@@ -45,8 +45,6 @@ public class ReadCommand extends Command
   @Override
   public String toString ()
   {
-    StringBuilder text = new StringBuilder ();
-    text.append (getName ());
-    return text.toString ();
+    return getName ();
   }
 }

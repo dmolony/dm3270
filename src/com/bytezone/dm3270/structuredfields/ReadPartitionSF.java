@@ -23,18 +23,23 @@ public class ReadPartitionSF extends StructuredField
       case (byte) 0x02:
         typeName = "Read Partition (Query)";
         break;
+
       case (byte) 0x03:
         typeName = "Read Partition (QueryList)";
         break;
+
       case Command.READ_BUFFER_F2:        // NB 0x02 would conflict with RPQ above
         typeName = "Read Partition (ReadBuffer)";
         break;
+
       case Command.READ_MODIFIED_F6:
         typeName = "Read Partition (ReadModified)";
         break;
+
       case Command.READ_MODIFIED_ALL_6E:
         typeName = "Read Partition (ReadModifiedAll)";
         break;
+
       default:
         typeName = String.format ("Unknown READ PARTITION type: %02X", data[2]);
     }
