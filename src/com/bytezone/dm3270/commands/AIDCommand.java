@@ -82,10 +82,13 @@ public class AIDCommand extends Command implements BufferAddressSource
         System.out.printf ("Unknown value: %02X%n", data[0]);
     }
 
-    this.key = command.key;
-    this.cursorAddress = command.cursorAddress;
-    this.orders.addAll (command.orders);
-    this.data = command.data;
+    if (command != null)
+    {
+      this.key = command.key;
+      this.cursorAddress = command.cursorAddress;
+      this.orders.addAll (command.orders);
+      this.data = command.data;
+    }
   }
 
   private AIDCommand readBuffer ()

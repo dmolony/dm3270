@@ -40,13 +40,6 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
             screenHandler.getCurrentField ().setModified (true);
 
           sp = screenHandler.getScreenPosition (cursor.moveRight ());
-          //          if (sp.isStartField ())
-          //          {
-          //            screenHandler.setCurrentField (screenHandler.getCurrentField ().getNext ());
-          //            cursor.setLocation (screenHandler.getCurrentField ().getStartPosition () + 1);
-          //            sp = screenHandler.getScreenPosition (cursor.getLocation ());
-          //          }
-
           cursor.setVisible (true);
         }
       }

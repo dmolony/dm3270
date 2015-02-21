@@ -89,15 +89,6 @@ public class BasicStage extends Stage
             ((AbstractExtendedCommand) sessionRecord.getMessage ()).getCommandHeader ();
     }
 
-    textArea.setText (sessionRecord.getSourceName ());
-    textArea.appendText (":\n\n");
-
-    if (commandHeader != null)
-    {
-      textArea.appendText (commandHeader.toString ());
-      textArea.appendText ("\n\n");
-    }
-
     ReplyBuffer message = sessionRecord.getMessage ();
 
     if (process)
@@ -105,6 +96,15 @@ public class BasicStage extends Stage
 
     if (textArea != null)
     {
+      textArea.setText (sessionRecord.getSourceName ());
+      textArea.appendText (":\n\n");
+
+      if (commandHeader != null)
+      {
+        textArea.appendText (commandHeader.toString ());
+        textArea.appendText ("\n\n");
+      }
+
       textArea.appendText (message.toString ());
       textArea.appendText ("\n\n");
       textArea.appendText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));

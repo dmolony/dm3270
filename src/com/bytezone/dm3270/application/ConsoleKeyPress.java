@@ -42,9 +42,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       case ENTER:
         screenHandler.getCursor ().setVisible (false);
         screenHandler.setAID ("ENTR");
-        //        ReadModified readCommand = new ReadModified (screenHandler);
-        //        readCommand.process ();
-        //        console.sendData (readCommand.getReply ().getTelnetData ());
         AIDCommand command = new AIDCommand (screenHandler);
         console.sendData (command.getTelnetData ());
         break;
@@ -90,9 +87,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
           screenHandler.getCursor ().setVisible (false);
           screenHandler.setAID ("PF" + pfKey);
-          //          readCommand = new ReadModified (screenHandler);
-          //          readCommand.process ();
-          //          console.sendData (readCommand.getReply ().getTelnetData ());
           command = new AIDCommand (screenHandler);
           console.sendData (command.getTelnetData ());
         }
