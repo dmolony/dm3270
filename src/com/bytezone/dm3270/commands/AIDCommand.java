@@ -47,7 +47,49 @@ public class AIDCommand extends Command implements BufferAddressSource
   public AIDCommand (ScreenHandler screenHandler)
   {
     super (screenHandler);
+    AIDCommand command = readModified (screenHandler.getAID ());
 
+    this.key = command.key;
+    this.cursorAddress = command.cursorAddress;
+    this.orders.addAll (command.orders);
+    this.data = command.data;
+  }
+
+  public AIDCommand (ScreenHandler screenHandler, byte type)
+  {
+    super (screenHandler);
+
+    AIDCommand command = null;
+
+    switch (type)
+    {
+      case Command.READ_BUFFER_F2:
+      case Command.READ_BUFFER_02:
+        command = readBuffer ();
+        break;
+
+      case Command.READ_MODIFIED_F6:
+      case Command.READ_MODIFIED_06:
+        command = readModified (AIDCommand.NO_AID_SPECIFIED);
+        break;
+
+      case Command.READ_MODIFIED_ALL_6E:
+      case Command.READ_MODIFIED_ALL_0E:
+        command = readModifiedAll (AIDCommand.NO_AID_SPECIFIED);
+        break;
+
+      default:
+        System.out.printf ("Unknown value: %02X%n", data[0]);
+    }
+
+    this.key = command.key;
+    this.cursorAddress = command.cursorAddress;
+    this.orders.addAll (command.orders);
+    this.data = command.data;
+  }
+
+  private AIDCommand readBuffer ()
+  {
     byte[] buffer = new byte[4096];
     int ptr = 0;
     buffer[ptr++] = AID_READ_PARTITION;
@@ -58,17 +100,11 @@ public class AIDCommand extends Command implements BufferAddressSource
     for (ScreenField sf : screenHandler.getScreenFields ())
       ptr = sf.pack (buffer, ptr);
 
-    AIDCommand command = new AIDCommand (screenHandler, buffer, 0, ptr);
-    this.key = command.key;
-    this.cursorAddress = command.cursorAddress;
-    this.orders.addAll (command.orders);
-    this.data = command.data;
+    return new AIDCommand (screenHandler, buffer, 0, ptr);
   }
 
-  public AIDCommand (ScreenHandler screenHandler, byte aid)
+  private AIDCommand readModified (byte aid)
   {
-    super (screenHandler);
-
     byte[] buffer = new byte[4096];
     int ptr = 0;
     buffer[ptr++] = aid;
@@ -93,11 +129,16 @@ public class AIDCommand extends Command implements BufferAddressSource
       }
     }
 
-    AIDCommand command = new AIDCommand (screenHandler, buffer, 0, ptr);
-    this.key = command.key;
-    this.cursorAddress = command.cursorAddress;
-    this.orders.addAll (command.orders);
-    this.data = command.data;
+    return new AIDCommand (screenHandler, buffer, 0, ptr);
+  }
+
+  private AIDCommand readModifiedAll (byte aid)
+  {
+    byte[] buffer = new byte[4096];
+    int ptr = 0;
+    buffer[ptr++] = aid;
+
+    return new AIDCommand (screenHandler, buffer, 0, ptr);
   }
 
   public AIDCommand (ScreenHandler screenHandler, byte[] buffer)
