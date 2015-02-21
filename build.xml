@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dataset" default="jar" basedir=".">
+
+  <property name="srcDir" location="src" />
+  <property name="binDir" location="bin" />
+  <property name="jarFile" location="/Users/denismolony/Dropbox/Java/Console.jar" />
+  
+  <target name="init">
+    <delete file="${binDir}/*.class" />
+  </target>
+
+  <target name="compilation" depends="init">
+    <javac debug="on" srcdir="${srcDir}" destdir="${binDir}" includeantruntime="false">
+      <classpath>
+        <pathelement location="." />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compilation">
+    <jar destfile="${jarFile}">
+      <fileset dir="${binDir}" />
+    	<manifest>
+    		<attribute name="Main-Class" value="com.bytezone.dm3270.application.Console" />
+    	</manifest>
+    </jar>
+  </target>
+	
+</project>

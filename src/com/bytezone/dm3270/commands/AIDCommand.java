@@ -1,0 +1,307 @@
+package com.bytezone.dm3270.commands;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bytezone.dm3270.application.Cursor;
+import com.bytezone.dm3270.application.ScreenField;
+import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
+import com.bytezone.dm3270.application.ScreenPosition;
+import com.bytezone.dm3270.orders.BufferAddress;
+import com.bytezone.dm3270.orders.BufferAddressSource;
+import com.bytezone.dm3270.orders.Order;
+import com.bytezone.dm3270.orders.SetBufferAddressOrder;
+import com.bytezone.dm3270.orders.TextOrder;
+
+public class AIDCommand extends Command implements BufferAddressSource
+{
+  public static final byte NO_AID_SPECIFIED = 0x60;
+  public static final byte AID_READ_PARTITION = 0x61;
+
+  private static byte[] keys = { //
+      0, (byte) 0x60, (byte) 0x7D, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4,
+          (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A,
+          (byte) 0x7B, (byte) 0x7C, (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4,
+          (byte) 0xC5, (byte) 0xC6, (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A,
+          (byte) 0x4B, (byte) 0x4C, (byte) 0x6C, (byte) 0x6E, (byte) 0x6B, (byte) 0x6D,
+          (byte) 0x6A, (byte) 0x61 };
+
+  private static String[] keyNames = { //
+      "Not found", "No AID", "ENTR", "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7",
+          "PF8", "PF9", "PF10", "PF11", "PF12", "PF13", "PF14", "PF15", "PF16", "PF17",
+          "PF18", "PF19", "PF20", "PF21", "PF22", "PF23", "PF24", "PA1", "PA2", "PA3",
+          "CLR", "CLR Partition", "Read Partition" };
+
+  private int key;
+  private byte keyCommand;
+  private BufferAddress cursorAddress;
+
+  private final List<ModifiedField> modifiedFields = new ArrayList<> ();
+  private final List<Order> orders = new ArrayList<> ();
+
+  // Constructor used for replies to Read Partition (Read Buffer)
+  // This method creates an AID from the current screen.
+  // Should be replaced with a static factory method
+
+  public AIDCommand (ScreenHandler screenHandler)
+  {
+    super (screenHandler);
+
+    byte[] buffer = new byte[4096];
+    int ptr = 0;
+    buffer[ptr++] = AID_READ_PARTITION;
+
+    BufferAddress ba = screenHandler.getCursor ().getAddress ();
+    ptr = ba.packAddress (buffer, ptr);
+
+    for (ScreenField sf : screenHandler.getScreenFields ())
+      ptr = sf.pack (buffer, ptr);
+
+    AIDCommand command = new AIDCommand (screenHandler, buffer, 0, ptr);
+    this.key = command.key;
+    this.cursorAddress = command.cursorAddress;
+    this.orders.addAll (command.orders);
+    this.data = command.data;
+  }
+
+  public AIDCommand (ScreenHandler screenHandler, byte aid)
+  {
+    super (screenHandler);
+
+    byte[] buffer = new byte[4096];
+    int ptr = 0;
+    buffer[ptr++] = aid;
+
+    BufferAddress ba = screenHandler.getCursor ().getAddress ();
+    ptr = ba.packAddress (buffer, ptr);
+
+    for (ScreenField sf : screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE))
+    {
+      if (sf.isModified ())
+      {
+        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+
+        int startPos = sf.getStartPosition () + 1;
+        ba = new BufferAddress (startPos);
+        ptr = ba.packAddress (buffer, ptr);
+
+        byte[] data = sf.getData ();
+        for (int i = 0; i < data.length; i++)
+          if (data[i] != 0)         // null suppression (is this sufficient?)
+            buffer[ptr++] = data[i];
+      }
+    }
+
+    AIDCommand command = new AIDCommand (screenHandler, buffer, 0, ptr);
+    this.key = command.key;
+    this.cursorAddress = command.cursorAddress;
+    this.orders.addAll (command.orders);
+    this.data = command.data;
+  }
+
+  public AIDCommand (ScreenHandler screenHandler, byte[] buffer)
+  {
+    this (screenHandler, buffer, 0, buffer.length);
+  }
+
+  // Constructor used for Inbound Commands (Spy/Replay)
+
+  public AIDCommand (ScreenHandler screenHandler, byte[] buffer, int offset, int length)
+  {
+    super (buffer, offset, length, screenHandler);
+
+    keyCommand = buffer[offset];
+    key = findKey (keyCommand);
+
+    if (length <= 1)
+    {
+      cursorAddress = null;
+      return;
+    }
+
+    cursorAddress = new BufferAddress (buffer[offset + 1], buffer[offset + 2]);
+
+    int ptr = offset + 3;
+    int max = offset + length;
+    Order previousOrder = null;
+    SetBufferAddressOrder sba = null;
+
+    while (ptr < max)
+    {
+      Order order = Order.getOrder (buffer, ptr, max);
+      if (!order.rejected ())
+      {
+        if (previousOrder != null && previousOrder.matches (order))
+          previousOrder.incrementDuplicates ();
+        else
+        {
+          orders.add (order);
+          previousOrder = order;
+        }
+
+        if (sba != null && order instanceof TextOrder)
+          modifiedFields.add (new ModifiedField (sba, (TextOrder) order));
+        sba =
+            (order instanceof SetBufferAddressOrder) ? (SetBufferAddressOrder) order
+                : null;
+      }
+      ptr += order.size ();
+    }
+  }
+
+  // copy modified fields back to the screen - only used in Replay mode
+  // usually an AID will be a reply command (which is never processed)
+
+  @Override
+  public void process ()
+  {
+    Cursor cursor = screenHandler.getCursor ();
+    cursor.setVisible (false);
+
+    // test to see whether this is a field that was null suppressed into moving
+    // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
+    ScreenField field = null;
+
+    if (modifiedFields.size () == 1 && false)
+    {
+      int cursorOldLocation = cursor.getLocation ();
+      int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
+      System.out.printf ("%d %d%n", cursorOldLocation, cursorDistance);
+      ModifiedField modifiedField = modifiedFields.get (0);
+      if (modifiedField.textOrder.getBuffer ().length == cursorDistance)
+      {
+        ScreenField screenField = screenHandler.getField (modifiedField.sba);
+        if (screenField.contains (modifiedField.sba.getBufferAddress ())
+            && screenField.contains (cursorAddress)
+            && screenField.contains (cursorOldLocation))
+        {
+          field = screenField;
+          cursor.setLocation (cursorOldLocation);
+          updateScreenField (modifiedField, cursor, screenHandler);
+        }
+      }
+    }
+
+    if (field == null)
+      for (ModifiedField modifiedField : modifiedFields)
+      {
+        cursor.setAddress (modifiedField.sba);
+        updateScreenField (modifiedField, cursor, screenHandler);
+      }
+
+    if (cursorAddress != null)
+      cursor.setAddress (cursorAddress);
+
+    cursor.setVisible (true);
+  }
+
+  private int findKey (byte keyCommand)
+  {
+    for (int i = 1; i < keys.length; i++)
+      if (keys[i] == keyCommand)
+        return i;
+    return 0;
+  }
+
+  private void updateScreenField (ModifiedField mf, Cursor cursor,
+      ScreenHandler screenHandler)
+  {
+    for (byte b : mf.textOrder.getBuffer ())
+    {
+      ScreenPosition sp = cursor.getScreenPosition ();
+      sp.setCharacter (b);
+      cursor.moveRight ();
+      screenHandler.getScreenCanvas ().draw (sp);
+    }
+
+    // set the actual field's modified flag
+    ScreenField sf = screenHandler.getField (mf.sba);
+    if (sf != null)
+      sf.setModified (true);
+    else
+      System.out.println ("Screen field not found: " + mf);
+  }
+
+  @Override
+  public BufferAddress getBufferAddress ()
+  {
+    return cursorAddress;
+  }
+
+  public byte getKeyCommand ()
+  {
+    return keyCommand;
+  }
+
+  @Override
+  public String getName ()
+  {
+    return "AID : " + keyNames[key];
+  }
+
+  public static byte getKey (String name)
+  {
+    int ptr = 0;
+    for (String keyName : keyNames)
+    {
+      if (keyName.equals (name))
+        return keys[ptr];
+      ptr++;
+    }
+    return -1;
+  }
+
+  @Override
+  public String brief ()
+  {
+    return keyNames[key];
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+    text.append (String.format ("AID     : %-12s : %02X%n", keyNames[key], keyCommand));
+    text.append (String.format ("Cursor  : %s%n", cursorAddress));
+
+    if (modifiedFields.size () > 0)
+    {
+      text.append (String.format ("%nModified fields  : %d", modifiedFields.size ()));
+      for (ModifiedField mf : modifiedFields)
+      {
+        text.append ("\nField   : ");
+        text.append (mf);
+      }
+    }
+
+    if (orders.size () > 0 && modifiedFields.size () == 0)
+    {
+      text.append (String.format ("%nOrders  : %d%n", orders.size ()));
+      for (Order order : orders)
+      {
+        String fmt = (order instanceof TextOrder) ? "%s" : "%n%-40s";
+        text.append (String.format (fmt, order));
+      }
+    }
+    return text.toString ();
+  }
+
+  private class ModifiedField
+  {
+    SetBufferAddressOrder sba;
+    TextOrder textOrder;
+
+    public ModifiedField (SetBufferAddressOrder sba, TextOrder textOrder)
+    {
+      this.sba = sba;
+      this.textOrder = textOrder;
+    }
+
+    @Override
+    public String toString ()
+    {
+      return String.format ("%s : %s", sba, textOrder);
+    }
+  }
+}

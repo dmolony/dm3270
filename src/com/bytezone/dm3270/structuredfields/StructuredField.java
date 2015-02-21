@@ -1,0 +1,46 @@
+package com.bytezone.dm3270.structuredfields;
+
+import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.buffers.AbstractTN3270Command;
+
+public abstract class StructuredField extends AbstractTN3270Command
+{
+  public final static byte RESET_PARTITION = 0x00;
+  public final static byte READ_PARTITION = 0x01;
+  public final static byte ERASE_RESET = 0x03;
+  public final static byte LOAD_PROGRAMMED_SYMBOLS = 0x06;
+  public final static byte SET_REPLY_MODE = 0x09;
+  public final static byte SET_WINDOW_ORIGIN = 0x0B;
+  public final static byte CREATE_PARTITION = 0x0C;
+  public final static byte DESTROY_PARTITION = 0x0D;
+  public final static byte ACTIVATE_PARTITION = 0x0E;
+  public final static byte OUTBOUND_3270DS = 0x40;
+  public final static byte SCS_DATA = 0x41;
+  public final static byte SELECT_FORMAT_GROUP = 0x4A;
+  public final static byte PRESENT_ABSOLUTE_FORMAT = 0x4B;
+  public final static byte PRESENT_RELATIVE_FORMAT = 0x4C;
+
+  public final static byte INBOUND_3270DS = (byte) 0x80;
+  public final static byte QUERY_REPLY = (byte) 0x81;
+
+  protected byte type;
+
+  public StructuredField (byte[] buffer, int offset, int length,
+      ScreenHandler screenHandler)
+  {
+    super (buffer, offset, length, screenHandler);
+    type = buffer[offset];
+  }
+
+  public String brief ()
+  {
+    return toString ();
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("StrF: %s", Utility.toHex (data).substring (8));
+  }
+}
