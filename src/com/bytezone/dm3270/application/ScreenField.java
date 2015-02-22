@@ -130,11 +130,11 @@ public class ScreenField
     return startPosition == location;
   }
 
-  public void clear ()        // NB this will assigns the attribute byte as well
+  public void clear ()        // NB this will assign the attribute byte as well
   {
     setModified (true);
     for (ScreenPosition sp : screenPositions)
-      sp.setCharacter ((byte) 0);
+      sp.resetCharacter ();
   }
 
   public boolean isModified ()
@@ -147,7 +147,7 @@ public class ScreenField
     StartFieldAttribute sfa = getStartFieldAttribute ();
     if (sfa != null)
       sfa.setModified (modified);
-    screenHandler.fieldModified (this);
+    screenHandler.fieldModified (this);     // display the new status
   }
 
   public String getFieldType ()
@@ -219,7 +219,7 @@ public class ScreenField
   @Override
   public String toString ()
   {
-    return String.format ("%04d-%04d %4d  [%s]", startPosition, endPosition,
-                          getLength (), getString ());
+    return String.format ("%04d-%04d %4d %s [%s]", startPosition, endPosition,
+                          getLength (), getFieldType (), getString ());
   }
 }

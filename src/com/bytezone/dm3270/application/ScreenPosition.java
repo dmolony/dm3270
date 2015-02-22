@@ -97,6 +97,12 @@ public class ScreenPosition
     return isStartField && getStartFieldAttribute ().isProtected ();
   }
 
+  public void resetCharacter ()
+  {
+    character = 0;
+    isGraphicsCharacter = false;
+  }
+
   public void setCharacter (byte b)
   {
     character = b;

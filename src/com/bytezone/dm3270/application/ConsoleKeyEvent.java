@@ -32,15 +32,15 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
         char ch = c.charAt (0);
         if (ch >= 32 && ch < 0x7F)
         {
-          ScreenPosition sp = cursor.getScreenPosition ();
-          sp.setCharacter ((byte) Utility.asc2ebc[ch]);
-          cursor.setVisible (false);
+          ScreenPosition screenPosition = cursor.getScreenPosition ();
+          ScreenField screenField = screenHandler.getCurrentField ();
 
-          if (screenHandler.getCurrentField () != null)
-            screenHandler.getCurrentField ().setModified (true);
-
-          sp = screenHandler.getScreenPosition (cursor.moveRight ());
-          cursor.setVisible (true);
+          if (screenField != null && screenField.isModifiable ())
+          {
+            screenPosition.setCharacter ((byte) Utility.asc2ebc[ch]);
+            screenField.setModified (true);
+            screenHandler.moveCursor (KeyCode.RIGHT);
+          }
         }
       }
     }
