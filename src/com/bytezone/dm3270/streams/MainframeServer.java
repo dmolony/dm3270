@@ -150,33 +150,29 @@ public class MainframeServer implements Runnable
 
   private void writex (byte... buffer) throws IOException
   {
-    if (clientOut != null)
-    {
-      clientOut.write (buffer);
-      clientOut.flush ();
-    }
+    write (buffer);
   }
 
-  public void write (byte[] buffer) throws IOException
+  public void write (byte[] buffer)
   {
     if (clientOut != null)
     {
-      clientOut.write (buffer);
-      clientOut.flush ();
+      try
+      {
+        clientOut.write (buffer);
+        clientOut.flush ();
+      }
+      catch (IOException e)
+      {
+        e.printStackTrace ();
+      }
     }
   }
 
   public void sendCommand (Command command)
   {
-    try
-    {
-      byte[] buffer = command.getTelnetData ();
-      write (buffer);
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace ();
-    }
+    byte[] buffer = command.getTelnetData ();
+    write (buffer);
   }
 
   public int getPort ()

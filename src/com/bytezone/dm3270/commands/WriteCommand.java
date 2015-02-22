@@ -9,6 +9,7 @@ import com.bytezone.dm3270.orders.TextOrder;
 
 public class WriteCommand extends Command
 {
+  private static final boolean REBUILD_FIELDS = true;
   private final boolean erase;
   private WriteControlCharacter writeControlCharacter;
   protected final List<Order> orders = new ArrayList<Order> ();
@@ -94,7 +95,7 @@ public class WriteCommand extends Command
     for (Order order : orders)
       order.process (screenHandler);
 
-    screenHandler.draw ();
+    screenHandler.draw (REBUILD_FIELDS);
   }
 
   public List<Order> getOrdersList ()

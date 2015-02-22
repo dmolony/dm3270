@@ -9,6 +9,8 @@ import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
 
 public class EraseAllUnprotectedCommand extends Command
 {
+  private static final boolean DONT_REBUILD_FIELDS = false;
+
   // This command has no WCC or data.
   public EraseAllUnprotectedCommand (ScreenHandler screenHandler, byte[] buffer,
       int offset, int length)
@@ -25,16 +27,17 @@ public class EraseAllUnprotectedCommand extends Command
 
     screenHandler.restoreKeyboard ();
     screenHandler.resetModified ();
-    screenHandler.draw ();
 
     // position cursor in first unprotected field
     List<ScreenField> fields =
         screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE);
     Cursor cursor = screenHandler.getCursor ();
     if (fields.size () > 0)
-      cursor.setLocation (fields.get (0).getStartPosition ());
+      cursor.setLocation (fields.get (0).getStartPosition () + 1);
     else
       cursor.setLocation (0);
+
+    screenHandler.draw (DONT_REBUILD_FIELDS);
   }
 
   @Override

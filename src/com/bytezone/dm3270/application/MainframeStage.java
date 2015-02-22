@@ -52,8 +52,10 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
   final RadioButton btnExtendedFieldMode;
   final RadioButton btnCharacterMode;
 
-  final Button btnReadBuffer;// = new Button ("Read Buffer");
-  final Button btnReadModified;// = new Button ("Read Modified");
+  final Button btnReadBuffer;
+  final Button btnReadModified;
+  final Button btnReadModifiedAll;
+  final Button btnEraseAllUnprotected;
 
   private static boolean UNPROTECTED = false;
   private static boolean PROTECTED = true;
@@ -75,16 +77,19 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     mainframeServer = new MainframeServer (mainframePort);
     mainframeServer.setStage (this);
 
-    final VBox vbox = getVBox ();
+    final VBox vBox1 = getVBox ();
     for (int i = 0; i < 10; i++)
-      buttons.add (getButton ("Empty", vbox, BUTTON_WIDTH));
+      buttons.add (getButton ("Empty", vBox1, BUTTON_WIDTH));
 
-    final HBox hbox = getHBox ();
-    btnReadBuffer = getButton ("Read Buffer", hbox, BUTTON_WIDTH);
-    btnReadModified = getButton ("Read Modified", hbox, BUTTON_WIDTH);
+    final VBox vBox2 = getVBox ();
+    btnReadBuffer = getButton ("Read Buffer", vBox2, BUTTON_WIDTH);
+    btnReadModified = getButton ("Read Modified", vBox2, BUTTON_WIDTH);
+    btnReadModifiedAll = getButton ("Read Mod All", vBox2, BUTTON_WIDTH);
+    btnEraseAllUnprotected = getButton ("Erase All Unpr", vBox2, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
+    final HBox hbox = getHBox ();
     btnFieldMode = getRadioButton ("Field Mode", hbox, modeGroup);
     btnExtendedFieldMode = getRadioButton ("Extended Field Mode", hbox, modeGroup);
     btnCharacterMode = getRadioButton ("Character Mode", hbox, modeGroup);
@@ -92,8 +97,11 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
 
+    final VBox vBox = getVBox ();
+    vBox.getChildren ().addAll (vBox1, vBox2);
+
     BorderPane borderPane = new BorderPane ();
-    borderPane.setLeft (vbox);
+    borderPane.setLeft (vBox);
     borderPane.setCenter (textArea);
     borderPane.setBottom (hbox);
 
@@ -187,14 +195,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
           textArea.appendText ("\n\n");
           textArea.appendText (Utility.toHex (dataRecord.getBuffer ()));
           textArea.positionCaret (0);
-          try
-          {
-            mainframeServer.write (dataRecord.getMessage ().getTelnetData ());
-          }
-          catch (Exception e)
-          {
-            e.printStackTrace ();
-          }
+          mainframeServer.write (dataRecord.getMessage ().getTelnetData ());
         });
 
         if (buttonNo < labels.size ())
@@ -205,25 +206,19 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     }
 
     btnReadBuffer.setOnAction ( (x) -> {
-      try
-      {
-        mainframeServer.write (createReadBufferCommand ((byte) 0xF2));   // ReadBuffer
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace ();
-      }
+      mainframeServer.write (createReadBufferCommand ((byte) 0xF2));
     });
 
     btnReadModified.setOnAction ( (x) -> {
-      try
-      {
-        mainframeServer.write (createReadBufferCommand ((byte) 0xF6));   // ReadModified
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace ();
-      }
+      mainframeServer.write (createReadBufferCommand ((byte) 0xF6));
+    });
+
+    btnReadModifiedAll.setOnAction ( (x) -> {
+      mainframeServer.write (createReadBufferCommand ((byte) 0x6E));
+    });
+
+    btnEraseAllUnprotected.setOnAction ( (x) -> {
+      mainframeServer.write (createReadBufferCommand ((byte) 0x6F));
     });
   }
 
@@ -245,6 +240,8 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
       button.setDisable (!enable);
     btnReadBuffer.setDisable (!enable);
     btnReadModified.setDisable (!enable);
+    btnReadModifiedAll.setDisable (!enable);
+    btnEraseAllUnprotected.setDisable (!enable);
 
     buttons.get (0).fire ();
     buttons.get (0).requestFocus ();

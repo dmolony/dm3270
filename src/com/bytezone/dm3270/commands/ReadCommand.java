@@ -20,6 +20,7 @@ public class ReadCommand extends Command
   @Override
   public void process ()
   {
+    // the AID command will decide how to pack the RB, RM or RMA request
     reply = new AIDCommand (screenHandler, data[0]);
   }
 

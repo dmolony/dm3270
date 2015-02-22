@@ -33,7 +33,7 @@ public class UsableArea extends ReplyField
 
     // copy the screen dimensions into the reply (skipping 4 header bytes)
     Utility.packUnsignedShort (80, reply, 6);     // columns
-    Utility.packUnsignedShort (24, reply, 10);    // rows
+    Utility.packUnsignedShort (24, reply, 8);     // rows
 
     checkDataLength (ptr);
   }

@@ -100,10 +100,13 @@ public class ScreenHandler
     return contextHandler;
   }
 
-  public void draw ()
+  public void draw (boolean rebuild)
   {
-    buildFields ();
-    setCurrentField ();
+    if (rebuild)
+    {
+      buildFields ();
+      setCurrentField ();
+    }
 
     for (ScreenField screenField : screenFields)
       if (screenField.isHidden ())

@@ -158,4 +158,14 @@ public class Cursor implements Iterable<Attribute>
     moveRight ();
     return leftLocation;
   }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+    text.append ("Cursor: \n");
+    text.append (String.format ("  location.... %d%n", location));
+    text.append (String.format ("  visible..... %s%n", visible));
+    return text.toString ();
+  }
 }
