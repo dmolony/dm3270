@@ -15,7 +15,9 @@ public class ProgramTabOrder extends Order
   @Override
   public void process (ScreenHandler screenHandler)
   {
-    System.out.println ("No idea PT");
+    // this is not quite right as it will wrap around, but it's a start
+    // the manual has a bunch of weird conditions that we have to account for
+    screenHandler.tab (true);
   }
 
   @Override

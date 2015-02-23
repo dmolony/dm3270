@@ -2,6 +2,7 @@ package com.bytezone.dm3270.application;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javafx.application.Application;
@@ -31,16 +32,9 @@ import javafx.stage.Stage;
 
 public class Console extends Application
 {
-  private static String CONSOLAS = "Consolas";
-  private static String SOURCE_CODE_PRO = "Source Code Pro";
-  private static String ANONYMOUS = "Anonymous Pro";
-  private static String INCONSOLATA = "Inconsolata";
-  private static String MONACO = "Monaco";
-  private static String MENLO = "Menlo";
-  private static String MPLUS = "M+ 2M";
-  private static String PT_MONO = "PT Mono";
-  private static String LUCULENT = "Luculent";
-  private static String MONOSPACED = "Monospaced";
+  private static String[] fontNames = { "Consolas", "Source Code Pro", "Anonymous Pro",
+                                       "Inconsolata", "Monaco", "Menlo", "M+ 2M",
+                                       "PT Mono", "Luculent", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
 
@@ -71,7 +65,7 @@ public class Console extends Application
     String clientPortText = prefs.get ("CLIENT_PORT", "2323");
     String fileText = prefs.get ("FILE_NAME", "spy01.txt");
     String optionSelected = prefs.get ("OPTION", "Replay");
-    String fontSelected = prefs.get ("FONT", MONOSPACED);
+    String fontSelected = prefs.get ("FONT", "Monospaced");
     String sizeSelected = prefs.get ("SIZE", "16");
 
     //    rw3270.connect ("192.168.0.78", 2300);      // hercules
@@ -230,24 +224,20 @@ public class Console extends Application
     MenuItem exit = new MenuItem ("Exit");
     exit.setOnAction (e -> Platform.exit ());
 
-    setFontMenu (CONSOLAS, fontGroup, menuFont, fontSelected);
-    setFontMenu (SOURCE_CODE_PRO, fontGroup, menuFont, fontSelected);
-    setFontMenu (ANONYMOUS, fontGroup, menuFont, fontSelected);
-    setFontMenu (INCONSOLATA, fontGroup, menuFont, fontSelected);
-    setFontMenu (LUCULENT, fontGroup, menuFont, fontSelected);
-    setFontMenu (MPLUS, fontGroup, menuFont, fontSelected);
-    setFontMenu (MENLO, fontGroup, menuFont, fontSelected);
-    setFontMenu (PT_MONO, fontGroup, menuFont, fontSelected);
-    setFontMenu (MONACO, fontGroup, menuFont, fontSelected);
-    setFontMenu (MONOSPACED, fontGroup, menuFont, fontSelected);
+    List<String> families = Font.getFamilies ();
+    for (String fontName : fontNames)
+    {
+      boolean disable = !families.contains (fontName);
+      setFontMenu (fontName, fontGroup, menuFont, fontSelected, disable);
+    }
 
     menuFont.getItems ().add (new SeparatorMenuItem ());
 
-    setFontMenu ("14", sizeGroup, menuFont, sizeSelected);
-    setFontMenu ("16", sizeGroup, menuFont, sizeSelected);
-    setFontMenu ("18", sizeGroup, menuFont, sizeSelected);
-    setFontMenu ("20", sizeGroup, menuFont, sizeSelected);
-    setFontMenu ("22", sizeGroup, menuFont, sizeSelected);
+    setFontMenu ("14", sizeGroup, menuFont, sizeSelected, false);
+    setFontMenu ("16", sizeGroup, menuFont, sizeSelected, false);
+    setFontMenu ("18", sizeGroup, menuFont, sizeSelected, false);
+    setFontMenu ("20", sizeGroup, menuFont, sizeSelected, false);
+    setFontMenu ("22", sizeGroup, menuFont, sizeSelected, false);
 
     menuFile.getItems ().addAll (exit);
     menuBar.getMenus ().addAll (menuFile, menuFont);
@@ -274,13 +264,14 @@ public class Console extends Application
   }
 
   private void setFontMenu (String name, ToggleGroup toggleGroup, Menu menu,
-      String fontSelected)
+      String fontSelected, boolean disable)
   {
     RadioMenuItem item = new RadioMenuItem (name);
     item.setToggleGroup (toggleGroup);
     menu.getItems ().add (item);
     if (fontSelected.equals (name))
       item.setSelected (true);
+    item.setDisable (disable);
   }
 
   private Node options (String[] options, ToggleGroup group, int offset, int length)
