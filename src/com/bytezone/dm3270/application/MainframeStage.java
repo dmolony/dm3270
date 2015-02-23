@@ -7,10 +7,12 @@ import java.util.List;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -78,15 +80,18 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     mainframeServer = new MainframeServer (mainframePort);
     mainframeServer.setStage (this);
 
-    final VBox vBox1 = getVBox ();
+    final VBox vBox = getVBox ();
     for (int i = 0; i < 10; i++)
-      buttons.add (getButton ("Empty", vBox1, BUTTON_WIDTH));
+      buttons.add (getButton ("Empty", vBox, BUTTON_WIDTH));
 
-    final VBox vBox2 = getVBox ();
-    btnReadBuffer = getButton ("Read Buffer", vBox2, BUTTON_WIDTH);
-    btnReadModified = getButton ("Read Modified", vBox2, BUTTON_WIDTH);
-    btnReadModifiedAll = getButton ("Read Mod All", vBox2, BUTTON_WIDTH);
-    btnEraseAllUnprotected = getButton ("Erase All Unpr", vBox2, BUTTON_WIDTH);
+    Separator separator = new Separator ();
+    separator.setOrientation (Orientation.HORIZONTAL);
+    vBox.getChildren ().add (separator);
+
+    btnReadBuffer = getButton ("Read Buffer", vBox, BUTTON_WIDTH);
+    btnReadModified = getButton ("Read Modified", vBox, BUTTON_WIDTH);
+    btnReadModifiedAll = getButton ("Read Mod All", vBox, BUTTON_WIDTH);
+    btnEraseAllUnprotected = getButton ("Erase All Unpr", vBox, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
@@ -97,9 +102,6 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     btnFieldMode.setSelected (true);        // match the default setting
 
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
-
-    final VBox vBox = getVBox ();
-    vBox.getChildren ().addAll (vBox1, vBox2);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setLeft (vBox);
@@ -249,8 +251,9 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     btnReadModifiedAll.setDisable (!enable);
     btnEraseAllUnprotected.setDisable (!enable);
 
-    buttons.get (0).fire ();
-    buttons.get (0).requestFocus ();
+    buttons.get (3).fire ();        // ISPF (Erase Write)
+    buttons.get (4).fire ();        // 3.4  (Write)
+    buttons.get (4).requestFocus ();
     this.requestFocus ();
   }
 
