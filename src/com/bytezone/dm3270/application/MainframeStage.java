@@ -212,19 +212,19 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     }
 
     btnReadBuffer.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand ((byte) 0xF2));
+      mainframeServer.write (createReadBufferCommand (Command.READ_BUFFER_F2));
     });
 
     btnReadModified.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand ((byte) 0xF6));
+      mainframeServer.write (createReadBufferCommand (Command.READ_MODIFIED_F6));
     });
 
     btnReadModifiedAll.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand ((byte) 0x6E));
+      mainframeServer.write (createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
     });
 
     btnEraseAllUnprotected.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand ((byte) 0x6F));
+      mainframeServer.write (createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F));
     });
   }
 

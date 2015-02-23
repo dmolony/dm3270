@@ -17,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 
+import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.session.SessionRecord;
@@ -98,11 +99,11 @@ public class SpyStage extends BasicTelnetStage
                       -> replay (newValue, textArea, null, DONT_PROCESS));
 
     btnReadBuffer.setOnAction ( (x) -> {
-      spyServer.writeToClientSocket (createReadBufferCommand ((byte) 0xF2));
+      spyServer.writeToClientSocket (createReadBufferCommand (Command.READ_BUFFER_F2));
     });
 
     btnReadModified.setOnAction ( (x) -> {
-      spyServer.writeToClientSocket (createReadBufferCommand ((byte) 0xF6));
+      spyServer.writeToClientSocket (createReadBufferCommand (Command.READ_MODIFIED_F6));
     });
 
     btnSave.setOnAction ( (e) -> {
