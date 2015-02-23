@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.application;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -177,6 +178,11 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
   {
     String userHome = System.getProperty ("user.home");
     String filename = userHome + "/Dropbox/Mainframe documentation/mf.txt";
+
+    File f = new File (filename);
+    if (!f.exists () || f.isDirectory ())
+      filename = userHome + "/dm3270/mf.txt";
+
     Session session = new Session (null, filename);
     List<String> labels = session.getLables ();
 
