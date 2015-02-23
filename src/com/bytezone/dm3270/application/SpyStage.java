@@ -95,28 +95,14 @@ public class SpyStage extends BasicTelnetStage
         .selectedItemProperty ()
         .addListener ( (ObservableValue<? extends SessionRecord> observable,
                           SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue, textArea, null, false));
+                      -> replay (newValue, textArea, null, DONT_PROCESS));
 
     btnReadBuffer.setOnAction ( (x) -> {
-      try
-      {
-        spyServer.writeToClientSocket (createReadBufferCommand ((byte) 0xF2));
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace ();
-      }
+      spyServer.writeToClientSocket (createReadBufferCommand ((byte) 0xF2));
     });
 
     btnReadModified.setOnAction ( (x) -> {
-      try
-      {
-        spyServer.writeToClientSocket (createReadBufferCommand ((byte) 0xF6));
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace ();
-      }
+      spyServer.writeToClientSocket (createReadBufferCommand ((byte) 0xF6));
     });
 
     btnSave.setOnAction ( (e) -> {

@@ -20,6 +20,9 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 
 public class BasicStage extends Stage
 {
+  protected static final boolean DONT_PROCESS = false;
+  protected static final boolean DO_PROCESS = true;
+
   protected HBox getHBox ()
   {
     HBox hbox = new HBox ();

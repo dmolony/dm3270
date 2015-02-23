@@ -116,7 +116,6 @@ public class ReplayStage extends BasicStage
 
     showTelnet.selectedProperty ().addListener (changeListener1);
     show3270E.selectedProperty ().addListener (changeListener1);
-    //    showHeaderColumns.selectedProperty ().addListener (changeListener2);
 
     showTelnet.setSelected (true);      // must be a bug
     //    showTelnet.setSelected (false);
@@ -127,7 +126,7 @@ public class ReplayStage extends BasicStage
         .selectedItemProperty ()
         .addListener ( (ObservableValue<? extends SessionRecord> observable,
                           SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue, textArea, replyTextArea, true));
+                      -> replay (newValue, textArea, replyTextArea, DO_PROCESS));
 
     Rectangle2D primaryScreenBounds = Screen.getPrimary ().getVisualBounds ();
     String osName = System.getProperty ("os.name");
