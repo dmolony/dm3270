@@ -1,5 +1,5 @@
 # dm3270
-Yet another TN3270 Terminal Emulator. Written in Java 8, using JavaFX.
+Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses JavaFX.
 #### Warning
 This software is not finished. At the moment it is only possible to run tests, you cannot connect it to a mainframe. You can however use it to watch an actual terminal-mainframe session in order to capture session details.
 #### Modes
