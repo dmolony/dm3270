@@ -1,10 +1,17 @@
 package com.bytezone.dm3270.attributes;
 
+import javafx.scene.paint.Color;
+
 import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.orders.BufferAddress;
 
 public class StartFieldAttribute extends Attribute
 {
+  private static final Color WHITE = ColorAttribute.colors[0];
+  private static final Color BLUE = ColorAttribute.colors[1];
+  private static final Color RED = ColorAttribute.colors[2];
+  private static final Color GREEN = ColorAttribute.colors[4];
+
   private final boolean isProtected;        // bit 2
   private final boolean isNumeric;          // bit 3
   private final boolean isModified;         // bit 7
@@ -114,15 +121,9 @@ public class StartFieldAttribute extends Attribute
   @Override
   public void process (ScreenPosition screenPosition)
   {
-    if (isHighIntensity)
-      if (isProtected)
-        screenPosition.setForeground (ColorAttribute.colors[0]);    // neutral1
-      else
-        screenPosition.setForeground (ColorAttribute.colors[2]);    // red
-    else if (isProtected)
-      screenPosition.setForeground (ColorAttribute.colors[1]);      // blue
-    else
-      screenPosition.setForeground (ColorAttribute.colors[4]);      // green
+    screenPosition.setForeground (isHighIntensity ?       //
+        isProtected ? WHITE : RED :                       //
+        isProtected ? BLUE : GREEN);
   }
 
   public String getAcronym ()
