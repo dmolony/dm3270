@@ -1,5 +1,5 @@
 # dm3270
-Yet another TN3270 Terminal Emulator. Not usable just yet.
+Yet another TN3270 Terminal Emulator. Written in Java 8, using JavaFX.
 #### Modes
 There are four ways in which this software can currently be used - Spy, Replay, Mainframe and Terminal. These are described below.
 ![Initial screen](main1.png?raw=true "main")
