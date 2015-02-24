@@ -1,5 +1,5 @@
 # dm3270
-TN3270 Terminal Emulator
+Yet another TN3270 Terminal Emulator.
 
-### Screenshots
+#### Screenshots
 ![Main screen](console.png?raw=true "dm3270")
