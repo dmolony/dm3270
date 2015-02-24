@@ -12,5 +12,5 @@ Reruns the session that was saved in the specifed session file. Individual buffe
 #### Mainframe Mode
 Waits for a terminal emulator (not this one) to connect to the port specifed. This program is now masquerading as a mainframe and the mainframe window can be used to send the terminal various 3270 commands. The session can also be saved for later replaying.
 #### Terminal Mode
-Connects this terminal to the pretend mainframe described above.
+Connects this terminal to the test mainframe described above.
 ![Terminal screen](console.png?raw=true "dm3270")
