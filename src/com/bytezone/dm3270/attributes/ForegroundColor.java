@@ -12,6 +12,6 @@ public class ForegroundColor extends ColorAttribute
   @Override
   public void process (ScreenPosition screenPosition)
   {
-    screenPosition.setForeground (colors[value & 0x0F]);
+    screenPosition.setForeground (colors[attributeValue & 0x0F]);
   }
 }

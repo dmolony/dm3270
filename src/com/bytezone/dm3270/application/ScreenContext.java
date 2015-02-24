@@ -11,7 +11,7 @@ public class ScreenContext
   final boolean highIntensity;
 
   public ScreenContext (Color foregroundColor, Color backgroundColor, boolean underscore,
-          boolean reverseVideo, boolean highIntensity)
+      boolean reverseVideo, boolean highIntensity)
   {
     this.foregroundColor = foregroundColor;
     this.backgroundColor = backgroundColor;
@@ -23,8 +23,10 @@ public class ScreenContext
   public boolean matches (ScreenContext other)
   {
     return foregroundColor == other.foregroundColor
-            && backgroundColor == other.backgroundColor && underscore == other.underscore
-            && reverseVideo == other.reverseVideo && highIntensity == other.highIntensity;
+        && backgroundColor == other.backgroundColor     //
+        && underscore == other.underscore               //
+        && reverseVideo == other.reverseVideo           //
+        && highIntensity == other.highIntensity;
   }
 
   @Override
@@ -32,6 +34,6 @@ public class ScreenContext
   {
     return String.format ("[Fg:%s Bg:%s Un:%s Hi:%s Rv:%s]", foregroundColor,
                           backgroundColor, (underscore ? 'x' : ' '), (highIntensity ? 'x'
-                                  : ' '), (reverseVideo ? 'x' : ' '));
+                              : ' '), (reverseVideo ? 'x' : ' '));
   }
 }

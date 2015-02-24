@@ -7,7 +7,7 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 public class StartFieldOrder extends Order
 {
-  protected final StartFieldAttribute startFieldAttribute;
+  private final StartFieldAttribute startFieldAttribute;
 
   public StartFieldOrder (byte[] buffer, int offset)
   {

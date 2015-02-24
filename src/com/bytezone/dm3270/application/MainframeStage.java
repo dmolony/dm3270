@@ -63,6 +63,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
   final Button btnReadModified;
   final Button btnReadModifiedAll;
   final Button btnEraseAllUnprotected;
+  final Button btnProgramTab;
 
   private static boolean UNPROTECTED = false;
   private static boolean PROTECTED = true;
@@ -85,6 +86,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     mainframeServer.setStage (this);
 
     final VBox vBox = getVBox ();
+
     for (int i = 0; i < 10; i++)
       buttons.add (getButton ("Empty", vBox, BUTTON_WIDTH));
 
@@ -96,6 +98,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     btnReadModified = getButton ("Read Modified", vBox, BUTTON_WIDTH);
     btnReadModifiedAll = getButton ("Read Mod All", vBox, BUTTON_WIDTH);
     btnEraseAllUnprotected = getButton ("Erase All Unpr", vBox, BUTTON_WIDTH);
+    btnProgramTab = getButton ("Program Tab", vBox, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
@@ -248,6 +251,19 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     btnEraseAllUnprotected.setOnAction ( (x) -> {
       mainframeServer.write (createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F));
     });
+
+    btnProgramTab.setOnAction ( (x) -> {
+      mainframeServer.write (createProgramTabCommand ());
+    });
+  }
+
+  private byte[] createProgramTabCommand ()
+  {
+    byte[] buffer = new byte[10];
+    int ptr = 0;
+
+    assert ptr == buffer.length;
+    return buffer;
   }
 
   @Override
@@ -266,10 +282,12 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
   {
     for (Button button : buttons)
       button.setDisable (!enable);
+
     btnReadBuffer.setDisable (!enable);
     btnReadModified.setDisable (!enable);
     btnReadModifiedAll.setDisable (!enable);
     btnEraseAllUnprotected.setDisable (!enable);
+    btnProgramTab.setDisable (!enable);
 
     buttons.get (3).fire ();        // ISPF (Erase Write)
     buttons.get (4).fire ();        // 3.4  (Write)

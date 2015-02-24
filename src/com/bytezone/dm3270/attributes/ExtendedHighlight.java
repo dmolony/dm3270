@@ -15,7 +15,7 @@ public class ExtendedHighlight extends Attribute
   @Override
   public void process (ScreenPosition screenPosition)
   {
-    switch (value)
+    switch (attributeValue)
     {
       case 0:
         System.out.println ("0 not written - default");
@@ -41,7 +41,7 @@ public class ExtendedHighlight extends Attribute
   @Override
   public String toString ()
   {
-    String valueText = value == 0 ? "Reset" : highlights[value & 0x0F];
-    return String.format ("%-12s : %02X %s", name (), value, valueText);
+    String valueText = attributeValue == 0 ? "Reset" : highlights[attributeValue & 0x0F];
+    return String.format ("%-12s : %02X %s", name (), attributeValue, valueText);
   }
 }

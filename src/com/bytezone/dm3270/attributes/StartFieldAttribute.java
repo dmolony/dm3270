@@ -51,7 +51,7 @@ public class StartFieldAttribute extends Attribute
 
   public byte getValue ()
   {
-    return value;
+    return attributeValue;
   }
 
   public boolean isProtected ()         // P/p - Protected/unprotected
@@ -142,6 +142,6 @@ public class StartFieldAttribute extends Attribute
   @Override
   public String toString ()
   {
-    return String.format ("Attribute    : %02X %s", value, getAcronym ());
+    return String.format ("Attribute    : %02X %s", attributeValue, getAcronym ());
   }
 }

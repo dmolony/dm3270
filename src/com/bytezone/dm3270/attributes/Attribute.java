@@ -14,25 +14,25 @@ public abstract class Attribute
   public final static byte XA_VALIDATION = (byte) 0xC1;
   public final static byte XA_OUTLINING = (byte) 0xC2;
 
-  protected final AttributeType type;
-  protected final byte byteType;
-  protected final byte value;
+  protected final AttributeType attributeType;
+  protected final byte attributeCode;
+  protected final byte attributeValue;
 
   public enum AttributeType
   {
     START_FIELD, HIGHLIGHT, FOREGROUND_COLOR, BACKGROUND_COLOR, RESET
   }
 
-  public Attribute (AttributeType type, byte byteType, byte value)
+  public Attribute (AttributeType attributeType, byte attributeCode, byte attributeValue)
   {
-    this.type = type;
-    this.byteType = byteType;
-    this.value = value;
+    this.attributeType = attributeType;
+    this.attributeCode = attributeCode;
+    this.attributeValue = attributeValue;
   }
 
   public String name ()
   {
-    switch (type)
+    switch (attributeType)
     {
       case START_FIELD:
         return "Start field";
@@ -51,20 +51,20 @@ public abstract class Attribute
 
   public boolean matches (byte type)
   {
-    return byteType == type;
+    return attributeCode == type;
   }
 
   public boolean matches (byte[] types)
   {
     for (byte type : types)
-      if (byteType == type)
+      if (attributeCode == type)
         return true;
     return false;
   }
 
   public int pack (byte[] buffer, int offset)
   {
-    switch (type)
+    switch (attributeType)
     {
       case RESET:
         buffer[offset] = XA_RESET;
@@ -90,7 +90,7 @@ public abstract class Attribute
         buffer[offset] = 0x00;
         System.out.println ("***** pack not written *****");
     }
-    buffer[offset + 1] = value;
+    buffer[offset + 1] = attributeValue;
     return offset + 2;
   }
 
@@ -98,23 +98,23 @@ public abstract class Attribute
 
   public AttributeType getAttributeType ()
   {
-    return type;
+    return attributeType;
   }
 
-  public static Attribute getAttribute (byte b1, byte b2)
+  public static Attribute getAttribute (byte attributeCode, byte attributeValue)
   {
-    switch (b1)
+    switch (attributeCode)
     {
       case 0:
-        return new ResetAttribute (b2);
+        return new ResetAttribute (attributeValue);
       case XA_START_FIELD:
-        return new StartFieldAttribute (b2);
+        return new StartFieldAttribute (attributeValue);
       case XA_HIGHLIGHTING:
-        return new ExtendedHighlight (b2);
+        return new ExtendedHighlight (attributeValue);
       case XA_BGCOLOR:
-        return new BackgroundColor (b2);
+        return new BackgroundColor (attributeValue);
       case XA_FGCOLOR:
-        return new ForegroundColor (b2);
+        return new ForegroundColor (attributeValue);
       case XA_CHARSET:
         System.out.println ("Charset not written");
         return null;
@@ -128,7 +128,7 @@ public abstract class Attribute
         System.out.println ("Transparency not written");
         return null;
       default:
-        System.out.printf ("Unknown attribute: %02X%n", b1);
+        System.out.printf ("Unknown attribute: %02X%n", attributeCode);
         return null;
     }
   }
@@ -136,6 +136,6 @@ public abstract class Attribute
   @Override
   public String toString ()
   {
-    return String.format ("%-12s : %02X", name (), value);
+    return String.format ("%-12s : %02X", name (), attributeValue);
   }
 }
