@@ -116,6 +116,10 @@ public class WriteCommand extends Command
     text.append (getName ());
     text.append ("\nWCC : " + writeControlCharacter);
 
+    // if the list begins with a TextOrder then tab out the missing columns
+    if (orders.size () > 0 && orders.get (0) instanceof TextOrder)
+      text.append (String.format ("%40s", ""));
+
     for (Order order : orders)
     {
       String fmt = (order instanceof TextOrder) ? "%s" : "%n%-40s";

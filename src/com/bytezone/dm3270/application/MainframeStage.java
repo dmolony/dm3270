@@ -5,8 +5,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -20,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
+import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
@@ -113,10 +116,27 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     setScene (scene);
 
     Rectangle2D screen = Screen.getPrimary ().getVisualBounds ();
-    setX (screen.getMinX () + screen.getWidth () - WIDTH - 20);
-    setY (screen.getMinY () + screen.getHeight () - HEIGHT - 40);
+    System.out.println (screen);
+    if (screen.getWidth () > 1800)
+      setX (screen.getMinX () + screen.getWidth () - WIDTH - 320);
+    else
+      setX (screen.getMinX () + screen.getWidth () - WIDTH - 20);
+
+    if (screen.getHeight () > 1200)
+      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 140);
+    else
+      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 40);
 
     prepareButtons (textArea);
+
+    setOnCloseRequest (new EventHandler<WindowEvent> ()
+    {
+      @Override
+      public void handle (WindowEvent we)
+      {
+        Platform.exit ();
+      }
+    });
   }
 
   public void startServer ()
@@ -151,7 +171,6 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     orders.add (new SetBufferAddressOrder (position));
     attributes.clear ();
     attributes.add (new ForegroundColor (color));
-    //    orders.add (new StartFieldExtendedOrder (fldOut, attributes, label));
     orders.add (new StartFieldExtendedOrder (fldOut, attributes));
     orders.add (new TextOrder (label));
   }

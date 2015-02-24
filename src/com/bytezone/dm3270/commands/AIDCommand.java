@@ -320,6 +320,11 @@ public class AIDCommand extends Command implements BufferAddressSource
     if (orders.size () > 0 && modifiedFields.size () == 0)
     {
       text.append (String.format ("%nOrders  : %d%n", orders.size ()));
+
+      // if the list begins with a TextOrder then tab out the missing columns
+      if (orders.size () > 0 && orders.get (0) instanceof TextOrder)
+        text.append (String.format ("%40s", ""));
+
       for (Order order : orders)
       {
         String fmt = (order instanceof TextOrder) ? "%s" : "%n%-40s";
