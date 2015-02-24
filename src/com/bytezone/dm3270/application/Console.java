@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.application;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -190,10 +191,11 @@ public class Console extends Application
           String file =
               System.getProperty ("user.home") + "/Dropbox/Mainframe documentation/"
                   + fileTextSave;
-          if (Files.exists (Paths.get (file)))
+          Path path = Paths.get (file);
+          if (Files.exists (path))
           {
             new ConsoleStage (screenHandler).show ();
-            new ReplayStage (screenHandler, file, this).show ();
+            new ReplayStage (screenHandler, path, this).show ();
           }
           else
             dialogStage.show ();

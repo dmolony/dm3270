@@ -2,6 +2,7 @@ package com.bytezone.dm3270.session;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ public class SessionReader
 
   public byte[] buffer = new byte[4096];
 
-  public SessionReader (Source source, String filename)
+  public SessionReader (Source source, Path path)
   {
     this.name = source == Source.CLIENT ? "Client" : "Server";
     firstLetter = name.substring (0, 1);
 
     try
     {
-      lines = Files.readAllLines (Paths.get (filename));
+      lines = Files.readAllLines (path);
     }
     catch (IOException e)
     {
@@ -159,8 +160,8 @@ public class SessionReader
     String filename = String.format ("%smf.txt", base);
     int mode = 2;
 
-    SessionReader server = new SessionReader (Source.SERVER, filename);
-    SessionReader client = new SessionReader (Source.CLIENT, filename);
+    SessionReader server = new SessionReader (Source.SERVER, Paths.get (filename));
+    SessionReader client = new SessionReader (Source.CLIENT, Paths.get (filename));
 
     while (client.nextLineNo () != server.nextLineNo ())    // both finished
     {

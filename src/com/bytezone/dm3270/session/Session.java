@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -65,17 +66,17 @@ public class Session implements Iterable<SessionRecord>
    * 
    * @param filename
    */
-  public Session (ScreenHandler screenHandler, String filename)
+  public Session (ScreenHandler screenHandler, Path path)
   {
     sessionMode = SessionMode.REPLAY;
 
-    SessionReader server = new SessionReader (Source.SERVER, filename);
-    SessionReader client = new SessionReader (Source.CLIENT, filename);
+    SessionReader server = new SessionReader (Source.SERVER, path);
+    SessionReader client = new SessionReader (Source.CLIENT, path);
 
     this.telnetState = new TelnetState ();
     this.screenHandler = screenHandler;
-    TelnetListener clientTelnetListener = new TelnetListener (Source.CLIENT, this);   // will call add()
-    TelnetListener serverTelnetListener = new TelnetListener (Source.SERVER, this);   // will call add()
+    TelnetListener clientTelnetListener = new TelnetListener (Source.CLIENT, this);
+    TelnetListener serverTelnetListener = new TelnetListener (Source.SERVER, this);
 
     while (client.nextLineNo () != server.nextLineNo ())
       if (client.nextLineNo () < server.nextLineNo ())

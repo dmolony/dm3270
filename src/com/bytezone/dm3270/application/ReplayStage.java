@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.application;
 
+import java.nio.file.Path;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -29,11 +31,11 @@ public class ReplayStage extends BasicStage
   Console console;
   private final SessionTable table = new SessionTable ();
 
-  public ReplayStage (ScreenHandler screenHandler, String filename, Console console)
+  public ReplayStage (ScreenHandler screenHandler, Path path, Console console)
   {
     this.console = console;
 
-    Session session = new Session (screenHandler, filename);
+    Session session = new Session (screenHandler, path);
 
     final Label label =
         new Label (session.getClientName () + " : " + session.getServerName ());
@@ -74,7 +76,7 @@ public class ReplayStage extends BasicStage
     borderPane.setTop (label);
     borderPane.setBottom (hbox);
 
-    setTitle ("Replay Commands - " + filename);
+    setTitle ("Replay Commands - " + path.getFileName ());
 
     Scene scene = new Scene (borderPane);
     setScene (scene);

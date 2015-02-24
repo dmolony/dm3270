@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.application;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -204,7 +205,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     if (!f.exists () || f.isDirectory ())
       filename = userHome + "/dm3270/mf.txt";
 
-    Session session = new Session (null, filename);
+    Session session = new Session (null, Paths.get (filename));
     List<String> labels = session.getLables ();
 
     SessionRecord dr = createCommand ();
