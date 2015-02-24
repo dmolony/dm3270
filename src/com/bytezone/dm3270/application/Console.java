@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 public class Console extends Application
 {
   private static String[] fontNames = { "Consolas", "Source Code Pro", "Anonymous Pro",
-                                       "Inconsolata", "Monaco", "Menlo", "M+ 2M",
+                                       "Inconsolata", "Monaco", "Menlo", "M+ 2m",
                                        "PT Mono", "Luculent", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
