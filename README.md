@@ -7,6 +7,7 @@ There are four ways in which this software can currently be used - Spy, Replay, 
 ![Initial screen](main1.png?raw=true "initial screen")
 #### Spy Mode
 Waits for a terminal emulator (not this one) to connect to the port specified, and then it completes the connection to the actual mainframe at the URL:port specified. The mainframe session can then be used as normal, however all communication buffers are recorded and can be saved in a session file to replay later.
+![Spy screen](spy.png?raw=true "spy screen")
 #### Replay Mode
 Allows the user to step through the commands that are saved in the specifed session file. Individual buffers can be selected and examined. The anticipated reply message (if any) is also displayed.
 ![Replay screen](replay.png?raw=true "replay screen")
