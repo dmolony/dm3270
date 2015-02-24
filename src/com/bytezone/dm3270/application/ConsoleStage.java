@@ -16,7 +16,6 @@ import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TerminalServer;
-import com.bytezone.dm3270.telnet.TelnetState;
 
 public class ConsoleStage extends Stage
 {
@@ -139,7 +138,6 @@ public class ConsoleStage extends Stage
     telnetListener = new TelnetListener (Source.SERVER, session);
     terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
     telnetState.setTerminalServer (terminalServer);
-    System.out.println ("Connecting to " + mainframeURL + ":" + mainframePort);
 
     new Thread (terminalServer).start ();
   }

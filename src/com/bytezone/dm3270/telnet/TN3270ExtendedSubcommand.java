@@ -5,6 +5,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.application.TelnetState;
+
 public class TN3270ExtendedSubcommand extends TelnetSubcommand
 {
   protected static final byte EXT_DEVICE_TYPE = 2;

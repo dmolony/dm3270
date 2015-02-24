@@ -23,7 +23,6 @@ import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
-import com.bytezone.dm3270.telnet.TelnetState;
 
 public class SpyStage extends BasicTelnetStage
 {
@@ -59,6 +58,8 @@ public class SpyStage extends BasicTelnetStage
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
+    // these buttons should not be enabled until a mainframe has connected
+    // also they should not be enabled if 3270E is being used
     btnFieldMode = getRadioButton ("Field Mode", hbox, modeGroup);
     btnExtendedFieldMode = getRadioButton ("Extended Field Mode", hbox, modeGroup);
     btnCharacterMode = getRadioButton ("Character Mode", hbox, modeGroup);

@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.buffers;
 
-import com.bytezone.dm3270.telnet.TelnetState;
+import com.bytezone.dm3270.application.TelnetState;
 
 public abstract class AbstractTelnetCommand extends AbstractReplyBuffer
 {

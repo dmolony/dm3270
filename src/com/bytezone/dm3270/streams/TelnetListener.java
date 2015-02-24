@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javafx.application.Platform;
 
 import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.application.TelnetState;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -22,7 +23,6 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand;
 import com.bytezone.dm3270.telnet.TelnetCommand;
-import com.bytezone.dm3270.telnet.TelnetState;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
 

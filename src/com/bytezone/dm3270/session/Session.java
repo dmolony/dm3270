@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.application.TelnetState;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
@@ -28,7 +29,6 @@ import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
-import com.bytezone.dm3270.telnet.TelnetState;
 
 public class Session implements Iterable<SessionRecord>
 {
