@@ -12,6 +12,7 @@ Allows the user to step through the commands that are saved in the specifed sess
 ![Replay screen](replay.png?raw=true "replay screen")
 #### Mainframe Mode
 Waits for a terminal emulator (not this one) to connect to the port specifed. This program is now masquerading as a mainframe and the mainframe window can be used to send the terminal various 3270 commands. The session can also be saved for later replaying.
+![Mainframe screen](mainframe.png?raw=true "mainframe screen")
 #### Terminal Mode
 Connects this terminal to the test mainframe described above.
 ![Terminal screen](console.png?raw=true "dm3270")
