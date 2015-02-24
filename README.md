@@ -2,7 +2,7 @@
 Yet another TN3270 Terminal Emulator. Not usable just yet.
 #### Modes
 There are four ways in which this software can currently be used - Spy, Replay, Mainframe and Terminal. These are described below.
-![Initial screen](main1.png?raw=true "main" =200x200)
+![Initial screen](main1.png?raw=true "main")
 #### Spy Mode
 Waits for a terminal emulator (not this one) to connect to the port specified, and then it completes the connection to the actual mainframe at the URL:port specified. The mainframe session can then be used as normal, however all communication buffers are recorded and can be saved in a session file to replay later.
 #### Replay Mode
