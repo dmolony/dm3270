@@ -35,8 +35,10 @@ public class ScreenPosition
 
     contextHandler = screenHandler.getContextHandler ();
     screenContext = contextHandler.getBase ();
-    row = location / screenHandler.getColumns ();
-    column = location % screenHandler.getColumns ();
+
+    int columns = screenHandler.getColumns ();
+    row = location / columns;
+    column = location % columns;
   }
 
   public void addAttribute (Attribute attribute)
@@ -48,11 +50,10 @@ public class ScreenPosition
 
   public StartFieldAttribute getStartFieldAttribute ()
   {
-    if (!hasAttributes ())
-      return null;
     for (Attribute attribute : fieldAttributes)
       if (attribute instanceof StartFieldAttribute)
         return (StartFieldAttribute) attribute;
+
     return null;
   }
 
@@ -179,11 +180,6 @@ public class ScreenPosition
     return isGraphicsCharacter;
   }
 
-  public ScreenContext getScreenContext ()
-  {
-    return screenContext;
-  }
-
   public int getLocation ()
   {
     return location;
@@ -204,10 +200,15 @@ public class ScreenPosition
     this.screenContext = screenContext;
   }
 
-  public boolean isEmpty ()
+  public ScreenContext getScreenContext ()
   {
-    return (getChar () == ' ' && fieldAttributes.size () == 0);
+    return screenContext;
   }
+
+  //  public boolean isEmpty ()
+  //  {
+  //    return (getChar () == ' ' && fieldAttributes.size () == 0);
+  //  }
 
   public boolean hasAttributes ()
   {
