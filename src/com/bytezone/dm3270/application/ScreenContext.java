@@ -4,11 +4,11 @@ import javafx.scene.paint.Color;
 
 public class ScreenContext
 {
-  final Color foregroundColor;
-  final Color backgroundColor;
-  final boolean underscore;
-  final boolean reverseVideo;
-  final boolean highIntensity;
+  final public Color foregroundColor;
+  final public Color backgroundColor;
+  final public boolean underscore;
+  final public boolean reverseVideo;
+  final public boolean highIntensity;
 
   public ScreenContext (Color foregroundColor, Color backgroundColor, boolean underscore,
       boolean reverseVideo, boolean highIntensity)
