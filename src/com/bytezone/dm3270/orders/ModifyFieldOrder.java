@@ -35,5 +35,6 @@ public class ModifyFieldOrder extends Order
   @Override
   public void process (ScreenHandler screenHandler)
   {
+    System.out.println ("What happens now?");
   }
 }

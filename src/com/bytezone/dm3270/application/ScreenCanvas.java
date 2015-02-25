@@ -28,7 +28,14 @@ public class ScreenCanvas extends Canvas
   private float ascent;
 
   private final float xOffset = 4;
-  private final float yOffset = 2;
+  private final float yOffset = 4;
+
+  // spacing between characters for outlining
+  private final boolean expanded = true;
+  private final double expandedWidth = .5;
+  private final double expandedHeight = 1.6;
+  private final boolean topLine = false;
+  private final boolean bottomLine = false;
 
   public ScreenCanvas (int rows, int columns, Font font)
   {
@@ -56,8 +63,10 @@ public class ScreenCanvas extends Canvas
     charHeight = fm.getLineHeight ();
     ascent = fm.getAscent ();
 
-    setWidth (charWidth * screenColumns + xOffset * 2);
-    setHeight (charHeight * screenRows + yOffset * 2);
+    setWidth (charWidth * screenColumns + xOffset * 2
+        + (expanded ? (screenColumns - 1) * expandedWidth : 0));
+    setHeight (charHeight * screenRows + yOffset * 2
+        + (expanded ? (screenRows + 1) * expandedHeight : 0));
 
     gc.setFont (font);
   }
@@ -66,9 +75,11 @@ public class ScreenCanvas extends Canvas
   {
     ScreenContext context = screenPosition.getScreenContext ();
     char character = screenPosition.getChar ();
+    int row = screenPosition.getRow ();
+    int col = screenPosition.getColumn ();
 
-    double x = xOffset + screenPosition.getColumn () * charWidth;
-    double y = yOffset + screenPosition.getRow () * charHeight;
+    double x = xOffset + col * charWidth + (expanded ? col * expandedWidth : 0);
+    double y = yOffset + row * charHeight + (expanded ? (row + 1) * expandedHeight : 0);
 
     if (screenPosition.hasCursor ())
     {
@@ -95,8 +106,22 @@ public class ScreenCanvas extends Canvas
       if (context.underscore)
       {
         gc.setStroke (context.foregroundColor);
-        y += charHeight - 1;
-        gc.strokeLine (x, y, x + charWidth, y);
+        double y2 = y + charHeight - 1;
+        gc.strokeLine (x, y2, x + charWidth, y2);
+      }
+
+      if (topLine && expanded)
+      {
+        gc.setStroke (Color.WHITE);
+        double y2 = y - 0.8;
+        gc.strokeLine (x, y2, x + charWidth, y2);
+      }
+
+      if (bottomLine && expanded)
+      {
+        gc.setStroke (Color.WHITE);
+        double y2 = y + charHeight + 0.8;
+        gc.strokeLine (x, y2, x + charWidth, y2);
       }
     }
   }

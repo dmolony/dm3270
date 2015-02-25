@@ -205,11 +205,6 @@ public class ScreenPosition
     return screenContext;
   }
 
-  //  public boolean isEmpty ()
-  //  {
-  //    return (getChar () == ' ' && fieldAttributes.size () == 0);
-  //  }
-
   public boolean hasAttributes ()
   {
     return fieldAttributes.size () > 0;
