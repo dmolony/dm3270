@@ -213,11 +213,10 @@ public class ScreenHandler
       {
         ScreenField screenField = new ScreenField (this, ptr);
         screenFields.add (screenField);
-        //        screenField.add (screenPosition);
         finishField (screenField);
 
         // link to previous unprotected field
-        if (!screenField.isProtected ())
+        if (screenField.isModifiable ())
         {
           unprotectedFields.add (screenField);
           if (previousUnprotectedField != null)
@@ -225,7 +224,7 @@ public class ScreenHandler
           previousUnprotectedField = screenField;
         }
 
-        ptr += screenField.getLength ();      // field-wrap will screw this up
+        ptr += screenField.getLength ();      // doesn't include the SFA
       }
       ptr++;
     }

@@ -94,6 +94,8 @@ public class ScreenPosition
 
   public int pack (byte[] buffer, int ptr, byte order)
   {
+    assert isStartField ();
+
     buffer[ptr++] = order;
 
     if (order == Order.START_FIELD)
@@ -113,6 +115,8 @@ public class ScreenPosition
 
   public int pack (byte[] buffer, int ptr, byte[] replyTypes)
   {
+    assert !isStartField ();
+
     for (Attribute attribute : attributes)
       if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
       {
