@@ -13,16 +13,12 @@ public class Field
 
   private final List<ScreenPosition> screenPositions = new ArrayList<> ();
 
-  public Field (Screen screen, int start, int end)
+  public Field (Screen screen, int start, int end, List<ScreenPosition> positions)
   {
     this.screen = screen;
     startPosition = start;
     endPosition = end;
-  }
-
-  public void addScreenPosition (ScreenPosition screenPosition)
-  {
-    screenPositions.add (screenPosition);
+    screenPositions.addAll (positions);
   }
 
   public StartFieldAttribute getStartFieldAttribute ()

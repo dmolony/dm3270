@@ -18,6 +18,7 @@ public class FieldManager
   {
     fields.clear ();
     unprotectedFields.clear ();
+    List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
 
     int start = -1;
     int first = -1;
@@ -28,16 +29,20 @@ public class FieldManager
       ScreenPosition screenPosition = screen.getScreenPosition (ptr);
       if (screenPosition.isStartField ())
       {
-        if (start >= 0)                                 // if there is a field to add
+        if (start >= 0)                     // if there is a field to add
         {
-          Field field = new Field (screen, start, ptr - 1);   // no need to validate
+          Field field = new Field (screen, start, ptr - 1, positions);
           fields.add (field);
+          positions.clear ();
         }
         else
           first = ptr;
 
         start = ptr;
       }
+
+      if (start >= 0)
+        positions.add (screenPosition);
 
       if (++ptr >= screen.screenSize)           // faster than validate()
       {
