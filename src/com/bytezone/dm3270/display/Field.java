@@ -10,6 +10,7 @@ public class Field
   private final Screen screen;
   private final int startPosition;      // position of StartFieldAttribute
   private final int endPosition;        // last data position of this field
+  private final StartFieldAttribute startFieldAttribute;
 
   private final List<ScreenPosition> screenPositions = new ArrayList<> ();
 
@@ -19,11 +20,12 @@ public class Field
     startPosition = start;
     endPosition = end;
     screenPositions.addAll (positions);
+    startFieldAttribute = positions.get (0).getStartFieldAttribute ();
   }
 
   public StartFieldAttribute getStartFieldAttribute ()
   {
-    return screen.getScreenPosition (startPosition).getStartFieldAttribute ();
+    return startFieldAttribute;
   }
 
   public int getDisplayLength ()
@@ -38,25 +40,22 @@ public class Field
 
   public boolean isProtected ()
   {
-    StartFieldAttribute sfa = getStartFieldAttribute ();
-    return sfa == null ? true : getStartFieldAttribute ().isProtected ();
+    return startFieldAttribute.isProtected ();
   }
 
   public boolean isModifiable ()
   {
-    return !isProtected ();
+    return !startFieldAttribute.isProtected ();
   }
 
   public boolean isModified ()
   {
-    return getStartFieldAttribute ().isModified ();
+    return startFieldAttribute.isModified ();
   }
 
   public void setModified (boolean modified)
   {
-    StartFieldAttribute sfa = getStartFieldAttribute ();
-    if (sfa != null)
-      sfa.setModified (modified);
+    startFieldAttribute.setModified (modified);
     //    screen.fieldModified (this);     // display the new status
   }
 
