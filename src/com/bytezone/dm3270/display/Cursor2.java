@@ -36,14 +36,27 @@ public class Cursor2
     ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
 
     if (unappliedAttributes.size () > 0)
-    {
-      sp.reset ();
-      for (Attribute attribute : unappliedAttributes)
-        sp.addAttribute (attribute);
-      unappliedAttributes.clear ();
-    }
+      applyAttributes (sp);
 
     sp.setChar (value);
+  }
+
+  public void setGraphicsChar (int value)
+  {
+    ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
+
+    if (unappliedAttributes.size () > 0)
+      applyAttributes (sp);
+
+    sp.setGraphicsChar (value);
+  }
+
+  private void applyAttributes (ScreenPosition2 sp)
+  {
+    sp.reset ();
+    for (Attribute attribute : unappliedAttributes)
+      sp.addAttribute (attribute);
+    unappliedAttributes.clear ();
   }
 
   public void move (Direction direction)
