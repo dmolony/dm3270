@@ -124,6 +124,22 @@ public class Field
     return "[" + new String (buffer) + "]";
   }
 
+  public String toStringWithLinks ()
+  {
+    StringBuilder text = new StringBuilder (toString ());
+    if (previous != null)
+    {
+      text.append ("\n      prev: ");
+      text.append (previous);
+    }
+    if (next != null)
+    {
+      text.append ("\n      next: ");
+      text.append (next);
+    }
+    return text.toString ();
+  }
+
   @Override
   public String toString ()
   {

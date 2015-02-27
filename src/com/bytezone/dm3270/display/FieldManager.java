@@ -53,10 +53,18 @@ public class FieldManager
     if (start >= 0 && positions.size () > 0)
       addField (start, screen.validate (ptr - 1), positions, previousUnprotectedField);
 
+    // link first unprotected field to the last one
+    if (unprotectedFields.size () > 0)
+    {
+      Field firstField = unprotectedFields.get (0);
+      Field lastField = unprotectedFields.get (unprotectedFields.size () - 1);
+      lastField.linkToNext (firstField);
+    }
+
     // build screen contexts for every position
     for (Field field : fields)
     {
-      System.out.println (field);
+      System.out.println (field.toStringWithLinks ());
     }
   }
 
