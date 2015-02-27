@@ -3,6 +3,7 @@ package com.bytezone.dm3270.orders;
 import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenPosition;
+import com.bytezone.dm3270.display.Screen;
 
 public class GraphicsEscapeOrder extends Order
 {
@@ -19,7 +20,7 @@ public class GraphicsEscapeOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     Cursor cursor = screenHandler.getCursor ();
 

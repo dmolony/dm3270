@@ -15,27 +15,7 @@ public class ExtendedHighlight extends Attribute
   @Override
   public void process (ScreenPosition screenPosition)
   {
-    switch (attributeValue)
-    {
-      case 0:
-        System.out.println ("0 not written - default");
-        System.out.println ("**************** Should be resetting here");
-        break;
-      case (byte) 0xF0:
-        System.out.println ("F0 not written - normal");
-        break;
-      case (byte) 0xF1:
-        System.out.println ("F1 not written - blink");
-        break;
-      case (byte) 0xF2:
-        screenPosition.setReverseVideo (true);
-        break;
-      case (byte) 0xF4:
-        screenPosition.setUnderscore (true);
-        break;
-
-      default:
-    }
+    screenPosition.setHighlight (attributeValue);
   }
 
   @Override

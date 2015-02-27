@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.streams.TelnetListener;
@@ -20,6 +21,7 @@ import com.bytezone.dm3270.streams.TerminalServer;
 public class ConsoleStage extends Stage
 {
   private final ScreenHandler screenHandler;
+  private final Screen screen;
   private final Label status = new Label ();
   private final Label cursorLocation = new Label ();
   private final Label fieldType = new Label ();
@@ -34,16 +36,18 @@ public class ConsoleStage extends Stage
 
   private ScreenField currentField;
 
-  public ConsoleStage (ScreenHandler screenHandler, String mainframeURL, int mainframePort)
+  public ConsoleStage (ScreenHandler screenHandler, Screen screen, String mainframeURL,
+      int mainframePort)
   {
-    this (screenHandler);
+    this (screenHandler, screen);
     this.mainframeURL = mainframeURL;
     this.mainframePort = mainframePort;
   }
 
-  public ConsoleStage (ScreenHandler screenHandler)
+  public ConsoleStage (ScreenHandler screenHandler, Screen screen)
   {
     this.screenHandler = screenHandler;
+    this.screen = screen;
     screenHandler.setConsoleStage (this);
 
     setTitle ("dm3270");
@@ -83,8 +87,8 @@ public class ConsoleStage extends Stage
     setX (0);
     setY (0);
 
-    getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screenHandler));
-    getScene ().setOnKeyTyped (new ConsoleKeyEvent (screenHandler));
+    getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screenHandler, screen));
+    getScene ().setOnKeyTyped (new ConsoleKeyEvent (screenHandler, screen));
   }
 
   public void sendData (byte[] buffer)
@@ -134,7 +138,7 @@ public class ConsoleStage extends Stage
   public void connect ()
   {
     telnetState = new TelnetState ();
-    session = new Session (screenHandler, telnetState, SessionMode.TERMINAL);
+    session = new Session (screenHandler, screen, telnetState, SessionMode.TERMINAL);
     telnetListener = new TelnetListener (Source.SERVER, session);
     terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
     telnetState.setTerminalServer (terminalServer);

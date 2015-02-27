@@ -3,6 +3,7 @@ package com.bytezone.dm3270.commands;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
+import com.bytezone.dm3270.display.Screen;
 
 //public abstract class Command extends AbstractTN3270Message
 public abstract class Command extends AbstractTN3270Command
@@ -85,27 +86,29 @@ public abstract class Command extends AbstractTN3270Command
    */
 
   public static Command getCommand (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler)
+      ScreenHandler screenHandler, Screen screen)
   {
     switch (buffer[offset])
     {
       case Command.WRITE_F1:
       case Command.WRITE_01:
-        return new WriteCommand (buffer, offset, length, screenHandler, false);
+        return new WriteCommand (buffer, offset, length, screenHandler, screen, false);
 
       case Command.ERASE_WRITE_F5:
       case Command.ERASE_WRITE_05:
       case Command.ERASE_WRITE_ALTERNATE_7E:
       case Command.ERASE_WRITE_ALTERNATE_0D:
-        return new WriteCommand (buffer, offset, length, screenHandler, true);
+        return new WriteCommand (buffer, offset, length, screenHandler, screen, true);
 
       case Command.WRITE_STRUCTURED_FIELD_F3:
       case Command.WRITE_STRUCTURED_FIELD_11:
-        return new WriteStructuredFieldCommand (buffer, offset, length, screenHandler);
+        return new WriteStructuredFieldCommand (buffer, offset, length, screenHandler,
+            screen);
 
       case Command.ERASE_ALL_UNPROTECTED_6F:
       case Command.ERASE_ALL_UNPROTECTED_0F:
-        return new EraseAllUnprotectedCommand (screenHandler, buffer, offset, length);
+        return new EraseAllUnprotectedCommand (screenHandler, screen, buffer, offset,
+            length);
 
       case Command.READ_BUFFER_F2:
       case Command.READ_BUFFER_02:
@@ -114,7 +117,7 @@ public abstract class Command extends AbstractTN3270Command
       case Command.READ_MODIFIED_ALL_6E:
       case Command.READ_MODIFIED_ALL_0E:
         // the ReadCommand creates a command with a reply of: AID, RM, RMA
-        return new ReadCommand (screenHandler, buffer, offset, length);
+        return new ReadCommand (screenHandler, screen, buffer, offset, length);
 
       default:
         System.out.println ("Unknown 3270 Command: "
@@ -127,27 +130,29 @@ public abstract class Command extends AbstractTN3270Command
 
   public abstract String getName ();
 
-  public static Command getReply (ScreenHandler screenHandler, byte[] buffer, int offset,
-      int length)
+  public static Command getReply (ScreenHandler screenHandler, Screen screen,
+      byte[] buffer, int offset, int length)
   {
     switch (buffer[offset])
     {
       case READ_STRUCTURED_FIELD_88:
-        return new ReadStructuredFieldCommand (buffer, offset, length, screenHandler);
+        return new ReadStructuredFieldCommand (buffer, offset, length, screenHandler,
+            screen);
 
       default:
-        return new AIDCommand (screenHandler, buffer, offset, length);
+        return new AIDCommand (screenHandler, screen, buffer, offset, length);
     }
   }
 
-  public Command (ScreenHandler screenHandler)
+  public Command (ScreenHandler screenHandler, Screen screen)
   {
-    super (screenHandler);
+    super (screenHandler, screen);
   }
 
-  public Command (byte[] buffer, int offset, int length, ScreenHandler screenHandler)
+  public Command (byte[] buffer, int offset, int length, ScreenHandler screenHandler,
+      Screen screen)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
   }
 
   // reduce toString() to a single line

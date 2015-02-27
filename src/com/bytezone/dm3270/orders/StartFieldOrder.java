@@ -4,6 +4,10 @@ import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenPosition2;
 
 public class StartFieldOrder extends Order
 {
@@ -29,7 +33,7 @@ public class StartFieldOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     Cursor cursor = screenHandler.getCursor ();
     ScreenPosition sp = cursor.getScreenPosition ();
@@ -38,6 +42,12 @@ public class StartFieldOrder extends Order
     sp.addAttribute (startFieldAttribute);
 
     cursor.moveRight ();
+
+    Cursor2 cursor2 = screen.getScreenCursor ();
+    ScreenPosition2 sp2 = cursor2.getScreenPosition ();
+    sp2.reset ();
+    sp2.addAttribute (startFieldAttribute);
+    cursor2.move (Direction.RIGHT);
   }
 
   @Override

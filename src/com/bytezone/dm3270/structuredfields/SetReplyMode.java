@@ -2,6 +2,7 @@ package com.bytezone.dm3270.structuredfields;
 
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.display.Screen;
 
 /*
  * The Reply Mode Query Reply (QCODE=x'88') indicates which Reply Modes are
@@ -21,9 +22,10 @@ public class SetReplyMode extends StructuredField
   private final byte replyMode;
   private final byte[] types;
 
-  public SetReplyMode (byte[] buffer, int offset, int length, ScreenHandler screenHandler)
+  public SetReplyMode (byte[] buffer, int offset, int length,
+      ScreenHandler screenHandler, Screen screen)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
 
     assert data[0] == StructuredField.SET_REPLY_MODE;
 

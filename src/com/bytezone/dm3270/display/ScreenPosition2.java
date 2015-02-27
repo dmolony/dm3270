@@ -12,8 +12,9 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.orders.Order;
 
-public class ScreenPosition
+public class ScreenPosition2
 {
+  // GraphicsEscape characters
   private static final byte TOP_LEFT = (byte) 0xC5;
   private static final byte TOP_RIGHT = (byte) 0xD5;
   private static final byte BOTTOM_LEFT = (byte) 0xC4;
@@ -21,21 +22,21 @@ public class ScreenPosition
   private static final byte HORIZONTAL_LINE = (byte) 0xA2;
   private static final byte VERTICAL_LINE = (byte) 0x85;
 
-  private final List<Attribute> attributes = new ArrayList<> ();
   private StartFieldAttribute startFieldAttribute;
+  private final List<Attribute> attributes = new ArrayList<> ();
   private int value;
   private boolean isGraphics;
   private boolean isVisible = true;
   private ScreenContext screenContext;
 
   private final boolean expanded = true;
-  private boolean topLine;
-  private boolean bottomLine;
+  private boolean topLine;        // testing
+  private boolean bottomLine;     // testing
 
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
 
-  public ScreenPosition (GraphicsContext gc, CharacterSize characterSize)
+  public ScreenPosition2 (GraphicsContext gc, CharacterSize characterSize)
   {
     this.gc = gc;
     this.characterSize = characterSize;
@@ -76,6 +77,18 @@ public class ScreenPosition
     return attributes;
   }
 
+  public void setChar (int value)
+  {
+    this.value = value;
+    isGraphics = false;
+  }
+
+  public void setGraphicsChar (int value)
+  {
+    this.value = value;
+    isGraphics = true;
+  }
+
   public char getChar ()
   {
     if (value == 0 || isStartField ())
@@ -90,6 +103,16 @@ public class ScreenPosition
     value = 0;
     isGraphics = false;
     this.screenContext = screenContext;       // set to screen default
+  }
+
+  public void reset ()
+  {
+    isVisible = true;
+    value = 0;
+    isGraphics = false;
+    this.screenContext = null;
+    startFieldAttribute = null;
+    attributes.clear ();
   }
 
   public int pack (byte[] buffer, int ptr, byte order)

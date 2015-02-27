@@ -6,6 +6,7 @@ import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenField;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
+import com.bytezone.dm3270.display.Screen;
 
 public class EraseUnprotectedToAddressOrder extends Order
 {
@@ -21,7 +22,7 @@ public class EraseUnprotectedToAddressOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     Cursor cursor = screenHandler.getCursor ();
     BufferAddress cursorAddress = cursor.getAddress ();

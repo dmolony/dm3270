@@ -4,14 +4,18 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import com.bytezone.dm3270.display.Screen;
+
 public class ConsoleKeyEvent implements EventHandler<KeyEvent>
 {
   private final ScreenHandler screenHandler;
+  private final Screen screen;
   private boolean keyboardLocked;
 
-  public ConsoleKeyEvent (ScreenHandler screenHandler)
+  public ConsoleKeyEvent (ScreenHandler screenHandler, Screen screen)
   {
     this.screenHandler = screenHandler;
+    this.screen = screen;
   }
 
   @Override

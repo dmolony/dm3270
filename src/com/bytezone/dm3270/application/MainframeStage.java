@@ -208,7 +208,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     if (!f.exists () || f.isDirectory ())
       filename = userHome + "/dm3270/mf.txt";
 
-    Session session = new Session (null, Paths.get (filename));
+    Session session = new Session (null, null, Paths.get (filename));
     List<String> labels = session.getLables ();
 
     SessionRecord dr = createCommand ();

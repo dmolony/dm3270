@@ -3,6 +3,8 @@ package com.bytezone.dm3270.orders;
 import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.attributes.Attribute;
+import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Screen;
 
 public class SetAttributeOrder extends Order
 {
@@ -15,7 +17,7 @@ public class SetAttributeOrder extends Order
     attribute = Attribute.getAttribute (buffer[offset + 1], buffer[offset + 2]);
 
     this.buffer = new byte[3];
-    System.arraycopy (buffer, offset, this.buffer, 0, 3);
+    System.arraycopy (buffer, offset, this.buffer, 0, this.buffer.length);
   }
 
   public Attribute getAttribute ()
@@ -24,10 +26,13 @@ public class SetAttributeOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     Cursor cursor = screenHandler.getCursor ();
     cursor.addAttribute (attribute);
+
+    Cursor2 cursor2 = screen.getScreenCursor ();
+    cursor2.add (attribute);
   }
 
   @Override

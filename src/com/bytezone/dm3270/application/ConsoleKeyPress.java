@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.display.Screen;
 
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
@@ -13,12 +14,14 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
                                              KeyCode.F7, KeyCode.F8, KeyCode.F9,
                                              KeyCode.F10, KeyCode.F11, KeyCode.F12 };
   private final ScreenHandler screenHandler;
+  private final Screen screen;
   private final ConsoleStage console;
 
-  public ConsoleKeyPress (ConsoleStage console, ScreenHandler screenHandler)
+  public ConsoleKeyPress (ConsoleStage console, ScreenHandler screenHandler, Screen screen)
   {
     this.console = console;
     this.screenHandler = screenHandler;
+    this.screen = screen;
   }
 
   @Override
@@ -42,7 +45,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       case ENTER:
         screenHandler.getCursor ().setVisible (false);
         screenHandler.setAID ("ENTR");
-        AIDCommand command = new AIDCommand (screenHandler);
+        AIDCommand command = new AIDCommand (screenHandler, screen);
         console.sendData (command.getTelnetData ());
         break;
 
@@ -87,7 +90,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
           screenHandler.getCursor ().setVisible (false);
           screenHandler.setAID ("PF" + pfKey);
-          command = new AIDCommand (screenHandler);
+          command = new AIDCommand (screenHandler, screen);
           console.sendData (command.getTelnetData ());
         }
         break;

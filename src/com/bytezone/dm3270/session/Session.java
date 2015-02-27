@@ -18,6 +18,7 @@ import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.commands.WriteCommand;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
@@ -36,6 +37,7 @@ public class Session implements Iterable<SessionRecord>
       .observableArrayList ();
   private final SessionMode sessionMode;
   private final ScreenHandler screenHandler;
+  private final Screen screen;
   private final TelnetState telnetState;
 
   private String clientName = "Unknown";
@@ -52,9 +54,11 @@ public class Session implements Iterable<SessionRecord>
    * 
    * @param mode
    */
-  public Session (ScreenHandler screenHandler, TelnetState telnetState, SessionMode mode)
+  public Session (ScreenHandler screenHandler, Screen screen, TelnetState telnetState,
+      SessionMode mode)
   {
     this.screenHandler = screenHandler;
+    this.screen = screen;
     this.telnetState = telnetState;
     sessionMode = mode;
   }
@@ -66,7 +70,7 @@ public class Session implements Iterable<SessionRecord>
    * 
    * @param filename
    */
-  public Session (ScreenHandler screenHandler, Path path)
+  public Session (ScreenHandler screenHandler, Screen screen, Path path)
   {
     sessionMode = SessionMode.REPLAY;
 
@@ -75,6 +79,7 @@ public class Session implements Iterable<SessionRecord>
 
     this.telnetState = new TelnetState ();
     this.screenHandler = screenHandler;
+    this.screen = screen;
     TelnetListener clientTelnetListener = new TelnetListener (Source.CLIENT, this);
     TelnetListener serverTelnetListener = new TelnetListener (Source.SERVER, this);
 
@@ -98,6 +103,11 @@ public class Session implements Iterable<SessionRecord>
   public ScreenHandler getScreenHandler ()
   {
     return screenHandler;
+  }
+
+  public Screen getScreen ()
+  {
+    return screen;
   }
 
   public TelnetState getTelnetState ()

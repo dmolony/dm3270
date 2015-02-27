@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.commands;
 
 import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.display.Screen;
 
 public class WriteControlCharacter
 {
@@ -26,18 +27,33 @@ public class WriteControlCharacter
     return value;
   }
 
-  public boolean process (ScreenHandler screenHandler)
+  public boolean process (ScreenHandler screenHandler, Screen screen)
   {
     if (resetPartition)
+    {
       screenHandler.resetPartition ();      // this moves the cursor to 0/0 maybe?
+      screen.resetPartition ();      // this moves the cursor to 0/0 maybe?
+    }
     if (startPrinter)
+    {
       screenHandler.startPrinter ();
+      screen.startPrinter ();
+    }
     if (soundAlarm)
+    {
       screenHandler.soundAlarm ();
+      screen.soundAlarm ();
+    }
     if (restoreKeyboard)
+    {
       screenHandler.restoreKeyboard ();
+      screen.restoreKeyboard ();
+    }
     if (resetModified)
+    {
       screenHandler.resetModified ();
+      screen.resetModified ();
+    }
 
     return true;
   }

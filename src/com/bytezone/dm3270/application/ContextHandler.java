@@ -14,8 +14,8 @@ public class ContextHandler
   public ContextHandler ()
   {
     ScreenContext base =
-        new ScreenContext (ColorAttribute.colors[0], ColorAttribute.colors[8], false,
-            false, false);
+        new ScreenContext (ColorAttribute.colors[0], ColorAttribute.colors[8], (byte) 0,
+            false);
     contextPool.add (base);
   }
 
@@ -29,13 +29,12 @@ public class ContextHandler
     for (ScreenContext sc : contextPool)
       if (sc.foregroundColor == color //
           && sc.backgroundColor == oldContext.backgroundColor
-          && sc.underscore == oldContext.underscore
-          && sc.reverseVideo == oldContext.reverseVideo
+          && sc.highlight == oldContext.highlight
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext =
-        new ScreenContext (color, oldContext.backgroundColor, oldContext.underscore,
-            oldContext.reverseVideo, oldContext.highIntensity);
+        new ScreenContext (color, oldContext.backgroundColor, oldContext.highlight,
+            oldContext.highIntensity);
     contextPool.add (newContext);
     return newContext;
   }
@@ -45,43 +44,27 @@ public class ContextHandler
     for (ScreenContext sc : contextPool)
       if (sc.backgroundColor == color //
           && sc.foregroundColor == oldContext.foregroundColor
-          && sc.underscore == oldContext.underscore
-          && sc.reverseVideo == oldContext.reverseVideo
+          && sc.highlight == oldContext.highlight
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext =
-        new ScreenContext (oldContext.foregroundColor, color, oldContext.underscore,
-            oldContext.reverseVideo, oldContext.highIntensity);
+        new ScreenContext (oldContext.foregroundColor, color, oldContext.highlight,
+            oldContext.highIntensity);
     contextPool.add (newContext);
     return newContext;
   }
 
-  public ScreenContext setUnderscore (ScreenContext oldContext, boolean underscore)
+  public ScreenContext setHighlight (ScreenContext oldContext, byte highlight)
   {
     for (ScreenContext sc : contextPool)
       if (sc.backgroundColor == oldContext.backgroundColor
           && sc.foregroundColor == oldContext.foregroundColor
-          && sc.underscore == underscore && sc.reverseVideo == oldContext.reverseVideo
+          && sc.highlight == highlight //
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext =
         new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
-            underscore, oldContext.reverseVideo, oldContext.highIntensity);
-    contextPool.add (newContext);
-    return newContext;
-  }
-
-  public ScreenContext setReverseVideo (ScreenContext oldContext, boolean reverseVideo)
-  {
-    for (ScreenContext sc : contextPool)
-      if (sc.backgroundColor == oldContext.backgroundColor
-          && sc.foregroundColor == oldContext.foregroundColor
-          && sc.underscore == oldContext.underscore && sc.reverseVideo == reverseVideo
-          && sc.highIntensity == oldContext.highIntensity)
-        return sc;
-    ScreenContext newContext =
-        new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
-            oldContext.underscore, reverseVideo, oldContext.highIntensity);
+            highlight, oldContext.highIntensity);
     contextPool.add (newContext);
     return newContext;
   }
@@ -91,13 +74,12 @@ public class ContextHandler
     for (ScreenContext sc : contextPool)
       if (sc.backgroundColor == oldContext.backgroundColor
           && sc.foregroundColor == oldContext.foregroundColor
-          && sc.underscore == oldContext.underscore
-          && sc.reverseVideo == oldContext.reverseVideo
+          && sc.highlight == oldContext.highlight //
           && sc.highIntensity == highIntensity)
         return sc;
     ScreenContext newContext =
         new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
-            oldContext.underscore, oldContext.reverseVideo, highIntensity);
+            oldContext.highlight, highIntensity);
     contextPool.add (newContext);
     return newContext;
   }

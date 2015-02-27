@@ -31,11 +31,12 @@ public class ReplayStage extends BasicStage
   Console console;
   private final SessionTable table = new SessionTable ();
 
-  public ReplayStage (ScreenHandler screenHandler, Path path, Console console)
+  public ReplayStage (ScreenHandler screenHandler,
+      com.bytezone.dm3270.display.Screen screen, Path path, Console console)
   {
     this.console = console;
 
-    Session session = new Session (screenHandler, path);
+    Session session = new Session (screenHandler, screen, path);
 
     final Label label =
         new Label (session.getClientName () + " : " + session.getServerName ());

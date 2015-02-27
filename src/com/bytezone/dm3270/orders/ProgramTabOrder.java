@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.display.Screen;
 
 public class ProgramTabOrder extends Order
 {
@@ -13,7 +14,7 @@ public class ProgramTabOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     // This makes no sense - why would a tab command be part of a Write? The fields
     // haven't even been built yet.

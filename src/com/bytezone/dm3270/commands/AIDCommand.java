@@ -9,6 +9,7 @@ import com.bytezone.dm3270.application.ScreenField;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
 import com.bytezone.dm3270.application.ScreenPosition;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
 import com.bytezone.dm3270.orders.Order;
@@ -45,9 +46,9 @@ public class AIDCommand extends Command implements BufferAddressSource
   // This method creates an AID from the current screen.
   // Should be replaced with a static factory method
 
-  public AIDCommand (ScreenHandler screenHandler)
+  public AIDCommand (ScreenHandler screenHandler, Screen screen)
   {
-    super (screenHandler);
+    super (screenHandler, screen);
     AIDCommand command = readModified (screenHandler.getAID ());
 
     this.key = command.key;
@@ -56,9 +57,9 @@ public class AIDCommand extends Command implements BufferAddressSource
     this.data = command.data;
   }
 
-  public AIDCommand (ScreenHandler screenHandler, byte type)
+  public AIDCommand (ScreenHandler screenHandler, Screen screen, byte type)
   {
-    super (screenHandler);
+    super (screenHandler, screen);
 
     AIDCommand command = null;
 
@@ -92,14 +93,15 @@ public class AIDCommand extends Command implements BufferAddressSource
     }
   }
 
-  public AIDCommand (ScreenHandler screenHandler, byte[] buffer)
+  public AIDCommand (ScreenHandler screenHandler, Screen screen, byte[] buffer)
   {
-    this (screenHandler, buffer, 0, buffer.length);
+    this (screenHandler, screen, buffer, 0, buffer.length);
   }
 
-  public AIDCommand (ScreenHandler screenHandler, byte[] buffer, int offset, int length)
+  public AIDCommand (ScreenHandler screenHandler, Screen screen, byte[] buffer,
+      int offset, int length)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
 
     keyCommand = buffer[offset];
     key = findKey (keyCommand);
@@ -152,7 +154,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     for (ScreenField sf : screenHandler.getScreenFields ())
       ptr = sf.pack (buffer, ptr);
 
-    return new AIDCommand (screenHandler, buffer, 0, ptr);
+    return new AIDCommand (screenHandler, screen, buffer, 0, ptr);
   }
 
   private AIDCommand readModified (byte aid)
@@ -178,7 +180,7 @@ public class AIDCommand extends Command implements BufferAddressSource
             buffer[ptr++] = b;
       }
 
-    return new AIDCommand (screenHandler, buffer, 0, ptr);
+    return new AIDCommand (screenHandler, screen, buffer, 0, ptr);
   }
 
   // not written yet
@@ -188,7 +190,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = aid;
 
-    return new AIDCommand (screenHandler, buffer, 0, ptr);
+    return new AIDCommand (screenHandler, screen, buffer, 0, ptr);
   }
 
   // copy modified fields back to the screen - only used in Replay mode

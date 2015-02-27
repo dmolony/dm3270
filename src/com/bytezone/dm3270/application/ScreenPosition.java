@@ -126,14 +126,9 @@ public class ScreenPosition
     screenContext = contextHandler.setBackground (screenContext, color);
   }
 
-  public void setReverseVideo (boolean value)
+  public void setHighlight (byte value)
   {
-    screenContext = contextHandler.setReverseVideo (screenContext, value);
-  }
-
-  public void setUnderscore (boolean value)
-  {
-    screenContext = contextHandler.setUnderscore (screenContext, value);
+    screenContext = contextHandler.setHighlight (screenContext, value);
   }
 
   public void setHighIntensity (boolean value)

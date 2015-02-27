@@ -3,6 +3,7 @@ package com.bytezone.dm3270.structuredfields;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
+import com.bytezone.dm3270.display.Screen;
 
 public abstract class StructuredField extends AbstractTN3270Command
 {
@@ -27,9 +28,9 @@ public abstract class StructuredField extends AbstractTN3270Command
   protected byte type;
 
   public StructuredField (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler)
+      ScreenHandler screenHandler, Screen screen)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
     type = buffer[offset];
   }
 

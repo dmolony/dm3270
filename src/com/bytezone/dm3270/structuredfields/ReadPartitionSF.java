@@ -4,6 +4,7 @@ import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
+import com.bytezone.dm3270.display.Screen;
 
 public class ReadPartitionSF extends StructuredField
 {
@@ -11,9 +12,9 @@ public class ReadPartitionSF extends StructuredField
   private String typeName;
 
   public ReadPartitionSF (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler)
+      ScreenHandler screenHandler, Screen screen)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
 
     assert data[0] == StructuredField.READ_PARTITION;
     partitionID = data[1];
@@ -52,7 +53,7 @@ public class ReadPartitionSF extends StructuredField
     {
       case (byte) 0x02:
         if (partitionID == (byte) 0xFF)           // query operation
-          reply = new ReadStructuredFieldCommand (screenHandler);
+          reply = new ReadStructuredFieldCommand (screenHandler, screen);
         else
           System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
         break;
@@ -70,7 +71,7 @@ public class ReadPartitionSF extends StructuredField
               break;
 
             case 2:
-              reply = new ReadStructuredFieldCommand (screenHandler);
+              reply = new ReadStructuredFieldCommand (screenHandler, screen);
               break;
 
             default:
@@ -83,7 +84,7 @@ public class ReadPartitionSF extends StructuredField
       case Command.READ_BUFFER_F2:        // NB 0x02 would conflict with RPQ above
       case Command.READ_MODIFIED_F6:
       case Command.READ_MODIFIED_ALL_6E:
-        reply = new AIDCommand (screenHandler, data[2]);
+        reply = new AIDCommand (screenHandler, screen, data[2]);
         break;
 
       default:

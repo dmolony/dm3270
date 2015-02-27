@@ -9,6 +9,10 @@ import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenPosition2;
 
 public class StartFieldExtendedOrder extends Order
 {
@@ -67,7 +71,7 @@ public class StartFieldExtendedOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     Cursor cursor = screenHandler.getCursor ();
     cursor.clearAttributes ();        // remove any unapplied character attributes
@@ -80,6 +84,14 @@ public class StartFieldExtendedOrder extends Order
       sp.addAttribute (attribute);
 
     cursor.moveRight ();
+
+    Cursor2 cursor2 = screen.getScreenCursor ();
+    ScreenPosition2 sp2 = cursor2.getScreenPosition ();
+    sp2.reset ();
+    sp2.addAttribute (startFieldAttribute);
+    for (Attribute attribute : attributes)
+      sp2.addAttribute (attribute);
+    cursor2.move (Direction.RIGHT);
   }
 
   @Override

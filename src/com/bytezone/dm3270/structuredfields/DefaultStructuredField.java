@@ -1,13 +1,14 @@
 package com.bytezone.dm3270.structuredfields;
 
 import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.display.Screen;
 
 public class DefaultStructuredField extends StructuredField
 {
   public DefaultStructuredField (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler)
+      ScreenHandler screenHandler, Screen screen)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
     System.out.println ("Default Structured Field !!");
   }
 

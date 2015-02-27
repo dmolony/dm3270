@@ -18,7 +18,7 @@ public class FieldManager
   {
     fields.clear ();
     unprotectedFields.clear ();
-    List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
+    List<ScreenPosition2> positions = new ArrayList<ScreenPosition2> ();
 
     int start = -1;
     int first = -1;
@@ -26,15 +26,11 @@ public class FieldManager
     int ptr = 0;
     while (ptr != first)
     {
-      ScreenPosition screenPosition = screen.getScreenPosition (ptr);
+      ScreenPosition2 screenPosition = screen.getScreenPosition (ptr);
       if (screenPosition.isStartField ())
       {
         if (start >= 0)                     // if there is a field to add
-        {
-          Field field = new Field (screen, start, ptr - 1, positions);
-          fields.add (field);
-          positions.clear ();
-        }
+          addField (start, ptr - 1, positions);
         else
           first = ptr;
 
@@ -51,6 +47,24 @@ public class FieldManager
           break;
       }
     }
+
+    if (start >= 0 && positions.size () > 0)
+      addField (start, screen.validate (ptr - 1), positions);
+
+    // build screen contexts for every position
+    for (Field field : fields)
+    {
+      System.out.println (field);
+    }
+  }
+
+  private void addField (int start, int end, List<ScreenPosition2> positions)
+  {
+    Field field = new Field (screen, start, end, positions);
+    fields.add (field);
+    if (field.isUnprotected ())
+      unprotectedFields.add (field);
+    positions.clear ();
   }
 
   public Field getField (int position)      // this needs to be improved

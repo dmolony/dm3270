@@ -6,16 +6,17 @@ import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenField;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
+import com.bytezone.dm3270.display.Screen;
 
 public class EraseAllUnprotectedCommand extends Command
 {
   private static final boolean DONT_REBUILD_FIELDS = false;
 
   // This command has no WCC or data.
-  public EraseAllUnprotectedCommand (ScreenHandler screenHandler, byte[] buffer,
-      int offset, int length)
+  public EraseAllUnprotectedCommand (ScreenHandler screenHandler, Screen screen,
+      byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
   }
 
   @Override

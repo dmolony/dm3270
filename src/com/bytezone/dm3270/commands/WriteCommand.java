@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.application.ScreenHandler;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 
@@ -15,9 +16,9 @@ public class WriteCommand extends Command
   protected final List<Order> orders = new ArrayList<Order> ();
 
   public WriteCommand (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler, boolean erase)
+      ScreenHandler screenHandler, Screen screen, boolean erase)
   {
-    super (buffer, offset, length, screenHandler);
+    super (buffer, offset, length, screenHandler, screen);
 
     this.erase = erase;
 
@@ -66,7 +67,7 @@ public class WriteCommand extends Command
 
   public WriteCommand (WriteControlCharacter wcc, boolean erase, List<Order> orders)
   {
-    super (null);
+    super (null, null);
     this.writeControlCharacter = wcc;
     this.erase = erase;
     this.orders.addAll (orders);
@@ -89,13 +90,19 @@ public class WriteCommand extends Command
   {
     screenHandler.eraseScreen (erase);
 
+    if (erase)
+      screen.clearScreen ();
+
     if (writeControlCharacter != null)
-      writeControlCharacter.process (screenHandler);
+      writeControlCharacter.process (screenHandler, screen);
 
     for (Order order : orders)
-      order.process (screenHandler);
+      order.process (screenHandler, screen);
 
     screenHandler.draw (REBUILD_FIELDS);
+
+    screen.buildFields ();
+    //    screen.drawScreen ();
   }
 
   public List<Order> getOrdersList ()

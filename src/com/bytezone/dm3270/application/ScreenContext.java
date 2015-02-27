@@ -8,15 +8,21 @@ public class ScreenContext
   final public Color backgroundColor;
   final public boolean underscore;
   final public boolean reverseVideo;
+  final public boolean blink;
+  final public boolean normalHighlight;
   final public boolean highIntensity;
+  final public byte highlight;
 
-  public ScreenContext (Color foregroundColor, Color backgroundColor, boolean underscore,
-      boolean reverseVideo, boolean highIntensity)
+  public ScreenContext (Color foregroundColor, Color backgroundColor, byte highlight,
+      boolean highIntensity)
   {
     this.foregroundColor = foregroundColor;
     this.backgroundColor = backgroundColor;
-    this.underscore = underscore;
-    this.reverseVideo = reverseVideo;
+    this.underscore = highlight == (byte) 0xF4;
+    this.reverseVideo = highlight == (byte) 0xF2;
+    this.blink = highlight == (byte) 0xF1;
+    this.normalHighlight = highlight == (byte) 0xF0;
+    this.highlight = highlight;
     this.highIntensity = highIntensity;
   }
 
@@ -24,16 +30,14 @@ public class ScreenContext
   {
     return foregroundColor == other.foregroundColor
         && backgroundColor == other.backgroundColor     //
-        && underscore == other.underscore               //
-        && reverseVideo == other.reverseVideo           //
+        && highlight == other.highlight                 //
         && highIntensity == other.highIntensity;
   }
 
   @Override
   public String toString ()
   {
-    return String.format ("[Fg:%s Bg:%s Un:%s Hi:%s Rv:%s]", foregroundColor,
-                          backgroundColor, (underscore ? 'x' : ' '), (highIntensity ? 'x'
-                              : ' '), (reverseVideo ? 'x' : ' '));
+    return String.format ("[Fg:%s Bg:%s In:%s Hl:%02X]", foregroundColor,
+                          backgroundColor, (highIntensity ? 'x' : ' '), highlight);
   }
 }

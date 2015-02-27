@@ -6,6 +6,9 @@ import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Screen;
 
 public class TextOrder extends Order
 {
@@ -50,7 +53,7 @@ public class TextOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     Cursor cursor = screenHandler.getCursor ();
     for (byte b : buffer)
@@ -60,6 +63,13 @@ public class TextOrder extends Order
       sp.clearAttributes ();
       sp.setCharacter (b);
       cursor.moveRight ();      // processes unapplied character attributes
+    }
+
+    Cursor2 cursor2 = screen.getScreenCursor ();
+    for (byte b : buffer)
+    {
+      cursor2.setChar (b & 0xFF);
+      cursor2.move (Direction.RIGHT);
     }
   }
 

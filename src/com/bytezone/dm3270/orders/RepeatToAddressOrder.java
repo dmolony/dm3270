@@ -4,6 +4,10 @@ import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenPosition2;
 
 public class RepeatToAddressOrder extends Order
 {
@@ -40,7 +44,7 @@ public class RepeatToAddressOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
     int stopLocation = stopAddress.getLocation ();
     Cursor cursor = screenHandler.getCursor ();
@@ -55,6 +59,21 @@ public class RepeatToAddressOrder extends Order
         screenPosition.clearAttributes ();
         screenPosition.setCharacter (rptChar);
         cursor.moveRight ();
+      }
+    }
+
+    int stopLocation2 = stopAddress.getLocation ();
+    Cursor2 cursor2 = screen.getScreenCursor ();
+    if (cursor2.getLocation () == stopLocation2 && rptChar == 0x40)
+      screen.clearScreen ();
+    else
+    {
+      while (cursor.getLocation () != stopLocation)
+      {
+        ScreenPosition2 sp2 = cursor2.getScreenPosition ();
+        sp2.reset ();
+        sp2.setChar (rptChar);
+        cursor2.move (Direction.RIGHT);
       }
     }
   }

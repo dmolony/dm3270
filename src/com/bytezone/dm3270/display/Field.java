@@ -12,9 +12,9 @@ public class Field
   private final int endPosition;        // last data position of this field
   private final StartFieldAttribute startFieldAttribute;
 
-  private final List<ScreenPosition> screenPositions = new ArrayList<> ();
+  private final List<ScreenPosition2> screenPositions = new ArrayList<> ();
 
-  public Field (Screen screen, int start, int end, List<ScreenPosition> positions)
+  public Field (Screen screen, int start, int end, List<ScreenPosition2> positions)
   {
     this.screen = screen;
     startPosition = start;
@@ -33,7 +33,7 @@ public class Field
     return screenPositions.size () - 1;
   }
 
-  public ScreenPosition getScreenPosition (int relativePosition)
+  public ScreenPosition2 getScreenPosition (int relativePosition)
   {
     return screenPositions.get (relativePosition + 1);
   }
@@ -43,7 +43,7 @@ public class Field
     return startFieldAttribute.isProtected ();
   }
 
-  public boolean isModifiable ()
+  public boolean isUnprotected ()
   {
     return !startFieldAttribute.isProtected ();
   }
@@ -76,5 +76,29 @@ public class Field
         break;
       position = screen.validate (position + 1);
     }
+  }
+
+  public String getText ()
+  {
+    if (startPosition == endPosition)
+      return "[]";
+    char[] buffer = new char[getDisplayLength ()];
+    int position = startPosition + 1;
+    int ptr = 0;
+    while (true)
+    {
+      buffer[ptr++] = screen.getScreenPosition (position).getChar ();
+      if (position == endPosition)
+        break;
+      position = screen.validate (position + 1);
+    }
+    return "[" + new String (buffer) + "]";
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("%04d-%04d  %s  %s", startPosition, endPosition,
+                          startFieldAttribute.getAcronym (), getText ());
   }
 }

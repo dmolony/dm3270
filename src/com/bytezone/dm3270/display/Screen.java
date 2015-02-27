@@ -7,9 +7,10 @@ import javafx.scene.text.Font;
 
 public class Screen extends Canvas
 {
-  private final ScreenPosition[] screenPositions;
+  private final ScreenPosition2[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
+  private final Cursor2 cursor = new Cursor2 (this);
 
   public final int rows;
   public final int columns;
@@ -32,9 +33,9 @@ public class Screen extends Canvas
     GraphicsContext gc = getGraphicsContext2D ();
     characterSize = new CharacterSize (font);
 
-    screenPositions = new ScreenPosition[rows * columns];
+    screenPositions = new ScreenPosition2[rows * columns];
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (gc, characterSize);
+      screenPositions[i] = new ScreenPosition2 (gc, characterSize);
   }
 
   public void setFont (Font font)
@@ -59,12 +60,17 @@ public class Screen extends Canvas
     return position;
   }
 
-  public ScreenPosition getScreenPosition (int position)
+  public Cursor2 getScreenCursor ()
+  {
+    return cursor;
+  }
+
+  public ScreenPosition2 getScreenPosition (int position)
   {
     return screenPositions[position];
   }
 
-  private void drawPosition (ScreenPosition screenPosition, int row, int col,
+  private void drawPosition (ScreenPosition2 screenPosition, int row, int col,
       boolean hasCursor)
   {
     double x = xOffset + col * characterSize.width        //
@@ -82,6 +88,11 @@ public class Screen extends Canvas
     drawPosition (screenPositions[position], row, col, hasCursor);
   }
 
+  public void buildFields ()
+  {
+    fieldManager.buildFields ();
+  }
+
   public void drawScreen ()
   {
     int pos = 0;
@@ -95,6 +106,11 @@ public class Screen extends Canvas
     GraphicsContext gc = getGraphicsContext2D ();
     gc.setFill (Color.BLACK);
     gc.fillRect (0, 0, getWidth (), getHeight ());
+
+    for (ScreenPosition2 sp : screenPositions)
+      sp.reset ();
+
+    cursor.moveTo (0);
   }
 
   @Override
@@ -106,5 +122,43 @@ public class Screen extends Canvas
   public Field getField (int position)
   {
     return fieldManager.getField (position);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Events to be processed
+  // ---------------------------------------------------------------------------------//
+
+  public void resetPartition ()
+  {
+    //    cursor.setLocation (0);
+  }
+
+  public void startPrinter ()
+  {
+  }
+
+  public void soundAlarm ()
+  {
+    System.out.println ("Sound alarm");
+    //    Toolkit.getDefaultToolkit ().beep ();
+  }
+
+  public void restoreKeyboard ()
+  {
+    //    keyboardLocked = false;
+    //    if (consoleStage != null)
+    //      consoleStage.setStatus ("");
+  }
+
+  public void lockKeyboard ()
+  {
+    //    keyboardLocked = true;
+    //    if (consoleStage != null)
+    //      consoleStage.setStatus ("Inhibit");
+  }
+
+  public void resetModified ()
+  {
+    //    resetModified = true;     // will happen after the screen is rebuilt
   }
 }
