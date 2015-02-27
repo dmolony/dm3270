@@ -14,6 +14,8 @@ public class Field
 
   private final List<ScreenPosition2> screenPositions = new ArrayList<> ();
 
+  private Field next, previous;
+
   public Field (Screen screen, int start, int end, List<ScreenPosition2> positions)
   {
     this.screen = screen;
@@ -28,9 +30,30 @@ public class Field
     return startFieldAttribute;
   }
 
+  public void linkToNext (Field nextField)
+  {
+    this.next = nextField;
+    nextField.previous = this;
+  }
+
+  public Field getNextUnprotectedField ()
+  {
+    return next;
+  }
+
+  public Field getPreviousUnprotectedField ()
+  {
+    return previous;
+  }
+
   public int getDisplayLength ()
   {
     return screenPositions.size () - 1;
+  }
+
+  public int getFirstLocation ()
+  {
+    return screen.validate (startPosition + 1);
   }
 
   public ScreenPosition2 getScreenPosition (int relativePosition)
@@ -76,6 +99,12 @@ public class Field
         break;
       position = screen.validate (position + 1);
     }
+  }
+
+  public void reset ()
+  {
+    for (int i = 1; i < screenPositions.size (); i++)
+      screenPositions.get (i).reset ();
   }
 
   public String getText ()

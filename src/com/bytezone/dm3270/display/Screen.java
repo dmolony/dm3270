@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.display;
 
+import java.util.List;
+
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -23,6 +25,8 @@ public class Screen extends Canvas
   private final boolean expanded = true;
   private final double expandedWidth = .5;
   private final double expandedHeight = 1.6;
+
+  private int insertedCursorPosition = -1;
 
   public Screen (int rows, int columns, Font font)
   {
@@ -70,6 +74,11 @@ public class Screen extends Canvas
     return screenPositions[position];
   }
 
+  public void insertCursor ()
+  {
+    insertedCursorPosition = cursor.getLocation ();    // move it here later
+  }
+
   private void drawPosition (ScreenPosition2 screenPosition, int row, int col,
       boolean hasCursor)
   {
@@ -90,7 +99,18 @@ public class Screen extends Canvas
 
   public void buildFields ()
   {
+    cursor.setVisible (false);
     fieldManager.buildFields ();
+
+    if (insertedCursorPosition >= 0)
+    {
+      cursor.moveTo (insertedCursorPosition);
+      insertedCursorPosition = -1;
+    }
+    else
+      cursor.moveTo (0);
+
+    cursor.setVisible (true);
   }
 
   public void drawScreen ()
@@ -122,6 +142,16 @@ public class Screen extends Canvas
   public Field getField (int position)
   {
     return fieldManager.getField (position);
+  }
+
+  public List<Field> getFields ()
+  {
+    return fieldManager.getFields ();
+  }
+
+  public List<Field> getUnprotectedFields ()
+  {
+    return fieldManager.getUnprotectedFields ();
   }
 
   // ---------------------------------------------------------------------------------//

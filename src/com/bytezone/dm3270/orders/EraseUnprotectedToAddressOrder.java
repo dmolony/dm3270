@@ -6,6 +6,8 @@ import com.bytezone.dm3270.application.Cursor;
 import com.bytezone.dm3270.application.ScreenField;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
+import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 
 public class EraseUnprotectedToAddressOrder extends Order
@@ -49,6 +51,28 @@ public class EraseUnprotectedToAddressOrder extends Order
         break;
       }
       currentField = currentField.getNext ();
+    }
+
+    Cursor2 cursor2 = screen.getScreenCursor ();
+    int cursorPostion = cursor2.getLocation ();
+    Field resetField = null;
+
+    for (Field field : screen.getUnprotectedFields ())
+      if (field.contains (cursorPostion))
+      {
+        resetField = field;
+        break;
+      }
+
+    while (resetField != null)
+    {
+      resetField.reset ();
+      if (resetField.contains (stopAddress.getLocation ()))
+      {
+        cursor.setLocation (resetField.getFirstLocation ());
+        break;
+      }
+      resetField = resetField.getNextUnprotectedField ();
     }
   }
 
