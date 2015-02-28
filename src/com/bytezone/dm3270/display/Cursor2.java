@@ -30,7 +30,7 @@ public class Cursor2
     unappliedAttributes.add (attribute);
   }
 
-  public void setChar (int value)
+  public void setChar (byte value)
   {
     ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
 
@@ -40,7 +40,7 @@ public class Cursor2
     sp.setChar (value);
   }
 
-  public void setGraphicsChar (int value)
+  public void setGraphicsChar (byte value)
   {
     ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
 

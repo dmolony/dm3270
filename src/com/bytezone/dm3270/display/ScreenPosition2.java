@@ -24,7 +24,7 @@ public class ScreenPosition2
 
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();
-  private int value;
+  private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
   private ScreenContext screenContext;
@@ -77,13 +77,13 @@ public class ScreenPosition2
     return attributes;
   }
 
-  public void setChar (int value)
+  public void setChar (byte value)
   {
     this.value = value;
     isGraphics = false;
   }
 
-  public void setGraphicsChar (int value)
+  public void setGraphicsChar (byte value)
   {
     this.value = value;
     isGraphics = true;
@@ -94,7 +94,7 @@ public class ScreenPosition2
     if (value == 0 || isStartField ())
       return ' ';
 
-    return (char) Utility.ebc2asc[value];
+    return (char) Utility.ebc2asc[value & 0xFF];
   }
 
   public void reset (ScreenContext screenContext)
@@ -147,7 +147,7 @@ public class ScreenPosition2
         ptr = attribute.pack (buffer, ptr);
       }
 
-    buffer[ptr++] = (byte) value;
+    buffer[ptr++] = value;
 
     return ptr;
   }
@@ -166,6 +166,7 @@ public class ScreenPosition2
     }
     else
     {
+      System.out.println (screenContext);
       gc.setFill (screenContext.reverseVideo ? Color.YELLOW       // fix this
           : screenContext.backgroundColor);
       gc.fillRect (x, y, charWidth + .4, charHeight + .4);

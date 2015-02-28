@@ -51,7 +51,7 @@ public class Field
         }
         else
           screenContext = contextHandler.applyAttribute (screenContext, attribute);
-      sp.setScreenContext (screenContext);
+      sp2.setScreenContext (screenContext);
     }
   }
 

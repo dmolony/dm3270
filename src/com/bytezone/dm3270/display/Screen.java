@@ -123,6 +123,7 @@ public class Screen extends Canvas
 
   public void clearScreen ()
   {
+    cursor.setVisible (false);
     GraphicsContext gc = getGraphicsContext2D ();
     gc.setFill (Color.BLACK);
     gc.fillRect (0, 0, getWidth (), getHeight ());
