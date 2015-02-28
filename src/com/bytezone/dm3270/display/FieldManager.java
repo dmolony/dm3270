@@ -6,7 +6,6 @@ import java.util.List;
 public class FieldManager
 {
   private final Screen screen;
-  private final ContextHandler contextHandler = new ContextHandler ();
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
@@ -57,7 +56,7 @@ public class FieldManager
     Field previousUnprotectedField = null;
     for (Field field : fields)
     {
-      field.setScreenContexts (contextHandler);
+      field.setScreenContexts ();
       if (field.isUnprotected ())
       {
         unprotectedFields.add (field);

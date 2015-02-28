@@ -12,6 +12,7 @@ public class Screen extends Canvas
   private final ScreenPosition2[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
+  private final ContextHandler contextHandler = new ContextHandler ();
   private final Cursor2 cursor = new Cursor2 (this);
 
   public final int rows;
@@ -72,6 +73,11 @@ public class Screen extends Canvas
   public ScreenPosition2 getScreenPosition (int position)
   {
     return screenPositions[position];
+  }
+
+  public ContextHandler getContextHandler ()
+  {
+    return contextHandler;
   }
 
   public void insertCursor ()

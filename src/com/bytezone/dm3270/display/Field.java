@@ -32,8 +32,9 @@ public class Field
     return startFieldAttribute;
   }
 
-  public void setScreenContexts (ContextHandler contextHandler)
+  void setScreenContexts ()
   {
+    ContextHandler contextHandler = screen.getContextHandler ();
     ScreenPosition2 sp = screenPositions.get (0);
     StartFieldAttribute sfa = sp.getStartFieldAttribute ();
     ScreenContext screenContext = contextHandler.getBase ();
