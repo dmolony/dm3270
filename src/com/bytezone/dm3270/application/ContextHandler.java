@@ -5,6 +5,7 @@ import java.util.List;
 
 import javafx.scene.paint.Color;
 
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 
 public class ContextHandler
@@ -87,5 +88,10 @@ public class ContextHandler
   public ScreenContext resetAttribute (ScreenContext oldContext)
   {
     return getBase ();
+  }
+
+  public ScreenContext applyAttribute (ScreenContext screenContext, Attribute attribute)
+  {
+    return screenContext;
   }
 }

@@ -3,9 +3,13 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.application.ContextHandler;
+
 public class FieldManager
 {
   private final Screen screen;
+  private final ContextHandler contextHandler = new ContextHandler ();
+
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
 
@@ -19,7 +23,6 @@ public class FieldManager
     fields.clear ();
     unprotectedFields.clear ();
     List<ScreenPosition2> positions = new ArrayList<ScreenPosition2> ();
-    Field previousUnprotectedField = null;    // used to link unprotected fields
 
     int start = -1;
     int first = -1;
@@ -31,8 +34,7 @@ public class FieldManager
       if (screenPosition.isStartField ())
       {
         if (start >= 0)                     // if there is a field to add
-          previousUnprotectedField =
-              addField (start, ptr - 1, positions, previousUnprotectedField);
+          addField (start, ptr - 1, positions);
         else
           first = ptr;
 
@@ -51,7 +53,21 @@ public class FieldManager
     }
 
     if (start >= 0 && positions.size () > 0)
-      addField (start, screen.validate (ptr - 1), positions, previousUnprotectedField);
+      addField (start, screen.validate (ptr - 1), positions);
+
+    // build screen contexts for every position and link uprotected fields
+    Field previousUnprotectedField = null;
+    for (Field field : fields)
+    {
+      field.setScreenContexts (contextHandler);
+      if (field.isUnprotected ())
+      {
+        unprotectedFields.add (field);
+        if (previousUnprotectedField != null)
+          previousUnprotectedField.linkToNext (field);
+        previousUnprotectedField = field;
+      }
+    }
 
     // link first unprotected field to the last one
     if (unprotectedFields.size () > 0)
@@ -61,27 +77,14 @@ public class FieldManager
       lastField.linkToNext (firstField);
     }
 
-    // build screen contexts for every position
-    for (Field field : fields)
-    {
-      System.out.println (field.toStringWithLinks ());
-    }
+    dumpFields ();
   }
 
-  private Field addField (int start, int end, List<ScreenPosition2> positions,
-      Field previousUnprotectedField)
+  private void addField (int start, int end, List<ScreenPosition2> positions)
   {
     Field field = new Field (screen, start, end, positions);
     fields.add (field);
-    if (field.isUnprotected ())
-    {
-      unprotectedFields.add (field);
-      if (previousUnprotectedField != null)
-        previousUnprotectedField.linkToNext (field);
-      previousUnprotectedField = field;
-    }
     positions.clear ();
-    return previousUnprotectedField;
   }
 
   public Field getField (int position)      // this needs to be improved
@@ -112,5 +115,30 @@ public class FieldManager
   {
     for (Field field : unprotectedFields)
       field.draw ();
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Debugging
+  // ---------------------------------------------------------------------------------//
+
+  public void dumpFields ()
+  {
+    int fieldPositions = 0;
+    int emptyFields = 0;
+    System.out.println ();
+    for (Field field : fields)
+    {
+      System.out.println (field.toStringWithLinks ());
+      fieldPositions += field.getDisplayLength ();
+      if (field.getDisplayLength () == 0)
+        ++emptyFields;
+    }
+
+    System.out.println ();
+    System.out.printf ("Total screen fields: %d%n", fields.size ());
+    System.out.printf ("Empty fields       : %d%n", emptyFields);
+    System.out.printf ("Unprotected fields : %d%n", unprotectedFields.size ());
+    System.out.printf ("Field positions    : %d%n", fieldPositions);
+    System.out.printf ("Data positions     : %d%n", fieldPositions + fields.size ());
   }
 }

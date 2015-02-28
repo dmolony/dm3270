@@ -79,18 +79,7 @@ public class Screen extends Canvas
     insertedCursorPosition = cursor.getLocation ();    // move it here later
   }
 
-  private void drawPosition (ScreenPosition2 screenPosition, int row, int col,
-      boolean hasCursor)
-  {
-    double x = xOffset + col * characterSize.width        //
-        + (expanded ? col * expandedWidth : 0);
-    double y = yOffset + row * characterSize.height       //
-        + (expanded ? (row + 1) * expandedHeight : 0);
-
-    screenPosition.draw (x, y, hasCursor);
-  }
-
-  public void drawPosition (int position, boolean hasCursor)
+  void drawPosition (int position, boolean hasCursor)
   {
     int row = position / columns;
     int col = position % columns;
@@ -119,6 +108,17 @@ public class Screen extends Canvas
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
         drawPosition (screenPositions[pos++], row, col, false);
+  }
+
+  private void drawPosition (ScreenPosition2 screenPosition, int row, int col,
+      boolean hasCursor)
+  {
+    double x = xOffset + col * characterSize.width        //
+        + (expanded ? col * expandedWidth : 0);
+    double y = yOffset + row * characterSize.height       //
+        + (expanded ? (row + 1) * expandedHeight : 0);
+
+    screenPosition.draw (x, y, hasCursor);
   }
 
   public void clearScreen ()
@@ -190,5 +190,33 @@ public class Screen extends Canvas
   public void resetModified ()
   {
     //    resetModified = true;     // will happen after the screen is rebuilt
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Debugging
+  // ---------------------------------------------------------------------------------//
+
+  public void dumpScreen ()
+  {
+    System.out.println ();
+    int pos = 0;
+    for (ScreenPosition2 sp : screenPositions)
+    {
+      if (sp.isStartField ())
+        System.out.print ("%");
+      else
+        System.out.print (sp.getChar ());
+      if (++pos % columns == 0)
+        System.out.println ();
+    }
+  }
+
+  public void dumpScreenPositions ()
+  {
+    int startFields = 0;
+    for (ScreenPosition2 sp : screenPositions)
+      if (sp.isStartField ())
+        ++startFields;
+    System.out.printf ("There are %d start fields%n", startFields);
   }
 }

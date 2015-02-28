@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.attributes.Attribute;
-import com.bytezone.dm3270.orders.BufferAddress;
 
 public class Cursor2
 {
@@ -120,11 +119,6 @@ public class Cursor2
   public Field getCurrentField ()
   {
     return visible ? null : currentField;
-  }
-
-  public void setAddress (BufferAddress bufferAddress)
-  {
-    currentPosition = bufferAddress.getLocation ();
   }
 
   public int getLocation ()

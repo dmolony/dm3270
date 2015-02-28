@@ -3,6 +3,10 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.application.ContextHandler;
+import com.bytezone.dm3270.application.ScreenContext;
+import com.bytezone.dm3270.attributes.Attribute;
+import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 public class Field
@@ -28,6 +32,27 @@ public class Field
   public StartFieldAttribute getStartFieldAttribute ()
   {
     return startFieldAttribute;
+  }
+
+  public void setScreenContexts (ContextHandler contextHandler)
+  {
+    ScreenPosition2 sp = screenPositions.get (0);
+    ScreenContext screenContext = contextHandler.getBase ();
+
+    screenContext =
+        contextHandler.applyAttribute (screenContext, sp.getStartFieldAttribute ());
+
+    for (ScreenPosition2 sp2 : screenPositions)
+    {
+      for (Attribute attribute : sp2.getAttributes ())
+        if (attribute.getAttributeType () == AttributeType.RESET)
+        {
+          System.out.println ("resetting");
+        }
+        else
+          screenContext = contextHandler.applyAttribute (screenContext, attribute);
+      sp.setScreenContext (screenContext);
+    }
   }
 
   public void linkToNext (Field nextField)

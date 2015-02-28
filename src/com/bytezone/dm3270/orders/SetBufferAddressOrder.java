@@ -41,7 +41,7 @@ public class SetBufferAddressOrder extends Order implements BufferAddressSource
     //    showText (cursor);
 
     Cursor2 cursor2 = screen.getScreenCursor ();
-    cursor2.setAddress (bufferAddress);
+    cursor2.moveTo (bufferAddress.getLocation ());
   }
 
   @Override
