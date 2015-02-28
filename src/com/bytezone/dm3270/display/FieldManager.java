@@ -3,8 +3,6 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.ContextHandler;
-
 public class FieldManager
 {
   private final Screen screen;

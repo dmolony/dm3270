@@ -1,6 +1,8 @@
 package com.bytezone.dm3270.attributes;
 
 import com.bytezone.dm3270.application.ScreenPosition;
+import com.bytezone.dm3270.display.ContextHandler;
+import com.bytezone.dm3270.display.ScreenContext;
 
 public class ExtendedHighlight extends Attribute
 {
@@ -16,6 +18,13 @@ public class ExtendedHighlight extends Attribute
   public void process (ScreenPosition screenPosition)
   {
     screenPosition.setHighlight (attributeValue);
+  }
+
+  @Override
+  public ScreenContext
+      process (ContextHandler contextHandler, ScreenContext screenContext)
+  {
+    return contextHandler.setHighlight (screenContext, attributeValue);
   }
 
   @Override

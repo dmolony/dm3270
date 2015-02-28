@@ -1,16 +1,11 @@
-package com.bytezone.dm3270.application;
+package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.paint.Color;
 
-import com.bytezone.dm3270.attributes.Attribute;
-import com.bytezone.dm3270.attributes.BackgroundColor;
 import com.bytezone.dm3270.attributes.ColorAttribute;
-import com.bytezone.dm3270.attributes.ExtendedHighlight;
-import com.bytezone.dm3270.attributes.ForegroundColor;
-import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 public class ContextHandler
 {
@@ -92,35 +87,5 @@ public class ContextHandler
   public ScreenContext resetAttribute (ScreenContext oldContext)
   {
     return getBase ();
-  }
-
-  public ScreenContext applyAttribute (ScreenContext screenContext, Attribute attribute)
-  {
-    return screenContext;
-  }
-
-  public ScreenContext applyAttribute (ScreenContext screenContext,
-      ForegroundColor attribute)
-  {
-    return setForeground (screenContext, attribute.getColor ());
-  }
-
-  public ScreenContext applyAttribute (ScreenContext screenContext,
-      BackgroundColor attribute)
-  {
-    return setBackground (screenContext, attribute.getColor ());
-  }
-
-  public ScreenContext applyAttribute (ScreenContext screenContext,
-      ExtendedHighlight attribute)
-  {
-    return setHighlight (screenContext, attribute.getAttributeValue ());
-  }
-
-  public ScreenContext applyAttribute (ScreenContext screenContext,
-      StartFieldAttribute attribute)
-  {
-    // could also set foreground color from protected/intensity flags
-    return setHighIntensity (screenContext, attribute.isIntensified ());
   }
 }

@@ -3,6 +3,8 @@ package com.bytezone.dm3270.attributes;
 import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.application.ScreenPosition;
+import com.bytezone.dm3270.display.ContextHandler;
+import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.BufferAddress;
 
 public class StartFieldAttribute extends Attribute
@@ -124,6 +126,16 @@ public class StartFieldAttribute extends Attribute
     screenPosition.setForeground (isHighIntensity ?       //
         isProtected ? WHITE : RED :                       //
         isProtected ? BLUE : GREEN);
+  }
+
+  @Override
+  public ScreenContext
+      process (ContextHandler contextHandler, ScreenContext screenContext)
+  {
+    Color color = isHighIntensity ?       //
+        isProtected ? WHITE : RED :                       //
+        isProtected ? BLUE : GREEN;
+    return contextHandler.setForeground (screenContext, color);
   }
 
   public String getAcronym ()

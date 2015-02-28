@@ -3,8 +3,6 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.ContextHandler;
-import com.bytezone.dm3270.application.ScreenContext;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -37,21 +35,27 @@ public class Field
   public void setScreenContexts (ContextHandler contextHandler)
   {
     ScreenPosition2 sp = screenPositions.get (0);
+    StartFieldAttribute sfa = sp.getStartFieldAttribute ();
     ScreenContext screenContext = contextHandler.getBase ();
 
-    screenContext =
-        contextHandler.applyAttribute (screenContext, sp.getStartFieldAttribute ());
+    screenContext = sfa.process (contextHandler, screenContext);
+    System.out.println (sfa);
 
     for (ScreenPosition2 sp2 : screenPositions)
     {
       for (Attribute attribute : sp2.getAttributes ())
+      {
+        System.out.println (attribute);
         if (attribute.getAttributeType () == AttributeType.RESET)
         {
-          System.out.println ("resetting");
+          screenContext = contextHandler.getBase ();
+          screenContext = sfa.process (contextHandler, screenContext);
         }
         else
-          screenContext = contextHandler.applyAttribute (screenContext, attribute);
+          screenContext = attribute.process (contextHandler, screenContext);
+      }
       sp2.setScreenContext (screenContext);
+      System.out.println (screenContext);
     }
   }
 

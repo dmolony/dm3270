@@ -8,6 +8,8 @@ import javafx.scene.text.Font;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.display.ContextHandler;
+import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
 

@@ -6,7 +6,6 @@ import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import com.bytezone.dm3270.application.ScreenContext;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;

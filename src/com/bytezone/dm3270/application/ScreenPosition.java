@@ -8,6 +8,8 @@ import javafx.scene.paint.Color;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.display.ContextHandler;
+import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.Order;
 
 public class ScreenPosition
