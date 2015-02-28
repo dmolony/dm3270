@@ -3,7 +3,7 @@ package com.bytezone.dm3270.attributes;
 import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.application.ScreenPosition;
-import com.bytezone.dm3270.display.ContextHandler;
+import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 
 public class ForegroundColor extends ColorAttribute
@@ -27,7 +27,7 @@ public class ForegroundColor extends ColorAttribute
 
   @Override
   public ScreenContext
-      process (ContextHandler contextHandler, ScreenContext screenContext)
+      process (ContextManager contextHandler, ScreenContext screenContext)
   {
     return contextHandler.setForeground (screenContext, colors[attributeValue & 0x0F]);
   }

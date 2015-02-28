@@ -3,7 +3,7 @@ package com.bytezone.dm3270.attributes;
 import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.application.ScreenPosition;
-import com.bytezone.dm3270.display.ContextHandler;
+import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.BufferAddress;
 
@@ -130,7 +130,7 @@ public class StartFieldAttribute extends Attribute
 
   @Override
   public ScreenContext
-      process (ContextHandler contextHandler, ScreenContext screenContext)
+      process (ContextManager contextHandler, ScreenContext screenContext)
   {
     Color color = isHighIntensity ?       //
         isProtected ? WHITE : RED :                       //

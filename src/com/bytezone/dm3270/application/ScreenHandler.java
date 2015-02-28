@@ -8,7 +8,7 @@ import javafx.scene.text.Font;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.display.ContextHandler;
+import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
@@ -21,7 +21,7 @@ public class ScreenHandler
 
   private final ScreenPosition[] screenPositions;
   private final ScreenCanvas screenCanvas;
-  private final ContextHandler contextHandler = new ContextHandler ();
+  private final ContextManager contextHandler = new ContextManager ();
 
   private final List<ScreenField> screenFields = new ArrayList<ScreenField> ();
   private final List<ScreenField> unprotectedFields = new ArrayList<ScreenField> ();
@@ -97,7 +97,7 @@ public class ScreenHandler
     return currentField;
   }
 
-  public ContextHandler getContextHandler ()
+  public ContextManager getContextHandler ()
   {
     return contextHandler;
   }

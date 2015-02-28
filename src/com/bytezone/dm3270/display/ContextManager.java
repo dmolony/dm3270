@@ -7,11 +7,11 @@ import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.attributes.ColorAttribute;
 
-public class ContextHandler
+public class ContextManager
 {
   private final List<ScreenContext> contextPool = new ArrayList<> ();
 
-  public ContextHandler ()
+  public ContextManager ()
   {
     ScreenContext base =
         new ScreenContext (ColorAttribute.colors[0], ColorAttribute.colors[8], (byte) 0,
