@@ -50,6 +50,8 @@ public abstract class ColorAttribute extends Attribute
     super (type, byteType, value);
   }
 
+  public abstract Color getColor ();
+
   public static String colorName (byte value)
   {
     return colorNames[value & 0x0F];

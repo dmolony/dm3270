@@ -96,6 +96,11 @@ public abstract class Attribute
 
   public abstract void process (ScreenPosition screenPosition);
 
+  public byte getAttributeValue ()
+  {
+    return attributeValue;
+  }
+
   public AttributeType getAttributeType ()
   {
     return attributeType;
