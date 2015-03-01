@@ -40,13 +40,13 @@ public class Field
     ScreenContext screenContext = contextHandler.getBase ();
 
     screenContext = sfa.process (contextHandler, screenContext);
-    System.out.println (sfa);
+    //    System.out.println (sfa);
 
     for (ScreenPosition2 sp2 : screenPositions)
     {
       for (Attribute attribute : sp2.getAttributes ())
       {
-        System.out.println (attribute);
+        //        System.out.println (attribute);
         if (attribute.getAttributeType () == AttributeType.RESET)
         {
           screenContext = contextHandler.getBase ();
@@ -56,7 +56,7 @@ public class Field
           screenContext = attribute.process (contextHandler, screenContext);
       }
       sp2.setScreenContext (screenContext);
-      System.out.println (screenContext);
+      //      System.out.println (screenContext);
     }
   }
 
@@ -124,6 +124,7 @@ public class Field
     int position = startPosition;
     while (true)
     {
+      //      System.out.println ("drawing : " + position);
       screen.drawPosition (position, false);
       if (position == endPosition)
         break;
@@ -152,6 +153,22 @@ public class Field
       position = screen.validate (position + 1);
     }
     return "[" + new String (buffer) + "]";
+  }
+
+  public void setText (byte[] buffer)
+  {
+    assert startPosition != endPosition;
+    int position = startPosition + 1;
+    int ptr = 0;
+    while (true)
+    {
+      ScreenPosition2 sp = screen.getScreenPosition (position);
+      //      System.out.println ("drawing");
+      sp.setChar (buffer[ptr++]);
+      if (position == endPosition || ptr == buffer.length)
+        break;
+      position = screen.validate (position + 1);
+    }
   }
 
   public String toStringWithLinks ()

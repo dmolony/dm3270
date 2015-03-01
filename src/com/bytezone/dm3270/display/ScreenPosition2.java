@@ -165,7 +165,7 @@ public class ScreenPosition2
     }
     else
     {
-      System.out.println (screenContext);
+      //      System.out.println (screenContext);
       gc.setFill (screenContext.reverseVideo ? Color.YELLOW       // fix this
           : screenContext.backgroundColor);
       gc.fillRect (x, y, charWidth + .4, charHeight + .4);

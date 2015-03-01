@@ -2,7 +2,6 @@ package com.bytezone.dm3270.application;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -53,12 +52,13 @@ public class ConsoleStage extends Stage
     setTitle ("dm3270");
 
     ScreenCanvas canvas = screenHandler.getScreenCanvas ();
-    canvas.setCursor (Cursor.CROSSHAIR);
+    //    canvas.setCursor (Cursor.CROSSHAIR);
     int margin = 4;
     BorderPane.setMargin (canvas, new Insets (margin, margin, 0, margin));
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setCenter (canvas);
+    //    borderPane.setCenter (canvas);
+    borderPane.setCenter (screen);
 
     HBox hbox1 = new HBox ();
     hbox1.setPadding (new Insets (2, 12, 2, 12));       // trbl

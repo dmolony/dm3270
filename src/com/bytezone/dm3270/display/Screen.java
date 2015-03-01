@@ -37,6 +37,7 @@ public class Screen extends Canvas
 
     GraphicsContext gc = getGraphicsContext2D ();
     characterSize = new CharacterSize (font);
+    setFont (font);     // yuk - twice
 
     screenPositions = new ScreenPosition2[rows * columns];
     for (int i = 0; i < screenPositions.length; i++)
@@ -53,7 +54,7 @@ public class Screen extends Canvas
         + (expanded ? (rows + 1) * expandedHeight : 0));
 
     getGraphicsContext2D ().setFont (font);
-    drawScreen ();
+    //    drawScreen ();
   }
 
   public int validate (int position)

@@ -9,6 +9,7 @@ import com.bytezone.dm3270.application.ScreenField;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
 import com.bytezone.dm3270.application.ScreenPosition;
+import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
@@ -221,7 +222,7 @@ public class AIDCommand extends Command implements BufferAddressSource
         {
           field = screenField;
           cursor.setLocation (cursorOldLocation);
-          updateScreenField (modifiedField, cursor, screenHandler);
+          updateScreenField (modifiedField, cursor, screenHandler, screen);
         }
       }
     }
@@ -230,7 +231,7 @@ public class AIDCommand extends Command implements BufferAddressSource
       for (ModifiedField modifiedField : modifiedFields)
       {
         cursor.setAddress (modifiedField.sbaOrder);
-        updateScreenField (modifiedField, cursor, screenHandler);
+        updateScreenField (modifiedField, cursor, screenHandler, screen);
       }
 
     if (cursorAddress != null)
@@ -248,7 +249,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   }
 
   private void updateScreenField (ModifiedField mf, Cursor cursor,
-      ScreenHandler screenHandler)
+      ScreenHandler screenHandler, Screen screen)
   {
     ScreenCanvas canvas = screenHandler.getScreenCanvas ();
     for (byte b : mf.textOrder.getBuffer ())
@@ -265,6 +266,11 @@ public class AIDCommand extends Command implements BufferAddressSource
       sf.setModified (true);
     else
       System.out.println ("Screen field not found: " + mf);
+
+    Field field = screen.getField (mf.sbaOrder.getBufferAddress ().getLocation ());
+    //    System.out.println (field);
+    field.setText (mf.textOrder.getBuffer ());
+    field.draw ();
   }
 
   @Override

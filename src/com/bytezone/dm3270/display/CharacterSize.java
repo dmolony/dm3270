@@ -14,12 +14,12 @@ public class CharacterSize
 
   public CharacterSize (Font font)
   {
-    this.font = font;
     changeFont (font);
   }
 
   public void changeFont (Font font)
   {
+    this.font = font;
     FontMetrics fm = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
 
     width = fm.computeStringWidth ("w");

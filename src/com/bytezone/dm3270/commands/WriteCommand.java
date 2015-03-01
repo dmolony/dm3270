@@ -102,7 +102,7 @@ public class WriteCommand extends Command
     screenHandler.draw (REBUILD_FIELDS);
 
     screen.buildFields ();
-    //    screen.drawScreen ();
+    screen.drawScreen ();
   }
 
   public List<Order> getOrdersList ()
