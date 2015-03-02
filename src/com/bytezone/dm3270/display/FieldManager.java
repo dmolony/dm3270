@@ -25,7 +25,7 @@ public class FieldManager
     int first = -1;
 
     int ptr = 0;
-    while (ptr != first)
+    while (ptr != first)                    // wrapped around to the first field
     {
       ScreenPosition2 screenPosition = screen.getScreenPosition (ptr);
       if (screenPosition.isStartField ())
@@ -39,12 +39,12 @@ public class FieldManager
       }
 
       if (start >= 0)
-        positions.add (screenPosition);
+        positions.add (screenPosition);    // collect next field's positions
 
-      if (++ptr >= screen.screenSize)           // faster than validate()
+      if (++ptr >= screen.screenSize)      // faster than validate()
       {
         ptr = 0;
-        if (fields.size () == 0)                // wrapped around and still no fields
+        if (first == -1)                   // wrapped around and still no fields
           break;
       }
     }
@@ -73,8 +73,6 @@ public class FieldManager
       Field lastField = unprotectedFields.get (unprotectedFields.size () - 1);
       lastField.linkToNext (firstField);
     }
-
-    dumpFields ();
   }
 
   private void addField (int start, int end, List<ScreenPosition2> positions)
@@ -118,24 +116,32 @@ public class FieldManager
   // Debugging
   // ---------------------------------------------------------------------------------//
 
-  public void dumpFields ()
+  public String dumpFields ()
   {
     int fieldPositions = 0;
     int emptyFields = 0;
-    System.out.println ();
+    int hiddenFields = 0;
+    StringBuilder text = new StringBuilder ();
+
     for (Field field : fields)
     {
-      System.out.println (field.toStringWithLinks ());
+      text.append (field.toStringWithLinks ());
+      text.append ("\n");
       fieldPositions += field.getDisplayLength ();
       if (field.getDisplayLength () == 0)
         ++emptyFields;
+      if (field.isHidden ())
+        ++hiddenFields;
     }
 
-    System.out.println ();
-    System.out.printf ("Total screen fields: %d%n", fields.size ());
-    System.out.printf ("Empty fields       : %d%n", emptyFields);
-    System.out.printf ("Unprotected fields : %d%n", unprotectedFields.size ());
-    System.out.printf ("Field positions    : %d%n", fieldPositions);
-    System.out.printf ("Data positions     : %d%n", fieldPositions + fields.size ());
+    text.append ("\n");
+    text.append (String.format ("Total screen fields: %d%n", fields.size ()));
+    text.append (String.format ("Empty fields       : %d%n", emptyFields));
+    text.append (String.format ("Hidden fields      : %d%n", hiddenFields));
+    text.append (String.format ("Unprotected fields : %d%n", unprotectedFields.size ()));
+    text.append (String.format ("Data positions     : %d%n", fieldPositions));
+    text.append (String.format ("Screen positions   : %d",
+                                fieldPositions + fields.size ()));
+    return text.toString ();
   }
 }

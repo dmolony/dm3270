@@ -27,6 +27,7 @@ public class ScreenPosition2
   private boolean isGraphics;
   private boolean isVisible = true;
   private ScreenContext screenContext;
+  private final ScreenContext baseContext;
 
   private final boolean expanded = true;
   private boolean topLine;        // testing
@@ -35,16 +36,22 @@ public class ScreenPosition2
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
 
-  public ScreenPosition2 (GraphicsContext gc, CharacterSize characterSize)
+  public ScreenPosition2 (GraphicsContext gc, CharacterSize characterSize,
+      ScreenContext baseContext)
   {
     this.gc = gc;
     this.characterSize = characterSize;
+    this.baseContext = baseContext;
+    screenContext = baseContext;
   }
 
   public void addAttribute (Attribute attribute)
   {
     if (attribute instanceof StartFieldAttribute)
+    {
       startFieldAttribute = (StartFieldAttribute) attribute;
+      setVisible (false);
+    }
     else
       attributes.add (attribute);
   }
@@ -102,16 +109,13 @@ public class ScreenPosition2
     value = 0;
     isGraphics = false;
     this.screenContext = screenContext;       // set to screen default
+    startFieldAttribute = null;
+    attributes.clear ();
   }
 
   public void reset ()
   {
-    isVisible = true;
-    value = 0;
-    isGraphics = false;
-    this.screenContext = null;
-    startFieldAttribute = null;
-    attributes.clear ();
+    reset (baseContext);
   }
 
   public int pack (byte[] buffer, int ptr, byte order)
@@ -165,7 +169,6 @@ public class ScreenPosition2
     }
     else
     {
-      //      System.out.println (screenContext);
       gc.setFill (screenContext.reverseVideo ? Color.YELLOW       // fix this
           : screenContext.backgroundColor);
       gc.fillRect (x, y, charWidth + .4, charHeight + .4);

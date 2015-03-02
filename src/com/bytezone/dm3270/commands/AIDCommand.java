@@ -9,6 +9,7 @@ import com.bytezone.dm3270.application.ScreenField;
 import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
 import com.bytezone.dm3270.application.ScreenPosition;
+import com.bytezone.dm3270.display.Cursor2;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.BufferAddress;
@@ -143,6 +144,14 @@ public class AIDCommand extends Command implements BufferAddressSource
     }
   }
 
+  private int findKey (byte keyCommand)
+  {
+    for (int i = 1; i < keys.length; i++)
+      if (keys[i] == keyCommand)
+        return i;
+    return 0;
+  }
+
   private AIDCommand readBuffer ()
   {
     byte[] buffer = new byte[4096];
@@ -201,7 +210,9 @@ public class AIDCommand extends Command implements BufferAddressSource
   public void process ()
   {
     Cursor cursor = screenHandler.getCursor ();
+    Cursor2 cursor2 = screen.getScreenCursor ();
     cursor.setVisible (false);
+    cursor2.setVisible (false);
 
     // test to see whether this is a field that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
@@ -235,17 +246,13 @@ public class AIDCommand extends Command implements BufferAddressSource
       }
 
     if (cursorAddress != null)
+    {
       cursor.setAddress (cursorAddress);
+      cursor2.moveTo (cursorAddress.getLocation ());
+    }
 
     cursor.setVisible (true);
-  }
-
-  private int findKey (byte keyCommand)
-  {
-    for (int i = 1; i < keys.length; i++)
-      if (keys[i] == keyCommand)
-        return i;
-    return 0;
+    cursor2.setVisible (true);
   }
 
   private void updateScreenField (ModifiedField mf, Cursor cursor,

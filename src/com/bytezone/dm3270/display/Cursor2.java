@@ -3,6 +3,8 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.input.KeyCode;
+
 import com.bytezone.dm3270.attributes.Attribute;
 
 public class Cursor2
@@ -58,6 +60,22 @@ public class Cursor2
     unappliedAttributes.clear ();
   }
 
+  public void move (KeyCode keyCode)
+  {
+    setVisible (false);
+
+    if (keyCode == KeyCode.LEFT)
+      move (Direction.LEFT);
+    else if (keyCode == KeyCode.RIGHT)
+      move (Direction.RIGHT);
+    else if (keyCode == KeyCode.UP)
+      move (Direction.UP);
+    else if (keyCode == KeyCode.DOWN)
+      move (Direction.DOWN);
+
+    setVisible (true);
+  }
+
   public void move (Direction direction)
   {
     int newPosition = -1;
@@ -86,14 +104,13 @@ public class Cursor2
 
   public void draw ()
   {
-    screen.drawPosition (currentPosition, true);
+    screen.drawPosition (currentPosition, visible);
   }
 
   public void setVisible (boolean visible)
   {
     this.visible = visible;
-    if (visible)
-      currentField = screen.getField (currentPosition);
+    draw ();
   }
 
   public void moveTo (int position)
@@ -103,12 +120,12 @@ public class Cursor2
       screen.drawPosition (currentPosition, false);
       currentPosition = screen.validate (position);
       screen.drawPosition (currentPosition, true);
-
-      if (!currentField.contains (currentPosition))
-        currentField = screen.getField (currentPosition);
     }
     else
       currentPosition = screen.validate (position);
+
+    if (currentField != null && !currentField.contains (currentPosition))
+      currentField = screen.getField (currentPosition);
   }
 
   public ScreenPosition2 getScreenPosition ()
@@ -118,7 +135,9 @@ public class Cursor2
 
   public Field getCurrentField ()
   {
-    return visible ? null : currentField;
+    if (currentField == null)
+      currentField = screen.getField (currentPosition);
+    return currentField;
   }
 
   public int getLocation ()

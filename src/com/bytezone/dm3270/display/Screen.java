@@ -40,8 +40,9 @@ public class Screen extends Canvas
     setFont (font);     // yuk - twice
 
     screenPositions = new ScreenPosition2[rows * columns];
+    ScreenContext baseContext = contextHandler.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition2 (gc, characterSize);
+      screenPositions[i] = new ScreenPosition2 (gc, characterSize, baseContext);
   }
 
   public void setFont (Font font)
@@ -93,11 +94,19 @@ public class Screen extends Canvas
     drawPosition (screenPositions[position], row, col, hasCursor);
   }
 
-  public void buildFields ()
+  public void drawScreen (boolean buildFields)
   {
-    cursor.setVisible (false);
-    fieldManager.buildFields ();
+    if (buildFields)
+      fieldManager.buildFields ();
 
+    int pos = 0;
+    for (int row = 0; row < rows; row++)
+      for (int col = 0; col < columns; col++)
+        drawPosition (screenPositions[pos++], row, col, false);
+
+    cursor.setVisible (true);
+
+    // Cursor.moveTo() will recalculate the current field if there is one set already
     if (insertedCursorPosition >= 0)
     {
       cursor.moveTo (insertedCursorPosition);
@@ -106,15 +115,7 @@ public class Screen extends Canvas
     else
       cursor.moveTo (0);
 
-    cursor.setVisible (true);
-  }
-
-  public void drawScreen ()
-  {
-    int pos = 0;
-    for (int row = 0; row < rows; row++)
-      for (int col = 0; col < columns; col++)
-        drawPosition (screenPositions[pos++], row, col, false);
+    cursor.getCurrentField ();      // force the calculation
   }
 
   private void drawPosition (ScreenPosition2 screenPosition, int row, int col,
@@ -203,6 +204,11 @@ public class Screen extends Canvas
   // ---------------------------------------------------------------------------------//
   // Debugging
   // ---------------------------------------------------------------------------------//
+
+  public String getFieldText ()
+  {
+    return fieldManager.dumpFields ();
+  }
 
   public void dumpScreen ()
   {

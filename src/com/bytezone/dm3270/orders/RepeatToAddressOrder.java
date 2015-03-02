@@ -68,7 +68,7 @@ public class RepeatToAddressOrder extends Order
       screen.clearScreen ();
     else
     {
-      while (cursor.getLocation () != stopLocation)
+      while (cursor2.getLocation () != stopLocation)
       {
         ScreenPosition2 sp2 = cursor2.getScreenPosition ();
         sp2.reset ();

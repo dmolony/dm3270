@@ -28,14 +28,11 @@ import com.bytezone.dm3270.session.SessionTable;
 
 public class ReplayStage extends BasicStage
 {
-  Console console;
   private final SessionTable table = new SessionTable ();
 
   public ReplayStage (ScreenHandler screenHandler,
-      com.bytezone.dm3270.display.Screen screen, Path path, Console console)
+      com.bytezone.dm3270.display.Screen screen, Path path)
   {
-    this.console = console;
-
     Session session = new Session (screenHandler, screen, path);
 
     final Label label =
@@ -121,15 +118,17 @@ public class ReplayStage extends BasicStage
     show3270E.selectedProperty ().addListener (changeListener1);
 
     showTelnet.setSelected (true);      // must be a bug
-    //    showTelnet.setSelected (false);
-    show3270E.setSelected (true);
+    showTelnet.setSelected (false);
+    //    show3270E.setSelected (true);
 
     table
         .getSelectionModel ()
         .selectedItemProperty ()
         .addListener ( (ObservableValue<? extends SessionRecord> observable,
                           SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue, textArea, replyTextArea, DO_PROCESS));
+                      -> {
+                        replay (newValue, textArea, replyTextArea, DO_PROCESS, screen);
+                      });
 
     Rectangle2D primaryScreenBounds = Screen.getPrimary ().getVisualBounds ();
     String osName = System.getProperty ("os.name");

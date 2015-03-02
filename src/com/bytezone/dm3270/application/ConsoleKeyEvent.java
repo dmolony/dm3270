@@ -4,6 +4,9 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 
 public class ConsoleKeyEvent implements EventHandler<KeyEvent>
@@ -30,6 +33,8 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
     if (e.getCode () == KeyCode.UNDEFINED && !e.isMetaDown ())
     {
       Cursor cursor = screenHandler.getCursor ();
+      Cursor2 cursor2 = screen.getScreenCursor ();
+
       String c = e.getCharacter ();
       if (!c.isEmpty ())
       {
@@ -44,6 +49,14 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
             screenPosition.setCharacter ((byte) Utility.asc2ebc[ch]);
             screenField.setModified (true);
             screenHandler.moveCursor (KeyCode.RIGHT);
+          }
+
+          Field currentField = cursor2.getCurrentField ();
+          if (currentField != null && currentField.isUnprotected ())
+          {
+            cursor2.setChar ((byte) Utility.asc2ebc[ch]);
+            cursor2.move (Direction.RIGHT);
+            currentField.setModified (true);
           }
         }
       }

@@ -100,9 +100,7 @@ public class WriteCommand extends Command
       order.process (screenHandler, screen);
 
     screenHandler.draw (REBUILD_FIELDS);
-
-    screen.buildFields ();
-    screen.drawScreen ();
+    screen.drawScreen (REBUILD_FIELDS);
   }
 
   public List<Order> getOrdersList ()

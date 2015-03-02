@@ -58,6 +58,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       case UP:
       case DOWN:
         screenHandler.moveCursor (e.getCode ());
+        screen.getScreenCursor ().move (e.getCode ());
         break;
 
       case BACK_SPACE:

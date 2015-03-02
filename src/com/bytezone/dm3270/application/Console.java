@@ -200,7 +200,7 @@ public class Console extends Application
           if (Files.exists (path))
           {
             new ConsoleStage (screenHandler, screen).show ();
-            new ReplayStage (screenHandler, screen, path, this).show ();
+            new ReplayStage (screenHandler, screen, path).show ();
           }
           else
             dialogStage.show ();

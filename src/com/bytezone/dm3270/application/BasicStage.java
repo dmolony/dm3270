@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.extended.AbstractExtendedCommand;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.session.SessionRecord;
@@ -76,7 +77,7 @@ public class BasicStage extends Stage
   }
 
   protected void replay (SessionRecord sessionRecord, TextArea textArea,
-      TextArea replyTextArea, boolean process)
+      TextArea replyTextArea, boolean process, Screen screen)
   {
     if (sessionRecord == null)     // nothing selected
       return;
@@ -140,7 +141,11 @@ public class BasicStage extends Stage
         replyTextArea.appendText (Utility.toHex (reply.getTelnetData (), ebcdic));
       }
 
-      replyTextArea.positionCaret (0);
+      //      replyTextArea.positionCaret (0);
     }
+
+    textArea.appendText ("\n\n");
+    textArea.appendText (screen.getFieldText ());
+    textArea.positionCaret (0);
   }
 }
