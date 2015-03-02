@@ -137,8 +137,11 @@ public class Field
     }
   }
 
-  public void reset ()
+  public void clear (boolean modified)
   {
+    if (modified)
+      setModified (true);       // don't reset any already set flags
+
     for (int i = 1; i < screenPositions.size (); i++)
       screenPositions.get (i).reset ();
   }

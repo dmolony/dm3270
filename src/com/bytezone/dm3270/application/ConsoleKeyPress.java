@@ -36,6 +36,12 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       return;
     }
 
+    if (screen.isKeyboardLocked ())
+    {
+      System.out.println ("Locked keyboard - ignoring : " + e);
+      return;
+    }
+
     int pfKey = 0;
 
     KeyCode keyCodePressed = e.getCode ();
@@ -51,6 +57,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
       case TAB:
         screenHandler.tab (e.isShiftDown ());
+        screen.getScreenCursor ().tab (e.isShiftDown ());
         break;
 
       case LEFT:
@@ -63,6 +70,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
       case BACK_SPACE:
         screenHandler.backspace ();
+        screen.getScreenCursor ().backspace ();
         break;
 
       case DELETE:

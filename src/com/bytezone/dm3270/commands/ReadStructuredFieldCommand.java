@@ -63,7 +63,7 @@ public class ReadStructuredFieldCommand extends Command
           break;
 
         case StructuredField.INBOUND_3270DS:
-          System.out.println ("***************************** here");
+          System.out.println ("***************************** here RSF");
           fields.add (new Inbound3270DS (data, ptr, size, screenHandler, screen));
           break;
 

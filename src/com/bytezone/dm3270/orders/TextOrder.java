@@ -68,6 +68,7 @@ public class TextOrder extends Order
     Cursor2 cursor2 = screen.getScreenCursor ();
     for (byte b : buffer)
     {
+      //      System.out.printf ("setting %02X at %d%n", b, cursor2.getLocation ());
       cursor2.setChar (b);
       cursor2.move (Direction.RIGHT);
     }

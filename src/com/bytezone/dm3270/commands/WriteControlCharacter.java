@@ -27,12 +27,14 @@ public class WriteControlCharacter
     return value;
   }
 
-  public boolean process (ScreenHandler screenHandler, Screen screen)
+  public void process (ScreenHandler screenHandler, Screen screen)
   {
+    screen.getScreenCursor ().reset ();     // screen fields are about to be rebuilt
+
     if (resetPartition)
     {
       screenHandler.resetPartition ();      // this moves the cursor to 0/0 maybe?
-      screen.resetPartition ();      // this moves the cursor to 0/0 maybe?
+      screen.resetPartition ();             // this moves the cursor to 0/0 maybe?
     }
     if (startPrinter)
     {
@@ -54,8 +56,6 @@ public class WriteControlCharacter
       screenHandler.resetModified ();
       screen.resetModified ();
     }
-
-    return true;
   }
 
   @Override

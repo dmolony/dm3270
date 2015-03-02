@@ -39,6 +39,14 @@ public class EraseAllUnprotectedCommand extends Command
       cursor.setLocation (0);
 
     screenHandler.draw (DONT_REBUILD_FIELDS);
+
+    // new processing - not finished
+
+    screen.eraseAllUnprotected ();
+    screen.restoreKeyboard ();
+    screen.resetModified ();
+
+    screen.drawScreen (DONT_REBUILD_FIELDS);
   }
 
   @Override

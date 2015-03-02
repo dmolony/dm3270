@@ -32,20 +32,64 @@ public class Cursor2
     unappliedAttributes.add (attribute);
   }
 
+  // called from ConsoleKeyEvent when the user types
+  public void typeChar (byte value)
+  {
+    if (currentField != null && currentField.isUnprotected ())
+    {
+      screen.getScreenPosition (currentPosition).setChar (value);
+      currentField.setModified (true);
+
+      int newPosition = screen.validate (currentPosition + 1);
+      if (!currentField.contains (newPosition))
+      {
+        Field newField = currentField.getNextUnprotectedField ();
+        newPosition = newField.getFirstLocation ();
+      }
+      moveTo (newPosition);
+    }
+  }
+
+  public void tab (boolean isShiftDown)
+  {
+    int first = currentField.getFirstLocation ();
+    Field newField =
+        isShiftDown ? currentPosition == first ? currentField
+            .getPreviousUnprotectedField () : currentField : currentField
+            .getNextUnprotectedField ();
+    int newPosition = newField.getFirstLocation ();
+    moveTo (newPosition);
+  }
+
+  public void backspace ()
+  {
+    int first = currentField.getFirstLocation ();
+    if (currentPosition != first)
+    {
+      int newPosition = screen.validate (currentPosition) - 1;
+      screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
+      moveTo (newPosition);
+    }
+  }
+
+  // called from Orders when building the screen
   public void setChar (byte value)
   {
     ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
 
+    sp.reset ();
     if (unappliedAttributes.size () > 0)
       applyAttributes (sp);
 
     sp.setChar (value);
   }
 
+  // called from Orders when building the screen
   public void setGraphicsChar (byte value)
   {
     ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
 
+    sp.reset ();
     if (unappliedAttributes.size () > 0)
       applyAttributes (sp);
 
@@ -54,7 +98,6 @@ public class Cursor2
 
   private void applyAttributes (ScreenPosition2 sp)
   {
-    sp.reset ();
     for (Attribute attribute : unappliedAttributes)
       sp.addAttribute (attribute);
     unappliedAttributes.clear ();
@@ -143,5 +186,12 @@ public class Cursor2
   public int getLocation ()
   {
     return currentPosition;
+  }
+
+  // called from WCC.process() - we are about to process orders so all the screen
+  // fields have been reset and moveTo() will be called repeatedly
+  public void reset ()
+  {
+    currentField = null;
   }
 }

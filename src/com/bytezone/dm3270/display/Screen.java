@@ -29,6 +29,8 @@ public class Screen extends Canvas
 
   private int insertedCursorPosition = -1;
 
+  private boolean keyboardLocked;
+
   public Screen (int rows, int columns, Font font)
   {
     this.rows = rows;
@@ -85,6 +87,11 @@ public class Screen extends Canvas
   public void insertCursor ()
   {
     insertedCursorPosition = cursor.getLocation ();    // move it here later
+  }
+
+  public void eraseAllUnprotected ()
+  {
+    fieldManager.eraseAllUnprotected ();
   }
 
   void drawPosition (int position, boolean hasCursor)
@@ -191,7 +198,7 @@ public class Screen extends Canvas
 
   public void lockKeyboard ()
   {
-    //    keyboardLocked = true;
+    keyboardLocked = true;
     //    if (consoleStage != null)
     //      consoleStage.setStatus ("Inhibit");
   }
@@ -200,6 +207,16 @@ public class Screen extends Canvas
   {
     //    resetModified = true;     // will happen after the screen is rebuilt
   }
+
+  public boolean isKeyboardLocked ()
+  {
+    return keyboardLocked;
+  }
+
+  //  public void tab (boolean shiftIsDown)
+  //  {
+  //    cursor.tab (shiftIsDown);
+  //  }
 
   // ---------------------------------------------------------------------------------//
   // Debugging

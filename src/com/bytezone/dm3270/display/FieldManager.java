@@ -112,6 +112,12 @@ public class FieldManager
       field.draw ();
   }
 
+  void eraseAllUnprotected ()
+  {
+    for (Field field : unprotectedFields)
+      field.clear (true);
+  }
+
   // ---------------------------------------------------------------------------------//
   // Debugging
   // ---------------------------------------------------------------------------------//

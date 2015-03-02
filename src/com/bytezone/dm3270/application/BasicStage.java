@@ -18,6 +18,7 @@ import com.bytezone.dm3270.extended.AbstractExtendedCommand;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
+import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
 public class BasicStage extends Stage
 {
@@ -112,6 +113,12 @@ public class BasicStage extends Stage
       textArea.appendText (message.toString ());
       textArea.appendText ("\n\n");
       textArea.appendText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
+
+      if (sessionRecord.getSource () == Source.SERVER)
+      {
+        textArea.appendText ("\n\n");
+        textArea.appendText (screen.getFieldText ());
+      }
       textArea.positionCaret (0);
     }
 
@@ -139,13 +146,8 @@ public class BasicStage extends Stage
         replyTextArea.appendText (reply.toString ());
         replyTextArea.appendText ("\n\n");
         replyTextArea.appendText (Utility.toHex (reply.getTelnetData (), ebcdic));
+        replyTextArea.positionCaret (0);
       }
-
-      //      replyTextArea.positionCaret (0);
     }
-
-    textArea.appendText ("\n\n");
-    textArea.appendText (screen.getFieldText ());
-    textArea.positionCaret (0);
   }
 }

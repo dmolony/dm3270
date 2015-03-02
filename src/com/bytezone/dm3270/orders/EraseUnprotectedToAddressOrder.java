@@ -66,7 +66,7 @@ public class EraseUnprotectedToAddressOrder extends Order
 
     while (resetField != null)
     {
-      resetField.reset ();
+      resetField.clear (false);       // don't set modified (is this correct?)
       if (resetField.contains (stopAddress.getLocation ()))
       {
         cursor.setLocation (resetField.getFirstLocation ());
