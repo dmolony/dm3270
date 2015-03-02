@@ -138,10 +138,11 @@ public class ScreenPosition
     screenContext = contextHandler.setHighIntensity (screenContext, value);
   }
 
-  public void resetAttribute ()
-  {
-    screenContext = contextHandler.resetAttribute (screenContext);
-  }
+  //  public void resetAttribute ()
+  //  {
+  //    //    screenContext = contextHandler.resetAttribute (screenContext);
+  //    screenContext = contextHandler.getBase ();
+  //  }
 
   public boolean hasCursor ()
   {

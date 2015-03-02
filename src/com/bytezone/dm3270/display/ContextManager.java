@@ -84,8 +84,8 @@ public class ContextManager
     return newContext;
   }
 
-  public ScreenContext resetAttribute (ScreenContext oldContext)
-  {
-    return getBase ();
-  }
+  //  public ScreenContext resetAttribute (ScreenContext oldContext)
+  //  {
+  //    return getBase ();
+  //  }
 }

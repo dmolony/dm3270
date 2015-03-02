@@ -16,7 +16,7 @@ public class ResetAttribute extends Attribute
   {
     // this should probably deal with the field as the SP has to revert to a
     // previous value
-    screenPosition.resetAttribute ();
+    //    screenPosition.resetAttribute ();
   }
 
   @Override

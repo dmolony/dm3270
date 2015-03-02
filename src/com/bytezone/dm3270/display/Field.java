@@ -180,12 +180,12 @@ public class Field
     StringBuilder text = new StringBuilder (toString ());
     if (previous != null)
     {
-      text.append ("\n      prev: ");
+      text.append ("\n          <-- ");
       text.append (previous);
     }
     if (next != null)
     {
-      text.append ("\n      next: ");
+      text.append ("\n          --> ");
       text.append (next);
     }
     return text.toString ();
@@ -194,7 +194,7 @@ public class Field
   @Override
   public String toString ()
   {
-    return String.format ("%04d-%04d  %s  %s", startPosition, endPosition,
+    return String.format ("%04d-%04d %s %s", startPosition, endPosition,
                           startFieldAttribute.getAcronym (), getText ());
   }
 }
