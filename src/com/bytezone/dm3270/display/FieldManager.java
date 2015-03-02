@@ -64,14 +64,38 @@ public class FieldManager
           previousUnprotectedField.linkToNext (field);
         previousUnprotectedField = field;
       }
+      //      else
+      //      {
+      //        if (previousUnprotectedField != null)
+      //          field.linkToPrevious (previousUnprotectedField);
+      //      }
     }
 
-    // link first unprotected field to the last one
     if (unprotectedFields.size () > 0)
     {
+      // link first unprotected field to the last one
       Field firstField = unprotectedFields.get (0);
       Field lastField = unprotectedFields.get (unprotectedFields.size () - 1);
       lastField.linkToNext (firstField);
+
+      // link protected fields to unprotected fields
+      // could be improved by copying previous field from the next unprotected
+      // field's previous field
+      Field link = lastField;
+      for (Field field : fields)
+        if (field.isProtected ())
+          field.setPrevious (link);
+        else
+          link = field;
+      link = firstField;
+      for (int i = fields.size () - 1; i >= 0; i--)
+      {
+        Field field = fields.get (i);
+        if (field.isProtected ())
+          field.setNext (link);
+        else
+          link = field;
+      }
     }
   }
 

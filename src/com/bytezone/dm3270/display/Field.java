@@ -61,10 +61,29 @@ public class Field
     }
   }
 
+  // link two unprotected fields to each other
   public void linkToNext (Field nextField)
   {
+    assert !isProtected ();
     this.next = nextField;
     nextField.previous = this;
+  }
+
+  void setPrevious (Field field)
+  {
+    this.previous = field;
+  }
+
+  void setNext (Field field)
+  {
+    this.next = field;
+  }
+
+  // link a protected field to its previous unprotected field
+  public void linkToPrevious (Field previousField)
+  {
+    assert isProtected ();
+    this.previous = previousField;
   }
 
   public Field getNextUnprotectedField ()

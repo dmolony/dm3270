@@ -52,13 +52,27 @@ public class Cursor2
 
   public void tab (boolean isShiftDown)
   {
-    int first = currentField.getFirstLocation ();
-    Field newField =
-        isShiftDown ? currentPosition == first ? currentField
-            .getPreviousUnprotectedField () : currentField : currentField
-            .getNextUnprotectedField ();
-    int newPosition = newField.getFirstLocation ();
-    moveTo (newPosition);
+    if (currentField.isUnprotected ())
+    {
+      int first = currentField.getFirstLocation ();
+      int sfaPosition = screen.validate (first - 1);
+      Field newField = isShiftDown ? //
+          (currentPosition == first || currentPosition == sfaPosition) ? //
+              currentField.getPreviousUnprotectedField () //
+              : currentField //
+          : currentPosition == sfaPosition ? currentField //
+              : currentField.getNextUnprotectedField ();
+      int newPosition = newField.getFirstLocation ();
+      moveTo (newPosition);
+    }
+    else
+    {
+      Field newField = isShiftDown ? //
+          currentField.getPreviousUnprotectedField ()   //
+          : currentField.getNextUnprotectedField ();
+      int newPosition = newField.getFirstLocation ();
+      moveTo (newPosition);
+    }
   }
 
   public void backspace ()
@@ -105,8 +119,6 @@ public class Cursor2
 
   public void move (KeyCode keyCode)
   {
-    setVisible (false);
-
     if (keyCode == KeyCode.LEFT)
       move (Direction.LEFT);
     else if (keyCode == KeyCode.RIGHT)
@@ -115,8 +127,6 @@ public class Cursor2
       move (Direction.UP);
     else if (keyCode == KeyCode.DOWN)
       move (Direction.DOWN);
-
-    setVisible (true);
   }
 
   public void move (Direction direction)
