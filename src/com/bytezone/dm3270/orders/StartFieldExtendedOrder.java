@@ -3,9 +3,6 @@ package com.bytezone.dm3270.orders;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Cursor;
-import com.bytezone.dm3270.application.ScreenHandler;
-import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -71,19 +68,19 @@ public class StartFieldExtendedOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler, Screen screen)
+  public void process (Screen screen)
   {
-    Cursor cursor = screenHandler.getCursor ();
-    cursor.clearAttributes ();        // remove any unapplied character attributes
-    ScreenPosition sp = cursor.getScreenPosition ();
-
-    sp.reset ();
-    sp.clearAttributes ();
-    sp.addAttribute (startFieldAttribute);
-    for (Attribute attribute : attributes)
-      sp.addAttribute (attribute);
-
-    cursor.moveRight ();
+    //    Cursor cursor = screenHandler.getCursor ();
+    //    cursor.clearAttributes ();        // remove any unapplied character attributes
+    //    ScreenPosition sp = cursor.getScreenPosition ();
+    //
+    //    sp.reset ();
+    //    sp.clearAttributes ();
+    //    sp.addAttribute (startFieldAttribute);
+    //    for (Attribute attribute : attributes)
+    //      sp.addAttribute (attribute);
+    //
+    //    cursor.moveRight ();
 
     Cursor2 cursor2 = screen.getScreenCursor ();
     ScreenPosition2 sp2 = cursor2.getScreenPosition ();

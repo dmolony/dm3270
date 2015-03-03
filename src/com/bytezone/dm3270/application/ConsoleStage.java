@@ -19,7 +19,7 @@ import com.bytezone.dm3270.streams.TerminalServer;
 
 public class ConsoleStage extends Stage
 {
-  private final ScreenHandler screenHandler;
+  //  private final ScreenHandler screenHandler;
   private final Screen screen;
   private final Label status = new Label ();
   private final Label cursorLocation = new Label ();
@@ -35,26 +35,25 @@ public class ConsoleStage extends Stage
 
   private ScreenField currentField;
 
-  public ConsoleStage (ScreenHandler screenHandler, Screen screen, String mainframeURL,
-      int mainframePort)
+  public ConsoleStage (Screen screen, String mainframeURL, int mainframePort)
   {
-    this (screenHandler, screen);
+    this (screen);
     this.mainframeURL = mainframeURL;
     this.mainframePort = mainframePort;
   }
 
-  public ConsoleStage (ScreenHandler screenHandler, Screen screen)
+  public ConsoleStage (Screen screen)
   {
-    this.screenHandler = screenHandler;
+    //    this.screenHandler = screenHandler;
     this.screen = screen;
-    screenHandler.setConsoleStage (this);
+    //    screenHandler.setConsoleStage (this);
 
     setTitle ("dm3270");
 
-    ScreenCanvas canvas = screenHandler.getScreenCanvas ();
+    //    ScreenCanvas canvas = screenHandler.getScreenCanvas ();
     //    canvas.setCursor (Cursor.CROSSHAIR);
     int margin = 4;
-    BorderPane.setMargin (canvas, new Insets (margin, margin, 0, margin));
+    BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
     BorderPane borderPane = new BorderPane ();
     //    borderPane.setCenter (canvas);
@@ -87,8 +86,8 @@ public class ConsoleStage extends Stage
     setX (0);
     setY (0);
 
-    getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screenHandler, screen));
-    getScene ().setOnKeyTyped (new ConsoleKeyEvent (screenHandler, screen));
+    getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screen));
+    getScene ().setOnKeyTyped (new ConsoleKeyEvent (screen));
   }
 
   public void sendData (byte[] buffer)
@@ -100,7 +99,8 @@ public class ConsoleStage extends Stage
     }
 
     if (buffer[0] != (byte) 0x88)
-      screenHandler.lockKeyboard ();
+      //      screenHandler.lockKeyboard ();
+      screen.lockKeyboard ();
 
     if (telnetState != null)
       telnetState.write (buffer);
@@ -138,7 +138,7 @@ public class ConsoleStage extends Stage
   public void connect ()
   {
     telnetState = new TelnetState ();
-    session = new Session (screenHandler, screen, telnetState, SessionMode.TERMINAL);
+    session = new Session (screen, telnetState, SessionMode.TERMINAL);
     telnetListener = new TelnetListener (Source.SERVER, session);
     terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
     telnetState.setTerminalServer (terminalServer);

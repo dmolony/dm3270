@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.structuredfields;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
 
@@ -22,10 +21,9 @@ public class SetReplyMode extends StructuredField
   private final byte replyMode;
   private final byte[] types;
 
-  public SetReplyMode (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler, Screen screen)
+  public SetReplyMode (byte[] buffer, int offset, int length, Screen screen)
   {
-    super (buffer, offset, length, screenHandler, screen);
+    super (buffer, offset, length, screen);
 
     assert data[0] == StructuredField.SET_REPLY_MODE;
 
@@ -41,7 +39,7 @@ public class SetReplyMode extends StructuredField
   @Override
   public void process ()
   {
-    screenHandler.setReplyMode (replyMode, types);
+    //    screenHandler.setReplyMode (replyMode, types);
   }
 
   @Override

@@ -30,10 +30,9 @@ public class ReplayStage extends BasicStage
 {
   private final SessionTable table = new SessionTable ();
 
-  public ReplayStage (ScreenHandler screenHandler,
-      com.bytezone.dm3270.display.Screen screen, Path path)
+  public ReplayStage (com.bytezone.dm3270.display.Screen screen, Path path)
   {
-    Session session = new Session (screenHandler, screen, path);
+    Session session = new Session (screen, path);
 
     final Label label =
         new Label (session.getClientName () + " : " + session.getServerName ());

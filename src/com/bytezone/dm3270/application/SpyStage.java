@@ -36,11 +36,10 @@ public class SpyStage extends BasicTelnetStage
   final RadioButton btnExtendedFieldMode;
   final RadioButton btnCharacterMode;
 
-  public SpyStage (ScreenHandler screenHandler, Screen screen, String serverURL,
-      int serverPort, int clientPort, boolean prevent3270E)
+  public SpyStage (Screen screen, String serverURL, int serverPort, int clientPort,
+      boolean prevent3270E)
   {
-    Session session =
-        new Session (screenHandler, screen, new TelnetState (), SessionMode.SPY);
+    Session session = new Session (screen, new TelnetState (), SessionMode.SPY);
 
     spyServer = new SpyServer (serverURL, serverPort, clientPort, session);
     spyServer.prevent3270E (prevent3270E);

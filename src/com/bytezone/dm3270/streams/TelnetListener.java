@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import javafx.application.Platform;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.TelnetState;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
@@ -34,7 +33,7 @@ public class TelnetListener implements BufferListener
 
   // convenience variables obtained from the Session parameter
   private final TelnetState telnetState;
-  private final ScreenHandler screenHandler;
+  //  private final ScreenHandler screenHandler;
   private final Screen screen;
   private final SessionMode sessionMode;
 
@@ -52,7 +51,7 @@ public class TelnetListener implements BufferListener
     this.session = session;
     this.source = source;
 
-    this.screenHandler = session.getScreenHandler ();
+    //    this.screenHandler = session.getScreenHandler ();
     this.screen = session.getScreen ();
     this.telnetState = session.getTelnetState ();
     this.sessionMode = session.getSessionMode ();
@@ -180,9 +179,8 @@ public class TelnetListener implements BufferListener
     {
       case TN3270_DATA:
         ReplyBuffer command =
-            source == Source.SERVER ? Command.getCommand (data, offset, length,
-                                                          screenHandler, screen)
-                : Command.getReply (screenHandler, screen, data, offset, length);
+            source == Source.SERVER ? Command.getCommand (data, offset, length, screen)
+                : Command.getReply (screen, data, offset, length);
         if (currentCommandHeader != null)
           command = new TN3270ExtendedCommand (currentCommandHeader, (Command) command);
         addDataRecord (command, SessionRecordType.TN3270);

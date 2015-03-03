@@ -3,7 +3,6 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
@@ -22,10 +21,9 @@ public class WriteStructuredFieldCommand extends Command
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private final List<Buffer> replies = new ArrayList<> ();
 
-  public WriteStructuredFieldCommand (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler, Screen screen)
+  public WriteStructuredFieldCommand (byte[] buffer, int offset, int length, Screen screen)
   {
-    super (buffer, offset, length, screenHandler, screen);
+    super (buffer, offset, length, screen);
 
     assert buffer[offset] == Command.WRITE_STRUCTURED_FIELD_11
         || buffer[offset] == Command.WRITE_STRUCTURED_FIELD_F3;
@@ -42,32 +40,29 @@ public class WriteStructuredFieldCommand extends Command
       {
         case StructuredField.RESET_PARTITION:
           System.out.println ("SF_RESET_PARTITION (00) not written yet");
-          fields.add (new DefaultStructuredField (buffer, ptr, size, screenHandler,
-              screen));
+          fields.add (new DefaultStructuredField (buffer, ptr, size, screen));
           break;
 
         case StructuredField.READ_PARTITION:
-          fields.add (new ReadPartitionSF (buffer, ptr, size, screenHandler, screen));
+          fields.add (new ReadPartitionSF (buffer, ptr, size, screen));
           break;
 
         case StructuredField.SET_REPLY_MODE:
-          fields.add (new SetReplyMode (buffer, ptr, size, screenHandler, screen));
+          fields.add (new SetReplyMode (buffer, ptr, size, screen));
           break;
 
         case StructuredField.ACTIVATE_PARTITION:
           System.out.println ("SF_ACTIVATE_PARTITION (0E) not written yet");
-          fields.add (new DefaultStructuredField (buffer, ptr, size, screenHandler,
-              screen));
+          fields.add (new DefaultStructuredField (buffer, ptr, size, screen));
           break;
 
         case StructuredField.OUTBOUND_3270DS:
-          fields.add (new Outbound3270DS (buffer, ptr, size, screenHandler, screen));
+          fields.add (new Outbound3270DS (buffer, ptr, size, screen));
           break;
 
         default:
           System.out.printf ("Unknown Structured Field: %02X", buffer[ptr]);
-          fields.add (new DefaultStructuredField (buffer, ptr, size, screenHandler,
-              screen));
+          fields.add (new DefaultStructuredField (buffer, ptr, size, screen));
       }
 
       ptr += size;

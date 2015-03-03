@@ -12,7 +12,6 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.TelnetState;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.commands.Command;
@@ -36,7 +35,7 @@ public class Session implements Iterable<SessionRecord>
   private final ObservableList<SessionRecord> dataRecords = FXCollections
       .observableArrayList ();
   private final SessionMode sessionMode;
-  private final ScreenHandler screenHandler;
+  //  private final ScreenHandler screenHandler;
   private final Screen screen;
   private final TelnetState telnetState;
 
@@ -54,10 +53,9 @@ public class Session implements Iterable<SessionRecord>
    * 
    * @param mode
    */
-  public Session (ScreenHandler screenHandler, Screen screen, TelnetState telnetState,
-      SessionMode mode)
+  public Session (Screen screen, TelnetState telnetState, SessionMode mode)
   {
-    this.screenHandler = screenHandler;
+    //    this.screenHandler = screenHandler;
     this.screen = screen;
     this.telnetState = telnetState;
     sessionMode = mode;
@@ -70,7 +68,7 @@ public class Session implements Iterable<SessionRecord>
    * 
    * @param filename
    */
-  public Session (ScreenHandler screenHandler, Screen screen, Path path)
+  public Session (Screen screen, Path path)
   {
     sessionMode = SessionMode.REPLAY;
 
@@ -78,7 +76,7 @@ public class Session implements Iterable<SessionRecord>
     SessionReader client = new SessionReader (Source.CLIENT, path);
 
     this.telnetState = new TelnetState ();
-    this.screenHandler = screenHandler;
+    //    this.screenHandler = screenHandler;
     this.screen = screen;
     TelnetListener clientTelnetListener = new TelnetListener (Source.CLIENT, this);
     TelnetListener serverTelnetListener = new TelnetListener (Source.SERVER, this);
@@ -100,10 +98,10 @@ public class Session implements Iterable<SessionRecord>
         }
   }
 
-  public ScreenHandler getScreenHandler ()
-  {
-    return screenHandler;
-  }
+  //  public ScreenHandler getScreenHandler ()
+  //  {
+  //    return screenHandler;
+  //  }
 
   public Screen getScreen ()
   {

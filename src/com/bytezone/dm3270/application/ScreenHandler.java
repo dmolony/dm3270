@@ -46,19 +46,21 @@ public class ScreenHandler
     PROTECTED, MODIFIABLE
   }
 
-  public ScreenHandler (int rows, int columns, Font font)
+  private ScreenHandler (int rows, int columns, Font font)
   {
     this.rows = rows;
     this.columns = columns;
     screenSize = rows * columns;
 
-    screenCanvas = new ScreenCanvas (rows, columns, font);
+    //    screenCanvas = new ScreenCanvas (rows, columns, font);
+    screenCanvas = null;
     screenPositions = new ScreenPosition[screenSize];
 
     for (int i = 0; i < screenPositions.length; i++)
       screenPositions[i] = new ScreenPosition (this, i);
 
-    cursor = new Cursor (this, screenPositions, screenCanvas);
+    //    cursor = new Cursor (this, screenPositions, screenCanvas);
+    cursor = null;
   }
 
   public void setConsoleStage (ConsoleStage consoleStage)
@@ -208,28 +210,28 @@ public class ScreenHandler
     ScreenField previousUnprotectedField = null;    // used to link unprotected fields
 
     int ptr = 0;
-    while (ptr < screenPositions.length)
-    {
-      ScreenPosition screenPosition = screenPositions[ptr];
-      if (screenPosition.isStartField ())
-      {
-        ScreenField screenField = new ScreenField (this, ptr);
-        screenFields.add (screenField);
-        finishField (screenField);
-
-        // link to previous unprotected field
-        if (screenField.isModifiable ())
-        {
-          unprotectedFields.add (screenField);
-          if (previousUnprotectedField != null)
-            previousUnprotectedField.linkToNext (screenField);
-          previousUnprotectedField = screenField;
-        }
-
-        ptr += screenField.getLength ();      // doesn't include the SFA
-      }
-      ptr++;
-    }
+    //    while (ptr < screenPositions.length)
+    //    {
+    //      ScreenPosition screenPosition = screenPositions[ptr];
+    //      if (screenPosition.isStartField ())
+    //      {
+    //        ScreenField screenField = new ScreenField (this, ptr);
+    //        screenFields.add (screenField);
+    //        finishField (screenField);
+    //
+    //        // link to previous unprotected field
+    //        if (screenField.isModifiable ())
+    //        {
+    //          unprotectedFields.add (screenField);
+    //          if (previousUnprotectedField != null)
+    //            previousUnprotectedField.linkToNext (screenField);
+    //          previousUnprotectedField = screenField;
+    //        }
+    //
+    //        ptr += screenField.getLength ();      // doesn't include the SFA
+    //      }
+    //      ptr++;
+    //    }
 
     // link first unprotected field to the last one
     if (unprotectedFields.size () > 0)

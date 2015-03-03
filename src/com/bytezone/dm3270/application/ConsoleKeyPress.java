@@ -13,14 +13,14 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
                                              KeyCode.F4, KeyCode.F5, KeyCode.F6,
                                              KeyCode.F7, KeyCode.F8, KeyCode.F9,
                                              KeyCode.F10, KeyCode.F11, KeyCode.F12 };
-  private final ScreenHandler screenHandler;
+  //  private final ScreenHandler screenHandler;
   private final Screen screen;
   private final ConsoleStage console;
 
-  public ConsoleKeyPress (ConsoleStage console, ScreenHandler screenHandler, Screen screen)
+  public ConsoleKeyPress (ConsoleStage console, Screen screen)
   {
     this.console = console;
-    this.screenHandler = screenHandler;
+    //    this.screenHandler = screenHandler;
     this.screen = screen;
   }
 
@@ -30,11 +30,11 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     if (e.isMetaDown ())
       return;
 
-    if (screenHandler.isKeyboardLocked ())
-    {
-      System.out.println ("Locked keyboard - ignoring : " + e);
-      return;
-    }
+    //    if (screenHandler.isKeyboardLocked ())
+    //    {
+    //      System.out.println ("Locked keyboard - ignoring : " + e);
+    //      return;
+    //    }
 
     if (screen.isKeyboardLocked ())
     {
@@ -49,14 +49,14 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     switch (keyCodePressed)
     {
       case ENTER:
-        screenHandler.getCursor ().setVisible (false);
-        screenHandler.setAID ("ENTR");
-        AIDCommand command = new AIDCommand (screenHandler, screen);
+        //        screenHandler.getCursor ().setVisible (false);
+        //        screenHandler.setAID ("ENTR");
+        AIDCommand command = new AIDCommand (screen);
         console.sendData (command.getTelnetData ());
         break;
 
       case TAB:
-        screenHandler.tab (e.isShiftDown ());
+        //        screenHandler.tab (e.isShiftDown ());
         screen.getScreenCursor ().tab (e.isShiftDown ());
         break;
 
@@ -64,12 +64,12 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       case RIGHT:
       case UP:
       case DOWN:
-        screenHandler.moveCursor (e.getCode ());
+        //        screenHandler.moveCursor (e.getCode ());
         screen.getScreenCursor ().move (e.getCode ());
         break;
 
       case BACK_SPACE:
-        screenHandler.backspace ();
+        //        screenHandler.backspace ();
         screen.getScreenCursor ().backspace ();
         break;
 
@@ -97,9 +97,9 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           if (e.isShiftDown ())
             pfKey += 12;
 
-          screenHandler.getCursor ().setVisible (false);
-          screenHandler.setAID ("PF" + pfKey);
-          command = new AIDCommand (screenHandler, screen);
+          //          screenHandler.getCursor ().setVisible (false);
+          //          screenHandler.setAID ("PF" + pfKey);
+          command = new AIDCommand (screen);
           console.sendData (command.getTelnetData ());
         }
         break;

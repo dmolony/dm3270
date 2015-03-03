@@ -80,7 +80,7 @@ public class MainframeServer implements Runnable
         if (mainframe != null && buffer[0] != TelnetCommand.IAC)
         {
           bytesRead = sanitise (buffer, bytesRead);       // remove 0xFF bytes
-          Command command = Command.getReply (null, null, buffer, 0, bytesRead);
+          Command command = Command.getReply (null, buffer, 0, bytesRead);
           Platform.runLater ( () -> mainframe.receiveCommand (command));
         }
       }

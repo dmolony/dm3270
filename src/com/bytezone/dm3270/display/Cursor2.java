@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.scene.input.KeyCode;
 
 import com.bytezone.dm3270.attributes.Attribute;
+import com.bytezone.dm3270.orders.BufferAddress;
 
 public class Cursor2
 {
@@ -196,6 +197,11 @@ public class Cursor2
   public int getLocation ()
   {
     return currentPosition;
+  }
+
+  public BufferAddress getBufferAddress ()
+  {
+    return new BufferAddress (currentPosition);
   }
 
   // called from WCC.process() - we are about to process orders so all the screen

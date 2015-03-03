@@ -3,7 +3,6 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.replyfield.AlphanumericPartitions;
@@ -30,21 +29,19 @@ public class ReadStructuredFieldCommand extends Command
   private static final String line = "\n----------------------------------------"
       + "---------------------------------";
 
-  public ReadStructuredFieldCommand (ScreenHandler screenHandler, Screen screen)
+  public ReadStructuredFieldCommand (Screen screen)
   {
-    this (buildReply (2), screenHandler, screen);
+    this (buildReply (2), screen);
   }
 
-  public ReadStructuredFieldCommand (byte[] buffer, ScreenHandler screenHandler,
-      Screen screen)
+  public ReadStructuredFieldCommand (byte[] buffer, Screen screen)
   {
-    this (buffer, 0, buffer.length, screenHandler, screen);
+    this (buffer, 0, buffer.length, screen);
   }
 
-  public ReadStructuredFieldCommand (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler, Screen screen)
+  public ReadStructuredFieldCommand (byte[] buffer, int offset, int length, Screen screen)
   {
-    super (buffer, offset, length, screenHandler, screen);
+    super (buffer, offset, length, screen);
 
     assert data[0] == (byte) 0x88;
 
@@ -59,18 +56,17 @@ public class ReadStructuredFieldCommand extends Command
       switch (data[ptr])
       {
         case StructuredField.QUERY_REPLY:
-          fields.add (new QueryReplySF (data, ptr, size, screenHandler, screen));
+          fields.add (new QueryReplySF (data, ptr, size, screen));
           break;
 
         case StructuredField.INBOUND_3270DS:
           System.out.println ("***************************** here RSF");
-          fields.add (new Inbound3270DS (data, ptr, size, screenHandler, screen));
+          fields.add (new Inbound3270DS (data, ptr, size, screen));
           break;
 
         default:
           System.out.printf ("Unknown Structured Field: %02X%n", data[ptr]);
-          fields
-              .add (new DefaultStructuredField (data, ptr, size, screenHandler, screen));
+          fields.add (new DefaultStructuredField (data, ptr, size, screen));
       }
       ptr += size;
     }

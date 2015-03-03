@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.orders;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.display.Screen;
 
 public class InsertCursorOrder extends Order
@@ -20,9 +19,9 @@ public class InsertCursorOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler, Screen screen)
+  public void process (Screen screen)
   {
-    screenHandler.insertCursor ();
+    //    screenHandler.insertCursor ();
     screen.insertCursor ();
   }
 

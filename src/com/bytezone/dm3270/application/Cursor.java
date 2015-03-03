@@ -21,7 +21,7 @@ public class Cursor implements Iterable<Attribute>
   private ConsoleStage consoleStage;
   private final ScreenHandler screenHandler;
 
-  public Cursor (ScreenHandler screenHandler, ScreenPosition[] screenPositions,
+  private Cursor (ScreenHandler screenHandler, ScreenPosition[] screenPositions,
       ScreenCanvas terminalScreen)
   {
     this.screenPositions = screenPositions;

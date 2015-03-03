@@ -1,11 +1,5 @@
 package com.bytezone.dm3270.orders;
 
-import java.util.List;
-
-import com.bytezone.dm3270.application.Cursor;
-import com.bytezone.dm3270.application.ScreenField;
-import com.bytezone.dm3270.application.ScreenHandler;
-import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
 import com.bytezone.dm3270.display.Cursor2;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
@@ -24,34 +18,34 @@ public class EraseUnprotectedToAddressOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler, Screen screen)
+  public void process (Screen screen)
   {
-    Cursor cursor = screenHandler.getCursor ();
-    BufferAddress cursorAddress = cursor.getAddress ();
-    List<ScreenField> fields =
-        screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE);
-
-    // find the cursor field
-    ScreenField currentField = null;
-    for (ScreenField sf : fields)
-    {
-      if (sf.contains (cursorAddress))
-      {
-        currentField = sf;
-        break;
-      }
-    }
-
-    while (currentField != null)
-    {
-      currentField.clear ();
-      if (currentField.contains (stopAddress))
-      {
-        cursor.setLocation (currentField.getStartPosition ());
-        break;
-      }
-      currentField = currentField.getNext ();
-    }
+    //    Cursor cursor = screenHandler.getCursor ();
+    //    BufferAddress cursorAddress = cursor.getAddress ();
+    //    List<ScreenField> fields =
+    //        screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE);
+    //
+    //    // find the cursor field
+    //    ScreenField currentField = null;
+    //    for (ScreenField sf : fields)
+    //    {
+    //      if (sf.contains (cursorAddress))
+    //      {
+    //        currentField = sf;
+    //        break;
+    //      }
+    //    }
+    //
+    //    while (currentField != null)
+    //    {
+    //      currentField.clear ();
+    //      if (currentField.contains (stopAddress))
+    //      {
+    //        cursor.setLocation (currentField.getStartPosition ());
+    //        break;
+    //      }
+    //      currentField = currentField.getNext ();
+    //    }
 
     Cursor2 cursor2 = screen.getScreenCursor ();
     int cursorPostion = cursor2.getLocation ();
@@ -69,7 +63,7 @@ public class EraseUnprotectedToAddressOrder extends Order
       resetField.clear (false);       // don't set modified (is this correct?)
       if (resetField.contains (stopAddress.getLocation ()))
       {
-        cursor.setLocation (resetField.getFirstLocation ());
+        cursor2.moveTo (resetField.getFirstLocation ());
         break;
       }
       resetField = resetField.getNextUnprotectedField ();

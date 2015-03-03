@@ -38,7 +38,7 @@ public class ScreenCanvas extends Canvas
   private final boolean topLine = false;
   private final boolean bottomLine = false;
 
-  public ScreenCanvas (int rows, int columns, Font font)
+  private ScreenCanvas (int rows, int columns, Font font)
   {
     screenRows = rows;
     screenColumns = columns;

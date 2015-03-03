@@ -3,12 +3,7 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Cursor;
-import com.bytezone.dm3270.application.ScreenCanvas;
 import com.bytezone.dm3270.application.ScreenField;
-import com.bytezone.dm3270.application.ScreenHandler;
-import com.bytezone.dm3270.application.ScreenHandler.FieldProtectionType;
-import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.display.Cursor2;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
@@ -48,20 +43,20 @@ public class AIDCommand extends Command implements BufferAddressSource
   // This method creates an AID from the current screen.
   // Should be replaced with a static factory method
 
-  public AIDCommand (ScreenHandler screenHandler, Screen screen)
+  public AIDCommand (Screen screen)
   {
-    super (screenHandler, screen);
-    AIDCommand command = readModified (screenHandler.getAID ());
+    super (screen);
+    //    AIDCommand command = readModified (screenHandler.getAID ());
 
-    this.key = command.key;
-    this.cursorAddress = command.cursorAddress;
-    this.orders.addAll (command.orders);
-    this.data = command.data;
+    //    this.key = command.key;
+    //    this.cursorAddress = command.cursorAddress;
+    //    this.orders.addAll (command.orders);
+    //    this.data = command.data;
   }
 
-  public AIDCommand (ScreenHandler screenHandler, Screen screen, byte type)
+  public AIDCommand (Screen screen, byte type)
   {
-    super (screenHandler, screen);
+    super (screen);
 
     AIDCommand command = null;
 
@@ -95,15 +90,14 @@ public class AIDCommand extends Command implements BufferAddressSource
     }
   }
 
-  public AIDCommand (ScreenHandler screenHandler, Screen screen, byte[] buffer)
+  public AIDCommand (Screen screen, byte[] buffer)
   {
-    this (screenHandler, screen, buffer, 0, buffer.length);
+    this (screen, buffer, 0, buffer.length);
   }
 
-  public AIDCommand (ScreenHandler screenHandler, Screen screen, byte[] buffer,
-      int offset, int length)
+  public AIDCommand (Screen screen, byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screenHandler, screen);
+    super (buffer, offset, length, screen);
 
     keyCommand = buffer[offset];
     key = findKey (keyCommand);
@@ -158,13 +152,15 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = AID_READ_PARTITION;
 
-    BufferAddress ba = screenHandler.getCursor ().getAddress ();
+    //    BufferAddress ba = screenHandler.getCursor ().getAddress ();
+    BufferAddress ba = screen.getScreenCursor ().getBufferAddress ();
     ptr = ba.packAddress (buffer, ptr);
 
-    for (ScreenField sf : screenHandler.getScreenFields ())
-      ptr = sf.pack (buffer, ptr);
+    //    for (ScreenField sf : screenHandler.getScreenFields ())
+    //      ptr = sf.pack (buffer, ptr);
+    System.out.println ("pack in AID.readBuffer()");
 
-    return new AIDCommand (screenHandler, screen, buffer, 0, ptr);
+    return new AIDCommand (screen, buffer, 0, ptr);
   }
 
   private AIDCommand readModified (byte aid)
@@ -173,24 +169,26 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = aid;
 
-    BufferAddress ba = screenHandler.getCursor ().getAddress ();
+    //    BufferAddress ba = screenHandler.getCursor ().getAddress ();
+    BufferAddress ba = screen.getScreenCursor ().getBufferAddress ();
     ptr = ba.packAddress (buffer, ptr);
 
-    for (ScreenField sf : screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE))
-      if (sf.isModified ())
-      {
-        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+    //    for (ScreenField sf : screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE))
+    //      if (sf.isModified ())
+    //      {
+    //        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+    //
+    //        int startPos = sf.getStartPosition () + 1;      // wrapping??
+    //        ba = new BufferAddress (startPos);
+    //        ptr = ba.packAddress (buffer, ptr);
+    //
+    //        for (byte b : sf.getData ())
+    //          if (b != 0)                       // null suppression (is this sufficient?)
+    //            buffer[ptr++] = b;
+    //      }
+    System.out.println ("pack in AID.readModified()");
 
-        int startPos = sf.getStartPosition () + 1;      // wrapping??
-        ba = new BufferAddress (startPos);
-        ptr = ba.packAddress (buffer, ptr);
-
-        for (byte b : sf.getData ())
-          if (b != 0)                       // null suppression (is this sufficient?)
-            buffer[ptr++] = b;
-      }
-
-    return new AIDCommand (screenHandler, screen, buffer, 0, ptr);
+    return new AIDCommand (screen, buffer, 0, ptr);
   }
 
   // not written yet
@@ -200,7 +198,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = aid;
 
-    return new AIDCommand (screenHandler, screen, buffer, 0, ptr);
+    return new AIDCommand (screen, buffer, 0, ptr);
   }
 
   // copy modified fields back to the screen - only used in Replay mode
@@ -209,9 +207,9 @@ public class AIDCommand extends Command implements BufferAddressSource
   @Override
   public void process ()
   {
-    Cursor cursor = screenHandler.getCursor ();
+    //    Cursor cursor = screenHandler.getCursor ();
     Cursor2 cursor2 = screen.getScreenCursor ();
-    cursor.setVisible (false);
+    //    cursor.setVisible (false);
     //    cursor2.setVisible (false);
 
     // test to see whether this is a field that was null suppressed into moving
@@ -250,39 +248,38 @@ public class AIDCommand extends Command implements BufferAddressSource
     if (field == null && !done)
       for (ModifiedField modifiedField : modifiedFields)
       {
-        cursor.setAddress (modifiedField.sbaOrder);
-        updateScreenField (modifiedField, cursor, screenHandler, screen);
+        //        cursor.setAddress (modifiedField.sbaOrder);
+        updateScreenField (modifiedField, screen);
       }
 
     // place cursor in new location
     if (cursorAddress != null)
     {
-      cursor.setAddress (cursorAddress);
+      //      cursor.setAddress (cursorAddress);
       cursor2.moveTo (cursorAddress.getLocation ());
     }
 
-    cursor.setVisible (true);
+    //    cursor.setVisible (true);
     //    cursor2.setVisible (true);
   }
 
-  private void updateScreenField (ModifiedField mf, Cursor cursor,
-      ScreenHandler screenHandler, Screen screen)
+  private void updateScreenField (ModifiedField mf, Screen screen)
   {
-    ScreenCanvas canvas = screenHandler.getScreenCanvas ();
-    for (byte b : mf.textOrder.getBuffer ())
-    {
-      ScreenPosition sp = cursor.getScreenPosition ();
-      sp.setCharacter (b);
-      cursor.moveRight ();
-      canvas.draw (sp);
-    }
-
-    // set the actual field's modified flag
-    ScreenField sf = screenHandler.getField (mf.sbaOrder);
-    if (sf != null)
-      sf.setModified (true);
-    else
-      System.out.println ("Screen field not found: " + mf);
+    //    ScreenCanvas canvas = screenHandler.getScreenCanvas ();
+    //    for (byte b : mf.textOrder.getBuffer ())
+    //    {
+    //      ScreenPosition sp = cursor.getScreenPosition ();
+    //      sp.setCharacter (b);
+    //      cursor.moveRight ();
+    //      canvas.draw (sp);
+    //    }
+    //
+    //    // set the actual field's modified flag
+    //    ScreenField sf = screenHandler.getField (mf.sbaOrder);
+    //    if (sf != null)
+    //      sf.setModified (true);
+    //    else
+    //      System.out.println ("Screen field not found: " + mf);
 
     Field field = screen.getField (mf.sbaOrder.getBufferAddress ().getLocation ());
     //    System.out.println (field);

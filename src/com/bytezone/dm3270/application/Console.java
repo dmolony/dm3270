@@ -41,7 +41,7 @@ public class Console extends Application
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
 
-  private ScreenHandler screenHandler;
+  //  private ScreenHandler screenHandler;
   private Screen screen;
   private TextField serverName;
   private TextField serverPort;
@@ -163,7 +163,7 @@ public class Console extends Application
 
       dialogStage.hide ();
 
-      screenHandler = createScreenHandler ();       // needs font information
+      //      screenHandler = createScreenHandler ();       // needs font information
       screen = createScreen ();
       int serverPortVal = Integer.parseInt (serverPort.getText ());
       int clientPortVal = Integer.parseInt (clientPort.getText ());
@@ -172,8 +172,8 @@ public class Console extends Application
       {
         case "Spy":
           spyStage =
-              new SpyStage (screenHandler, screen, serverName.getText (), serverPortVal,
-                  clientPortVal, prevent3270E.isSelected ());
+              new SpyStage (screen, serverName.getText (), serverPortVal, clientPortVal,
+                  prevent3270E.isSelected ());
           spyStage.show ();
           spyStage.startServer ();
 
@@ -184,9 +184,7 @@ public class Console extends Application
           mainframeStage.show ();
           mainframeStage.startServer ();
 
-          consoleStage =
-              new ConsoleStage (screenHandler, screen, "localhost",
-                  MAINFRAME_EMULATOR_PORT);
+          consoleStage = new ConsoleStage (screen, "localhost", MAINFRAME_EMULATOR_PORT);
           consoleStage.show ();
           consoleStage.connect ();
 
@@ -199,8 +197,8 @@ public class Console extends Application
           Path path = Paths.get (file);
           if (Files.exists (path))
           {
-            new ConsoleStage (screenHandler, screen).show ();
-            new ReplayStage (screenHandler, screen, path).show ();
+            new ConsoleStage (screen).show ();
+            new ReplayStage (screen, path).show ();
           }
           else
             dialogStage.show ();
@@ -209,8 +207,8 @@ public class Console extends Application
 
         case "Mainframe":
           spyStage =
-              new SpyStage (screenHandler, screen, "localhost", MAINFRAME_EMULATOR_PORT,
-                  clientPortVal, prevent3270E.isSelected ());
+              new SpyStage (screen, "localhost", MAINFRAME_EMULATOR_PORT, clientPortVal,
+                  prevent3270E.isSelected ());
           spyStage.show ();
           spyStage.startServer ();
 
@@ -319,16 +317,16 @@ public class Console extends Application
     return row;
   }
 
-  private ScreenHandler createScreenHandler ()
-  {
-    RadioMenuItem selectedFontName = (RadioMenuItem) fontGroup.getSelectedToggle ();
-    RadioMenuItem selectedFontSize = (RadioMenuItem) sizeGroup.getSelectedToggle ();
-    Font font =
-        Font.font (selectedFontName.getText (),
-                   Integer.parseInt (selectedFontSize.getText ()));
-
-    return new ScreenHandler (24, 80, font);
-  }
+  //  private ScreenHandler createScreenHandler ()
+  //  {
+  //    RadioMenuItem selectedFontName = (RadioMenuItem) fontGroup.getSelectedToggle ();
+  //    RadioMenuItem selectedFontSize = (RadioMenuItem) sizeGroup.getSelectedToggle ();
+  //    Font font =
+  //        Font.font (selectedFontName.getText (),
+  //                   Integer.parseInt (selectedFontSize.getText ()));
+  //
+  //    return new ScreenHandler (24, 80, font);
+  //  }
 
   private Screen createScreen ()
   {

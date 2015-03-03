@@ -1,16 +1,14 @@
 package com.bytezone.dm3270.commands;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.display.Screen;
 
 // Inbound only command - creates a Reply of AID 
 
 public class ReadCommand extends Command
 {
-  public ReadCommand (ScreenHandler screenHandler, Screen screen, byte[] buffer,
-      int offset, int length)
+  public ReadCommand (Screen screen, byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screenHandler, screen);
+    super (buffer, offset, length, screen);
   }
 
   @Override
@@ -23,7 +21,7 @@ public class ReadCommand extends Command
   public void process ()
   {
     // the AID command will decide how to pack the RB, RM or RMA request
-    reply = new AIDCommand (screenHandler, screen, data[0]);
+    //    reply = new AIDCommand (screenHandler, screen, data[0]);
   }
 
   @Override

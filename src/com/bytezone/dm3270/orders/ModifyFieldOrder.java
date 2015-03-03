@@ -3,7 +3,6 @@ package com.bytezone.dm3270.orders;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.Screen;
 
@@ -34,7 +33,7 @@ public class ModifyFieldOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler, Screen screen)
+  public void process (Screen screen)
   {
     System.out.println ("What happens now?");
   }

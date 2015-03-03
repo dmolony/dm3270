@@ -1,8 +1,5 @@
 package com.bytezone.dm3270.orders;
 
-import com.bytezone.dm3270.application.Cursor;
-import com.bytezone.dm3270.application.ScreenHandler;
-import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.display.Cursor2;
 import com.bytezone.dm3270.display.Cursor2.Direction;
 import com.bytezone.dm3270.display.Screen;
@@ -22,22 +19,22 @@ public class GraphicsEscapeOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler, Screen screen)
+  public void process (Screen screen)
   {
-    Cursor cursor = screenHandler.getCursor ();
-
-    int max = duplicates + 1;
-    for (int i = 0; i < max; i++)
-    {
-      ScreenPosition sp = cursor.getScreenPosition ();
-      sp.reset ();
-      sp.clearAttributes ();
-      sp.setGraphicsCharacter (code);
-      cursor.moveRight ();      // will add any unapplied attributes
-    }
+    //    Cursor cursor = screenHandler.getCursor ();
+    //
+    //    int max = duplicates + 1;
+    //    for (int i = 0; i < max; i++)
+    //    {
+    //      ScreenPosition sp = cursor.getScreenPosition ();
+    //      sp.reset ();
+    //      sp.clearAttributes ();
+    //      sp.setGraphicsCharacter (code);
+    //      cursor.moveRight ();      // will add any unapplied attributes
+    //    }
 
     Cursor2 cursor2 = screen.getScreenCursor ();
-    max = duplicates + 1;
+    int max = duplicates + 1;
     for (int i = 0; i < max; i++)
     {
       cursor2.setGraphicsChar (code);

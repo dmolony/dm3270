@@ -22,7 +22,7 @@ public class ScreenField
   private final List<ScreenPosition> screenPositions = new ArrayList<> ();
   private ScreenField previous, next;
 
-  public ScreenField (ScreenHandler screenHandler, int startPosition)
+  private ScreenField (ScreenHandler screenHandler, int startPosition)
   {
     this.screenHandler = screenHandler;
     this.startPosition = startPosition;

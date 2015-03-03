@@ -2,9 +2,6 @@ package com.bytezone.dm3270.orders;
 
 import java.io.UnsupportedEncodingException;
 
-import com.bytezone.dm3270.application.Cursor;
-import com.bytezone.dm3270.application.ScreenHandler;
-import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Cursor2;
 import com.bytezone.dm3270.display.Cursor2.Direction;
@@ -53,17 +50,17 @@ public class TextOrder extends Order
   }
 
   @Override
-  public void process (ScreenHandler screenHandler, Screen screen)
+  public void process (Screen screen)
   {
-    Cursor cursor = screenHandler.getCursor ();
-    for (byte b : buffer)
-    {
-      ScreenPosition sp = cursor.getScreenPosition ();
-      sp.reset ();
-      sp.clearAttributes ();
-      sp.setCharacter (b);
-      cursor.moveRight ();      // processes unapplied character attributes
-    }
+    //    Cursor cursor = screenHandler.getCursor ();
+    //    for (byte b : buffer)
+    //    {
+    //      ScreenPosition sp = cursor.getScreenPosition ();
+    //      sp.reset ();
+    //      sp.clearAttributes ();
+    //      sp.setCharacter (b);
+    //      cursor.moveRight ();      // processes unapplied character attributes
+    //    }
 
     Cursor2 cursor2 = screen.getScreenCursor ();
     for (byte b : buffer)

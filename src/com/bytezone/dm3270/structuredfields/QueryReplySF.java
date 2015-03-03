@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.structuredfields;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.replyfield.ReplyField;
 
@@ -8,10 +7,9 @@ public class QueryReplySF extends StructuredField
 {
   private final ReplyField replyField;
 
-  public QueryReplySF (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler, Screen screen)
+  public QueryReplySF (byte[] buffer, int offset, int length, Screen screen)
   {
-    super (buffer, offset, length, screenHandler, screen);
+    super (buffer, offset, length, screen);
     assert data[0] == StructuredField.QUERY_REPLY;
     replyField = ReplyField.getReplyField (data);     // not a reply in the usual sense
   }

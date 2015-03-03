@@ -3,7 +3,6 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.ScreenHandler;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
@@ -15,10 +14,9 @@ public class WriteCommand extends Command
   private WriteControlCharacter writeControlCharacter;
   protected final List<Order> orders = new ArrayList<Order> ();
 
-  public WriteCommand (byte[] buffer, int offset, int length,
-      ScreenHandler screenHandler, Screen screen, boolean erase)
+  public WriteCommand (byte[] buffer, int offset, int length, Screen screen, boolean erase)
   {
-    super (buffer, offset, length, screenHandler, screen);
+    super (buffer, offset, length, screen);
 
     this.erase = erase;
 
@@ -67,7 +65,7 @@ public class WriteCommand extends Command
 
   public WriteCommand (WriteControlCharacter wcc, boolean erase, List<Order> orders)
   {
-    super (null, null);
+    super (null);
     this.writeControlCharacter = wcc;
     this.erase = erase;
     this.orders.addAll (orders);
@@ -88,18 +86,18 @@ public class WriteCommand extends Command
   @Override
   public void process ()
   {
-    screenHandler.eraseScreen (erase);
+    //    screenHandler.eraseScreen (erase);
 
     if (erase)
       screen.clearScreen ();
 
     if (writeControlCharacter != null)
-      writeControlCharacter.process (screenHandler, screen);
+      writeControlCharacter.process (screen);
 
     for (Order order : orders)
-      order.process (screenHandler, screen);
+      order.process (screen);
 
-    screenHandler.draw (REBUILD_FIELDS);
+    //    screenHandler.draw (REBUILD_FIELDS);
 
     // don't move the cursor when all we did was unlock the keyboard
     if (orders.size () > 0)
