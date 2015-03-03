@@ -28,7 +28,7 @@ public class WriteControlCharacter
 
   public void process (Screen screen)
   {
-    screen.getScreenCursor ().reset ();     // screen fields are about to be rebuilt
+    screen.getScreenCursor ().resetCurrentField ();     // screen fields are about to be rebuilt
 
     if (resetPartition)
     {

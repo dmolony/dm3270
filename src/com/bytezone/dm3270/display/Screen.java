@@ -103,6 +103,8 @@ public class Screen extends Canvas
 
   public void drawScreen (boolean buildFields)
   {
+    cursor.setVisible (false);
+
     if (buildFields)
       fieldManager.buildFields ();
 
@@ -110,8 +112,6 @@ public class Screen extends Canvas
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
         drawPosition (screenPositions[pos++], row, col, false);
-
-    cursor.setVisible (true);
 
     // Cursor.moveTo() will recalculate the current field if there is one set already
     if (insertedCursorPosition >= 0)
@@ -122,7 +122,7 @@ public class Screen extends Canvas
     else
       cursor.moveTo (0);
 
-    cursor.getCurrentField ();      // force the calculation
+    cursor.setVisible (true);
   }
 
   private void drawPosition (ScreenPosition2 screenPosition, int row, int col,

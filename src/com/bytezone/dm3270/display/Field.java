@@ -20,6 +20,9 @@ public class Field
 
   public Field (Screen screen, int start, int end, List<ScreenPosition2> positions)
   {
+    assert positions.size () == (start > end ? screen.screenSize - start + end + 1 : end
+        - start + 1);
+
     this.screen = screen;
     startPosition = start;
     endPosition = end;
@@ -62,7 +65,7 @@ public class Field
   }
 
   // link two unprotected fields to each other
-  public void linkToNext (Field nextField)
+  void linkToNext (Field nextField)
   {
     assert !isProtected ();
     this.next = nextField;
@@ -77,13 +80,6 @@ public class Field
   void setNext (Field field)
   {
     this.next = field;
-  }
-
-  // link a protected field to its previous unprotected field
-  public void linkToPrevious (Field previousField)
-  {
-    assert isProtected ();
-    this.previous = previousField;
   }
 
   public Field getNextUnprotectedField ()
@@ -104,11 +100,6 @@ public class Field
   public int getFirstLocation ()
   {
     return screen.validate (startPosition + 1);
-  }
-
-  public ScreenPosition2 getScreenPosition (int relativePosition)
-  {
-    return screenPositions.get (relativePosition + 1);
   }
 
   public boolean isHidden ()
@@ -156,10 +147,10 @@ public class Field
     }
   }
 
-  public void clear (boolean modified)
+  public void clear (boolean setModified)
   {
-    if (modified)
-      setModified (true);       // don't reset any already set flags
+    if (setModified)                 // don't reset any already set flags
+      setModified (true);
 
     for (int i = 1; i < screenPositions.size (); i++)
       screenPositions.get (i).reset ();
@@ -169,9 +160,11 @@ public class Field
   {
     if (startPosition == endPosition)
       return "[]";
+
     char[] buffer = new char[getDisplayLength ()];
     int position = screen.validate (startPosition + 1);
     int ptr = 0;
+
     while (true)
     {
       buffer[ptr++] = screen.getScreenPosition (position).getChar ();
@@ -187,10 +180,10 @@ public class Field
     assert startPosition != endPosition;
     int position = screen.validate (startPosition + 1);
     int ptr = 0;
+
     while (true)
     {
-      ScreenPosition2 sp = screen.getScreenPosition (position);
-      sp.setChar (buffer[ptr++]);
+      screen.getScreenPosition (position).setChar (buffer[ptr++]);
       if (position == endPosition || ptr == buffer.length)
         break;
       position = screen.validate (position + 1);

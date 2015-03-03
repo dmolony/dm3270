@@ -90,6 +90,8 @@ public class Cursor2
       }
       moveTo (newPosition);
     }
+    else
+      System.out.println ("Can't type here");         // lock the keyboard?
   }
 
   // called from Orders when building the screen
@@ -178,7 +180,7 @@ public class Cursor2
       currentPosition = screen.validate (newPosition);
 
     if (currentField != null && !currentField.contains (currentPosition))
-      currentField = screen.getField (currentPosition);
+      setCurrentField ();
   }
 
   public void draw ()
@@ -189,6 +191,10 @@ public class Cursor2
   public void setVisible (boolean visible)
   {
     this.visible = visible;
+    if (visible)
+      getCurrentField ();
+    else
+      resetCurrentField ();
     draw ();
   }
 
@@ -200,7 +206,7 @@ public class Cursor2
   public Field getCurrentField ()
   {
     if (currentField == null)
-      currentField = screen.getField (currentPosition);
+      setCurrentField ();
     return currentField;
   }
 
@@ -216,8 +222,15 @@ public class Cursor2
 
   // called from WCC.process() - we are about to process orders so all the screen
   // fields have been reset and moveTo() will be called repeatedly
-  public void reset ()
+  public void resetCurrentField ()
   {
     currentField = null;
+    System.out.println (currentField);
+  }
+
+  private void setCurrentField ()
+  {
+    currentField = screen.getField (currentPosition);
+    System.out.println (currentField);
   }
 }

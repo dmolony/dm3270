@@ -86,8 +86,6 @@ public class WriteCommand extends Command
   @Override
   public void process ()
   {
-    //    screenHandler.eraseScreen (erase);
-
     if (erase)
       screen.clearScreen ();
 
@@ -96,8 +94,6 @@ public class WriteCommand extends Command
 
     for (Order order : orders)
       order.process (screen);
-
-    //    screenHandler.draw (REBUILD_FIELDS);
 
     // don't move the cursor when all we did was unlock the keyboard
     if (orders.size () > 0)
