@@ -103,7 +103,6 @@ public class FieldManager
   private void addField (int start, int end, List<ScreenPosition2> positions)
   {
     Field field = new Field (screen, start, end, positions);
-    System.out.println ("adding: " + field);
 
     fields.add (field);
     positions.clear ();

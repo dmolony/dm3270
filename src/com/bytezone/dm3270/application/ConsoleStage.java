@@ -10,6 +10,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.display.CursorMoveListener;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.Session.SessionMode;
@@ -17,7 +20,8 @@ import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TerminalServer;
 
-public class ConsoleStage extends Stage
+public class ConsoleStage extends Stage implements FieldChangeListener,
+    CursorMoveListener
 {
   //  private final ScreenHandler screenHandler;
   private final Screen screen;
@@ -33,7 +37,7 @@ public class ConsoleStage extends Stage
   private Session session;
   private TerminalServer terminalServer;
 
-  private ScreenField currentField;
+  private Field currentField;
 
   public ConsoleStage (Screen screen, String mainframeURL, int mainframePort)
   {
@@ -44,14 +48,12 @@ public class ConsoleStage extends Stage
 
   public ConsoleStage (Screen screen)
   {
-    //    this.screenHandler = screenHandler;
     this.screen = screen;
-    //    screenHandler.setConsoleStage (this);
+    screen.getScreenCursor ().addFieldChangeListener (this);
+    screen.getScreenCursor ().addCursorMoveListener (this);
 
     setTitle ("dm3270");
 
-    //    ScreenCanvas canvas = screenHandler.getScreenCanvas ();
-    //    canvas.setCursor (Cursor.CROSSHAIR);
     int margin = 4;
     BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
@@ -105,33 +107,10 @@ public class ConsoleStage extends Stage
       telnetState.write (buffer);
   }
 
+  // Inhibit message
   public void setStatus (String text)
   {
     status.setText (text);
-  }
-
-  public void setCursorLocation (int row, int column)
-  {
-    cursorLocation.setText (String.format ("%03d/%03d", row, column));
-  }
-
-  public void setCurrentField (ScreenField screenField)
-  {
-    if (screenField != currentField)
-    {
-      if (screenField == null)
-        fieldType.setText ("");
-      else
-        setFieldType (screenField);
-      currentField = screenField;
-    }
-  }
-
-  public void setFieldType (ScreenField screenField)
-  {
-    StartFieldAttribute sfa = screenField.getStartFieldAttribute ();
-    String sfaText = sfa == null ? "" : sfa.getAcronym ();
-    fieldType.setText (String.format ("%4d  %6s", screenField.getLength (), sfaText));
   }
 
   public void connect ()
@@ -149,5 +128,28 @@ public class ConsoleStage extends Stage
   {
     if (terminalServer != null)
       terminalServer.close ();
+  }
+
+  @Override
+  public void fieldChanged (Field oldField, Field newField)
+  {
+    if (newField == null)
+      fieldType.setText ("");
+    else
+    {
+      StartFieldAttribute sfa = newField.getStartFieldAttribute ();
+      fieldType.setText (String.format ("%4d  %6s", newField.getDisplayLength (),
+                                        sfa.getAcronym ()));
+    }
+    currentField = newField;
+  }
+
+  @Override
+  public void cursorMoved (int oldLocation, int newLocation)
+  {
+    int row = newLocation / screen.columns;
+    int col = newLocation % screen.columns;
+    cursorLocation.setText (String.format ("%03d/%03d", row, col));
+    fieldChanged (currentField, currentField);    // update the acronym
   }
 }

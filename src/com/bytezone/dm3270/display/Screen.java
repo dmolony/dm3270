@@ -28,7 +28,6 @@ public class Screen extends Canvas
   private final double expandedHeight = 1.6;
 
   private int insertedCursorPosition = -1;
-
   private boolean keyboardLocked;
 
   public Screen (int rows, int columns, Font font)

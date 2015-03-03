@@ -172,9 +172,11 @@ public class Cursor2
   {
     if (visible)
     {
+      int oldPosition = currentPosition;
       screen.drawPosition (currentPosition, false);
       currentPosition = screen.validate (newPosition);
       screen.drawPosition (currentPosition, true);
+      notifyCursorMove (oldPosition, currentPosition);
     }
     else
       currentPosition = screen.validate (newPosition);
@@ -192,7 +194,10 @@ public class Cursor2
   {
     this.visible = visible;
     if (visible)
-      getCurrentField ();
+    {
+      setCurrentField ();
+      notifyCursorMove (0, currentPosition);
+    }
     else
       resetCurrentField ();
     draw ();
@@ -224,13 +229,56 @@ public class Cursor2
   // fields have been reset and moveTo() will be called repeatedly
   public void resetCurrentField ()
   {
+    Field lastField = currentField;
     currentField = null;
-    System.out.println (currentField);
+    if (currentField != lastField)
+      notifyFieldChange (lastField, currentField);
   }
 
   private void setCurrentField ()
   {
+    Field lastField = currentField;
     currentField = screen.getField (currentPosition);
-    System.out.println (currentField);
+    if (currentField != lastField)
+      notifyFieldChange (lastField, currentField);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Listener events
+  // ---------------------------------------------------------------------------------//
+
+  private final List<FieldChangeListener> fieldChangeListeners = new ArrayList<> ();
+  private final List<CursorMoveListener> cursorMoveListeners = new ArrayList<> ();
+
+  void notifyFieldChange (Field oldField, Field currentField)
+  {
+    for (FieldChangeListener listener : fieldChangeListeners)
+      listener.fieldChanged (oldField, currentField);
+  }
+
+  public void addFieldChangeListener (FieldChangeListener listener)
+  {
+    fieldChangeListeners.add (listener);
+  }
+
+  public void removeFieldChangeListener (FieldChangeListener listener)
+  {
+    fieldChangeListeners.remove (listener);
+  }
+
+  void notifyCursorMove (int oldLocation, int currentLocation)
+  {
+    for (CursorMoveListener listener : cursorMoveListeners)
+      listener.cursorMoved (oldLocation, currentLocation);
+  }
+
+  public void addCursorMoveListener (CursorMoveListener listener)
+  {
+    cursorMoveListeners.add (listener);
+  }
+
+  public void removeCursorMoveListener (CursorMoveListener listener)
+  {
+    cursorMoveListeners.remove (listener);
   }
 }

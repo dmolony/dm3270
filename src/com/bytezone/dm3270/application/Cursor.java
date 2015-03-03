@@ -111,8 +111,8 @@ public class Cursor implements Iterable<Attribute>
     while (location >= size)
       location -= size;
 
-    if (consoleStage != null)
-      consoleStage.setCursorLocation (location / columns, location % columns);
+    //    if (consoleStage != null)
+    //      consoleStage.setCursorLocation (location / columns, location % columns);
   }
 
   private void processUnappliedAttributes ()

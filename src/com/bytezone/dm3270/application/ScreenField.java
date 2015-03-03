@@ -147,7 +147,7 @@ public class ScreenField
     StartFieldAttribute sfa = getStartFieldAttribute ();
     if (sfa != null)
       sfa.setModified (modified);
-    screenHandler.fieldModified (this);     // display the new status
+    //    screenHandler.fieldModified (this);     // display the new status
   }
 
   public String getFieldType ()

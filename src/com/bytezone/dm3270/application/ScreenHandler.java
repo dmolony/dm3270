@@ -3,7 +3,6 @@ package com.bytezone.dm3270.application;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.input.KeyCode;
 import javafx.scene.text.Font;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -106,11 +105,11 @@ public class ScreenHandler
 
   public void draw (boolean rebuild)
   {
-    if (rebuild)
-    {
-      buildFields ();
-      setCurrentField ();
-    }
+    //    if (rebuild)
+    //    {
+    //      buildFields ();
+    //      setCurrentField ();
+    //    }
 
     for (ScreenField screenField : screenFields)
       if (screenField.isHidden ())
@@ -123,28 +122,28 @@ public class ScreenHandler
     screenCanvas.draw (cursor.getScreenPosition ());    // protected fields are erased
   }
 
-  private void setCurrentField ()
-  {
-    setCurrentField (null);
-    int cursorLocation = cursor.getLocation ();
-    for (ScreenField sf : screenFields)
-      if (sf.contains (cursorLocation))
-      {
-        setCurrentField (sf);
-        break;
-      }
-  }
+  //  private void setCurrentField ()
+  //  {
+  //    setCurrentField (null);
+  //    int cursorLocation = cursor.getLocation ();
+  //    for (ScreenField sf : screenFields)
+  //      if (sf.contains (cursorLocation))
+  //      {
+  //        setCurrentField (sf);
+  //        break;
+  //      }
+  //  }
 
-  private void setCurrentField (ScreenField screenField)
-  {
-    currentField = screenField;
-    consoleStage.setCurrentField (screenField);
-  }
-
-  public void fieldModified (ScreenField screenField)
-  {
-    consoleStage.setFieldType (screenField);
-  }
+  //  private void setCurrentField (ScreenField screenField)
+  //  {
+  //    currentField = screenField;
+  //    consoleStage.setCurrentField (screenField);
+  //  }
+  //
+  //  public void fieldModified (ScreenField screenField)
+  //  {
+  //    consoleStage.setFieldType (screenField);
+  //  }
 
   public void eraseScreen (boolean erase)
   {
@@ -356,65 +355,65 @@ public class ScreenHandler
     cursor.setVisible (false);
   }
 
-  public void tab (boolean shiftIsDown)
-  {
-    cursor.setVisible (false);
+  //  public void tab (boolean shiftIsDown)
+  //  {
+  //    cursor.setVisible (false);
+  //
+  //    if (currentField != null && currentField.isModifiable ())
+  //    {
+  //      // use the linked list contained in unprotected fields
+  //      ScreenPosition sp = cursor.getScreenPosition ();
+  //      ScreenPosition firstPosition = currentField.getScreenPositions ().get (1);
+  //      // what if a field has no screenPositions?
+  //      setCurrentField (shiftIsDown ? (sp == firstPosition ? currentField.getPrevious ()
+  //          : currentField) : currentField.getNext ());
+  //      cursor.setLocation (currentField.getStartPosition () + 1);
+  //    }
+  //    else
+  //    {
+  //      // search the list of unprotected fields
+  //      // what about screens with no fields??
+  //      setCurrentField (shiftIsDown ? previousUnprotectedField ()
+  //          : nextUnprotectedField ());
+  //      cursor.setLocation (currentField.getStartPosition () + 1);
+  //    }
+  //
+  //    cursor.setVisible (true);
+  //  }
+  //
+  //  public void backspace ()
+  //  {
+  //    cursor.setVisible (false);
+  //
+  //    cursor.moveLeft ();
+  //    ScreenPosition sp = cursor.getScreenPosition ();
+  //    if (sp.isStartField ())
+  //    {
+  //      setCurrentField (currentField.getPrevious ());
+  //      cursor.setLocation (currentField.getStartPosition () + 1);
+  //      sp = cursor.getScreenPosition ();
+  //    }
+  //
+  //    sp.setCharacter ((byte) 0);
+  //    cursor.setVisible (true);
+  //  }
 
-    if (currentField != null && currentField.isModifiable ())
-    {
-      // use the linked list contained in unprotected fields
-      ScreenPosition sp = cursor.getScreenPosition ();
-      ScreenPosition firstPosition = currentField.getScreenPositions ().get (1);
-      // what if a field has no screenPositions?
-      setCurrentField (shiftIsDown ? (sp == firstPosition ? currentField.getPrevious ()
-          : currentField) : currentField.getNext ());
-      cursor.setLocation (currentField.getStartPosition () + 1);
-    }
-    else
-    {
-      // search the list of unprotected fields
-      // what about screens with no fields??
-      setCurrentField (shiftIsDown ? previousUnprotectedField ()
-          : nextUnprotectedField ());
-      cursor.setLocation (currentField.getStartPosition () + 1);
-    }
-
-    cursor.setVisible (true);
-  }
-
-  public void backspace ()
-  {
-    cursor.setVisible (false);
-
-    cursor.moveLeft ();
-    ScreenPosition sp = cursor.getScreenPosition ();
-    if (sp.isStartField ())
-    {
-      setCurrentField (currentField.getPrevious ());
-      cursor.setLocation (currentField.getStartPosition () + 1);
-      sp = cursor.getScreenPosition ();
-    }
-
-    sp.setCharacter ((byte) 0);
-    cursor.setVisible (true);
-  }
-
-  public void moveCursor (KeyCode keyCode)
-  {
-    cursor.setVisible (false);
-
-    if (keyCode == KeyCode.LEFT)
-      cursor.moveLeft ();
-    else if (keyCode == KeyCode.RIGHT)
-      cursor.moveRight ();
-    else if (keyCode == KeyCode.UP)
-      cursor.moveUp ();
-    else if (keyCode == KeyCode.DOWN)
-      cursor.moveDown ();
-
-    setCurrentField ();
-    cursor.setVisible (true);
-  }
+  //  public void moveCursor (KeyCode keyCode)
+  //  {
+  //    cursor.setVisible (false);
+  //
+  //    if (keyCode == KeyCode.LEFT)
+  //      cursor.moveLeft ();
+  //    else if (keyCode == KeyCode.RIGHT)
+  //      cursor.moveRight ();
+  //    else if (keyCode == KeyCode.UP)
+  //      cursor.moveUp ();
+  //    else if (keyCode == KeyCode.DOWN)
+  //      cursor.moveDown ();
+  //
+  //    setCurrentField ();
+  //    cursor.setVisible (true);
+  //  }
 
   // ---------------------------------------------------------------------------------//
   // Field traversal
