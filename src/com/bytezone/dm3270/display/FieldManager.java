@@ -6,9 +6,12 @@ import java.util.List;
 public class FieldManager
 {
   private final Screen screen;
+  private int dataPositions;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
+  private final List<Field> emptyFields = new ArrayList<> ();
+  private final List<Field> hiddenFields = new ArrayList<> ();
 
   public FieldManager (Screen screen)
   {
@@ -19,6 +22,10 @@ public class FieldManager
   {
     fields.clear ();
     unprotectedFields.clear ();
+    emptyFields.clear ();
+    hiddenFields.clear ();
+    dataPositions = 0;
+
     List<ScreenPosition2> positions = new ArrayList<ScreenPosition2> ();
 
     int start = -1;
@@ -31,7 +38,7 @@ public class FieldManager
       if (screenPosition.isStartField ())
       {
         if (start >= 0)                     // if there is a field to add
-          addField (start, ptr - 1, positions);
+          addField (start, screen.validate (ptr - 1), positions);
         else
           first = ptr;
 
@@ -51,6 +58,8 @@ public class FieldManager
 
     if (start >= 0 && positions.size () > 0)
       addField (start, screen.validate (ptr - 1), positions);
+
+    assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
 
     // build screen contexts for every position and link uprotected fields
     Field previousUnprotectedField = null;
@@ -94,8 +103,15 @@ public class FieldManager
   private void addField (int start, int end, List<ScreenPosition2> positions)
   {
     Field field = new Field (screen, start, end, positions);
+    dataPositions += field.getDisplayLength ();
+
     fields.add (field);
     positions.clear ();
+
+    if (field.getDisplayLength () == 0)
+      emptyFields.add (field);
+    if (field.isHidden ())
+      hiddenFields.add (field);
   }
 
   public Field getField (int position)      // this needs to be improved
@@ -140,32 +156,21 @@ public class FieldManager
 
   public String dumpFields ()
   {
-    int fieldPositions = 0;
-    int emptyFields = 0;
-    int hiddenFields = 0;
-
     StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("Total screen fields : %d%n", fields.size ()));
+    text.append (String.format ("Empty fields        : %d%n", emptyFields.size ()));
+    text.append (String.format ("Hidden fields       : %d%n", hiddenFields.size ()));
+    text.append (String.format ("Unprotected fields  : %d%n", unprotectedFields.size ()));
+    text.append (String.format ("Data positions      : %d%n", dataPositions));
+    text.append (String.format ("Screen positions    : %d",
+                                dataPositions + fields.size ()));
 
     for (Field field : fields)
     {
-      text.append (field.toStringWithLinks ());
       text.append ("\n\n");
-      fieldPositions += field.getDisplayLength ();
-
-      if (field.getDisplayLength () == 0)
-        ++emptyFields;
-      if (field.isHidden ())
-        ++hiddenFields;
+      text.append (field.toStringWithLinks ());
     }
-
-    //    text.append ("\n");
-    text.append (String.format ("Total screen fields: %d%n", fields.size ()));
-    text.append (String.format ("Empty fields       : %d%n", emptyFields));
-    text.append (String.format ("Hidden fields      : %d%n", hiddenFields));
-    text.append (String.format ("Unprotected fields : %d%n", unprotectedFields.size ()));
-    text.append (String.format ("Data positions     : %d%n", fieldPositions));
-    text.append (String.format ("Screen positions   : %d",
-                                fieldPositions + fields.size ()));
     return text.toString ();
   }
 }
