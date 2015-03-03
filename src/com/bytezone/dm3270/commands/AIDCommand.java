@@ -204,7 +204,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   }
 
   // copy modified fields back to the screen - only used in Replay mode
-  // usually an AID will be a reply command (which is never processed)
+  // Normally an AID is a reply command (which is never processed)
 
   @Override
   public void process ()
@@ -212,39 +212,49 @@ public class AIDCommand extends Command implements BufferAddressSource
     Cursor cursor = screenHandler.getCursor ();
     Cursor2 cursor2 = screen.getScreenCursor ();
     cursor.setVisible (false);
-    cursor2.setVisible (false);
+    //    cursor2.setVisible (false);
 
     // test to see whether this is a field that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
     ScreenField field = null;
+    boolean done = false;
 
-    if (modifiedFields.size () == 1 && false)
+    if (modifiedFields.size () == 1 && true)
     {
-      int cursorOldLocation = cursor.getLocation ();
+      int cursorOldLocation = cursor2.getLocation ();
       int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
-      System.out.printf ("%d %d%n", cursorOldLocation, cursorDistance);
+      //      System.out.printf ("%d %d%n", cursorOldLocation, cursorDistance);
+
       ModifiedField modifiedField = modifiedFields.get (0);
       if (modifiedField.textOrder.getBuffer ().length == cursorDistance)
       {
-        ScreenField screenField = screenHandler.getField (modifiedField.sbaOrder);
-        if (screenField.contains (modifiedField.sbaOrder.getBufferAddress ())
-            && screenField.contains (cursorAddress)
-            && screenField.contains (cursorOldLocation))
+        //        ScreenField screenField = screenHandler.getField (modifiedField.sbaOrder);
+        //        if (screenField.contains (modifiedField.sbaOrder.getBufferAddress ())
+        //            && screenField.contains (cursorAddress)
+        //            && screenField.contains (cursorOldLocation))
+        //        {
+        //          field = screenField;
+        //          cursor.setLocation (cursorOldLocation);
+        //          updateScreenField (modifiedField, cursor, screenHandler, screen);
+        //        }
+        Field field2 = cursor2.getCurrentField ();
+        if (field2.contains (cursorOldLocation))
         {
-          field = screenField;
-          cursor.setLocation (cursorOldLocation);
-          updateScreenField (modifiedField, cursor, screenHandler, screen);
+          for (byte b : modifiedField.textOrder.getBuffer ())
+            cursor2.typeChar (b);
+          done = true;
         }
       }
     }
 
-    if (field == null)
+    if (field == null && !done)
       for (ModifiedField modifiedField : modifiedFields)
       {
         cursor.setAddress (modifiedField.sbaOrder);
         updateScreenField (modifiedField, cursor, screenHandler, screen);
       }
 
+    // place cursor in new location
     if (cursorAddress != null)
     {
       cursor.setAddress (cursorAddress);
@@ -252,7 +262,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     }
 
     cursor.setVisible (true);
-    cursor2.setVisible (true);
+    //    cursor2.setVisible (true);
   }
 
   private void updateScreenField (ModifiedField mf, Cursor cursor,

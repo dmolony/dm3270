@@ -100,7 +100,10 @@ public class WriteCommand extends Command
       order.process (screenHandler, screen);
 
     screenHandler.draw (REBUILD_FIELDS);
-    screen.drawScreen (REBUILD_FIELDS);
+
+    // don't move the cursor when all we did was unlock the keyboard
+    if (orders.size () > 0)
+      screen.drawScreen (REBUILD_FIELDS);
   }
 
   public List<Order> getOrdersList ()
