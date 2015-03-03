@@ -99,7 +99,6 @@ public class ConsoleStage extends Stage
     }
 
     if (buffer[0] != (byte) 0x88)
-      //      screenHandler.lockKeyboard ();
       screen.lockKeyboard ();
 
     if (telnetState != null)

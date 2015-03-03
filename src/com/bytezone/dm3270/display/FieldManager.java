@@ -64,11 +64,6 @@ public class FieldManager
           previousUnprotectedField.linkToNext (field);
         previousUnprotectedField = field;
       }
-      //      else
-      //      {
-      //        if (previousUnprotectedField != null)
-      //          field.linkToPrevious (previousUnprotectedField);
-      //      }
     }
 
     if (unprotectedFields.size () > 0)
@@ -79,23 +74,20 @@ public class FieldManager
       lastField.linkToNext (firstField);
 
       // link protected fields to unprotected fields
-      // could be improved by copying previous field from the next unprotected
-      // field's previous field
-      Field link = lastField;
+      Field prev = lastField;
+      Field next = firstField;
+
       for (Field field : fields)
         if (field.isProtected ())
-          field.setPrevious (link);
+        {
+          field.setNext (next);
+          field.setPrevious (prev);
+        }
         else
-          link = field;
-      link = firstField;
-      for (int i = fields.size () - 1; i >= 0; i--)
-      {
-        Field field = fields.get (i);
-        if (field.isProtected ())
-          field.setNext (link);
-        else
-          link = field;
-      }
+        {
+          next = field.getNextUnprotectedField ();
+          prev = field;
+        }
     }
   }
 
@@ -151,20 +143,22 @@ public class FieldManager
     int fieldPositions = 0;
     int emptyFields = 0;
     int hiddenFields = 0;
+
     StringBuilder text = new StringBuilder ();
 
     for (Field field : fields)
     {
       text.append (field.toStringWithLinks ());
-      text.append ("\n");
+      text.append ("\n\n");
       fieldPositions += field.getDisplayLength ();
+
       if (field.getDisplayLength () == 0)
         ++emptyFields;
       if (field.isHidden ())
         ++hiddenFields;
     }
 
-    text.append ("\n");
+    //    text.append ("\n");
     text.append (String.format ("Total screen fields: %d%n", fields.size ()));
     text.append (String.format ("Empty fields       : %d%n", emptyFields));
     text.append (String.format ("Hidden fields      : %d%n", hiddenFields));
