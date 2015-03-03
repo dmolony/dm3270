@@ -28,9 +28,50 @@ public class Cursor2
     this.screen = screen;
   }
 
-  public void add (Attribute attribute)
+  public void tab (boolean backTab)
   {
-    unappliedAttributes.add (attribute);
+    Field newField = null;
+
+    if (currentField.isUnprotected ())
+    {
+      int first = currentField.getFirstLocation ();
+      int sfaPosition = screen.validate (first - 1);
+
+      if (backTab)
+      {
+        if (currentPosition == first || currentPosition == sfaPosition)
+          newField = currentField.getPreviousUnprotectedField ();
+        else
+          newField = currentField;
+      }
+      else
+      {
+        if (currentPosition == sfaPosition)
+          newField = currentField;
+        else
+          newField = currentField.getNextUnprotectedField ();
+      }
+    }
+    else
+    {
+      if (backTab)
+        newField = currentField.getPreviousUnprotectedField ();
+      else
+        newField = currentField.getNextUnprotectedField ();
+    }
+
+    moveTo (newField.getFirstLocation ());
+  }
+
+  public void backspace ()
+  {
+    int first = currentField.getFirstLocation ();
+    if (currentPosition != first)
+    {
+      int newPosition = screen.validate (currentPosition) - 1;
+      screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
+      moveTo (newPosition);
+    }
   }
 
   // called from ConsoleKeyEvent when the user types
@@ -47,42 +88,6 @@ public class Cursor2
         Field newField = currentField.getNextUnprotectedField ();
         newPosition = newField.getFirstLocation ();
       }
-      moveTo (newPosition);
-    }
-  }
-
-  public void tab (boolean isShiftDown)
-  {
-    if (currentField.isUnprotected ())
-    {
-      int first = currentField.getFirstLocation ();
-      int sfaPosition = screen.validate (first - 1);
-      Field newField = isShiftDown ? //
-          (currentPosition == first || currentPosition == sfaPosition) ? //
-              currentField.getPreviousUnprotectedField () //
-              : currentField //
-          : currentPosition == sfaPosition ? currentField //
-              : currentField.getNextUnprotectedField ();
-      int newPosition = newField.getFirstLocation ();
-      moveTo (newPosition);
-    }
-    else
-    {
-      Field newField = isShiftDown ? //
-          currentField.getPreviousUnprotectedField ()   //
-          : currentField.getNextUnprotectedField ();
-      int newPosition = newField.getFirstLocation ();
-      moveTo (newPosition);
-    }
-  }
-
-  public void backspace ()
-  {
-    int first = currentField.getFirstLocation ();
-    if (currentPosition != first)
-    {
-      int newPosition = screen.validate (currentPosition) - 1;
-      screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
       moveTo (newPosition);
     }
   }
@@ -109,6 +114,11 @@ public class Cursor2
       applyAttributes (sp);
 
     sp.setGraphicsChar (value);
+  }
+
+  public void add (Attribute attribute)
+  {
+    unappliedAttributes.add (attribute);
   }
 
   private void applyAttributes (ScreenPosition2 sp)
@@ -156,6 +166,21 @@ public class Cursor2
     moveTo (newPosition);
   }
 
+  public void moveTo (int newPosition)
+  {
+    if (visible)
+    {
+      screen.drawPosition (currentPosition, false);
+      currentPosition = screen.validate (newPosition);
+      screen.drawPosition (currentPosition, true);
+    }
+    else
+      currentPosition = screen.validate (newPosition);
+
+    if (currentField != null && !currentField.contains (currentPosition))
+      currentField = screen.getField (currentPosition);
+  }
+
   public void draw ()
   {
     screen.drawPosition (currentPosition, visible);
@@ -165,21 +190,6 @@ public class Cursor2
   {
     this.visible = visible;
     draw ();
-  }
-
-  public void moveTo (int position)
-  {
-    if (visible)
-    {
-      screen.drawPosition (currentPosition, false);
-      currentPosition = screen.validate (position);
-      screen.drawPosition (currentPosition, true);
-    }
-    else
-      currentPosition = screen.validate (position);
-
-    if (currentField != null && !currentField.contains (currentPosition))
-      currentField = screen.getField (currentPosition);
   }
 
   public ScreenPosition2 getScreenPosition ()

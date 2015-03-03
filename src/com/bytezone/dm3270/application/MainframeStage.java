@@ -120,7 +120,6 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     setScene (scene);
 
     Rectangle2D screen = Screen.getPrimary ().getVisualBounds ();
-    System.out.println (screen);
     if (screen.getWidth () > 1800)
       setX (screen.getMinX () + screen.getWidth () - WIDTH - 320);
     else
