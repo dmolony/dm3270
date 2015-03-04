@@ -130,7 +130,7 @@ public class Cursor2
     unappliedAttributes.clear ();
   }
 
-  public void move (KeyCode keyCode)
+  private void move (KeyCode keyCode)
   {
     if (keyCode == KeyCode.LEFT)
       move (Direction.LEFT);

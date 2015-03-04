@@ -29,6 +29,7 @@ public class Screen extends Canvas
 
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
+  private byte currentAID;
 
   public Screen (int rows, int columns, Font font)
   {
@@ -167,6 +168,16 @@ public class Screen extends Canvas
   public List<Field> getUnprotectedFields ()
   {
     return fieldManager.getUnprotectedFields ();
+  }
+
+  public byte getAID ()
+  {
+    return currentAID;
+  }
+
+  public void setAID (byte aid)
+  {
+    currentAID = aid;
   }
 
   // ---------------------------------------------------------------------------------//
