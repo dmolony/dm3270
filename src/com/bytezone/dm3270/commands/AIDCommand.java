@@ -151,7 +151,8 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = AID_READ_PARTITION;
 
-    BufferAddress ba = screen.getScreenCursor ().getBufferAddress ();
+    int cursorLocation = screen.getScreenCursor ().getLocation ();
+    BufferAddress ba = new BufferAddress (cursorLocation);
     ptr = ba.packAddress (buffer, ptr);
 
     //    for (ScreenField sf : screenHandler.getScreenFields ())
@@ -167,7 +168,8 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = aid;
 
-    BufferAddress ba = screen.getScreenCursor ().getBufferAddress ();
+    int cursorLocation = screen.getScreenCursor ().getLocation ();
+    BufferAddress ba = new BufferAddress (cursorLocation);
     ptr = ba.packAddress (buffer, ptr);
 
     //    for (ScreenField sf : screenHandler.getScreenFields 
@@ -206,6 +208,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   public void process ()
   {
     Cursor2 cursor = screen.getScreenCursor ();
+    cursor.setVisible (true);
 
     // test to see whether this is data entry that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic

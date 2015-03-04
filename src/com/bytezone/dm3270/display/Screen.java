@@ -113,7 +113,8 @@ public class Screen extends Canvas
       for (int col = 0; col < columns; col++)
         drawPosition (screenPositions[pos++], row, col, false);
 
-    // Cursor.moveTo() will recalculate the current field if there is one set already
+    // Cursor.moveTo() will recalculate the current field if it is visible
+    cursor.setVisible (true);
     if (insertedCursorPosition >= 0)
     {
       cursor.moveTo (insertedCursorPosition);
@@ -121,8 +122,6 @@ public class Screen extends Canvas
     }
     else
       cursor.moveTo (0);
-
-    cursor.setVisible (true);
   }
 
   private void drawPosition (ScreenPosition2 screenPosition, int row, int col,

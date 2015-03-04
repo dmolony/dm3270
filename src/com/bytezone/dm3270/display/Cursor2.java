@@ -3,10 +3,7 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.input.KeyCode;
-
 import com.bytezone.dm3270.attributes.Attribute;
-import com.bytezone.dm3270.orders.BufferAddress;
 
 public class Cursor2
 {
@@ -28,51 +25,44 @@ public class Cursor2
     this.screen = screen;
   }
 
-  public void tab (boolean backTab)
+  public void draw ()
   {
-    Field newField = null;
+    screen.drawPosition (currentPosition, visible);
+  }
 
-    if (currentField.isUnprotected ())
+  public void setVisible (boolean visible)
+  {
+    this.visible = visible;
+    if (visible)
     {
-      int first = currentField.getFirstLocation ();
-      int sfaPosition = screen.validate (first - 1);
-
-      if (backTab)
-      {
-        if (currentPosition == first || currentPosition == sfaPosition)
-          newField = currentField.getPreviousUnprotectedField ();
-        else
-          newField = currentField;
-      }
-      else
-      {
-        if (currentPosition == sfaPosition)
-          newField = currentField;
-        else
-          newField = currentField.getNextUnprotectedField ();
-      }
+      setCurrentField ();
+      notifyCursorMove (0, currentPosition);
     }
     else
-    {
-      if (backTab)
-        newField = currentField.getPreviousUnprotectedField ();
-      else
-        newField = currentField.getNextUnprotectedField ();
-    }
-
-    moveTo (newField.getFirstLocation ());
+      resetCurrentField ();
+    draw ();
   }
 
-  public void backspace ()
+  public ScreenPosition2 getScreenPosition ()
   {
-    int first = currentField.getFirstLocation ();
-    if (currentPosition != first)
-    {
-      int newPosition = screen.validate (currentPosition) - 1;
-      screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
-      moveTo (newPosition);
-    }
+    return screen.getScreenPosition (currentPosition);
   }
+
+  public Field getCurrentField ()
+  {
+    if (currentField == null)
+      setCurrentField ();
+    return currentField;
+  }
+
+  public int getLocation ()
+  {
+    return currentPosition;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Update screen contents
+  // ---------------------------------------------------------------------------------//
 
   // called from ConsoleKeyEvent when the user types
   public void typeChar (byte value)
@@ -92,6 +82,17 @@ public class Cursor2
     }
     else
       System.out.println ("Can't type here");         // lock the keyboard?
+  }
+
+  public void backspace ()
+  {
+    int first = currentField.getFirstLocation ();
+    if (currentPosition != first)
+    {
+      int newPosition = screen.validate (currentPosition) - 1;
+      screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
+      moveTo (newPosition);
+    }
   }
 
   // called from Orders when building the screen
@@ -130,42 +131,65 @@ public class Cursor2
     unappliedAttributes.clear ();
   }
 
-  private void move (KeyCode keyCode)
+  // ---------------------------------------------------------------------------------//
+  // Cursor movement
+  // ---------------------------------------------------------------------------------//
+
+  public void tab (boolean backTab)
   {
-    if (keyCode == KeyCode.LEFT)
-      move (Direction.LEFT);
-    else if (keyCode == KeyCode.RIGHT)
-      move (Direction.RIGHT);
-    else if (keyCode == KeyCode.UP)
-      move (Direction.UP);
-    else if (keyCode == KeyCode.DOWN)
-      move (Direction.DOWN);
+    Field newField = null;
+
+    if (currentField.isUnprotected ())
+    {
+      int first = currentField.getFirstLocation ();
+      int sfaPosition = screen.validate (first - 1);
+
+      if (backTab)
+      {
+        if (currentPosition == first || currentPosition == sfaPosition)
+          newField = currentField.getPreviousUnprotectedField ();
+        else
+          newField = currentField;
+      }
+      else
+      {
+        if (currentPosition == sfaPosition)
+          newField = currentField;
+        else
+          newField = currentField.getNextUnprotectedField ();
+      }
+    }
+    else
+    {
+      if (backTab)
+        newField = currentField.getPreviousUnprotectedField ();
+      else
+        newField = currentField.getNextUnprotectedField ();
+    }
+
+    moveTo (newField.getFirstLocation ());
   }
 
   public void move (Direction direction)
   {
-    int newPosition = -1;
-
     switch (direction)
     {
       case RIGHT:
-        newPosition = currentPosition + 1;
+        moveTo (currentPosition + 1);
         break;
 
       case LEFT:
-        newPosition = currentPosition - 1;
+        moveTo (currentPosition - 1);
         break;
 
       case UP:
-        newPosition = currentPosition - screen.columns;
+        moveTo (currentPosition - screen.columns);
         break;
 
       case DOWN:
-        newPosition = currentPosition + screen.columns;
+        moveTo (currentPosition + screen.columns);
         break;
     }
-
-    moveTo (newPosition);
   }
 
   public void moveTo (int newPosition)
@@ -185,49 +209,11 @@ public class Cursor2
       setCurrentField ();
   }
 
-  public void draw ()
-  {
-    screen.drawPosition (currentPosition, visible);
-  }
+  // ---------------------------------------------------------------------------------//
+  // Update currentField
+  // ---------------------------------------------------------------------------------//
 
-  public void setVisible (boolean visible)
-  {
-    this.visible = visible;
-    if (visible)
-    {
-      setCurrentField ();
-      notifyCursorMove (0, currentPosition);
-    }
-    else
-      resetCurrentField ();
-    draw ();
-  }
-
-  public ScreenPosition2 getScreenPosition ()
-  {
-    return screen.getScreenPosition (currentPosition);
-  }
-
-  public Field getCurrentField ()
-  {
-    if (currentField == null)
-      setCurrentField ();
-    return currentField;
-  }
-
-  public int getLocation ()
-  {
-    return currentPosition;
-  }
-
-  public BufferAddress getBufferAddress ()
-  {
-    return new BufferAddress (currentPosition);
-  }
-
-  // called from WCC.process() - we are about to process orders so all the screen
-  // fields have been reset and moveTo() will be called repeatedly
-  public void resetCurrentField ()
+  private void resetCurrentField ()
   {
     Field lastField = currentField;
     currentField = null;

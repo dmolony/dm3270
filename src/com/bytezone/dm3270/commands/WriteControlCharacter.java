@@ -28,31 +28,26 @@ public class WriteControlCharacter
 
   public void process (Screen screen)
   {
-    screen.getScreenCursor ().resetCurrentField ();     // screen fields are about to be rebuilt
+    screen.getScreenCursor ().setVisible (false); // screen fields are about to be rebuilt
 
     if (resetPartition)
     {
-      //      screenHandler.resetPartition ();      // this moves the cursor to 0/0 maybe?
       screen.resetPartition ();             // this moves the cursor to 0/0 maybe?
     }
     if (startPrinter)
     {
-      //      screenHandler.startPrinter ();
       screen.startPrinter ();
     }
     if (soundAlarm)
     {
-      //      screenHandler.soundAlarm ();
       screen.soundAlarm ();
     }
     if (restoreKeyboard)
     {
-      //      screenHandler.restoreKeyboard ();
       screen.restoreKeyboard ();
     }
     if (resetModified)
     {
-      //      screenHandler.resetModified ();
       screen.resetModified ();
     }
   }
