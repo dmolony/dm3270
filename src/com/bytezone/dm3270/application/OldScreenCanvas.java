@@ -3,7 +3,7 @@ package com.bytezone.dm3270.application;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.text.Font;
 
-public class ScreenCanvas extends Canvas
+public class OldScreenCanvas extends Canvas
 {
   //  private static final byte TOP_LEFT = (byte) 0xC5;
   //  private static final byte TOP_RIGHT = (byte) 0xD5;
@@ -30,7 +30,7 @@ public class ScreenCanvas extends Canvas
   //  private final boolean topLine = false;
   //  private final boolean bottomLine = false;
 
-  private ScreenCanvas (int rows, int columns, Font font)
+  private OldScreenCanvas (int rows, int columns, Font font)
   {
     //    screenRows = rows;
     //    screenColumns = columns;

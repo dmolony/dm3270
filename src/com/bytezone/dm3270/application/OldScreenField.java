@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.application;
 
 
-public class ScreenField
+public class OldScreenField
 {
   //  private final ScreenHandler screenHandler;
   //  private final int startPosition;      // position of StartFieldAttribute
@@ -13,7 +13,7 @@ public class ScreenField
   //  private final List<ScreenPosition> screenPositions = new ArrayList<> ();
   //  private ScreenField previous, next;
 
-  private ScreenField (ScreenHandler screenHandler, int startPosition)
+  private OldScreenField (OldScreenHandler screenHandler, int startPosition)
   {
     //    this.screenHandler = screenHandler;
     //    this.startPosition = startPosition;

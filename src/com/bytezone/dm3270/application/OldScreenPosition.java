@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.application;
 
 
-public class ScreenPosition
+public class OldScreenPosition
 {
   //  private final ScreenHandler screenHandler;
   //  private ContextManager contextHandler;
@@ -19,7 +19,7 @@ public class ScreenPosition
   //
   //  private final List<Attribute> fieldAttributes = new ArrayList<> ();
 
-  private ScreenPosition (ScreenHandler screenHandler, int location)
+  private OldScreenPosition (OldScreenHandler screenHandler, int location)
   {
     //    this.screenHandler = screenHandler;
     //    this.location = location;

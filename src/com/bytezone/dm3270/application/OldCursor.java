@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.application;
 
 
-public class Cursor //implements Iterable<Attribute>
+public class OldCursor
 {
   //  private int location;
   //  private boolean visible;
@@ -14,8 +14,8 @@ public class Cursor //implements Iterable<Attribute>
   //  private ConsoleStage consoleStage;
   //  private final ScreenHandler screenHandler;
 
-  private Cursor (ScreenHandler screenHandler, ScreenPosition[] screenPositions,
-      ScreenCanvas terminalScreen)
+  private OldCursor (OldScreenHandler screenHandler, OldScreenPosition[] screenPositions,
+      OldScreenCanvas terminalScreen)
   {
     //    this.screenPositions = screenPositions;
     //    this.canvas = terminalScreen;

@@ -2,7 +2,7 @@ package com.bytezone.dm3270.application;
 
 import javafx.scene.text.Font;
 
-public class ScreenHandler
+public class OldScreenHandler
 {
   //  private final int rows;
   //  private final int columns;
@@ -35,7 +35,7 @@ public class ScreenHandler
   //    PROTECTED, MODIFIABLE
   //  }
 
-  private ScreenHandler (int rows, int columns, Font font)
+  private OldScreenHandler (int rows, int columns, Font font)
   {
     //    this.rows = rows;
     //    this.columns = columns;
