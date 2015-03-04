@@ -3,7 +3,6 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.ScreenField;
 import com.bytezone.dm3270.display.Cursor2;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
@@ -36,7 +35,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   private byte keyCommand;
   private BufferAddress cursorAddress;
 
-  private final List<ModifiedField> modifiedFields = new ArrayList<> ();
+  private final List<AIDField> aidFields = new ArrayList<> ();
   private final List<Order> orders = new ArrayList<> ();
 
   // Constructor used for replies to Read Partition (Read Buffer) and user actions.
@@ -129,7 +128,7 @@ public class AIDCommand extends Command implements BufferAddressSource
         }
 
         if (sba != null && order instanceof TextOrder)
-          modifiedFields.add (new ModifiedField (sba, (TextOrder) order));
+          aidFields.add (new AIDField (sba, (TextOrder) order));
         sba =
             (order instanceof SetBufferAddressOrder) ? (SetBufferAddressOrder) order
                 : null;
@@ -168,7 +167,6 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = aid;
 
-    //    BufferAddress ba = screenHandler.getCursor ().getAddress ();
     BufferAddress ba = screen.getScreenCursor ().getBufferAddress ();
     ptr = ba.packAddress (buffer, ptr);
 
@@ -207,43 +205,37 @@ public class AIDCommand extends Command implements BufferAddressSource
   @Override
   public void process ()
   {
-    Cursor2 cursor2 = screen.getScreenCursor ();
+    Cursor2 cursor = screen.getScreenCursor ();
 
-    // test to see whether this is a field that was null suppressed into moving
+    // test to see whether this is data entry that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
-    ScreenField field = null;
     boolean done = false;
-
-    if (modifiedFields.size () == 1 && true)
+    if (aidFields.size () == 1)
     {
-      int cursorOldLocation = cursor2.getLocation ();
+      int cursorOldLocation = cursor.getLocation ();
       int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
 
-      ModifiedField modifiedField = modifiedFields.get (0);
-      if (modifiedField.textOrder.getBuffer ().length == cursorDistance)
+      byte[] buffer = aidFields.get (0).getBuffer ();
+      if (buffer.length == cursorDistance
+          && cursor.getCurrentField ().contains (cursorOldLocation))
       {
-        Field field2 = cursor2.getCurrentField ();
-        if (field2.contains (cursorOldLocation))
-        {
-          for (byte b : modifiedField.textOrder.getBuffer ())
-            cursor2.typeChar (b);
-          done = true;
-        }
+        for (byte b : buffer)
+          cursor.typeChar (b);   // send characters through the old cursor
+        done = true;
       }
     }
 
-    if (field == null && !done)
-      for (ModifiedField modifiedField : modifiedFields)
+    if (!done)
+      for (AIDField aidField : aidFields)
       {
-        Field mField =
-            screen.getField (modifiedField.sbaOrder.getBufferAddress ().getLocation ());
-        mField.setText (modifiedField.textOrder.getBuffer ());
-        mField.draw ();
+        Field field = screen.getField (aidField.getLocation ());
+        field.setText (aidField.getBuffer ());
+        field.draw ();
       }
 
     // place cursor in new location
     if (cursorAddress != null)
-      cursor2.moveTo (cursorAddress.getLocation ());
+      cursor.moveTo (cursorAddress.getLocation ());
   }
 
   @Override
@@ -288,17 +280,17 @@ public class AIDCommand extends Command implements BufferAddressSource
     text.append (String.format ("AID     : %-12s : %02X%n", keyNames[key], keyCommand));
     text.append (String.format ("Cursor  : %s%n", cursorAddress));
 
-    if (modifiedFields.size () > 0)
+    if (aidFields.size () > 0)
     {
-      text.append (String.format ("%nModified fields  : %d", modifiedFields.size ()));
-      for (ModifiedField mf : modifiedFields)
+      text.append (String.format ("%nModified fields  : %d", aidFields.size ()));
+      for (AIDField aidField : aidFields)
       {
         text.append ("\nField   : ");
-        text.append (mf);
+        text.append (aidField);
       }
     }
 
-    if (orders.size () > 0 && modifiedFields.size () == 0)
+    if (orders.size () > 0 && aidFields.size () == 0)
     {
       text.append (String.format ("%nOrders  : %d%n", orders.size ()));
 
@@ -315,15 +307,25 @@ public class AIDCommand extends Command implements BufferAddressSource
     return text.toString ();
   }
 
-  private class ModifiedField
+  private class AIDField
   {
     SetBufferAddressOrder sbaOrder;
     TextOrder textOrder;
 
-    public ModifiedField (SetBufferAddressOrder sbaOrder, TextOrder textOrder)
+    public AIDField (SetBufferAddressOrder sbaOrder, TextOrder textOrder)
     {
       this.sbaOrder = sbaOrder;
       this.textOrder = textOrder;
+    }
+
+    public int getLocation ()
+    {
+      return sbaOrder.getBufferAddress ().getLocation ();
+    }
+
+    public byte[] getBuffer ()
+    {
+      return textOrder.getBuffer ();
     }
 
     @Override
