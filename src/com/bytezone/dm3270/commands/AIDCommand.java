@@ -152,7 +152,6 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = 0;
     buffer[ptr++] = AID_READ_PARTITION;
 
-    //    BufferAddress ba = screenHandler.getCursor ().getAddress ();
     BufferAddress ba = screen.getScreenCursor ().getBufferAddress ();
     ptr = ba.packAddress (buffer, ptr);
 
@@ -173,7 +172,8 @@ public class AIDCommand extends Command implements BufferAddressSource
     BufferAddress ba = screen.getScreenCursor ().getBufferAddress ();
     ptr = ba.packAddress (buffer, ptr);
 
-    //    for (ScreenField sf : screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE))
+    //    for (ScreenField sf : screenHandler.getScreenFields 
+    //                        (FieldProtectionType.MODIFIABLE))
     //      if (sf.isModified ())
     //      {
     //        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
@@ -183,7 +183,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     //        ptr = ba.packAddress (buffer, ptr);
     //
     //        for (byte b : sf.getData ())
-    //          if (b != 0)                       // null suppression (is this sufficient?)
+    //          if (b != 0)                 // null suppression (is this sufficient?)
     //            buffer[ptr++] = b;
     //      }
     System.out.println ("pack in AID.readModified()");
@@ -207,10 +207,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   @Override
   public void process ()
   {
-    //    Cursor cursor = screenHandler.getCursor ();
     Cursor2 cursor2 = screen.getScreenCursor ();
-    //    cursor.setVisible (false);
-    //    cursor2.setVisible (false);
 
     // test to see whether this is a field that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
@@ -221,20 +218,10 @@ public class AIDCommand extends Command implements BufferAddressSource
     {
       int cursorOldLocation = cursor2.getLocation ();
       int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
-      //      System.out.printf ("%d %d%n", cursorOldLocation, cursorDistance);
 
       ModifiedField modifiedField = modifiedFields.get (0);
       if (modifiedField.textOrder.getBuffer ().length == cursorDistance)
       {
-        //        ScreenField screenField = screenHandler.getField (modifiedField.sbaOrder);
-        //        if (screenField.contains (modifiedField.sbaOrder.getBufferAddress ())
-        //            && screenField.contains (cursorAddress)
-        //            && screenField.contains (cursorOldLocation))
-        //        {
-        //          field = screenField;
-        //          cursor.setLocation (cursorOldLocation);
-        //          updateScreenField (modifiedField, cursor, screenHandler, screen);
-        //        }
         Field field2 = cursor2.getCurrentField ();
         if (field2.contains (cursorOldLocation))
         {
@@ -248,43 +235,15 @@ public class AIDCommand extends Command implements BufferAddressSource
     if (field == null && !done)
       for (ModifiedField modifiedField : modifiedFields)
       {
-        //        cursor.setAddress (modifiedField.sbaOrder);
-        updateScreenField (modifiedField, screen);
+        Field mField =
+            screen.getField (modifiedField.sbaOrder.getBufferAddress ().getLocation ());
+        mField.setText (modifiedField.textOrder.getBuffer ());
+        mField.draw ();
       }
 
     // place cursor in new location
     if (cursorAddress != null)
-    {
-      //      cursor.setAddress (cursorAddress);
       cursor2.moveTo (cursorAddress.getLocation ());
-    }
-
-    //    cursor.setVisible (true);
-    //    cursor2.setVisible (true);
-  }
-
-  private void updateScreenField (ModifiedField mf, Screen screen)
-  {
-    //    ScreenCanvas canvas = screenHandler.getScreenCanvas ();
-    //    for (byte b : mf.textOrder.getBuffer ())
-    //    {
-    //      ScreenPosition sp = cursor.getScreenPosition ();
-    //      sp.setCharacter (b);
-    //      cursor.moveRight ();
-    //      canvas.draw (sp);
-    //    }
-    //
-    //    // set the actual field's modified flag
-    //    ScreenField sf = screenHandler.getField (mf.sbaOrder);
-    //    if (sf != null)
-    //      sf.setModified (true);
-    //    else
-    //      System.out.println ("Screen field not found: " + mf);
-
-    Field field = screen.getField (mf.sbaOrder.getBufferAddress ().getLocation ());
-    //    System.out.println (field);
-    field.setText (mf.textOrder.getBuffer ());
-    field.draw ();
   }
 
   @Override
