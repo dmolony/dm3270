@@ -144,10 +144,15 @@ public class FieldManager
       field.draw ();
   }
 
-  void eraseAllUnprotected ()
+  Field eraseAllUnprotected ()
   {
+    if (unprotectedFields.size () == 0)
+      return null;
+
     for (Field field : unprotectedFields)
       field.clear (true);
+
+    return unprotectedFields.get (0);
   }
 
   // ---------------------------------------------------------------------------------//

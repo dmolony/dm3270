@@ -9,6 +9,8 @@ import javafx.scene.text.Font;
 
 public class Screen extends Canvas
 {
+  private static final boolean DONT_REBUILD_FIELDS = false;
+
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
@@ -91,7 +93,14 @@ public class Screen extends Canvas
 
   public void eraseAllUnprotected ()
   {
-    fieldManager.eraseAllUnprotected ();
+    Field firstUnprotectedField = fieldManager.eraseAllUnprotected ();
+
+    restoreKeyboard ();
+    resetModified ();
+    drawScreen (DONT_REBUILD_FIELDS);
+
+    if (firstUnprotectedField != null)
+      cursor.moveTo (firstUnprotectedField.getFirstLocation ());
   }
 
   void drawPosition (int position, boolean hasCursor)

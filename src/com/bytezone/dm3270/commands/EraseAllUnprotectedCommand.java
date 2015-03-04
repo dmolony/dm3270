@@ -4,8 +4,6 @@ import com.bytezone.dm3270.display.Screen;
 
 public class EraseAllUnprotectedCommand extends Command
 {
-  private static final boolean DONT_REBUILD_FIELDS = false;
-
   // This command has no WCC or data.
   public EraseAllUnprotectedCommand (Screen screen, byte[] buffer, int offset, int length)
   {
@@ -15,31 +13,7 @@ public class EraseAllUnprotectedCommand extends Command
   @Override
   public void process ()
   {
-    //    // set all unprotected character locations to null
-    //    for (ScreenField sf : screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE))
-    //      sf.clear ();
-    //
-    //    screenHandler.restoreKeyboard ();
-    //    screenHandler.resetModified ();
-    //
-    //    // position cursor in first unprotected field
-    //    List<ScreenField> fields =
-    //        screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE);
-    //    Cursor cursor = screenHandler.getCursor ();
-    //    if (fields.size () > 0)
-    //      cursor.setLocation (fields.get (0).getStartPosition () + 1);
-    //    else
-    //      cursor.setLocation (0);
-    //
-    //    screenHandler.draw (DONT_REBUILD_FIELDS);
-
-    // new processing - not finished
-
     screen.eraseAllUnprotected ();
-    screen.restoreKeyboard ();
-    screen.resetModified ();
-
-    screen.drawScreen (DONT_REBUILD_FIELDS);
   }
 
   @Override
