@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import javafx.application.Application;
@@ -13,7 +14,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -201,7 +205,13 @@ public class Console extends Application
             new ReplayStage (screen, path).show ();
           }
           else
-            dialogStage.show ();
+          {
+            Alert alert =
+                new Alert (AlertType.ERROR, "The file " + file + " does not exist");
+            Optional<ButtonType> result = alert.showAndWait ();
+            if (result.isPresent () && result.get () == ButtonType.OK)
+              dialogStage.show ();
+          }
 
           break;
 
