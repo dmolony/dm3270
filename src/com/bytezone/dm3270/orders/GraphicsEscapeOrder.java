@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.orders;
 
-import com.bytezone.dm3270.display.Cursor2;
-import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
 
 public class GraphicsEscapeOrder extends Order
@@ -33,7 +33,7 @@ public class GraphicsEscapeOrder extends Order
     //      cursor.moveRight ();      // will add any unapplied attributes
     //    }
 
-    Cursor2 cursor2 = screen.getScreenCursor ();
+    Cursor cursor2 = screen.getScreenCursor ();
     int max = duplicates + 1;
     for (int i = 0; i < max; i++)
     {

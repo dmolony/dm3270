@@ -1,10 +1,10 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.application.Utility;
-import com.bytezone.dm3270.display.Cursor2;
-import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenPosition2;
+import com.bytezone.dm3270.display.ScreenPosition;
 
 public class RepeatToAddressOrder extends Order
 {
@@ -61,14 +61,14 @@ public class RepeatToAddressOrder extends Order
     //    }
 
     int stopLocation2 = stopAddress.getLocation ();
-    Cursor2 cursor2 = screen.getScreenCursor ();
+    Cursor cursor2 = screen.getScreenCursor ();
     if (cursor2.getLocation () == stopLocation2 && (rptChar == 0x40 || rptChar == 0x00))
       screen.clearScreen ();
     else
     {
       while (cursor2.getLocation () != stopLocation)
       {
-        ScreenPosition2 sp2 = cursor2.getScreenPosition ();
+        ScreenPosition sp2 = cursor2.getScreenPosition ();
         sp2.reset ();
         sp2.setChar (rptChar);
         cursor2.move (Direction.RIGHT);

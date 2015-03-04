@@ -5,8 +5,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.display.Cursor2;
-import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
 
 class ConsoleKeyPress implements EventHandler<KeyEvent>
@@ -22,7 +22,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
   private final Screen screen;
   private final ConsoleStage console;
-  private final Cursor2 cursor;
+  private final Cursor cursor;
 
   public ConsoleKeyPress (ConsoleStage console, Screen screen)
   {

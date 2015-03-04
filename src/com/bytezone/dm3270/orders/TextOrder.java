@@ -3,8 +3,8 @@ package com.bytezone.dm3270.orders;
 import java.io.UnsupportedEncodingException;
 
 import com.bytezone.dm3270.application.Utility;
-import com.bytezone.dm3270.display.Cursor2;
-import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
 
 public class TextOrder extends Order
@@ -62,7 +62,7 @@ public class TextOrder extends Order
     //      cursor.moveRight ();      // processes unapplied character attributes
     //    }
 
-    Cursor2 cursor2 = screen.getScreenCursor ();
+    Cursor cursor2 = screen.getScreenCursor ();
     for (byte b : buffer)
     {
       //      System.out.printf ("setting %02X at %d%n", b, cursor2.getLocation ());

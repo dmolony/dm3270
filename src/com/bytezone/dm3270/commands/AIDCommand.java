@@ -3,7 +3,7 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.BufferAddress;
@@ -207,7 +207,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   @Override
   public void process ()
   {
-    Cursor2 cursor = screen.getScreenCursor ();
+    Cursor cursor = screen.getScreenCursor ();
     cursor.setVisible (true);
 
     // test to see whether this is data entry that was null suppressed into moving

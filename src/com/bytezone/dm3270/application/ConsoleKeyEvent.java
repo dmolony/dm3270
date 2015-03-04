@@ -4,7 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
 
 public class ConsoleKeyEvent implements EventHandler<KeyEvent>
@@ -31,7 +31,7 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
     if (e.getCode () == KeyCode.UNDEFINED && !e.isMetaDown ())
     {
       //      Cursor cursor = screenHandler.getCursor ();     // old
-      Cursor2 cursor2 = screen.getScreenCursor ();    // new
+      Cursor cursor2 = screen.getScreenCursor ();    // new
 
       String c = e.getCharacter ();
       if (!c.isEmpty ())

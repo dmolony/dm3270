@@ -11,7 +11,7 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.orders.Order;
 
-public class ScreenPosition2
+public class ScreenPosition
 {
   // GraphicsEscape characters
   private static final byte TOP_LEFT = (byte) 0xC5;
@@ -36,7 +36,7 @@ public class ScreenPosition2
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
 
-  public ScreenPosition2 (GraphicsContext gc, CharacterSize characterSize,
+  public ScreenPosition (GraphicsContext gc, CharacterSize characterSize,
       ScreenContext baseContext)
   {
     this.gc = gc;

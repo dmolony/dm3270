@@ -1,10 +1,10 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
-import com.bytezone.dm3270.display.Cursor2;
-import com.bytezone.dm3270.display.Cursor2.Direction;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenPosition2;
+import com.bytezone.dm3270.display.ScreenPosition;
 
 public class StartFieldOrder extends Order
 {
@@ -40,8 +40,8 @@ public class StartFieldOrder extends Order
     //
     //    cursor.moveRight ();
 
-    Cursor2 cursor2 = screen.getScreenCursor ();
-    ScreenPosition2 sp2 = cursor2.getScreenPosition ();
+    Cursor cursor2 = screen.getScreenCursor ();
+    ScreenPosition sp2 = cursor2.getScreenPosition ();
     sp2.reset ();
     sp2.addAttribute (startFieldAttribute);
     cursor2.move (Direction.RIGHT);

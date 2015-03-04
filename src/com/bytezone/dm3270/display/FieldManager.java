@@ -26,7 +26,7 @@ public class FieldManager
     hiddenFields.clear ();
     dataPositions = 0;
 
-    List<ScreenPosition2> positions = new ArrayList<ScreenPosition2> ();
+    List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
 
     int start = -1;
     int first = -1;
@@ -34,7 +34,7 @@ public class FieldManager
     int ptr = 0;
     while (ptr != first)                    // wrapped around to the first field
     {
-      ScreenPosition2 screenPosition = screen.getScreenPosition (ptr);
+      ScreenPosition screenPosition = screen.getScreenPosition (ptr);
       if (screenPosition.isStartField ())
       {
         if (start >= 0)                     // if there is a field to add
@@ -100,7 +100,7 @@ public class FieldManager
     }
   }
 
-  private void addField (int start, int end, List<ScreenPosition2> positions)
+  private void addField (int start, int end, List<ScreenPosition> positions)
   {
     Field field = new Field (screen, start, end, positions);
 

@@ -14,11 +14,11 @@ public class Field
   private final int endPosition;        // last data position of this field
   private final StartFieldAttribute startFieldAttribute;
 
-  private final List<ScreenPosition2> screenPositions = new ArrayList<> ();
+  private final List<ScreenPosition> screenPositions = new ArrayList<> ();
 
   private Field next, previous;
 
-  public Field (Screen screen, int start, int end, List<ScreenPosition2> positions)
+  public Field (Screen screen, int start, int end, List<ScreenPosition> positions)
   {
     assert positions.size () == (start > end ? screen.screenSize - start + end + 1 : end
         - start + 1);
@@ -30,7 +30,7 @@ public class Field
     startFieldAttribute = positions.get (0).getStartFieldAttribute ();
 
     if (startFieldAttribute.isHidden ())
-      for (ScreenPosition2 screenPosition : positions)
+      for (ScreenPosition screenPosition : positions)
         screenPosition.setVisible (false);
   }
 
@@ -47,7 +47,7 @@ public class Field
 
     screenContext = sfa.process (contextManager, screenContext);
 
-    for (ScreenPosition2 sp2 : screenPositions)
+    for (ScreenPosition sp2 : screenPositions)
     {
       for (Attribute attribute : sp2.getAttributes ())
         if (attribute.getAttributeType () == AttributeType.RESET)

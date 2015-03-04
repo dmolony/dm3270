@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.orders;
 
-import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 
@@ -47,7 +47,7 @@ public class EraseUnprotectedToAddressOrder extends Order
     //      currentField = currentField.getNext ();
     //    }
 
-    Cursor2 cursor2 = screen.getScreenCursor ();
+    Cursor cursor2 = screen.getScreenCursor ();
     int cursorPostion = cursor2.getLocation ();
     Field resetField = null;
 

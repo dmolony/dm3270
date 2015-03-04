@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.attributes.Attribute;
-import com.bytezone.dm3270.display.Cursor2;
+import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
 
 public class SetAttributeOrder extends Order
@@ -29,7 +29,7 @@ public class SetAttributeOrder extends Order
     //    Cursor cursor = screenHandler.getCursor ();
     //    cursor.addAttribute (attribute);
 
-    Cursor2 cursor2 = screen.getScreenCursor ();
+    Cursor cursor2 = screen.getScreenCursor ();
     cursor2.add (attribute);
   }
 

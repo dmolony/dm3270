@@ -9,11 +9,11 @@ import javafx.scene.text.Font;
 
 public class Screen extends Canvas
 {
-  private final ScreenPosition2[] screenPositions;
+  private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
   private final ContextManager contextHandler = new ContextManager ();
-  private final Cursor2 cursor = new Cursor2 (this);
+  private final Cursor cursor = new Cursor (this);
 
   public final int rows;
   public final int columns;
@@ -41,10 +41,10 @@ public class Screen extends Canvas
     characterSize = new CharacterSize (font);
     setFont (font);     // yuk - twice
 
-    screenPositions = new ScreenPosition2[rows * columns];
+    screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = contextHandler.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition2 (gc, characterSize, baseContext);
+      screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
   }
 
   public void setFont (Font font)
@@ -69,12 +69,12 @@ public class Screen extends Canvas
     return position;
   }
 
-  public Cursor2 getScreenCursor ()
+  public Cursor getScreenCursor ()
   {
     return cursor;
   }
 
-  public ScreenPosition2 getScreenPosition (int position)
+  public ScreenPosition getScreenPosition (int position)
   {
     return screenPositions[position];
   }
@@ -124,7 +124,7 @@ public class Screen extends Canvas
       cursor.moveTo (0);
   }
 
-  private void drawPosition (ScreenPosition2 screenPosition, int row, int col,
+  private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
     double x = xOffset + col * characterSize.width        //
@@ -142,7 +142,7 @@ public class Screen extends Canvas
     gc.setFill (Color.BLACK);
     gc.fillRect (0, 0, getWidth (), getHeight ());
 
-    for (ScreenPosition2 sp : screenPositions)
+    for (ScreenPosition sp : screenPositions)
       sp.reset ();
 
     cursor.moveTo (0);
@@ -240,7 +240,7 @@ public class Screen extends Canvas
   {
     System.out.println ();
     int pos = 0;
-    for (ScreenPosition2 sp : screenPositions)
+    for (ScreenPosition sp : screenPositions)
     {
       if (sp.isStartField ())
         System.out.print ("%");
@@ -254,7 +254,7 @@ public class Screen extends Canvas
   public void dumpScreenPositions ()
   {
     int startFields = 0;
-    for (ScreenPosition2 sp : screenPositions)
+    for (ScreenPosition sp : screenPositions)
       if (sp.isStartField ())
         ++startFields;
     System.out.printf ("There are %d start fields%n", startFields);

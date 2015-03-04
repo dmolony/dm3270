@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bytezone.dm3270.attributes.Attribute;
 
-public class Cursor2
+public class Cursor
 {
   private final Screen screen;
 
@@ -20,7 +20,7 @@ public class Cursor2
     LEFT, RIGHT, UP, DOWN
   }
 
-  public Cursor2 (Screen screen)
+  public Cursor (Screen screen)
   {
     this.screen = screen;
   }
@@ -43,7 +43,7 @@ public class Cursor2
     draw ();
   }
 
-  public ScreenPosition2 getScreenPosition ()
+  public ScreenPosition getScreenPosition ()
   {
     return screen.getScreenPosition (currentPosition);
   }
@@ -98,7 +98,7 @@ public class Cursor2
   // called from Orders when building the screen
   public void setChar (byte value)
   {
-    ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
+    ScreenPosition sp = screen.getScreenPosition (currentPosition);
 
     sp.reset ();
     if (unappliedAttributes.size () > 0)
@@ -110,7 +110,7 @@ public class Cursor2
   // called from Orders when building the screen
   public void setGraphicsChar (byte value)
   {
-    ScreenPosition2 sp = screen.getScreenPosition (currentPosition);
+    ScreenPosition sp = screen.getScreenPosition (currentPosition);
 
     sp.reset ();
     if (unappliedAttributes.size () > 0)
@@ -124,7 +124,7 @@ public class Cursor2
     unappliedAttributes.add (attribute);
   }
 
-  private void applyAttributes (ScreenPosition2 sp)
+  private void applyAttributes (ScreenPosition sp)
   {
     for (Attribute attribute : unappliedAttributes)
       sp.addAttribute (attribute);
