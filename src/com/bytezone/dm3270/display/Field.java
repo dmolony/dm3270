@@ -41,25 +41,20 @@ public class Field
 
   void setScreenContexts ()
   {
-    ContextManager contextHandler = screen.getContextHandler ();
-    ScreenPosition2 sp = screenPositions.get (0);
-    StartFieldAttribute sfa = sp.getStartFieldAttribute ();
-    ScreenContext screenContext = contextHandler.getBase ();
+    ContextManager contextManager = screen.getContextHandler ();
+    StartFieldAttribute sfa = screenPositions.get (0).getStartFieldAttribute ();
+    ScreenContext screenContext = contextManager.getBase ();
 
-    screenContext = sfa.process (contextHandler, screenContext);
+    screenContext = sfa.process (contextManager, screenContext);
 
     for (ScreenPosition2 sp2 : screenPositions)
     {
       for (Attribute attribute : sp2.getAttributes ())
-      {
         if (attribute.getAttributeType () == AttributeType.RESET)
-        {
-          screenContext = contextHandler.getBase ();
-          screenContext = sfa.process (contextHandler, screenContext);
-        }
+          screenContext = sfa.process (contextManager, contextManager.getBase ());
         else
-          screenContext = attribute.process (contextHandler, screenContext);
-      }
+          screenContext = attribute.process (contextManager, screenContext);
+
       sp2.setScreenContext (screenContext);
     }
   }

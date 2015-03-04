@@ -31,25 +31,15 @@ public class WriteControlCharacter
     screen.getScreenCursor ().setVisible (false); // screen fields are about to be rebuilt
 
     if (resetPartition)
-    {
       screen.resetPartition ();             // this moves the cursor to 0/0 maybe?
-    }
     if (startPrinter)
-    {
       screen.startPrinter ();
-    }
     if (soundAlarm)
-    {
       screen.soundAlarm ();
-    }
     if (restoreKeyboard)
-    {
       screen.restoreKeyboard ();
-    }
     if (resetModified)
-    {
       screen.resetModified ();
-    }
   }
 
   @Override
