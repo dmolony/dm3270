@@ -58,7 +58,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
     BorderPane borderPane = new BorderPane ();
-    //    borderPane.setCenter (canvas);
     borderPane.setCenter (screen);
 
     HBox hbox1 = new HBox ();

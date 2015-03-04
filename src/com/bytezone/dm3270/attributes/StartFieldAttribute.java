@@ -2,7 +2,6 @@ package com.bytezone.dm3270.attributes;
 
 import javafx.scene.paint.Color;
 
-import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.BufferAddress;
@@ -120,13 +119,13 @@ public class StartFieldAttribute extends Attribute
    * on a terminal.)
    */
 
-  @Override
-  public void process (ScreenPosition screenPosition)
-  {
-    screenPosition.setForeground (isHighIntensity ?       //
-        isProtected ? WHITE : RED :                       //
-        isProtected ? BLUE : GREEN);
-  }
+  //  @Override
+  //  public void process (ScreenPosition screenPosition)
+  //  {
+  //    screenPosition.setForeground (isHighIntensity ?       //
+  //        isProtected ? WHITE : RED :                       //
+  //        isProtected ? BLUE : GREEN);
+  //  }
 
   @Override
   public ScreenContext

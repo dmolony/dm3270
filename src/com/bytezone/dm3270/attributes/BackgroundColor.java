@@ -2,7 +2,6 @@ package com.bytezone.dm3270.attributes;
 
 import javafx.scene.paint.Color;
 
-import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 
@@ -13,11 +12,11 @@ public class BackgroundColor extends ColorAttribute
     super (AttributeType.BACKGROUND_COLOR, Attribute.XA_BGCOLOR, value);
   }
 
-  @Override
-  public void process (ScreenPosition screenPosition)
-  {
-    screenPosition.setBackground (colors[attributeValue & 0x0F]);
-  }
+  //  @Override
+  //  public void process (ScreenPosition screenPosition)
+  //  {
+  //    screenPosition.setBackground (colors[attributeValue & 0x0F]);
+  //  }
 
   @Override
   public Color getColor ()

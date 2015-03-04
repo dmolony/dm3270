@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.attributes;
 
-import com.bytezone.dm3270.application.ScreenPosition;
 import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 
@@ -96,7 +95,7 @@ public abstract class Attribute
     return offset + 2;
   }
 
-  public abstract void process (ScreenPosition screenPosition);
+  //  public abstract void process (ScreenPosition screenPosition);
 
   public abstract ScreenContext process (ContextManager contextHandler,
       ScreenContext screenContext);
