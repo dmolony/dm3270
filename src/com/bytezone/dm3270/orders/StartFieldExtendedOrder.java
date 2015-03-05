@@ -15,6 +15,7 @@ public class StartFieldExtendedOrder extends Order
 {
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<Attribute> ();
+  private int location = -1;
 
   public StartFieldExtendedOrder (byte[] buffer, int offset)
   {
@@ -70,32 +71,21 @@ public class StartFieldExtendedOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    //    Cursor cursor = screenHandler.getCursor ();
-    //    cursor.clearAttributes ();        // remove any unapplied character attributes
-    //    ScreenPosition sp = cursor.getScreenPosition ();
-    //
-    //    sp.reset ();
-    //    sp.clearAttributes ();
-    //    sp.addAttribute (startFieldAttribute);
-    //    for (Attribute attribute : attributes)
-    //      sp.addAttribute (attribute);
-    //
-    //    cursor.moveRight ();
-
-    Cursor cursor2 = screen.getScreenCursor ();
-    ScreenPosition sp2 = cursor2.getScreenPosition ();
-    sp2.reset ();
-    sp2.addAttribute (startFieldAttribute);
+    Cursor cursor = screen.getScreenCursor ();
+    location = cursor.getLocation ();
+    ScreenPosition sp = cursor.getScreenPosition ();
+    sp.reset ();
+    sp.addAttribute (startFieldAttribute);
     for (Attribute attribute : attributes)
-      sp2.addAttribute (attribute);
-    cursor2.move (Direction.RIGHT);
+      sp.addAttribute (attribute);
+    cursor.move (Direction.RIGHT);
   }
 
   @Override
   public String toString ()
   {
-    StringBuilder text = new StringBuilder ("SFE : ");
-    text.append (startFieldAttribute);
+    StringBuilder text = new StringBuilder ();
+    text.append (String.format ("SFE : %s (%04d)", startFieldAttribute, location));
 
     for (Attribute attr : attributes)
       text.append (String.format ("\n      %-34s", attr));

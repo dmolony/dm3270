@@ -9,6 +9,7 @@ import com.bytezone.dm3270.display.ScreenPosition;
 public class StartFieldOrder extends Order
 {
   private final StartFieldAttribute startFieldAttribute;
+  private int location = -1;
 
   public StartFieldOrder (byte[] buffer, int offset)
   {
@@ -32,24 +33,17 @@ public class StartFieldOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    //    Cursor cursor = screenHandler.getCursor ();
-    //    ScreenPosition sp = cursor.getScreenPosition ();
-    //    sp.reset ();
-    //    sp.clearAttributes ();
-    //    sp.addAttribute (startFieldAttribute);
-    //
-    //    cursor.moveRight ();
-
-    Cursor cursor2 = screen.getScreenCursor ();
-    ScreenPosition sp2 = cursor2.getScreenPosition ();
-    sp2.reset ();
-    sp2.addAttribute (startFieldAttribute);
-    cursor2.move (Direction.RIGHT);
+    Cursor cursor = screen.getScreenCursor ();
+    ScreenPosition sp = cursor.getScreenPosition ();
+    location = cursor.getLocation ();
+    sp.reset ();
+    sp.addAttribute (startFieldAttribute);
+    cursor.move (Direction.RIGHT);
   }
 
   @Override
   public String toString ()
   {
-    return String.format ("SF  : %s", startFieldAttribute);
+    return String.format ("SF  : %s (%04d)", startFieldAttribute, location);
   }
 }
