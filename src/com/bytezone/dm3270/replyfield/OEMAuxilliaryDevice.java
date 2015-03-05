@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.bytezone.dm3270.structuredfields.StructuredField;
 
-public class OEMAuxilliaryDevice extends ReplyField
+public class OEMAuxilliaryDevice extends QueryReplyField
 {
   byte flags;
   byte refID;
@@ -13,7 +13,7 @@ public class OEMAuxilliaryDevice extends ReplyField
 
   public OEMAuxilliaryDevice ()
   {
-    super (ReplyField.OEM_AUXILLIARY_DEVICE_REPLY);
+    super (QueryReplyField.OEM_AUXILLIARY_DEVICE_REPLY);
 
     byte[] rest = { 0x00, 0x00, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, //
                    0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40,  //
@@ -44,7 +44,7 @@ public class OEMAuxilliaryDevice extends ReplyField
     super (buffer);
 
     assert data[0] == StructuredField.QUERY_REPLY;
-    assert data[1] == ReplyField.OEM_AUXILLIARY_DEVICE_REPLY;
+    assert data[1] == QueryReplyField.OEM_AUXILLIARY_DEVICE_REPLY;
 
     try
     {

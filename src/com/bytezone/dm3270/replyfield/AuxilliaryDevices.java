@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-public class AuxilliaryDevices extends ReplyField
+public class AuxilliaryDevices extends QueryReplyField
 {
   byte flags1;
   byte flags2;

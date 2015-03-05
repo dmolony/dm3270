@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Summary extends ReplyField implements Iterable<ReplyField>
+public class Summary extends QueryReplyField implements Iterable<QueryReplyField>
 {
-  List<ReplyField> replyList;
+  List<QueryReplyField> replyList;
 
-  public Summary (List<ReplyField> replies)
+  public Summary (List<QueryReplyField> replies)
   {
     super (SUMMARY_QUERY_REPLY);
 
@@ -17,7 +17,7 @@ public class Summary extends ReplyField implements Iterable<ReplyField>
     replyList.addAll (replies);
 
     int ptr = createReply (replyList.size ());
-    for (ReplyField replyField : replyList)
+    for (QueryReplyField replyField : replyList)
       reply[ptr++] = replyField.replyType.type;
 
     checkDataLength (ptr);
@@ -38,7 +38,7 @@ public class Summary extends ReplyField implements Iterable<ReplyField>
   }
 
   @Override
-  public Iterator<ReplyField> iterator ()
+  public Iterator<QueryReplyField> iterator ()
   {
     return replyList.iterator ();
   }

@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class DefaultReply extends ReplyField
+public class DefaultReply extends QueryReplyField
 {
   public DefaultReply (byte[] buffer)
   {

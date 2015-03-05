@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-public class ReplyModes extends ReplyField
+public class ReplyModes extends QueryReplyField
 {
   private static String[] modeTypes = { "Field mode", "Extended field mode",
                                        "Character mode" };

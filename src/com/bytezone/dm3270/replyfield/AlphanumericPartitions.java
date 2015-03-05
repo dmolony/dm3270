@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class AlphanumericPartitions extends ReplyField
+public class AlphanumericPartitions extends QueryReplyField
 {
   int maxPartitions;
   int totalAvailableStorage;

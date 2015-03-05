@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class RPQNames extends ReplyField
+public class RPQNames extends QueryReplyField
 {
   String deviceType;
   long model;

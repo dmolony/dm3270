@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class CharacterSets extends ReplyField
+public class CharacterSets extends QueryReplyField
 {
   byte flags1;
   byte flags2;

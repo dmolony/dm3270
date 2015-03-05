@@ -22,7 +22,7 @@ import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
 import com.bytezone.dm3270.replyfield.RPQNames;
-import com.bytezone.dm3270.replyfield.ReplyField;
+import com.bytezone.dm3270.replyfield.QueryReplyField;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetListener;
@@ -172,21 +172,21 @@ public class Session implements Iterable<SessionRecord>
     for (StructuredField sf : ((ReadStructuredFieldCommand) command).getFieldList ())
       if (sf instanceof QueryReplySF)
       {
-        ReplyField rf = ((QueryReplySF) sf).getReplyField ();
+        QueryReplyField rf = ((QueryReplySF) sf).getReplyField ();
         byte type = rf.getReplyType ().type;
-        if (type == ReplyField.OEM_AUXILLIARY_DEVICE_REPLY)
+        if (type == QueryReplyField.OEM_AUXILLIARY_DEVICE_REPLY)
         {
           OEMAuxilliaryDevice oem = (OEMAuxilliaryDevice) rf;
           clientName = oem.getUserName ();
           if (clientName.equals ("VISTA"))
             clientName = "Vista";
         }
-        else if (type == ReplyField.RPQ_NAMES_REPLY)
+        else if (type == QueryReplyField.RPQ_NAMES_REPLY)
         {
           RPQNames rpqNames = (RPQNames) rf;
           clientName = rpqNames.getRPQName ();
         }
-        else if (type == ReplyField.SUMMARY_QUERY_REPLY)
+        else if (type == QueryReplyField.SUMMARY_QUERY_REPLY)
         {
           Summary summary = (Summary) rf;
           int size = summary.size ();

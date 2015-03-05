@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class UsableArea extends ReplyField
+public class UsableArea extends QueryReplyField
 {
   private static String[] measurementUnits = { "Inches", "Millimetres" };
   private static String[] addressingModes = { "Reserved", "12/14 bit", "Reserved",

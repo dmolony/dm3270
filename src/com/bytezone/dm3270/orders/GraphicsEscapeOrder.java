@@ -22,8 +22,8 @@ public class GraphicsEscapeOrder extends Order
   public void process (Screen screen)
   {
     Cursor cursor = screen.getScreenCursor ();
-    int max = duplicates + 1;
-    for (int i = 0; i < max; i++)
+    int max = duplicates;
+    while (max-- >= 0)                    // always do at least one
     {
       cursor.setGraphicsChar (code);
       cursor.move (Direction.RIGHT);

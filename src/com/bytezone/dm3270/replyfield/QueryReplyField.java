@@ -6,7 +6,7 @@ import java.util.List;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 
-public abstract class ReplyField
+public abstract class QueryReplyField
 {
   public final static byte SUMMARY_QUERY_REPLY = (byte) 0x80;
   public final static byte USABLE_AREA_REPLY = (byte) 0x81;
@@ -49,7 +49,7 @@ public abstract class ReplyField
     replyTypes.add (new ReplyType (TRANSPARENCY_REPLY, "Transparency"));
   }
 
-  public static ReplyField getReplyField (byte[] buffer)
+  public static QueryReplyField getReplyField (byte[] buffer)
   {
     assert buffer[0] == StructuredField.QUERY_REPLY;
 
@@ -99,12 +99,12 @@ public abstract class ReplyField
     }
   }
 
-  public ReplyField (byte replyType)
+  public QueryReplyField (byte replyType)
   {
     this.replyType = getReplyType (replyType);
   }
 
-  public ReplyField (byte[] buffer)
+  public QueryReplyField (byte[] buffer)
   {
     assert buffer[0] == (byte) 0x81;
     data = buffer;

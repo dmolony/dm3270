@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class DistributedDataManagement extends ReplyField
+public class DistributedDataManagement extends QueryReplyField
 {
   int flags;
   int limitIn;

@@ -14,7 +14,7 @@ import com.bytezone.dm3270.replyfield.Highlight;
 import com.bytezone.dm3270.replyfield.ImplicitPartition;
 import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
 import com.bytezone.dm3270.replyfield.RPQNames;
-import com.bytezone.dm3270.replyfield.ReplyField;
+import com.bytezone.dm3270.replyfield.QueryReplyField;
 import com.bytezone.dm3270.replyfield.ReplyModes;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.replyfield.UsableArea;
@@ -89,7 +89,7 @@ public class ReadStructuredFieldCommand extends Command
     Color color = new Color ();
     ImplicitPartition partition = new ImplicitPartition ();
 
-    List<ReplyField> replyFields = new ArrayList<> ();
+    List<QueryReplyField> replyFields = new ArrayList<> ();
 
     // Freehost
     if (version == 1)
@@ -128,7 +128,7 @@ public class ReadStructuredFieldCommand extends Command
 
     // calculate the size of the reply record
     int replyLength = 1;
-    for (ReplyField reply : summary)
+    for (QueryReplyField reply : summary)
       replyLength += reply.replySize ();
 
     // create the reply record buffer
@@ -138,7 +138,7 @@ public class ReadStructuredFieldCommand extends Command
     buffer[ptr++] = (byte) 0x88;      // AID
 
     // fill buffer with reply components
-    for (ReplyField reply : summary)
+    for (QueryReplyField reply : summary)
       ptr = reply.packReply (buffer, ptr);
 
     assert ptr == replyLength;

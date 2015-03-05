@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-public class Highlight extends ReplyField
+public class Highlight extends QueryReplyField
 {
   private static final String[] values = { "Normal", "Blink", "Reverse video", "",
                                           "Underscore", "", "", "", "Intensity" };

@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class ImplicitPartition extends ReplyField
+public class ImplicitPartition extends QueryReplyField
 {
   int width, height;
   int alternateWidth, alternateHeight;

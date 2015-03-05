@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.attributes.ColorAttribute;
 
-public class Color extends ReplyField
+public class Color extends QueryReplyField
 {
   private byte flags;
   private int pairs;
