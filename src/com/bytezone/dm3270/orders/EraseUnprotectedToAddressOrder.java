@@ -20,35 +20,8 @@ public class EraseUnprotectedToAddressOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    //    Cursor cursor = screenHandler.getCursor ();
-    //    BufferAddress cursorAddress = cursor.getAddress ();
-    //    List<ScreenField> fields =
-    //        screenHandler.getScreenFields (FieldProtectionType.MODIFIABLE);
-    //
-    //    // find the cursor field
-    //    ScreenField currentField = null;
-    //    for (ScreenField sf : fields)
-    //    {
-    //      if (sf.contains (cursorAddress))
-    //      {
-    //        currentField = sf;
-    //        break;
-    //      }
-    //    }
-    //
-    //    while (currentField != null)
-    //    {
-    //      currentField.clear ();
-    //      if (currentField.contains (stopAddress))
-    //      {
-    //        cursor.setLocation (currentField.getStartPosition ());
-    //        break;
-    //      }
-    //      currentField = currentField.getNext ();
-    //    }
-
-    Cursor cursor2 = screen.getScreenCursor ();
-    int cursorPostion = cursor2.getLocation ();
+    Cursor cursor = screen.getScreenCursor ();
+    int cursorPostion = cursor.getLocation ();
     Field resetField = null;
 
     for (Field field : screen.getUnprotectedFields ())
@@ -63,7 +36,7 @@ public class EraseUnprotectedToAddressOrder extends Order
       resetField.clear (false);       // don't set modified (is this correct?)
       if (resetField.contains (stopAddress.getLocation ()))
       {
-        cursor2.moveTo (resetField.getFirstLocation ());
+        cursor.moveTo (resetField.getFirstLocation ());
         break;
       }
       resetField = resetField.getNextUnprotectedField ();

@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -22,7 +21,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -39,13 +37,12 @@ import com.bytezone.dm3270.display.Screen;
 
 public class Console extends Application
 {
-  private static String[] fontNames = { "Consolas", "Source Code Pro", "Anonymous Pro",
-                                       "Inconsolata", "Monaco", "Menlo", "M+ 2m",
-                                       "PT Mono", "Luculent", "Monospaced" };
+  private static String[] fontNames = { //
+      "Consolas", "Source Code Pro", "Anonymous Pro", "Inconsolata", "Monaco", "Menlo",
+          "M+ 2m", "PT Mono", "Luculent", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
 
-  //  private ScreenHandler screenHandler;
   private Screen screen;
   private TextField serverName;
   private TextField serverPort;
@@ -63,6 +60,8 @@ public class Console extends Application
   private MainframeStage mainframeStage;
   private SpyStage spyStage;
   private ConsoleStage consoleStage;
+
+  private final MenuBar menuBar = new MenuBar ();
 
   @Override
   public void start (Stage dialogStage) throws Exception
@@ -101,43 +100,26 @@ public class Console extends Application
       public void changed (ObservableValue<? extends Toggle> ov, Toggle oldToggle,
           Toggle newToggle)
       {
-        if (newToggle != null)
+        if (newToggle == null)
+          return;
+
+        switch ((String) newToggle.getUserData ())
         {
-          String button = (String) newToggle.getUserData ();
-          switch (button)
-          {
-            case "Spy":
-              serverName.setDisable (false);
-              serverPort.setDisable (false);
-              clientPort.setDisable (false);
-              prevent3270E.setDisable (false);
-              filename.setDisable (true);
-              break;
+          case "Spy":
+            setDisable (false, false, false, false, true);
+            break;
 
-            case "Replay":
-              serverName.setDisable (true);
-              serverPort.setDisable (true);
-              clientPort.setDisable (true);
-              prevent3270E.setDisable (true);
-              filename.setDisable (false);
-              break;
+          case "Replay":
+            setDisable (true, true, true, true, false);
+            break;
 
-            case "Terminal":
-              serverName.setDisable (false);
-              serverPort.setDisable (false);
-              clientPort.setDisable (true);
-              prevent3270E.setDisable (true);
-              filename.setDisable (true);
-              break;
+          case "Terminal":
+            setDisable (false, false, true, true, true);
+            break;
 
-            case "Mainframe":
-              serverName.setDisable (true);
-              serverPort.setDisable (true);
-              clientPort.setDisable (false);
-              prevent3270E.setDisable (true);
-              filename.setDisable (true);
-              break;
-          }
+          case "Mainframe":
+            setDisable (true, true, false, true, true);
+            break;
         }
       }
     });
@@ -167,7 +149,6 @@ public class Console extends Application
 
       dialogStage.hide ();
 
-      //      screenHandler = createScreenHandler ();       // needs font information
       screen = createScreen ();
       int serverPortVal = Integer.parseInt (serverPort.getText ());
       int clientPortVal = Integer.parseInt (clientPort.getText ());
@@ -206,8 +187,8 @@ public class Console extends Application
           }
           else
           {
-            Alert alert =
-                new Alert (AlertType.ERROR, "The file " + file + " does not exist");
+            Alert alert = new Alert (AlertType.ERROR, file + " does not exist");
+            alert.getDialogPane ().setHeaderText (null);
             Optional<ButtonType> result = alert.showAndWait ();
             if (result.isPresent () && result.get () == ButtonType.OK)
               dialogStage.show ();
@@ -232,12 +213,7 @@ public class Console extends Application
 
     cancel.setOnAction ( (e) -> dialogStage.hide ());
 
-    MenuBar menuBar = new MenuBar ();
-    Menu menuFile = new Menu ("File");
     Menu menuFont = new Menu ("Fonts");
-
-    MenuItem exit = new MenuItem ("Exit");
-    exit.setOnAction (e -> Platform.exit ());
 
     List<String> families = Font.getFamilies ();
     for (String fontName : fontNames)
@@ -248,14 +224,18 @@ public class Console extends Application
 
     menuFont.getItems ().add (new SeparatorMenuItem ());
 
+    setFontMenu ("12", sizeGroup, menuFont, sizeSelected, false);
     setFontMenu ("14", sizeGroup, menuFont, sizeSelected, false);
     setFontMenu ("16", sizeGroup, menuFont, sizeSelected, false);
     setFontMenu ("18", sizeGroup, menuFont, sizeSelected, false);
     setFontMenu ("20", sizeGroup, menuFont, sizeSelected, false);
     setFontMenu ("22", sizeGroup, menuFont, sizeSelected, false);
 
-    menuFile.getItems ().addAll (exit);
-    menuBar.getMenus ().addAll (menuFile, menuFont);
+    menuBar.getMenus ().addAll (menuFont);
+
+    //    final String os = System.getProperty ("os.name");
+    //    if (os != null && os.startsWith ("Mac"))
+    //      menuBar.useSystemMenuBarProperty ().set (true);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setTop (menuBar);
@@ -276,6 +256,15 @@ public class Console extends Application
 
     if (consoleStage != null)
       consoleStage.disconnect ();
+  }
+
+  private void setDisable (boolean sn, boolean sp, boolean cp, boolean pr, boolean fn)
+  {
+    serverName.setDisable (sn);
+    serverPort.setDisable (sp);
+    clientPort.setDisable (cp);
+    prevent3270E.setDisable (pr);
+    filename.setDisable (fn);
   }
 
   private void setFontMenu (String name, ToggleGroup toggleGroup, Menu menu,
@@ -327,17 +316,6 @@ public class Console extends Application
     return row;
   }
 
-  //  private ScreenHandler createScreenHandler ()
-  //  {
-  //    RadioMenuItem selectedFontName = (RadioMenuItem) fontGroup.getSelectedToggle ();
-  //    RadioMenuItem selectedFontSize = (RadioMenuItem) sizeGroup.getSelectedToggle ();
-  //    Font font =
-  //        Font.font (selectedFontName.getText (),
-  //                   Integer.parseInt (selectedFontSize.getText ()));
-  //
-  //    return new ScreenHandler (24, 80, font);
-  //  }
-
   private Screen createScreen ()
   {
     RadioMenuItem selectedFontName = (RadioMenuItem) fontGroup.getSelectedToggle ();
@@ -345,7 +323,6 @@ public class Console extends Application
     Font font =
         Font.font (selectedFontName.getText (),
                    Integer.parseInt (selectedFontSize.getText ()));
-
     return new Screen (24, 80, font);
   }
 

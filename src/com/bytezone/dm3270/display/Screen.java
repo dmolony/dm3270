@@ -31,6 +31,7 @@ public class Screen extends Canvas
 
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
+  private boolean resetModified;
   private byte currentAID;
 
   public Screen (int rows, int columns, Font font)
@@ -115,7 +116,7 @@ public class Screen extends Canvas
     cursor.setVisible (false);
 
     if (buildFields)
-      fieldManager.buildFields ();
+      fieldManager.buildFields ();      // what about resetModified?
 
     int pos = 0;
     for (int row = 0; row < rows; row++)
@@ -147,6 +148,7 @@ public class Screen extends Canvas
   public void clearScreen ()
   {
     cursor.setVisible (false);
+
     GraphicsContext gc = getGraphicsContext2D ();
     gc.setFill (Color.BLACK);
     gc.fillRect (0, 0, getWidth (), getHeight ());
@@ -209,7 +211,7 @@ public class Screen extends Canvas
 
   public void restoreKeyboard ()
   {
-    //    keyboardLocked = false;
+    keyboardLocked = false;
     //    if (consoleStage != null)
     //      consoleStage.setStatus ("");
   }
@@ -223,18 +225,13 @@ public class Screen extends Canvas
 
   public void resetModified ()
   {
-    //    resetModified = true;     // will happen after the screen is rebuilt
+    resetModified = true;     // will happen after the screen is rebuilt
   }
 
   public boolean isKeyboardLocked ()
   {
     return keyboardLocked;
   }
-
-  //  public void tab (boolean shiftIsDown)
-  //  {
-  //    cursor.tab (shiftIsDown);
-  //  }
 
   // ---------------------------------------------------------------------------------//
   // Debugging

@@ -3,7 +3,9 @@ package com.bytezone.dm3270.application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -23,7 +25,6 @@ import com.bytezone.dm3270.streams.TerminalServer;
 public class ConsoleStage extends Stage implements FieldChangeListener,
     CursorMoveListener
 {
-  //  private final ScreenHandler screenHandler;
   private final Screen screen;
   private final Label status = new Label ();
   private final Label cursorLocation = new Label ();
@@ -49,6 +50,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   public ConsoleStage (Screen screen)
   {
     this.screen = screen;
+
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
 
@@ -57,8 +59,19 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     int margin = 4;
     BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
+    ToolBar toolbar = new ToolBar ();
+    toolbar.getItems ().add (new Button ("Home"));
+    toolbar.getItems ().add (new Button ("Options"));
+    toolbar.getItems ().add (new Button ("Help"));
+
+    //    final String os = System.getProperty ("os.name");
+    //    if (os != null && os.startsWith ("Mac"))
+    //      menuBar.useSystemMenuBarProperty ().set (true);
+
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
+    borderPane.setTop (toolbar);
+    //    borderPane.setTop (menuBar);
 
     HBox hbox1 = new HBox ();
     hbox1.setPadding (new Insets (2, 12, 2, 12));       // trbl

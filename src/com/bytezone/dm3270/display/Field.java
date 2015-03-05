@@ -120,7 +120,6 @@ public class Field
   public void setModified (boolean modified)
   {
     startFieldAttribute.setModified (modified);
-    //    screen.fieldModified (this);     // display the new status
   }
 
   public boolean contains (int position)
