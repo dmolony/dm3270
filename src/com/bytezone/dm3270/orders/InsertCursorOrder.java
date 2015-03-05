@@ -21,7 +21,6 @@ public class InsertCursorOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    //    screenHandler.insertCursor ();
     screen.insertCursor ();
   }
 

@@ -21,24 +21,12 @@ public class GraphicsEscapeOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    //    Cursor cursor = screenHandler.getCursor ();
-    //
-    //    int max = duplicates + 1;
-    //    for (int i = 0; i < max; i++)
-    //    {
-    //      ScreenPosition sp = cursor.getScreenPosition ();
-    //      sp.reset ();
-    //      sp.clearAttributes ();
-    //      sp.setGraphicsCharacter (code);
-    //      cursor.moveRight ();      // will add any unapplied attributes
-    //    }
-
-    Cursor cursor2 = screen.getScreenCursor ();
+    Cursor cursor = screen.getScreenCursor ();
     int max = duplicates + 1;
     for (int i = 0; i < max; i++)
     {
-      cursor2.setGraphicsChar (code);
-      cursor2.move (Direction.RIGHT);
+      cursor.setGraphicsChar (code);
+      cursor.move (Direction.RIGHT);
     }
   }
 

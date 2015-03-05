@@ -31,6 +31,7 @@ public class EraseUnprotectedToAddressOrder extends Order
         break;
       }
 
+    // this relies on stopAddress being in an unprotected field
     while (resetField != null)
     {
       resetField.clear (false);       // don't set modified (is this correct?)

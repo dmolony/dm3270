@@ -4,7 +4,6 @@ import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenPosition;
 
 public class RepeatToAddressOrder extends Order
 {
@@ -45,35 +44,15 @@ public class RepeatToAddressOrder extends Order
   {
     int stopLocation = stopAddress.getLocation ();
 
-    //    Cursor cursor = screenHandler.getCursor ();
-    //    if (cursor.getLocation () == stopLocation && rptChar == 0x40)
-    //      screenHandler.eraseScreen (true);
-    //    else
-    //    {
-    //      while (cursor.getLocation () != stopLocation)
-    //      {
-    //        ScreenPosition screenPosition = cursor.getScreenPosition ();
-    //        screenPosition.reset ();
-    //        screenPosition.clearAttributes ();
-    //        screenPosition.setCharacter (rptChar);
-    //        cursor.moveRight ();
-    //      }
-    //    }
-
-    int stopLocation2 = stopAddress.getLocation ();
-    Cursor cursor2 = screen.getScreenCursor ();
-    if (cursor2.getLocation () == stopLocation2 && (rptChar == 0x40 || rptChar == 0x00))
+    Cursor cursor = screen.getScreenCursor ();
+    if (cursor.getLocation () == stopLocation && (rptChar == 0x40 || rptChar == 0x00))
       screen.clearScreen ();
     else
-    {
-      while (cursor2.getLocation () != stopLocation)
+      while (cursor.getLocation () != stopLocation)
       {
-        ScreenPosition sp2 = cursor2.getScreenPosition ();
-        sp2.reset ();
-        sp2.setChar (rptChar);
-        cursor2.move (Direction.RIGHT);
+        cursor.setChar (rptChar);
+        cursor.move (Direction.RIGHT);
       }
-    }
   }
 
   @Override
