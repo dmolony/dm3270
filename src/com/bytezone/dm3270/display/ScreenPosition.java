@@ -78,6 +78,11 @@ public class ScreenPosition
     return startFieldAttribute;
   }
 
+  public boolean hasAttributes ()
+  {
+    return attributes.size () > 0;
+  }
+
   public List<Attribute> getAttributes ()
   {
     return attributes;
@@ -101,6 +106,11 @@ public class ScreenPosition
       return ' ';
 
     return (char) Utility.ebc2asc[value & 0xFF];
+  }
+
+  public byte getByte ()
+  {
+    return value;
   }
 
   public void reset (ScreenContext screenContext)

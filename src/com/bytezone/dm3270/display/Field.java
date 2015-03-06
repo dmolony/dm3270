@@ -184,6 +184,19 @@ public class Field
     }
   }
 
+  public int packData (byte[] buffer, int ptr)
+  {
+    for (int i = 1; i < screenPositions.size (); i++)  // skip attribute ScreenPosition
+    {
+      ScreenPosition sp = screenPositions.get (i);
+      byte b = sp.getByte ();
+      if (b != 0)                   // bytes are signed
+        buffer[ptr++] = b;
+    }
+
+    return ptr;
+  }
+
   public String toStringWithLinks ()
   {
     StringBuilder text = new StringBuilder (toString ());

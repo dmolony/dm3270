@@ -38,61 +38,32 @@ public class AIDCommand extends Command implements BufferAddressSource
   private final List<AIDField> aidFields = new ArrayList<> ();
   private final List<Order> orders = new ArrayList<> ();
 
-  // Constructor used for replies to Read Partition (Read Buffer) and user actions.
-  // This method creates an AID from the current screen.
-  // Should be replaced with a static factory method
-
-  public AIDCommand (Screen screen)
-  {
-    super (screen);
-    //    AIDCommand command = readModified (screenHandler.getAID ());
-
-    //    this.key = command.key;
-    //    this.cursorAddress = command.cursorAddress;
-    //    this.orders.addAll (command.orders);
-    //    this.data = command.data;
-  }
-
-  public AIDCommand (Screen screen, byte type)
-  {
-    super (screen);
-
-    AIDCommand command = null;
-
-    switch (type)
-    {
-      case Command.READ_BUFFER_F2:
-      case Command.READ_BUFFER_02:
-        command = readBuffer ();
-        break;
-
-      case Command.READ_MODIFIED_F6:
-      case Command.READ_MODIFIED_06:
-        command = readModified (AIDCommand.NO_AID_SPECIFIED);
-        break;
-
-      case Command.READ_MODIFIED_ALL_6E:
-      case Command.READ_MODIFIED_ALL_0E:
-        command = readModifiedAll (AIDCommand.NO_AID_SPECIFIED);
-        break;
-
-      default:
-        System.out.printf ("Unknown value: %02X%n", data[0]);
-    }
-
-    if (command != null)
-    {
-      this.key = command.key;
-      this.cursorAddress = command.cursorAddress;
-      this.orders.addAll (command.orders);
-      this.data = command.data;
-    }
-  }
-
-  public AIDCommand (Screen screen, byte[] buffer)
-  {
-    this (screen, buffer, 0, buffer.length);
-  }
+  //  public static AIDCommand ReadBuffer (Screen screen, byte type)
+  //  {
+  //    AIDCommand command = null;
+  //
+  //    switch (type)
+  //    {
+  //      case Command.READ_BUFFER_F2:
+  //      case Command.READ_BUFFER_02:
+  //        //        command = readBuffer ();
+  //        break;
+  //
+  //      case Command.READ_MODIFIED_F6:
+  //      case Command.READ_MODIFIED_06:
+  //        //        command = readModified (AIDCommand.NO_AID_SPECIFIED);
+  //        break;
+  //
+  //      case Command.READ_MODIFIED_ALL_6E:
+  //      case Command.READ_MODIFIED_ALL_0E:
+  //        //        command = readModifiedAll (AIDCommand.NO_AID_SPECIFIED);
+  //        break;
+  //
+  //      default:
+  //        //        System.out.printf ("Unknown value: %02X%n", data[0]);
+  //    }
+  //    return command;
+  //  }
 
   public AIDCommand (Screen screen, byte[] buffer, int offset, int length)
   {
@@ -145,61 +116,34 @@ public class AIDCommand extends Command implements BufferAddressSource
     return 0;
   }
 
-  private AIDCommand readBuffer ()
-  {
-    byte[] buffer = new byte[4096];
-    int ptr = 0;
-    buffer[ptr++] = AID_READ_PARTITION;
-
-    int cursorLocation = screen.getScreenCursor ().getLocation ();
-    BufferAddress ba = new BufferAddress (cursorLocation);
-    ptr = ba.packAddress (buffer, ptr);
-
-    //    for (ScreenField sf : screenHandler.getScreenFields ())
-    //      ptr = sf.pack (buffer, ptr);
-    System.out.println ("pack in AID.readBuffer()");
-
-    return new AIDCommand (screen, buffer, 0, ptr);
-  }
-
-  private AIDCommand readModified (byte aid)
-  {
-    byte[] buffer = new byte[4096];
-    int ptr = 0;
-    buffer[ptr++] = aid;
-
-    int cursorLocation = screen.getScreenCursor ().getLocation ();
-    BufferAddress ba = new BufferAddress (cursorLocation);
-    ptr = ba.packAddress (buffer, ptr);
-
-    //    for (ScreenField sf : screenHandler.getScreenFields 
-    //                        (FieldProtectionType.MODIFIABLE))
-    //      if (sf.isModified ())
-    //      {
-    //        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
-    //
-    //        int startPos = sf.getStartPosition () + 1;      // wrapping??
-    //        ba = new BufferAddress (startPos);
-    //        ptr = ba.packAddress (buffer, ptr);
-    //
-    //        for (byte b : sf.getData ())
-    //          if (b != 0)                 // null suppression (is this sufficient?)
-    //            buffer[ptr++] = b;
-    //      }
-    System.out.println ("pack in AID.readModified()");
-
-    return new AIDCommand (screen, buffer, 0, ptr);
-  }
+  //  public AIDCommand readBuffer ()
+  //  {
+  //    byte[] buffer = new byte[4096];
+  //    int ptr = 0;
+  //    buffer[ptr++] = AID_READ_PARTITION;
+  //
+  //    int cursorLocation = screen.getScreenCursor ().getLocation ();
+  //    BufferAddress ba = new BufferAddress (cursorLocation);
+  //    ptr = ba.packAddress (buffer, ptr);
+  //
+  //    //    for (ScreenField sf : screenHandler.getScreenFields ())
+  //    //      ptr = sf.pack (buffer, ptr);
+  //    System.out.println ("pack in AID.readBuffer()");
+  //
+  //    return new AIDCommand (screen, buffer, 0, ptr);
+  //  }
 
   // not written yet
-  private AIDCommand readModifiedAll (byte aid)
-  {
-    byte[] buffer = new byte[4096];
-    int ptr = 0;
-    buffer[ptr++] = aid;
-
-    return new AIDCommand (screen, buffer, 0, ptr);
-  }
+  //  private AIDCommand readModifiedAll (byte aid)
+  //  {
+  //    byte[] buffer = new byte[4096];
+  //    int ptr = 0;
+  //    buffer[ptr++] = aid;
+  //
+  //    System.out.println ("pack in AID.readModifiedAll()");
+  //
+  //    return new AIDCommand (screen, buffer, 0, ptr);
+  //  }
 
   // copy modified fields back to the screen - only used in Replay mode
   // Normally an AID is a reply command (which is never processed)
@@ -219,8 +163,9 @@ public class AIDCommand extends Command implements BufferAddressSource
       int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
 
       byte[] buffer = aidFields.get (0).getBuffer ();
-      if (buffer.length == cursorDistance
-          && cursor.getCurrentField ().contains (cursorOldLocation))
+      Field currentField = cursor.getCurrentField ();
+      if (buffer.length == cursorDistance && currentField != null
+          && currentField.contains (cursorOldLocation))
       {
         for (byte b : buffer)
           cursor.typeChar (b);   // send characters through the old cursor
@@ -232,8 +177,11 @@ public class AIDCommand extends Command implements BufferAddressSource
       for (AIDField aidField : aidFields)
       {
         Field field = screen.getField (aidField.getLocation ());
-        field.setText (aidField.getBuffer ());
-        field.draw ();
+        if (field != null)    // in replay mode we cannot rely on the fields list
+        {
+          field.setText (aidField.getBuffer ());
+          field.draw ();
+        }
       }
 
     // place cursor in new location

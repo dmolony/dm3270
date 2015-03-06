@@ -111,7 +111,11 @@ public class BasicStage extends Stage
       }
 
       textArea.appendText (message.toString ());
+
       textArea.appendText ("\n\n");
+      textArea.appendText (screen.getScreen ());
+
+      textArea.appendText ("\n");
       textArea.appendText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
 
       if (sessionRecord.getSource () == Source.SERVER)

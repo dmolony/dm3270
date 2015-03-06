@@ -4,7 +4,6 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
@@ -49,8 +48,8 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     {
       case ENTER:
         screen.setAID ((byte) 0x7D);
-        AIDCommand command = new AIDCommand (screen);
-        console.sendData (command.getTelnetData ());
+        screen.lockKeyboard ();
+        console.sendData (screen.readModifiedFields ().getTelnetData ());
         break;
 
       case TAB:
@@ -100,8 +99,8 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
             pfKey += 12;
 
           screen.setAID (keyValues[pfKey]);
-          command = new AIDCommand (screen);
-          console.sendData (command.getTelnetData ());
+          screen.lockKeyboard ();
+          console.sendData (screen.readModifiedFields ().getTelnetData ());
         }
         break;
     }

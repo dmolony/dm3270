@@ -170,6 +170,7 @@ public class Console extends Application
           mainframeStage.startServer ();
 
           consoleStage = new ConsoleStage (screen, "localhost", MAINFRAME_EMULATOR_PORT);
+          screen.addStatusChangeListener (consoleStage);
           consoleStage.show ();
           consoleStage.connect ();
 
@@ -182,7 +183,9 @@ public class Console extends Application
           Path path = Paths.get (file);
           if (Files.exists (path))
           {
-            new ConsoleStage (screen).show ();
+            consoleStage = new ConsoleStage (screen);
+            screen.addStatusChangeListener (consoleStage);
+            consoleStage.show ();
             new ReplayStage (screen, path).show ();
           }
           else

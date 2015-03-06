@@ -95,8 +95,6 @@ public abstract class Attribute
     return offset + 2;
   }
 
-  //  public abstract void process (ScreenPosition screenPosition);
-
   public abstract ScreenContext process (ContextManager contextHandler,
       ScreenContext screenContext);
 

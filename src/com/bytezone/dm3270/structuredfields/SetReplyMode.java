@@ -39,7 +39,7 @@ public class SetReplyMode extends StructuredField
   @Override
   public void process ()
   {
-    //    screenHandler.setReplyMode (replyMode, types);
+    screen.setReplyMode (replyMode, types);
   }
 
   @Override

@@ -1,11 +1,20 @@
 package com.bytezone.dm3270.display;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import com.bytezone.dm3270.attributes.Attribute;
+import com.bytezone.dm3270.attributes.Attribute.AttributeType;
+import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.orders.BufferAddress;
+import com.bytezone.dm3270.orders.Order;
+import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class Screen extends Canvas
 {
@@ -32,7 +41,10 @@ public class Screen extends Canvas
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
   private boolean resetModified;
+
   private byte currentAID;
+  private byte replyMode;
+  private byte[] replyTypes = new byte[0];
 
   public Screen (int rows, int columns, Font font)
   {
@@ -80,6 +92,11 @@ public class Screen extends Canvas
   public ScreenPosition getScreenPosition (int position)
   {
     return screenPositions[position];
+  }
+
+  public ScreenPosition[] getScreenPositions ()
+  {
+    return screenPositions;
   }
 
   public ContextManager getContextHandler ()
@@ -180,14 +197,120 @@ public class Screen extends Canvas
     return fieldManager.getUnprotectedFields ();
   }
 
+  public void setAID (byte aid)
+  {
+    currentAID = aid;
+  }
+
   public byte getAID ()
   {
     return currentAID;
   }
 
-  public void setAID (byte aid)
+  public void setReplyMode (byte replyMode, byte[] replyTypes)
   {
-    currentAID = aid;
+    this.replyMode = replyMode;
+    this.replyTypes = replyTypes;
+  }
+
+  public byte getReplyMode ()
+  {
+    return replyMode;
+  }
+
+  public byte[] getReplyTypes ()
+  {
+    return replyTypes;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Convert screen contents to an AID command
+  // ---------------------------------------------------------------------------------//
+
+  public AIDCommand readBuffer ()
+  {
+    byte[] buffer = new byte[4096];
+    int ptr = 0;
+    buffer[ptr++] = AIDCommand.AID_READ_PARTITION;
+
+    int cursorLocation = getScreenCursor ().getLocation ();
+    BufferAddress ba = new BufferAddress (cursorLocation);
+    ptr = ba.packAddress (buffer, ptr);
+
+    for (ScreenPosition sp : screenPositions)
+    {
+      if (sp.isStartField ())
+      {
+        StartFieldAttribute sfa = sp.getStartFieldAttribute ();
+
+        if (replyMode == SetReplyMode.RM_FIELD)
+        {
+          buffer[ptr++] = Order.START_FIELD;
+          buffer[ptr++] = sfa.getValue ();
+        }
+        else
+        {
+          buffer[ptr++] = Order.START_FIELD_EXTENDED;
+
+          List<Attribute> attributes = sp.getAttributes ();
+          buffer[ptr++] = (byte) (attributes.size () + 1);    // include SFA
+
+          ptr = sfa.pack (buffer, ptr);
+          for (Attribute attribute : attributes)
+            ptr = attribute.pack (buffer, ptr);
+        }
+      }
+      else
+      {
+        if (replyMode == SetReplyMode.RM_CHARACTER && sp.hasAttributes ())
+        {
+          List<Attribute> attributes = sp.getAttributes ();
+          for (Attribute attribute : attributes)
+          {
+            if (attribute.getAttributeType () == AttributeType.RESET)
+              ptr = attribute.pack (buffer, ptr);
+            else
+              for (byte b : replyTypes)
+                if (attribute.matches (b))
+                {
+                  ptr = attribute.pack (buffer, ptr);
+                  break;
+                }
+          }
+        }
+
+        buffer[ptr++] = sp.getByte ();
+      }
+    }
+
+    return new AIDCommand (this, buffer, 0, ptr);
+  }
+
+  public AIDCommand readModifiedFields ()     // in response to a user key press
+  {
+    byte[] buffer = new byte[4096];
+    int ptr = 0;
+    buffer[ptr++] = getAID ();        // whatever key was pressed
+
+    int cursorLocation = getScreenCursor ().getLocation ();
+    BufferAddress ba = new BufferAddress (cursorLocation);
+    ptr = ba.packAddress (buffer, ptr);
+
+    for (Field field : getUnprotectedFields ())
+      if (field.isModified ())
+      {
+        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+        ba = new BufferAddress (field.getFirstLocation ());
+        ptr = ba.packAddress (buffer, ptr);
+        ptr = field.packData (buffer, ptr);
+      }
+
+    return new AIDCommand (this, buffer, 0, ptr);
+  }
+
+  public AIDCommand readModifiedFields (byte type)
+  {
+    return null;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -212,15 +335,13 @@ public class Screen extends Canvas
   public void restoreKeyboard ()
   {
     keyboardLocked = false;
-    //    if (consoleStage != null)
-    //      consoleStage.setStatus ("");
+    notifyKeyboardStatusChange (!keyboardLocked, keyboardLocked);
   }
 
   public void lockKeyboard ()
   {
     keyboardLocked = true;
-    //    if (consoleStage != null)
-    //      consoleStage.setStatus ("Inhibit");
+    notifyKeyboardStatusChange (!keyboardLocked, keyboardLocked);
   }
 
   public void resetModified ()
@@ -234,6 +355,28 @@ public class Screen extends Canvas
   }
 
   // ---------------------------------------------------------------------------------//
+  // Listener events
+  // ---------------------------------------------------------------------------------//
+
+  private final List<KeyboardStatusListener> keyboardStatusListeners = new ArrayList<> ();
+
+  void notifyKeyboardStatusChange (boolean oldValue, boolean newValue)
+  {
+    for (KeyboardStatusListener listener : keyboardStatusListeners)
+      listener.keyboardStatusChanged (oldValue, newValue);
+  }
+
+  public void addStatusChangeListener (KeyboardStatusListener listener)
+  {
+    keyboardStatusListeners.add (listener);
+  }
+
+  public void removeStatusChangeListener (KeyboardStatusListener listener)
+  {
+    keyboardStatusListeners.remove (listener);
+  }
+
+  // ---------------------------------------------------------------------------------//
   // Debugging
   // ---------------------------------------------------------------------------------//
 
@@ -242,27 +385,19 @@ public class Screen extends Canvas
     return fieldManager.dumpFields ();
   }
 
-  public void dumpScreen ()
+  public String getScreen ()
   {
-    System.out.println ();
+    StringBuilder text = new StringBuilder ();
     int pos = 0;
     for (ScreenPosition sp : screenPositions)
     {
       if (sp.isStartField ())
-        System.out.print ("%");
+        text.append ("%");
       else
-        System.out.print (sp.getChar ());
+        text.append (sp.getChar ());
       if (++pos % columns == 0)
-        System.out.println ();
+        text.append ("\n");
     }
-  }
-
-  public void dumpScreenPositions ()
-  {
-    int startFields = 0;
-    for (ScreenPosition sp : screenPositions)
-      if (sp.isStartField ())
-        ++startFields;
-    System.out.printf ("There are %d start fields%n", startFields);
+    return text.toString ();
   }
 }

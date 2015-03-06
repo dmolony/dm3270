@@ -15,6 +15,7 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
+import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.Session.SessionMode;
@@ -23,7 +24,7 @@ import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TerminalServer;
 
 public class ConsoleStage extends Stage implements FieldChangeListener,
-    CursorMoveListener
+    CursorMoveListener, KeyboardStatusListener
 {
   private final Screen screen;
   private final Label status = new Label ();
@@ -119,12 +120,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       telnetState.write (buffer);
   }
 
-  // Inhibit message
-  public void setStatus (String text)
-  {
-    status.setText (text);
-  }
-
   public void connect ()
   {
     telnetState = new TelnetState ();
@@ -163,5 +158,11 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     int col = newLocation % screen.columns;
     cursorLocation.setText (String.format ("%03d/%03d", row, col));
     fieldChanged (currentField, currentField);    // update the acronym
+  }
+
+  @Override
+  public void keyboardStatusChanged (boolean oldValue, boolean newValue)
+  {
+    status.setText (newValue ? "Inhibit" : "");
   }
 }

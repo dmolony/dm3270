@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.structuredfields;
 
-import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
@@ -80,9 +79,12 @@ public class ReadPartitionSF extends StructuredField
         break;
 
       case Command.READ_BUFFER_F2:        // NB 0x02 would conflict with RPQ above
+        reply = screen.readBuffer ();
+        break;
+
       case Command.READ_MODIFIED_F6:
       case Command.READ_MODIFIED_ALL_6E:
-        reply = new AIDCommand (screen, data[2]);
+        reply = screen.readModifiedFields (data[2]);
         break;
 
       default:
