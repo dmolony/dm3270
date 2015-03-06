@@ -34,11 +34,6 @@ public class Field
         screenPosition.setVisible (false);
   }
 
-  public StartFieldAttribute getStartFieldAttribute ()
-  {
-    return startFieldAttribute;
-  }
-
   void setScreenContexts ()
   {
     ContextManager contextManager = screen.getContextHandler ();
@@ -85,6 +80,11 @@ public class Field
   public Field getPreviousUnprotectedField ()
   {
     return previous;
+  }
+
+  public StartFieldAttribute getStartFieldAttribute ()
+  {
+    return startFieldAttribute;
   }
 
   public int getDisplayLength ()

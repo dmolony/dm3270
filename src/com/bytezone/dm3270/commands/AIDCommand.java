@@ -38,33 +38,6 @@ public class AIDCommand extends Command implements BufferAddressSource
   private final List<AIDField> aidFields = new ArrayList<> ();
   private final List<Order> orders = new ArrayList<> ();
 
-  //  public static AIDCommand ReadBuffer (Screen screen, byte type)
-  //  {
-  //    AIDCommand command = null;
-  //
-  //    switch (type)
-  //    {
-  //      case Command.READ_BUFFER_F2:
-  //      case Command.READ_BUFFER_02:
-  //        //        command = readBuffer ();
-  //        break;
-  //
-  //      case Command.READ_MODIFIED_F6:
-  //      case Command.READ_MODIFIED_06:
-  //        //        command = readModified (AIDCommand.NO_AID_SPECIFIED);
-  //        break;
-  //
-  //      case Command.READ_MODIFIED_ALL_6E:
-  //      case Command.READ_MODIFIED_ALL_0E:
-  //        //        command = readModifiedAll (AIDCommand.NO_AID_SPECIFIED);
-  //        break;
-  //
-  //      default:
-  //        //        System.out.printf ("Unknown value: %02X%n", data[0]);
-  //    }
-  //    return command;
-  //  }
-
   public AIDCommand (Screen screen, byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length, screen);
@@ -115,35 +88,6 @@ public class AIDCommand extends Command implements BufferAddressSource
         return i;
     return 0;
   }
-
-  //  public AIDCommand readBuffer ()
-  //  {
-  //    byte[] buffer = new byte[4096];
-  //    int ptr = 0;
-  //    buffer[ptr++] = AID_READ_PARTITION;
-  //
-  //    int cursorLocation = screen.getScreenCursor ().getLocation ();
-  //    BufferAddress ba = new BufferAddress (cursorLocation);
-  //    ptr = ba.packAddress (buffer, ptr);
-  //
-  //    //    for (ScreenField sf : screenHandler.getScreenFields ())
-  //    //      ptr = sf.pack (buffer, ptr);
-  //    System.out.println ("pack in AID.readBuffer()");
-  //
-  //    return new AIDCommand (screen, buffer, 0, ptr);
-  //  }
-
-  // not written yet
-  //  private AIDCommand readModifiedAll (byte aid)
-  //  {
-  //    byte[] buffer = new byte[4096];
-  //    int ptr = 0;
-  //    buffer[ptr++] = aid;
-  //
-  //    System.out.println ("pack in AID.readModifiedAll()");
-  //
-  //    return new AIDCommand (screen, buffer, 0, ptr);
-  //  }
 
   // copy modified fields back to the screen - only used in Replay mode
   // Normally an AID is a reply command (which is never processed)

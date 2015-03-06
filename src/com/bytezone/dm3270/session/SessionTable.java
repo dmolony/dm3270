@@ -25,7 +25,7 @@ public class SessionTable extends TableView<SessionRecord>
     commandTypeCol.setPrefWidth (60);
     commandTypeCol.setCellValueFactory (new PropertyValueFactory<> ("commandType"));
 
-    commandCol.setPrefWidth (140);
+    commandCol.setPrefWidth (120);
     commandCol.setCellValueFactory (new PropertyValueFactory<> ("commandName"));
 
     sizeCol.setPrefWidth (40);
@@ -42,19 +42,21 @@ public class SessionTable extends TableView<SessionRecord>
         TableCell<SessionRecord, Integer>> ()
         {
           @Override
-          public TableCell<SessionRecord, Integer> call (TableColumn<SessionRecord, Integer> p)
+          public TableCell<SessionRecord, Integer> call (
+              TableColumn<SessionRecord, Integer> p)
           {
-            TableCell<SessionRecord, Integer> cell = new TableCell<SessionRecord, Integer> ()
-            {
-              @Override
-              public void updateItem (Integer item, boolean empty)
-              {
-                super.updateItem (item, empty);
-                setText (empty ? null : getItem () == null ? "0" : //
-                    String.format ("%,d", getItem ()));
-                setGraphic (null);
-              }
-            };
+            TableCell<SessionRecord, Integer> cell =
+                new TableCell<SessionRecord, Integer> ()
+                {
+                  @Override
+                  public void updateItem (Integer item, boolean empty)
+                  {
+                    super.updateItem (item, empty);
+                    setText (empty ? null : getItem () == null ? "0" : //
+                        String.format ("%,d", getItem ()));
+                    setGraphic (null);
+                  }
+                };
 
             cell.setStyle ("-fx-alignment: top-right;");
             return cell;

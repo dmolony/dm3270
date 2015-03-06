@@ -63,7 +63,7 @@ public class ReplayStage extends BasicStage
     sp3.getChildren ().add (replyTextArea);
 
     splitPane1.getItems ().addAll (sp1, splitPane2);
-    splitPane1.setDividerPositions (0.35f);
+    splitPane1.setDividerPositions (0.32f);
 
     splitPane2.getItems ().addAll (sp2, sp3);
     splitPane2.setDividerPositions (0.75f);
