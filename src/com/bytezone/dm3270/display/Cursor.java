@@ -7,6 +7,9 @@ import com.bytezone.dm3270.attributes.Attribute;
 
 public class Cursor
 {
+  private static final boolean WITH_CURSOR = true;
+  private static final boolean WITHOUT_CURSOR = false;
+
   private final Screen screen;
 
   private int currentPosition;
@@ -201,19 +204,22 @@ public class Cursor
 
   public void moveTo (int newPosition)
   {
-    if (visible)
-    {
-      int oldPosition = currentPosition;
-      screen.drawPosition (currentPosition, false);
-      currentPosition = screen.validate (newPosition);
-      screen.drawPosition (currentPosition, true);
-      notifyCursorMove (oldPosition, currentPosition);
-    }
-    else
-      currentPosition = screen.validate (newPosition);
+    int oldPosition = currentPosition;
+    currentPosition = screen.validate (newPosition);
 
-    if (currentField != null && !currentField.contains (currentPosition))
-      setCurrentField ();
+    if (currentPosition != oldPosition)
+    {
+      notifyCursorMove (oldPosition, currentPosition);
+
+      if (visible)
+      {
+        screen.drawPosition (oldPosition, WITHOUT_CURSOR);
+        screen.drawPosition (currentPosition, WITH_CURSOR);
+      }
+
+      if (currentField != null && !currentField.contains (currentPosition))
+        setCurrentField ();
+    }
   }
 
   // ---------------------------------------------------------------------------------//

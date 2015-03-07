@@ -60,7 +60,7 @@ public class SessionTable extends TableView<SessionRecord>
                   }
                 };
 
-            cell.setStyle ("-fx-alignment: top-right;");
+            cell.setStyle ("-fx-alignment: center-right;");
             return cell;
           }
         });
@@ -86,7 +86,7 @@ public class SessionTable extends TableView<SessionRecord>
                   }
                 };
 
-            cell.setStyle ("-fx-alignment: CENTER;");
+            cell.setStyle ("-fx-alignment: center;");
             return cell;
           }
         });
