@@ -80,18 +80,22 @@ public class Cursor
       }
       moveTo (newPosition);
     }
-    else
-      System.out.println ("Can't type here");         // lock the keyboard?
+    //    else
+    //      System.out.println ("Can't type here");         // lock the keyboard?
   }
 
   public void backspace ()
   {
-    int first = currentField.getFirstLocation ();
-    if (currentPosition != first)
+    if (currentField != null && currentField.isUnprotected ())
     {
-      int newPosition = screen.validate (currentPosition) - 1;
-      screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
-      moveTo (newPosition);
+
+      int first = currentField.getFirstLocation ();
+      if (currentPosition != first)
+      {
+        int newPosition = screen.validate (currentPosition) - 1;
+        screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
+        moveTo (newPosition);
+      }
     }
   }
 
@@ -137,6 +141,9 @@ public class Cursor
 
   public void tab (boolean backTab)
   {
+    if (currentField == null)
+      return;
+
     Field newField = null;
 
     if (currentField.isUnprotected ())

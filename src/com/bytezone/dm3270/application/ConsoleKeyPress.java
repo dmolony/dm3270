@@ -36,6 +36,8 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     if (e.isMetaDown ())
       return;
 
+    e.consume ();
+
     if (screen.isKeyboardLocked ())
     {
       System.out.println ("Locked keyboard - ignoring : " + e);
@@ -59,12 +61,15 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       case LEFT:
         cursor.move (Direction.LEFT);
         break;
+
       case RIGHT:
         cursor.move (Direction.RIGHT);
         break;
+
       case UP:
         cursor.move (Direction.UP);
         break;
+
       case DOWN:
         cursor.move (Direction.DOWN);
         break;
