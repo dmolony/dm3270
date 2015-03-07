@@ -13,8 +13,8 @@ import com.bytezone.dm3270.replyfield.DistributedDataManagement;
 import com.bytezone.dm3270.replyfield.Highlight;
 import com.bytezone.dm3270.replyfield.ImplicitPartition;
 import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
-import com.bytezone.dm3270.replyfield.RPQNames;
 import com.bytezone.dm3270.replyfield.QueryReplyField;
+import com.bytezone.dm3270.replyfield.RPQNames;
 import com.bytezone.dm3270.replyfield.ReplyModes;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.replyfield.UsableArea;
@@ -75,12 +75,6 @@ public class ReadStructuredFieldCommand extends Command
   public List<StructuredField> getFieldList ()
   {
     return fields;
-  }
-
-  @Override
-  public String getName ()
-  {
-    return "Read Structured Field";
   }
 
   private static byte[] buildReply (int version)
@@ -149,6 +143,12 @@ public class ReadStructuredFieldCommand extends Command
   @Override
   public void process ()
   {
+  }
+
+  @Override
+  public String getName ()
+  {
+    return "Read SF";
   }
 
   @Override

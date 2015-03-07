@@ -21,8 +21,8 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
-import com.bytezone.dm3270.replyfield.RPQNames;
 import com.bytezone.dm3270.replyfield.QueryReplyField;
+import com.bytezone.dm3270.replyfield.RPQNames;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetListener;
@@ -97,11 +97,6 @@ public class Session implements Iterable<SessionRecord>
             labels.add (server.getLabel ());
         }
   }
-
-  //  public ScreenHandler getScreenHandler ()
-  //  {
-  //    return screenHandler;
-  //  }
 
   public Screen getScreen ()
   {

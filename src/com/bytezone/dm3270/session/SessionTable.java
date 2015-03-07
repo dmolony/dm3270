@@ -11,8 +11,9 @@ public class SessionTable extends TableView<SessionRecord>
   public SessionTable ()
   {
     setPrefHeight (770);
-    setPrefWidth (340);
+    //    setPrefWidth (300);
     setStyle ("-fx-font-size: 11;");
+    setFixedCellSize (20.0);
 
     TableColumn<SessionRecord, String> sourceCol = new TableColumn<> ("Source");
     TableColumn<SessionRecord, String> commandTypeCol = new TableColumn<> ("Type");
@@ -25,7 +26,7 @@ public class SessionTable extends TableView<SessionRecord>
     commandTypeCol.setPrefWidth (60);
     commandTypeCol.setCellValueFactory (new PropertyValueFactory<> ("commandType"));
 
-    commandCol.setPrefWidth (120);
+    commandCol.setPrefWidth (70);
     commandCol.setCellValueFactory (new PropertyValueFactory<> ("commandName"));
 
     sizeCol.setPrefWidth (40);

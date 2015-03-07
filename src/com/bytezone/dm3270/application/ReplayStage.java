@@ -63,7 +63,7 @@ public class ReplayStage extends BasicStage
     sp3.getChildren ().add (replyTextArea);
 
     splitPane1.getItems ().addAll (sp1, splitPane2);
-    splitPane1.setDividerPositions (0.32f);
+    splitPane1.setDividerPositions (0.30f);
 
     splitPane2.getItems ().addAll (sp2, sp3);
     splitPane2.setDividerPositions (0.75f);
@@ -125,9 +125,7 @@ public class ReplayStage extends BasicStage
         .selectedItemProperty ()
         .addListener ( (ObservableValue<? extends SessionRecord> observable,
                           SessionRecord oldValue, SessionRecord newValue) //
-                      -> {
-                        replay (newValue, textArea, replyTextArea, DO_PROCESS, screen);
-                      });
+                      -> replay (newValue, textArea, replyTextArea, DO_PROCESS, screen));
 
     Rectangle2D primaryScreenBounds = Screen.getPrimary ().getVisualBounds ();
     String osName = System.getProperty ("os.name");

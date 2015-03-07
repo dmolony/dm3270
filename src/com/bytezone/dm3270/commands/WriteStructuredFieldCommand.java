@@ -111,7 +111,7 @@ public class WriteStructuredFieldCommand extends Command
   @Override
   public String getName ()
   {
-    return "Write Structured Field";
+    return "Write SF";
   }
 
   @Override

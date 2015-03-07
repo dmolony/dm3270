@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
@@ -40,6 +41,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private TerminalServer terminalServer;
 
   private Field currentField;
+  private final Command clearCommand;
 
   public ConsoleStage (Screen screen, String mainframeURL, int mainframePort)
   {
@@ -57,17 +59,23 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     setTitle ("dm3270");
 
+    byte[] buffer = { (byte) 0xF5, (byte) 0xC1, 0x11, 0x40, 0x40, 0x13 };
+    clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
+
     int margin = 4;
     BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
     ToolBar toolbar = new ToolBar ();
-    toolbar.getItems ().add (new Button ("Home"));
+    Button btnClear = new Button ("Clear");
+    toolbar.getItems ().add (btnClear);
     toolbar.getItems ().add (new Button ("Options"));
     toolbar.getItems ().add (new Button ("Help"));
 
     //    final String os = System.getProperty ("os.name");
     //    if (os != null && os.startsWith ("Mac"))
     //      menuBar.useSystemMenuBarProperty ().set (true);
+
+    btnClear.setOnAction (e -> clearCommand.process ());
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
