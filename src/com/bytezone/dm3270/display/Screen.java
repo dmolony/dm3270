@@ -382,10 +382,10 @@ public class Screen extends Canvas
 
   public String getFieldText ()
   {
-    return fieldManager.dumpFields ();
+    return fieldManager.getFieldsText ();
   }
 
-  public String getScreen ()
+  public String getScreenText ()
   {
     StringBuilder text = new StringBuilder ();
     int pos = 0;
@@ -398,6 +398,10 @@ public class Screen extends Canvas
       if (++pos % columns == 0)
         text.append ("\n");
     }
+
+    text.append ("\n");
+    text.append (fieldManager.getTotalsText ());
+
     return text.toString ();
   }
 }

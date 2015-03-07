@@ -159,7 +159,7 @@ public class FieldManager
   // Debugging
   // ---------------------------------------------------------------------------------//
 
-  public String dumpFields ()
+  public String getTotalsText ()
   {
     StringBuilder text = new StringBuilder ();
 
@@ -170,6 +170,13 @@ public class FieldManager
     text.append (String.format ("Data positions      : %d%n", dataPositions));
     text.append (String.format ("Screen positions    : %d",
                                 dataPositions + fields.size ()));
+
+    return text.toString ();
+  }
+
+  public String getFieldsText ()
+  {
+    StringBuilder text = new StringBuilder ();
 
     for (Field field : fields)
     {

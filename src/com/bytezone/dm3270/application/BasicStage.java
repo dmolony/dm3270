@@ -78,7 +78,8 @@ public class BasicStage extends Stage
   }
 
   protected void replay (SessionRecord sessionRecord, TextArea textArea,
-      TextArea replyTextArea, boolean process, Screen screen)
+      TextArea bufferTextArea, TextArea replyTextArea, TextArea fieldsTextArea,
+      TextArea screenTextArea, boolean process, Screen screen)
   {
     if (sessionRecord == null)     // nothing selected
       return;
@@ -111,19 +112,13 @@ public class BasicStage extends Stage
       }
 
       textArea.appendText (message.toString ());
-
-      textArea.appendText ("\n\n");
-      textArea.appendText (screen.getScreen ());
-
-      textArea.appendText ("\n");
-      textArea.appendText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
-
-      if (sessionRecord.getSource () == Source.SERVER)
-      {
-        textArea.appendText ("\n\n");
-        textArea.appendText (screen.getFieldText ());
-      }
       textArea.positionCaret (0);
+    }
+
+    if (bufferTextArea != null)
+    {
+      bufferTextArea.setText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
+      bufferTextArea.positionCaret (0);
     }
 
     if (replyTextArea != null)
@@ -152,6 +147,21 @@ public class BasicStage extends Stage
         replyTextArea.appendText (Utility.toHex (reply.getTelnetData (), ebcdic));
         replyTextArea.positionCaret (0);
       }
+    }
+
+    if (fieldsTextArea != null)
+    {
+      if (sessionRecord.getSource () == Source.SERVER)
+      {
+        fieldsTextArea.setText (screen.getFieldText ());
+        fieldsTextArea.positionCaret (0);
+      }
+    }
+
+    if (screenTextArea != null)
+    {
+      screenTextArea.setText (screen.getScreenText ());
+      screenTextArea.positionCaret (0);
     }
   }
 }
