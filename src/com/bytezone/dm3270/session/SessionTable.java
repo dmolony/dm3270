@@ -39,6 +39,7 @@ public class SessionTable extends TableView<SessionRecord>
 
     setTableMenuButtonVisible (true);
 
+    // right justify the size column
     sizeCol.setCellFactory (new Callback<TableColumn<SessionRecord, Integer>, //
         TableCell<SessionRecord, Integer>> ()
         {
@@ -60,6 +61,32 @@ public class SessionTable extends TableView<SessionRecord>
                 };
 
             cell.setStyle ("-fx-alignment: top-right;");
+            return cell;
+          }
+        });
+
+    // centre justify the source column
+    sourceCol.setCellFactory (new Callback<TableColumn<SessionRecord, String>, //
+        TableCell<SessionRecord, String>> ()
+        {
+          @Override
+          public TableCell<SessionRecord, String> call (
+              TableColumn<SessionRecord, String> p)
+          {
+            TableCell<SessionRecord, String> cell =
+                new TableCell<SessionRecord, String> ()
+                {
+                  @Override
+                  public void updateItem (String item, boolean empty)
+                  {
+                    super.updateItem (item, empty);
+                    setText (empty ? null : getItem () == null ? "" : getItem ()
+                        .toString ());
+                    setGraphic (null);
+                  }
+                };
+
+            cell.setStyle ("-fx-alignment: CENTER;");
             return cell;
           }
         });
