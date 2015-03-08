@@ -71,29 +71,24 @@ public class AIDCommand extends Command implements BufferAddressSource
           orders.add (order);
           previousOrder = order;
         }
-        //        System.out.println (order);
-        if (false)
+
+        if (order instanceof TextOrder)
         {
-          if (order instanceof TextOrder)
+          // create an AIDField when a TextOrder is preceded by a SetBufferAddressOrder
+          // these are sent from the terminal when the user presses ENTR/PFxx
+          if (sba != null)
           {
-            textOrders++;
             aidFields.add (new AIDField (sba, (TextOrder) order));
+            //            System.out.printf ("AID %02X%n", keyCommand);
           }
-          else if (order instanceof SetBufferAddressOrder)
-            sba = (SetBufferAddressOrder) order;
+          textOrders++;
         }
+
+        if (order instanceof SetBufferAddressOrder)
+          sba = (SetBufferAddressOrder) order;
         else
-        {
-          if (sba != null && order instanceof TextOrder)
-            aidFields.add (new AIDField (sba, (TextOrder) order));
-          if (order instanceof SetBufferAddressOrder)
-            sba = (SetBufferAddressOrder) order;
-          else
-            sba = null;
-          //          sba =
-          //              (order instanceof SetBufferAddressOrder) ? (SetBufferAddressOrder) order
-          //                  : null;
-        }
+          sba = null;
+
       }
       ptr += order.size ();
     }
@@ -190,6 +185,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
+
     text.append (String.format ("AID     : %-12s : %02X%n", keyNames[key], keyCommand));
     text.append (String.format ("Cursor  : %s%n", cursorAddress));
 
@@ -202,8 +198,8 @@ public class AIDCommand extends Command implements BufferAddressSource
         text.append (aidField);
       }
     }
-
-    if (orders.size () > 0 && aidFields.size () == 0)
+    // response to a read buffer request
+    else if (orders.size () > 0)
     {
       text.append (String.format ("%nOrders  : %d%n", orders.size () - textOrders));
       text.append (String.format ("Text    : %d%n", textOrders));
