@@ -279,6 +279,9 @@ public class Screen extends Canvas
           }
         }
 
+        if (sp.isGraphicsChar ())
+          buffer[ptr++] = Order.GRAPHICS_ESCAPE;
+
         buffer[ptr++] = sp.getByte ();
       }
     }

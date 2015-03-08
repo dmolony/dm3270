@@ -73,6 +73,11 @@ public class ScreenPosition
     return startFieldAttribute != null;
   }
 
+  public boolean isGraphicsChar ()
+  {
+    return isGraphics;
+  }
+
   public StartFieldAttribute getStartFieldAttribute ()
   {
     return startFieldAttribute;
