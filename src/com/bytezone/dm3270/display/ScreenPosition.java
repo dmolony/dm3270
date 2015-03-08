@@ -105,6 +105,17 @@ public class ScreenPosition
     if (value == 0 || isStartField ())
       return ' ';
 
+    if (isGraphics)
+      switch (value)
+      {
+        case HORIZONTAL_LINE:
+          return '-';
+        case VERTICAL_LINE:
+          return '|';
+        default:
+          return '*';
+      }
+
     return (char) Utility.ebc2asc[value & 0xFF];
   }
 

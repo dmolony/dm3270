@@ -163,13 +163,14 @@ public class FieldManager
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String.format ("Total screen fields : %d%n", fields.size ()));
-    text.append (String.format ("Empty fields        : %d%n", emptyFields.size ()));
-    text.append (String.format ("Hidden fields       : %d%n", hiddenFields.size ()));
-    text.append (String.format ("Unprotected fields  : %d%n", unprotectedFields.size ()));
-    text.append (String.format ("Data positions      : %d%n", dataPositions));
-    text.append (String.format ("Screen positions    : %d",
-                                dataPositions + fields.size ()));
+    text.append (String.format ("Total fields     : %d%n", fields.size ()));
+    text.append (String.format ("  Empty          : %d%n", emptyFields.size ()));
+    text.append (String.format ("  Hidden         : %d%n", hiddenFields.size ()));
+    text.append (String.format ("  Unprotected    : %d%n", unprotectedFields.size ()));
+    text.append (String.format ("  Protected      : %d%n%n", fields.size ()
+        - unprotectedFields.size ()));
+    text.append (String.format ("Data positions   : %d%n", dataPositions));
+    text.append (String.format ("Screen positions : %d", dataPositions + fields.size ()));
 
     return text.toString ();
   }
@@ -180,8 +181,13 @@ public class FieldManager
 
     for (Field field : fields)
     {
-      text.append ("\n\n");
       text.append (field.toStringWithLinks ());
+      text.append ("\n\n");
+    }
+    if (text.length () > 0)
+    {
+      text.deleteCharAt (text.length () - 1);
+      text.deleteCharAt (text.length () - 1);
     }
     return text.toString ();
   }
