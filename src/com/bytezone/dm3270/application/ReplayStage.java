@@ -21,7 +21,6 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 
@@ -47,8 +46,12 @@ public class ReplayStage extends BasicStage
     final CheckBox showTelnet = new CheckBox ("Show telnet");
     final CheckBox show3270E = new CheckBox ("Show 3270-E");
 
-    final HBox hbox = getHBox ();
-    hbox.getChildren ().addAll (showTelnet, show3270E);
+    final HBox checkBoxes = getHBox ();
+    checkBoxes.getChildren ().addAll (showTelnet, show3270E);
+
+    TabPane tabPane = new TabPane ();
+    tabPane.setSide (Side.BOTTOM);
+    tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
 
     final TextArea commandTextArea = getTextArea (TEXT_WIDTH);
     final TextArea replyTextArea = getTextArea (TEXT_WIDTH);
@@ -56,48 +59,24 @@ public class ReplayStage extends BasicStage
     final TextArea fieldsTextArea = getTextArea (TEXT_WIDTH);
     final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
 
-    SplitPane splitPane1 = new SplitPane ();
-    splitPane1.setOrientation (Orientation.HORIZONTAL);
-
-    final StackPane sp1 = new StackPane ();
-    sp1.getChildren ().add (table);
-
-    final StackPane sp3 = new StackPane ();
-    sp3.getChildren ().add (replyTextArea);
-
-    TabPane tabPane = new TabPane ();
-    tabPane.setSide (Side.BOTTOM);
-    tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
-
-    Tab tabCommand = new Tab ();
-    tabCommand.setText ("Command");
-    tabCommand.setContent (commandTextArea);
-
-    Tab tabReply = new Tab ();
-    tabReply.setText ("Reply");
-    tabReply.setContent (replyTextArea);
-
-    Tab tabScreen = new Tab ();
-    tabScreen.setText ("Screen");
-    tabScreen.setContent (screenTextArea);
-
-    Tab tabFields = new Tab ();
-    tabFields.setText ("Fields");
-    tabFields.setContent (fieldsTextArea);
-
-    Tab tabBuffer = new Tab ();
-    tabBuffer.setText ("Buffer");
-    tabBuffer.setContent (bufferTextArea);
+    Tab tabCommand = getTab ("Command", commandTextArea);
+    Tab tabReply = getTab ("Reply", replyTextArea);
+    Tab tabScreen = getTab ("Screen", screenTextArea);
+    Tab tabFields = getTab ("Fields", fieldsTextArea);
+    Tab tabBuffer = getTab ("Buffer", bufferTextArea);
 
     tabPane.getTabs ().addAll (tabCommand, tabBuffer, tabReply, tabFields, tabScreen);
 
-    splitPane1.getItems ().addAll (sp1, tabPane);
-    splitPane1.setDividerPositions (0.31f);
+    SplitPane splitPane = new SplitPane ();
+    splitPane.setOrientation (Orientation.HORIZONTAL);
+
+    splitPane.getItems ().addAll (table, tabPane);
+    splitPane.setDividerPositions (0.31f);
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setCenter (splitPane1);
+    borderPane.setCenter (splitPane);
     borderPane.setTop (label);
-    borderPane.setBottom (hbox);
+    borderPane.setBottom (checkBoxes);
 
     setTitle ("Replay Commands - " + path.getFileName ());
 

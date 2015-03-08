@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
@@ -67,6 +68,14 @@ public class BasicStage extends Stage
     textArea.setFont (Font.font ("Monospaced", 12));
     textArea.setPrefWidth (width);
     return textArea;
+  }
+
+  protected Tab getTab (String name, TextArea textArea)
+  {
+    Tab tab = new Tab ();
+    tab.setText (name);
+    tab.setContent (textArea);
+    return tab;
   }
 
   protected RadioButton getRadioButton (String text, HBox hbox, ToggleGroup group)

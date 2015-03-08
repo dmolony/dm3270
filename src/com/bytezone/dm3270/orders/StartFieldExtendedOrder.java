@@ -85,7 +85,8 @@ public class StartFieldExtendedOrder extends Order
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-    text.append (String.format ("SFE : %s (%04d)", startFieldAttribute, location));
+    String locationText = location >= 0 ? String.format ("(%04d)", location) : "";
+    text.append (String.format ("SFE : %s %s", startFieldAttribute, locationText));
 
     for (Attribute attr : attributes)
       text.append (String.format ("\n      %-34s", attr));

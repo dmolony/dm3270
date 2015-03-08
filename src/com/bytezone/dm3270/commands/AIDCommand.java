@@ -37,6 +37,7 @@ public class AIDCommand extends Command implements BufferAddressSource
 
   private final List<AIDField> aidFields = new ArrayList<> ();
   private final List<Order> orders = new ArrayList<> ();
+  private int textOrders;
 
   public AIDCommand (Screen screen, byte[] buffer, int offset, int length)
   {
@@ -70,12 +71,29 @@ public class AIDCommand extends Command implements BufferAddressSource
           orders.add (order);
           previousOrder = order;
         }
-
-        if (sba != null && order instanceof TextOrder)
-          aidFields.add (new AIDField (sba, (TextOrder) order));
-        sba =
-            (order instanceof SetBufferAddressOrder) ? (SetBufferAddressOrder) order
-                : null;
+        //        System.out.println (order);
+        if (false)
+        {
+          if (order instanceof TextOrder)
+          {
+            textOrders++;
+            aidFields.add (new AIDField (sba, (TextOrder) order));
+          }
+          else if (order instanceof SetBufferAddressOrder)
+            sba = (SetBufferAddressOrder) order;
+        }
+        else
+        {
+          if (sba != null && order instanceof TextOrder)
+            aidFields.add (new AIDField (sba, (TextOrder) order));
+          if (order instanceof SetBufferAddressOrder)
+            sba = (SetBufferAddressOrder) order;
+          else
+            sba = null;
+          //          sba =
+          //              (order instanceof SetBufferAddressOrder) ? (SetBufferAddressOrder) order
+          //                  : null;
+        }
       }
       ptr += order.size ();
     }
@@ -187,7 +205,8 @@ public class AIDCommand extends Command implements BufferAddressSource
 
     if (orders.size () > 0 && aidFields.size () == 0)
     {
-      text.append (String.format ("%nOrders  : %d%n", orders.size ()));
+      text.append (String.format ("%nOrders  : %d%n", orders.size () - textOrders));
+      text.append (String.format ("Text    : %d%n", textOrders));
 
       // if the list begins with a TextOrder then tab out the missing columns
       if (orders.size () > 0 && orders.get (0) instanceof TextOrder)
