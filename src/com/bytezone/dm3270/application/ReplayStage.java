@@ -32,6 +32,7 @@ import com.bytezone.dm3270.session.SessionTable;
 
 public class ReplayStage extends BasicStage
 {
+  private static final int TEXT_WIDTH = 540;
   private final SessionTable table = new SessionTable ();
 
   public ReplayStage (com.bytezone.dm3270.display.Screen screen, Path path)
@@ -49,11 +50,11 @@ public class ReplayStage extends BasicStage
     final HBox hbox = getHBox ();
     hbox.getChildren ().addAll (showTelnet, show3270E);
 
-    final TextArea commandTextArea = getTextArea (600);
-    final TextArea replyTextArea = getTextArea (600);
-    final TextArea screenTextArea = getTextArea (600);
-    final TextArea fieldsTextArea = getTextArea (600);
-    final TextArea bufferTextArea = getTextArea (600);
+    final TextArea commandTextArea = getTextArea (TEXT_WIDTH);
+    final TextArea replyTextArea = getTextArea (TEXT_WIDTH);
+    final TextArea screenTextArea = getTextArea (TEXT_WIDTH);
+    final TextArea fieldsTextArea = getTextArea (TEXT_WIDTH);
+    final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
 
     SplitPane splitPane1 = new SplitPane ();
     splitPane1.setOrientation (Orientation.HORIZONTAL);
@@ -91,7 +92,7 @@ public class ReplayStage extends BasicStage
     tabPane.getTabs ().addAll (tabCommand, tabBuffer, tabReply, tabFields, tabScreen);
 
     splitPane1.getItems ().addAll (sp1, tabPane);
-    splitPane1.setDividerPositions (0.30f);
+    splitPane1.setDividerPositions (0.31f);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane1);
