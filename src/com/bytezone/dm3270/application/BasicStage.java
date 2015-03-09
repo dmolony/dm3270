@@ -87,8 +87,8 @@ public class BasicStage extends Stage
   }
 
   protected void replay (SessionRecord sessionRecord, TextArea textArea,
-      TextArea bufferTextArea, TextArea replyTextArea, TextArea fieldsTextArea,
-      TextArea screenTextArea, boolean process, Screen screen)
+      TextArea bufferTextArea, TextArea replyTextArea, TextArea replyBufferTextArea,
+      TextArea fieldsTextArea, TextArea screenTextArea, boolean process, Screen screen)
   {
     if (sessionRecord == null)     // nothing selected
       return;
@@ -109,10 +109,13 @@ public class BasicStage extends Stage
     if (process)
       message.process ();       // only process the message when in Replay mode
 
+    Buffer reply = message.getReply ();
+
     if (textArea != null)
     {
-      textArea.setText (sessionRecord.getSourceName ());
-      textArea.appendText (":\n\n");
+      textArea.setText ("");
+      //      textArea.setText (sessionRecord.getSourceName ());
+      //      textArea.appendText (":\n\n");
 
       if (commandHeader != null)
       {
@@ -132,29 +135,37 @@ public class BasicStage extends Stage
 
     if (replyTextArea != null)
     {
-      Buffer reply = message.getReply ();
       if (reply == null || reply.size () == 0)
         replyTextArea.setText ("");
       else
       {
-        replyTextArea.setText ("Reply:");
+        replyTextArea.setText ("");
         if (reply instanceof AbstractExtendedCommand)
         {
           CommandHeader header = ((AbstractExtendedCommand) reply).getCommandHeader ();
           if (header != null)
           {
-            replyTextArea.appendText ("\n\n");
+            //            replyTextArea.appendText ("\n\n");
             replyTextArea.appendText (header.toString ());
             replyTextArea.appendText ("\n\n");
             replyTextArea.appendText (Utility.toHex (header.getData (), ebcdic));
           }
         }
 
-        replyTextArea.appendText ("\n\n");
+        //        replyTextArea.appendText ("\n\n");
         replyTextArea.appendText (reply.toString ());
-        replyTextArea.appendText ("\n\n");
-        replyTextArea.appendText (Utility.toHex (reply.getTelnetData (), ebcdic));
         replyTextArea.positionCaret (0);
+      }
+    }
+
+    if (replyBufferTextArea != null)
+    {
+      if (reply == null || reply.size () == 0)
+        replyBufferTextArea.setText ("");
+      else
+      {
+        replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
+        replyBufferTextArea.positionCaret (0);
       }
     }
 

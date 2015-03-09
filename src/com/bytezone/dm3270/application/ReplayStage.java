@@ -58,14 +58,17 @@ public class ReplayStage extends BasicStage
     final TextArea screenTextArea = getTextArea (TEXT_WIDTH);
     final TextArea fieldsTextArea = getTextArea (TEXT_WIDTH);
     final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
+    final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
 
     Tab tabCommand = getTab ("Command", commandTextArea);
     Tab tabReply = getTab ("Reply", replyTextArea);
     Tab tabScreen = getTab ("Screen", screenTextArea);
     Tab tabFields = getTab ("Fields", fieldsTextArea);
     Tab tabBuffer = getTab ("Buffer", bufferTextArea);
+    Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
 
-    tabPane.getTabs ().addAll (tabCommand, tabBuffer, tabReply, tabFields, tabScreen);
+    tabPane.getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
+                               tabReplyBuffer);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
@@ -131,8 +134,8 @@ public class ReplayStage extends BasicStage
         .addListener ( (ObservableValue<? extends SessionRecord> observable,
                           SessionRecord oldValue, SessionRecord newValue) //
                       -> replay (newValue, commandTextArea, bufferTextArea,
-                                 replyTextArea, fieldsTextArea, screenTextArea,
-                                 DO_PROCESS, screen));
+                                 replyTextArea, replyBufferTextArea, fieldsTextArea,
+                                 screenTextArea, DO_PROCESS, screen));
 
     Rectangle2D primaryScreenBounds = Screen.getPrimary ().getVisualBounds ();
     String osName = System.getProperty ("os.name");

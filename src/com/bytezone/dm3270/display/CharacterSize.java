@@ -19,11 +19,14 @@ public class CharacterSize
 
   public void changeFont (Font font)
   {
-    this.font = font;
-    FontMetrics fm = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
+    if (font != this.font)
+    {
+      this.font = font;
+      FontMetrics fm = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
 
-    width = fm.computeStringWidth ("w");
-    height = fm.getLineHeight ();
-    ascent = fm.getAscent ();
+      width = fm.computeStringWidth ("w");
+      height = fm.getLineHeight ();
+      ascent = fm.getAscent ();
+    }
   }
 }

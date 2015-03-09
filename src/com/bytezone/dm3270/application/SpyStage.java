@@ -98,7 +98,7 @@ public class SpyStage extends BasicTelnetStage
         .selectedItemProperty ()
         .addListener ( (ObservableValue<? extends SessionRecord> observable,
                           SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue, textArea, null, null, null, null,
+                      -> replay (newValue, textArea, null, null, null, null, null,
                                  DONT_PROCESS, screen));
 
     btnReadBuffer.setOnAction ( (x) -> {

@@ -75,12 +75,10 @@ public class AIDCommand extends Command implements BufferAddressSource
         if (order instanceof TextOrder)
         {
           // create an AIDField when a TextOrder is preceded by a SetBufferAddressOrder
-          // these are sent from the terminal when the user presses ENTR/PFxx
+          // these are created by screen.readModifiedFields () in response to the 
+          // user pressing ENTR/PFxx
           if (sba != null)
-          {
             aidFields.add (new AIDField (sba, (TextOrder) order));
-            //            System.out.printf ("AID %02X%n", keyCommand);
-          }
           textOrders++;
         }
 

@@ -54,7 +54,7 @@ public class Screen extends Canvas
 
     GraphicsContext gc = getGraphicsContext2D ();
     characterSize = new CharacterSize (font);
-    setFont (font);     // yuk - twice
+    setFont (font);
 
     screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = contextHandler.getBase ();
@@ -72,7 +72,6 @@ public class Screen extends Canvas
         + (expanded ? (rows + 1) * expandedHeight : 0));
 
     getGraphicsContext2D ().setFont (font);
-    //    drawScreen ();
   }
 
   public int validate (int position)
@@ -140,7 +139,7 @@ public class Screen extends Canvas
       for (int col = 0; col < columns; col++)
         drawPosition (screenPositions[pos++], row, col, false);
 
-    // Cursor.moveTo() will recalculate the current field if it is visible
+    // Cursor.moveTo() will recalculate the current field if the cursor is visible
     cursor.setVisible (true);
     if (insertedCursorPosition >= 0)
     {

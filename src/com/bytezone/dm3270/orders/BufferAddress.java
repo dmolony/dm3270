@@ -74,7 +74,7 @@ public class BufferAddress
   @Override
   public String toString ()
   {
-    return String.format ("%04d %02d/%02d   : %02X %02X", location, location / columns,
+    return String.format ("%04d %03d/%03d : %02X %02X", location, location / columns,
                           location % columns, b1, b2);
   }
 }
