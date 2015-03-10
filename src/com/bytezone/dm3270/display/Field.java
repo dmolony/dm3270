@@ -97,6 +97,15 @@ public class Field
     return screen.validate (startPosition + 1);
   }
 
+  public int getCursorOffset ()
+  {
+    Cursor cursor = screen.getScreenCursor ();
+    int cursorLocation = cursor.getLocation ();
+    if (cursorLocation >= startPosition)
+      return cursorLocation - startPosition;
+    return screen.screenSize - startPosition + cursorLocation;
+  }
+
   public boolean isHidden ()
   {
     return startFieldAttribute.isHidden ();

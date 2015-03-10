@@ -60,8 +60,8 @@ public class TelnetListener implements BufferListener
   // Converts buffer arrays to Messages.
 
   // Can be called from SessionBuilder when recreating a session from a file.
-  // Can be called from a SocketListener thread whilst eavesdropping.
-  // Probably from a Console thread too (or does it use a SocketListener?)
+  // Can be called from a TelnetSocket thread whilst eavesdropping.
+  // Probably from a Console thread too (or will it use a SocketListener?)
 
   @Override
   public synchronized void listen (Source source, byte[] buffer, LocalDateTime dateTime,
@@ -128,24 +128,19 @@ public class TelnetListener implements BufferListener
 
   private void doTelnetSubcommand ()
   {
-    TelnetSubcommand subcommand;
+    TelnetSubcommand subcommand = null;
 
-    switch (data[2])
+    if (data[2] == TelnetSubcommand.TERMINAL_TYPE)
+      subcommand = new TerminalTypeSubcommand (data, 0, dataPtr, telnetState);
+    else if (data[2] == TelnetSubcommand.TN3270E)
+      subcommand = new TN3270ExtendedSubcommand (data, 0, dataPtr, telnetState);
+    else
+      System.out.printf ("Unknown command type : %02X%n" + data[2]);
+
+    if (subcommand != null)
     {
-      case TelnetSubcommand.TERMINAL_TYPE:
-        subcommand = new TerminalTypeSubcommand (data, 0, dataPtr, telnetState);
-        subcommand.process ();
-        addDataRecord (subcommand, SessionRecordType.TELNET);
-        break;
-
-      case TelnetSubcommand.TN3270E:
-        subcommand = new TN3270ExtendedSubcommand (data, 0, dataPtr, telnetState);
-        subcommand.process ();
-        addDataRecord (subcommand, SessionRecordType.TELNET);
-        break;
-
-      default:
-        System.out.printf ("Unknown command type : %02X%n" + data[2]);
+      subcommand.process ();
+      addDataRecord (subcommand, SessionRecordType.TELNET);
     }
 
     lastByte = 0;
@@ -222,17 +217,11 @@ public class TelnetListener implements BufferListener
 
     if (sessionMode == SessionMode.TERMINAL)     // if not replying then we're done
     {
-      //      System.out.println ("Received " + message);
       Platform.runLater ( () -> {
         message.process ();
         Buffer reply = message.getReply ();
         if (reply != null)
-        {
-          //          System.out.println ("Reply: " + reply);
           telnetState.write (reply.getTelnetData ());
-        }
-        //        else
-        //          System.out.println ("no reply");
       });
     }
   }

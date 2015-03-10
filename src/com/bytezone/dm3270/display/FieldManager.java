@@ -7,11 +7,15 @@ public class FieldManager
 {
   private final Screen screen;
   private int dataPositions;
+  private int inputPositions;
+  private int hiddenProtectedFields;
+  private int hiddenUnprotectedFields;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
   private final List<Field> emptyFields = new ArrayList<> ();
-  private final List<Field> hiddenFields = new ArrayList<> ();
+
+  //  private final List<Field> hiddenFields = new ArrayList<> ();
 
   public FieldManager (Screen screen)
   {
@@ -23,8 +27,11 @@ public class FieldManager
     fields.clear ();
     unprotectedFields.clear ();
     emptyFields.clear ();
-    hiddenFields.clear ();
+    //    hiddenFields.clear ();
     dataPositions = 0;
+    inputPositions = 0;
+    hiddenProtectedFields = 0;
+    hiddenUnprotectedFields = 0;
 
     List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
 
@@ -110,8 +117,15 @@ public class FieldManager
     dataPositions += field.getDisplayLength ();
     if (field.getDisplayLength () == 0)
       emptyFields.add (field);
+    //    if (field.isHidden ())
+    //      hiddenFields.add (field);
+    if (field.isUnprotected ())
+      inputPositions += field.getDisplayLength ();
     if (field.isHidden ())
-      hiddenFields.add (field);
+      if (field.isProtected ())
+        ++hiddenProtectedFields;
+      else
+        ++hiddenUnprotectedFields;
   }
 
   public Field getField (int position)      // this needs to be improved
@@ -163,14 +177,21 @@ public class FieldManager
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String.format ("Total fields     : %d%n", fields.size ()));
-    text.append (String.format ("  Empty          : %d%n", emptyFields.size ()));
-    text.append (String.format ("  Hidden         : %d%n", hiddenFields.size ()));
-    text.append (String.format ("  Unprotected    : %d%n", unprotectedFields.size ()));
-    text.append (String.format ("  Protected      : %d%n%n", fields.size ()
-        - unprotectedFields.size ()));
-    text.append (String.format ("Data positions   : %d%n", dataPositions));
-    text.append (String.format ("Screen positions : %d", dataPositions + fields.size ()));
+    text.append (String.format ("Start fields     : %4d%n", fields.size ()));
+    text.append (String.format ("  Zero length    : %4d%n", emptyFields.size ()));
+    //    text.append (String.format ("  Hidden         : %d%n", hiddenFields.size ()));
+    text.append (String.format ("  Unprotected    : %4d   (%d hidden)%n",
+                                unprotectedFields.size (), hiddenUnprotectedFields));
+    text.append (String.format ("  Protected      : %4d   (%d hidden)%n%n",
+                                fields.size () - unprotectedFields.size (),
+                                hiddenProtectedFields));
+
+    text.append (String.format ("Screen positions : %4d%n",
+                                dataPositions + fields.size ()));
+    text.append (String.format ("  Attributes     : %4d%n", fields.size ()));
+    text.append (String.format ("  Output         : %4d%n", dataPositions
+        - inputPositions));
+    text.append (String.format ("  Input          : %4d", inputPositions));
 
     return text.toString ();
   }

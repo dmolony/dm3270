@@ -39,7 +39,7 @@ public class Cursor
     if (visible)
     {
       setCurrentField ();
-      notifyCursorMove (0, currentPosition);
+      notifyCursorMove (0, currentPosition, currentField, 0);
     }
     else
       resetCurrentField ();
@@ -209,7 +209,7 @@ public class Cursor
 
     if (currentPosition != oldPosition)
     {
-      notifyCursorMove (oldPosition, currentPosition);
+      notifyCursorMove (oldPosition, currentPosition, currentField, 0);
 
       if (visible)
       {
@@ -231,7 +231,7 @@ public class Cursor
     Field lastField = currentField;
     currentField = null;
     if (currentField != lastField)
-      notifyFieldChange (lastField, currentField);
+      notifyFieldChange (lastField, currentField, 0);
   }
 
   private void setCurrentField ()
@@ -239,7 +239,7 @@ public class Cursor
     Field lastField = currentField;
     currentField = screen.getField (currentPosition);
     if (currentField != lastField)
-      notifyFieldChange (lastField, currentField);
+      notifyFieldChange (lastField, currentField, 0);
   }
 
   // ---------------------------------------------------------------------------------//
@@ -249,7 +249,7 @@ public class Cursor
   private final List<FieldChangeListener> fieldChangeListeners = new ArrayList<> ();
   private final List<CursorMoveListener> cursorMoveListeners = new ArrayList<> ();
 
-  void notifyFieldChange (Field oldField, Field currentField)
+  void notifyFieldChange (Field oldField, Field currentField, int offset)
   {
     for (FieldChangeListener listener : fieldChangeListeners)
       listener.fieldChanged (oldField, currentField);
@@ -265,10 +265,11 @@ public class Cursor
     fieldChangeListeners.remove (listener);
   }
 
-  void notifyCursorMove (int oldLocation, int currentLocation)
+  void notifyCursorMove (int oldLocation, int currentLocation, Field currentField,
+      int offset)
   {
     for (CursorMoveListener listener : cursorMoveListeners)
-      listener.cursorMoved (oldLocation, currentLocation);
+      listener.cursorMoved (oldLocation, currentLocation, currentField);
   }
 
   public void addCursorMoveListener (CursorMoveListener listener)

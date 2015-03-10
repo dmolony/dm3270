@@ -31,6 +31,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private final Label status = new Label ();
   private final Label cursorLocation = new Label ();
   private final Label fieldType = new Label ();
+  private final Label fieldLocation = new Label ();
 
   private String mainframeURL;
   private int mainframePort;
@@ -89,10 +90,16 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     borderPane.setTop (toolbar);
     //    borderPane.setTop (menuBar);
 
+    HBox hbox0 = new HBox ();
+    hbox0.setPadding (new Insets (2, 12, 2, 4));       // trbl
+    hbox0.setSpacing (10);
+    hbox0.setAlignment (Pos.CENTER_LEFT);
+    hbox0.getChildren ().add (fieldLocation);
+
     HBox hbox1 = new HBox ();
     hbox1.setPadding (new Insets (2, 12, 2, 12));       // trbl
     hbox1.setSpacing (10);
-    hbox1.setAlignment (Pos.CENTER_LEFT);
+    hbox1.setAlignment (Pos.CENTER);
     hbox1.getChildren ().add (status);
 
     HBox hbox2 = new HBox ();
@@ -105,9 +112,11 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     status.setFont (font);
     cursorLocation.setFont (font);
     fieldType.setFont (font);
+    fieldLocation.setFont (font);
 
     BorderPane statusPane = new BorderPane ();
-    statusPane.setLeft (hbox1);
+    statusPane.setLeft (hbox0);
+    statusPane.setCenter (hbox1);
     statusPane.setRight (hbox2);
     borderPane.setBottom (statusPane);
 
@@ -160,14 +169,19 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     else
     {
       StartFieldAttribute sfa = newField.getStartFieldAttribute ();
-      fieldType.setText (String.format ("%4d  %6s", newField.getDisplayLength (),
-                                        sfa.getAcronym ()));
+      fieldType.setText (String.format ("%6s", sfa.getAcronym ()));
     }
     currentField = newField;
+
+    if (currentField == null)
+      fieldLocation.setText ("");
+    else
+      fieldLocation.setText (String.format ("%04d/%04d", currentField.getCursorOffset (),
+                                            currentField.getDisplayLength ()));
   }
 
   @Override
-  public void cursorMoved (int oldLocation, int newLocation)
+  public void cursorMoved (int oldLocation, int newLocation, Field currentField)
   {
     int row = newLocation / screen.columns;
     int col = newLocation % screen.columns;
