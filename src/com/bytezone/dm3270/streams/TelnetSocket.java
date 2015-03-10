@@ -141,7 +141,7 @@ public class TelnetSocket implements Runnable
   private boolean fakeCommandSent () throws IOException
   {
     // If the server sends a request for us to DO 3270E and we don't want to, then
-    // sent a fake WONT reply instead of passing on the request.
+    // send a fake WONT reply instead of passing on the request.
     if (source == Source.SERVER                     //
         && prevent3270E && bytesRead == 3           //
         && buffer[0] == TelnetCommand.IAC           //
