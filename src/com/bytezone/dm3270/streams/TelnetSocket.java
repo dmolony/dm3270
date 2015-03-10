@@ -24,12 +24,12 @@ public class TelnetSocket implements Runnable
   private final byte[] buffer = new byte[4096];
   private int bytesRead;
 
-  private final BufferListener listener;
+  private final BufferListener listener;      // TelnetListener
   private volatile boolean running;
 
   private TelnetSocket partner;
   private boolean prevent3270E;
-  private boolean skipNextReply;
+  private boolean skipNextMessage;
 
   public enum Source
   {
@@ -94,8 +94,8 @@ public class TelnetSocket implements Runnable
           continue;
 
         if (partner != null)
-          if (skipNextReply)
-            skipNextReply = false;
+          if (skipNextMessage)
+            skipNextMessage = false;
           else
             partner.write (message, false);
       }
@@ -104,7 +104,7 @@ public class TelnetSocket implements Runnable
         if (running)
           System.out.println (name + " closing due to IOException: " + e);
         else
-          System.out.println (name + " says bye");
+          System.out.println (name + " quitting");
         close ();
         return;
       }
@@ -114,16 +114,14 @@ public class TelnetSocket implements Runnable
     close ();
   }
 
-  public void write (byte[] buffer)
-  {
-    write (buffer, false);
-  }
-
-  public void write (byte[] buffer, boolean skipNextReply)
+  // SpyServer calls this when faking commands like SetReplyMode and ReadBuffer, in
+  // which case skipNextMessage will be true (i.e. record it but don't pass it to
+  // partner because they didn't request it).
+  void write (byte[] buffer, boolean skipNextMessage)
   {
     try
     {
-      this.skipNextReply = skipNextReply;
+      this.skipNextMessage = skipNextMessage;
       outputStream.write (buffer);
       outputStream.flush ();
     }
@@ -133,9 +131,11 @@ public class TelnetSocket implements Runnable
     }
   }
 
-  public void listen (byte[] message, boolean provenance)
+  // SpyServer calls this when faking commands like SetReplyMode and ReadBuffer, in
+  // which case genuine will be false (i.e. MITM).
+  void listen (byte[] message, boolean genuine)
   {
-    listener.listen (source, message, LocalDateTime.now (), provenance);
+    listener.listen (source, message, LocalDateTime.now (), genuine);
   }
 
   private boolean fakeCommandSent () throws IOException
@@ -154,7 +154,7 @@ public class TelnetSocket implements Runnable
       reply[1] = TelnetCommand.WONT;
       reply[2] = TelnetSubcommand.TN3270E;
 
-      write (reply);     // don't skip the next message
+      write (reply, false);     // don't skip the next message
 
       // send a ManInTheMiddle notification on behalf of the client
       partner.listen (reply, MITM);

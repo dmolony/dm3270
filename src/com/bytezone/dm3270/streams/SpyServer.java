@@ -52,6 +52,7 @@ public class SpyServer implements Runnable
     return session;
   }
 
+  // SpyStage calls this in order to send commands like SetReplyMode and ReadBuffer
   public void writeToClientSocket (byte[] buffer)
   {
     serverTelnetSocket.listen (buffer, false);  // not genuine
