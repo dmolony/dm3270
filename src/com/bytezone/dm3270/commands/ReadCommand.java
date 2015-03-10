@@ -20,8 +20,19 @@ public class ReadCommand extends Command
   @Override
   public void process ()
   {
-    // the AID command will decide how to pack the RB, RM or RMA request
-    //    reply = new AIDCommand (screenHandler, screen, data[0]);
+    if (data[0] == READ_BUFFER_F2)
+      reply = screen.readBuffer ();
+    else if (data[0] == READ_MODIFIED_F6)
+    {
+      screen.setAID (AIDCommand.NO_AID_SPECIFIED);
+      reply = screen.readModifiedFields ();
+    }
+    else if (data[0] == READ_MODIFIED_ALL_6E)
+    {
+      System.out.println ("Read Modified All");
+    }
+    else
+      System.out.printf ("Unknown READ command: %02X%n", data[0]);
   }
 
   @Override

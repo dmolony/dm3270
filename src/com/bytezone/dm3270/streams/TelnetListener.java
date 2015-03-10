@@ -33,7 +33,6 @@ public class TelnetListener implements BufferListener
 
   // convenience variables obtained from the Session parameter
   private final TelnetState telnetState;
-  //  private final ScreenHandler screenHandler;
   private final Screen screen;
   private final SessionMode sessionMode;
 
@@ -48,10 +47,9 @@ public class TelnetListener implements BufferListener
 
   public TelnetListener (Source source, Session session)
   {
-    this.session = session;
-    this.source = source;
+    this.session = session;       // where we store the session records
+    this.source = source;         // are we listening to a SERVER or a CLIENT?
 
-    //    this.screenHandler = session.getScreenHandler ();
     this.screen = session.getScreen ();
     this.telnetState = session.getTelnetState ();
     this.sessionMode = session.getSessionMode ();
@@ -219,19 +217,23 @@ public class TelnetListener implements BufferListener
         new SessionRecord (sessionRecordType, message, source, currentDateTime,
             currentGenuine);
 
-    // add the DataRecord to the Session - is it OK to do this from a non-EDT?
+    // add the SessionRecord to the Session - is it OK to do this from a non-EDT?
     session.add (sessionRecord);
 
     if (sessionMode == SessionMode.TERMINAL)     // if not replying then we're done
     {
+      //      System.out.println ("Received " + message);
       Platform.runLater ( () -> {
         message.process ();
         Buffer reply = message.getReply ();
         if (reply != null)
+        {
+          //          System.out.println ("Reply: " + reply);
           telnetState.write (reply.getTelnetData ());
+        }
         //        else
         //          System.out.println ("no reply");
-        });
+      });
     }
   }
 }

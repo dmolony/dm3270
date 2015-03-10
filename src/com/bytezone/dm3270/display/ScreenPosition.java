@@ -191,13 +191,19 @@ public class ScreenPosition
     if (hasCursor)
     {
       gc.setFill (screenContext.foregroundColor);
-      gc.fillRect (x + .15, y + .15, charWidth - .3, charHeight - .3);
+      if (expanded)
+        gc.fillRect (x + .15, y + .15, charWidth - .3, charHeight - .3);
+      else
+        gc.fillRect (x + .15, y + .15, charWidth - .3, charHeight - .3);
     }
     else
     {
       gc.setFill (screenContext.reverseVideo ? Color.YELLOW       // fix this
           : screenContext.backgroundColor);
-      gc.fillRect (x, y, charWidth + .4, charHeight + .4);
+      if (expanded)
+        gc.fillRect (x, y, charWidth + .4, charHeight + 1.4);
+      else
+        gc.fillRect (x, y, charWidth + .4, charHeight + .4);
     }
 
     // Draw foreground
@@ -283,6 +289,9 @@ public class ScreenPosition
   public void erase (GraphicsContext gc, double x, double y)
   {
     gc.setFill (screenContext.backgroundColor);
-    gc.fillRect (x, y, characterSize.width, characterSize.height);
+    if (expanded)
+      gc.fillRect (x, y, characterSize.width + 1, characterSize.height + 1);
+    else
+      gc.fillRect (x, y, characterSize.width, characterSize.height);
   }
 }

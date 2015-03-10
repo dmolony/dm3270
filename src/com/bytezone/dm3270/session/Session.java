@@ -35,7 +35,6 @@ public class Session implements Iterable<SessionRecord>
   private final ObservableList<SessionRecord> dataRecords = FXCollections
       .observableArrayList ();
   private final SessionMode sessionMode;
-  //  private final ScreenHandler screenHandler;
   private final Screen screen;
   private final TelnetState telnetState;
 
@@ -55,7 +54,6 @@ public class Session implements Iterable<SessionRecord>
    */
   public Session (Screen screen, TelnetState telnetState, SessionMode mode)
   {
-    //    this.screenHandler = screenHandler;
     this.screen = screen;
     this.telnetState = telnetState;
     sessionMode = mode;
@@ -76,7 +74,6 @@ public class Session implements Iterable<SessionRecord>
     SessionReader client = new SessionReader (Source.CLIENT, path);
 
     this.telnetState = new TelnetState ();
-    //    this.screenHandler = screenHandler;
     this.screen = screen;
     TelnetListener clientTelnetListener = new TelnetListener (Source.CLIENT, this);
     TelnetListener serverTelnetListener = new TelnetListener (Source.SERVER, this);

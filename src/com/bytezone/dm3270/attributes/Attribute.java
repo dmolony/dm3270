@@ -68,31 +68,31 @@ public abstract class Attribute
     switch (attributeType)
     {
       case RESET:
-        buffer[offset] = XA_RESET;
+        buffer[offset++] = XA_RESET;
         break;
 
       case START_FIELD:
-        buffer[offset] = XA_START_FIELD;
+        buffer[offset++] = XA_START_FIELD;
         break;
 
       case HIGHLIGHT:
-        buffer[offset] = XA_HIGHLIGHTING;
+        buffer[offset++] = XA_HIGHLIGHTING;
         break;
 
       case FOREGROUND_COLOR:
-        buffer[offset] = XA_FGCOLOR;
+        buffer[offset++] = XA_FGCOLOR;
         break;
 
       case BACKGROUND_COLOR:
-        buffer[offset] = XA_BGCOLOR;
+        buffer[offset++] = XA_BGCOLOR;
         break;
 
       default:
-        buffer[offset] = 0x00;
+        buffer[offset++] = 0x00;
         System.out.println ("***** pack not written *****");
     }
-    buffer[offset + 1] = attributeValue;
-    return offset + 2;
+    buffer[offset++] = attributeValue;
+    return offset;
   }
 
   public abstract ScreenContext process (ContextManager contextHandler,

@@ -57,6 +57,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
+    screen.addStatusChangeListener (this);
 
     setTitle ("dm3270");
 

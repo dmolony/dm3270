@@ -256,15 +256,6 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     });
   }
 
-  private byte[] createProgramTabCommand ()
-  {
-    byte[] buffer = new byte[10];
-    int ptr = 0;
-
-    assert ptr == buffer.length;
-    return buffer;
-  }
-
   @Override
   public void receiveCommand (Command command)
   {

@@ -170,7 +170,7 @@ public class Console extends Application
           mainframeStage.startServer ();
 
           consoleStage = new ConsoleStage (screen, "localhost", MAINFRAME_EMULATOR_PORT);
-          screen.addStatusChangeListener (consoleStage);
+          //          screen.addStatusChangeListener (consoleStage);
           consoleStage.show ();
           consoleStage.connect ();
 

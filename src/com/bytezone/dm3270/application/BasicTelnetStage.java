@@ -2,6 +2,7 @@ package com.bytezone.dm3270.application;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.commands.Command;
+import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 
@@ -72,6 +73,22 @@ public class BasicTelnetStage extends BasicStage
       buffer[ptr++] = Attribute.XA_BGCOLOR;
       buffer[ptr++] = Attribute.XA_TRANSPARENCY;
     }
+
+    buffer[ptr++] = TelnetCommand.IAC;
+    buffer[ptr++] = TelnetCommand.EOR;
+
+    assert ptr == buffer.length;
+
+    return buffer;
+  }
+
+  protected byte[] createProgramTabCommand ()
+  {
+    byte[] buffer = new byte[3];
+    int ptr = 0;
+
+    // need to build a WRITE command with a PT order
+    buffer[ptr++] = Order.PROGRAM_TAB;    // this makes no sense (and won't work)
 
     buffer[ptr++] = TelnetCommand.IAC;
     buffer[ptr++] = TelnetCommand.EOR;

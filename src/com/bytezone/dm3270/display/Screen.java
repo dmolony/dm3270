@@ -267,11 +267,15 @@ public class Screen extends Canvas
           for (Attribute attribute : attributes)
           {
             if (attribute.getAttributeType () == AttributeType.RESET)
+            {
+              buffer[ptr++] = Order.SET_ATTRIBUTE;
               ptr = attribute.pack (buffer, ptr);
+            }
             else
               for (byte b : replyTypes)
                 if (attribute.matches (b))
                 {
+                  buffer[ptr++] = Order.SET_ATTRIBUTE;
                   ptr = attribute.pack (buffer, ptr);
                   break;
                 }
