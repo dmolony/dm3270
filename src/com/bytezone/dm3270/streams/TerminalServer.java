@@ -21,13 +21,13 @@ public class TerminalServer implements Runnable
   private int bytesRead;
   private volatile boolean running;
 
-  private final BufferListener listener;
+  private final BufferListener telnetListener;
 
   public TerminalServer (String serverURL, int serverPort, BufferListener listener)
   {
     this.serverPort = serverPort;
     this.serverURL = serverURL;
-    this.listener = listener;
+    this.telnetListener = listener;
   }
 
   @Override
@@ -54,7 +54,7 @@ public class TerminalServer implements Runnable
 
         byte[] message = new byte[bytesRead];
         System.arraycopy (buffer, 0, message, 0, bytesRead);
-        listener.listen (Source.SERVER, message, LocalDateTime.now (), true);
+        telnetListener.listen (Source.SERVER, message, LocalDateTime.now (), true);
       }
     }
     catch (IOException e)

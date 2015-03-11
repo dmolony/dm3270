@@ -49,14 +49,14 @@ public class ReadPartitionSF extends StructuredField
     switch (data[2])
     {
       case (byte) 0x02:
-        if (partitionID == (byte) 0xFF)           // query operation
-          reply = new ReadStructuredFieldCommand (screen);
+        if (partitionID == (byte) 0xFF)                         // query operation
+          reply = new ReadStructuredFieldCommand (screen);      // build a QueryReply
         else
           System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
         break;
 
       case (byte) 0x03:
-        if (partitionID == (byte) 0xFF)          // query operation
+        if (partitionID == (byte) 0xFF)                         // query operation
           switch (data[3])
           {
             case 0:
@@ -68,7 +68,7 @@ public class ReadPartitionSF extends StructuredField
               break;
 
             case 2:
-              reply = new ReadStructuredFieldCommand (screen);
+              reply = new ReadStructuredFieldCommand (screen);  // build a QueryReply
               break;
 
             default:
@@ -78,7 +78,7 @@ public class ReadPartitionSF extends StructuredField
           System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
         break;
 
-      case Command.READ_BUFFER_F2:        // NB 0x02 would conflict with RPQ above
+      case Command.READ_BUFFER_F2:            // NB 0x02 would conflict with RPQ above
         reply = screen.readBuffer ();
         break;
 

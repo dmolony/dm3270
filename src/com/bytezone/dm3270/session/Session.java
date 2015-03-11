@@ -105,7 +105,7 @@ public class Session implements Iterable<SessionRecord>
     return telnetState;
   }
 
-  public List<String> getLables ()
+  public List<String> getLabels ()
   {
     return labels;
   }

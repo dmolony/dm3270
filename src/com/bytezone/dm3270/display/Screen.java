@@ -226,6 +226,7 @@ public class Screen extends Canvas
   // Convert screen contents to an AID command
   // ---------------------------------------------------------------------------------//
 
+  // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
   public AIDCommand readBuffer ()
   {
     byte[] buffer = new byte[4096];
@@ -237,61 +238,68 @@ public class Screen extends Canvas
     ptr = ba.packAddress (buffer, ptr);
 
     for (ScreenPosition sp : screenPositions)
-    {
       if (sp.isStartField ())
-      {
-        StartFieldAttribute sfa = sp.getStartFieldAttribute ();
-
-        if (replyMode == SetReplyMode.RM_FIELD)
-        {
-          buffer[ptr++] = Order.START_FIELD;
-          buffer[ptr++] = sfa.getValue ();
-        }
-        else
-        {
-          buffer[ptr++] = Order.START_FIELD_EXTENDED;
-
-          List<Attribute> attributes = sp.getAttributes ();
-          buffer[ptr++] = (byte) (attributes.size () + 1);    // include SFA
-
-          ptr = sfa.pack (buffer, ptr);
-          for (Attribute attribute : attributes)
-            ptr = attribute.pack (buffer, ptr);
-        }
-      }
+        ptr = packStartPosition (sp, buffer, ptr);
       else
-      {
-        if (replyMode == SetReplyMode.RM_CHARACTER && sp.hasAttributes ())
-        {
-          List<Attribute> attributes = sp.getAttributes ();
-          for (Attribute attribute : attributes)
-          {
-            if (attribute.getAttributeType () == AttributeType.RESET)
-            {
-              buffer[ptr++] = Order.SET_ATTRIBUTE;
-              ptr = attribute.pack (buffer, ptr);
-            }
-            else
-              for (byte b : replyTypes)
-                if (attribute.matches (b))
-                {
-                  buffer[ptr++] = Order.SET_ATTRIBUTE;
-                  ptr = attribute.pack (buffer, ptr);
-                  break;
-                }
-          }
-        }
-
-        if (sp.isGraphicsChar ())
-          buffer[ptr++] = Order.GRAPHICS_ESCAPE;
-
-        buffer[ptr++] = sp.getByte ();
-      }
-    }
+        packDataPosition (sp, buffer, ptr);
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
 
+  private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr)
+  {
+    StartFieldAttribute sfa = sp.getStartFieldAttribute ();
+
+    if (replyMode == SetReplyMode.RM_FIELD)
+    {
+      buffer[ptr++] = Order.START_FIELD;
+      buffer[ptr++] = sfa.getValue ();
+    }
+    else
+    {
+      buffer[ptr++] = Order.START_FIELD_EXTENDED;
+
+      List<Attribute> attributes = sp.getAttributes ();
+      buffer[ptr++] = (byte) (attributes.size () + 1);    // include SFA
+
+      ptr = sfa.pack (buffer, ptr);
+      for (Attribute attribute : attributes)
+        ptr = attribute.pack (buffer, ptr);
+    }
+    return ptr;
+  }
+
+  private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
+  {
+    if (replyMode == SetReplyMode.RM_CHARACTER && sp.hasAttributes ())
+    {
+      List<Attribute> attributes = sp.getAttributes ();
+      for (Attribute attribute : attributes)
+      {
+        if (attribute.getAttributeType () == AttributeType.RESET)
+        {
+          buffer[ptr++] = Order.SET_ATTRIBUTE;
+          ptr = attribute.pack (buffer, ptr);
+        }
+        else
+          for (byte b : replyTypes)
+            if (attribute.matches (b))
+            {
+              buffer[ptr++] = Order.SET_ATTRIBUTE;
+              ptr = attribute.pack (buffer, ptr);
+              break;
+            }
+      }
+    }
+
+    if (sp.isGraphicsChar ())
+      buffer[ptr++] = Order.GRAPHICS_ESCAPE;
+
+    buffer[ptr++] = sp.getByte ();
+    return ptr;
+  }
+
+  // Called from ConsoleKeyPress.handle() in response to a user command
   public AIDCommand readModifiedFields ()     // in response to a user key press
   {
     byte[] buffer = new byte[4096];
@@ -314,8 +322,25 @@ public class Screen extends Canvas
     return new AIDCommand (this, buffer, 0, ptr);
   }
 
+  // Called from ReadPartitionSF.process() in response to a ReadModified (F6)
+  // or a ReadModifiedAll (6E) command
   public AIDCommand readModifiedFields (byte type)
   {
+    switch (type)
+    {
+      case (byte) 0xF6:
+        System.out.println ("ReadPartitionSF not creating an AID F6");
+        // ReadModified
+        break;
+
+      case 0x6E:
+        System.out.println ("ReadPartitionSF not creating an AID 6E");
+        // ReadModifiedAll
+        break;
+
+      default:
+        System.out.println ("Unknown type in Screen.readModifiedFields()");
+    }
     return null;
   }
 

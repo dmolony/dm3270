@@ -208,7 +208,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
       filename = userHome + "/dm3270/mf.txt";
 
     Session session = new Session (null, Paths.get (filename));
-    List<String> labels = session.getLables ();
+    List<String> labels = session.getLabels ();
 
     SessionRecord dr = createCommand ();
     session.add (dr);
