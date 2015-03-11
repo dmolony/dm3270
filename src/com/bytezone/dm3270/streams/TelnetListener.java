@@ -45,6 +45,8 @@ public class TelnetListener implements BufferListener
   private LocalDateTime currentDateTime;
   private boolean currentGenuine;
 
+  // Use this when recording the session in SPY mode, or replaying the session
+  // in REPLAY mode.
   public TelnetListener (Source source, Session session)
   {
     this.session = session;       // where we store the session records
@@ -53,6 +55,18 @@ public class TelnetListener implements BufferListener
     this.screen = session.getScreen ();
     this.telnetState = session.getTelnetState ();
     this.sessionMode = session.getSessionMode ();
+
+    assert sessionMode == SessionMode.REPLAY || sessionMode == SessionMode.SPY;
+  }
+
+  // Use this when not recording the session and running in TERMINAL mode.
+  public TelnetListener (Screen screen, TelnetState telnetState)
+  {
+    this.screen = screen;
+    this.telnetState = telnetState;
+    this.sessionMode = SessionMode.TERMINAL;      // acting as a terminal
+    this.source = Source.SERVER;                  // listening to a server
+    this.session = null;
   }
 
   // This method is always called with a copy of the original buffer. It can be
@@ -61,7 +75,6 @@ public class TelnetListener implements BufferListener
 
   // Can be called from SessionBuilder when recreating a session from a file.
   // Can be called from a TelnetSocket thread whilst eavesdropping.
-  // Probably from a Console thread too (or will it use a SocketListener?)
 
   @Override
   public synchronized void listen (Source source, byte[] buffer, LocalDateTime dateTime,
@@ -213,7 +226,8 @@ public class TelnetListener implements BufferListener
             currentGenuine);
 
     // add the SessionRecord to the Session - is it OK to do this from a non-EDT?
-    session.add (sessionRecord);
+    if (session != null)
+      session.add (sessionRecord);
 
     if (sessionMode == SessionMode.TERMINAL)     // if not replying then we're done
     {

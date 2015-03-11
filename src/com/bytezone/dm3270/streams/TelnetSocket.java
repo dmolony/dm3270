@@ -24,13 +24,11 @@ public class TelnetSocket implements Runnable
   private final byte[] buffer = new byte[4096];
   private int bytesRead;
 
-  private final BufferListener listener;      // TelnetListener
+  private final BufferListener telnetListener;
   private volatile boolean running;
 
   private TelnetSocket partner;
   private boolean prevent3270E;
-
-  //  private boolean skipNextMessage;
 
   public enum Source
   {
@@ -52,7 +50,7 @@ public class TelnetSocket implements Runnable
     this.name = source == Source.CLIENT ? "Client" : "Server";
     this.source = source;
     this.socket = socket;
-    this.listener = listener;
+    this.telnetListener = listener;
 
     this.inputStream = socket.getInputStream ();
     this.outputStream = socket.getOutputStream ();
@@ -89,14 +87,13 @@ public class TelnetSocket implements Runnable
         // take a copy of the input buffer and send it to the TelnetListener
         byte[] message = new byte[bytesRead];
         System.arraycopy (buffer, 0, message, 0, message.length);
-        //        listen (message, GENUINE);
-        listener.listen (source, message, LocalDateTime.now (), GENUINE);
+        telnetListener.listen (source, message, LocalDateTime.now (), GENUINE);
 
-        if (fakeReplySent ())       // did we reject a request for 3270-E?
+        if (prevent3270E && fakeReplySent ())   // did we reject a request for 3270-E?
           continue;
 
         if (partner != null)
-          partner.write (message);     // write to partner's OutputStream
+          partner.write (message);              // write to partner's OutputStream
       }
       catch (IOException e)
       {
@@ -126,32 +123,12 @@ public class TelnetSocket implements Runnable
     }
   }
 
-  //  void fake (byte[] buffer)
-  //  {
-  //    // The following message is from a MITM - no SessionRecord is created
-  //    listener.listen (partner.source, buffer, LocalDateTime.now (), MITM);
-  //
-  //    // Tell the client TelnetSocket to write the message and ignore the subsequent reply
-  //    // Create a session record that appears to come from the server
-  //
-  //    // Works for ReadBuffer (expect a reply) but not for SetReplyMode (no response)
-  //    //    this.skipNextMessage = true;
-  //    partner.write (buffer);
-  //  }
-
-  // SpyServer also calls this when faking commands like SetReplyMode and ReadBuffer, in
-  // which case genuine will be false (i.e. MITM).
-  //  void listen (byte[] message, boolean genuine)
-  //  {
-  //    listener.listen (source, message, LocalDateTime.now (), genuine);
-  //  }
-
   private boolean fakeReplySent () throws IOException
   {
     // If the server sends a request for us to DO 3270E and we don't want to, then
     // send a fake WONT reply instead of passing on the request.
     if (source == Source.SERVER                     //
-        && prevent3270E && bytesRead == 3           //
+        && bytesRead == 3                           //
         && buffer[0] == TelnetCommand.IAC           //
         && buffer[1] == TelnetCommand.DO            //
         && buffer[2] == TelnetSubcommand.TN3270E)
@@ -162,11 +139,10 @@ public class TelnetSocket implements Runnable
       reply[1] = TelnetCommand.WONT;
       reply[2] = TelnetSubcommand.TN3270E;
 
-      write (reply);     // reply directly, don't go via partner
+      write (reply);     // reply directly, don't send it to partner
 
       // send a ManInTheMiddle notification on behalf of the client
-      //      partner.listen (reply, MITM);
-      listener.listen (partner.source, reply, LocalDateTime.now (), MITM);
+      telnetListener.listen (partner.source, reply, LocalDateTime.now (), MITM);
 
       return true;
     }
