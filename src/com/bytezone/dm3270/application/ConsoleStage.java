@@ -174,7 +174,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     currentField = newField;
 
     if (currentField == null)
-      fieldLocation.setText ("");
+      fieldLocation.setText ("0000/0000");
     else
       fieldLocation.setText (String.format ("%04d/%04d", currentField.getCursorOffset (),
                                             currentField.getDisplayLength ()));
