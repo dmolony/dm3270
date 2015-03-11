@@ -47,24 +47,6 @@ public class SpyServer implements Runnable
     prevent3270E = value;
   }
 
-  public Session getSession ()
-  {
-    return session;
-  }
-
-  // Only SpyStage calls this in order to send SetReplyMode and ReadBuffer commands
-  //  public void writeToClientSocket (byte[] buffer)
-  //  {
-  //    // Tell the server TelnetSocket to advise its TelnetListener that the following
-  //    // message is from a MITM - no SessionRecord is created
-  //    //    serverTelnetSocket.listen (buffer, false);  // not genuine
-  //
-  //    // Tell the client TelnetSocket to write the message and ignore the subsequent reply
-  //    // Create a session record that appears to come from the server
-  //    //    clientTelnetSocket.write (buffer, true);
-  //    serverTelnetSocket.fake (buffer);
-  //  }
-
   @Override
   public void run ()
   {

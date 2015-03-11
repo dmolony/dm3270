@@ -142,7 +142,7 @@ public class TelnetSocket implements Runnable
       write (reply);     // reply directly, don't send it to partner
 
       // send a ManInTheMiddle notification on behalf of the client
-      telnetListener.listen (partner.source, reply, LocalDateTime.now (), MITM);
+      partner.telnetListener.listen (partner.source, reply, LocalDateTime.now (), MITM);
 
       return true;
     }

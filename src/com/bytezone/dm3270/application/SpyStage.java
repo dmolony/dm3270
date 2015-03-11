@@ -26,15 +26,12 @@ public class SpyStage extends BasicTelnetStage
 
   private final SessionTable table = new SessionTable ();
   private SpyServer spyServer;
-
-  //  final RadioButton btnFieldMode;
-  //  final RadioButton btnExtendedFieldMode;
-  //  final RadioButton btnCharacterMode;
+  private final Session session;
 
   public SpyStage (Screen screen, String serverURL, int serverPort, int clientPort,
       boolean prevent3270E)
   {
-    Session session = new Session (screen, new TelnetState (), SessionMode.SPY);
+    session = new Session (screen, new TelnetState (), SessionMode.SPY);
 
     spyServer = new SpyServer (serverURL, serverPort, clientPort, session);
     spyServer.prevent3270E (prevent3270E);
@@ -42,27 +39,10 @@ public class SpyStage extends BasicTelnetStage
     final TextArea textArea = getTextArea (600);
 
     Button btnSave = new Button ("Save");
-    //    Button btnReadBuffer = new Button ("Read Buffer");
-    //    Button btnReadModified = new Button ("Read Modified");
 
     btnSave.setPrefWidth (BUTTON_WIDTH);
-    //    btnReadBuffer.setPrefWidth (BUTTON_WIDTH);
-    //    btnReadModified.setPrefWidth (BUTTON_WIDTH);
 
     final HBox hbox = getHBox ();
-    //    hbox.getChildren ().addAll (btnReadBuffer, btnReadModified);
-
-    //    final ToggleGroup modeGroup = new ToggleGroup ();
-
-    // these buttons should not be enabled until a mainframe has connected
-    // also they should not be enabled if 3270E is being used
-    //    btnFieldMode = getRadioButton ("Field Mode", hbox, modeGroup);
-    //    btnExtendedFieldMode = getRadioButton ("Extended Field Mode", hbox, modeGroup);
-    //    btnCharacterMode = getRadioButton ("Character Mode", hbox, modeGroup);
-    //    btnFieldMode.setSelected (true);
-
-    //    modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
-
     hbox.getChildren ().addAll (btnSave);
 
     SplitPane splitPane = new SplitPane ();
@@ -73,7 +53,7 @@ public class SpyStage extends BasicTelnetStage
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);
-    //    borderPane.setBottom (hbox);
+    borderPane.setBottom (hbox);
 
     Scene scene = new Scene (borderPane, 900, 800);     // width/height
     setTitle ("Terminal Spy");
@@ -86,7 +66,7 @@ public class SpyStage extends BasicTelnetStage
             + "Will connect to mainframe at %s:%d", clientPort, serverURL, serverPort);
 
     table.setPlaceholder (new Label (message));
-    table.setItems (spyServer.getSession ().getDataRecords ());
+    table.setItems (session.getDataRecords ());
 
     table
         .getSelectionModel ()
@@ -96,43 +76,14 @@ public class SpyStage extends BasicTelnetStage
                       -> replay (newValue, textArea, null, null, null, null, null,
                                  DONT_PROCESS, screen));
 
-    //    btnReadBuffer.setOnAction ( (x) -> {
-    //      spyServer.writeToClientSocket (createReadBufferCommand (Command.READ_BUFFER_F2));
-    //    });
-    //
-    //    btnReadModified.setOnAction ( (x) -> {
-    //      spyServer.writeToClientSocket (createReadBufferCommand (Command.READ_MODIFIED_F6));
-    //    });
-
     btnSave.setOnAction ( (e) -> {
       FileChooser fileChooser = new FileChooser ();
       fileChooser.setTitle ("Save Session");
       File file = fileChooser.showSaveDialog (this);
       if (file != null)
-        spyServer.getSession ().save (file);
+        session.save (file);
     });
   }
-
-  //  private class OnToggleHandler implements ChangeListener<Toggle>
-  //  {
-  //    @Override
-  //    public void changed (ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1)
-  //    {
-  //      try
-  //      {
-  //        if (t1 == btnFieldMode)
-  //          spyServer.writeToClientSocket (createSetReplyModeCommand ((byte) 0x00));
-  //        else if (t1 == btnExtendedFieldMode)
-  //          spyServer.writeToClientSocket (createSetReplyModeCommand ((byte) 0x01));
-  //        else if (t1 == btnCharacterMode)
-  //          spyServer.writeToClientSocket (createSetReplyModeCommand ((byte) 0x02));
-  //      }
-  //      catch (Exception e)
-  //      {
-  //        e.printStackTrace ();
-  //      }
-  //    }
-  //  }
 
   public void startServer ()
   {
