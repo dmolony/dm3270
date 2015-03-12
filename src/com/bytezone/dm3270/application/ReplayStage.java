@@ -65,12 +65,12 @@ public class ReplayStage extends BasicStage
     final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
     final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
 
-    Tab tabCommand = getTab ("Command", commandTextArea);
-    Tab tabReply = getTab ("Reply", replyTextArea);
-    Tab tabScreen = getTab ("Screen", screenTextArea);
-    Tab tabFields = getTab ("Fields", fieldsTextArea);
-    Tab tabBuffer = getTab ("Buffer", bufferTextArea);
-    Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
+    final Tab tabCommand = getTab ("Command", commandTextArea);
+    final Tab tabReply = getTab ("Reply", replyTextArea);
+    final Tab tabScreen = getTab ("Screen", screenTextArea);
+    final Tab tabFields = getTab ("Fields", fieldsTextArea);
+    final Tab tabBuffer = getTab ("Buffer", bufferTextArea);
+    final Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
 
     tabPane.getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
                                tabReplyBuffer);
@@ -84,7 +84,6 @@ public class ReplayStage extends BasicStage
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);
     borderPane.setTop (label);
-    //    borderPane.setBottom (checkBoxes);
 
     setTitle ("Replay Commands - " + path.getFileName ());
 

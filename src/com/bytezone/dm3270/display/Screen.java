@@ -241,7 +241,7 @@ public class Screen extends Canvas
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr);
       else
-        packDataPosition (sp, buffer, ptr);
+        ptr = packDataPosition (sp, buffer, ptr);
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
@@ -296,6 +296,7 @@ public class Screen extends Canvas
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;
 
     buffer[ptr++] = sp.getByte ();
+
     return ptr;
   }
 
