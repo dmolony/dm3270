@@ -1,7 +1,9 @@
 package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.bytezone.dm3270.attributes.Attribute;
 
@@ -246,8 +248,8 @@ public class Cursor
   // Listener events
   // ---------------------------------------------------------------------------------//
 
-  private final List<FieldChangeListener> fieldChangeListeners = new ArrayList<> ();
-  private final List<CursorMoveListener> cursorMoveListeners = new ArrayList<> ();
+  private final Set<FieldChangeListener> fieldChangeListeners = new HashSet<> ();
+  private final Set<CursorMoveListener> cursorMoveListeners = new HashSet<> ();
 
   void notifyFieldChange (Field oldField, Field currentField, int offset)
   {

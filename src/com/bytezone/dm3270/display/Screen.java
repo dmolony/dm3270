@@ -1,7 +1,8 @@
 package com.bytezone.dm3270.display;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -385,7 +386,7 @@ public class Screen extends Canvas
   // Listener events
   // ---------------------------------------------------------------------------------//
 
-  private final List<KeyboardStatusListener> keyboardStatusListeners = new ArrayList<> ();
+  private final Set<KeyboardStatusListener> keyboardStatusListeners = new HashSet<> ();
 
   void notifyKeyboardStatusChange (boolean oldValue, boolean newValue)
   {
