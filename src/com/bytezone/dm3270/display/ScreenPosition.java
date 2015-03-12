@@ -23,6 +23,7 @@ public class ScreenPosition
 
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();
+
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;

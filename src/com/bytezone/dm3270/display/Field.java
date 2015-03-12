@@ -159,10 +159,10 @@ public class Field
       screenPositions.get (i).reset ();
   }
 
-  public String getText ()
+  String getText ()
   {
     if (startPosition == endPosition)
-      return "[]";
+      return "";
 
     char[] buffer = new char[getDisplayLength ()];
     int position = screen.validate (startPosition + 1);
@@ -175,7 +175,7 @@ public class Field
         break;
       position = screen.validate (position + 1);
     }
-    return "[" + new String (buffer) + "]";
+    return new String (buffer);
   }
 
   public void setText (byte[] buffer)
@@ -225,7 +225,7 @@ public class Field
   @Override
   public String toString ()
   {
-    return String.format ("%04d-%04d %s %s", startPosition, endPosition,
+    return String.format ("%04d-%04d %s [%s]", startPosition, endPosition,
                           startFieldAttribute.getAcronym (), getText ());
   }
 }

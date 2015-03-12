@@ -260,7 +260,7 @@ public class Screen extends Canvas
       buffer[ptr++] = Order.START_FIELD_EXTENDED;
 
       List<Attribute> attributes = sp.getAttributes ();
-      buffer[ptr++] = (byte) (attributes.size () + 1);    // include SFA
+      buffer[ptr++] = (byte) (attributes.size () + 1);    // include StartFieldAttribute
 
       ptr = sfa.pack (buffer, ptr);
       for (Attribute attribute : attributes)
@@ -304,7 +304,7 @@ public class Screen extends Canvas
   {
     byte[] buffer = new byte[4096];
     int ptr = 0;
-    buffer[ptr++] = getAID ();        // whatever key was pressed
+    buffer[ptr++] = currentAID;               // whatever key was pressed
 
     int cursorLocation = getScreenCursor ().getLocation ();
     BufferAddress ba = new BufferAddress (cursorLocation);
@@ -329,14 +329,9 @@ public class Screen extends Canvas
     switch (type)
     {
       case (byte) 0xF6:
-        System.out.println ("ReadPartitionSF not creating an AID F6");
-        // ReadModified
-        break;
-
       case 0x6E:
-        System.out.println ("ReadPartitionSF not creating an AID 6E");
-        // ReadModifiedAll
-        break;
+        currentAID = AIDCommand.NO_AID_SPECIFIED;
+        return readModifiedFields ();
 
       default:
         System.out.println ("Unknown type in Screen.readModifiedFields()");

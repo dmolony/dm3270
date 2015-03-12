@@ -27,7 +27,6 @@ public class FieldManager
     fields.clear ();
     unprotectedFields.clear ();
     emptyFields.clear ();
-    //    hiddenFields.clear ();
     dataPositions = 0;
     inputPositions = 0;
     hiddenProtectedFields = 0;

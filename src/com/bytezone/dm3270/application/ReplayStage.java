@@ -21,6 +21,7 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 
@@ -46,8 +47,12 @@ public class ReplayStage extends BasicStage
     final CheckBox showTelnet = new CheckBox ("Show telnet");
     final CheckBox show3270E = new CheckBox ("Show 3270-E");
 
-    final HBox checkBoxes = getHBox ();
+    final HBox checkBoxes = new HBox ();
+    checkBoxes.setSpacing (15);
     checkBoxes.getChildren ().addAll (showTelnet, show3270E);
+
+    final VBox leftPane = getVBox ();
+    leftPane.getChildren ().addAll (table, checkBoxes);
 
     TabPane tabPane = new TabPane ();
     tabPane.setSide (Side.BOTTOM);
@@ -73,13 +78,13 @@ public class ReplayStage extends BasicStage
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
 
-    splitPane.getItems ().addAll (table, tabPane);
-    splitPane.setDividerPositions (0.31f);
+    splitPane.getItems ().addAll (leftPane, tabPane);
+    splitPane.setDividerPositions (0.33f);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);
     borderPane.setTop (label);
-    borderPane.setBottom (checkBoxes);
+    //    borderPane.setBottom (checkBoxes);
 
     setTitle ("Replay Commands - " + path.getFileName ());
 
