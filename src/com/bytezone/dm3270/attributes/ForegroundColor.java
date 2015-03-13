@@ -12,12 +12,6 @@ public class ForegroundColor extends ColorAttribute
     super (AttributeType.FOREGROUND_COLOR, Attribute.XA_FGCOLOR, value);
   }
 
-  //  @Override
-  //  public void process (ScreenPosition screenPosition)
-  //  {
-  //    screenPosition.setForeground (colors[attributeValue & 0x0F]);
-  //  }
-
   @Override
   public Color getColor ()
   {

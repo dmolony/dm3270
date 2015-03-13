@@ -63,7 +63,7 @@ public class Screen extends Canvas
       screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
   }
 
-  public void setFont (Font font)
+  private void setFont (Font font)
   {
     characterSize.changeFont (font);
 
@@ -130,8 +130,6 @@ public class Screen extends Canvas
 
   public void drawScreen (boolean buildFields)
   {
-    cursor.setVisible (false);
-
     if (buildFields)
       fieldManager.buildFields ();      // what about resetModified?
 

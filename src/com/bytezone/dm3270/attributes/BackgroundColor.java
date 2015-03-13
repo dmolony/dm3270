@@ -12,12 +12,6 @@ public class BackgroundColor extends ColorAttribute
     super (AttributeType.BACKGROUND_COLOR, Attribute.XA_BGCOLOR, value);
   }
 
-  //  @Override
-  //  public void process (ScreenPosition screenPosition)
-  //  {
-  //    screenPosition.setBackground (colors[attributeValue & 0x0F]);
-  //  }
-
   @Override
   public Color getColor ()
   {

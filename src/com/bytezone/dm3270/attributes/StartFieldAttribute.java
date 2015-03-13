@@ -119,14 +119,6 @@ public class StartFieldAttribute extends Attribute
    * on a terminal.)
    */
 
-  //  @Override
-  //  public void process (ScreenPosition screenPosition)
-  //  {
-  //    screenPosition.setForeground (isHighIntensity ?       //
-  //        isProtected ? WHITE : RED :                       //
-  //        isProtected ? BLUE : GREEN);
-  //  }
-
   @Override
   public ScreenContext
       process (ContextManager contextHandler, ScreenContext screenContext)
