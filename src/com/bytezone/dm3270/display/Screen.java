@@ -164,8 +164,6 @@ public class Screen extends Canvas
 
   public void clearScreen ()
   {
-    cursor.setVisible (false);
-
     GraphicsContext gc = getGraphicsContext2D ();
     gc.setFill (Color.BLACK);
     gc.fillRect (0, 0, getWidth (), getHeight ());
@@ -173,6 +171,7 @@ public class Screen extends Canvas
     for (ScreenPosition sp : screenPositions)
       sp.reset ();
 
+    cursor.setVisible (false);
     cursor.moveTo (0);
   }
 
@@ -302,7 +301,7 @@ public class Screen extends Canvas
   }
 
   // Called from ConsoleKeyPress.handle() in response to a user command
-  public AIDCommand readModifiedFields ()     // in response to a user key press
+  public AIDCommand readModifiedFields ()
   {
     byte[] buffer = new byte[4096];
     int ptr = 0;
