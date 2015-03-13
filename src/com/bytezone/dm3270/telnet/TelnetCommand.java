@@ -109,9 +109,11 @@ public class TelnetCommand extends AbstractTelnetCommand
       byte[] reply = new byte[3];
 
       reply[0] = IAC;
-      if (commandType == CommandType.TERMINAL_TYPE || commandType == CommandType.EOR
-          || commandType == CommandType.BINARY
-          || commandType == CommandType.TN3270_EXTENDED)
+      if (commandType == CommandType.TERMINAL_TYPE      //
+          || commandType == CommandType.EOR             //
+          || commandType == CommandType.BINARY          //
+      //          || commandType == CommandType.TN3270_EXTENDED //
+      )
       {
         reply[1] = WILL;
 

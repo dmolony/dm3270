@@ -18,6 +18,8 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent e)       // onKeyTyped
   {
+    e.consume ();
+
     if (screen.isKeyboardLocked ())
     {
       System.out.println ("Locked keyboard - ignoring : " + e);

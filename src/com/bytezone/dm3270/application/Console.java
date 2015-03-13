@@ -164,18 +164,6 @@ public class Console extends Application
 
           break;
 
-        case "Terminal":
-          mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
-          mainframeStage.show ();
-          mainframeStage.startServer ();
-
-          consoleStage = new ConsoleStage (screen, "localhost", MAINFRAME_EMULATOR_PORT);
-          //          screen.addStatusChangeListener (consoleStage);
-          consoleStage.show ();
-          consoleStage.connect ();
-
-          break;
-
         case "Replay":
           String file =
               System.getProperty ("user.home") + "/Dropbox/Mainframe documentation/"
@@ -209,6 +197,20 @@ public class Console extends Application
           mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
           mainframeStage.show ();
           mainframeStage.startServer ();
+
+          break;
+
+        case "Terminal":
+          //          mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
+          //          mainframeStage.show ();
+          //          mainframeStage.startServer ();
+
+          //          consoleStage = new ConsoleStage (screen, "localhost", MAINFRAME_EMULATOR_PORT);
+          consoleStage = new ConsoleStage (screen, serverName.getText (), serverPortVal);
+          screen.addStatusChangeListener (consoleStage);
+          consoleStage.show ();
+          //          consoleStage.connect ();
+          consoleStage.connectDirect ();
 
           break;
       }

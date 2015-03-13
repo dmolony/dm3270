@@ -127,6 +127,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screen));
     getScene ().setOnKeyTyped (new ConsoleKeyEvent (screen));
+
+    screen.requestFocus ();
   }
 
   public void sendData (byte[] buffer)
@@ -149,6 +151,17 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     telnetState = new TelnetState ();
     session = new Session (screen, telnetState, SessionMode.TERMINAL);
     telnetListener = new TelnetListener (Source.SERVER, session);
+    terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
+    telnetState.setTerminalServer (terminalServer);
+
+    new Thread (terminalServer).start ();
+  }
+
+  public void connectDirect ()
+  {
+    telnetState = new TelnetState ();
+    //    session = new Session (screen, telnetState, SessionMode.TERMINAL);
+    telnetListener = new TelnetListener (screen, telnetState);
     terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
     telnetState.setTerminalServer (terminalServer);
 

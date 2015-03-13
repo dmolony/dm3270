@@ -235,7 +235,11 @@ public class TelnetListener implements BufferListener
         message.process ();
         Buffer reply = message.getReply ();
         if (reply != null)
+        {
           telnetState.write (reply.getTelnetData ());
+          System.out.println ("Reply:");
+          System.out.println (Utility.toHex (reply.getTelnetData ()));
+        }
       });
     }
   }

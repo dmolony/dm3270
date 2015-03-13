@@ -124,7 +124,7 @@ public class StartFieldAttribute extends Attribute
       process (ContextManager contextHandler, ScreenContext screenContext)
   {
     Color color = isHighIntensity ?       //
-        isProtected ? WHITE : RED :                       //
+        isProtected ? WHITE : RED :       //
         isProtected ? BLUE : GREEN;
     return contextHandler.setForeground (screenContext, color);
   }

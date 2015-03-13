@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.LocalDateTime;
 
+import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
 public class TerminalServer implements Runnable
@@ -35,14 +36,17 @@ public class TerminalServer implements Runnable
   {
     try
     {
+      System.out.printf ("Connecting to %s on port %d%n", serverURL, serverPort);
       serverSocket.connect (new InetSocketAddress (serverURL, serverPort));
 
       serverIn = serverSocket.getInputStream ();
       serverOut = serverSocket.getOutputStream ();
+      System.out.println ("connected");
 
       running = true;
       while (running)
       {
+        System.out.println ("blocking");
         bytesRead = serverIn.read (buffer);
         if (bytesRead < 0)
         {
@@ -52,6 +56,8 @@ public class TerminalServer implements Runnable
           break;
         }
 
+        System.out.printf ("Received %d bytes%n", bytesRead);
+        System.out.println (Utility.toHex (buffer, 0, bytesRead));
         byte[] message = new byte[bytesRead];
         System.arraycopy (buffer, 0, message, 0, bytesRead);
         telnetListener.listen (Source.SERVER, message, LocalDateTime.now (), true);
