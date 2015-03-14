@@ -6,13 +6,16 @@ public class TelnetState
 {
   // preferences
   private boolean do3270Extended = false;
-  private boolean doBinary = false;
-  private boolean doEOR = false;
+  private boolean doBinary = true;
+  private boolean doEOR = true;
+  private boolean doTerminalType = true;
 
   // current status
   private boolean does3270Extended = false;
-  private boolean doesEOR = true;
-  private boolean doesBinary = true;
+  private boolean doesEOR = false;
+  private boolean doesBinary = false;
+  private boolean doesTerminalType = false;
+
   private String terminal = "";
 
   // Socket
@@ -36,7 +39,6 @@ public class TelnetState
   public void setDoes3270Extended (boolean state)
   {
     does3270Extended = state;
-    //    System.out.println ("set actual " + state);
   }
 
   public void setDoesEOR (boolean state)
@@ -47,6 +49,11 @@ public class TelnetState
   public void setDoesBinary (boolean state)
   {
     doesBinary = state;
+  }
+
+  public void setDoesTerminalType (boolean state)
+  {
+    doesTerminalType = state;
   }
 
   public void setTerminal (String terminal)
@@ -60,7 +67,6 @@ public class TelnetState
 
   public boolean does3270Extended ()
   {
-    //    System.out.println ("ask actual " + does3270Extended);
     return does3270Extended;
   }
 
@@ -74,6 +80,11 @@ public class TelnetState
     return doesBinary || does3270Extended;
   }
 
+  public boolean doesTerminalType ()
+  {
+    return doesTerminalType || does3270Extended;
+  }
+
   public String getTerminal ()
   {
     return terminal;
@@ -85,18 +96,22 @@ public class TelnetState
 
   public boolean do3270Extended ()
   {
-    //    System.out.println ("ask prefer " + do3270Extended);
     return do3270Extended;
   }
 
   public boolean doEOR ()
   {
-    return doEOR || does3270Extended;
+    return doEOR;
   }
 
   public boolean doBinary ()
   {
-    return doBinary || does3270Extended;
+    return doBinary;
+  }
+
+  public boolean doTerminalType ()
+  {
+    return doTerminalType;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -105,7 +120,6 @@ public class TelnetState
 
   public void setDo3270Extended (boolean state)
   {
-    //    System.out.println ("set prefer " + state);
     do3270Extended = state;
   }
 
@@ -117,5 +131,10 @@ public class TelnetState
   public void setDoEOR (boolean state)
   {
     doEOR = state;
+  }
+
+  public void setDoTerminalType (boolean state)
+  {
+    doTerminalType = state;
   }
 }

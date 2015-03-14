@@ -118,6 +118,13 @@ public class TelnetCommand extends AbstractTelnetCommand
         telnetState.setDoes3270Extended (preference);           // set actual
       }
 
+      if (commandType == CommandType.TERMINAL_TYPE)
+      {
+        boolean preference = telnetState.doTerminalType ();     // preference
+        reply[1] = preference ? WILL : WONT;
+        telnetState.setDoesTerminalType (preference);           // set actual
+      }
+
       if (commandType == CommandType.EOR)
       {
         boolean preference = telnetState.doEOR ();        // preference
@@ -144,11 +151,19 @@ public class TelnetCommand extends AbstractTelnetCommand
         reply[1] = telnetState.does3270Extended () ? DO : DONT;
         telnetState.setDoes3270Extended (true);
       }
+
+      if (commandType == CommandType.TERMINAL_TYPE)
+      {
+        reply[1] = telnetState.doesTerminalType () ? DO : DONT;
+        telnetState.setDoesTerminalType (true);
+      }
+
       if (commandType == CommandType.EOR)
       {
         reply[1] = telnetState.doesEOR () ? DO : DONT;
         telnetState.setDoesEOR (true);
       }
+
       if (commandType == CommandType.BINARY)
       {
         reply[1] = telnetState.doesBinary () ? DO : DONT;
@@ -162,6 +177,8 @@ public class TelnetCommand extends AbstractTelnetCommand
     {
       if (commandType == CommandType.BINARY)
         telnetState.setDoesBinary (false);
+      if (commandType == CommandType.TERMINAL_TYPE)
+        telnetState.setDoesTerminalType (false);
       if (commandType == CommandType.TN3270_EXTENDED)
         telnetState.setDoes3270Extended (false);
       if (commandType == CommandType.EOR)

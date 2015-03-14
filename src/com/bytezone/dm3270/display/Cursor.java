@@ -37,7 +37,6 @@ public class Cursor
 
   public void setVisible (boolean visible)
   {
-    System.out.printf ("Setting cursor visible: %s%n", visible);
     this.visible = visible;
     if (visible)
     {
