@@ -16,7 +16,7 @@ public class Cursor
 
   private int currentPosition;
   private Field currentField;
-  private boolean visible;
+  private boolean visible = false;    // this should match the keyboard locked status
 
   private final List<Attribute> unappliedAttributes = new ArrayList<> ();
 
@@ -37,6 +37,7 @@ public class Cursor
 
   public void setVisible (boolean visible)
   {
+    System.out.printf ("Setting cursor visible: %s%n", visible);
     this.visible = visible;
     if (visible)
     {

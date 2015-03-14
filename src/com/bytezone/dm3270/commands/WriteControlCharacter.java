@@ -28,10 +28,10 @@ public class WriteControlCharacter
 
   public void process (Screen screen)
   {
-    screen.getScreenCursor ().setVisible (false); // screen fields are about to be rebuilt
+    //    screen.getScreenCursor ().setVisible (false); // screen fields are about to be rebuilt
 
     if (resetPartition)
-      screen.resetPartition ();             // this moves the cursor to 0/0 maybe?
+      screen.resetPartition ();
     if (startPrinter)
       screen.startPrinter ();
     if (soundAlarm)
@@ -40,6 +40,8 @@ public class WriteControlCharacter
       screen.restoreKeyboard ();
     if (resetModified)
       screen.resetModified ();
+
+    //    screen.getScreenCursor ().setVisible (true);
   }
 
   @Override

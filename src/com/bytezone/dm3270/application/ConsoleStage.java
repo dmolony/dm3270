@@ -139,8 +139,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       return;
     }
 
-    if (buffer[0] != (byte) 0x88)
-      screen.lockKeyboard ();
+    //    if (buffer[0] != (byte) 0x88)
+    //      screen.lockKeyboard ();
 
     if (telnetState != null)
       telnetState.write (buffer);

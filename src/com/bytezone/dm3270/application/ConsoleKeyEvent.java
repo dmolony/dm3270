@@ -22,7 +22,7 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
 
     if (screen.isKeyboardLocked ())
     {
-      System.out.println ("Locked keyboard - ignoring : " + e);
+      System.out.println ("Locked keyboard event - ignoring : " + e);
       return;
     }
 

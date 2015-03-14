@@ -139,14 +139,14 @@ public class Screen extends Canvas
         drawPosition (screenPositions[pos++], row, col, false);
 
     // Cursor.moveTo() will recalculate the current field if the cursor is visible
-    cursor.setVisible (true);
+    //    cursor.setVisible (true);
     if (insertedCursorPosition >= 0)
     {
       cursor.moveTo (insertedCursorPosition);
       insertedCursorPosition = -1;
     }
-    else
-      cursor.moveTo (0);
+    //    else
+    //      cursor.moveTo (0);
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
@@ -169,7 +169,7 @@ public class Screen extends Canvas
     for (ScreenPosition sp : screenPositions)
       sp.reset ();
 
-    cursor.setVisible (false);
+    //    cursor.setVisible (false);
     cursor.moveTo (0);
   }
 
@@ -339,12 +339,11 @@ public class Screen extends Canvas
   }
 
   // ---------------------------------------------------------------------------------//
-  // Events to be processed
+  // Events to be processed from WriteControlCharacter.process()
   // ---------------------------------------------------------------------------------//
 
   public void resetPartition ()
   {
-    //    cursor.setLocation (0);
   }
 
   public void startPrinter ()
@@ -361,12 +360,14 @@ public class Screen extends Canvas
   {
     keyboardLocked = false;
     notifyKeyboardStatusChange (!keyboardLocked, keyboardLocked);
+    cursor.setVisible (true);
   }
 
   public void lockKeyboard ()
   {
     keyboardLocked = true;
     notifyKeyboardStatusChange (!keyboardLocked, keyboardLocked);
+    cursor.setVisible (false);
   }
 
   public void resetModified ()

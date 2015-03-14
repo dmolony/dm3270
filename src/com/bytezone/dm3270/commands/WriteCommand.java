@@ -89,15 +89,18 @@ public class WriteCommand extends Command
     if (erase)
       screen.clearScreen ();
 
+    if (orders.size () > 0)
+    {
+      for (Order order : orders)
+        order.process (screen);
+
+      // don't move the cursor when all we did was unlock the keyboard
+      screen.drawScreen (REBUILD_FIELDS);
+    }
+
+    // should this be after any orders are processed?
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);
-
-    for (Order order : orders)
-      order.process (screen);
-
-    // don't move the cursor when all we did was unlock the keyboard
-    if (orders.size () > 0)
-      screen.drawScreen (REBUILD_FIELDS);
   }
 
   public List<Order> getOrdersList ()

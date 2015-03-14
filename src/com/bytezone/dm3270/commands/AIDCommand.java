@@ -107,7 +107,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   public void process ()
   {
     Cursor cursor = screen.getScreenCursor ();
-    cursor.setVisible (true);
+    //    cursor.setVisible (true);
 
     // test to see whether this is data entry that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic

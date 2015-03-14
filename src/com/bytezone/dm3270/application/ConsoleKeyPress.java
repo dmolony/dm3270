@@ -20,12 +20,12 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
        (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C, };
 
   private final Screen screen;
-  private final ConsoleStage console;
+  private final ConsoleStage consoleStage;
   private final Cursor cursor;
 
   public ConsoleKeyPress (ConsoleStage console, Screen screen)
   {
-    this.console = console;
+    this.consoleStage = console;
     this.screen = screen;
     this.cursor = screen.getScreenCursor ();
   }
@@ -51,7 +51,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       case ENTER:
         screen.setAID ((byte) 0x7D);
         screen.lockKeyboard ();
-        console.sendData (screen.readModifiedFields ().getTelnetData ());
+        consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
         break;
 
       case TAB:
@@ -105,7 +105,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
           screen.setAID (keyValues[pfKey]);
           screen.lockKeyboard ();
-          console.sendData (screen.readModifiedFields ().getTelnetData ());
+          consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
         }
         break;
     }
