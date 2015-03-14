@@ -114,8 +114,6 @@ public class BasicStage extends Stage
     if (textArea != null)
     {
       textArea.setText ("");
-      //      textArea.setText (sessionRecord.getSourceName ());
-      //      textArea.appendText (":\n\n");
 
       if (commandHeader != null)
       {
@@ -145,14 +143,12 @@ public class BasicStage extends Stage
           CommandHeader header = ((AbstractExtendedCommand) reply).getCommandHeader ();
           if (header != null)
           {
-            //            replyTextArea.appendText ("\n\n");
             replyTextArea.appendText (header.toString ());
             replyTextArea.appendText ("\n\n");
             replyTextArea.appendText (Utility.toHex (header.getData (), ebcdic));
           }
         }
 
-        //        replyTextArea.appendText ("\n\n");
         replyTextArea.appendText (reply.toString ());
         replyTextArea.positionCaret (0);
       }

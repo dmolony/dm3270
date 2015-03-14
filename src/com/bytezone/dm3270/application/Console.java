@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -87,7 +88,7 @@ public class Console extends Application
                    row ("Server port", serverPort = new TextField (serverPortText)),
                    row ("Client port", clientPort = new TextField (clientPortText)),
                    row ("Prevent 3270-E", prevent3270E = new CheckBox ()),
-                   row ("File name", filename = new TextField (fileText)),
+                   row ("Session file", filename = new TextField (fileText)),
                    row ("", buttons ()));
 
     HBox hBox = new HBox (10);
@@ -307,6 +308,7 @@ public class Console extends Application
   private Node row (String labelText, Node field)
   {
     HBox row = new HBox (10);
+    row.setAlignment (Pos.CENTER_LEFT);
     Label label = new Label (labelText);
     label.setMinWidth (100);
     row.getChildren ().addAll (label, field);

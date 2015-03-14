@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.display;
 
+import java.awt.Toolkit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -352,8 +353,7 @@ public class Screen extends Canvas
 
   public void soundAlarm ()
   {
-    System.out.println ("Sound alarm");
-    //    Toolkit.getDefaultToolkit ().beep ();
+    Toolkit.getDefaultToolkit ().beep ();
   }
 
   public void restoreKeyboard ()
