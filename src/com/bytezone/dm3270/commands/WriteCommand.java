@@ -10,9 +10,10 @@ import com.bytezone.dm3270.orders.TextOrder;
 public class WriteCommand extends Command
 {
   private static final boolean REBUILD_FIELDS = true;
+
   private final boolean erase;
-  private WriteControlCharacter writeControlCharacter;
-  protected final List<Order> orders = new ArrayList<Order> ();
+  private final WriteControlCharacter writeControlCharacter;
+  private final List<Order> orders = new ArrayList<Order> ();
 
   public WriteCommand (byte[] buffer, int offset, int length, Screen screen, boolean erase)
   {
@@ -20,6 +21,7 @@ public class WriteCommand extends Command
 
     this.erase = erase;
 
+    // ?????
     // I think that this command (when sourced from a WSF command) has an address
     // field after the WCC. Perhaps the constructor could be passed the WCC and
     // starting address.
@@ -63,6 +65,7 @@ public class WriteCommand extends Command
     }
   }
 
+  // Used by MainframeStage.createCommand() when building a screen
   public WriteCommand (WriteControlCharacter wcc, boolean erase, List<Order> orders)
   {
     super (null);
@@ -94,15 +97,14 @@ public class WriteCommand extends Command
       for (Order order : orders)
         order.process (screen);
 
-      // don't move the cursor when all we did was unlock the keyboard
       screen.drawScreen (REBUILD_FIELDS);
     }
 
-    // should this be after any orders are processed?
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);
   }
 
+  // Used by Session.checkServerName() when searching for the server's name
   public List<Order> getOrdersList ()
   {
     return orders;
