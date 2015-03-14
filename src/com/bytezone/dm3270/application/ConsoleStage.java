@@ -20,6 +20,7 @@ import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TerminalServer;
+import com.bytezone.dm3270.telnet.TelnetState;
 
 public class ConsoleStage extends Stage implements FieldChangeListener,
     CursorMoveListener, KeyboardStatusListener

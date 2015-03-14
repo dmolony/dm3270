@@ -19,6 +19,7 @@ import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
+import com.bytezone.dm3270.telnet.TelnetState;
 
 public class SpyStage extends BasicTelnetStage
 {

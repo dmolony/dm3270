@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.application;
+package com.bytezone.dm3270.telnet;
 
 import com.bytezone.dm3270.streams.TerminalServer;
 
@@ -33,7 +33,7 @@ public class TelnetState
   }
 
   // ---------------------------------------------------------------------------------//
-  // Set current status (what was actually communicated during negotiations)
+  // Set actual (what was communicated during negotiations)
   // ---------------------------------------------------------------------------------//
 
   public void setDoes3270Extended (boolean state)
@@ -91,7 +91,7 @@ public class TelnetState
   }
 
   // ---------------------------------------------------------------------------------//
-  // Ask preference
+  // Ask preferences
   // ---------------------------------------------------------------------------------//
 
   public boolean do3270Extended ()

@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.telnet;
 
-import com.bytezone.dm3270.application.TelnetState;
 import com.bytezone.dm3270.buffers.AbstractTelnetCommand;
 
 public abstract class TelnetSubcommand extends AbstractTelnetCommand
