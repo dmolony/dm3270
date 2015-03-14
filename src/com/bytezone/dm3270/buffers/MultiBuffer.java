@@ -19,6 +19,11 @@ public class MultiBuffer implements Buffer
     return buffers.get (index);
   }
 
+  public int totalBuffers ()
+  {
+    return buffers.size ();
+  }
+
   @Override
   public byte[] getData ()
   {

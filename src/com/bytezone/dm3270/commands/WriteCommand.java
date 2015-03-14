@@ -40,18 +40,7 @@ public class WriteCommand extends Command
       Order order = Order.getOrder (buffer, ptr, max);
 
       if (order.rejected ())
-      {
-        System.out.println ("Rejected");
-        System.out.println (order);
         break;
-      }
-
-      if (order.size () == 0)
-      {
-        System.out.println ("Not finished");
-        System.out.println (order);
-        break;
-      }
 
       if (previousOrder != null && previousOrder.matches (order))
         previousOrder.incrementDuplicates ();

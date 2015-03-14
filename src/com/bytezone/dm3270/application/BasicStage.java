@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.buffers.Buffer;
+import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.extended.AbstractExtendedCommand;
@@ -131,40 +132,6 @@ public class BasicStage extends Stage
       bufferTextArea.positionCaret (0);
     }
 
-    if (replyTextArea != null)
-    {
-      if (reply == null || reply.size () == 0)
-        replyTextArea.setText ("");
-      else
-      {
-        replyTextArea.setText ("");
-        if (reply instanceof AbstractExtendedCommand)
-        {
-          CommandHeader header = ((AbstractExtendedCommand) reply).getCommandHeader ();
-          if (header != null)
-          {
-            replyTextArea.appendText (header.toString ());
-            replyTextArea.appendText ("\n\n");
-            replyTextArea.appendText (Utility.toHex (header.getData (), ebcdic));
-          }
-        }
-
-        replyTextArea.appendText (reply.toString ());
-        replyTextArea.positionCaret (0);
-      }
-    }
-
-    if (replyBufferTextArea != null)
-    {
-      if (reply == null || reply.size () == 0)
-        replyBufferTextArea.setText ("");
-      else
-      {
-        replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
-        replyBufferTextArea.positionCaret (0);
-      }
-    }
-
     if (fieldsTextArea != null)
     {
       if (sessionRecord.getSource () == Source.SERVER)
@@ -178,6 +145,65 @@ public class BasicStage extends Stage
     {
       screenTextArea.setText (screen.getScreenText ());
       screenTextArea.positionCaret (0);
+    }
+
+    if (replyTextArea != null)
+    {
+      if (reply == null || reply.size () == 0)
+        replyTextArea.setText ("");
+      else
+      {
+        replyTextArea.setText ("");
+
+        if (reply instanceof MultiBuffer)
+        {
+          int buffers = ((MultiBuffer) reply).totalBuffers ();
+          for (int i = 0; i < buffers; i++)
+          {
+            Buffer b = ((MultiBuffer) reply).getBuffer (i);
+            if (b instanceof AbstractExtendedCommand)
+            {
+              CommandHeader header = ((AbstractExtendedCommand) b).getCommandHeader ();
+              if (header != null)
+              {
+                replyTextArea.appendText (header.toString ());
+                replyTextArea.appendText ("\n\n");
+              }
+            }
+            replyTextArea.appendText (b.toString ());
+            replyTextArea.appendText ("\n\n");
+          }
+        }
+        else
+        {
+          if (reply instanceof AbstractExtendedCommand)
+          {
+            CommandHeader header = ((AbstractExtendedCommand) reply).getCommandHeader ();
+            if (header != null)
+            {
+              replyTextArea.appendText (header.toString ());
+              replyTextArea.appendText ("\n\n");
+            }
+          }
+
+          replyTextArea.appendText (reply.toString ());
+        }
+
+        replyTextArea.deleteText (replyTextArea.getLength () - 2,
+                                  replyTextArea.getLength ());
+        replyTextArea.positionCaret (0);
+      }
+    }
+
+    if (replyBufferTextArea != null)
+    {
+      if (reply == null || reply.size () == 0)
+        replyBufferTextArea.setText ("");
+      else
+      {
+        replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
+        replyBufferTextArea.positionCaret (0);
+      }
     }
   }
 }
