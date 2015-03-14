@@ -182,6 +182,25 @@ public class Cursor
     moveTo (newField.getFirstLocation ());
   }
 
+  public void newLine ()
+  {
+    if (currentField == null)
+      return;
+
+    int oldRow = currentPosition / screen.columns;
+    int pos = currentPosition;
+
+    while (true)
+    {
+      tab (false);
+      if (currentPosition <= pos)     // backwards or didn't move
+        break;
+      int newRow = currentPosition / screen.columns;
+      if (newRow != oldRow)
+        break;
+    }
+  }
+
   public void move (Direction direction)
   {
     switch (direction)

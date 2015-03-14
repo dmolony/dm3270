@@ -49,9 +49,14 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     switch (keyCodePressed)
     {
       case ENTER:
-        screen.setAID ((byte) 0x7D);
-        screen.lockKeyboard ();
-        consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
+        if (e.isShiftDown ())
+          cursor.newLine ();
+        else
+        {
+          screen.setAID ((byte) 0x7D);
+          screen.lockKeyboard ();
+          consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
+        }
         break;
 
       case TAB:
