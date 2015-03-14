@@ -104,42 +104,56 @@ public class TelnetCommand extends AbstractTelnetCommand
   @Override
   public void process ()
   {
-    if (commandName == CommandName.DO)
+    if (commandName == CommandName.DO)      // mainframe asks us DO xxx
     {
       byte[] reply = new byte[3];
-
       reply[0] = IAC;
-      if (commandType == CommandType.TERMINAL_TYPE      //
-          || commandType == CommandType.EOR             //
-          || commandType == CommandType.BINARY          //
-      //          || commandType == CommandType.TN3270_EXTENDED //
-      )
-      {
-        reply[1] = WILL;
-
-        if (commandType == CommandType.BINARY)
-          telnetState.setDoesBinary (true);
-        if (commandType == CommandType.TN3270_EXTENDED)
-          telnetState.setDoes3270Extended (true);
-        if (commandType == CommandType.EOR)
-          telnetState.setDoesEOR (true);
-      }
-      else
-        reply[1] = WONT;
-
+      reply[1] = WONT;
       reply[2] = data[2];
+
+      if (commandType == CommandType.TN3270_EXTENDED)
+      {
+        boolean preference = telnetState.do3270Extended ();     // preference
+        reply[1] = preference ? WILL : WONT;
+        telnetState.setDoes3270Extended (preference);           // set actual
+      }
+
+      if (commandType == CommandType.EOR)
+      {
+        boolean preference = telnetState.doEOR ();        // preference
+        reply[1] = preference ? WILL : WONT;
+        telnetState.setDoesEOR (preference);              // set actual
+      }
+
+      if (commandType == CommandType.BINARY)
+      {
+        boolean preference = telnetState.doBinary ();     // preference
+        reply[1] = preference ? WILL : WONT;
+        telnetState.setDoesBinary (preference);           // set actual
+      }
+
       this.reply = new TelnetCommand (telnetState, reply);
     }
-    else if (commandName == CommandName.WILL)
+    else if (commandName == CommandName.WILL)       // the actual reply (REPLAY)
     {
       byte[] reply = new byte[3];
       reply[0] = IAC;
-      if (commandType == CommandType.TERMINAL_TYPE || commandType == CommandType.EOR
-          || commandType == CommandType.BINARY
-          || commandType == CommandType.TN3270_EXTENDED)
-        reply[1] = DO;
-      else
-        reply[1] = DONT;
+
+      if (commandType == CommandType.TN3270_EXTENDED)
+      {
+        reply[1] = telnetState.does3270Extended () ? DO : DONT;
+        telnetState.setDoes3270Extended (true);
+      }
+      if (commandType == CommandType.EOR)
+      {
+        reply[1] = telnetState.doesEOR () ? DO : DONT;
+        telnetState.setDoesEOR (true);
+      }
+      if (commandType == CommandType.BINARY)
+      {
+        reply[1] = telnetState.doesBinary () ? DO : DONT;
+        telnetState.setDoesBinary (true);
+      }
 
       reply[2] = data[2];
       this.reply = new TelnetCommand (telnetState, reply);

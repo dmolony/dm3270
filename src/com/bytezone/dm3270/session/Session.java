@@ -75,6 +75,7 @@ public class Session implements Iterable<SessionRecord>
 
     this.telnetState = new TelnetState ();
     this.screen = screen;
+
     TelnetListener clientTelnetListener = new TelnetListener (Source.CLIENT, this);
     TelnetListener serverTelnetListener = new TelnetListener (Source.SERVER, this);
 
