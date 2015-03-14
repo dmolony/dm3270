@@ -172,7 +172,6 @@ public class Console extends Application
           if (Files.exists (path))
           {
             consoleStage = new ConsoleStage (screen);
-            screen.addStatusChangeListener (consoleStage);
             consoleStage.show ();
             new ReplayStage (screen, path).show ();
           }
@@ -201,16 +200,9 @@ public class Console extends Application
           break;
 
         case "Terminal":
-          //          mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
-          //          mainframeStage.show ();
-          //          mainframeStage.startServer ();
-
-          //          consoleStage = new ConsoleStage (screen, "localhost", MAINFRAME_EMULATOR_PORT);
-          consoleStage = new ConsoleStage (screen, serverName.getText (), serverPortVal);
-          screen.addStatusChangeListener (consoleStage);
+          consoleStage = new ConsoleStage (screen);
           consoleStage.show ();
-          //          consoleStage.connect ();
-          consoleStage.connectDirect ();
+          consoleStage.connect (serverName.getText (), serverPortVal);
 
           break;
       }

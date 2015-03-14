@@ -18,10 +18,7 @@ import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.session.Session;
-import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.streams.TelnetListener;
-import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TerminalServer;
 
 public class ConsoleStage extends Stage implements FieldChangeListener,
@@ -33,24 +30,13 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private final Label fieldType = new Label ();
   private final Label fieldLocation = new Label ();
 
-  private String mainframeURL;
-  private int mainframePort;
-
   private TelnetListener telnetListener;
   private TelnetState telnetState;
-  private Session session;
   private TerminalServer terminalServer;
 
   private Field currentField;
   private final Command clearCommand;
   private final Command resetCommand;
-
-  public ConsoleStage (Screen screen, String mainframeURL, int mainframePort)
-  {
-    this (screen);
-    this.mainframeURL = mainframeURL;
-    this.mainframePort = mainframePort;
-  }
 
   public ConsoleStage (Screen screen)
   {
@@ -72,7 +58,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     toolbar.getItems ().add (btnReset);
     toolbar.getItems ().add (new Button ("Help"));
 
-    //    byte[] buffer = { (byte) 0xF5, (byte) 0xC1, 0x11, 0x40, 0x40, 0x13 };
     byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
     clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
     btnClear.setOnAction (e -> clearCommand.process ());
@@ -139,27 +124,11 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       return;
     }
 
-    //    if (buffer[0] != (byte) 0x88)
-    //      screen.lockKeyboard ();
-
     if (telnetState != null)
       telnetState.write (buffer);
   }
 
-  public void connect ()
-  {
-    telnetState = new TelnetState ();
-    telnetState.setDo3270Extended (true);
-
-    session = new Session (screen, telnetState, SessionMode.TERMINAL);
-    telnetListener = new TelnetListener (Source.SERVER, session);
-    terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
-    telnetState.setTerminalServer (terminalServer);
-
-    new Thread (terminalServer).start ();
-  }
-
-  public void connectDirect ()
+  public void connect (String mainframeURL, int mainframePort)
   {
     telnetState = new TelnetState ();
     telnetState.setDo3270Extended (false);    // set preferences for this session
@@ -182,19 +151,18 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   public void fieldChanged (Field oldField, Field newField)
   {
     if (newField == null)
+    {
       fieldType.setText ("");
+      fieldLocation.setText ("0000/0000");
+    }
     else
     {
       StartFieldAttribute sfa = newField.getStartFieldAttribute ();
       fieldType.setText (String.format ("%6s", sfa.getAcronym ()));
+      fieldLocation.setText (String.format ("%04d/%04d", newField.getCursorOffset (),
+                                            newField.getDisplayLength ()));
     }
     currentField = newField;
-
-    if (currentField == null)
-      fieldLocation.setText ("0000/0000");
-    else
-      fieldLocation.setText (String.format ("%04d/%04d", currentField.getCursorOffset (),
-                                            currentField.getDisplayLength ()));
   }
 
   @Override
