@@ -2,6 +2,9 @@
 Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses JavaFX.
 #### Warning
 This is beta software. Not everything has been implemented yet, however most of the functions are working.
+#### Defaults
+The release version is built so that it always runs in Terminal mode (see below). To enable the other modes you will need to download the source and change the release flag in Console.java.
+![Default Connection](connect.png?raw=true "default connection")
 #### Modes
 There are four ways in which this software can currently be used - Spy, Replay, Mainframe and Terminal. These are described below.                
 ![Initial screen](main1.png?raw=true "initial screen")
