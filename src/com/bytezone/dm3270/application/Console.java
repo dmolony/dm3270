@@ -62,6 +62,8 @@ public class Console extends Application
   private SpyStage spyStage;
   private ConsoleStage consoleStage;
 
+  private final boolean release = true;
+
   private final MenuBar menuBar = new MenuBar ();
 
   @Override
@@ -76,20 +78,31 @@ public class Console extends Application
     String fontSelected = prefs.get ("FONT", "Monospaced");
     String sizeSelected = prefs.get ("SIZE", "16");
 
-    //    rw3270.connect ("192.168.0.78", 2300);      // hercules
-
     String[] optionList = { "Spy", "Replay", "Terminal", "Mainframe" };
 
     VBox panel = new VBox (10);
-    panel.getChildren //
-        ().addAll (row ("Mode", options (optionList, group, 0, 2)),
-                   row ("", options (optionList, group, 2, 2)),
-                   row ("Server", serverName = new TextField (serverText)),
-                   row ("Server port", serverPort = new TextField (serverPortText)),
-                   row ("Client port", clientPort = new TextField (clientPortText)),
-                   row ("Prevent 3270-E", prevent3270E = new CheckBox ()),
-                   row ("Session file", filename = new TextField (fileText)),
-                   row ("", buttons ()));
+
+    serverName = new TextField (serverText);
+    serverPort = new TextField (serverPortText);
+    clientPort = new TextField (clientPortText);
+    prevent3270E = new CheckBox ();
+    filename = new TextField (fileText);
+    Node node1 = options (optionList, group, 0, 2);
+    Node node2 = options (optionList, group, 2, 2);
+
+    if (release)
+    {
+      panel.getChildren ().addAll (row ("Server", serverName),
+                                   row ("Server port", serverPort), row ("", buttons ()));
+    }
+    else
+    {
+      panel.getChildren //
+          ().addAll (row ("Mode", node1), row ("", node2), row ("Server", serverName),
+                     row ("Server port", serverPort), row ("Client port", clientPort),
+                     row ("Prevent 3270-E", prevent3270E),
+                     row ("Session file", filename), row ("", buttons ()));
+    }
 
     HBox hBox = new HBox (10);
     HBox.setMargin (panel, new Insets (10));
@@ -125,11 +138,14 @@ public class Console extends Application
       }
     });
 
-    for (int i = 0; i < optionList.length; i++)
-    {
-      if (optionList[i].equals (optionSelected))
-        group.selectToggle (group.getToggles ().get (i));
-    }
+    if (release)
+      group.selectToggle (group.getToggles ().get (2));
+    else
+      for (int i = 0; i < optionList.length; i++)
+      {
+        if (optionList[i].equals (optionSelected))
+          group.selectToggle (group.getToggles ().get (i));
+      }
 
     ok.setOnAction ( (e) -> {
       // get user values
@@ -172,7 +188,7 @@ public class Console extends Application
           Path path = Paths.get (file);
           if (Files.exists (path))
           {
-            consoleStage = new ConsoleStage (screen);
+            consoleStage = new ConsoleStage (screen, release);
             consoleStage.show ();
             new ReplayStage (screen, path).show ();
           }
@@ -201,7 +217,7 @@ public class Console extends Application
           break;
 
         case "Terminal":
-          consoleStage = new ConsoleStage (screen);
+          consoleStage = new ConsoleStage (screen, release);
           consoleStage.show ();
           consoleStage.connect (serverName.getText (), serverPortVal);
 

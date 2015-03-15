@@ -35,11 +35,10 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private TelnetState telnetState;
   private TerminalServer terminalServer;
 
-  private Field currentField;
   private final Command clearCommand;
   private final Command resetCommand;
 
-  public ConsoleStage (Screen screen)
+  public ConsoleStage (Screen screen, boolean release)
   {
     this.screen = screen;
 
@@ -73,7 +72,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
-    borderPane.setTop (toolbar);
+
+    if (!release)
+      borderPane.setTop (toolbar);
     //    borderPane.setTop (menuBar);
 
     HBox hbox0 = new HBox ();
@@ -113,6 +114,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screen));
     getScene ().setOnKeyTyped (new ConsoleKeyEvent (screen));
+
+    if (release)
+      centerOnScreen ();
 
     screen.requestFocus ();
   }
@@ -163,7 +167,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       fieldLocation.setText (String.format ("%04d/%04d", newField.getCursorOffset (),
                                             newField.getDisplayLength ()));
     }
-    currentField = newField;
   }
 
   @Override
