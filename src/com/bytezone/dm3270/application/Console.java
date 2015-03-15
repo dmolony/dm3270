@@ -92,16 +92,19 @@ public class Console extends Application
 
     if (release)
     {
-      panel.getChildren ().addAll (row ("Server", serverName),
+      panel.getChildren ().addAll (row ("Server URL", serverName),
                                    row ("Server port", serverPort), row ("", buttons ()));
+      dialogStage.setTitle ("Connect to Server");
     }
     else
     {
       panel.getChildren //
-          ().addAll (row ("Mode", node1), row ("", node2), row ("Server", serverName),
-                     row ("Server port", serverPort), row ("Client port", clientPort),
+          ().addAll (row ("Mode", node1), row ("", node2),
+                     row ("Server URL", serverName), row ("Server port", serverPort),
+                     row ("Client port", clientPort),
                      row ("Prevent 3270-E", prevent3270E),
                      row ("Session file", filename), row ("", buttons ()));
+      dialogStage.setTitle ("Choose parameters");
     }
 
     HBox hBox = new HBox (10);
