@@ -91,8 +91,7 @@ public class MultiBuffer implements Buffer
     }
 
     if (text.length () > 0)
-      for (int i = 0; i < 1; i++)
-        text.deleteCharAt (text.length () - 1);
+      text.deleteCharAt (text.length () - 1);
 
     return text.toString ();
   }

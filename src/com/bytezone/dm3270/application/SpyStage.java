@@ -28,6 +28,7 @@ public class SpyStage extends BasicTelnetStage
   private final SessionTable table = new SessionTable ();
   private SpyServer spyServer;
   private final Session session;
+  private Thread serverThread;
 
   public SpyStage (Screen screen, String serverURL, int serverPort, int clientPort,
       boolean prevent3270E)
@@ -88,7 +89,8 @@ public class SpyStage extends BasicTelnetStage
 
   public void startServer ()
   {
-    new Thread (spyServer).start ();
+    serverThread = new Thread (spyServer);
+    serverThread.start ();
   }
 
   public void disconnect ()
@@ -98,5 +100,15 @@ public class SpyStage extends BasicTelnetStage
       spyServer.close ();
       spyServer = null;
     }
+
+    if (serverThread != null)
+      try
+      {
+        serverThread.join ();
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace ();
+      }
   }
 }

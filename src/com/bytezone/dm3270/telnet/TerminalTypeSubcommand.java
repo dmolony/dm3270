@@ -31,9 +31,6 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
   @Override
   public void process ()
   {
-    //    if (replies.size () > 0)
-    //      return;
-
     if (type == SubcommandType.SEND)
     {
       try

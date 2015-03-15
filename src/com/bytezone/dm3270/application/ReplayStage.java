@@ -55,7 +55,7 @@ public class ReplayStage extends BasicStage
     leftPane.getChildren ().addAll (table, checkBoxes);
 
     TabPane tabPane = new TabPane ();
-    tabPane.setSide (Side.BOTTOM);
+    tabPane.setSide (Side.TOP);
     tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
 
     final TextArea commandTextArea = getTextArea (TEXT_WIDTH);

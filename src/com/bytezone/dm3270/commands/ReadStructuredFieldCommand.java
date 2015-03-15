@@ -27,7 +27,7 @@ public class ReadStructuredFieldCommand extends Command
 {
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private static final String line = "\n----------------------------------------"
-      + "---------------------------------";
+      + "-------------------------------";
 
   public ReadStructuredFieldCommand (Screen screen)
   {

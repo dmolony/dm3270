@@ -129,9 +129,6 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
   @Override
   public void process ()
   {
-    //    if (replies.size () > 0)
-    //      return;
-
     if (type == SubcommandType.SEND && subType == SubType.DEVICE_TYPE)
     {
       try
