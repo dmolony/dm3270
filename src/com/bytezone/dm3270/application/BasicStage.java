@@ -160,37 +160,15 @@ public class BasicStage extends Stage
           int buffers = ((MultiBuffer) reply).totalBuffers ();
           for (int i = 0; i < buffers; i++)
           {
-            Buffer b = ((MultiBuffer) reply).getBuffer (i);
-            if (b instanceof AbstractExtendedCommand)
-            {
-              CommandHeader header = ((AbstractExtendedCommand) b).getCommandHeader ();
-              if (header != null)
-              {
-                replyTextArea.appendText (header.toString ());
-                replyTextArea.appendText ("\n\n");
-              }
-            }
-            replyTextArea.appendText (b.toString ());
+            appendCommand (replyTextArea, ((MultiBuffer) reply).getBuffer (i));
             replyTextArea.appendText ("\n\n");
           }
+          replyTextArea.deleteText (replyTextArea.getLength () - 2,
+                                    replyTextArea.getLength ());
         }
         else
-        {
-          if (reply instanceof AbstractExtendedCommand)
-          {
-            CommandHeader header = ((AbstractExtendedCommand) reply).getCommandHeader ();
-            if (header != null)
-            {
-              replyTextArea.appendText (header.toString ());
-              replyTextArea.appendText ("\n\n");
-            }
-          }
+          appendCommand (replyTextArea, reply);
 
-          replyTextArea.appendText (reply.toString ());
-        }
-
-        replyTextArea.deleteText (replyTextArea.getLength () - 2,
-                                  replyTextArea.getLength ());
         replyTextArea.positionCaret (0);
       }
     }
@@ -205,5 +183,20 @@ public class BasicStage extends Stage
         replyBufferTextArea.positionCaret (0);
       }
     }
+  }
+
+  private void appendCommand (TextArea textArea, Buffer buffer)
+  {
+
+    if (buffer instanceof AbstractExtendedCommand)
+    {
+      CommandHeader header = ((AbstractExtendedCommand) buffer).getCommandHeader ();
+      if (header != null)
+      {
+        textArea.appendText (header.toString ());
+        textArea.appendText ("\n\n");
+      }
+    }
+    textArea.appendText (buffer.toString ());
   }
 }
