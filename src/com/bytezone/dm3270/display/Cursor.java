@@ -97,8 +97,11 @@ public class Cursor
       if (start > 1)
       {
         moveTo (screen.validate (currentPosition - 1));
-        delete ();
+        int end = currentField.getDisplayLength ();
+        currentField.move (start - 1, end);
       }
+      currentField.draw ();     // draws the field without the cursor
+      draw ();                  // redraw the cursor
     }
   }
 
