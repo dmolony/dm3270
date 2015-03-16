@@ -80,7 +80,10 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
         break;
 
       case BACK_SPACE:
-        cursor.backspace ();
+        if (e.isShiftDown ())
+          cursor.eol ();
+        else
+          cursor.backspace ();
         break;
 
       case DELETE:

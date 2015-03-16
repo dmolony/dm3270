@@ -159,6 +159,12 @@ public class Field
       screenPositions.get (i).reset ();
   }
 
+  public void clear (int first, int last)
+  {
+    for (int i = first; i <= last; i++)
+      screenPositions.get (i).setChar ((byte) 0);
+  }
+
   String getText ()
   {
     if (startPosition == endPosition)

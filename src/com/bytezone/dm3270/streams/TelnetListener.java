@@ -129,7 +129,7 @@ public class TelnetListener implements BufferListener
   private void doTelnetCommand ()
   {
     TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, dataPtr);
-    //    telnetCommand.process ();       // updates TelnetState
+    telnetCommand.process ();       // updates TelnetState
 
     if (telnetCommand.commandName () != TelnetCommand.CommandName.SUBCOMMAND)
       addDataRecord (telnetCommand, SessionRecordType.TELNET);
@@ -153,7 +153,7 @@ public class TelnetListener implements BufferListener
 
     if (subcommand != null)
     {
-      //      subcommand.process ();
+      subcommand.process ();
       addDataRecord (subcommand, SessionRecordType.TELNET);
     }
 
