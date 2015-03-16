@@ -90,6 +90,14 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
         cursor.delete ();
         break;
 
+      case END:
+        cursor.eraseEOL ();
+        break;
+
+      case INSERT:
+        System.out.println ("Insert");
+        break;
+
       case ESCAPE:
         System.out.println ("escape");    // CLR key?
         break;

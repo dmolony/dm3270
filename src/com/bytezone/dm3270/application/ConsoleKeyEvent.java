@@ -21,10 +21,7 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
     e.consume ();
 
     if (screen.isKeyboardLocked ())
-    {
-      //      System.out.println ("Locked keyboard event - ignoring : " + e);
       return;
-    }
 
     if (e.getCode () == KeyCode.UNDEFINED && !e.isMetaDown ())
     {
