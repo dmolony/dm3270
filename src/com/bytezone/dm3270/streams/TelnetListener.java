@@ -129,7 +129,7 @@ public class TelnetListener implements BufferListener
   private void doTelnetCommand ()
   {
     TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, dataPtr);
-    telnetCommand.process ();       // updates TelnetState
+    //    telnetCommand.process ();       // updates TelnetState
 
     if (telnetCommand.commandName () != TelnetCommand.CommandName.SUBCOMMAND)
       addDataRecord (telnetCommand, SessionRecordType.TELNET);
@@ -153,7 +153,7 @@ public class TelnetListener implements BufferListener
 
     if (subcommand != null)
     {
-      subcommand.process ();
+      //      subcommand.process ();
       addDataRecord (subcommand, SessionRecordType.TELNET);
     }
 
@@ -222,25 +222,30 @@ public class TelnetListener implements BufferListener
 
   private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
   {
-    SessionRecord sessionRecord =
-        new SessionRecord (sessionRecordType, message, source, currentDateTime,
-            currentGenuine);
-
     // add the SessionRecord to the Session - is it OK to do this from a non-EDT?
     if (session != null)
-      session.add (sessionRecord);
-
-    if (sessionMode == SessionMode.TERMINAL)     // if not replying then we're done
     {
-      Platform.runLater ( () -> {
-        message.process ();
-        Buffer reply = message.getReply ();
-        if (reply != null)
-        {
-          telnetState.write (reply.getTelnetData ());
-        }
-      });
+      SessionRecord sessionRecord =
+          new SessionRecord (sessionRecordType, message, source, currentDateTime,
+              currentGenuine);
+      session.add (sessionRecord);
     }
+
+    if (sessionMode == SessionMode.TERMINAL)
+    {
+      if (sessionRecordType == SessionRecordType.TELNET)      // no gui involved
+        processMessage (message);
+      else
+        Platform.runLater ( () -> processMessage (message));
+    }
+  }
+
+  private void processMessage (ReplyBuffer message)
+  {
+    message.process ();
+    Buffer reply = message.getReply ();
+    if (reply != null)
+      telnetState.write (reply.getTelnetData ());
   }
 
   @Override
