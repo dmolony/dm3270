@@ -70,7 +70,7 @@ public class Console extends Application
   public void start (Stage dialogStage) throws Exception
   {
     prefs = Preferences.userNodeForPackage (this.getClass ());
-    String serverText = prefs.get ("SERVER", "fandezhi.efglobe.com");
+    String serverText = prefs.get ("SERVER", "your.server.com");
     String serverPortText = prefs.get ("SERVER_PORT", "23");
     String clientPortText = prefs.get ("CLIENT_PORT", "2323");
     String fileText = prefs.get ("FILE_NAME", "spy01.txt");

@@ -75,6 +75,7 @@ public class TelnetListener implements BufferListener
 
   // Can be called from SessionBuilder when recreating a session from a file.
   // Can be called from a TelnetSocket thread whilst eavesdropping.
+  // Can be called from TerminalServer during a Terminal session
 
   @Override
   public synchronized void listen (Source source, byte[] buffer, LocalDateTime dateTime,
@@ -240,5 +241,11 @@ public class TelnetListener implements BufferListener
         }
       });
     }
+  }
+
+  @Override
+  public void close ()
+  {
+    Platform.runLater ( () -> screen.clearScreen ());
   }
 }

@@ -46,9 +46,7 @@ public class TerminalServer implements Runnable
         bytesRead = serverIn.read (buffer);
         if (bytesRead < 0)
         {
-          System.out.println ("Closing server socket in TerminalServer");
-          running = false;
-          serverSocket.close ();
+          close ();
           break;
         }
 
@@ -91,11 +89,15 @@ public class TerminalServer implements Runnable
     try
     {
       running = false;
+
       serverIn = null;
       serverOut = null;
 
       if (serverSocket != null)
         serverSocket.close ();
+
+      if (telnetListener != null)
+        telnetListener.close ();
     }
     catch (IOException e)
     {

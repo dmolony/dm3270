@@ -35,9 +35,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private TelnetState telnetState;
   private TerminalServer terminalServer;
 
-  private final Command clearCommand;
-  private final Command resetCommand;
-
   public ConsoleStage (Screen screen, boolean release)
   {
     this.screen = screen;
@@ -51,21 +48,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     int margin = 4;
     BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
-    ToolBar toolbar = new ToolBar ();
-    Button btnClear = new Button ("Clear");
-    Button btnReset = new Button ("Reset");
-    toolbar.getItems ().add (btnClear);
-    toolbar.getItems ().add (btnReset);
-    toolbar.getItems ().add (new Button ("Help"));
-
-    byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
-    clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
-    btnClear.setOnAction (e -> clearCommand.process ());
-
-    byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
-    resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
-    btnReset.setOnAction (e -> resetCommand.process ());
-
     //    final String os = System.getProperty ("os.name");
     //    if (os != null && os.startsWith ("Mac"))
     //      menuBar.useSystemMenuBarProperty ().set (true);
@@ -74,8 +56,23 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     borderPane.setCenter (screen);
 
     if (!release)
+    {
+      ToolBar toolbar = new ToolBar ();
+      Button btnClear = new Button ("Clear");
+      Button btnReset = new Button ("Reset");
+      toolbar.getItems ().add (btnClear);
+      toolbar.getItems ().add (btnReset);
+      toolbar.getItems ().add (new Button ("Help"));
+
+      byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
+      Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
+      btnClear.setOnAction (e -> clearCommand.process ());
+
+      byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
+      Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
+      btnReset.setOnAction (e -> resetCommand.process ());
       borderPane.setTop (toolbar);
-    //    borderPane.setTop (menuBar);
+    }
 
     HBox hbox0 = new HBox ();
     hbox0.setPadding (new Insets (2, 12, 2, 4));       // trbl
@@ -150,6 +147,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   {
     if (terminalServer != null)
       terminalServer.close ();
+    screen.clearScreen ();
   }
 
   @Override
