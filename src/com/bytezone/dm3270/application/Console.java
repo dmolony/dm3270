@@ -62,7 +62,7 @@ public class Console extends Application
   private SpyStage spyStage;
   private ConsoleStage consoleStage;
 
-  private final boolean release = true;
+  private final boolean release = false;
 
   private final MenuBar menuBar = new MenuBar ();
 

@@ -165,6 +165,14 @@ public class Field
       screenPositions.get (i).setChar ((byte) 0);
   }
 
+  public void move (int first, int last)
+  {
+    while (first < last)
+      screenPositions.get (first).setChar (screenPositions.get (++first).getByte ());
+
+    screenPositions.get (last).setChar ((byte) 0);
+  }
+
   String getText ()
   {
     if (startPosition == endPosition)

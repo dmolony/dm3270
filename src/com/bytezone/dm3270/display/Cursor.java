@@ -93,17 +93,31 @@ public class Cursor
   {
     if (currentField != null && currentField.isUnprotected ())
     {
-      int first = currentField.getFirstLocation ();
-      if (currentPosition != first)
+      int start = currentField.getCursorOffset ();
+      if (start > 1)
       {
-        int newPosition = screen.validate (currentPosition) - 1;
-        screen.getScreenPosition (newPosition).setChar ((byte) 0x00);
-        moveTo (newPosition);
+        moveTo (screen.validate (currentPosition - 1));
+        delete ();
       }
     }
   }
 
-  public void eol ()
+  public void delete ()
+  {
+    if (currentField != null && currentField.isUnprotected ())
+    {
+      int start = currentField.getCursorOffset ();
+      if (start > 0)
+      {
+        int end = currentField.getDisplayLength ();
+        currentField.move (start, end);
+      }
+      currentField.draw ();     // draws the field without the cursor
+      draw ();                  // redraw the cursor
+    }
+  }
+
+  public void eraseEOL ()
   {
     if (currentField != null && currentField.isUnprotected ())
     {

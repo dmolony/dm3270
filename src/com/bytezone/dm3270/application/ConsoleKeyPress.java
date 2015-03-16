@@ -81,13 +81,13 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
       case BACK_SPACE:
         if (e.isShiftDown ())
-          cursor.eol ();
+          cursor.eraseEOL ();
         else
           cursor.backspace ();
         break;
 
       case DELETE:
-        System.out.println ("delete");
+        cursor.delete ();
         break;
 
       case ESCAPE:
