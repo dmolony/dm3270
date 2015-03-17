@@ -43,6 +43,7 @@ public class Screen extends Canvas
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
   private boolean resetModified;
+  private boolean insertMode;
 
   private byte currentAID;
   private byte replyMode;
@@ -103,6 +104,17 @@ public class Screen extends Canvas
   public ContextManager getContextHandler ()
   {
     return contextHandler;
+  }
+
+  public void toggleInsertMode ()
+  {
+    insertMode = !insertMode;
+    notifyKeyboardStatusChange ();
+  }
+
+  public boolean isInsertMode ()
+  {
+    return insertMode;
   }
 
   public void insertCursor ()
@@ -359,14 +371,14 @@ public class Screen extends Canvas
   public void restoreKeyboard ()
   {
     keyboardLocked = false;
-    notifyKeyboardStatusChange (!keyboardLocked, keyboardLocked);
+    notifyKeyboardStatusChange ();
     cursor.setVisible (true);
   }
 
   public void lockKeyboard ()
   {
     keyboardLocked = true;
-    notifyKeyboardStatusChange (!keyboardLocked, keyboardLocked);
+    notifyKeyboardStatusChange ();
     cursor.setVisible (false);
   }
 
@@ -386,10 +398,10 @@ public class Screen extends Canvas
 
   private final Set<KeyboardStatusListener> keyboardStatusListeners = new HashSet<> ();
 
-  void notifyKeyboardStatusChange (boolean oldValue, boolean newValue)
+  void notifyKeyboardStatusChange ()
   {
     for (KeyboardStatusListener listener : keyboardStatusListeners)
-      listener.keyboardStatusChanged (oldValue, newValue);
+      listener.keyboardStatusChanged (keyboardLocked, insertMode);
   }
 
   public void addStatusChangeListener (KeyboardStatusListener listener)

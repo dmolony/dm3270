@@ -27,6 +27,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 {
   private final Screen screen;
   private final Label status = new Label ();
+  private final Label insertMode = new Label ();
   private final Label cursorLocation = new Label ();
   private final Label fieldType = new Label ();
   private final Label fieldLocation = new Label ();
@@ -90,10 +91,11 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     hbox2.setPadding (new Insets (2, 4, 2, 12));        // trbl
     hbox2.setSpacing (20);
     hbox2.setAlignment (Pos.CENTER_RIGHT);
-    hbox2.getChildren ().addAll (fieldType, cursorLocation);
+    hbox2.getChildren ().addAll (insertMode, fieldType, cursorLocation);
 
     Font font = Font.font ("Monospaced", 14);
     status.setFont (font);
+    insertMode.setFont (font);
     cursorLocation.setFont (font);
     fieldType.setFont (font);
     fieldLocation.setFont (font);
@@ -177,8 +179,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   }
 
   @Override
-  public void keyboardStatusChanged (boolean oldValue, boolean newValue)
+  public void keyboardStatusChanged (boolean keyboardLocked, boolean insert)
   {
-    status.setText (newValue ? "Inhibit" : "");
+    status.setText (keyboardLocked ? "Inhibit" : "");
+    insertMode.setText (insert ? "Insert" : "");
   }
 }

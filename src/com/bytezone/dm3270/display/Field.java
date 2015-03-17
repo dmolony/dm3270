@@ -173,6 +173,12 @@ public class Field
     screenPositions.get (last).setChar ((byte) 0);
   }
 
+  public void push (int first, int last)
+  {
+    while (first < last)
+      screenPositions.get (last).setChar (screenPositions.get (--last).getByte ());
+  }
+
   String getText ()
   {
     if (startPosition == endPosition)

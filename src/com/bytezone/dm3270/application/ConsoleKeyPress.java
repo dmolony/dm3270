@@ -34,7 +34,11 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   public void handle (KeyEvent e)
   {
     if (e.isMetaDown ())
+    {
+      if (e.getCode () == KeyCode.I)
+        screen.toggleInsertMode ();
       return;
+    }
 
     e.consume ();
 
@@ -95,12 +99,18 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
         break;
 
       case INSERT:
-        System.out.println ("Insert");
+        screen.toggleInsertMode ();
         break;
 
       case ESCAPE:
         System.out.println ("escape");    // CLR key?
         break;
+
+      //      case I:
+      //        System.out.println ("II");
+      //        if (e.isMetaDown ())
+      //          screen.toggleInsertMode ();
+      //        break;
 
       default:
         boolean found = false;

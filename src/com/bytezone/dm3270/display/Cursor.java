@@ -74,6 +74,13 @@ public class Cursor
   {
     if (currentField != null && currentField.isUnprotected ())
     {
+      if (screen.isInsertMode ())
+      {
+        int start = currentField.getCursorOffset ();
+        int end = currentField.getDisplayLength ();
+        currentField.push (start, end);
+        currentField.draw ();     // draws the field without the cursor
+      }
       screen.getScreenPosition (currentPosition).setChar (value);
       currentField.setModified (true);
 
@@ -85,8 +92,6 @@ public class Cursor
       }
       moveTo (newPosition);
     }
-    //    else
-    //      System.out.println ("Can't type here");         // lock the keyboard?
   }
 
   public void backspace ()
