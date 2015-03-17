@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.LocalDateTime;
 
+import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
 public class TerminalServer implements Runnable
@@ -22,6 +23,7 @@ public class TerminalServer implements Runnable
   private volatile boolean running;
 
   private final BufferListener telnetListener;
+  private final boolean debug = true;
 
   public TerminalServer (String serverURL, int serverPort, BufferListener listener)
   {
@@ -48,6 +50,13 @@ public class TerminalServer implements Runnable
         {
           close ();
           break;
+        }
+
+        if (debug)
+        {
+          System.out.println (toString ());
+          System.out.println ("reading:");
+          System.out.println (Utility.toHex (buffer, 0, bytesRead));
         }
 
         byte[] message = new byte[bytesRead];
@@ -82,6 +91,13 @@ public class TerminalServer implements Runnable
     {
       e.printStackTrace ();
     }
+
+    if (debug)
+    {
+      System.out.println (toString ());
+      System.out.println ("writing:");
+      System.out.println (Utility.toHex (buffer));
+    }
   }
 
   public void close ()
@@ -103,5 +119,11 @@ public class TerminalServer implements Runnable
     {
       e.printStackTrace ();
     }
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("TerminalSocket listening to %s : %d", serverURL, serverPort);
   }
 }

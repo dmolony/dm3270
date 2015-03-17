@@ -8,6 +8,8 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
   public static final byte OPTION_IS = 0;
   public static final byte OPTION_SEND = 1;
 
+  private final String terminalType = "IBM-3278-2-E";
+
   public TerminalTypeSubcommand (byte[] buffer, int offset, int length,
       TelnetState telnetState)
   {
@@ -36,7 +38,7 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
       try
       {
         byte[] header = { TelnetCommand.IAC, TelnetCommand.SB, TERMINAL_TYPE, OPTION_IS };
-        byte[] terminal = "IBM-3278-2-E".getBytes ("ASCII");
+        byte[] terminal = terminalType.getBytes ("ASCII");
         byte[] reply = new byte[header.length + terminal.length + 2];
 
         System.arraycopy (header, 0, reply, 0, header.length);
@@ -44,12 +46,32 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
         reply[reply.length - 2] = TelnetCommand.IAC;
         reply[reply.length - 1] = TelnetCommand.SE;
 
+        telnetState.setTerminal (terminalType);
+
         this.reply = new TerminalTypeSubcommand (reply, 0, reply.length, telnetState);
       }
       catch (UnsupportedEncodingException e)
       {
         e.printStackTrace ();
       }
+    }
+    else if (type == SubcommandType.IS)
+    {
+
+    }
+  }
+
+  @Override
+  public String toString ()
+  {
+    switch (type)
+    {
+      case SEND:
+        return type + " TerminalType";
+      case IS:
+        return type + " TerminalType " + terminalType;
+      default:
+        return "SUB: " + "Unknown";
     }
   }
 }

@@ -18,6 +18,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
   private String connect;
   private List<Function> functions;
   private String functionsList = "";
+  private final String terminalType = "IBM-3278-2-E";
 
   public enum SubType
   {
@@ -134,15 +135,16 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       try
       {
         byte[] header =
-            { TelnetCommand.IAC, TelnetCommand.SB, TERMINAL_TYPE, EXT_DEVICE_TYPE,
-             EXT_REQUEST };
-        byte[] terminal = "IBM-3278-2-E".getBytes ("ASCII");
+            { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_DEVICE_TYPE, EXT_REQUEST };
+        byte[] terminal = terminalType.getBytes ("ASCII");
         byte[] reply = new byte[header.length + terminal.length + 2];
 
         System.arraycopy (header, 0, reply, 0, header.length);
         System.arraycopy (terminal, 0, reply, header.length, terminal.length);
         reply[reply.length - 2] = TelnetCommand.IAC;
         reply[reply.length - 1] = TelnetCommand.SE;
+
+        telnetState.setTerminal (terminalType);
 
         this.reply = new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState);
       }

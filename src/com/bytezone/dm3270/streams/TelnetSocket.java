@@ -6,11 +6,14 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.time.LocalDateTime;
 
+import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 
 public class TelnetSocket implements Runnable
 {
+  private static final boolean debug = true;
+
   private static final boolean GENUINE = true;
   private static final boolean MITM = false;
 
@@ -54,6 +57,11 @@ public class TelnetSocket implements Runnable
 
     this.inputStream = socket.getInputStream ();
     this.outputStream = socket.getOutputStream ();
+
+    if (debug)
+    {
+      System.out.printf ("Creating TelnetSocket for %s%n", source);
+    }
   }
 
   public void link (TelnetSocket partner)
@@ -82,6 +90,13 @@ public class TelnetSocket implements Runnable
           System.out.println (name + " has no data on input stream");
           close ();
           return;
+        }
+
+        if (debug)
+        {
+          System.out.println (toString ());
+          System.out.println ("reading:");
+          System.out.println (Utility.toHex (buffer, 0, bytesRead));
         }
 
         // take a copy of the input buffer and send it to the TelnetListener
@@ -120,6 +135,13 @@ public class TelnetSocket implements Runnable
     catch (IOException e)
     {
       e.printStackTrace ();
+    }
+
+    if (debug)
+    {
+      System.out.println (toString ());
+      System.out.println ("writing:");
+      System.out.println (Utility.toHex (buffer));
     }
   }
 
@@ -166,5 +188,14 @@ public class TelnetSocket implements Runnable
     socket = null;
     inputStream = null;
     outputStream = null;
+
+    if (debug)
+      System.out.printf ("Closing %s%n", toString ());
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("TelnetSocket: Source=%s, name=%s", source, name);
   }
 }

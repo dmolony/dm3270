@@ -131,6 +131,10 @@ public class TelnetListener implements BufferListener
     TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, dataPtr);
     telnetCommand.process ();       // updates TelnetState
 
+    System.out.printf ("%s: ", source);
+    System.out.println (telnetCommand);
+    System.out.println ();
+
     if (telnetCommand.commandName () != TelnetCommand.CommandName.SUBCOMMAND)
       addDataRecord (telnetCommand, SessionRecordType.TELNET);
     else
@@ -150,6 +154,10 @@ public class TelnetListener implements BufferListener
       subcommand = new TN3270ExtendedSubcommand (data, 0, dataPtr, telnetState);
     else
       System.out.printf ("Unknown command type : %02X%n" + data[2]);
+
+    System.out.printf ("%s: ", source);
+    System.out.println (subcommand);
+    System.out.println ();
 
     if (subcommand != null)
     {
@@ -231,6 +239,7 @@ public class TelnetListener implements BufferListener
       session.add (sessionRecord);
     }
 
+    //    System.out.printf ("AddDataRecord mode: %s%n", sessionMode);
     if (sessionMode == SessionMode.TERMINAL)
     {
       if (sessionRecordType == SessionRecordType.TELNET)      // no gui involved
@@ -245,7 +254,12 @@ public class TelnetListener implements BufferListener
     message.process ();
     Buffer reply = message.getReply ();
     if (reply != null)
+    {
       telnetState.write (reply.getTelnetData ());
+      System.out.println ("Reply: " + reply + "\n");
+    }
+    else
+      System.out.println ("No reply\n");
   }
 
   @Override

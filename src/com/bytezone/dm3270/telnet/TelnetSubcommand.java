@@ -36,6 +36,6 @@ public abstract class TelnetSubcommand extends AbstractTelnetCommand
   @Override
   public String toString ()
   {
-    return String.format ("%s %s %s", "??", type, (value == null ? "" : value));
+    return String.format ("Subcommand: %s %s", type, (value == null ? "" : value));
   }
 }
