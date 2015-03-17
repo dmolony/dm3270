@@ -56,11 +56,14 @@ public class SpyServer implements Runnable
       clientServerSocket = new ServerSocket (clientPort);
       clientSocket = clientServerSocket.accept ();      // blocks
 
-      // leave a message on the terminal screen while we connect to the MF
-      String message = "Connecting to " + serverURL + ":" + serverPort;
-      OutputStream clientOut = clientSocket.getOutputStream ();
-      clientOut.write (message.getBytes ("ASCII"));
-      clientOut.flush ();
+      if (false)
+      {
+        // leave a message on the terminal screen while we connect to the MF
+        String message = "Connecting to " + serverURL + ":" + serverPort;
+        OutputStream clientOut = clientSocket.getOutputStream ();
+        clientOut.write (message.getBytes ("ASCII"));
+        clientOut.flush ();
+      }
 
       // now connect to the real mainframe
       serverSocket.connect (new InetSocketAddress (serverURL, serverPort));
