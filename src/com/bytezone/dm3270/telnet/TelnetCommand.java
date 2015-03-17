@@ -3,6 +3,7 @@ package com.bytezone.dm3270.telnet;
 import java.security.InvalidParameterException;
 
 import com.bytezone.dm3270.buffers.AbstractTelnetCommand;
+import com.bytezone.dm3270.streams.TelnetState;
 
 public class TelnetCommand extends AbstractTelnetCommand
 {

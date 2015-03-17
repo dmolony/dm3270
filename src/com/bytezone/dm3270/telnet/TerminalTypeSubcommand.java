@@ -3,6 +3,8 @@ package com.bytezone.dm3270.telnet;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidParameterException;
 
+import com.bytezone.dm3270.streams.TelnetState;
+
 public class TerminalTypeSubcommand extends TelnetSubcommand
 {
   public static final byte OPTION_IS = 0;

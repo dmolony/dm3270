@@ -22,7 +22,6 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand;
 import com.bytezone.dm3270.telnet.TelnetCommand;
-import com.bytezone.dm3270.telnet.TelnetState;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
 

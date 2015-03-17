@@ -1,6 +1,5 @@
-package com.bytezone.dm3270.telnet;
+package com.bytezone.dm3270.streams;
 
-import com.bytezone.dm3270.streams.TerminalServer;
 
 public class TelnetState
 {

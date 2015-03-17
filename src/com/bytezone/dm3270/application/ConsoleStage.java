@@ -19,8 +19,8 @@ import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetListener;
+import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
-import com.bytezone.dm3270.telnet.TelnetState;
 
 public class ConsoleStage extends Stage implements FieldChangeListener,
     CursorMoveListener, KeyboardStatusListener
@@ -135,7 +135,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   public void connect (String mainframeURL, int mainframePort)
   {
     telnetState = new TelnetState ();
-    telnetState.setDo3270Extended (true);    // set preferences for this session
+    telnetState.setDo3270Extended (false);    // set preferences for this session
     telnetState.setDoTerminalType (true);    // set preferences for this session
 
     telnetListener = new TelnetListener (screen, telnetState);
