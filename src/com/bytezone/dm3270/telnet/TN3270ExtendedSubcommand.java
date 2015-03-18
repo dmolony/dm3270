@@ -185,7 +185,8 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       case FUNCTIONS:
         return type + " " + subType + " : " + functionsList;
       case DEVICE_TYPE:
-        return type + " " + subType + " " + value;
+        String connectText = connect == null ? "" : " (" + connect + ")";
+        return type + " " + subType + " " + value + connectText;
       default:
         return "SUB: " + "Unknown";
     }
