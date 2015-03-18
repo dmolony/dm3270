@@ -53,12 +53,12 @@ public class TelnetTester
 
   public void listen (byte... buffer)
   {
-    for (byte b : buffer)
+    for (byte thisByte : buffer)
     {
-      System.out.printf ("Byte %02X%n", b);
-      data[dataPtr++] = b;
+      System.out.printf ("Byte %02X%n", thisByte);
+      data[dataPtr++] = thisByte;
 
-      if (b == IAC)
+      if (thisByte == IAC)
       {
         if (pending)                        // previous byte might have been an IAC
         {
@@ -76,7 +76,7 @@ public class TelnetTester
       {
         pending = false;
 
-        if (b == EOR)
+        if (thisByte == EOR)
         {
           processRecord ();
           continue;
@@ -87,44 +87,44 @@ public class TelnetTester
           dataPtr -= 2;                     // remove IAC and this byte
           processData ();
           data[dataPtr++] = IAC;            // drop through and process the new byte
-          data[dataPtr++] = b;
+          data[dataPtr++] = thisByte;
         }
 
-        if (b == NOP)
+        if (thisByte == NOP)
         {
           dataPtr -= 2;                     // ignore IAC NOP
           System.out.println ("NOP\n");
           continue;
         }
 
-        if (b == IP)
+        if (thisByte == IP)
         {
           // now what?
           dataPtr = 0;
           continue;
         }
 
-        if (b == SB)                        // leave IAC SB in buffer
+        if (thisByte == SB)                 // leave IAC SB in buffer
           continue;
 
-        if (b == SE)
+        if (thisByte == SE)
         {
           processSubcommand ();
           continue;
         }
 
-        if (b == DO || b == DONT || b == WILL | b == WONT)
+        if (thisByte == DO || thisByte == DONT || thisByte == WILL | thisByte == WONT)
         {
-          command = b;
+          command = thisByte;
           continue;
         }
-        //        else
-        //          System.out.println ("Unknown command");   // handle error somehow
+
+        System.err.println ("Unknown command");   // handle error somehow
       }
       else
       {
         if (command != 0)
-          processCommand (b);
+          processCommand (thisByte);
       }
     }
   }

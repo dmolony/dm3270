@@ -72,9 +72,9 @@ public class TelnetListener implements BufferListener
   // called from a background thread, so any GUI calls must be placed on the EDT.
   // Converts buffer arrays to Messages.
 
-  // Can be called from SessionBuilder when recreating a session from a file.
-  // Can be called from a TelnetSocket thread whilst eavesdropping.
-  // Can be called from TerminalServer during a Terminal session
+  // Called from Session when recreating a session from a file     - REPLAY mode
+  // Called from a TelnetSocket thread whilst eavesdropping        - SPY mode
+  // Called from a TerminalServer thread during a Terminal session - TERMINAL mode
 
   @Override
   public synchronized void listen (Source source, byte[] buffer, LocalDateTime dateTime,
