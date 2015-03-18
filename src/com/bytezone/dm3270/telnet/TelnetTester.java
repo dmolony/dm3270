@@ -29,12 +29,13 @@ public class TelnetTester
   public static final byte SB_EOR = 0x19;
   public static final byte SB_TN3270E = 0x28;
 
+  // state variables
   private final byte[] data = new byte[1024];
   private int dataPtr;
   private boolean pending;
   private boolean weirdData;
-
   private byte command;
+
   private final TelnetState telnetState = new TelnetState ();
 
   public void test (byte[] buffer)
@@ -84,21 +85,6 @@ public class TelnetTester
           data[dataPtr++] = thisByte;
         }
 
-        if (thisByte == NOP)
-        {
-          dataPtr -= 2;                     // ignore IAC NOP
-          System.out.println ("NOP\n");
-          continue;
-        }
-
-        if (thisByte == IP)
-        {
-          // now what?
-          dataPtr = 0;
-          command = 0;
-          continue;
-        }
-
         if (thisByte == SB)                 // leave IAC SB in buffer
           continue;
 
@@ -114,11 +100,32 @@ public class TelnetTester
           continue;
         }
 
+        if (thisByte == NOP)
+        {
+          dataPtr -= 2;                     // ignore IAC NOP
+          System.out.println ("NOP\n");
+          continue;
+        }
+
+        if (thisByte == IP)
+        {
+          // now what?
+          reset ();
+          continue;
+        }
+
         System.err.println ("Unknown command");   // handle error somehow
       }
       else if (command != 0)
         processCommand (thisByte);
     }
+  }
+
+  private void reset ()
+  {
+    dataPtr = 0;
+    command = 0;
+    weirdData = false;
   }
 
   private void processData ()
@@ -127,9 +134,7 @@ public class TelnetTester
     System.out.println (Utility.toHex (data, 0, dataPtr, false));
     System.out.println ();
 
-    dataPtr = 0;
-    command = 0;
-    weirdData = false;
+    reset ();
   }
 
   private void processCommand (byte b)
@@ -146,8 +151,7 @@ public class TelnetTester
     System.out.println (Utility.toHex (data, 0, dataPtr, false));
     System.out.println ();
 
-    dataPtr = 0;
-    command = 0;
+    reset ();
   }
 
   private void processSubcommand ()
@@ -183,8 +187,7 @@ public class TelnetTester
     System.out.println (Utility.toHex (data, 0, dataPtr, false));
     System.out.println ();
 
-    dataPtr = 0;
-    command = 0;
+    reset ();
   }
 
   private void processRecord ()
@@ -196,8 +199,7 @@ public class TelnetTester
     System.out.println (Utility.toHex (data, 0, dataPtr - 2));
     System.out.println ();
 
-    dataPtr = 0;
-    command = 0;
+    reset ();
   }
 
   public void flush ()
@@ -215,10 +217,10 @@ public class TelnetTester
     //    tester.flush ();
 
     System.out.println (line);
-    tester.test (helloWorld ());
+    tester.test (spy01 ());
 
     System.out.println (line);
-    tester.test (spy01 ());
+    tester.test (helloWorld ());
 
     System.out.println (line);
     tester.test (spy05 ());
