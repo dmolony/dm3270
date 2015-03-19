@@ -23,8 +23,8 @@ import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
+import com.bytezone.dm3270.telnet.TelnetProcessor;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
-import com.bytezone.dm3270.telnet.TelnetTester;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
 
 public class TelnetListener implements BufferListener, TelnetCommandProcessor
@@ -47,7 +47,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   private boolean currentGenuine;
   private boolean debug;
 
-  private final TelnetTester telnetTester = new TelnetTester (this);
+  private final TelnetProcessor telnetTester = new TelnetProcessor (this);
 
   // Use this when recording the session in SPY mode, or replaying the session
   // in REPLAY mode.
@@ -91,160 +91,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     currentDateTime = dateTime;
     currentGenuine = genuine;
 
-    if (telnetTester != null)
-    {
-      telnetTester.listen (buffer);
-    }
-    //    else
-    //    {
-    //      assert false;
-    //      int ptr = 0;
-    //
-    //      while (ptr < buffer.length)
-    //      {
-    //        byte thisByte = buffer[ptr++];
-    //        data[dataPtr++] = thisByte;
-    //
-    //        // Check for double-IAC
-    //        if (lastByte == TelnetCommand.IAC && thisByte == TelnetCommand.IAC)
-    //        {
-    //          lastByte = 0;     // ignore the second 0xFF, and put dataPtr back
-    //          --dataPtr;
-    //        }
-    //
-    //        // Check for end of record - signifies a 3270 data stream
-    //        else if (lastByte == TelnetCommand.IAC && thisByte == TelnetCommand.EOR)
-    //          do3270Command ();
-    //
-    //        // Check for end of subcommand
-    //        else if (lastByte == TelnetCommand.IAC && thisByte == TelnetCommand.SE)
-    //          doTelnetSubcommand ();
-    //
-    //        // Check for any 3-byte telnet command that is not a subcommand
-    //        else if (dataPtr == 3                 //
-    //            && data[0] == TelnetCommand.IAC   //
-    //            && data[1] != TelnetCommand.SB)
-    //          doTelnetCommand ();
-    //
-    //        // check for a known 2-byte telnet command
-    //        else if (dataPtr == 2                 //
-    //            && data[0] == TelnetCommand.IAC
-    //            && (thisByte == TelnetCommand.IP || thisByte == TelnetCommand.NOP))
-    //          doTelnetCommand ();
-    //
-    //        else
-    //          lastByte = thisByte;
-    //      }
-    //    }
+    telnetTester.listen (buffer);
   }
-
-  //  private void doTelnetCommand ()
-  //  {
-  //    TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, dataPtr);
-  //    telnetCommand.process ();       // updates TelnetState
-  //
-  //    if (debug)
-  //    {
-  //      System.out.printf ("%s: ", source);
-  //      System.out.println (telnetCommand);
-  //      System.out.println ();
-  //    }
-  //
-  //    if (telnetCommand.commandName () != TelnetCommand.CommandName.SUBCOMMAND)
-  //      addDataRecord (telnetCommand, SessionRecordType.TELNET);
-  //    else
-  //      System.out.println ("Unexpected telnet command: " + telnetCommand);
-  //
-  //    lastByte = 0;
-  //    dataPtr = 0;
-  //  }
-
-  //  private void doTelnetSubcommand ()
-  //  {
-  //    TelnetSubcommand subcommand = null;
-  //
-  //    if (data[2] == TelnetSubcommand.TERMINAL_TYPE)
-  //      subcommand = new TerminalTypeSubcommand (data, 0, dataPtr, telnetState);
-  //    else if (data[2] == TelnetSubcommand.TN3270E)
-  //      subcommand = new TN3270ExtendedSubcommand (data, 0, dataPtr, telnetState);
-  //    else
-  //      System.out.printf ("Unknown command type : %02X%n" + data[2]);
-  //
-  //    if (debug)
-  //    {
-  //      System.out.printf ("%s: ", source);
-  //      System.out.println (subcommand);
-  //      System.out.println ();
-  //    }
-  //
-  //    if (subcommand != null)
-  //    {
-  //      subcommand.process ();
-  //      addDataRecord (subcommand, SessionRecordType.TELNET);
-  //    }
-  //
-  //    lastByte = 0;
-  //    dataPtr = 0;
-  //  }
-
-  //  private void do3270Command ()
-  //  {
-  //    int offset;
-  //    int length;
-  //    DataType dataType;
-  //
-  //    if (telnetState.does3270Extended ())
-  //    {
-  //      offset = 5;
-  //      length = dataPtr - 7;         // exclude IAC/EOR and header
-  //      currentCommandHeader = new CommandHeader (data, 0, 5);
-  //      dataType = currentCommandHeader.getDataType ();
-  //    }
-  //    else
-  //    {
-  //      offset = 0;
-  //      length = dataPtr - 2;         // exclude IAC/EOR
-  //      currentCommandHeader = null;
-  //      dataType = DataType.TN3270_DATA;
-  //    }
-  //
-  //    switch (dataType)
-  //    {
-  //      case TN3270_DATA:
-  //        ReplyBuffer command =
-  //            source == Source.SERVER ? Command.getCommand (data, offset, length, screen)
-  //                : Command.getReply (screen, data, offset, length);
-  //        if (currentCommandHeader != null)
-  //          command = new TN3270ExtendedCommand (currentCommandHeader, (Command) command);
-  //        addDataRecord (command, SessionRecordType.TN3270);
-  //        break;
-  //
-  //      case BIND_IMAGE:
-  //        BindCommand bindCommand =
-  //            new BindCommand (currentCommandHeader, data, offset, length);
-  //        addDataRecord (bindCommand, SessionRecordType.TN3270E);
-  //        break;
-  //
-  //      case UNBIND:
-  //        UnbindCommand unbindCommand =
-  //            new UnbindCommand (currentCommandHeader, data, offset, length);
-  //        addDataRecord (unbindCommand, SessionRecordType.TN3270E);
-  //        break;
-  //
-  //      case RESPONSE:
-  //        ResponseCommand responseCommand =
-  //            new ResponseCommand (currentCommandHeader, data, offset, length);
-  //        addDataRecord (responseCommand, SessionRecordType.TN3270E);
-  //        break;
-  //
-  //      default:
-  //        System.out.println ("Data type not written: " + dataType);
-  //        System.out.println (Utility.toHex (data, offset, length));
-  //    }
-  //
-  //    lastByte = 0;
-  //    dataPtr = 0;
-  //  }
 
   private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
   {
@@ -289,7 +137,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   @Override
   public void processData (byte[] buffer, int length)
   {
-    System.out.println ();
+    System.out.println ("Unknown telnet data received:");
+    System.out.println (new String (buffer, 0, length));
+    System.out.println (Utility.toHex (buffer, 0, length, false));
   }
 
   @Override

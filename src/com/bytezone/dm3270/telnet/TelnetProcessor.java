@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.streams.TelnetState;
 
-public class TelnetTester
+public class TelnetProcessor
 {
   // command prefix
   public static final byte IAC = (byte) 0xFF;
@@ -39,7 +39,7 @@ public class TelnetTester
   // command processor
   private final TelnetCommandProcessor commandProcessor;
 
-  public TelnetTester (TelnetCommandProcessor commandProcessor)
+  public TelnetProcessor (TelnetCommandProcessor commandProcessor)
   {
     this.commandProcessor = commandProcessor;
   }
@@ -142,7 +142,7 @@ public class TelnetTester
 
   public static void main (String[] args)
   {
-    TelnetTester tester = new TelnetTester (new Processor ());
+    TelnetProcessor tester = new TelnetProcessor (new Processor ());
     String line = "-------------------------------------------------";
 
     tester.test (dataInTelnetFormat ());
@@ -216,8 +216,8 @@ class Processor implements TelnetCommandProcessor
   @Override
   public void processRecord (byte[] data, int length)
   {
-    assert data[length - 2] == TelnetTester.IAC;
-    assert data[length - 1] == TelnetTester.EOR;
+    assert data[length - 2] == TelnetProcessor.IAC;
+    assert data[length - 1] == TelnetProcessor.EOR;
 
     System.out.println ("Record");
     System.out.println (Utility.toHex (data, 0, length - 2));
@@ -227,7 +227,7 @@ class Processor implements TelnetCommandProcessor
   @Override
   public void processTelnetCommand (byte[] data, int length)
   {
-    assert data[0] == TelnetTester.IAC;
+    assert data[0] == TelnetProcessor.IAC;
 
     TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, length);
 
@@ -241,21 +241,21 @@ class Processor implements TelnetCommandProcessor
   @Override
   public void processTelnetSubcommand (byte[] data, int length)
   {
-    assert data[0] == TelnetTester.IAC;
-    assert data[1] == TelnetTester.SB;
-    assert data[length - 2] == TelnetTester.IAC;
-    assert data[length - 1] == TelnetTester.SE;
+    assert data[0] == TelnetProcessor.IAC;
+    assert data[1] == TelnetProcessor.SB;
+    assert data[length - 2] == TelnetProcessor.IAC;
+    assert data[length - 1] == TelnetProcessor.SE;
 
     byte subCommand = data[2];
     String text;
     TelnetSubcommand telnetSubcommand;
 
-    if (subCommand == TelnetTester.SB_TERMINAL_TYPE)
+    if (subCommand == TelnetProcessor.SB_TERMINAL_TYPE)
     {
       text = "TERMINAL_TYPE";
       telnetSubcommand = new TerminalTypeSubcommand (data, 0, length, telnetState);
     }
-    else if (subCommand == TelnetTester.SB_TN3270E)
+    else if (subCommand == TelnetProcessor.SB_TN3270E)
     {
       text = "TN3270-E";
       telnetSubcommand = new TN3270ExtendedSubcommand (data, 0, length, telnetState);
