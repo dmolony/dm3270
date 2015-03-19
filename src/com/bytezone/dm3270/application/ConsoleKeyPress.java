@@ -4,21 +4,13 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
 
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
-  private static final KeyCode[] keyCodes = //
-      { KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6,
-       KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12 };
-  private static final byte[] keyValues = //
-      { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
-       (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
-       (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
-       (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C, };
-
   private final String os = System.getProperty ("os.name");
   private final boolean isMac = os != null && os.startsWith ("Mac");
 
@@ -53,7 +45,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           cursor.newLine ();
         else
         {
-          screen.setAID ((byte) 0x7D);
+          screen.setAID (AIDCommand.AID_ENTER_KEY);
           screen.lockKeyboard ();
           consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
         }
@@ -119,7 +111,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       default:
         boolean found = false;
         int pfKey = 0;
-        for (KeyCode keyCode : keyCodes)
+        for (KeyCode keyCode : AIDCommand.PFKeyCodes)
         {
           if (keyCode == keyCodePressed)
           {
@@ -133,7 +125,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           if (e.isShiftDown ())
             pfKey += 12;
 
-          screen.setAID (keyValues[pfKey]);
+          screen.setAID (AIDCommand.PFKeyValues[pfKey]);
           screen.lockKeyboard ();
           consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
         }

@@ -3,6 +3,8 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.input.KeyCode;
+
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
@@ -16,6 +18,7 @@ public class AIDCommand extends Command implements BufferAddressSource
 {
   public static final byte NO_AID_SPECIFIED = 0x60;
   public static final byte AID_READ_PARTITION = 0x61;
+  public static final byte AID_ENTER_KEY = 0x7D;
 
   private static byte[] keys = { //
       0, (byte) 0x60, (byte) 0x7D, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4,
@@ -30,6 +33,15 @@ public class AIDCommand extends Command implements BufferAddressSource
           "PF8", "PF9", "PF10", "PF11", "PF12", "PF13", "PF14", "PF15", "PF16", "PF17",
           "PF18", "PF19", "PF20", "PF21", "PF22", "PF23", "PF24", "PA1", "PA2", "PA3",
           "CLR", "CLR Partition", "Read Partition" };
+
+  public static final KeyCode[] PFKeyCodes = //
+      { KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6,
+       KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12 };
+  public static final byte[] PFKeyValues = //
+      { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+       (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
+       (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
+       (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C, };
 
   private int key;
   private byte keyCommand;
