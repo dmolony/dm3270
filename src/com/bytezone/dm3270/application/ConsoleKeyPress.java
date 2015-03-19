@@ -106,23 +106,17 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
         System.out.println ("escape");    // CLR key?
         break;
 
-      //      case I:
-      //        System.out.println ("II");
-      //        if (e.isMetaDown ())
-      //          screen.toggleInsertMode ();
-      //        break;
-
       default:
         boolean found = false;
         int pfKey = 0;
         for (KeyCode keyCode : keyCodes)
         {
-          ++pfKey;
           if (keyCode == keyCodePressed)
           {
             found = true;
             break;
           }
+          ++pfKey;
         }
         if (found)
         {

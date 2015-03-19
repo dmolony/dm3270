@@ -142,7 +142,7 @@ public class Utility
               textLine.append (new String (b, ptr + linePtr, 1));
           }
         }
-        text.append (String.format ("%04X  %-48s %s%n", ptr, hexLine.toString (),
+        text.append (String.format ("%06X  %-48s %s%n", ptr, hexLine.toString (),
                                     textLine.toString ()));
       }
     }

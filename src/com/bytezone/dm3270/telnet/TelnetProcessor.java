@@ -54,6 +54,7 @@ public class TelnetProcessor
   {
     for (byte thisByte : buffer)
     {
+      //      System.out.printf ("Byte: %02X - %04X%n", thisByte, dataPtr);
       data[dataPtr++] = thisByte;
 
       if (thisByte == IAC)
