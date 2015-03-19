@@ -23,7 +23,7 @@ public class TerminalServer implements Runnable
   private volatile boolean running;
 
   private final BufferListener telnetListener;
-  private final boolean debug = true;
+  private final boolean debug = false;
 
   public TerminalServer (String serverURL, int serverPort, BufferListener listener)
   {

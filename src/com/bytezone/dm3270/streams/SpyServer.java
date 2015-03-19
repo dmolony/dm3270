@@ -56,7 +56,7 @@ public class SpyServer implements Runnable
       clientServerSocket = new ServerSocket (clientPort);
       clientSocket = clientServerSocket.accept ();      // blocks
 
-      if (false)
+      if (true)
       {
         // leave a message on the terminal screen while we connect to the MF
         String message = "Connecting to " + serverURL + ":" + serverPort;

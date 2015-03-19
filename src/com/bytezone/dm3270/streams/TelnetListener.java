@@ -91,7 +91,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     currentDateTime = dateTime;
     currentGenuine = genuine;
 
-    telnetTester.listen (buffer);
+    telnetTester.listen (buffer);     // will call one of the processXXX routines
   }
 
   private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
@@ -105,7 +105,6 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
       session.add (sessionRecord);
     }
 
-    //    System.out.printf ("AddDataRecord mode: %s%n", sessionMode);
     if (sessionMode == SessionMode.TERMINAL)
     {
       if (sessionRecordType == SessionRecordType.TELNET)      // no gui involved
@@ -122,10 +121,10 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     if (reply != null)
     {
       telnetState.write (reply.getTelnetData ());
-      System.out.println ("Reply: " + reply + "\n");
+      //      System.out.println ("Reply: " + reply + "\n");
     }
-    else
-      System.out.println ("No reply\n");
+    //    else
+    //      System.out.println ("No reply\n");
   }
 
   @Override
