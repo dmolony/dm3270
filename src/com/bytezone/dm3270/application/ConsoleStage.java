@@ -56,7 +56,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
 
-    if (!release)
+    if (!release && false)
     {
       ToolBar toolbar = new ToolBar ();
       Button btnClear = new Button ("Clear");
