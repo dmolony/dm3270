@@ -207,6 +207,14 @@ public class Screen extends Canvas
     return fieldManager.getUnprotectedFields ();
   }
 
+  public Field getHomeField ()
+  {
+    List<Field> fields = getUnprotectedFields ();
+    if (fields != null && fields.size () > 0)
+      return fields.get (0);
+    return null;
+  }
+
   public void setAID (byte aid)
   {
     currentAID = aid;

@@ -19,6 +19,9 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
        (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
        (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C, };
 
+  private final String os = System.getProperty ("os.name");
+  private final boolean isMac = os != null && os.startsWith ("Mac");
+
   private final Screen screen;
   private final ConsoleStage consoleStage;
   private final Cursor cursor;
@@ -33,13 +36,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent e)
   {
-    if (e.isMetaDown ())
-    {
-      if (e.getCode () == KeyCode.I)
-        screen.toggleInsertMode ();
-      return;
-    }
-
     e.consume ();
 
     if (screen.isKeyboardLocked ())
@@ -100,6 +96,20 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
       case INSERT:
         screen.toggleInsertMode ();
+        break;
+
+      case HOME:
+        cursor.home ();
+        break;
+
+      case H:
+        if (isMac && e.isControlDown ())
+          cursor.home ();
+        break;
+
+      case I:
+        if (isMac && e.isControlDown ())
+          screen.toggleInsertMode ();
         break;
 
       case ESCAPE:

@@ -94,6 +94,13 @@ public class Cursor
     }
   }
 
+  public void home ()
+  {
+    Field field = screen.getHomeField ();
+    if (field != null)
+      moveTo (field.getFirstLocation ());
+  }
+
   public void backspace ()
   {
     if (currentField != null && currentField.isUnprotected ())
