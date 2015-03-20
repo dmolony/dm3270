@@ -104,29 +104,24 @@ public class TelnetProcessor
           continue;
         }
 
+        // known three-byte commands
         if (thisByte == DO || thisByte == DONT || thisByte == WILL | thisByte == WONT)
         {
-          command = thisByte;
+          command = thisByte;               // wait for the third byte
           continue;
         }
 
-        if (thisByte == NOP)
+        // known two-byte commands
+        if (thisByte == NOP || thisByte == IP)
         {
-          dataPtr -= 2;                     // ignore IAC NOP
-          System.out.println ("NOP\n");
-          continue;
-        }
-
-        if (thisByte == IP)
-        {
-          // now what?
+          commandProcessor.processTelnetCommand (data, dataPtr);
           reset ();
           continue;
         }
 
         System.err.println ("Unknown command");   // handle error somehow
       }
-      else if (command != 0)
+      else if (command != 0)                // the third byte has arrived
       {
         commandProcessor.processTelnetCommand (data, dataPtr);
         reset ();
