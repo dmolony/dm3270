@@ -3,7 +3,7 @@ Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses Ja
 #### Warning
 This is beta software. Not everything has been implemented yet, however most of the functions are working.
 #### Defaults
-The release version is built so that it always runs in Terminal mode (see below). To enable the other modes you will need to download the source and change the release flag in Console.java.
+The program defaults to the Release setting, which means it runs only in Terminal mode (see below). To enable the other modes you will need to change the Debug menu option and restart. This is the dialog box you will see when running as Release.
 ![Default Connection](Resources/connect.png?raw=true "default connection")
 #### Modes
 There are four ways in which this software can currently be used - Spy, Replay, Mainframe and Terminal. These are described below.                
