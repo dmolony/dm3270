@@ -12,12 +12,15 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.extended.CommandHeader;
+import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
@@ -35,6 +38,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private TelnetListener telnetListener;
   private TelnetState telnetState;
   private TerminalServer terminalServer;
+
+  private int commandHeaderCount;
 
   public ConsoleStage (Screen screen, boolean release)
   {
@@ -120,6 +125,20 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     screen.requestFocus ();
   }
 
+  public void sendAID (AIDCommand command)
+  {
+    if (telnetState.do3270Extended ())
+    {
+      byte[] buffer = new byte[5];
+      Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
+      CommandHeader header = new CommandHeader (buffer);
+      TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header, command);
+      sendData (extendedCommand.getTelnetData ());
+    }
+    else
+      sendData (command.getTelnetData ());
+  }
+
   public void sendData (byte[] buffer)
   {
     if (buffer == null)
@@ -135,7 +154,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   public void connect (String mainframeURL, int mainframePort)
   {
     telnetState = new TelnetState ();
-    telnetState.setDo3270Extended (false);    // set preferences for this session
+    telnetState.setDo3270Extended (true);    // set preferences for this session
     telnetState.setDoTerminalType (true);    // set preferences for this session
 
     telnetListener = new TelnetListener (screen, telnetState);

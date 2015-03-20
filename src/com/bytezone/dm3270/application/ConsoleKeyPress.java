@@ -44,7 +44,9 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
         {
           screen.setAID (AIDCommand.AID_ENTER_KEY);
           screen.lockKeyboard ();
-          consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
+
+          AIDCommand command = screen.readModifiedFields ();
+          consoleStage.sendAID (command);
         }
         break;
 
@@ -124,7 +126,9 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
           screen.setAID (AIDCommand.PFKeyValues[pfKey]);
           screen.lockKeyboard ();
-          consoleStage.sendData (screen.readModifiedFields ().getTelnetData ());
+
+          AIDCommand command = screen.readModifiedFields ();
+          consoleStage.sendAID (command);
         }
         break;
     }
