@@ -6,7 +6,7 @@ This is beta software. Not everything has been implemented yet, however most of 
 The program defaults to the Release setting, which means it runs only in Terminal mode (see below). To enable the other modes you will need to change the Debug menu option and restart. This is the dialog box you will see when running as Release.  
 ![Default Connection](Resources/connect.png?raw=true "default connection")
 #### Modes
-There are four ways in which this software can currently be used - Spy, Replay, Mainframe and Terminal. These are described below.                
+There are four ways in which this software can currently be used - Spy, Replay, Mainframe and Terminal. These are described below. This is the dialog box you will see when running as Debug.  
 ![Initial screen](Resources/main1.png?raw=true "initial screen")
 #### Spy Mode
 Waits for a terminal emulator to connect to the client port specified, and then it completes the connection to the actual mainframe at the server and port specified. The mainframe session can then be used as normal, however all communication buffers are recorded and can be saved in a session file to replay later.
