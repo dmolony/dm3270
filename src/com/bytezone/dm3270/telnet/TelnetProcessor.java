@@ -54,8 +54,7 @@ public class TelnetProcessor
   {
     for (byte thisByte : buffer)
     {
-      //      System.out.printf ("Byte: %02X - %04X%n", thisByte, dataPtr);
-      data[dataPtr++] = thisByte;
+      data[dataPtr++] = thisByte;           // store every byte we receive
 
       if (thisByte == IAC)
       {
@@ -107,7 +106,7 @@ public class TelnetProcessor
         // known three-byte commands
         if (thisByte == DO || thisByte == DONT || thisByte == WILL | thisByte == WONT)
         {
-          command = thisByte;               // wait for the third byte
+          command = thisByte;               // save it and wait for the third byte
           continue;
         }
 
@@ -121,7 +120,7 @@ public class TelnetProcessor
 
         System.err.println ("Unknown command");   // handle error somehow
       }
-      else if (command != 0)                // the third byte has arrived
+      else if (command != 0)                // the third byte has arrived (in thisByte)
       {
         commandProcessor.processTelnetCommand (data, dataPtr);
         reset ();

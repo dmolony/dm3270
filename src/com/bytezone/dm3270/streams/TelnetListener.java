@@ -47,7 +47,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   private boolean currentGenuine;
   private boolean debug;
 
-  private final TelnetProcessor telnetTester = new TelnetProcessor (this);
+  private final TelnetProcessor telnetProcessor = new TelnetProcessor (this);
 
   // Use this when recording the session in SPY mode, or replaying the session
   // in REPLAY mode.
@@ -91,7 +91,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     currentDateTime = dateTime;
     currentGenuine = genuine;
 
-    telnetTester.listen (buffer);     // will call one of the processXXX routines
+    telnetProcessor.listen (buffer);     // will call one of the processXXX routines
   }
 
   private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
@@ -119,12 +119,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     message.process ();
     Buffer reply = message.getReply ();
     if (reply != null)
-    {
       telnetState.write (reply.getTelnetData ());
-      //      System.out.println ("Reply: " + reply + "\n");
-    }
-    //    else
-    //      System.out.println ("No reply\n");
   }
 
   @Override
