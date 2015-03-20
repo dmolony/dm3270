@@ -55,14 +55,16 @@ public class Console extends Application
   private Button cancel = new Button ("Cancel");
   private final ToggleGroup group = new ToggleGroup ();
   private Preferences prefs;
+
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
+  private final ToggleGroup releaseGroup = new ToggleGroup ();
 
   private MainframeStage mainframeStage;
   private SpyStage spyStage;
   private ConsoleStage consoleStage;
 
-  private final boolean release = false;
+  private boolean release;
 
   private final MenuBar menuBar = new MenuBar ();
 
@@ -77,6 +79,7 @@ public class Console extends Application
     String optionSelected = prefs.get ("OPTION", "Replay");
     String fontSelected = prefs.get ("FONT", "Monospaced");
     String sizeSelected = prefs.get ("SIZE", "16");
+    String runMode = prefs.get ("RUNMODE", "Release");
 
     String[] optionList = { "Spy", "Replay", "Terminal", "Mainframe" };
 
@@ -90,6 +93,7 @@ public class Console extends Application
     Node node1 = options (optionList, group, 0, 2);
     Node node2 = options (optionList, group, 2, 2);
 
+    release = runMode.equals ("Release");
     if (release)
     {
       panel.getChildren ().addAll (row ("Server URL", serverName),
@@ -166,6 +170,8 @@ public class Console extends Application
       prefs.put ("OPTION", optionTextSave);
       prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
       prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
+      prefs.put ("RUNMODE",
+                 ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
 
       dialogStage.hide ();
 
@@ -231,24 +237,28 @@ public class Console extends Application
     cancel.setOnAction ( (e) -> dialogStage.hide ());
 
     Menu menuFont = new Menu ("Fonts");
+    Menu menuDebug = new Menu ("Debug");
 
     List<String> families = Font.getFamilies ();
     for (String fontName : fontNames)
     {
       boolean disable = !families.contains (fontName);
-      setFontMenu (fontName, fontGroup, menuFont, fontSelected, disable);
+      setMenuItem (fontName, fontGroup, menuFont, fontSelected, disable);
     }
 
     menuFont.getItems ().add (new SeparatorMenuItem ());
 
-    setFontMenu ("12", sizeGroup, menuFont, sizeSelected, false);
-    setFontMenu ("14", sizeGroup, menuFont, sizeSelected, false);
-    setFontMenu ("16", sizeGroup, menuFont, sizeSelected, false);
-    setFontMenu ("18", sizeGroup, menuFont, sizeSelected, false);
-    setFontMenu ("20", sizeGroup, menuFont, sizeSelected, false);
-    setFontMenu ("22", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("12", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("14", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("16", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("18", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("20", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("22", sizeGroup, menuFont, sizeSelected, false);
 
-    menuBar.getMenus ().addAll (menuFont);
+    setMenuItem ("Debug", releaseGroup, menuDebug, runMode, false);
+    setMenuItem ("Release", releaseGroup, menuDebug, runMode, false);
+
+    menuBar.getMenus ().addAll (menuFont, menuDebug);
 
     final String os = System.getProperty ("os.name");
     if (os != null && os.startsWith ("Mac"))
@@ -284,13 +294,13 @@ public class Console extends Application
     filename.setDisable (fn);
   }
 
-  private void setFontMenu (String name, ToggleGroup toggleGroup, Menu menu,
-      String fontSelected, boolean disable)
+  private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
+      String selectedItemName, boolean disable)
   {
-    RadioMenuItem item = new RadioMenuItem (name);
+    RadioMenuItem item = new RadioMenuItem (itemName);
     item.setToggleGroup (toggleGroup);
     menu.getItems ().add (item);
-    if (fontSelected.equals (name))
+    if (itemName.equals (selectedItemName))
       item.setSelected (true);
     item.setDisable (disable);
   }

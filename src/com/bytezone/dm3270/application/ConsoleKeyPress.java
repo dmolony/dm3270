@@ -31,17 +31,14 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     e.consume ();
 
     if (screen.isKeyboardLocked ())
-    {
-      System.out.println ("Locked keyboard - ignoring : " + e);
       return;
-    }
 
     KeyCode keyCodePressed = e.getCode ();
 
     switch (keyCodePressed)
     {
       case ENTER:
-        if (e.isShiftDown ())
+        if (e.isControlDown ())
           cursor.newLine ();
         else
         {
