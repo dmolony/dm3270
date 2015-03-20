@@ -41,13 +41,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
         if (e.isControlDown ())
           cursor.newLine ();
         else
-        {
-          screen.setAID (AIDCommand.AID_ENTER_KEY);
-          screen.lockKeyboard ();
-
-          AIDCommand command = screen.readModifiedFields ();
-          consoleStage.sendAID (command);
-        }
+          sendAID (AIDCommand.AID_ENTER_KEY);
         break;
 
       case TAB:
@@ -123,14 +117,18 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
         {
           if (e.isShiftDown ())
             pfKey += 12;
-
-          screen.setAID (AIDCommand.PFKeyValues[pfKey]);
-          screen.lockKeyboard ();
-
-          AIDCommand command = screen.readModifiedFields ();
-          consoleStage.sendAID (command);
+          sendAID (AIDCommand.PFKeyValues[pfKey]);
         }
         break;
     }
+  }
+
+  private void sendAID (byte aid)
+  {
+    screen.lockKeyboard ();
+    screen.setAID (aid);
+
+    AIDCommand command = screen.readModifiedFields ();
+    consoleStage.sendAID (command);
   }
 }
