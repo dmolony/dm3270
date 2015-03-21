@@ -35,6 +35,47 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     KeyCode keyCodePressed = e.getCode ();
 
+    if (e.isControlDown ())
+    {
+      switch (keyCodePressed)
+      {
+        case ENTER:
+          cursor.newLine ();
+          break;
+
+        case BACK_SPACE:
+          if (isMac)
+            cursor.eraseEOL ();
+          break;
+
+        case H:
+          if (isMac)
+            cursor.home ();
+          break;
+
+        case I:
+          if (isMac)
+            screen.toggleInsertMode ();
+          break;
+
+        case F1:
+          sendAID (AIDCommand.AID_PA1);
+          break;
+
+        case F2:
+          sendAID (AIDCommand.AID_PA2);
+          break;
+
+        case F3:
+          sendAID (AIDCommand.AID_PA3);
+          break;
+
+        default:
+          break;
+      }
+      return;
+    }
+
     if (keyCodePressed.isArrowKey ())
       switch (keyCodePressed)
       {
@@ -62,10 +103,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       switch (keyCodePressed)
       {
         case ENTER:
-          if (e.isControlDown ())         // all platforms
-            cursor.newLine ();
-          else
-            sendAID (AIDCommand.AID_ENTER_KEY);
+          sendAID (AIDCommand.AID_ENTER_KEY);
           break;
 
         case TAB:
@@ -73,10 +111,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case BACK_SPACE:
-          if (isMac && e.isControlDown ())
-            cursor.eraseEOL ();
-          else
-            cursor.backspace ();
+          cursor.backspace ();
           break;
 
         case DELETE:
@@ -93,16 +128,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
         case HOME:
           cursor.home ();
-          break;
-
-        case H:
-          if (isMac && e.isControlDown ())
-            cursor.home ();
-          break;
-
-        case I:
-          if (isMac && e.isControlDown ())
-            screen.toggleInsertMode ();
           break;
 
         case ESCAPE:
