@@ -380,6 +380,7 @@ public class Screen extends Canvas
   {
     keyboardLocked = false;
     notifyKeyboardStatusChange ();
+    setAID (AIDCommand.NO_AID_SPECIFIED);
     cursor.setVisible (true);
   }
 

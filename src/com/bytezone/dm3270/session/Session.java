@@ -25,8 +25,8 @@ import com.bytezone.dm3270.replyfield.RPQNames;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetListener;
-import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 
@@ -210,6 +210,11 @@ public class Session implements Iterable<SessionRecord>
         else if (textOrder.getTextString ().contains ("Hercules Version  :"))
         {
           serverName = "Hercules";
+          break;
+        }
+        else if (textOrder.getTextString ().equals ("[(03) 97974300 ]"))
+        {
+          serverName = "Nissan";
           break;
         }
       }
