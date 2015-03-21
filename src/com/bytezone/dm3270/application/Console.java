@@ -155,23 +155,6 @@ public class Console extends Application
       }
 
     ok.setOnAction ( (e) -> {
-      // get user values
-      String serverTextSave = serverName.getText ();
-      String serverPortTextSave = serverPort.getText ();
-      String clientPortTextSave = clientPort.getText ();
-      String fileTextSave = filename.getText ();
-      String optionTextSave = (String) group.getSelectedToggle ().getUserData ();
-
-      // save user values
-      prefs.put ("SERVER", serverTextSave);
-      prefs.put ("SERVER_PORT", serverPortTextSave);
-      prefs.put ("CLIENT_PORT", clientPortTextSave);
-      prefs.put ("FILE_NAME", fileTextSave);
-      prefs.put ("OPTION", optionTextSave);
-      prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
-      prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
-      prefs.put ("RUNMODE",
-                 ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
 
       dialogStage.hide ();
 
@@ -179,6 +162,7 @@ public class Console extends Application
       int serverPortVal = Integer.parseInt (serverPort.getText ());
       int clientPortVal = Integer.parseInt (clientPort.getText ());
 
+      String optionTextSave = (String) group.getSelectedToggle ().getUserData ();
       switch (optionTextSave)
       {
         case "Spy":
@@ -193,7 +177,7 @@ public class Console extends Application
         case "Replay":
           String file =
               System.getProperty ("user.home") + "/Dropbox/Mainframe documentation/"
-                  + fileTextSave;
+                  + filename.getText ();
           Path path = Paths.get (file);
           if (Files.exists (path))
           {
@@ -283,6 +267,28 @@ public class Console extends Application
 
     if (consoleStage != null)
       consoleStage.disconnect ();
+
+    savePreferences ();
+  }
+
+  private void savePreferences ()
+  {
+    // get user values
+    String serverTextSave = serverName.getText ();
+    String serverPortTextSave = serverPort.getText ();
+    String clientPortTextSave = clientPort.getText ();
+    String fileTextSave = filename.getText ();
+    String optionTextSave = (String) group.getSelectedToggle ().getUserData ();
+
+    // save user values
+    prefs.put ("SERVER", serverTextSave);
+    prefs.put ("SERVER_PORT", serverPortTextSave);
+    prefs.put ("CLIENT_PORT", clientPortTextSave);
+    prefs.put ("FILE_NAME", fileTextSave);
+    prefs.put ("OPTION", optionTextSave);
+    prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
+    prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
+    prefs.put ("RUNMODE", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
   }
 
   private void setDisable (boolean sn, boolean sp, boolean cp, boolean pr, boolean fn)
