@@ -15,9 +15,9 @@ public class ExtendedHighlight extends Attribute
 
   @Override
   public ScreenContext
-      process (ContextManager contextHandler, ScreenContext screenContext)
+      process (ContextManager contextManager, ScreenContext screenContext)
   {
-    return contextHandler.setHighlight (screenContext, attributeValue);
+    return contextManager.setHighlight (screenContext, attributeValue);
   }
 
   @Override
