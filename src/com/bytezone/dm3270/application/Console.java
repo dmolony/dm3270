@@ -197,7 +197,7 @@ public class Console extends Application
           Path path = Paths.get (file);
           if (Files.exists (path))
           {
-            consoleStage = new ConsoleStage (screen, release);
+            consoleStage = new ConsoleStage (screen);
             consoleStage.show ();
             new ReplayStage (screen, path).show ();
           }
@@ -226,7 +226,7 @@ public class Console extends Application
           break;
 
         case "Terminal":
-          consoleStage = new ConsoleStage (screen, release);
+          consoleStage = new ConsoleStage (screen);
           consoleStage.show ();
           consoleStage.connect (serverName.getText (), serverPortVal);
 

@@ -36,12 +36,12 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private final Label fieldLocation = new Label ();
 
   private TelnetListener telnetListener;
-  private TelnetState telnetState;
+  private final TelnetState telnetState = new TelnetState ();
   private TerminalServer terminalServer;
 
   private int commandHeaderCount;
 
-  public ConsoleStage (Screen screen, boolean release)
+  public ConsoleStage (Screen screen)
   {
     this.screen = screen;
 
@@ -61,7 +61,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
 
-    if (!release && false)
+    if (false)
     {
       ToolBar toolbar = new ToolBar ();
       Button btnClear = new Button ("Clear");
@@ -119,15 +119,15 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screen));
     getScene ().setOnKeyTyped (new ConsoleKeyEvent (screen));
 
-    if (release)
-      centerOnScreen ();
+    //    if (release)
+    centerOnScreen ();
 
     screen.requestFocus ();
   }
 
   public void sendAID (AIDCommand command)
   {
-    if (telnetState.do3270Extended ())
+    if (telnetState != null && telnetState.do3270Extended ())
     {
       byte[] buffer = new byte[5];
       Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
@@ -153,7 +153,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
   public void connect (String mainframeURL, int mainframePort)
   {
-    telnetState = new TelnetState ();
+    //    telnetState = new TelnetState ();
     telnetState.setDo3270Extended (true);    // set preferences for this session
     telnetState.setDoTerminalType (true);    // set preferences for this session
 

@@ -35,92 +35,100 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     KeyCode keyCodePressed = e.getCode ();
 
-    switch (keyCodePressed)
-    {
-      case ENTER:
-        if (e.isControlDown ())
-          cursor.newLine ();
-        else
-          sendAID (AIDCommand.AID_ENTER_KEY);
-        break;
+    if (keyCodePressed.isArrowKey ())
+      switch (keyCodePressed)
+      {
+        case LEFT:
+          cursor.move (Direction.LEFT);
+          break;
 
-      case TAB:
-        cursor.tab (e.isShiftDown ());
-        break;
+        case RIGHT:
+          cursor.move (Direction.RIGHT);
+          break;
 
-      case LEFT:
-        cursor.move (Direction.LEFT);
-        break;
+        case UP:
+          cursor.move (Direction.UP);
+          break;
 
-      case RIGHT:
-        cursor.move (Direction.RIGHT);
-        break;
+        case DOWN:
+          cursor.move (Direction.DOWN);
+          break;
 
-      case UP:
-        cursor.move (Direction.UP);
-        break;
+        default:
+          System.out.println ("Impossible");
+          break;
+      }
+    else
+      switch (keyCodePressed)
+      {
+        case ENTER:
+          if (e.isControlDown ())         // all platforms
+            cursor.newLine ();
+          else
+            sendAID (AIDCommand.AID_ENTER_KEY);
+          break;
 
-      case DOWN:
-        cursor.move (Direction.DOWN);
-        break;
+        case TAB:
+          cursor.tab (e.isShiftDown ());
+          break;
 
-      case BACK_SPACE:
-        if (e.isShiftDown ())
+        case BACK_SPACE:
+          if (isMac && e.isControlDown ())
+            cursor.eraseEOL ();
+          else
+            cursor.backspace ();
+          break;
+
+        case DELETE:
+          cursor.delete ();
+          break;
+
+        case END:
           cursor.eraseEOL ();
-        else
-          cursor.backspace ();
-        break;
+          break;
 
-      case DELETE:
-        cursor.delete ();
-        break;
-
-      case END:
-        cursor.eraseEOL ();
-        break;
-
-      case INSERT:
-        screen.toggleInsertMode ();
-        break;
-
-      case HOME:
-        cursor.home ();
-        break;
-
-      case H:
-        if (isMac && e.isControlDown ())
-          cursor.home ();
-        break;
-
-      case I:
-        if (isMac && e.isControlDown ())
+        case INSERT:
           screen.toggleInsertMode ();
-        break;
+          break;
 
-      case ESCAPE:
-        System.out.println ("escape");    // CLR key?
-        break;
+        case HOME:
+          cursor.home ();
+          break;
 
-      default:
-        boolean found = false;
-        int pfKey = 0;
-        for (KeyCode keyCode : AIDCommand.PFKeyCodes)
-        {
-          if (keyCode == keyCodePressed)
+        case H:
+          if (isMac && e.isControlDown ())
+            cursor.home ();
+          break;
+
+        case I:
+          if (isMac && e.isControlDown ())
+            screen.toggleInsertMode ();
+          break;
+
+        case ESCAPE:
+          System.out.println ("escape");    // CLR key?
+          break;
+
+        default:
+          boolean found = false;
+          int pfKey = 0;
+          for (KeyCode keyCode : AIDCommand.PFKeyCodes)
           {
-            found = true;
-            break;
+            if (keyCode == keyCodePressed)
+            {
+              found = true;
+              break;
+            }
+            ++pfKey;
           }
-          ++pfKey;
-        }
-        if (found)
-        {
-          if (e.isShiftDown ())
-            pfKey += 12;
-          sendAID (AIDCommand.PFKeyValues[pfKey]);
-        }
-        break;
-    }
+          if (found)
+          {
+            if (e.isShiftDown ())
+              pfKey += 12;
+            sendAID (AIDCommand.PFKeyValues[pfKey]);
+          }
+          break;
+      }
   }
 
   private void sendAID (byte aid)
