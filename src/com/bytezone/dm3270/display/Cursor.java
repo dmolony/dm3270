@@ -111,6 +111,8 @@ public class Cursor
         moveTo (screen.validate (currentPosition - 1));
         int end = currentField.getDisplayLength ();
         currentField.move (start - 1, end);
+        currentField.setModified (true);
+        notifyFieldChange (currentField, currentField);
       }
       currentField.draw ();     // draws the field without the cursor
       draw ();                  // redraw the cursor
@@ -126,6 +128,8 @@ public class Cursor
       {
         int end = currentField.getDisplayLength ();
         currentField.move (start, end);
+        currentField.setModified (true);
+        notifyFieldChange (currentField, currentField);
       }
       currentField.draw ();     // draws the field without the cursor
       draw ();                  // redraw the cursor
@@ -141,6 +145,8 @@ public class Cursor
       {
         int end = currentField.getDisplayLength ();
         currentField.clear (start, end);
+        currentField.setModified (true);
+        notifyFieldChange (currentField, currentField);
       }
       currentField.draw ();     // draws the field without the cursor
       draw ();                  // redraw the cursor
@@ -295,7 +301,7 @@ public class Cursor
     Field lastField = currentField;
     currentField = null;
     if (currentField != lastField)
-      notifyFieldChange (lastField, currentField, 0);
+      notifyFieldChange (lastField, currentField);
   }
 
   private void setCurrentField ()
@@ -303,7 +309,7 @@ public class Cursor
     Field lastField = currentField;
     currentField = screen.getField (currentPosition);
     if (currentField != lastField)
-      notifyFieldChange (lastField, currentField, 0);
+      notifyFieldChange (lastField, currentField);
   }
 
   // ---------------------------------------------------------------------------------//
@@ -313,7 +319,7 @@ public class Cursor
   private final Set<FieldChangeListener> fieldChangeListeners = new HashSet<> ();
   private final Set<CursorMoveListener> cursorMoveListeners = new HashSet<> ();
 
-  void notifyFieldChange (Field oldField, Field currentField, int offset)
+  void notifyFieldChange (Field oldField, Field currentField)
   {
     for (FieldChangeListener listener : fieldChangeListeners)
       listener.fieldChanged (oldField, currentField);
