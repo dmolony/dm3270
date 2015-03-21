@@ -197,7 +197,9 @@ public class AIDCommand extends Command implements BufferAddressSource
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("AID     : %-12s : %02X%n", keyNames[key], keyCommand));
-    text.append (String.format ("Cursor  : %s%n", cursorAddress));
+
+    if (cursorAddress != null)
+      text.append (String.format ("Cursor  : %s%n", cursorAddress));
 
     if (aidFields.size () > 0)
     {
