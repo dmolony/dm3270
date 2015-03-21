@@ -6,15 +6,26 @@ import com.bytezone.dm3270.display.Screen;
 
 public class ReadCommand extends Command
 {
+  String name;
+
   public ReadCommand (Screen screen, byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length, screen);
+
+    if (data[0] == READ_BUFFER_F2)
+      name = "Read Buffer";
+    else if (data[0] == READ_MODIFIED_F6)
+      name = "Read Modified";
+    else if (data[0] == READ_MODIFIED_ALL_6E)
+      name = "Read Modified All";
+    else
+      name = "Unknown Command";
   }
 
   @Override
   public String getName ()
   {
-    return "Read Command";
+    return name;
   }
 
   @Override
@@ -25,11 +36,12 @@ public class ReadCommand extends Command
     else if (data[0] == READ_MODIFIED_F6)
     {
       screen.setAID (AIDCommand.NO_AID_SPECIFIED);
-      reply = screen.readModifiedFields ();
+      reply = screen.readModifiedFields ((byte) 0xF6);
     }
     else if (data[0] == READ_MODIFIED_ALL_6E)
     {
       System.out.println ("Read Modified All");
+      reply = screen.readModifiedFields ((byte) 0x6E);
     }
     else
       System.out.printf ("Unknown READ command: %02X%n", data[0]);
