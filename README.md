@@ -1,5 +1,5 @@
 # dm3270
-Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses JavaFX. Please ensure you are using the latest version as JavaFX improves with every reales. At present Java 8 update 40 is the minimum version requred.
+Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses JavaFX. Please ensure that you are using the latest java version as JavaFX ~~has fewer bugs~~ improves with every release. At present Java 8 update 40 is the minimum version requred.
 #### Warning
 This is beta software. You know what that means.
 #### Defaults
