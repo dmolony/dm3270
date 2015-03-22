@@ -22,5 +22,5 @@ Connects the dm3270 terminal to a real mainframe. This mode has not been thoroug
 ![Terminal screen](Resources/console.png?raw=true "dm3270")
 #### Menus
 There are two menus which are only available from the first screen. There you may choose the font and font size for the terminal screen, and whether to run in Debug or Release mode.  
-![Fonts](Resources/fonts.png?raw=true "fonts")
-![Debug](Resources/debug.png?raw=true "debug")
+![Fonts](resources/fonts.png?raw=true "fonts")
+![Debug](resources/debug.png?raw=true "debug")
