@@ -79,7 +79,7 @@ public class ReadPartitionSF extends StructuredField
         break;
 
       case Command.READ_BUFFER_F2:            // NB 0x02 would conflict with RPQ above
-        reply = screen.readBuffer ();
+        reply = screen.readBuffer ();         // AID command
         break;
 
       case Command.READ_MODIFIED_F6:

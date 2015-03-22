@@ -14,6 +14,7 @@ public class EraseAllUnprotectedCommand extends Command
   public void process ()
   {
     screen.eraseAllUnprotected ();
+    screen.setAID (AIDCommand.NO_AID_SPECIFIED);      // also reset keyboard
   }
 
   @Override
