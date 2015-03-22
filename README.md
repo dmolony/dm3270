@@ -24,3 +24,10 @@ Connects the dm3270 terminal to the specified mainframe. This is the only mode a
 There are two menus which are only available from the first screen. There you may choose the font and font size for the terminal screen, and whether to run in Debug or Release mode. The fonts listed are the only ones that dm3270 will attempt to load, and then only if you have them installed on your machine. Most of the fonts are freely available on the web.
 ![Fonts](resources/fonts.png?raw=true "fonts")
 ![Debug](resources/debug.png?raw=true "debug")
+#### Keys
+Not all keys are available on all platforms, and some aren't usually available at all. To help with this, the following shortcuts are available.
+* Home - ctrl-h
+* Erase EOL - ctrl-del
+* Return - crtl-enter
+* Insert - ctrl-i
+* PA1/2/3 - ctrl-1/2/3
