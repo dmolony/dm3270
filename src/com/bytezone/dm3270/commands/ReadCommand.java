@@ -6,20 +6,39 @@ import com.bytezone.dm3270.display.Screen;
 
 public class ReadCommand extends Command
 {
-  String name;
+  private final String name;
+  private final CommandType type;
 
+  enum CommandType
+  {
+    READ_BUFFER, READ_MODIFIED, READ_MODIFIED_ALL
+  }
+
+  // Called from the static Command.getCommand()
   public ReadCommand (Screen screen, byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length, screen);
 
     if (data[0] == READ_BUFFER_F2)
+    {
       name = "Read Buffer";
+      type = CommandType.READ_BUFFER;
+    }
     else if (data[0] == READ_MODIFIED_F6)
+    {
       name = "Read Modified";
+      type = CommandType.READ_MODIFIED;
+    }
     else if (data[0] == READ_MODIFIED_ALL_6E)
+    {
       name = "Read Modified All";
+      type = CommandType.READ_MODIFIED_ALL;
+    }
     else
+    {
       name = "Unknown Command";
+      type = null;
+    }
   }
 
   @Override
@@ -31,17 +50,17 @@ public class ReadCommand extends Command
   @Override
   public void process ()
   {
-    if (data[0] == READ_BUFFER_F2)
+    if (type == CommandType.READ_BUFFER)
       reply = screen.readBuffer ();
-    else if (data[0] == READ_MODIFIED_F6)
+    else if (type == CommandType.READ_MODIFIED)
     {
       screen.setAID (AIDCommand.NO_AID_SPECIFIED);
-      reply = screen.readModifiedFields ((byte) 0xF6);
+      reply = screen.readModifiedFields (READ_MODIFIED_F6);
     }
-    else if (data[0] == READ_MODIFIED_ALL_6E)
+    else if (type == CommandType.READ_MODIFIED_ALL)
     {
       System.out.println ("Read Modified All");
-      reply = screen.readModifiedFields ((byte) 0x6E);
+      reply = screen.readModifiedFields (READ_MODIFIED_ALL_6E);
     }
     else
       System.out.printf ("Unknown READ command: %02X%n", data[0]);
