@@ -39,8 +39,8 @@ import com.bytezone.dm3270.display.Screen;
 public class Console extends Application
 {
   private static String[] fontNames = { //
-      "Consolas", "Source Code Pro", "Anonymous Pro", "Inconsolata", "Monaco", "Menlo",
-          "M+ 2m", "PT Mono", "Luculent", "Monospaced" };
+        "Consolas", "Source Code Pro", "Anonymous Pro", "Inconsolata", "Monaco", "Menlo",
+            "M+ 2m", "PT Mono", "Luculent", "DejaVu Sans Mono", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
 
@@ -103,11 +103,10 @@ public class Console extends Application
     else
     {
       panel.getChildren //
-          ().addAll (row ("Mode", node1), row ("", node2),
-                     row ("Server URL", serverName), row ("Server port", serverPort),
-                     row ("Client port", clientPort),
-                     row ("Prevent 3270-E", prevent3270E),
-                     row ("Session file", filename), row ("", buttons ()));
+      ().addAll (row ("Mode", node1), row ("", node2), row ("Server URL", serverName),
+                 row ("Server port", serverPort), row ("Client port", clientPort),
+                 row ("Prevent 3270-E", prevent3270E), row ("Session file", filename),
+                 row ("", buttons ()));
       dialogStage.setTitle ("Choose parameters");
     }
 
@@ -119,7 +118,7 @@ public class Console extends Application
     {
       @Override
       public void changed (ObservableValue<? extends Toggle> ov, Toggle oldToggle,
-          Toggle newToggle)
+            Toggle newToggle)
       {
         if (newToggle == null)
           return;
@@ -167,8 +166,8 @@ public class Console extends Application
       {
         case "Spy":
           spyStage =
-              new SpyStage (screen, serverName.getText (), serverPortVal, clientPortVal,
-                  prevent3270E.isSelected ());
+                new SpyStage (screen, serverName.getText (), serverPortVal, clientPortVal,
+                      prevent3270E.isSelected ());
           spyStage.show ();
           spyStage.startServer ();
 
@@ -176,8 +175,8 @@ public class Console extends Application
 
         case "Replay":
           String file =
-              System.getProperty ("user.home") + "/Dropbox/Mainframe documentation/"
-                  + filename.getText ();
+                System.getProperty ("user.home") + "/Dropbox/Mainframe documentation/"
+                      + filename.getText ();
           Path path = Paths.get (file);
           if (Files.exists (path))
           {
@@ -198,8 +197,8 @@ public class Console extends Application
 
         case "Mainframe":
           spyStage =
-              new SpyStage (screen, "localhost", MAINFRAME_EMULATOR_PORT, clientPortVal,
-                  prevent3270E.isSelected ());
+                new SpyStage (screen, "localhost", MAINFRAME_EMULATOR_PORT, clientPortVal,
+                      prevent3270E.isSelected ());
           spyStage.show ();
           spyStage.startServer ();
 
@@ -301,7 +300,7 @@ public class Console extends Application
   }
 
   private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
-      String selectedItemName, boolean disable)
+        String selectedItemName, boolean disable)
   {
     RadioMenuItem item = new RadioMenuItem (itemName);
     item.setToggleGroup (toggleGroup);
@@ -355,8 +354,8 @@ public class Console extends Application
     RadioMenuItem selectedFontName = (RadioMenuItem) fontGroup.getSelectedToggle ();
     RadioMenuItem selectedFontSize = (RadioMenuItem) sizeGroup.getSelectedToggle ();
     Font font =
-        Font.font (selectedFontName.getText (),
-                   Integer.parseInt (selectedFontSize.getText ()));
+          Font.font (selectedFontName.getText (),
+                     Integer.parseInt (selectedFontSize.getText ()));
     return new Screen (24, 80, font);
   }
 
