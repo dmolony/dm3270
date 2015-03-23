@@ -41,7 +41,13 @@ public class SessionReader
   {
     this.name = source == Source.CLIENT ? "Client" : "Server";
     firstLetter = name.substring (0, 1);
+    lines = readFile (path);
+    skipToNext ();
+  }
 
+  private List<String> readFile (Path path)
+  {
+    List<String> lines = null;
     try
     {
       lines = Files.readAllLines (path);
@@ -52,7 +58,7 @@ public class SessionReader
       if (lines == null)
         lines = new ArrayList<> ();
     }
-    skipToNext ();
+    return lines;
   }
 
   public int next ()
