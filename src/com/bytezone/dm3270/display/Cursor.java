@@ -237,12 +237,12 @@ public class Cursor
       return;
 
     int oldRow = currentPosition / screen.columns;
-    int pos = currentPosition;
+    int oldPosition = currentPosition;
 
     while (true)
     {
       tab (false);
-      if (currentPosition <= pos)     // backwards or didn't move
+      if (currentPosition <= oldPosition)     // backwards or didn't move
         break;
       int newRow = currentPosition / screen.columns;
       if (newRow != oldRow)
