@@ -29,6 +29,14 @@ public class SessionReader
 
   public byte[] buffer = new byte[4096];
 
+  public SessionReader (Source source, List<String> lines)
+  {
+    this.name = source == Source.CLIENT ? "Client" : "Server";
+    firstLetter = name.substring (0, 1);
+    this.lines.addAll (lines);
+    skipToNext ();
+  }
+
   public SessionReader (Source source, Path path)
   {
     this.name = source == Source.CLIENT ? "Client" : "Server";

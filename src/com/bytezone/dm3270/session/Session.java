@@ -36,7 +36,7 @@ public class Session implements Iterable<SessionRecord>
       .observableArrayList ();
   private final SessionMode sessionMode;
   private final Screen screen;
-  private final TelnetState telnetState;
+  private final TelnetState telnetState = new TelnetState ();
 
   private String clientName = "Unknown";
   private String serverName = null;
@@ -55,7 +55,6 @@ public class Session implements Iterable<SessionRecord>
   public Session (Screen screen, TelnetState telnetState, SessionMode mode)
   {
     this.screen = screen;
-    this.telnetState = telnetState;
     sessionMode = mode;
   }
 
@@ -66,15 +65,30 @@ public class Session implements Iterable<SessionRecord>
    * 
    * @param filename
    */
+  public Session (Screen screen, List<String> lines)
+  {
+    sessionMode = SessionMode.REPLAY;
+    this.screen = screen;
+
+    SessionReader server = new SessionReader (Source.SERVER, lines);
+    SessionReader client = new SessionReader (Source.CLIENT, lines);
+
+    init (client, server);
+  }
+
   public Session (Screen screen, Path path)
   {
     sessionMode = SessionMode.REPLAY;
+    this.screen = screen;
 
     SessionReader server = new SessionReader (Source.SERVER, path);
     SessionReader client = new SessionReader (Source.CLIENT, path);
 
-    this.screen = screen;
-    this.telnetState = new TelnetState ();
+    init (client, server);
+  }
+
+  private void init (SessionReader client, SessionReader server)
+  {
     telnetState.setDo3270Extended (true);
     telnetState.setDoTerminalType (true);
 

@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.application;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -119,10 +122,16 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screen));
     getScene ().setOnKeyTyped (new ConsoleKeyEvent (screen));
 
-    //    if (release)
-    //    centerOnScreen ();
-
     screen.requestFocus ();
+
+    setOnCloseRequest (new EventHandler<WindowEvent> ()
+    {
+      @Override
+      public void handle (WindowEvent we)
+      {
+        Platform.exit ();
+      }
+    });
   }
 
   public void sendAID (AIDCommand command)

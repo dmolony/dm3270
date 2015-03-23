@@ -203,6 +203,26 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     String userHome = System.getProperty ("user.home");
     String filename = userHome + "/Dropbox/Mainframe documentation/mf.txt";
 
+    //    InputStream in = getClass ().getResourceAsStream ("/resources/mf.txt");
+    //    if (in == null)
+    //    {
+    //      System.out.println ("Bollocks");
+    //      Platform.exit ();
+    //      return;
+    //    }
+    //    BufferedReader reader = new BufferedReader (new InputStreamReader (in));
+    //    String line;
+    //    List<String> lines = new ArrayList<String> ();
+    //    try
+    //    {
+    //      while ((line = reader.readLine ()) != null)
+    //        lines.add (line);
+    //    }
+    //    catch (IOException e)
+    //    {
+    //      e.printStackTrace ();
+    //    }
+
     File f = new File (filename);
     if (!f.exists () || f.isDirectory ())
       filename = userHome + "/dm3270/mf.txt";
