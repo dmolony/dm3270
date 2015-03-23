@@ -120,7 +120,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     getScene ().setOnKeyTyped (new ConsoleKeyEvent (screen));
 
     //    if (release)
-    centerOnScreen ();
+    //    centerOnScreen ();
 
     screen.requestFocus ();
   }

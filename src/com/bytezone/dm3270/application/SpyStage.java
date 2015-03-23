@@ -2,7 +2,9 @@ package com.bytezone.dm3270.application;
 
 import java.io.File;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,6 +14,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
@@ -84,6 +87,15 @@ public class SpyStage extends BasicTelnetStage
       File file = fileChooser.showSaveDialog (this);
       if (file != null)
         session.save (file);
+    });
+
+    setOnCloseRequest (new EventHandler<WindowEvent> ()
+    {
+      @Override
+      public void handle (WindowEvent we)
+      {
+        Platform.exit ();
+      }
     });
   }
 

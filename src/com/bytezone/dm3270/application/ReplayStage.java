@@ -2,11 +2,13 @@ package com.bytezone.dm3270.application;
 
 import java.nio.file.Path;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
@@ -24,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
+import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
@@ -153,5 +156,14 @@ public class ReplayStage extends BasicStage
     SessionRecord dataRecord = session.getNext (SessionRecordType.TN3270);
     if (dataRecord != null)
       table.getSelectionModel ().select (dataRecord);
+
+    setOnCloseRequest (new EventHandler<WindowEvent> ()
+    {
+      @Override
+      public void handle (WindowEvent we)
+      {
+        Platform.exit ();
+      }
+    });
   }
 }
