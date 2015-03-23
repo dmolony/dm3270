@@ -246,6 +246,7 @@ public class Screen extends Canvas
   // ---------------------------------------------------------------------------------//
 
   // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
+  // Called from ReadCommand.process() in response to a ReadBuffer (F2) command
   public AIDCommand readBuffer ()
   {
     byte[] buffer = new byte[4096];
@@ -259,7 +260,7 @@ public class Screen extends Canvas
     for (ScreenPosition sp : screenPositions)
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr);
-      else
+      else if (sp.getByte () != 0)
         ptr = packDataPosition (sp, buffer, ptr);
 
     return new AIDCommand (this, buffer, 0, ptr);
@@ -336,7 +337,7 @@ public class Screen extends Canvas
         buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
         ba = new BufferAddress (field.getFirstLocation ());
         ptr = ba.packAddress (buffer, ptr);
-        ptr = field.packData (buffer, ptr);
+        ptr = field.packData (buffer, ptr);         // uses null suppression
       }
 
     return new AIDCommand (this, buffer, 0, ptr);
