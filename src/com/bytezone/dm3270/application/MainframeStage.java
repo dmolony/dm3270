@@ -1,7 +1,9 @@
 package com.bytezone.dm3270.application;
 
-import java.io.File;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -200,34 +202,29 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 
   private void prepareButtons (TextArea textArea)
   {
-    String userHome = System.getProperty ("user.home");
-    String filename = userHome + "/Dropbox/Mainframe documentation/mf.txt";
+    InputStream in =
+        Console.class.getClassLoader ()
+            .getResourceAsStream ("com/bytezone/dm3270/application/mf.txt");
+    if (in == null)
+    {
+      System.out.println ("mf.txt not found");
+      Platform.exit ();
+      return;
+    }
+    BufferedReader reader = new BufferedReader (new InputStreamReader (in));
+    String line;
+    List<String> lines = new ArrayList<String> ();
+    try
+    {
+      while ((line = reader.readLine ()) != null)
+        lines.add (line);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace ();
+    }
 
-    //    InputStream in = getClass ().getResourceAsStream ("/resources/mf.txt");
-    //    if (in == null)
-    //    {
-    //      System.out.println ("Bollocks");
-    //      Platform.exit ();
-    //      return;
-    //    }
-    //    BufferedReader reader = new BufferedReader (new InputStreamReader (in));
-    //    String line;
-    //    List<String> lines = new ArrayList<String> ();
-    //    try
-    //    {
-    //      while ((line = reader.readLine ()) != null)
-    //        lines.add (line);
-    //    }
-    //    catch (IOException e)
-    //    {
-    //      e.printStackTrace ();
-    //    }
-
-    File f = new File (filename);
-    if (!f.exists () || f.isDirectory ())
-      filename = userHome + "/dm3270/mf.txt";
-
-    Session session = new Session (null, Paths.get (filename));
+    Session session = new Session (null, lines);
     List<String> labels = session.getLabels ();
 
     SessionRecord dr = createCommand ();

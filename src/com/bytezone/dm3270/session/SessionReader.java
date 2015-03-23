@@ -15,7 +15,7 @@ public class SessionReader
 {
   private final String name;
   private final String firstLetter;
-  private List<String> lines;
+  private final List<String> lines;
   private int nextLine;
 
   private boolean genuine;
@@ -33,6 +33,7 @@ public class SessionReader
   {
     this.name = source == Source.CLIENT ? "Client" : "Server";
     firstLetter = name.substring (0, 1);
+    this.lines = new ArrayList<> ();
     this.lines.addAll (lines);
     skipToNext ();
   }
