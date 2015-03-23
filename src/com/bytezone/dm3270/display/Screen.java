@@ -327,22 +327,32 @@ public class Screen extends Canvas
     int ptr = 0;
     buffer[ptr++] = currentAID;               // whatever key was pressed
 
-    int cursorLocation = getScreenCursor ().getLocation ();
-    BufferAddress ba = new BufferAddress (cursorLocation);
-    ptr = ba.packAddress (buffer, ptr);
+    if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
+        || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
+    {
+      // don't do the cursor or the modified fields
+    }
+    else
+    {
+      int cursorLocation = getScreenCursor ().getLocation ();
+      BufferAddress ba = new BufferAddress (cursorLocation);
+      ptr = ba.packAddress (buffer, ptr);
 
-    for (Field field : getUnprotectedFields ())
-      if (field.isModified ())
-      {
-        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
-        ba = new BufferAddress (field.getFirstLocation ());
-        ptr = ba.packAddress (buffer, ptr);
-        ptr = field.packData (buffer, ptr);         // uses null suppression
-      }
+      for (Field field : getUnprotectedFields ())
+        if (field.isModified ())
+        {
+          buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+          ba = new BufferAddress (field.getFirstLocation ());
+          ptr = ba.packAddress (buffer, ptr);
+          ptr = field.packData (buffer, ptr);         // uses null suppression
+        }
+    }
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
 
+  // Called from ReadCommand.process() in response to a ReadModified (F6)
+  // or a ReadModifiedAll (6E) command
   // Called from ReadPartitionSF.process() in response to a ReadModified (F6)
   // or a ReadModifiedAll (6E) command
   public AIDCommand readModifiedFields (byte type)
@@ -350,13 +360,20 @@ public class Screen extends Canvas
     switch (type)
     {
       case (byte) 0xF6:
-      case 0x6E:
         currentAID = AIDCommand.NO_AID_SPECIFIED;
         return readModifiedFields ();
+
+      case 0x6E:
+        byte saveAID = currentAID;
+        currentAID = AIDCommand.NO_AID_SPECIFIED;
+        AIDCommand command = readModifiedFields ();
+        currentAID = saveAID;
+        return command;
 
       default:
         System.out.println ("Unknown type in Screen.readModifiedFields()");
     }
+
     return null;
   }
 

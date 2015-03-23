@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.streams;
 
-
 public class TelnetState
 {
   // preferences
