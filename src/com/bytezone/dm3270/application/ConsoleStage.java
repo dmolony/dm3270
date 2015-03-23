@@ -136,7 +136,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
   public void sendAID (AIDCommand command)
   {
-    if (telnetState != null && telnetState.do3270Extended ())
+    if (telnetState != null && telnetState.does3270Extended ())
     {
       byte[] buffer = new byte[5];
       Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
