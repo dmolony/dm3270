@@ -22,6 +22,8 @@ public class Screen extends Canvas
 {
   private static final boolean DONT_REBUILD_FIELDS = false;
 
+  private static byte[] buffer = new byte[4096];
+
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
@@ -248,7 +250,7 @@ public class Screen extends Canvas
   // Called from ConsoleKeyPress.handle() in response to a user command
   public AIDCommand readModifiedFields ()
   {
-    byte[] buffer = new byte[4096];
+    //    byte[] buffer = new byte[4096];
     int ptr = 0;
     buffer[ptr++] = currentAID;               // whatever key was pressed
 
@@ -280,7 +282,7 @@ public class Screen extends Canvas
   // Called from ReadCommand.process() in response to a ReadBuffer (F2) command
   public AIDCommand readBuffer ()
   {
-    byte[] buffer = new byte[4096];
+    //    byte[] buffer = new byte[4096];
     int ptr = 0;
     //    buffer[ptr++] = AIDCommand.AID_READ_PARTITION;
     buffer[ptr++] = AIDCommand.NO_AID_SPECIFIED;
