@@ -250,30 +250,23 @@ public class Screen extends Canvas
   // Called from ConsoleKeyPress.handle() in response to a user command
   public AIDCommand readModifiedFields ()
   {
-    //    byte[] buffer = new byte[4096];
     int ptr = 0;
     buffer[ptr++] = currentAID;               // whatever key was pressed
 
+    // PA keys and the CLR key only return the AID byte
     if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
         || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
-    {
-      // don't do the cursor or the modified fields
-    }
-    else
-    {
-      int cursorLocation = getScreenCursor ().getLocation ();
-      BufferAddress ba = new BufferAddress (cursorLocation);
-      ptr = ba.packAddress (buffer, ptr);
+      return new AIDCommand (this, buffer, 0, ptr);
 
-      for (Field field : getUnprotectedFields ())
-        if (field.isModified ())
-        {
-          buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
-          ba = new BufferAddress (field.getFirstLocation ());
-          ptr = ba.packAddress (buffer, ptr);
-          ptr = field.packData (buffer, ptr);         // uses null suppression
-        }
-    }
+    // Pack the cursor address
+    int cursorLocation = getScreenCursor ().getLocation ();
+    BufferAddress ba = new BufferAddress (cursorLocation);
+    ptr = ba.packAddress (buffer, ptr);
+
+    // Pack all modified fields
+    for (Field field : getUnprotectedFields ())
+      if (field.isModified ())
+        ptr = packField (field, buffer, ptr);
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
@@ -282,7 +275,6 @@ public class Screen extends Canvas
   // Called from ReadCommand.process() in response to a ReadBuffer (F2) command
   public AIDCommand readBuffer ()
   {
-    //    byte[] buffer = new byte[4096];
     int ptr = 0;
     //    buffer[ptr++] = AIDCommand.AID_READ_PARTITION;
     buffer[ptr++] = AIDCommand.NO_AID_SPECIFIED;
@@ -294,7 +286,7 @@ public class Screen extends Canvas
     for (ScreenPosition sp : screenPositions)
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr);
-      else if (sp.getByte () != 0)
+      else if (sp.getByte () != 0)                      // null suppression
         ptr = packDataPosition (sp, buffer, ptr);
 
     return new AIDCommand (this, buffer, 0, ptr);
@@ -376,10 +368,31 @@ public class Screen extends Canvas
       }
     }
 
+    // should this be null suppressed?
+
     if (sp.isGraphicsChar ())
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;
 
     buffer[ptr++] = sp.getByte ();
+
+    return ptr;
+  }
+
+  private int packField (Field field, byte[] buffer, int ptr)
+  {
+    for (ScreenPosition sp : field)
+      if (sp.isStartField ())
+      {
+        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+        BufferAddress ba = new BufferAddress (field.getFirstLocation ());
+        ptr = ba.packAddress (buffer, ptr);
+      }
+      else
+      {
+        byte b = sp.getByte ();
+        if (b != 0)                   // bytes are signed, so don't use (b > 0)
+          buffer[ptr++] = b;
+      }
 
     return ptr;
   }

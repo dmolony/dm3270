@@ -1,13 +1,14 @@
 package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
-public class Field
+public class Field implements Iterable<ScreenPosition>
 {
   private final Screen screen;
   private final int startPosition;      // position of StartFieldAttribute
@@ -213,18 +214,18 @@ public class Field
     }
   }
 
-  public int packData (byte[] buffer, int ptr)
-  {
-    for (int i = 1; i < screenPositions.size (); i++)  // skip attribute ScreenPosition
-    {
-      ScreenPosition sp = screenPositions.get (i);
-      byte b = sp.getByte ();
-      if (b != 0)                   // bytes are signed
-        buffer[ptr++] = b;
-    }
-
-    return ptr;
-  }
+  //  public int packData (byte[] buffer, int ptr)
+  //  {
+  //    for (int i = 1; i < screenPositions.size (); i++)  // skip attribute ScreenPosition
+  //    {
+  //      ScreenPosition sp = screenPositions.get (i);
+  //      byte b = sp.getByte ();
+  //      if (b != 0)                   // bytes are signed, so don't use (b > 0)
+  //        buffer[ptr++] = b;
+  //    }
+  //
+  //    return ptr;
+  //  }
 
   public String toStringWithLinks ()
   {
@@ -247,5 +248,11 @@ public class Field
   {
     return String.format ("%04d-%04d %s [%s]", startPosition, endPosition,
                           startFieldAttribute.getAcronym (), getText ());
+  }
+
+  @Override
+  public Iterator<ScreenPosition> iterator ()
+  {
+    return screenPositions.iterator ();
   }
 }
