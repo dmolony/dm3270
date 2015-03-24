@@ -245,13 +245,45 @@ public class Screen extends Canvas
   // Convert screen contents to an AID command
   // ---------------------------------------------------------------------------------//
 
+  // Called from ConsoleKeyPress.handle() in response to a user command
+  public AIDCommand readModifiedFields ()
+  {
+    byte[] buffer = new byte[4096];
+    int ptr = 0;
+    buffer[ptr++] = currentAID;               // whatever key was pressed
+
+    if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
+        || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
+    {
+      // don't do the cursor or the modified fields
+    }
+    else
+    {
+      int cursorLocation = getScreenCursor ().getLocation ();
+      BufferAddress ba = new BufferAddress (cursorLocation);
+      ptr = ba.packAddress (buffer, ptr);
+
+      for (Field field : getUnprotectedFields ())
+        if (field.isModified ())
+        {
+          buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+          ba = new BufferAddress (field.getFirstLocation ());
+          ptr = ba.packAddress (buffer, ptr);
+          ptr = field.packData (buffer, ptr);         // uses null suppression
+        }
+    }
+
+    return new AIDCommand (this, buffer, 0, ptr);
+  }
+
   // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
   // Called from ReadCommand.process() in response to a ReadBuffer (F2) command
   public AIDCommand readBuffer ()
   {
     byte[] buffer = new byte[4096];
     int ptr = 0;
-    buffer[ptr++] = AIDCommand.AID_READ_PARTITION;
+    //    buffer[ptr++] = AIDCommand.AID_READ_PARTITION;
+    buffer[ptr++] = AIDCommand.NO_AID_SPECIFIED;
 
     int cursorLocation = getScreenCursor ().getLocation ();
     BufferAddress ba = new BufferAddress (cursorLocation);
@@ -265,6 +297,36 @@ public class Screen extends Canvas
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
+
+  // Called from ReadCommand.process() in response to a ReadModified (F6)
+  // or a ReadModifiedAll (6E) command
+  // Called from ReadPartitionSF.process() in response to a ReadModified (F6)
+  // or a ReadModifiedAll (6E) command
+  public AIDCommand readModifiedFields (byte type)
+  {
+    switch (type)
+    {
+      case (byte) 0xF6:
+        currentAID = AIDCommand.NO_AID_SPECIFIED;
+        return readModifiedFields ();
+
+      case 0x6E:
+        byte saveAID = currentAID;
+        currentAID = AIDCommand.NO_AID_SPECIFIED;
+        AIDCommand command = readModifiedFields ();
+        currentAID = saveAID;
+        return command;
+
+      default:
+        System.out.println ("Unknown type in Screen.readModifiedFields()");
+    }
+
+    return null;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Pack ScreenPosition routines - based on current ReplyMode setting
+  // ---------------------------------------------------------------------------------//
 
   private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
@@ -318,63 +380,6 @@ public class Screen extends Canvas
     buffer[ptr++] = sp.getByte ();
 
     return ptr;
-  }
-
-  // Called from ConsoleKeyPress.handle() in response to a user command
-  public AIDCommand readModifiedFields ()
-  {
-    byte[] buffer = new byte[4096];
-    int ptr = 0;
-    buffer[ptr++] = currentAID;               // whatever key was pressed
-
-    if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
-        || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
-    {
-      // don't do the cursor or the modified fields
-    }
-    else
-    {
-      int cursorLocation = getScreenCursor ().getLocation ();
-      BufferAddress ba = new BufferAddress (cursorLocation);
-      ptr = ba.packAddress (buffer, ptr);
-
-      for (Field field : getUnprotectedFields ())
-        if (field.isModified ())
-        {
-          buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
-          ba = new BufferAddress (field.getFirstLocation ());
-          ptr = ba.packAddress (buffer, ptr);
-          ptr = field.packData (buffer, ptr);         // uses null suppression
-        }
-    }
-
-    return new AIDCommand (this, buffer, 0, ptr);
-  }
-
-  // Called from ReadCommand.process() in response to a ReadModified (F6)
-  // or a ReadModifiedAll (6E) command
-  // Called from ReadPartitionSF.process() in response to a ReadModified (F6)
-  // or a ReadModifiedAll (6E) command
-  public AIDCommand readModifiedFields (byte type)
-  {
-    switch (type)
-    {
-      case (byte) 0xF6:
-        currentAID = AIDCommand.NO_AID_SPECIFIED;
-        return readModifiedFields ();
-
-      case 0x6E:
-        byte saveAID = currentAID;
-        currentAID = AIDCommand.NO_AID_SPECIFIED;
-        AIDCommand command = readModifiedFields ();
-        currentAID = saveAID;
-        return command;
-
-      default:
-        System.out.println ("Unknown type in Screen.readModifiedFields()");
-    }
-
-    return null;
   }
 
   // ---------------------------------------------------------------------------------//
