@@ -18,8 +18,10 @@ import com.bytezone.dm3270.telnet.TelnetSubcommand;
 
 public class SessionRecord
 {
-  private static final DateTimeFormatter dTF = DateTimeFormatter
+  private static final DateTimeFormatter formatter = DateTimeFormatter
       .ofPattern ("dd MMM uuuu HH:mm:ss.S");
+  private static final DateTimeFormatter timeFormatter = DateTimeFormatter
+      .ofPattern ("mm:ss");
   private final ReplyBuffer message;
 
   private final Source source;
@@ -31,6 +33,7 @@ public class SessionRecord
   private StringProperty commandType;
   private StringProperty commandName;
   private IntegerProperty bufferSize;
+  private StringProperty time;
 
   public enum SessionRecordType
   {
@@ -77,6 +80,7 @@ public class SessionRecord
       setCommandName (((AbstractExtendedCommand) message).getName ());
 
     setBufferSize (message.size ());
+    setTime (timeFormatter.format (dateTime));
   }
 
   public boolean isCommand ()
@@ -204,9 +208,28 @@ public class SessionRecord
     return bufferSize;
   }
 
+  // Time
+
+  public void setTime (String value)
+  {
+    timeProperty ().set (value);
+  }
+
+  public String getTime ()
+  {
+    return commandNameProperty ().get ();
+  }
+
+  public StringProperty timeProperty ()
+  {
+    if (time == null)
+      time = new SimpleStringProperty (this, "time");
+    return time;
+  }
+
   @Override
   public String toString ()
   {
-    return String.format ("%s %s", source, dTF.format (dateTime));
+    return String.format ("%s : %s", source, formatter.format (dateTime));
   }
 }

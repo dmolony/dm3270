@@ -114,8 +114,7 @@ public class BasicStage extends Stage
 
     if (textArea != null)
     {
-      textArea.setText (sessionRecord.toString ());
-      textArea.appendText ("\n\n");
+      textArea.setText ("");
 
       if (commandHeader != null)
       {
