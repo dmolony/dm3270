@@ -73,11 +73,13 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = offset + 3;
     int max = offset + length;
     Order previousOrder = null;
-    SetBufferAddressOrder sba = null;
+    //    SetBufferAddressOrder sba = null;
+    AIDField currentAIDField = null;
 
     while (ptr < max)
     {
       Order order = Order.getOrder (buffer, ptr, max);
+      //      System.out.println (order);
       if (!order.rejected ())
       {
         if (previousOrder != null && previousOrder.matches (order))
@@ -88,21 +90,18 @@ public class AIDCommand extends Command implements BufferAddressSource
           previousOrder = order;
         }
 
-        if (order instanceof TextOrder)
-        {
-          // create an AIDField when a TextOrder is preceded by a SetBufferAddressOrder
-          // these are created by screen.readModifiedFields () in response to the 
-          // user pressing ENTR/PFxx
-          if (sba != null)
-            aidFields.add (new AIDField (sba, (TextOrder) order));
-          textOrders++;
-        }
-
         if (order instanceof SetBufferAddressOrder)
-          sba = (SetBufferAddressOrder) order;
+        {
+          currentAIDField = new AIDField ((SetBufferAddressOrder) order);
+          aidFields.add (currentAIDField);
+        }
+        else if (currentAIDField != null)
+          currentAIDField.addOrder (order);
         else
-          sba = null;
+          System.out.println ("Order with no field");
 
+        if (order instanceof TextOrder)
+          textOrders++;
       }
       ptr += order.size ();
     }
@@ -123,7 +122,6 @@ public class AIDCommand extends Command implements BufferAddressSource
   public void process ()
   {
     Cursor cursor = screen.getScreenCursor ();
-    //    cursor.setVisible (true);
 
     // test to see whether this is data entry that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
@@ -233,15 +231,21 @@ public class AIDCommand extends Command implements BufferAddressSource
     return text.toString ();
   }
 
+  // This class is used to collect information about each modified field specified
+  // in the AIDCommand.
   private class AIDField
   {
     SetBufferAddressOrder sbaOrder;
-    TextOrder textOrder;
+    List<Order> orders = new ArrayList<> ();
 
-    public AIDField (SetBufferAddressOrder sbaOrder, TextOrder textOrder)
+    public AIDField (SetBufferAddressOrder sbaOrder)
     {
       this.sbaOrder = sbaOrder;
-      this.textOrder = textOrder;
+    }
+
+    public void addOrder (Order order)
+    {
+      orders.add (order);
     }
 
     public int getLocation ()
@@ -251,13 +255,25 @@ public class AIDCommand extends Command implements BufferAddressSource
 
     public byte[] getBuffer ()
     {
-      return textOrder.getBuffer ();
+      for (Order order : orders)
+        if (order instanceof TextOrder)
+          return ((TextOrder) order).getBuffer ();     // only returning the first one!!!
+      return new byte[0];
     }
 
     @Override
     public String toString ()
     {
-      return String.format ("%s : %s", sbaOrder, textOrder);
+      StringBuilder text = new StringBuilder ();
+      text.append (String.format ("%-40s", sbaOrder));
+      for (Order order : orders)
+      {
+        if (!(order instanceof TextOrder))
+          text.append (String.format ("\n        : %-40s", order));
+        else
+          text.append (order);
+      }
+      return text.toString ();
     }
   }
 }

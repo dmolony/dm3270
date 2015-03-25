@@ -271,8 +271,8 @@ public class Screen extends Canvas
     return new AIDCommand (this, buffer, 0, ptr);
   }
 
-  // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
   // Called from ReadCommand.process() in response to a ReadBuffer (F2) command
+  // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
   public AIDCommand readBuffer ()
   {
     int ptr = 0;
@@ -301,7 +301,7 @@ public class Screen extends Canvas
     switch (type)
     {
       case (byte) 0xF6:
-        currentAID = AIDCommand.NO_AID_SPECIFIED;
+        //        currentAID = AIDCommand.NO_AID_SPECIFIED;
         return readModifiedFields ();
 
       case 0x6E:
@@ -324,6 +324,8 @@ public class Screen extends Canvas
 
   private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
+    assert sp.isStartField ();
+
     StartFieldAttribute sfa = sp.getStartFieldAttribute ();
 
     if (replyMode == SetReplyMode.RM_FIELD)
@@ -338,20 +340,19 @@ public class Screen extends Canvas
       List<Attribute> attributes = sp.getAttributes ();
       buffer[ptr++] = (byte) (attributes.size () + 1);    // include StartFieldAttribute
 
-      ptr = sfa.pack (buffer, ptr);
+      ptr = sfa.pack (buffer, ptr);                       // pack the SFA first
       for (Attribute attribute : attributes)
-        ptr = attribute.pack (buffer, ptr);
+        ptr = attribute.pack (buffer, ptr);               // then pack the rest
     }
     return ptr;
   }
 
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
-    if (replyMode == SetReplyMode.RM_CHARACTER && sp.hasAttributes ())
-    {
-      List<Attribute> attributes = sp.getAttributes ();
-      for (Attribute attribute : attributes)
-      {
+    assert sp.getByte () != (byte) 0;                     // we never pack nulls
+
+    if (replyMode == SetReplyMode.RM_CHARACTER)
+      for (Attribute attribute : sp.getAttributes ())
         if (attribute.getAttributeType () == AttributeType.RESET)
         {
           buffer[ptr++] = Order.SET_ATTRIBUTE;
@@ -365,10 +366,6 @@ public class Screen extends Canvas
               ptr = attribute.pack (buffer, ptr);
               break;
             }
-      }
-    }
-
-    // should this be null suppressed?
 
     if (sp.isGraphicsChar ())
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;
@@ -380,6 +377,8 @@ public class Screen extends Canvas
 
   private int packField (Field field, byte[] buffer, int ptr)
   {
+    assert field.isModified ();
+
     for (ScreenPosition sp : field)
       if (sp.isStartField ())
       {
@@ -390,8 +389,8 @@ public class Screen extends Canvas
       else
       {
         byte b = sp.getByte ();
-        if (b != 0)                   // bytes are signed, so don't use (b > 0)
-          buffer[ptr++] = b;
+        if (b != (byte) 0)
+          ptr = packDataPosition (sp, buffer, ptr);
       }
 
     return ptr;
