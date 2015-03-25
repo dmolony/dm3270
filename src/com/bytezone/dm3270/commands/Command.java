@@ -56,10 +56,10 @@ public abstract class Command extends AbstractTN3270Command
    * 2) Read Buffer, Read Modifed, Read Modified All
    *    Sent when the application wants to know about the screen fields.
    *    process()   : creates a Reply
-   *    getReply () : AID command or ReadModified command
+   *    getReply () : AID command
    * 
    * 3) Write Structured Field
-   *    Contains one or more commands, including W/EW/EWA and RB/RM/RMA (?) embedded
+   *    Contains one or more commands, including W/EW/EWA and RB/RM/RMA embedded
    *    as an Outbound3270DS command. This command starts with 0x40 and the
    *    Partition ID, followed by the command in its usual format.
    *    process() : calls process () on each command
@@ -67,7 +67,7 @@ public abstract class Command extends AbstractTN3270Command
    *    Other commands are Read Partition (Query) which expects a Read Structured 
    *    Field (0x88) containing several Query Reply records as the response.
    * 
-   * 4) AID (User command)    (AID ENTR/PFxx)
+   * 4) AID (User command)    (AID ENTR/PFxx/PAx/CLR)
    * 
    * 5) Read Partition        (AID 0x61)
    * 
