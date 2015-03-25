@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.session;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -17,6 +18,8 @@ import com.bytezone.dm3270.telnet.TelnetSubcommand;
 
 public class SessionRecord
 {
+  private static final DateTimeFormatter dTF = DateTimeFormatter
+      .ofPattern ("dd MMM uuuu HH:mm:ss.S");
   private final ReplyBuffer message;
 
   private final Source source;
@@ -204,6 +207,6 @@ public class SessionRecord
   @Override
   public String toString ()
   {
-    return String.format ("%s : %s", source, message.toString ());
+    return String.format ("%s %s", source, dTF.format (dateTime));
   }
 }
