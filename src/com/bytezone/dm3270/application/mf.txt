@@ -1,3 +1,6 @@
+## Unlock keyboard
+Server:
+000000  F1 C2 FF EF                                      .....1B.Õ
 
 ## Hercules
 Server:

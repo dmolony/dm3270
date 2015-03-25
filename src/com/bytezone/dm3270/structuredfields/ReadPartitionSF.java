@@ -78,13 +78,14 @@ public class ReadPartitionSF extends StructuredField
           System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
         break;
 
+      // these three replies should be wrapped in an AID 0x88 (Read Structured Field)
       case Command.READ_BUFFER_F2:            // NB 0x02 would conflict with RPQ above
         reply = screen.readBuffer ();         // AID command
         break;
 
       case Command.READ_MODIFIED_F6:
       case Command.READ_MODIFIED_ALL_6E:
-        reply = screen.readModifiedFields (data[2]);
+        reply = screen.readModifiedFields (data[2]);      // AID command
         break;
 
       default:

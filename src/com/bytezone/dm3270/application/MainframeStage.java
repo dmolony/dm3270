@@ -51,7 +51,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 {
   private static final int WIDTH = 680;
   private static final int HEIGHT = 800;
-  private static final int BUTTON_WIDTH = 105;
+  private static final int BUTTON_WIDTH = 120;
 
   private final List<Button> buttons = new ArrayList<> ();
   private final TextArea textArea = getTextArea (600);
@@ -89,7 +89,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 
     final VBox vBox = getVBox ();
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 11; i++)
       buttons.add (getButton ("Empty", vBox, BUTTON_WIDTH));
 
     Separator separator = new Separator ();
@@ -296,10 +296,11 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     btnEraseAllUnprotected.setDisable (!enable);
     btnProgramTab.setDisable (!enable);
 
-    buttons.get (3).fire ();        // ISPF (Erase Write)
-    buttons.get (4).fire ();        // 3.4  (Write)
-    buttons.get (4).requestFocus ();
+    toFront ();
+    buttons.get (4).fire ();        // ISPF (Erase Write)
+    buttons.get (5).fire ();        // 3.4  (Write)
     this.requestFocus ();
+    buttons.get (5).requestFocus ();
   }
 
   public void disconnect ()

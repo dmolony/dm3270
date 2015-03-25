@@ -53,15 +53,9 @@ public class ReadCommand extends Command
     if (type == CommandType.READ_BUFFER)
       reply = screen.readBuffer ();
     else if (type == CommandType.READ_MODIFIED)
-    {
-      screen.setAID (AIDCommand.NO_AID_SPECIFIED);
       reply = screen.readModifiedFields (READ_MODIFIED_F6);
-    }
     else if (type == CommandType.READ_MODIFIED_ALL)
-    {
-      System.out.println ("Read Modified All");
       reply = screen.readModifiedFields (READ_MODIFIED_ALL_6E);
-    }
     else
       System.out.printf ("Unknown READ command: %02X%n", data[0]);
   }

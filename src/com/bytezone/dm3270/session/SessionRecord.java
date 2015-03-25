@@ -80,7 +80,8 @@ public class SessionRecord
       setCommandName (((AbstractExtendedCommand) message).getName ());
 
     setBufferSize (message.size ());
-    setTime (timeFormatter.format (dateTime));
+    if (dateTime != null)
+      setTime (timeFormatter.format (dateTime));
   }
 
   public boolean isCommand ()
