@@ -37,21 +37,28 @@ public class Field implements Iterable<ScreenPosition>
 
   void setScreenContexts ()
   {
+    System.out.println ("\nNew field");
     ContextManager contextManager = screen.getContextHandler ();
     StartFieldAttribute sfa = screenPositions.get (0).getStartFieldAttribute ();
     ScreenContext screenContext = contextManager.getBase ();
 
     screenContext = sfa.process (contextManager, screenContext);
 
-    for (ScreenPosition sp2 : screenPositions)
+    int position = 0;
+    for (ScreenPosition screenPosition : screenPositions)
     {
-      for (Attribute attribute : sp2.getAttributes ())
+      String spText = screenPosition.toString ();
+      if (!spText.isEmpty ())
+        System.out.printf ("  %4d %s%n", position, screenPosition);
+      position++;
+
+      for (Attribute attribute : screenPosition.getAttributes ())
         if (attribute.getAttributeType () == AttributeType.RESET)
           screenContext = sfa.process (contextManager, contextManager.getBase ());
         else
           screenContext = attribute.process (contextManager, screenContext);
 
-      sp2.setScreenContext (screenContext);
+      screenPosition.setScreenContext (screenContext);
     }
   }
 
