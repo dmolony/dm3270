@@ -60,7 +60,7 @@ public abstract class ColorAttribute extends Attribute
   @Override
   public String toString ()
   {
-    return String.format ("%-12s : %02X %s", name (), attributeValue, //
+    return String.format ("%-12s : %02X %-12s", name (), attributeValue, //
                           colorName (attributeValue));
   }
 }

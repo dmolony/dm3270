@@ -317,15 +317,13 @@ public class ScreenPosition
   {
     StringBuilder text = new StringBuilder ();
     if (isStartField ())
-    {
       text.append (startFieldAttribute);
-      //      text.append ("\n");
-    }
+
     for (Attribute attribute : attributes)
     {
       if (text.length () > 0)
         text.append ("\n       ");
-      text.append (attribute);
+      text.append (String.format ("%-30s", attribute));
     }
     return text.toString ();
   }

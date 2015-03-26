@@ -13,11 +13,12 @@ public class Field implements Iterable<ScreenPosition>
   private final Screen screen;
   private final int startPosition;      // position of StartFieldAttribute
   private final int endPosition;        // last data position of this field
-  private final StartFieldAttribute startFieldAttribute;
+  private Field next, previous;         // unprotected fields
 
+  private final StartFieldAttribute startFieldAttribute;
   private final List<ScreenPosition> screenPositions = new ArrayList<> ();
 
-  private Field next, previous;
+  private final boolean debug = false;
 
   public Field (Screen screen, int start, int end, List<ScreenPosition> positions)
   {
@@ -37,26 +38,38 @@ public class Field implements Iterable<ScreenPosition>
 
   void setScreenContexts ()
   {
-    System.out.println ("\nNew field");
     ContextManager contextManager = screen.getContextHandler ();
-    StartFieldAttribute sfa = screenPositions.get (0).getStartFieldAttribute ();
+    ScreenPosition startFieldScreenPosition = screenPositions.get (0);
+    StartFieldAttribute sfa = startFieldScreenPosition.getStartFieldAttribute ();
     ScreenContext screenContext = contextManager.getBase ();
 
     screenContext = sfa.process (contextManager, screenContext);
+    for (Attribute attribute : startFieldScreenPosition.getAttributes ())
+      screenContext = attribute.process (contextManager, screenContext);
+    ScreenContext baseContext = screenContext;
+
+    if (debug)
+      System.out.printf ("%n%nNew field : %s", baseContext);
 
     int position = 0;
     for (ScreenPosition screenPosition : screenPositions)
     {
-      String spText = screenPosition.toString ();
-      if (!spText.isEmpty ())
-        System.out.printf ("  %4d %s%n", position, screenPosition);
-      position++;
+      if (debug)
+      {
+        String spText = screenPosition.toString ();
+        if (!spText.isEmpty ())
+          System.out.printf ("%n  %4d %s : ", position, screenPosition);
+      }
 
-      for (Attribute attribute : screenPosition.getAttributes ())
-        if (attribute.getAttributeType () == AttributeType.RESET)
-          screenContext = sfa.process (contextManager, contextManager.getBase ());
-        else
-          screenContext = attribute.process (contextManager, screenContext);
+      if (position++ > 0)
+        for (Attribute attribute : screenPosition.getAttributes ())
+          if (attribute.getAttributeType () == AttributeType.RESET)
+            screenContext = attribute.process (contextManager, baseContext);
+          else
+            screenContext = attribute.process (contextManager, screenContext);
+
+      if (debug)
+        System.out.print (screenPosition.getChar ());
 
       screenPosition.setScreenContext (screenContext);
     }

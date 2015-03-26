@@ -14,7 +14,6 @@ public class ResetAttribute extends Attribute
   public ScreenContext
       process (ContextManager contextHandler, ScreenContext screenContext)
   {
-    System.out.println ("Not changing context in ResetAttribute");
     return screenContext;
   }
 }
