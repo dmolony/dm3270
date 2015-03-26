@@ -242,7 +242,7 @@ public class ScreenPosition
       if (screenContext.underscore)
       {
         gc.setStroke (screenContext.foregroundColor);
-        double y2 = y + charHeight - 1;
+        double y2 = y + charHeight + 1;
         gc.strokeLine (x, y2, x + charWidth, y2);
       }
 
@@ -310,5 +310,23 @@ public class ScreenPosition
       gc.fillRect (x, y, characterSize.width + 1, characterSize.height + 1);
     else
       gc.fillRect (x, y, characterSize.width, characterSize.height);
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+    if (isStartField ())
+    {
+      text.append (startFieldAttribute);
+      //      text.append ("\n");
+    }
+    for (Attribute attribute : attributes)
+    {
+      if (text.length () > 0)
+        text.append ("\n       ");
+      text.append (attribute);
+    }
+    return text.toString ();
   }
 }
