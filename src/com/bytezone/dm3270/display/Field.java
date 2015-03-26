@@ -234,19 +234,6 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
-  //  public int packData (byte[] buffer, int ptr)
-  //  {
-  //    for (int i = 1; i < screenPositions.size (); i++)  // skip attribute ScreenPosition
-  //    {
-  //      ScreenPosition sp = screenPositions.get (i);
-  //      byte b = sp.getByte ();
-  //      if (b != 0)                   // bytes are signed, so don't use (b > 0)
-  //        buffer[ptr++] = b;
-  //    }
-  //
-  //    return ptr;
-  //  }
-
   public String toStringWithLinks ()
   {
     StringBuilder text = new StringBuilder (toString ());
