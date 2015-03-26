@@ -82,7 +82,7 @@ public class ReplayStage extends BasicStage
     splitPane.setOrientation (Orientation.HORIZONTAL);
 
     splitPane.getItems ().addAll (leftPane, tabPane);
-    splitPane.setDividerPositions (0.36f);
+    splitPane.setDividerPositions (0.37f);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);

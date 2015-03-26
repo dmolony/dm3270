@@ -19,7 +19,7 @@ public class SessionTable extends TableView<SessionRecord>
     TableColumn<SessionRecord, String> commandTypeCol = new TableColumn<> ("Type");
     TableColumn<SessionRecord, String> commandCol = new TableColumn<> ("Command");
     TableColumn<SessionRecord, Integer> sizeCol = new TableColumn<> ("Size");
-    TableColumn<SessionRecord, Integer> timeCol = new TableColumn<> ("Time");
+    TableColumn<SessionRecord, String> timeCol = new TableColumn<> ("mm:ss");
 
     sourceCol.setPrefWidth (55);
     sourceCol.setCellValueFactory (new PropertyValueFactory<> ("sourceName"));
@@ -33,7 +33,7 @@ public class SessionTable extends TableView<SessionRecord>
     sizeCol.setPrefWidth (40);
     sizeCol.setCellValueFactory (new PropertyValueFactory<> ("bufferSize"));
 
-    timeCol.setPrefWidth (38);
+    timeCol.setPrefWidth (42);
     timeCol.setCellValueFactory (new PropertyValueFactory<> ("time"));
 
     getColumns ().add (timeCol);
@@ -44,8 +44,9 @@ public class SessionTable extends TableView<SessionRecord>
 
     setTableMenuButtonVisible (true);
 
-    // right justify the size column
-    sizeCol.setCellFactory (new Callback<TableColumn<SessionRecord, Integer>, //
+    Callback<TableColumn<SessionRecord, Integer>, //
+    TableCell<SessionRecord, Integer>> rightJustified =
+        new Callback<TableColumn<SessionRecord, Integer>, //
         TableCell<SessionRecord, Integer>> ()
         {
           @Override
@@ -68,10 +69,11 @@ public class SessionTable extends TableView<SessionRecord>
             cell.setStyle ("-fx-alignment: center-right;");
             return cell;
           }
-        });
+        };
 
-    // centre justify the source column
-    sourceCol.setCellFactory (new Callback<TableColumn<SessionRecord, String>, //
+    Callback<TableColumn<SessionRecord, String>, //
+    TableCell<SessionRecord, String>> centreJustified =
+        new Callback<TableColumn<SessionRecord, String>, //
         TableCell<SessionRecord, String>> ()
         {
           @Override
@@ -94,6 +96,10 @@ public class SessionTable extends TableView<SessionRecord>
             cell.setStyle ("-fx-alignment: center;");
             return cell;
           }
-        });
+        };
+
+    sizeCol.setCellFactory (rightJustified);
+    sourceCol.setCellFactory (centreJustified);
+    timeCol.setCellFactory (centreJustified);
   }
 }

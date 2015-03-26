@@ -64,7 +64,7 @@ public class Field implements Iterable<ScreenPosition>
       if (position++ > 0)
         for (Attribute attribute : screenPosition.getAttributes ())
           if (attribute.getAttributeType () == AttributeType.RESET)
-            screenContext = attribute.process (contextManager, baseContext);
+            screenContext = baseContext;
           else
             screenContext = attribute.process (contextManager, screenContext);
 
