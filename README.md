@@ -25,7 +25,7 @@ There are two menus which are only available from the first screen. There you ma
 ![Fonts](resources/fonts.png?raw=true "fonts")
 ![Debug](resources/debug.png?raw=true "debug")
 #### Keys
-Not all keys are available on all platforms, and some aren't usually available at all. To help with this, the following shortcuts are available. These will probably change after some more testing on Windows.
+Not all keys are available on all platforms, and some keys aren't available at all. To help with this, the following shortcuts are available. These will probably change after some more testing on Windows.
 * Home - ctrl-h
 * Erase EOL - ctrl-del
 * Return - crtl-enter
