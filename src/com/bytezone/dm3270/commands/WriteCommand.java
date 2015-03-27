@@ -3,6 +3,7 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
@@ -78,6 +79,8 @@ public class WriteCommand extends Command
   @Override
   public void process ()
   {
+    Cursor cursor = screen.getScreenCursor ();
+    int cursorLocation = cursor.getLocation ();
     if (erase)
       screen.clearScreen ();
 
@@ -86,14 +89,19 @@ public class WriteCommand extends Command
       for (Order order : orders)
         order.process (screen);
 
+      cursor.moveTo (cursorLocation);
       screen.drawScreen (REBUILD_FIELDS);
     }
 
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);
 
-    //    if (!screen.isKeyboardLocked ())
-    //      screen.getScreenCursor ().setVisible (true);
+    if (false)
+    {
+      screen.getScreenCursor ().moveTo (cursorLocation);
+      int newCursorLocation = screen.getScreenCursor ().getLocation ();
+      System.out.printf ("Cursor now at %d%n", newCursorLocation);
+    }
   }
 
   // Used by Session.checkServerName() when searching for the server's name

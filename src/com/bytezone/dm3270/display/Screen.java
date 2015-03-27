@@ -156,16 +156,14 @@ public class Screen extends Canvas
       for (int col = 0; col < columns; col++)
         drawPosition (screenPositions[pos++], row, col, false);
 
-    // Cursor.moveTo() will recalculate the current field if the cursor is visible
-    //    cursor.setVisible (saveCursorVisible);
-
     if (insertedCursorPosition >= 0)
     {
       cursor.moveTo (insertedCursorPosition);
       insertedCursorPosition = -1;
+      cursor.setVisible (true);
     }
-    //    else
-    //      cursor.moveTo (0);
+
+    drawPosition (cursor.getLocation (), true);
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
@@ -188,7 +186,6 @@ public class Screen extends Canvas
     for (ScreenPosition sp : screenPositions)
       sp.reset ();
 
-    //    cursor.setVisible (false);
     cursor.moveTo (0);
   }
 
@@ -419,7 +416,6 @@ public class Screen extends Canvas
 
   public void restoreKeyboard ()
   {
-    System.out.println ("unlocked");
     keyboardLocked = false;
     notifyKeyboardStatusChange ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
@@ -428,7 +424,6 @@ public class Screen extends Canvas
 
   public void lockKeyboard ()
   {
-    System.out.println ("locked");
     keyboardLocked = true;
     notifyKeyboardStatusChange ();
     cursor.setVisible (false);
