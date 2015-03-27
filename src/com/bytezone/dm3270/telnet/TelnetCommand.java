@@ -7,20 +7,23 @@ import com.bytezone.dm3270.streams.TelnetState;
 
 public class TelnetCommand extends AbstractTelnetCommand
 {
-  public static final byte IAC = (byte) 0xFF;   // Is a telnet command
+  public static final byte IAC = (byte) 0xFF;   // Interpret As Command
+  public static final byte SB = (byte) 0xFA;    // Begin subcommand
+  public static final byte GA = (byte) 0xF9;    // Go Ahead
+  public static final byte EL = (byte) 0xF8;    // Erase Line
+  public static final byte EC = (byte) 0xF7;    // Erase Character
+  public static final byte AYT = (byte) 0xF6;   // Are You There
+  public static final byte AO = (byte) 0xF5;    // Abort Output
+  public static final byte IP = (byte) 0xF4;    // Interrupt process
+  public static final byte NOP = (byte) 0xF1;   // No Operation
+  public static final byte SE = (byte) 0xF0;    // End of subcommmand
+  public static final byte EOR = (byte) 0xEF;   // End of record
 
   // double-byte commands
-  public static final byte WILL = (byte) 0xFB;
-  public static final byte WONT = (byte) 0xFC;
-  public static final byte DO = (byte) 0xFD;
   public static final byte DONT = (byte) 0xFE;
-
-  // single-byte commands
-  public static final byte EOR = (byte) 0xEF;   // End of record
-  public static final byte SE = (byte) 0xF0;    // End of subcommmand
-  public static final byte NOP = (byte) 0xF1;   // No Operation
-  public static final byte IP = (byte) 0xF4;    // Interrupt process
-  public static final byte SB = (byte) 0xFA;    // Begin subcommand
+  public static final byte DO = (byte) 0xFD;
+  public static final byte WONT = (byte) 0xFC;
+  public static final byte WILL = (byte) 0xFB;
 
   private final CommandName commandName;
   private final CommandType commandType;
@@ -127,16 +130,16 @@ public class TelnetCommand extends AbstractTelnetCommand
 
       if (commandType == CommandType.EOR)
       {
-        boolean preference = telnetState.doEOR ();        // preference
+        boolean preference = telnetState.doEOR ();              // preference
         reply[1] = preference ? WILL : WONT;
-        telnetState.setDoesEOR (preference);              // set actual
+        telnetState.setDoesEOR (preference);                    // set actual
       }
 
       if (commandType == CommandType.BINARY)
       {
-        boolean preference = telnetState.doBinary ();     // preference
+        boolean preference = telnetState.doBinary ();           // preference
         reply[1] = preference ? WILL : WONT;
-        telnetState.setDoesBinary (preference);           // set actual
+        telnetState.setDoesBinary (preference);                 // set actual
       }
 
       this.reply = new TelnetCommand (telnetState, reply);
