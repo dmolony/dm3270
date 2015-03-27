@@ -91,6 +91,9 @@ public class WriteCommand extends Command
 
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);
+
+    //    if (!screen.isKeyboardLocked ())
+    //      screen.getScreenCursor ().setVisible (true);
   }
 
   // Used by Session.checkServerName() when searching for the server's name

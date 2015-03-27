@@ -145,6 +145,9 @@ public class Screen extends Canvas
 
   public void drawScreen (boolean buildFields)
   {
+    //    boolean saveCursorVisible = cursor.getVisible ();
+    //    cursor.setVisible (false);
+
     if (buildFields)
       fieldManager.buildFields ();      // what about resetModified?
 
@@ -154,7 +157,8 @@ public class Screen extends Canvas
         drawPosition (screenPositions[pos++], row, col, false);
 
     // Cursor.moveTo() will recalculate the current field if the cursor is visible
-    //    cursor.setVisible (true);
+    //    cursor.setVisible (saveCursorVisible);
+
     if (insertedCursorPosition >= 0)
     {
       cursor.moveTo (insertedCursorPosition);
@@ -415,6 +419,7 @@ public class Screen extends Canvas
 
   public void restoreKeyboard ()
   {
+    System.out.println ("unlocked");
     keyboardLocked = false;
     notifyKeyboardStatusChange ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
@@ -423,6 +428,7 @@ public class Screen extends Canvas
 
   public void lockKeyboard ()
   {
+    System.out.println ("locked");
     keyboardLocked = true;
     notifyKeyboardStatusChange ();
     cursor.setVisible (false);

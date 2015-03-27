@@ -37,6 +37,7 @@ public class Cursor
 
   public void setVisible (boolean visible)
   {
+    System.out.printf ("Cursor visible: %s%n", visible);
     this.visible = visible;
     if (visible)
     {
@@ -46,6 +47,11 @@ public class Cursor
     else
       resetCurrentField ();
     draw ();
+  }
+
+  public boolean getVisible ()
+  {
+    return visible;
   }
 
   public ScreenPosition getScreenPosition ()

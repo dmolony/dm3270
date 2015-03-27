@@ -116,7 +116,6 @@ public class AIDCommand extends Command implements BufferAddressSource
 
   // copy modified fields back to the screen - only used in Replay mode
   // Normally an AID is a reply command (which is never processed)
-
   @Override
   public void process ()
   {
@@ -155,6 +154,8 @@ public class AIDCommand extends Command implements BufferAddressSource
     // place cursor in new location
     if (cursorAddress != null)
       cursor.moveTo (cursorAddress.getLocation ());
+
+    screen.lockKeyboard ();
   }
 
   @Override
