@@ -7,7 +7,7 @@ The program defaults to the Release setting, which means it runs only in Termina
 ![Default Connection](Resources/connect.png?raw=true "default connection")
 #### Modes
 The four modes in which this software can currently be used are Spy, Replay, Mainframe and Terminal. These are described below. Only terminal mode is available when in the Release setting, but all four are enabled if you switch to the Debug setting. This is the dialog box you will see when running as Debug.  
-![Initial screen](Resources/main1.png?raw=true "initial screen")
+![Debug Connection](Resources/connect2.png?raw=true "debug connection")
 #### Spy Mode
 Waits for any terminal emulator to connect to the client port specified, and then it completes the connection to the actual mainframe at the server and port specified. The mainframe session can be used as normal, however all communication buffers are recorded and can be saved in a session file to replay later.
 ![Spy screen](Resources/spy.png?raw=true "spy screen")
