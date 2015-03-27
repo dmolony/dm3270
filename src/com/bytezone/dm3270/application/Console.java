@@ -90,8 +90,6 @@ public class Console extends Application
     clientPort = new TextField (clientPortText);
     prevent3270E = new CheckBox ();
     filename = new TextField (fileText);
-    Node node1 = options (optionList, group, 0, 2);
-    Node node2 = options (optionList, group, 2, 2);
 
     release = runMode.equals ("Release");
     if (release)
@@ -103,12 +101,15 @@ public class Console extends Application
     else
     {
       panel.getChildren //
-          ().addAll (row ("Mode", node1), row ("", node2),
-                     row ("Server URL", serverName), row ("Server port", serverPort),
+          ().addAll (row ("Function", options (optionList, group, 0, 2)),
+                     row ("", options (optionList, group, 2, 2)),
+                     row ("Server URL", serverName),          //
+                     row ("Server port", serverPort),         //
                      row ("Client port", clientPort),
                      row ("Prevent 3270-E", prevent3270E),
-                     row ("Session file", filename), row ("", buttons ()));
-      dialogStage.setTitle ("Choose parameters");
+                     row ("Session file", filename),          //
+                     row ("", buttons ()));
+      dialogStage.setTitle ("Choose Function");
     }
 
     HBox hBox = new HBox (10);
