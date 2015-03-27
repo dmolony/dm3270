@@ -79,7 +79,6 @@ public class AIDCommand extends Command implements BufferAddressSource
     while (ptr < max)
     {
       Order order = Order.getOrder (buffer, ptr, max);
-      //      System.out.println (order);
       if (!order.rejected ())
       {
         if (previousOrder != null && previousOrder.matches (order))
@@ -97,8 +96,8 @@ public class AIDCommand extends Command implements BufferAddressSource
         }
         else if (currentAIDField != null)
           currentAIDField.addOrder (order);
-        else
-          System.out.println ("Order with no field");
+        //        else
+        //          System.out.println ("Order with no field : " + order);
 
         if (order instanceof TextOrder)
           textOrders++;

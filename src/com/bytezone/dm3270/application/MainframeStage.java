@@ -132,7 +132,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     else
       setY (screen.getMinY () + screen.getHeight () - HEIGHT - 40);
 
-    prepareButtons (textArea);
+    prepareButtons ();
 
     setOnCloseRequest (new EventHandler<WindowEvent> ()
     {
@@ -200,7 +200,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     orders.add (new InsertCursorOrder ());
   }
 
-  private void prepareButtons (TextArea textArea)
+  private void prepareButtons ()
   {
     InputStream in =
         Console.class.getClassLoader ()
@@ -276,13 +276,13 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
   @Override
   public void receiveCommand (Command command)
   {
-    if (command instanceof ReadStructuredFieldCommand)
-      enableButtons (true);
-
     textArea.setText (command.toString ());
     textArea.appendText ("\n\n");
     textArea.appendText (Utility.toHex (command.getData ()));
     textArea.positionCaret (0);
+
+    if (command instanceof ReadStructuredFieldCommand)
+      enableButtons (true);
   }
 
   private void enableButtons (boolean enable)
