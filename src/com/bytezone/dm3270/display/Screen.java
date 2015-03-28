@@ -287,8 +287,8 @@ public class Screen extends Canvas
     for (ScreenPosition sp : screenPositions)
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr);
-      else if (sp.getByte () != 0)                      // null suppression
-        ptr = packDataPosition (sp, buffer, ptr);
+      else
+        ptr = packDataPosition (sp, buffer, ptr);       // don't suppress nulls
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
@@ -302,7 +302,6 @@ public class Screen extends Canvas
     switch (type)
     {
       case (byte) 0xF6:
-        //        currentAID = AIDCommand.NO_AID_SPECIFIED;
         return readModifiedFields ();
 
       case 0x6E:
@@ -350,8 +349,6 @@ public class Screen extends Canvas
 
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
-    assert sp.getByte () != (byte) 0;                     // we never pack nulls
-
     if (replyMode == SetReplyMode.RM_CHARACTER)
       for (Attribute attribute : sp.getAttributes ())
         if (attribute.getAttributeType () == AttributeType.RESET)
@@ -391,7 +388,7 @@ public class Screen extends Canvas
       {
         byte b = sp.getByte ();
         if (b != (byte) 0)
-          ptr = packDataPosition (sp, buffer, ptr);
+          ptr = packDataPosition (sp, buffer, ptr);       // suppress nulls
       }
 
     return ptr;
