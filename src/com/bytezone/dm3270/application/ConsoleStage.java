@@ -178,6 +178,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     if (terminalServer != null)
       terminalServer.close ();
     screen.clearScreen ();
+
+    System.out.println ();
+    telnetState.printSummary ();
   }
 
   @Override

@@ -1,7 +1,13 @@
 package com.bytezone.dm3270.streams;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class TelnetState
 {
+  private static final DateTimeFormatter formatter = DateTimeFormatter
+      .ofPattern ("dd MMM uuuu HH:mm:ss.S");
+
   // preferences
   private boolean do3270Extended = false;
   private boolean doBinary = true;
@@ -19,15 +25,67 @@ public class TelnetState
   // Socket
   private TerminalServer terminalServer;
 
+  private volatile LocalDateTime lastAccess;
+  private final boolean debug = false;
+  private int totalReads;
+  private int totalWrites;
+  private int totalBytesRead;
+  private int totalBytesWritten;
+
   public void setTerminalServer (TerminalServer terminalServer)
   {
     this.terminalServer = terminalServer;
   }
 
-  public void write (byte[] buffer)
+  public synchronized void setLastAccess (LocalDateTime dateTime, int bytes)
+  {
+    lastAccess = dateTime;
+    ++totalReads;
+    totalBytesRead += bytes;
+
+    if (debug)
+      System.out.printf ("Read  : %,6d %s%n", bytes, formatter.format (lastAccess));
+  }
+
+  public synchronized void write (byte[] buffer)
   {
     if (terminalServer != null)
+    {
       terminalServer.write (buffer);
+
+      lastAccess = LocalDateTime.now ();
+      ++totalWrites;
+      totalBytesWritten += buffer.length;
+
+      if (debug)
+        System.out.printf ("Write : %,6d %s%n", buffer.length,
+                           formatter.format (lastAccess));
+    }
+  }
+
+  public void printSummary ()
+  {
+    if (totalReads == 0 || totalWrites == 0)
+    {
+      System.out.println ("No data");
+      return;
+    }
+
+    int averageReads = totalBytesRead / totalReads;
+    int averageWrites = totalBytesWritten / totalWrites;
+    int totalIOBytes = totalBytesRead + totalBytesWritten;
+    int totalIO = totalReads + totalWrites;
+    int averageIO = totalIOBytes / totalIO;
+
+    System.out.printf ("          Total       Bytes     Average");
+    System.out.printf ("         -------   ----------   -------");
+    System.out.printf ("Reads    %,5d         %,7d        %,4d %n", totalReads,
+                       totalBytesRead, averageReads);
+    System.out.printf ("Writes   %,5d         %,7d        %,4d %n", totalWrites,
+                       totalBytesWritten, averageWrites);
+    System.out.printf ("         =======   ==========   =======");
+    System.out.printf ("         %,5d         %,7d        %,4d %n", totalIO,
+                       totalIOBytes, averageIO);
   }
 
   // ---------------------------------------------------------------------------------//
