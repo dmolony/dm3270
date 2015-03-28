@@ -39,6 +39,10 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     {
       switch (keyCodePressed)
       {
+        case ENTER:
+          cursor.newLine ();
+          break;
+
         case TAB:
           cursor.newLine ();
           break;
