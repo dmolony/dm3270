@@ -16,10 +16,10 @@ Uses the dm3270 terminal to replay the commands that were previously saved in a 
 ![Replay screen](Resources/replay.png?raw=true "replay screen")
 #### Mainframe Mode
 Waits for any terminal emulator to connect to the client port specifed. The program is now serving as a dummy mainframe, and the mainframe window can be used to send the terminal various 3270 commands. Any replies from the terminal are displayed. The session can also be saved for later replaying.
-![Mainframe screen](Resources/mainframe.png?raw=true "mainframe screen")
+![Mainframe screen](resources/server.png?raw=true "mainframe screen")
 #### Terminal Mode
 Connects the dm3270 terminal to the specified mainframe. This is the only mode available at the Release setting.
-![Terminal screen](Resources/console.png?raw=true "dm3270")
+![Terminal screen](resources/terminal.png?raw=true "dm3270")
 #### Menus
 There are two menus which are only available from the first screen. There you may choose the font and font size for the terminal screen, and whether to run in Debug or Release mode. The fonts listed are the only ones that dm3270 will attempt to load, and then only if you have them installed on your machine. Most of the fonts are freely available on the web.  
 ![Fonts](resources/fonts.png?raw=true "fonts")
