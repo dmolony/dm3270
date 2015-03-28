@@ -73,9 +73,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     int ptr = offset + 3;
     int max = offset + length;
     Order previousOrder = null;
-    //    SetBufferAddressOrder sba = null;
     AIDField currentAIDField = null;
-    //    System.out.println (Utility.toHex (buffer, offset, length));
 
     while (ptr < max)
     {
@@ -97,8 +95,6 @@ public class AIDCommand extends Command implements BufferAddressSource
         }
         else if (currentAIDField != null)
           currentAIDField.addOrder (order);
-        //        else
-        //          System.out.println ("Order with no field : " + order);
 
         if (order instanceof TextOrder)
           textOrders++;
@@ -143,19 +139,15 @@ public class AIDCommand extends Command implements BufferAddressSource
 
     if (!done)
       for (AIDField aidField : aidFields)
-      {
-        //        System.out.println ("AID field:");
-        //        System.out.println (aidField);
-        Field field = screen.getField (aidField.getLocation ());
-        if (field != null)    // in replay mode we cannot rely on the fields list
+        if (aidField.hasData ())
         {
-          if (aidField.hasData ())
+          Field field = screen.getField (aidField.getLocation ());
+          if (field != null)    // in replay mode we cannot rely on the fields list
           {
             field.setText (aidField.getBuffer ());
             field.draw ();
           }
         }
-      }
 
     // place cursor in new location
     if (cursorAddress != null)
