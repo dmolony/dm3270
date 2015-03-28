@@ -35,7 +35,7 @@ public class EraseResetSF extends StructuredField
   public String toString ()
   {
     StringBuilder text = new StringBuilder ("Struct Field : 03 Erase/Reset\n");
-    text.append (String.format ("   flags     : %02X (%s)%n", flags, size));
+    text.append (String.format ("   flags     : %02X (%s)", flags, size));
     return text.toString ();
   }
 }

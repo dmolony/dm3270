@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.structuredfields;
 
+import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
 
 public class DefaultStructuredField extends StructuredField
@@ -14,5 +15,14 @@ public class DefaultStructuredField extends StructuredField
   public void process ()
   {
     System.out.printf ("Processing a DefaultStructuredField: %02X%n", type);
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+    text.append (String.format ("Unknown SF   : %02X%n", data[0]));
+    text.append (Utility.toHex (data));
+    return text.toString ();
   }
 }

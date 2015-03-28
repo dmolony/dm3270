@@ -66,8 +66,8 @@ public class WriteStructuredFieldCommand extends Command
           break;
 
         default:
-          System.out.printf ("Unknown Structured Field: %02X", buffer[ptr]);
           fields.add (new DefaultStructuredField (buffer, ptr, size, screen));
+          break;
       }
 
       ptr += size;
