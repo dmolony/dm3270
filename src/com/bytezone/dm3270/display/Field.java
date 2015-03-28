@@ -224,9 +224,12 @@ public class Field implements Iterable<ScreenPosition>
     assert startPosition != endPosition;
     int position = screen.validate (startPosition + 1);
     int ptr = 0;
+    //    System.out.printf ("Start: %d, End: %d%n", startPosition, endPosition);
+    //    System.out.println (Utility.toHex (buffer));
 
     while (true)
     {
+      //      System.out.printf ("Position: %d%n", position);
       screen.getScreenPosition (position).setChar (buffer[ptr++]);
       if (position == endPosition || ptr == buffer.length)
         break;

@@ -75,6 +75,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     Order previousOrder = null;
     //    SetBufferAddressOrder sba = null;
     AIDField currentAIDField = null;
+    //    System.out.println (Utility.toHex (buffer, offset, length));
 
     while (ptr < max)
     {
@@ -143,11 +144,16 @@ public class AIDCommand extends Command implements BufferAddressSource
     if (!done)
       for (AIDField aidField : aidFields)
       {
+        //        System.out.println ("AID field:");
+        //        System.out.println (aidField);
         Field field = screen.getField (aidField.getLocation ());
         if (field != null)    // in replay mode we cannot rely on the fields list
         {
-          field.setText (aidField.getBuffer ());
-          field.draw ();
+          if (aidField.hasData ())
+          {
+            field.setText (aidField.getBuffer ());
+            field.draw ();
+          }
         }
       }
 
@@ -251,6 +257,11 @@ public class AIDCommand extends Command implements BufferAddressSource
     public int getLocation ()
     {
       return sbaOrder.getBufferAddress ().getLocation ();
+    }
+
+    public boolean hasData ()
+    {
+      return getBuffer ().length > 0;
     }
 
     public byte[] getBuffer ()
