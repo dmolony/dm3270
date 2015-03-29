@@ -89,7 +89,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 
     final VBox vBox = getVBox ();
 
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < 10; i++)
       buttons.add (getButton ("Empty", vBox, BUTTON_WIDTH));
 
     Separator separator = new Separator ();
@@ -208,7 +208,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     if (in == null)
     {
       System.out.println ("mf.txt not found");
-      Platform.exit ();
+      //      Platform.exit ();
       return;
     }
     BufferedReader reader = new BufferedReader (new InputStreamReader (in));
@@ -230,6 +230,8 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     SessionRecord dr = createCommand ();
     session.add (dr);
     labels.add ("Test");
+    System.out.println (labels.size ());
+    System.out.println (buttons.size ());
 
     int buttonNo = 0;
     for (SessionRecord dataRecord : session)
