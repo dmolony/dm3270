@@ -180,7 +180,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     screen.clearScreen ();
 
     System.out.println ();
-    telnetState.printSummary ();
+    telnetState.close ();
   }
 
   @Override

@@ -74,7 +74,7 @@ public class TerminalServer implements Runnable
     }
   }
 
-  public void write (byte[] buffer)
+  synchronized void write (byte[] buffer)
   {
     if (serverOut == null)
     {
