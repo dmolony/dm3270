@@ -92,7 +92,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     currentGenuine = genuine;
 
     telnetProcessor.listen (buffer);     // will call one of the processXXX routines
-    telnetState.setLastAccess (dateTime, buffer.length);
+
+    if (sessionMode == SessionMode.TERMINAL)
+      telnetState.setLastAccess (dateTime, buffer.length);
   }
 
   private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
