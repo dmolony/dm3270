@@ -162,7 +162,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
   public void connect (String mainframeURL, int mainframePort)
   {
-    //    telnetState = new TelnetState ();
     telnetState.setDo3270Extended (true);    // set preferences for this session
     telnetState.setDoTerminalType (true);    // set preferences for this session
 
@@ -177,10 +176,10 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   {
     if (terminalServer != null)
       terminalServer.close ();
-    screen.clearScreen ();
 
-    System.out.println ();
     telnetState.close ();
+    //    screen.clearScreen ();
+    //    screen.displayText (telnetState.getSummary ());
   }
 
   @Override
@@ -188,13 +187,13 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   {
     if (newField == null)
     {
-      fieldType.setText ("");
+      fieldType.setText ("      ");
       fieldLocation.setText ("0000/0000");
     }
     else
     {
       StartFieldAttribute sfa = newField.getStartFieldAttribute ();
-      fieldType.setText (String.format ("%6s", sfa.getAcronym ()));
+      fieldType.setText (String.format ("%6.6s", sfa.getAcronym ()));
       fieldLocation.setText (String.format ("%04d/%04d", newField.getCursorOffset (),
                                             newField.getDisplayLength ()));
     }
@@ -212,7 +211,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   @Override
   public void keyboardStatusChanged (boolean keyboardLocked, boolean insert)
   {
-    status.setText (keyboardLocked ? "Inhibit" : "");
-    insertMode.setText (insert ? "Insert" : "");
+    status.setText (keyboardLocked ? "Inhibit" : "       ");
+    insertMode.setText (insert ? "Insert " : "       ");
   }
 }

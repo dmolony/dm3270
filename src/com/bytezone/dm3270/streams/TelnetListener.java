@@ -128,7 +128,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   @Override
   public void close ()
   {
-    Platform.runLater ( () -> screen.clearScreen ());
+    //    Platform.runLater ( () -> screen.clearScreen ());
+    Platform.runLater ( () -> screen.displayText (telnetState.getSummary ()));
   }
 
   @Override

@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
+import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
@@ -77,6 +78,24 @@ public class Screen extends Canvas
         + (expanded ? (rows + 1) * expandedHeight : 0));
 
     getGraphicsContext2D ().setFont (font);
+  }
+
+  public void displayText (String text)
+  {
+    GraphicsContext gc = getGraphicsContext2D ();
+    gc.setFill (Color.BLACK);
+    gc.fillRect (0, 0, getWidth (), getHeight ());
+    gc.setFill (ColorAttribute.colors[1]);
+    int x = 120;
+    int y = 100;
+    int height = 20;
+
+    String[] lines = text.split ("\n");
+    for (String line : lines)
+    {
+      gc.fillText (line, x, y);
+      y += height;
+    }
   }
 
   public int validate (int position)

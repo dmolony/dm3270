@@ -218,10 +218,9 @@ public class Console extends Application
 
         case "Terminal":
           consoleStage = new ConsoleStage (screen);
+          consoleStage.centerOnScreen ();
           consoleStage.show ();
           consoleStage.connect (serverName.getText (), serverPortVal);
-
-          consoleStage.centerOnScreen ();
 
           break;
       }

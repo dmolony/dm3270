@@ -97,14 +97,12 @@ public class TelnetState implements Runnable
       running = false;
       thread.interrupt ();
     }
-
-    printSummary ();
   }
 
-  private void printSummary ()
+  public String getSummary ()
   {
     if (totalReads == 0 || totalWrites == 0)
-      return;
+      return "No data";
 
     int averageReads = totalBytesRead / totalReads;
     int averageWrites = totalBytesWritten / totalWrites;
@@ -112,15 +110,19 @@ public class TelnetState implements Runnable
     int totalIO = totalReads + totalWrites;
     int averageIO = totalIOBytes / totalIO;
 
-    System.out.printf ("          Total        Bytes    Average%n");
-    System.out.printf ("         -------   ----------   -------%n");
-    System.out.printf ("Reads     %,5d       %,7d     %,4d %n", totalReads,
-                       totalBytesRead, averageReads);
-    System.out.printf ("Writes    %,5d       %,7d     %,4d %n", totalWrites,
-                       totalBytesWritten, averageWrites);
-    System.out.printf ("         =======   ==========   =======%n");
-    System.out.printf ("          %,5d       %,7d     %,4d %n", totalIO, totalIOBytes,
-                       averageIO);
+    StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("          Total        Bytes    Average%n"));
+    text.append (String.format ("         -------   ----------   -------%n"));
+    text.append (String.format ("Reads     %,5d       %,7d     %,4d %n", totalReads,
+                                totalBytesRead, averageReads));
+    text.append (String.format ("Writes    %,5d       %,7d     %,4d %n", totalWrites,
+                                totalBytesWritten, averageWrites));
+    text.append (String.format ("         -------   ----------   -------%n"));
+    text.append (String.format ("          %,5d       %,7d     %,4d %n", totalIO,
+                                totalIOBytes, averageIO));
+
+    return text.toString ();
   }
 
   // ---------------------------------------------------------------------------------//
