@@ -208,7 +208,6 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     if (in == null)
     {
       System.out.println ("mf.txt not found");
-      //      Platform.exit ();
       return;
     }
     BufferedReader reader = new BufferedReader (new InputStreamReader (in));
@@ -230,8 +229,6 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     SessionRecord dr = createCommand ();
     session.add (dr);
     labels.add ("Test");
-    System.out.println (labels.size ());
-    System.out.println (buttons.size ());
 
     int buttonNo = 0;
     for (SessionRecord dataRecord : session)
