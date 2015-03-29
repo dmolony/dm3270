@@ -86,15 +86,15 @@ public class Cursor
         currentField.push (start, end);
         currentField.draw ();     // draws the field without the cursor
       }
+
+      //      System.out.printf ("Setting %d to %d%n", currentPosition, value);
       screen.getScreenPosition (currentPosition).setChar (value);
       currentField.setModified (true);
 
       int newPosition = screen.validate (currentPosition + 1);
       if (!currentField.contains (newPosition))
-      {
-        Field newField = currentField.getNextUnprotectedField ();
-        newPosition = newField.getFirstLocation ();
-      }
+        newPosition = currentField.getNextUnprotectedField ().getFirstLocation ();
+
       moveTo (newPosition);
     }
   }

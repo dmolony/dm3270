@@ -123,19 +123,25 @@ public class AIDCommand extends Command implements BufferAddressSource
     boolean done = false;
     if (aidFields.size () == 1)
     {
-      int cursorOldLocation = cursor.getLocation ();
-      int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
-
-      byte[] buffer = aidFields.get (0).getBuffer ();
       Field currentField = cursor.getCurrentField ();
-      if (buffer.length == cursorDistance && currentField != null
-          && currentField.contains (cursorOldLocation))
+      if (currentField != null)
       {
-        for (byte b : buffer)
-          cursor.typeChar (b);   // send characters through the old cursor
-        done = true;
+        int cursorOldLocation = cursor.getLocation ();
+        if (cursorOldLocation != currentField.getFirstLocation ()
+            && currentField.contains (cursorOldLocation))
+        {
+          int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
+          byte[] buffer = aidFields.get (0).getBuffer ();
+          if (buffer.length == cursorDistance)
+          {
+            for (byte b : buffer)
+              cursor.typeChar (b);   // send characters through the old cursor
+            done = true;
+          }
+        }
       }
     }
+    System.out.println (done);
 
     if (!done)
       for (AIDField aidField : aidFields)
