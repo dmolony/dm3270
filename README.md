@@ -15,7 +15,7 @@ Waits for any terminal emulator to connect to the client port specified, and the
 Uses the dm3270 terminal to replay the commands that were previously saved in a session file. Individual buffers can be selected and examined. The anticipated reply message (if any) can also displayed. Each command (both client and server) is sent to the terminal for processing.
 ![Replay screen](resources/replay2.png?raw=true "replay screen")
 #### Mainframe Mode
-Waits for any terminal emulator to connect to the client port specifed. The program is now serving as a dummy mainframe, and the mainframe window can be used to send the terminal various 3270 commands. Any replies from the terminal are displayed. The session can also be saved for later replaying.
+Waits for any terminal emulator to connect to the client port specifed. The program is now serving as a dummy mainframe, and it can be used to send the terminal various 3270 commands. Any replies from the terminal are displayed. The session can also be saved for later replaying.
 ![Mainframe screen](resources/server.png?raw=true "mainframe screen")
 #### Terminal Mode
 Connects the dm3270 terminal to the specified mainframe. This is the only mode available at the Release setting.
