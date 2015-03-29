@@ -57,10 +57,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     int margin = 4;
     BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
-    //    final String os = System.getProperty ("os.name");
-    //    if (os != null && os.startsWith ("Mac"))
-    //      menuBar.useSystemMenuBarProperty ().set (true);
-
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
 
@@ -178,8 +174,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       terminalServer.close ();
 
     telnetState.close ();
-    //    screen.clearScreen ();
-    //    screen.displayText (telnetState.getSummary ());
   }
 
   @Override
