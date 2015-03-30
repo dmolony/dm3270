@@ -112,6 +112,9 @@ public class SessionReader
   // returns a List of lines contained in a single buffer
   private List<String> getBufferLines ()
   {
+    // file structure
+    int firstHexDigit = 0;
+
     List<String> list = new ArrayList<> ();
     while (nextLine < lines.size ())
     {
@@ -120,8 +123,11 @@ public class SessionReader
       if (!line.startsWith ("0"))
         break;
 
-      line = line.substring (8);
-      if (line.length () > 48)
+      if (firstHexDigit == 0)
+        firstHexDigit = line.charAt (7) == ' ' ? 8 : 6;
+
+      line = line.substring (firstHexDigit);
+      if (line.length () > 48)              // 16 hex values plus spaces
         line = line.substring (0, 48);      // leave a space on the end
       list.add (line);
 

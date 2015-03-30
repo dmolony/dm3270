@@ -112,7 +112,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   }
 
   // copy modified fields back to the screen - only used in Replay mode
-  // Normally an AID is a reply command (which is never processed)
+  // Normally an AID is a reply command (which never has process() called)
   @Override
   public void process ()
   {
@@ -134,6 +134,7 @@ public class AIDCommand extends Command implements BufferAddressSource
           byte[] buffer = aidFields.get (0).getBuffer ();
           if (buffer.length == cursorDistance)
           {
+            // cannot call field.setText() as the data starts mid-field
             for (byte b : buffer)
               cursor.typeChar (b);   // send characters through the old cursor
             done = true;
@@ -141,7 +142,6 @@ public class AIDCommand extends Command implements BufferAddressSource
         }
       }
     }
-    System.out.println (done);
 
     if (!done)
       for (AIDField aidField : aidFields)
