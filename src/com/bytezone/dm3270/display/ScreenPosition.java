@@ -203,7 +203,7 @@ public class ScreenPosition
       gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.foregroundColor
           : screenContext.backgroundColor : screenContext.backgroundColor);
       if (expanded)
-        gc.fillRect (x, y, charWidth + .4, charHeight + 1.4);
+        gc.fillRect (x, y, charWidth + 1.4, charHeight + 1.8);
       else
         gc.fillRect (x, y, charWidth + .4, charHeight + .4);
     }

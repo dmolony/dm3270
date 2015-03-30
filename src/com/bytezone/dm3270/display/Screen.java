@@ -45,7 +45,7 @@ public class Screen extends Canvas
 
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
-  private boolean resetModified;
+  //  private boolean resetModified;
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
@@ -144,12 +144,14 @@ public class Screen extends Canvas
     insertedCursorPosition = cursor.getLocation ();    // move it here later
   }
 
+  // called from EraseAllUnprotectedCommand.process()
   public void eraseAllUnprotected ()
   {
     Field firstUnprotectedField = fieldManager.eraseAllUnprotected ();
 
     restoreKeyboard ();
     resetModified ();
+    setAID (AIDCommand.NO_AID_SPECIFIED);
     drawScreen (DONT_REBUILD_FIELDS);
 
     if (firstUnprotectedField != null)
@@ -445,7 +447,15 @@ public class Screen extends Canvas
 
   public void resetModified ()
   {
-    resetModified = true;     // will happen after the screen is rebuilt
+    //    System.out.println ("Should do something here!");
+    int fieldsReset = 0;
+    for (Field field : getUnprotectedFields ())
+      if (field.isModified ())
+      {
+        field.setModified (false);
+        ++fieldsReset;
+      }
+    System.out.printf ("Fields reset: %d%n", fieldsReset);
   }
 
   public boolean isKeyboardLocked ()
