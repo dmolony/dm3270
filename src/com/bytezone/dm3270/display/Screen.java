@@ -164,9 +164,6 @@ public class Screen extends Canvas
 
   public void drawScreen (boolean buildFields)
   {
-    //    boolean saveCursorVisible = cursor.getVisible ();
-    //    cursor.setVisible (false);
-
     if (buildFields)
       fieldManager.buildFields ();      // what about resetModified?
 

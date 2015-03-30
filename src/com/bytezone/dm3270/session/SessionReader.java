@@ -120,7 +120,7 @@ public class SessionReader
     {
       String line = lines.get (nextLine);
 
-      if (!line.startsWith ("0"))
+      if (!line.startsWith ("0") && !line.startsWith ("1"))
         break;
 
       if (firstHexDigit == 0)
