@@ -26,7 +26,7 @@ public class TelnetState implements Runnable
   private final boolean debug = false;
 
   // IO
-  private volatile LocalDateTime lastAccess;
+  private volatile long lastAccess;
   private volatile boolean running = false;
   private Thread thread;
 
@@ -44,12 +44,12 @@ public class TelnetState implements Runnable
 
   public void setLastAccess (LocalDateTime dateTime, int bytes)
   {
-    lastAccess = dateTime;
+    lastAccess = System.currentTimeMillis ();
     ++totalReads;
     totalBytesRead += bytes;
 
     if (debug)
-      System.out.printf ("Read  : %,6d %s%n", bytes, formatter.format (lastAccess));
+      System.out.printf ("Read  : %,6d %s%n", bytes, formatter.format (dateTime));
   }
 
   public void write (byte[] buffer)
@@ -57,28 +57,37 @@ public class TelnetState implements Runnable
     if (terminalServer != null)
       terminalServer.write (buffer);
 
-    lastAccess = LocalDateTime.now ();
+    lastAccess = System.currentTimeMillis ();
     ++totalWrites;
     totalBytesWritten += buffer.length;
 
     if (debug)
       System.out.printf ("Write : %,6d %s%n", buffer.length,
-                         formatter.format (lastAccess));
+                         formatter.format (LocalDateTime.now ()));
   }
+
+  // This thread exists simply to keep the connection alive. It sleeps for a
+  // certain period, and when it wakes it issues a NOOP if nothing else has
+  // communicated with the server.
 
   @Override
   public void run ()
   {
-    LocalDateTime lastTimeIChecked;
+    long lastTimeIChecked;
+    lastAccess = System.currentTimeMillis ();
     running = true;
+    long limit = 120;      // seconds to wait
 
     while (running)
     {
       try
       {
         lastTimeIChecked = lastAccess;
-        Thread.sleep (2 * 60 * 1000);           // adjust this
-        if (lastAccess == lastTimeIChecked)
+        long delay = (System.currentTimeMillis () - lastAccess) / 1000;
+        long sleep = limit - delay;
+
+        Thread.sleep (sleep * 1000);
+        if (lastTimeIChecked == lastAccess)
           write (noOp);
       }
       catch (InterruptedException e)
