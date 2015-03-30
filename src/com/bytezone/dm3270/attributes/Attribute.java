@@ -50,12 +50,12 @@ public abstract class Attribute
     }
   }
 
-  public boolean matches (byte type)
-  {
-    return attributeCode == type;
-  }
+  //  public boolean matches (byte type)
+  //  {
+  //    return attributeCode == type;
+  //  }
 
-  public boolean matches (byte[] types)
+  public boolean matches (byte... types)
   {
     for (byte type : types)
       if (attributeCode == type)
