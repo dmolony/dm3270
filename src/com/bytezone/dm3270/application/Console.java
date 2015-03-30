@@ -63,6 +63,7 @@ public class Console extends Application
   private MainframeStage mainframeStage;
   private SpyStage spyStage;
   private ConsoleStage consoleStage;
+  private ReplayStage replayStage;
 
   private boolean release;
 
@@ -190,7 +191,8 @@ public class Console extends Application
           {
             consoleStage = new ConsoleStage (screen);
             consoleStage.show ();
-            new ReplayStage (screen, path).show ();
+            replayStage = new ReplayStage (screen, path, prefs);
+            replayStage.show ();
           }
           else
           {
@@ -275,6 +277,9 @@ public class Console extends Application
 
     if (consoleStage != null)
       consoleStage.disconnect ();
+
+    if (replayStage != null)
+      replayStage.disconnect ();
 
     savePreferences ();
   }

@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.application;
 
 import java.nio.file.Path;
+import java.util.prefs.Preferences;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -25,9 +26,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Screen;
 import javafx.stage.WindowEvent;
 
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
@@ -37,22 +38,30 @@ public class ReplayStage extends BasicStage
 {
   private static final int TEXT_WIDTH = 540;
   private final SessionTable table = new SessionTable ();
+  private final Preferences prefs;
 
-  public ReplayStage (com.bytezone.dm3270.display.Screen screen, Path path)
+  private boolean showTelnet;
+  private boolean showExtended;
+
+  private final CheckBox showTelnetCB = new CheckBox ("Show telnet");
+  private final CheckBox show3270ECB = new CheckBox ("Show 3270-E");
+
+  public ReplayStage (Screen screen, Path path, Preferences prefs)
   {
     Session session = new Session (screen, path);
+    this.prefs = prefs;
 
     final Label label =
         new Label (session.getClientName () + " : " + session.getServerName ());
     label.setFont (new Font ("Arial", 20));
     label.setPadding (new Insets (10, 10, 10, 10));    // trbl
 
-    final CheckBox showTelnet = new CheckBox ("Show telnet");
-    final CheckBox show3270E = new CheckBox ("Show 3270-E");
+    showTelnet = prefs.getBoolean ("SHOW_TELNET", false);
+    showExtended = prefs.getBoolean ("SHOW_EXTENDED", false);
 
     final HBox checkBoxes = new HBox ();
     checkBoxes.setSpacing (15);
-    checkBoxes.getChildren ().addAll (showTelnet, show3270E);
+    checkBoxes.getChildren ().addAll (showTelnetCB, show3270ECB);
 
     final VBox leftPane = getVBox ();
     leftPane.getChildren ().addAll (table, checkBoxes);
@@ -109,12 +118,12 @@ public class ReplayStage extends BasicStage
 
             boolean isTelnet =
                 dataRecord.getDataRecordType () == SessionRecordType.TELNET;
-            if (!showTelnet.isSelected () && isTelnet)
+            if (!showTelnetCB.isSelected () && isTelnet)
               return false;
 
             boolean isTN3270Ext =
                 dataRecord.getDataRecordType () == SessionRecordType.TN3270E;
-            if (!show3270E.isSelected () && isTN3270Ext)
+            if (!show3270ECB.isSelected () && isTN3270Ext)
               return false;
 
             return true;      // show the record
@@ -128,12 +137,13 @@ public class ReplayStage extends BasicStage
           }
         });
 
-    showTelnet.selectedProperty ().addListener (changeListener1);
-    show3270E.selectedProperty ().addListener (changeListener1);
+    showTelnetCB.selectedProperty ().addListener (changeListener1);
+    show3270ECB.selectedProperty ().addListener (changeListener1);
 
-    showTelnet.setSelected (true);      // must be a bug
-    showTelnet.setSelected (false);
-    //    show3270E.setSelected (true);
+    showTelnetCB.setSelected (true);      // must be a bug
+    showTelnetCB.setSelected (showTelnet);
+    show3270ECB.setSelected (true);
+    show3270ECB.setSelected (showExtended);
 
     table
         .getSelectionModel ()
@@ -144,7 +154,8 @@ public class ReplayStage extends BasicStage
                                  replyTextArea, replyBufferTextArea, fieldsTextArea,
                                  screenTextArea, DO_PROCESS, screen));
 
-    Rectangle2D primaryScreenBounds = Screen.getPrimary ().getVisualBounds ();
+    Rectangle2D primaryScreenBounds =
+        javafx.stage.Screen.getPrimary ().getVisualBounds ();
     String osName = System.getProperty ("os.name");
     if (osName.startsWith ("Mac"))
     {
@@ -165,5 +176,11 @@ public class ReplayStage extends BasicStage
         Platform.exit ();
       }
     });
+  }
+
+  public void disconnect ()
+  {
+    prefs.putBoolean ("SHOW_TELNET", showTelnetCB.isSelected ());
+    prefs.putBoolean ("SHOW_EXTENDED", show3270ECB.isSelected ());
   }
 }
