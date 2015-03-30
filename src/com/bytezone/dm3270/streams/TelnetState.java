@@ -58,7 +58,8 @@ public class TelnetState implements Runnable
     if (terminalServer != null)
       terminalServer.write (buffer);
 
-    lastAccess.set (System.currentTimeMillis ());
+    if (lastAccess != null)
+      lastAccess.set (System.currentTimeMillis ());
     ++totalWrites;
     totalBytesWritten += buffer.length;
 

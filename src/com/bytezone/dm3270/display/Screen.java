@@ -47,6 +47,7 @@ public class Screen extends Canvas
   private boolean keyboardLocked;
   private boolean resetModified;
   private boolean insertMode;
+  private boolean readModifiedAll = false;
 
   private byte currentAID;
   private byte replyMode;
@@ -271,9 +272,10 @@ public class Screen extends Canvas
     buffer[ptr++] = currentAID;               // whatever key was pressed
 
     // PA keys and the CLR key only return the AID byte
-    if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
-        || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
-      return new AIDCommand (this, buffer, 0, ptr);
+    if (!readModifiedAll)
+      if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
+          || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
+        return new AIDCommand (this, buffer, 0, ptr);
 
     // Pack the cursor address
     int cursorLocation = getScreenCursor ().getLocation ();
@@ -321,10 +323,9 @@ public class Screen extends Canvas
         return readModifiedFields ();
 
       case 0x6E:
-        byte saveAID = currentAID;
-        currentAID = AIDCommand.NO_AID_SPECIFIED;
+        readModifiedAll = true;
         AIDCommand command = readModifiedFields ();
-        currentAID = saveAID;
+        readModifiedAll = false;
         return command;
 
       default:
