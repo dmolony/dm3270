@@ -2,6 +2,7 @@ package com.bytezone.dm3270.streams;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class TelnetState implements Runnable
 {
@@ -26,7 +27,7 @@ public class TelnetState implements Runnable
   private final boolean debug = false;
 
   // IO
-  private volatile long lastAccess;
+  private AtomicLong lastAccess;
   private volatile boolean running = false;
   private Thread thread;
 
@@ -44,7 +45,7 @@ public class TelnetState implements Runnable
 
   public void setLastAccess (LocalDateTime dateTime, int bytes)
   {
-    lastAccess = System.currentTimeMillis ();
+    lastAccess.set (System.currentTimeMillis ());
     ++totalReads;
     totalBytesRead += bytes;
 
@@ -57,7 +58,7 @@ public class TelnetState implements Runnable
     if (terminalServer != null)
       terminalServer.write (buffer);
 
-    lastAccess = System.currentTimeMillis ();
+    lastAccess.set (System.currentTimeMillis ());
     ++totalWrites;
     totalBytesWritten += buffer.length;
 
@@ -74,7 +75,7 @@ public class TelnetState implements Runnable
   public void run ()
   {
     long lastTimeIChecked;
-    lastAccess = System.currentTimeMillis ();
+    lastAccess = new AtomicLong (System.currentTimeMillis ());
     running = true;
     long limit = 120;      // seconds to wait
 
@@ -82,12 +83,13 @@ public class TelnetState implements Runnable
     {
       try
       {
-        lastTimeIChecked = lastAccess;
-        long delay = (System.currentTimeMillis () - lastAccess) / 1000;
+        lastTimeIChecked = lastAccess.get ();
+        long delay = (System.currentTimeMillis () - lastTimeIChecked) / 1000;
         long sleep = limit - delay;
 
-        Thread.sleep (sleep * 1000);
-        if (lastTimeIChecked == lastAccess)
+        if (sleep > 1)
+          Thread.sleep (sleep * 1000);
+        if (lastTimeIChecked == lastAccess.get ())
           write (noOp);
       }
       catch (InterruptedException e)
