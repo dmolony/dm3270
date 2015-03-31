@@ -54,8 +54,7 @@ public class Console extends Application
   private TextField serverName;
   private TextField serverPort;
   private TextField clientPort;
-  //  private TextField filename;
-  private ComboBox<String> list;
+  private ComboBox<String> filenameList;
   private CheckBox prevent3270E;
 
   private Button ok = new Button ("OK");
@@ -105,9 +104,9 @@ public class Console extends Application
     ObservableList<String> filesList =
         FXCollections.observableArrayList (files.stream ()
             .map (p -> p.getFileName ().toString ()).collect (Collectors.toList ()));
-    list = new ComboBox<> (filesList);
-    list.setVisibleRowCount (12);
-    list.getSelectionModel ().select (fileText);
+    filenameList = new ComboBox<> (filesList);
+    filenameList.setVisibleRowCount (12);
+    filenameList.getSelectionModel ().select (fileText);
 
     release = runMode.equals ("Release");
     if (release)
@@ -124,7 +123,8 @@ public class Console extends Application
                      row ("Server URL", serverName),          //
                      row ("Server port", serverPort),         //
                      row ("Client port", clientPort),
-                     row ("Prevent 3270-E", prevent3270E), row ("Session file", list),          //
+                     row ("Prevent 3270-E", prevent3270E),
+                     row ("Session file", filenameList),      //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
     }
@@ -193,7 +193,7 @@ public class Console extends Application
           break;
 
         case "Replay":
-          String selectedFileName = list.getValue ();
+          String selectedFileName = filenameList.getValue ();
           String file = userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
           Path path = Paths.get (file);
           if (!Files.exists (path))
@@ -331,7 +331,7 @@ public class Console extends Application
     prefs.put ("SERVER", serverName.getText ());
     prefs.put ("SERVER_PORT", serverPort.getText ());
     prefs.put ("CLIENT_PORT", clientPort.getText ());
-    prefs.put ("FILE_NAME", list.getValue ());
+    prefs.put ("FILE_NAME", filenameList.getValue ());
     prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
     prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
@@ -344,7 +344,7 @@ public class Console extends Application
     serverPort.setDisable (sp);
     clientPort.setDisable (cp);
     prevent3270E.setDisable (pr);
-    list.setDisable (fn);
+    filenameList.setDisable (fn);
   }
 
   private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
