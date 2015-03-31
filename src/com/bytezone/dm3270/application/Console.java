@@ -1,15 +1,20 @@
 package com.bytezone.dm3270.application;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,6 +24,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -48,7 +54,8 @@ public class Console extends Application
   private TextField serverName;
   private TextField serverPort;
   private TextField clientPort;
-  private TextField filename;
+  //  private TextField filename;
+  private ComboBox<String> list;
   private CheckBox prevent3270E;
 
   private Button ok = new Button ("OK");
@@ -64,6 +71,8 @@ public class Console extends Application
   private SpyStage spyStage;
   private ConsoleStage consoleStage;
   private ReplayStage replayStage;
+
+  private final String userHome = System.getProperty ("user.home");
 
   private boolean release;
 
@@ -90,7 +99,15 @@ public class Console extends Application
     serverPort = new TextField (serverPortText);
     clientPort = new TextField (clientPortText);
     prevent3270E = new CheckBox ();
-    filename = new TextField (fileText);
+    //    filename = new TextField (fileText);
+
+    List<Path> files = getSessionFiles ();
+    ObservableList<String> filesList =
+        FXCollections.observableArrayList (files.stream ()
+            .map (p -> p.getFileName ().toString ()).collect (Collectors.toList ()));
+    list = new ComboBox<> (filesList);
+    list.setVisibleRowCount (12);
+    list.getSelectionModel ().select (fileText);
 
     release = runMode.equals ("Release");
     if (release)
@@ -107,8 +124,7 @@ public class Console extends Application
                      row ("Server URL", serverName),          //
                      row ("Server port", serverPort),         //
                      row ("Client port", clientPort),
-                     row ("Prevent 3270-E", prevent3270E),
-                     row ("Session file", filename),          //
+                     row ("Prevent 3270-E", prevent3270E), row ("Session file", list),          //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
     }
@@ -177,13 +193,12 @@ public class Console extends Application
           break;
 
         case "Replay":
-          String userHome = System.getProperty ("user.home");
-          String file =
-              userHome + "/Dropbox/Mainframe documentation/" + filename.getText ();
+          String selectedFileName = list.getValue ();
+          String file = userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
           Path path = Paths.get (file);
           if (!Files.exists (path))
           {
-            file = userHome + "/dm3270/" + filename.getText ();
+            file = userHome + "/dm3270/" + selectedFileName;
             path = Paths.get (file);
           }
 
@@ -284,21 +299,40 @@ public class Console extends Application
     savePreferences ();
   }
 
+  private List<Path> getSessionFiles ()
+  {
+    String file = userHome + "/Dropbox/Mainframe documentation/";
+    Path path = Paths.get (file);
+
+    if (!Files.exists (path) || !Files.isDirectory (path))
+    {
+      file = userHome + "/dm3270/";
+      path = Paths.get (file);
+    }
+    if (Files.exists (path) && Files.isDirectory (path))
+    {
+      try
+      {
+        return Files.list (path)
+            .filter (p -> p.getFileName ().toString ().matches ("spy..\\.txt"))
+            .collect (Collectors.toList ());
+      }
+      catch (IOException e)
+      {
+        e.printStackTrace ();
+      }
+    }
+
+    return new ArrayList<Path> ();      // empty list
+  }
+
   private void savePreferences ()
   {
-    // get user values
-    String serverTextSave = serverName.getText ();
-    String serverPortTextSave = serverPort.getText ();
-    String clientPortTextSave = clientPort.getText ();
-    String fileTextSave = filename.getText ();
-    String optionTextSave = (String) group.getSelectedToggle ().getUserData ();
-
-    // save user values
-    prefs.put ("SERVER", serverTextSave);
-    prefs.put ("SERVER_PORT", serverPortTextSave);
-    prefs.put ("CLIENT_PORT", clientPortTextSave);
-    prefs.put ("FILE_NAME", fileTextSave);
-    prefs.put ("OPTION", optionTextSave);
+    prefs.put ("SERVER", serverName.getText ());
+    prefs.put ("SERVER_PORT", serverPort.getText ());
+    prefs.put ("CLIENT_PORT", clientPort.getText ());
+    prefs.put ("FILE_NAME", list.getValue ());
+    prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
     prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
     prefs.put ("RUNMODE", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
@@ -310,7 +344,7 @@ public class Console extends Application
     serverPort.setDisable (sp);
     clientPort.setDisable (cp);
     prevent3270E.setDisable (pr);
-    filename.setDisable (fn);
+    list.setDisable (fn);
   }
 
   private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,

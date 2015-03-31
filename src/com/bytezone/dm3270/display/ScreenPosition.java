@@ -203,7 +203,7 @@ public class ScreenPosition
       gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.foregroundColor
           : screenContext.backgroundColor : screenContext.backgroundColor);
       if (expanded)
-        gc.fillRect (x, y, charWidth + 1.4, charHeight + 1.8);
+        gc.fillRect (x, y, charWidth + 1.4, charHeight + 1.4);
       else
         gc.fillRect (x, y, charWidth + .4, charHeight + .4);
     }
@@ -236,7 +236,10 @@ public class ScreenPosition
       {
         gc.setStroke (screenContext.foregroundColor);
         double y2 = y + charHeight;
-        gc.strokeLine (x, y2, x + charWidth, y2);
+        if (expanded)
+          gc.strokeLine (x, y2, x + charWidth + 1.4, y2);
+        else
+          gc.strokeLine (x, y2, x + charWidth, y2);
       }
 
       if (topLine && expanded)
