@@ -91,6 +91,8 @@ public class Console extends Application
     String runMode = prefs.get ("RUNMODE", "Release");
 
     String[] optionList = { "Spy", "Replay", "Terminal", "Mainframe" };
+    Node row1 = options (optionList, group, 0, 2);
+    Node row2 = options (optionList, group, 2, 2);
 
     VBox panel = new VBox (10);
 
@@ -120,8 +122,8 @@ public class Console extends Application
     else
     {
       panel.getChildren //
-          ().addAll (row ("Function", options (optionList, group, 0, 2)),
-                     row ("", options (optionList, group, 2, 2)),
+          ().addAll (row ("Function", row1),
+                     row ("", row2),
                      row ("Server URL", serverName),          //
                      row ("Server port", serverPort),         //
                      row ("Client port", clientPort),
@@ -166,9 +168,7 @@ public class Console extends Application
     });
 
     if (release)
-    {
-      //      group.selectToggle (group.getToggles ().get (2));
-    }
+      group.selectToggle (group.getToggles ().get (2));
     else
       for (int i = 0; i < optionList.length; i++)
       {
@@ -184,11 +184,8 @@ public class Console extends Application
       int serverPortVal = Integer.parseInt (serverPort.getText ());
       int clientPortVal = Integer.parseInt (clientPort.getText ());
 
-      String optionTextSave = "Terminal";
-      if (!release)
-        optionTextSave = (String) group.getSelectedToggle ().getUserData ();
-
-      switch (optionTextSave)
+      String optionText = (String) group.getSelectedToggle ().getUserData ();
+      switch (optionText)
       {
         case "Spy":
           spyStage =
@@ -346,8 +343,8 @@ public class Console extends Application
     prefs.put ("SERVER_PORT", serverPort.getText ());
     prefs.put ("CLIENT_PORT", clientPort.getText ());
     prefs.put ("FILE_NAME", filenameList.getValue ());
-    if (!release)
-      prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
+    //    if (!release)
+    prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
     prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
     prefs.put ("RUNMODE", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
