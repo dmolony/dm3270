@@ -98,13 +98,8 @@ public class Console extends Application
     serverPort = new TextField (serverPortText);
     clientPort = new TextField (clientPortText);
     prevent3270E = new CheckBox ();
-    //    filename = new TextField (fileText);
+    filenameList = new ComboBox<> (getSessionFiles ());
 
-    List<Path> files = getSessionFiles ();
-    ObservableList<String> filesList =
-        FXCollections.observableArrayList (files.stream ()
-            .map (p -> p.getFileName ().toString ()).collect (Collectors.toList ()));
-    filenameList = new ComboBox<> (filesList);
     filenameList.setVisibleRowCount (12);
     filenameList.getSelectionModel ().select (fileText);
 
@@ -299,23 +294,26 @@ public class Console extends Application
     savePreferences ();
   }
 
-  private List<Path> getSessionFiles ()
+  private ObservableList<String> getSessionFiles ()
   {
-    String file = userHome + "/Dropbox/Mainframe documentation/";
-    Path path = Paths.get (file);
+    String[] locations = new String[2];
+    locations[0] = userHome + "/Dropbox/Mainframe documentation/";
+    locations[1] = userHome + "/dm3270/";
+    List<Path> files = null;
 
-    if (!Files.exists (path) || !Files.isDirectory (path))
+    for (String filename : locations)
     {
-      file = userHome + "/dm3270/";
-      path = Paths.get (file);
-    }
-    if (Files.exists (path) && Files.isDirectory (path))
-    {
+      Path path = Paths.get (filename);
+      if (!Files.exists (path) || !Files.isDirectory (path))
+        continue;
+
       try
       {
-        return Files.list (path)
-            .filter (p -> p.getFileName ().toString ().matches ("spy..\\.txt"))
-            .collect (Collectors.toList ());
+        files =
+            Files.list (path)
+                .filter (p -> p.getFileName ().toString ().matches ("spy[0-9]{2}\\.txt"))
+                .collect (Collectors.toList ());
+        break;
       }
       catch (IOException e)
       {
@@ -323,7 +321,11 @@ public class Console extends Application
       }
     }
 
-    return new ArrayList<Path> ();      // empty list
+    if (files == null)
+      files = new ArrayList<Path> ();      // empty list
+
+    return FXCollections.observableArrayList (files.stream ()
+        .map (p -> p.getFileName ().toString ()).collect (Collectors.toList ()));
   }
 
   private void savePreferences ()
