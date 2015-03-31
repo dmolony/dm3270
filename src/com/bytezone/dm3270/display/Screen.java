@@ -45,7 +45,6 @@ public class Screen extends Canvas
 
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
-  //  private boolean resetModified;
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
@@ -447,7 +446,6 @@ public class Screen extends Canvas
 
   public void resetModified ()
   {
-    //    System.out.println ("Should do something here!");
     int fieldsReset = 0;
     for (Field field : getUnprotectedFields ())
       if (field.isModified ())
@@ -455,7 +453,9 @@ public class Screen extends Canvas
         field.setModified (false);
         ++fieldsReset;
       }
-    System.out.printf ("Fields reset: %d%n", fieldsReset);
+
+    if (fieldsReset > 0)
+      System.out.printf ("Fields reset: %d%n", fieldsReset);
   }
 
   public boolean isKeyboardLocked ()
