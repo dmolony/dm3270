@@ -57,8 +57,8 @@ public class Console extends Application
   private ComboBox<String> filenameList;
   private CheckBox prevent3270E;
 
-  private Button ok = new Button ("OK");
-  private Button cancel = new Button ("Cancel");
+  private Button okButton = new Button ("OK");
+  private Button cancelButton = new Button ("Cancel");
   private final ToggleGroup group = new ToggleGroup ();
   private Preferences prefs;
 
@@ -176,7 +176,7 @@ public class Console extends Application
           group.selectToggle (group.getToggles ().get (i));
       }
 
-    ok.setOnAction ( (e) -> {
+    okButton.setOnAction ( (e) -> {
 
       dialogStage.hide ();
 
@@ -247,7 +247,7 @@ public class Console extends Application
       }
     });
 
-    cancel.setOnAction ( (e) -> dialogStage.hide ());
+    cancelButton.setOnAction ( (e) -> dialogStage.hide ());
 
     Menu menuFont = new Menu ("Fonts");
     Menu menuDebug = new Menu ("Mode");
@@ -389,13 +389,13 @@ public class Console extends Application
   private Node buttons ()
   {
     HBox box = new HBox (10);
-    ok = new Button ("OK");
-    ok.setDefaultButton (true);
-    cancel = new Button ("Cancel");
-    cancel.setCancelButton (true);
-    ok.setPrefWidth (80);
-    cancel.setPrefWidth (80);
-    box.getChildren ().addAll (cancel, ok);
+    okButton = new Button ("OK");
+    okButton.setDefaultButton (true);
+    cancelButton = new Button ("Cancel");
+    cancelButton.setCancelButton (true);
+    okButton.setPrefWidth (80);
+    cancelButton.setPrefWidth (80);
+    box.getChildren ().addAll (cancelButton, okButton);
     return box;
   }
 

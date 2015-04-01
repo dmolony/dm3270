@@ -26,9 +26,9 @@ public class CharacterSize
 
       if (true)
       {
-        width = (float) ((int) fm.computeStringWidth ("w") + 0.5);
-        height = (float) ((int) fm.getLineHeight () + 0.5);
-        ascent = (float) ((int) fm.getAscent () + 0.5);
+        width = (float) (((int) fm.computeStringWidth ("w")) + 0.5);
+        height = (float) (((int) fm.getLineHeight ()) + 0.5);
+        ascent = (float) (((int) fm.getAscent ()) + 0.5);
       }
       else
       {

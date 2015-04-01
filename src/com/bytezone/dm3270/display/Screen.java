@@ -59,10 +59,10 @@ public class Screen extends Canvas
     screenSize = rows * columns;
 
     GraphicsContext gc = getGraphicsContext2D ();
-    //    gc.translate (0.5, 0.5);                            // what does this do?
+    gc.translate (0.5, 0.5);                            // what does this do?
     characterSize = new CharacterSize (font);
     setFont (font);
-    System.out.println (characterSize);
+    //    System.out.println (characterSize);
 
     screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = contextHandler.getBase ();
