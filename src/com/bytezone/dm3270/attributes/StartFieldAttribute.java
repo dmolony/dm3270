@@ -57,11 +57,6 @@ public class StartFieldAttribute extends Attribute
     return BufferAddress.address[value];
   }
 
-  public byte getValue ()
-  {
-    return attributeValue;
-  }
-
   public boolean isProtected ()         // P/p - Protected/unprotected
   {
     return isProtected;

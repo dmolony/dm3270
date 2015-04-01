@@ -284,8 +284,7 @@ public class Screen extends Canvas
         return new AIDCommand (this, buffer, 0, ptr);
 
     // pack the cursor address
-    int cursorLocation = getScreenCursor ().getLocation ();
-    BufferAddress ba = new BufferAddress (cursorLocation);
+    BufferAddress ba = new BufferAddress (getScreenCursor ().getLocation ());
     ptr = ba.packAddress (buffer, ptr);
 
     // pack all modified fields
@@ -355,7 +354,7 @@ public class Screen extends Canvas
     if (replyMode == SetReplyMode.RM_FIELD)
     {
       buffer[ptr++] = Order.START_FIELD;
-      buffer[ptr++] = sfa.getValue ();
+      buffer[ptr++] = sfa.getAttributeValue ();
     }
     else
     {
@@ -408,12 +407,8 @@ public class Screen extends Canvas
         BufferAddress ba = new BufferAddress (field.getFirstLocation ());
         ptr = ba.packAddress (buffer, ptr);
       }
-      else
-      {
-        byte b = sp.getByte ();
-        if (b != (byte) 0)
-          ptr = packDataPosition (sp, buffer, ptr);       // suppress nulls
-      }
+      else if (!sp.isNull ())
+        ptr = packDataPosition (sp, buffer, ptr);       // suppress nulls
 
     return ptr;
   }

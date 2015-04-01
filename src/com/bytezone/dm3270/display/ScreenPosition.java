@@ -130,6 +130,11 @@ public class ScreenPosition
     return value;
   }
 
+  public boolean isNull ()
+  {
+    return value == 0;
+  }
+
   public void reset (ScreenContext screenContext)
   {
     isVisible = true;
@@ -152,7 +157,7 @@ public class ScreenPosition
     buffer[ptr++] = order;
 
     if (order == Order.START_FIELD)
-      buffer[ptr++] = startFieldAttribute.getValue ();
+      buffer[ptr++] = startFieldAttribute.getAttributeValue ();
     else if (order == Order.START_FIELD_EXTENDED)
     {
       buffer[ptr++] = (byte) (attributes.size () + 1);    // includes the SFA

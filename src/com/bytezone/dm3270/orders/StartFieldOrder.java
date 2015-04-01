@@ -27,7 +27,7 @@ public class StartFieldOrder extends Order
     this.startFieldAttribute = startFieldAttribute;
     this.buffer = new byte[2];
     this.buffer[0] = Order.START_FIELD;
-    this.buffer[1] = startFieldAttribute.getValue ();
+    this.buffer[1] = startFieldAttribute.getAttributeValue ();
   }
 
   @Override
