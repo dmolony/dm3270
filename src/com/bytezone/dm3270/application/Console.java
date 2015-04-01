@@ -100,7 +100,9 @@ public class Console extends Application
     serverPort = new TextField (serverPortText);
     clientPort = new TextField (clientPortText);
     prevent3270E = new CheckBox ();
-    filenameList = new ComboBox<> (getSessionFiles ());
+
+    ObservableList<String> sessionFiles = getSessionFiles ();
+    filenameList = new ComboBox<> (sessionFiles);
 
     filenameList.setVisibleRowCount (12);
     filenameList.getSelectionModel ().select (fileText);
@@ -131,6 +133,8 @@ public class Console extends Application
                      row ("Session file", filenameList),      //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
+      if (sessionFiles.size () == 0)
+        ((RadioButton) group.getToggles ().get (1)).setDisable (true);
     }
 
     HBox hBox = new HBox (10);
@@ -176,76 +180,78 @@ public class Console extends Application
           group.selectToggle (group.getToggles ().get (i));
       }
 
-    okButton.setOnAction ( (e) -> {
+    okButton
+        .setOnAction ( (e) -> {
 
-      dialogStage.hide ();
+          dialogStage.hide ();
 
-      screen = createScreen ();
-      int serverPortVal = Integer.parseInt (serverPort.getText ());
-      int clientPortVal = Integer.parseInt (clientPort.getText ());
+          screen = createScreen ();
+          int serverPortVal = Integer.parseInt (serverPort.getText ());
+          int clientPortVal = Integer.parseInt (clientPort.getText ());
 
-      String optionText = (String) group.getSelectedToggle ().getUserData ();
-      switch (optionText)
-      {
-        case "Spy":
-          spyStage =
-              new SpyStage (screen, serverName.getText (), serverPortVal, clientPortVal,
-                  prevent3270E.isSelected ());
-          spyStage.show ();
-          spyStage.startServer ();
-
-          break;
-
-        case "Replay":
-          String selectedFileName = filenameList.getValue ();
-          String file = userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
-          Path path = Paths.get (file);
-          if (!Files.exists (path))
+          String optionText = (String) group.getSelectedToggle ().getUserData ();
+          switch (optionText)
           {
-            file = userHome + "/dm3270/" + selectedFileName;
-            path = Paths.get (file);
+            case "Spy":
+              spyStage =
+                  new SpyStage (screen, serverName.getText (), serverPortVal,
+                      clientPortVal, prevent3270E.isSelected ());
+              spyStage.show ();
+              spyStage.startServer ();
+
+              break;
+
+            case "Replay":
+              String selectedFileName = filenameList.getValue ();
+              String file =
+                  userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
+              Path path = Paths.get (file);
+              if (!Files.exists (path))
+              {
+                file = userHome + "/dm3270/" + selectedFileName;
+                path = Paths.get (file);
+              }
+
+              if (Files.exists (path))
+              {
+                consoleStage = new ConsoleStage (screen);
+                consoleStage.show ();
+                replayStage = new ReplayStage (screen, path, prefs);
+                replayStage.show ();
+              }
+              else
+              {
+                Alert alert = new Alert (AlertType.ERROR, file + " does not exist");
+                alert.getDialogPane ().setHeaderText (null);
+                Optional<ButtonType> result = alert.showAndWait ();
+                if (result.isPresent () && result.get () == ButtonType.OK)
+                  dialogStage.show ();
+              }
+
+              break;
+
+            case "Mainframe":
+              spyStage =
+                  new SpyStage (screen, "localhost", MAINFRAME_EMULATOR_PORT,
+                      clientPortVal, prevent3270E.isSelected ());
+              spyStage.show ();
+              spyStage.startServer ();
+
+              mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
+              mainframeStage.show ();
+              mainframeStage.startServer ();
+
+              break;
+
+            case "Terminal":
+              consoleStage = new ConsoleStage (screen);
+              consoleStage.centerOnScreen ();
+              consoleStage.show ();
+              consoleStage.connect (serverName.getText (), serverPortVal);
+
+              break;
           }
-
-          if (Files.exists (path))
-          {
-            consoleStage = new ConsoleStage (screen);
-            consoleStage.show ();
-            replayStage = new ReplayStage (screen, path, prefs);
-            replayStage.show ();
-          }
-          else
-          {
-            Alert alert = new Alert (AlertType.ERROR, file + " does not exist");
-            alert.getDialogPane ().setHeaderText (null);
-            Optional<ButtonType> result = alert.showAndWait ();
-            if (result.isPresent () && result.get () == ButtonType.OK)
-              dialogStage.show ();
-          }
-
-          break;
-
-        case "Mainframe":
-          spyStage =
-              new SpyStage (screen, "localhost", MAINFRAME_EMULATOR_PORT, clientPortVal,
-                  prevent3270E.isSelected ());
-          spyStage.show ();
-          spyStage.startServer ();
-
-          mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
-          mainframeStage.show ();
-          mainframeStage.startServer ();
-
-          break;
-
-        case "Terminal":
-          consoleStage = new ConsoleStage (screen);
-          consoleStage.centerOnScreen ();
-          consoleStage.show ();
-          consoleStage.connect (serverName.getText (), serverPortVal);
-
-          break;
-      }
-    });
+        });
 
     cancelButton.setOnAction ( (e) -> dialogStage.hide ());
 
