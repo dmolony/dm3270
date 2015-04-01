@@ -237,7 +237,7 @@ public class ScreenPosition
         gc.setStroke (screenContext.foregroundColor);
         double y2 = y + charHeight;
         if (expanded)
-          gc.strokeLine (x, y2, x + charWidth + 1.4, y2);
+          gc.strokeLine (x, y2, x + charWidth + 1.5, y2);
         else
           gc.strokeLine (x, y2, x + charWidth, y2);
       }
@@ -260,13 +260,14 @@ public class ScreenPosition
 
   private void doGraphics (double x, double y)
   {
-    double dx = 4.3;
+    double dx = 4.5;
+    double extra = expanded ? 1 : 0;
     //    gc.setLineWidth (1.5);
 
     switch (value)
     {
       case HORIZONTAL_LINE:
-        gc.strokeLine (x, y + 10, x + characterSize.getWidth (), y + 10);
+        gc.strokeLine (x, y + 10, x + characterSize.getWidth () + extra, y + 10);
         break;
 
       case VERTICAL_LINE:
