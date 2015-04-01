@@ -269,9 +269,11 @@ public class Screen extends Canvas
   // Convert screen contents to an AID command
   // ---------------------------------------------------------------------------------//
 
-  // Called from ConsoleKeyPress.handle() in response to a user command
+  // called from ConsoleKeyPress.handle() in response to a user command
+  // called from readModifiedFields(0x..) below
   public AIDCommand readModifiedFields ()
   {
+    // pack the AID
     int ptr = 0;
     buffer[ptr++] = currentAID;               // whatever key was pressed
 
@@ -281,12 +283,12 @@ public class Screen extends Canvas
           || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
         return new AIDCommand (this, buffer, 0, ptr);
 
-    // Pack the cursor address
+    // pack the cursor address
     int cursorLocation = getScreenCursor ().getLocation ();
     BufferAddress ba = new BufferAddress (cursorLocation);
     ptr = ba.packAddress (buffer, ptr);
 
-    // Pack all modified fields
+    // pack all modified fields
     for (Field field : getUnprotectedFields ())
       if (field.isModified ())
         ptr = packField (field, buffer, ptr);
@@ -298,14 +300,15 @@ public class Screen extends Canvas
   // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
   public AIDCommand readBuffer ()
   {
+    // pack the AID
     int ptr = 0;
-    //    buffer[ptr++] = AIDCommand.AID_READ_PARTITION;
-    buffer[ptr++] = AIDCommand.NO_AID_SPECIFIED;
+    buffer[ptr++] = currentAID;
 
-    int cursorLocation = getScreenCursor ().getLocation ();
-    BufferAddress ba = new BufferAddress (cursorLocation);
+    // pack the cursor address
+    BufferAddress ba = new BufferAddress (getScreenCursor ().getLocation ());
     ptr = ba.packAddress (buffer, ptr);
 
+    // pack every screen location
     for (ScreenPosition sp : screenPositions)
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr);
