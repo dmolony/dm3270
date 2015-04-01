@@ -87,7 +87,7 @@ public class Screen extends Canvas
     GraphicsContext gc = getGraphicsContext2D ();
     gc.setFill (Color.BLACK);
     gc.fillRect (0, 0, getWidth (), getHeight ());
-    gc.setFill (ColorAttribute.colors[1]);
+    gc.setFill (ColorAttribute.colors[5]);
     int x = 120;
     int y = 100;
     int height = 20;
