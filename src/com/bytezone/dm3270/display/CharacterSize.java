@@ -8,9 +8,9 @@ import com.sun.javafx.tk.Toolkit;
 public class CharacterSize
 {
   public Font font;
-  public float height;
-  public float width;
-  public float ascent;
+  private float height;
+  private float width;
+  private float ascent;
 
   public CharacterSize (Font font)
   {
@@ -24,9 +24,40 @@ public class CharacterSize
       this.font = font;
       FontMetrics fm = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
 
-      width = fm.computeStringWidth ("w");
-      height = fm.getLineHeight ();
-      ascent = fm.getAscent ();
+      if (true)
+      {
+        width = (float) ((int) fm.computeStringWidth ("w") + 0.5);
+        height = (float) ((int) fm.getLineHeight () + 0.5);
+        ascent = (float) ((int) fm.getAscent () + 0.5);
+      }
+      else
+      {
+        width = fm.computeStringWidth ("w");
+        height = fm.getLineHeight ();
+        ascent = fm.getAscent ();
+      }
     }
+  }
+
+  public float getWidth ()
+  {
+    return width;
+  }
+
+  public float getHeight ()
+  {
+    return height;
+  }
+
+  public float getAscent ()
+  {
+    return ascent;
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("[Font=%s, height=%2.2f, width=%2.2f, ascent=%2.2f]",
+                          font.getName (), height, width, ascent);
   }
 }

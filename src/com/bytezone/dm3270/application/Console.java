@@ -250,7 +250,7 @@ public class Console extends Application
     cancel.setOnAction ( (e) -> dialogStage.hide ());
 
     Menu menuFont = new Menu ("Fonts");
-    Menu menuDebug = new Menu ("Debug");
+    Menu menuDebug = new Menu ("Mode");
 
     List<String> families = Font.getFamilies ();
     for (String fontName : fontNames)

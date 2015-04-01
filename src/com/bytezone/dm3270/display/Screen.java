@@ -31,10 +31,6 @@ public class Screen extends Canvas
   private final ContextManager contextHandler = new ContextManager ();
   private final Cursor cursor = new Cursor (this);
 
-  public final int rows;
-  public final int columns;
-  public final int screenSize;
-
   private final float xOffset = 4;      // padding left and right
   private final float yOffset = 4;      // padding top and bottom
 
@@ -52,6 +48,10 @@ public class Screen extends Canvas
   private byte replyMode;
   private byte[] replyTypes = new byte[0];
 
+  public final int rows;
+  public final int columns;
+  public final int screenSize;
+
   public Screen (int rows, int columns, Font font)
   {
     this.rows = rows;
@@ -59,8 +59,10 @@ public class Screen extends Canvas
     screenSize = rows * columns;
 
     GraphicsContext gc = getGraphicsContext2D ();
+    //    gc.translate (0.5, 0.5);                            // what does this do?
     characterSize = new CharacterSize (font);
     setFont (font);
+    System.out.println (characterSize);
 
     screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = contextHandler.getBase ();
@@ -72,9 +74,9 @@ public class Screen extends Canvas
   {
     characterSize.changeFont (font);
 
-    setWidth (characterSize.width * columns + xOffset * 2
+    setWidth (characterSize.getWidth () * columns + xOffset * 2
         + (expanded ? (columns - 1) * expandedWidth : 0));
-    setHeight (characterSize.height * rows + yOffset * 2
+    setHeight (characterSize.getHeight () * rows + yOffset * 2
         + (expanded ? (rows + 1) * expandedHeight : 0));
 
     getGraphicsContext2D ().setFont (font);
@@ -187,10 +189,11 @@ public class Screen extends Canvas
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    double x = xOffset + col * characterSize.width        //
-        + (expanded ? col * expandedWidth : 0);
-    double y = yOffset + row * characterSize.height       //
-        + (expanded ? (row + 1) * expandedHeight : 0);
+    double x =
+        xOffset + col * characterSize.getWidth () + (expanded ? col * expandedWidth : 0);
+    double y =
+        yOffset + row * characterSize.getHeight ()
+            + (expanded ? (row + 1) * expandedHeight : 0);
 
     screenPosition.draw (x, y, hasCursor);
   }

@@ -184,9 +184,9 @@ public class ScreenPosition
 
   public void draw (double x, double y, boolean hasCursor)
   {
-    double charWidth = characterSize.width;
-    double charHeight = characterSize.height;
-    double ascent = characterSize.ascent;
+    double charWidth = characterSize.getWidth ();
+    double charHeight = characterSize.getHeight ();
+    double ascent = characterSize.getAscent ();
 
     // Draw background
     if (hasCursor)
@@ -266,11 +266,11 @@ public class ScreenPosition
     switch (value)
     {
       case HORIZONTAL_LINE:
-        gc.strokeLine (x, y + 10, x + characterSize.width, y + 10);
+        gc.strokeLine (x, y + 10, x + characterSize.getWidth (), y + 10);
         break;
 
       case VERTICAL_LINE:
-        gc.strokeLine (x + dx, y, x + dx, y + characterSize.height + 1);
+        gc.strokeLine (x + dx, y, x + dx, y + characterSize.getHeight () + 1);
         break;
 
       case TOP_LEFT:
@@ -294,7 +294,7 @@ public class ScreenPosition
         break;
 
       default:
-        gc.fillText (getChar () + "", x, y + characterSize.ascent);
+        gc.fillText (getChar () + "", x, y + characterSize.getAscent ());
         System.out.printf ("Unknown graphics character: %02X%n", value);
     }
   }
@@ -303,9 +303,9 @@ public class ScreenPosition
   {
     gc.setFill (screenContext.backgroundColor);
     if (expanded)
-      gc.fillRect (x, y, characterSize.width + 1, characterSize.height + 1);
+      gc.fillRect (x, y, characterSize.getWidth () + 1, characterSize.getHeight () + 1);
     else
-      gc.fillRect (x, y, characterSize.width, characterSize.height);
+      gc.fillRect (x, y, characterSize.getWidth (), characterSize.getHeight ());
   }
 
   @Override
