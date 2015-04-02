@@ -19,16 +19,10 @@ import com.bytezone.dm3270.commands.WriteCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
-import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
-import com.bytezone.dm3270.replyfield.QueryReplyField;
-import com.bytezone.dm3270.replyfield.RPQNames;
-import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TelnetState;
-import com.bytezone.dm3270.structuredfields.QueryReplySF;
-import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class Session implements Iterable<SessionRecord>
 {
@@ -38,7 +32,7 @@ public class Session implements Iterable<SessionRecord>
   private final Screen screen;
   private final TelnetState telnetState = new TelnetState ();
 
-  private String clientName = "Unknown";
+  private String clientName = null;
   private String serverName = null;
   private final List<String> labels = new ArrayList<> ();
 
@@ -167,42 +161,16 @@ public class Session implements Iterable<SessionRecord>
     dataRecords.add (sessionRecord);       // should be concurrent?
 
     if (sessionMode == SessionMode.REPLAY && sessionRecord.isCommand ())
-      if (sessionRecord.getSource () == Source.CLIENT)
-        checkClientName (sessionRecord.getCommand ());
-      else if (serverName == null)
-        checkServerName (sessionRecord.getCommand ());
-  }
-
-  private void checkClientName (Command command)
-  {
-    if (!(command instanceof ReadStructuredFieldCommand))
-      return;
-
-    for (StructuredField sf : ((ReadStructuredFieldCommand) command).getFieldList ())
-      if (sf instanceof QueryReplySF)
+    {
+      Command command = sessionRecord.getCommand ();
+      if (clientName == null && sessionRecord.getSource () == Source.CLIENT)
       {
-        QueryReplyField rf = ((QueryReplySF) sf).getReplyField ();
-        byte type = rf.getReplyType ().type;
-        if (type == QueryReplyField.OEM_AUXILLIARY_DEVICE_REPLY)
-        {
-          OEMAuxilliaryDevice oem = (OEMAuxilliaryDevice) rf;
-          clientName = oem.getUserName ();
-          if (clientName.equals ("VISTA"))
-            clientName = "Vista";
-        }
-        else if (type == QueryReplyField.RPQ_NAMES_REPLY)
-        {
-          RPQNames rpqNames = (RPQNames) rf;
-          clientName = rpqNames.getRPQName ();
-        }
-        else if (type == QueryReplyField.SUMMARY_QUERY_REPLY)
-        {
-          Summary summary = (Summary) rf;
-          int size = summary.size ();
-          if (size == 4)
-            clientName = "FreeHost";
-        }
+        if (command instanceof ReadStructuredFieldCommand)
+          clientName = ((ReadStructuredFieldCommand) command).getClientName ();
       }
+      else if (serverName == null && sessionRecord.getSource () == Source.SERVER)
+        checkServerName (command);
+    }
   }
 
   private void checkServerName (Command command)

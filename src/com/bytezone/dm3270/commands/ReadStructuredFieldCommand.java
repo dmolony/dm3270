@@ -35,7 +35,7 @@ public class ReadStructuredFieldCommand extends Command
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private static final String line = "\n----------------------------------------"
       + "-------------------------------";
-  private String clientName;
+  private String clientName = "";
 
   static
   {
@@ -102,13 +102,18 @@ public class ReadStructuredFieldCommand extends Command
       byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
       String signature = DatatypeConverter.printHexBinary (digest);
       String clientName = clientNames.get (signature);
-      return clientName == null ? "" : clientName;
+      return clientName == null ? signature : clientName;
     }
     catch (NoSuchAlgorithmException e)
     {
       e.printStackTrace ();
     }
-    return "";
+    return "Unknown";
+  }
+
+  public String getClientName ()
+  {
+    return clientName;
   }
 
   public List<StructuredField> getFieldList ()
