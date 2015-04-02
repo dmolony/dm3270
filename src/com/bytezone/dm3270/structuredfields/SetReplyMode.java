@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.structuredfields;
 
-import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.Screen;
 
 /*
@@ -49,8 +49,12 @@ public class SetReplyMode extends StructuredField
     text.append (String.format ("   partition : %02X%n", partition));
     text.append (String.format ("   mode      : %02X %s mode", replyMode,
                                 modes[replyMode]));
-    if (types.length > 0)
-      text.append (String.format ("%n   types     : %s", Utility.toHexString (types)));
+    for (byte type : types)
+    {
+      String typeName = Attribute.getTypeName (type);
+      text.append (String.format ("%n   type      : %02X %s", type, typeName));
+    }
+
     return text.toString ();
   }
 }

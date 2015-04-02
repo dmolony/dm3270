@@ -58,6 +58,31 @@ public abstract class Attribute
     return false;
   }
 
+  public static String getTypeName (byte type)
+  {
+    switch (type)
+    {
+      case XA_HIGHLIGHTING:
+        return "Highlighting";
+      case XA_FGCOLOR:
+        return "Foreground Color";
+      case XA_CHARSET:
+        return "Charset";
+      case XA_BGCOLOR:
+        return "Background Color";
+      case XA_TRANSPARENCY:
+        return "Transparency";
+      case XA_START_FIELD:
+        return "Start Field";
+      case XA_VALIDATION:
+        return "Validation";
+      case XA_OUTLINING:
+        return "Outlining";
+      default:
+        return "Unknown";
+    }
+  }
+
   public int pack (byte[] buffer, int offset)
   {
     switch (attributeType)
