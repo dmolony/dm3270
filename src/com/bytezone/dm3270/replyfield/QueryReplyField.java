@@ -17,10 +17,17 @@ public abstract class QueryReplyField
   public final static byte REPLY_MODES_REPLY = (byte) 0x88;
   public final static byte OEM_AUXILLIARY_DEVICE_REPLY = (byte) 0x8F;
   public final static byte DISTRIBUTED_DATA_MANAGEMENT_REPLY = (byte) 0x95;
+  public final static byte STORAGE_POOLS_REPLY = (byte) 0x96;
   public final static byte AUXILLIARY_DEVICE_REPLY = (byte) 0x99;
   public final static byte RPQ_NAMES_REPLY = (byte) 0xA1;
   public final static byte IMP_PART_QUERY_REPLY = (byte) 0xA6;
   public final static byte TRANSPARENCY_REPLY = (byte) 0xA8;
+  public final static byte SEGMENT_REPLY = (byte) 0xB0;
+  public final static byte PROCEDURE_REPLY = (byte) 0xB1;
+  public final static byte LINE_TYPE_REPLY = (byte) 0xB2;
+  public final static byte PORT_REPLY = (byte) 0xB3;
+  public final static byte GRAPHIC_COLOR_REPLY = (byte) 0xB4;
+  public final static byte GRAPHIC_SYMBOL_SETS_REPLY = (byte) 0xB6;
 
   protected byte[] data;            // data read from a saved session
   protected final ReplyType replyType;
@@ -43,10 +50,17 @@ public abstract class QueryReplyField
     replyTypes.add (new ReplyType (OEM_AUXILLIARY_DEVICE_REPLY, "OEM Aux Devices"));
     replyTypes.add (new ReplyType (DISTRIBUTED_DATA_MANAGEMENT_REPLY,
         "Distributed Data Management"));
+    replyTypes.add (new ReplyType (STORAGE_POOLS_REPLY, "Storage Pools"));
     replyTypes.add (new ReplyType (AUXILLIARY_DEVICE_REPLY, "Auxilliary Devices"));
     replyTypes.add (new ReplyType (RPQ_NAMES_REPLY, "RPQ Names"));
     replyTypes.add (new ReplyType (IMP_PART_QUERY_REPLY, "Implicit Partition"));
     replyTypes.add (new ReplyType (TRANSPARENCY_REPLY, "Transparency"));
+    replyTypes.add (new ReplyType (SEGMENT_REPLY, "Segment"));
+    replyTypes.add (new ReplyType (PROCEDURE_REPLY, "Procedure"));
+    replyTypes.add (new ReplyType (LINE_TYPE_REPLY, "Line Type"));
+    replyTypes.add (new ReplyType (PORT_REPLY, "Port"));
+    replyTypes.add (new ReplyType (GRAPHIC_COLOR_REPLY, "Graphic Color"));
+    replyTypes.add (new ReplyType (GRAPHIC_SYMBOL_SETS_REPLY, "Graphic Symbol Sets"));
   }
 
   public static QueryReplyField getReplyField (byte[] buffer)
@@ -93,6 +107,9 @@ public abstract class QueryReplyField
 
       case TRANSPARENCY_REPLY:
         return new Transparency (buffer);
+
+      case SEGMENT_REPLY:
+        return new Segment (buffer);
 
       default:
         return new DefaultReply (buffer);
