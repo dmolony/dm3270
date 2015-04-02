@@ -179,28 +179,26 @@ public class Session implements Iterable<SessionRecord>
       return;
 
     for (Order order : ((WriteCommand) command).getOrdersList ())
-    {
       if (order instanceof TextOrder)
       {
-        TextOrder textOrder = (TextOrder) order;
-        if (textOrder.getTextString ()
-            .contains ("Welcome to Fan DeZhi Mainframe System!"))
+        String text = ((TextOrder) order).getTextString ();
+        if (text.contains ("Welcome to Fan DeZhi Mainframe System!"))
         {
           serverName = "FanDeZhi";
           break;
         }
-        else if (textOrder.getTextString ().contains ("Hercules Version  :"))
+        else if (text.contains ("Hercules Version  :"))
         {
           serverName = "Hercules";
           break;
         }
-        else if (textOrder.getTextString ().equals ("[(03) 97974300 ]"))
+        else if (text.equals ("[(03) 97974300 ]"))
         {
           serverName = "Nissan";
           break;
         }
       }
-    }
+
     if (serverName == null)
       serverName = "Unknown";
   }

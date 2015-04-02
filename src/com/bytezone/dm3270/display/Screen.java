@@ -455,8 +455,8 @@ public class Screen extends Canvas
         ++fieldsReset;
       }
 
-    if (fieldsReset > 0)
-      System.out.printf ("Fields reset: %d%n", fieldsReset);
+    //    if (fieldsReset > 0)
+    //      System.out.printf ("Fields reset: %d%n", fieldsReset);
   }
 
   public boolean isKeyboardLocked ()
