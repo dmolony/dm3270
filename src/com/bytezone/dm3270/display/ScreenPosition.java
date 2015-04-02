@@ -179,7 +179,7 @@ public class ScreenPosition
       if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
       {
         buffer[ptr++] = Order.SET_ATTRIBUTE;
-        ptr = attribute.pack (buffer, ptr);
+        ptr = attribute.pack (buffer, ptr);       // packs type/value pair
       }
 
     buffer[ptr++] = value;
