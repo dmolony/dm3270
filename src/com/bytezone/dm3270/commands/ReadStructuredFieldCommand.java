@@ -1,7 +1,13 @@
 package com.bytezone.dm3270.commands;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
 
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
@@ -25,9 +31,20 @@ import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class ReadStructuredFieldCommand extends Command
 {
+  private static Map<String, String> clientNames = new HashMap<> ();
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private static final String line = "\n----------------------------------------"
       + "-------------------------------";
+  private String clientName;
+
+  static
+  {
+    clientNames.put ("53952DB14CBB53CD7C1E5AB1FDFDA193", "tn3270X");
+    clientNames.put ("12F0F4557FB72796E8A4398AA694255C", "Vista");
+    clientNames.put ("19D8CA4B4B59357FBF37FB9B7F38EC21", "x3270");
+    clientNames.put ("F960E103861F3920FC3B8AF00D8B8601", "FreeHost");
+    clientNames.put ("C1F30DBA8306E1887C7EE2D976C6B24A", "dm3270");
+  }
 
   public ReadStructuredFieldCommand (Screen screen)
   {
@@ -44,6 +61,7 @@ public class ReadStructuredFieldCommand extends Command
     super (buffer, offset, length, screen);
 
     assert data[0] == (byte) 0x88;
+    boolean isQueryReply = false;
 
     int ptr = 1;
     int max = data.length;
@@ -56,7 +74,9 @@ public class ReadStructuredFieldCommand extends Command
       switch (data[ptr])
       {
         case StructuredField.QUERY_REPLY:
-          fields.add (new QueryReplySF (data, ptr, size, screen));
+          QueryReplySF queryReply = new QueryReplySF (data, ptr, size, screen);
+          fields.add (queryReply);
+          isQueryReply = true;
           break;
 
         case StructuredField.INBOUND_3270DS:
@@ -70,6 +90,25 @@ public class ReadStructuredFieldCommand extends Command
       }
       ptr += size;
     }
+
+    if (isQueryReply)
+      clientName = getClientName (data);
+  }
+
+  private String getClientName (byte[] buffer)
+  {
+    try
+    {
+      byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
+      String signature = DatatypeConverter.printHexBinary (digest);
+      String clientName = clientNames.get (signature);
+      return clientName == null ? "" : clientName;
+    }
+    catch (NoSuchAlgorithmException e)
+    {
+      e.printStackTrace ();
+    }
+    return "";
   }
 
   public List<StructuredField> getFieldList ()
