@@ -3,13 +3,6 @@ package com.bytezone.dm3270.structuredfields;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.Screen;
 
-/*
- * The Reply Mode Query Reply (QCODE=x'88') indicates which Reply Modes are
- * supported by the terminal. Field Mode (Reply Mode 0) is the default.
- * Extended Field Mode (Reply Mode 1) adds SFE to the possible inbound orders.
- * Character Mode (Reply Mode 2) adds SA to the possible inbound orders.
- */
-
 public class SetReplyMode extends StructuredField
 {
   public static final byte RM_FIELD = 0x00;
