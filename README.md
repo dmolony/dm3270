@@ -1,7 +1,5 @@
 # dm3270
 Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses JavaFX. Please ensure that you are using the latest java version as JavaFX ~~has fewer bugs~~ improves with every release. At present Java 8 update 40 is the minimum version requred.
-#### Warning
-This is beta software. You know what that means.
 #### Defaults
 The program defaults to the Release setting, which means it runs only in Terminal mode (see below). To enable the other modes you will need to change the Debug menu option and restart. This is the dialog box you will see when running as Release.  
 ![Default Connection](resources/connect1.png?raw=true "default connection")
