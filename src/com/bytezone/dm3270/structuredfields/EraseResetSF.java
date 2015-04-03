@@ -26,12 +26,6 @@ public class EraseResetSF extends StructuredField
   }
 
   @Override
-  public void process ()
-  {
-    // not doing anything, both sizes are the same
-  }
-
-  @Override
   public String toString ()
   {
     StringBuilder text = new StringBuilder ("Struct Field : 03 Erase/Reset\n");

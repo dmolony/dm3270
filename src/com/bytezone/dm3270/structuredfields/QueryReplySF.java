@@ -20,11 +20,6 @@ public class QueryReplySF extends StructuredField
   }
 
   @Override
-  public void process ()
-  {
-  }
-
-  @Override
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();

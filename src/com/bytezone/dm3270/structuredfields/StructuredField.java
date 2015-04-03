@@ -32,6 +32,12 @@ public abstract class StructuredField extends AbstractTN3270Command
     type = buffer[offset];
   }
 
+  @Override
+  public void process ()
+  {
+    // do nothing 
+  }
+
   public String brief ()
   {
     return toString ();
