@@ -103,6 +103,14 @@ public class AIDCommand extends Command implements BufferAddressSource
     }
   }
 
+  public boolean isPAKey ()
+  {
+    if (data.length == 1
+        && (keyCommand == AID_PA1 || keyCommand == AID_PA2 || keyCommand == AID_PA3))
+      return true;
+    return false;
+  }
+
   private int findKey (byte keyCommand)
   {
     for (int i = 1; i < keys.length; i++)

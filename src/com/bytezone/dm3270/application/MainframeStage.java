@@ -31,6 +31,7 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.ForegroundColor;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.commands.WriteCommand;
@@ -282,6 +283,12 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 
     if (command instanceof ReadStructuredFieldCommand)
       enableButtons (true);
+
+    if (command instanceof AIDCommand && ((AIDCommand) command).isPAKey ())
+    {
+      mainframeServer.write (createSetReplyModeCommand ((byte) 2));
+      mainframeServer.write (createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
+    }
   }
 
   private void enableButtons (boolean enable)
@@ -296,10 +303,10 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     btnProgramTab.setDisable (!enable);
 
     toFront ();
-    buttons.get (4).fire ();        // ISPF (Erase Write)
-    buttons.get (5).fire ();        // 3.4  (Write)
+    buttons.get (3).fire ();        // ISPF (Erase Write)
+    buttons.get (4).fire ();        // 3.4  (Write)
     this.requestFocus ();
-    buttons.get (5).requestFocus ();
+    buttons.get (4).requestFocus ();
   }
 
   public void disconnect ()
