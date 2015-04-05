@@ -211,9 +211,11 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
       System.out.println ("mf.txt not found");
       return;
     }
+
     BufferedReader reader = new BufferedReader (new InputStreamReader (in));
     String line;
     List<String> lines = new ArrayList<String> ();
+
     try
     {
       while ((line = reader.readLine ()) != null)
