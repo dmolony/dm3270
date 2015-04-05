@@ -232,17 +232,17 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     labels.add ("Test");
 
     int buttonNo = 0;
-    for (SessionRecord dataRecord : session)
+    for (SessionRecord sessionRecord : session)
     {
       if (buttonNo < buttons.size ())
       {
         Button button = buttons.get (buttonNo);
         button.setOnAction ( (x) -> {
-          textArea.setText (dataRecord.getMessage ().toString ());
+          textArea.setText (sessionRecord.getMessage ().toString ());
           textArea.appendText ("\n\n");
-          textArea.appendText (Utility.toHex (dataRecord.getBuffer ()));
+          textArea.appendText (Utility.toHex (sessionRecord.getBuffer ()));
           textArea.positionCaret (0);
-          mainframeServer.write (dataRecord.getMessage ().getTelnetData ());
+          mainframeServer.write (sessionRecord.getMessage ().getTelnetData ());
         });
 
         if (buttonNo < labels.size ())
