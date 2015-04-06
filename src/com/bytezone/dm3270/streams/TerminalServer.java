@@ -45,12 +45,17 @@ public class TerminalServer implements Runnable
       running = true;
       while (running)
       {
+        System.out.println ("TerminalServer blocking");
         bytesRead = serverIn.read (buffer);
+        System.out.println ("TerminalServer read " + bytesRead);
         if (bytesRead < 0)
         {
           close ();
           break;
         }
+
+        if (Thread.currentThread ().isInterrupted ())
+          System.out.println ("TerminalServer was interrupted!");
 
         if (debug)
         {
