@@ -105,6 +105,7 @@ public class AIDCommand extends Command implements BufferAddressSource
 
   public boolean isPAKey ()
   {
+    // ignore any PA key reply caused by RMA
     if (data.length == 1
         && (keyCommand == AID_PA1 || keyCommand == AID_PA2 || keyCommand == AID_PA3))
       return true;
