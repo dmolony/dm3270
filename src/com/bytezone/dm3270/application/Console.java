@@ -311,10 +311,19 @@ public class Console extends Application
   {
     try
     {
-      return Integer.parseInt (textField.getText ());
+      int value = Integer.parseInt (textField.getText ());
+      if (value <= 0)
+      {
+        System.out.println ("Invalid port value: " + textField.getText ());
+        textField.setText ("23");
+        value = 23;
+      }
+      return value;
     }
-    catch (NumberFormatException e2)
+    catch (NumberFormatException e)
     {
+      System.out.println ("Invalid port value: " + textField.getText ());
+      textField.setText ("23");
       return 23;
     }
   }

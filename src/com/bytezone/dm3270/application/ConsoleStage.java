@@ -41,6 +41,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private TelnetListener telnetListener;
   private final TelnetState telnetState = new TelnetState ();
   private TerminalServer terminalServer;
+  private Thread terminalServerThread;
 
   private int commandHeaderCount;
 
@@ -165,7 +166,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
     telnetState.setTerminalServer (terminalServer);
 
-    new Thread (terminalServer).start ();
+    terminalServerThread = new Thread (terminalServer);
+    terminalServerThread.start ();
   }
 
   public void disconnect ()
@@ -174,6 +176,19 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       terminalServer.close ();
 
     telnetState.close ();
+
+    if (terminalServerThread != null)
+    {
+      terminalServerThread.interrupt ();
+      try
+      {
+        terminalServerThread.join ();
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace ();
+      }
+    }
   }
 
   @Override
