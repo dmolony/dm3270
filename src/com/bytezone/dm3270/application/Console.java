@@ -186,16 +186,14 @@ public class Console extends Application
           dialogStage.hide ();
 
           screen = createScreen ();
-          int serverPortVal = Integer.parseInt (serverPort.getText ());
-          int clientPortVal = Integer.parseInt (clientPort.getText ());
 
           String optionText = (String) group.getSelectedToggle ().getUserData ();
           switch (optionText)
           {
             case "Spy":
               spyStage =
-                  new SpyStage (screen, serverName.getText (), serverPortVal,
-                      clientPortVal, prevent3270E.isSelected ());
+                  new SpyStage (screen, serverName.getText (), getPort (serverPort),
+                      getPort (clientPort), prevent3270E.isSelected ());
               spyStage.show ();
               spyStage.startServer ();
 
@@ -233,7 +231,7 @@ public class Console extends Application
             case "Mainframe":
               spyStage =
                   new SpyStage (screen, "localhost", MAINFRAME_EMULATOR_PORT,
-                      clientPortVal, prevent3270E.isSelected ());
+                      getPort (clientPort), prevent3270E.isSelected ());
               spyStage.show ();
               spyStage.startServer ();
 
@@ -247,7 +245,7 @@ public class Console extends Application
               consoleStage = new ConsoleStage (screen);
               consoleStage.centerOnScreen ();
               consoleStage.show ();
-              consoleStage.connect (serverName.getText (), serverPortVal);
+              consoleStage.connect (serverName.getText (), getPort (serverPort));
 
               break;
           }
@@ -307,6 +305,18 @@ public class Console extends Application
       replayStage.disconnect ();
 
     savePreferences ();
+  }
+
+  private int getPort (TextField textField)
+  {
+    try
+    {
+      return Integer.parseInt (textField.getText ());
+    }
+    catch (NumberFormatException e2)
+    {
+      return 23;
+    }
   }
 
   private ObservableList<String> getSessionFiles ()
