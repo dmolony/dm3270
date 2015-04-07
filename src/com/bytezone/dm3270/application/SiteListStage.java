@@ -6,9 +6,13 @@ import java.util.prefs.Preferences;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -18,6 +22,7 @@ public class SiteListStage extends BasicStage
   Preferences prefs;
   List<Site> sites = new ArrayList<> ();
   ComboBox<String> comboBox;
+  Button cancelButton, saveButton;
 
   public SiteListStage (Preferences prefs, String key, int max, String windowTitle)
   {
@@ -27,9 +32,19 @@ public class SiteListStage extends BasicStage
     readPrefs (key, max);
 
     VBox vbox = new VBox ();
+    vbox.setSpacing (5);
+    vbox.setPadding (new Insets (5, 5, 5, 5));    // trbl
+
+    HBox titleBox = new HBox ();
+    titleBox.getChildren ().addAll (new Label ("Site name"), new Label ("URL"),
+                                    new Label ("Port"));
+    vbox.getChildren ().add (titleBox);
+
     for (Site site : sites)
     {
-      HBox hbox = getHBox ();
+      HBox hbox = new HBox ();
+      hbox.setSpacing (15);
+      hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
       hbox.getChildren ().addAll (site.name, site.url, site.port);
       vbox.getChildren ().add (hbox);
     }
@@ -42,14 +57,9 @@ public class SiteListStage extends BasicStage
 
     //set previous selection
 
-    Button cancelButton = new Button ("Cancel");
-    Button saveButton = new Button ("Save");
-    HBox buttonsHBox = new HBox ();
-    buttonsHBox.getChildren ().addAll (cancelButton, saveButton);
-
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (vbox);
-    borderPane.setBottom (buttonsHBox);
+    borderPane.setBottom (buttons ());
 
     Scene scene = new Scene (borderPane);
     setScene (scene);
@@ -105,10 +115,18 @@ public class SiteListStage extends BasicStage
     return comboBox;
   }
 
-  //  ObservableList<String> getSiteList ()
-  //  {
-  //    List<String> list = new ArrayList<> ();
-  //    ObservableList<String> observableList = FXCollections.observableList (list);
-  //    return observableList;
-  //  }
+  private Node buttons ()
+  {
+    HBox box = new HBox (10);
+    saveButton = new Button ("OK");
+    saveButton.setDefaultButton (true);
+    cancelButton = new Button ("Cancel");
+    cancelButton.setCancelButton (true);
+    saveButton.setPrefWidth (80);
+    cancelButton.setPrefWidth (80);
+    box.getChildren ().addAll (cancelButton, saveButton);
+    box.setAlignment (Pos.BASELINE_CENTER);
+    box.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    return box;
+  }
 }

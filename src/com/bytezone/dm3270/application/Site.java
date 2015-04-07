@@ -13,6 +13,8 @@ class Site
     this.name.setText (name);
     this.url.setText (url);
     this.port.setText (port + "");
+
+    this.port.setMaxWidth (50);
   }
 
   public String getName ()
