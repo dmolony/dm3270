@@ -59,6 +59,9 @@ public class Console extends Application
   private ComboBox<String> clientComboBox;
   private CheckBox prevent3270E;
 
+  Button editServersButton = new Button ("edit...");
+  Button editClientsButton = new Button ("edit...");
+
   private Button okButton = new Button ("OK");
   private Button cancelButton = new Button ("Cancel");
   private final ToggleGroup group = new ToggleGroup ();
@@ -92,8 +95,10 @@ public class Console extends Application
     String sizeSelected = prefs.get ("SIZE", "16");
     String runMode = prefs.get ("RUNMODE", "Release");
 
-    SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5);
-    SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5);
+    SiteListStage serverSitesListStage =
+        new SiteListStage (prefs, "Server", 5, "Server Sites");
+    SiteListStage clientSitesListStage =
+        new SiteListStage (prefs, "Client", 5, "Client Sites");
 
     String[] optionList = { "Record", "Replay", "Terminal", "Test" };
     Node row1 = options (optionList, group, 0, 2);
@@ -101,9 +106,6 @@ public class Console extends Application
 
     VBox panel = new VBox (10);
 
-    //    serverName = new TextField (serverText);
-    //    serverPort = new TextField (serverPortText);
-    //    clientPort = new TextField (clientPortText);
     prevent3270E = new CheckBox ();
 
     ObservableList<String> sessionFiles = getSessionFiles ();
@@ -111,38 +113,32 @@ public class Console extends Application
     fileComboBox.setVisibleRowCount (12);
     fileComboBox.getSelectionModel ().select (fileText);
 
-    ObservableList<String> serverList = serverSitesListStage.getSiteList ();
-    serverComboBox = new ComboBox<> (serverList);
+    serverComboBox = serverSitesListStage.getComboBox ();
     serverComboBox.setVisibleRowCount (6);
+    editServersButton.setStyle ("-fx-font-size: 10;");
 
-    ObservableList<String> clientList = clientSitesListStage.getSiteList ();
-    clientComboBox = new ComboBox<> (clientList);
+    clientComboBox = clientSitesListStage.getComboBox ();
     clientComboBox.setVisibleRowCount (4);
+    editClientsButton.setStyle ("-fx-font-size: 10;");
 
     int width = 200;
     fileComboBox.setPrefWidth (width / 1.5);
     serverComboBox.setPrefWidth (width / 1.5);
     clientComboBox.setPrefWidth (width / 1.5);
-    //    serverName.setPrefWidth (width);
-    //    serverPort.setPrefWidth (width / 3);
-    //    clientPort.setPrefWidth (width / 3);
 
     release = runMode.equals ("Release");
     if (release)
     {
-      panel.getChildren ().addAll (row ("Server", serverComboBox),
-      //                                   row ("Server port", serverPort), //
+      panel.getChildren ().addAll (row ("Server", serverComboBox, editServersButton),
                                    row ("", buttons ()));
       dialogStage.setTitle ("Connect to Server");
     }
     else
     {
       panel.getChildren //
-          ().addAll (row ("Function", row1),
-                     row ("", row2),
-                     row ("Server URL", serverComboBox),          //
-                     //                     row ("Server port", serverPort),         //
-                     row ("Client port", clientComboBox),
+          ().addAll (row ("Function", row1), row ("", row2),
+                     row ("Server URL", serverComboBox, editServersButton),
+                     row ("Client port", clientComboBox, editClientsButton),
                      row ("Prevent 3270-E", prevent3270E),
                      row ("Session file", fileComboBox),      //
                      row ("", buttons ()));
@@ -166,20 +162,20 @@ public class Console extends Application
 
         switch ((String) newToggle.getUserData ())
         {
-          case "Spy":
-            setDisable (false, false, false, false, true);
+          case "Record":
+            setDisable (false, false, false, true);
             break;
 
           case "Replay":
-            setDisable (true, true, true, true, false);
+            setDisable (true, true, true, false);
             break;
 
           case "Terminal":
-            setDisable (false, false, true, true, true);
+            setDisable (false, true, true, true);
             break;
 
-          case "Mainframe":
-            setDisable (true, true, false, true, true);
+          case "Test":
+            setDisable (true, false, true, true);
             break;
         }
       }
@@ -188,11 +184,20 @@ public class Console extends Application
     if (release)
       group.selectToggle (group.getToggles ().get (2));
     else
+    {
+      boolean found = false;
       for (int i = 0; i < optionList.length; i++)
       {
         if (optionList[i].equals (optionSelected))
+        {
           group.selectToggle (group.getToggles ().get (i));
+          found = true;
+          break;
+        }
       }
+      if (!found)
+        group.selectToggle (group.getToggles ().get (2));
+    }
 
     okButton
         .setOnAction ( (e) -> {
@@ -391,8 +396,12 @@ public class Console extends Application
     prefs.put ("RUNMODE", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
   }
 
-  private void setDisable (boolean sn, boolean sp, boolean cp, boolean pr, boolean fn)
+  private void setDisable (boolean server, boolean client, boolean pr, boolean fn)
   {
+    serverComboBox.setDisable (server);
+    editServersButton.setDisable (server);
+    clientComboBox.setDisable (client);
+    editClientsButton.setDisable (client);
     //    serverName.setDisable (sn);
     //    serverPort.setDisable (sp);
     //    clientPort.setDisable (cp);
@@ -440,13 +449,15 @@ public class Console extends Application
     return box;
   }
 
-  private Node row (String labelText, Node field)
+  private Node row (String labelText, Node... field)
   {
     HBox row = new HBox (10);
     row.setAlignment (Pos.CENTER_LEFT);
     Label label = new Label (labelText);
     label.setMinWidth (100);
-    row.getChildren ().addAll (label, field);
+    row.getChildren ().add (label);
+    for (Node node : field)
+      row.getChildren ().add (node);
     return row;
   }
 

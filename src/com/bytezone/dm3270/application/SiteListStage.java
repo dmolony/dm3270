@@ -7,6 +7,9 @@ import java.util.prefs.Preferences;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -14,8 +17,9 @@ public class SiteListStage extends BasicStage
 {
   Preferences prefs;
   List<Site> sites = new ArrayList<> ();
+  ComboBox<String> comboBox;
 
-  public SiteListStage (Preferences prefs, String key, int max)
+  public SiteListStage (Preferences prefs, String key, int max, String windowTitle)
   {
     this.prefs = prefs;
 
@@ -29,8 +33,29 @@ public class SiteListStage extends BasicStage
       vbox.getChildren ().add (hbox);
     }
 
-    Scene scene = new Scene (vbox);
+    List<String> list = new ArrayList<> ();
+    for (Site site : sites)
+      list.add (site.getName ());
+    ObservableList<String> observableList = FXCollections.observableList (list);
+    comboBox = new ComboBox<> (observableList);
+
+    //set previous selection
+
+    Button cancelButton = new Button ("Cancel");
+    Button saveButton = new Button ("Save");
+    HBox buttonsHBox = new HBox ();
+    buttonsHBox.getChildren ().addAll (cancelButton, saveButton);
+
+    BorderPane borderPane = new BorderPane ();
+    borderPane.setCenter (vbox);
+    borderPane.setBottom (buttonsHBox);
+
+    Scene scene = new Scene (borderPane);
     setScene (scene);
+
+    saveButton.setOnAction ( (e) -> {
+      savePrefs (key);
+    });
   }
 
   private void readPrefs (String key, int max)
@@ -71,10 +96,15 @@ public class SiteListStage extends BasicStage
     return null;
   }
 
-  ObservableList<String> getSiteList ()
+  ComboBox<String> getComboBox ()
   {
-    List<String> list = new ArrayList<> ();
-    ObservableList<String> observableList = FXCollections.observableList (list);
-    return observableList;
+    return comboBox;
   }
+
+  //  ObservableList<String> getSiteList ()
+  //  {
+  //    List<String> list = new ArrayList<> ();
+  //    ObservableList<String> observableList = FXCollections.observableList (list);
+  //    return observableList;
+  //  }
 }
