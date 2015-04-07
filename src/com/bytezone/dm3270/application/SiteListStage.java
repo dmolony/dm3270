@@ -22,10 +22,11 @@ public class SiteListStage extends BasicStage
   public SiteListStage (Preferences prefs, String key, int max, String windowTitle)
   {
     this.prefs = prefs;
+    setTitle (windowTitle);
 
     readPrefs (key, max);
 
-    VBox vbox = getVBox ();
+    VBox vbox = new VBox ();
     for (Site site : sites)
     {
       HBox hbox = getHBox ();
@@ -55,7 +56,10 @@ public class SiteListStage extends BasicStage
 
     saveButton.setOnAction ( (e) -> {
       savePrefs (key);
+      this.hide ();
     });
+
+    cancelButton.setOnAction ( (e) -> this.hide ());
   }
 
   private void readPrefs (String key, int max)

@@ -1,12 +1,12 @@
 package com.bytezone.dm3270.application;
 
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 class Site
 {
-  public final TextArea name = new TextArea ();
-  public final TextArea url = new TextArea ();
-  public final TextArea port = new TextArea ();
+  public final TextField name = new TextField ();
+  public final TextField url = new TextField ();
+  public final TextField port = new TextField ();
 
   public Site (String name, String url, int port)
   {

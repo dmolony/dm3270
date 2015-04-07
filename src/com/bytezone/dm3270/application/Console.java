@@ -51,9 +51,7 @@ public class Console extends Application
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
 
   private Screen screen;
-  //  private TextField serverName;
-  //  private TextField serverPort;
-  //  private TextField clientPort;
+
   private ComboBox<String> fileComboBox;
   private ComboBox<String> serverComboBox;
   private ComboBox<String> clientComboBox;
@@ -116,10 +114,12 @@ public class Console extends Application
     serverComboBox = serverSitesListStage.getComboBox ();
     serverComboBox.setVisibleRowCount (6);
     editServersButton.setStyle ("-fx-font-size: 10;");
+    editServersButton.setOnAction ( (e) -> serverSitesListStage.show ());
 
     clientComboBox = clientSitesListStage.getComboBox ();
     clientComboBox.setVisibleRowCount (4);
     editClientsButton.setStyle ("-fx-font-size: 10;");
+    editClientsButton.setOnAction ( (e) -> clientSitesListStage.show ());
 
     int width = 200;
     fileComboBox.setPrefWidth (width / 1.5);
