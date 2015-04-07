@@ -33,12 +33,13 @@ public class SpyStage extends BasicTelnetStage
   private final Session session;
   private Thread serverThread;
 
-  public SpyStage (Screen screen, String serverURL, int serverPort, int clientPort,
-      boolean prevent3270E)
+  public SpyStage (Screen screen, Site serverSite, Site clientSite, boolean prevent3270E)
   {
     session = new Session (screen, new TelnetState (), SessionMode.SPY);
 
-    spyServer = new SpyServer (serverURL, serverPort, clientPort, session);
+    spyServer =
+        new SpyServer (serverSite.getURL (), serverSite.getPort (),
+            clientSite.getPort (), session);
     spyServer.prevent3270E (prevent3270E);
 
     final TextArea textArea = getTextArea (600);
@@ -68,7 +69,8 @@ public class SpyStage extends BasicTelnetStage
 
     String message =
         String.format ("Connect a terminal to localhost:%d%n%n"
-            + "Will connect to mainframe at %s:%d", clientPort, serverURL, serverPort);
+                           + "Will connect to mainframe at %s:%d", clientSite.getPort (),
+                       serverSite.getURL (), serverSite.getPort ());
 
     table.setPlaceholder (new Label (message));
     table.setItems (session.getDataRecords ());

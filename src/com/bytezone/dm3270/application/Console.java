@@ -51,10 +51,12 @@ public class Console extends Application
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
 
   private Screen screen;
-  private TextField serverName;
-  private TextField serverPort;
-  private TextField clientPort;
-  private ComboBox<String> filenameList;
+  //  private TextField serverName;
+  //  private TextField serverPort;
+  //  private TextField clientPort;
+  private ComboBox<String> fileComboBox;
+  private ComboBox<String> serverComboBox;
+  private ComboBox<String> clientComboBox;
   private CheckBox prevent3270E;
 
   private Button okButton = new Button ("OK");
@@ -90,34 +92,46 @@ public class Console extends Application
     String sizeSelected = prefs.get ("SIZE", "16");
     String runMode = prefs.get ("RUNMODE", "Release");
 
-    String[] optionList = { "Spy", "Replay", "Terminal", "Mainframe" };
+    SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5);
+    SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5);
+
+    String[] optionList = { "Record", "Replay", "Terminal", "Test" };
     Node row1 = options (optionList, group, 0, 2);
     Node row2 = options (optionList, group, 2, 2);
 
     VBox panel = new VBox (10);
 
-    serverName = new TextField (serverText);
-    serverPort = new TextField (serverPortText);
-    clientPort = new TextField (clientPortText);
+    //    serverName = new TextField (serverText);
+    //    serverPort = new TextField (serverPortText);
+    //    clientPort = new TextField (clientPortText);
     prevent3270E = new CheckBox ();
 
     ObservableList<String> sessionFiles = getSessionFiles ();
-    filenameList = new ComboBox<> (sessionFiles);
+    fileComboBox = new ComboBox<> (sessionFiles);
+    fileComboBox.setVisibleRowCount (12);
+    fileComboBox.getSelectionModel ().select (fileText);
 
-    filenameList.setVisibleRowCount (12);
-    filenameList.getSelectionModel ().select (fileText);
+    ObservableList<String> serverList = serverSitesListStage.getSiteList ();
+    serverComboBox = new ComboBox<> (serverList);
+    serverComboBox.setVisibleRowCount (6);
+
+    ObservableList<String> clientList = clientSitesListStage.getSiteList ();
+    clientComboBox = new ComboBox<> (clientList);
+    clientComboBox.setVisibleRowCount (4);
 
     int width = 200;
-    filenameList.setPrefWidth (width / 1.5);
-    serverName.setPrefWidth (width);
-    serverPort.setPrefWidth (width / 3);
-    clientPort.setPrefWidth (width / 3);
+    fileComboBox.setPrefWidth (width / 1.5);
+    serverComboBox.setPrefWidth (width / 1.5);
+    clientComboBox.setPrefWidth (width / 1.5);
+    //    serverName.setPrefWidth (width);
+    //    serverPort.setPrefWidth (width / 3);
+    //    clientPort.setPrefWidth (width / 3);
 
     release = runMode.equals ("Release");
     if (release)
     {
-      panel.getChildren ().addAll (row ("Server URL", serverName),
-                                   row ("Server port", serverPort), //
+      panel.getChildren ().addAll (row ("Server", serverComboBox),
+      //                                   row ("Server port", serverPort), //
                                    row ("", buttons ()));
       dialogStage.setTitle ("Connect to Server");
     }
@@ -126,11 +140,11 @@ public class Console extends Application
       panel.getChildren //
           ().addAll (row ("Function", row1),
                      row ("", row2),
-                     row ("Server URL", serverName),          //
-                     row ("Server port", serverPort),         //
-                     row ("Client port", clientPort),
+                     row ("Server URL", serverComboBox),          //
+                     //                     row ("Server port", serverPort),         //
+                     row ("Client port", clientComboBox),
                      row ("Prevent 3270-E", prevent3270E),
-                     row ("Session file", filenameList),      //
+                     row ("Session file", fileComboBox),      //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
       if (sessionFiles.size () == 0)
@@ -186,21 +200,23 @@ public class Console extends Application
           dialogStage.hide ();
 
           screen = createScreen ();
+          Site serverSite = serverSitesListStage.getSelected ();
+          Site clientSite = clientSitesListStage.getSelected ();
 
           String optionText = (String) group.getSelectedToggle ().getUserData ();
           switch (optionText)
           {
             case "Spy":
               spyStage =
-                  new SpyStage (screen, serverName.getText (), getPort (serverPort),
-                      getPort (clientPort), prevent3270E.isSelected ());
+                  new SpyStage (screen, serverSite, clientSite, prevent3270E
+                      .isSelected ());
               spyStage.show ();
               spyStage.startServer ();
 
               break;
 
             case "Replay":
-              String selectedFileName = filenameList.getValue ();
+              String selectedFileName = fileComboBox.getValue ();
               String file =
                   userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
               Path path = Paths.get (file);
@@ -230,8 +246,8 @@ public class Console extends Application
 
             case "Mainframe":
               spyStage =
-                  new SpyStage (screen, "localhost", MAINFRAME_EMULATOR_PORT,
-                      getPort (clientPort), prevent3270E.isSelected ());
+                  new SpyStage (screen, serverSite, clientSite, prevent3270E
+                      .isSelected ());
               spyStage.show ();
               spyStage.startServer ();
 
@@ -245,7 +261,7 @@ public class Console extends Application
               consoleStage = new ConsoleStage (screen);
               consoleStage.centerOnScreen ();
               consoleStage.show ();
-              consoleStage.connect (serverName.getText (), getPort (serverPort));
+              consoleStage.connect (serverSite);
 
               break;
           }
@@ -364,10 +380,10 @@ public class Console extends Application
 
   private void savePreferences ()
   {
-    prefs.put ("SERVER", serverName.getText ());
-    prefs.put ("SERVER_PORT", serverPort.getText ());
-    prefs.put ("CLIENT_PORT", clientPort.getText ());
-    prefs.put ("FILE_NAME", filenameList.getValue ());
+    //    prefs.put ("SERVER", serverName.getText ());
+    //    prefs.put ("SERVER_PORT", serverPort.getText ());
+    //    prefs.put ("CLIENT_PORT", clientPort.getText ());
+    prefs.put ("FILE_NAME", fileComboBox.getValue ());
     //    if (!release)
     prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
     prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
@@ -377,11 +393,11 @@ public class Console extends Application
 
   private void setDisable (boolean sn, boolean sp, boolean cp, boolean pr, boolean fn)
   {
-    serverName.setDisable (sn);
-    serverPort.setDisable (sp);
-    clientPort.setDisable (cp);
+    //    serverName.setDisable (sn);
+    //    serverPort.setDisable (sp);
+    //    clientPort.setDisable (cp);
     prevent3270E.setDisable (pr);
-    filenameList.setDisable (fn);
+    fileComboBox.setDisable (fn);
   }
 
   private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,

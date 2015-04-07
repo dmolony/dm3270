@@ -157,13 +157,14 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       telnetState.write (buffer);
   }
 
-  public void connect (String mainframeURL, int mainframePort)
+  public void connect (Site server)
   {
     telnetState.setDo3270Extended (true);    // set preferences for this session
     telnetState.setDoTerminalType (true);    // set preferences for this session
 
     telnetListener = new TelnetListener (screen, telnetState);
-    terminalServer = new TerminalServer (mainframeURL, mainframePort, telnetListener);
+    terminalServer =
+        new TerminalServer (server.getURL (), server.getPort (), telnetListener);
     telnetState.setTerminalServer (terminalServer);
 
     terminalServerThread = new Thread (terminalServer);
