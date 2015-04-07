@@ -57,8 +57,8 @@ public class Console extends Application
   private ComboBox<String> clientComboBox;
   private CheckBox prevent3270E;
 
-  Button editServersButton = new Button ("edit...");
-  Button editClientsButton = new Button ("edit...");
+  Button editServersButton;
+  Button editClientsButton;
 
   private Button okButton = new Button ("OK");
   private Button cancelButton = new Button ("Cancel");
@@ -113,13 +113,13 @@ public class Console extends Application
 
     serverComboBox = serverSitesListStage.getComboBox ();
     serverComboBox.setVisibleRowCount (6);
+    editServersButton = serverSitesListStage.getEditButton ();
     editServersButton.setStyle ("-fx-font-size: 10;");
-    editServersButton.setOnAction ( (e) -> serverSitesListStage.show ());
 
     clientComboBox = clientSitesListStage.getComboBox ();
     clientComboBox.setVisibleRowCount (4);
+    editClientsButton = clientSitesListStage.getEditButton ();
     editClientsButton.setStyle ("-fx-font-size: 10;");
-    editClientsButton.setOnAction ( (e) -> clientSitesListStage.show ());
 
     int width = 200;
     fileComboBox.setPrefWidth (width / 1.5);
@@ -205,13 +205,13 @@ public class Console extends Application
           dialogStage.hide ();
 
           screen = createScreen ();
-          Site serverSite = serverSitesListStage.getSelected ();
-          Site clientSite = clientSitesListStage.getSelected ();
+          Site serverSite = serverSitesListStage.getSelectedSite ();
+          Site clientSite = clientSitesListStage.getSelectedSite ();
 
           String optionText = (String) group.getSelectedToggle ().getUserData ();
           switch (optionText)
           {
-            case "Spy":
+            case "Record":
               spyStage =
                   new SpyStage (screen, serverSite, clientSite, prevent3270E
                       .isSelected ());
@@ -249,7 +249,17 @@ public class Console extends Application
 
               break;
 
-            case "Mainframe":
+            case "Terminal":
+              consoleStage = new ConsoleStage (screen);
+              consoleStage.centerOnScreen ();
+              consoleStage.show ();
+              consoleStage.connect (serverSite);
+
+              break;
+
+            case "Test":
+              // ensure that serverSite is using localhost:5555
+              // clientSite should be localhost:2323
               spyStage =
                   new SpyStage (screen, serverSite, clientSite, prevent3270E
                       .isSelected ());
@@ -259,14 +269,6 @@ public class Console extends Application
               mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
               mainframeStage.show ();
               mainframeStage.startServer ();
-
-              break;
-
-            case "Terminal":
-              consoleStage = new ConsoleStage (screen);
-              consoleStage.centerOnScreen ();
-              consoleStage.show ();
-              consoleStage.connect (serverSite);
 
               break;
           }
@@ -389,7 +391,6 @@ public class Console extends Application
     //    prefs.put ("SERVER_PORT", serverPort.getText ());
     //    prefs.put ("CLIENT_PORT", clientPort.getText ());
     prefs.put ("FILE_NAME", fileComboBox.getValue ());
-    //    if (!release)
     prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
     prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
@@ -402,9 +403,6 @@ public class Console extends Application
     editServersButton.setDisable (server);
     clientComboBox.setDisable (client);
     editClientsButton.setDisable (client);
-    //    serverName.setDisable (sn);
-    //    serverPort.setDisable (sp);
-    //    clientPort.setDisable (cp);
     prevent3270E.setDisable (pr);
     fileComboBox.setDisable (fn);
   }

@@ -19,10 +19,11 @@ import javafx.scene.layout.VBox;
 
 public class SiteListStage extends BasicStage
 {
-  Preferences prefs;
-  List<Site> sites = new ArrayList<> ();
-  ComboBox<String> comboBox;
-  Button cancelButton, saveButton;
+  private final Preferences prefs;
+  private final List<Site> sites = new ArrayList<> ();
+  private final ComboBox<String> comboBox;
+  private final Button editListButton;
+  private Button cancelButton, saveButton;
 
   public SiteListStage (Preferences prefs, String key, int max, String windowTitle)
   {
@@ -54,6 +55,7 @@ public class SiteListStage extends BasicStage
       list.add (site.getName ());
     ObservableList<String> observableList = FXCollections.observableList (list);
     comboBox = new ComboBox<> (observableList);
+    editListButton = new Button ("Edit...");
 
     //set previous selection
 
@@ -64,12 +66,13 @@ public class SiteListStage extends BasicStage
     Scene scene = new Scene (borderPane);
     setScene (scene);
 
-    saveButton.setOnAction ( (e) -> {
+    saveButton.setOnAction (e -> {
       savePrefs (key);
       this.hide ();
     });
 
-    cancelButton.setOnAction ( (e) -> this.hide ());
+    cancelButton.setOnAction (e -> this.hide ());
+    editListButton.setOnAction (e -> this.show ());
   }
 
   private void readPrefs (String key, int max)
@@ -105,14 +108,35 @@ public class SiteListStage extends BasicStage
     }
   }
 
-  Site getSelected ()
+  Site getSelectedSite ()
   {
+    String key = getSelectedName ();
+    if (key == null || key.isEmpty ())
+      return null;
+    for (Site site : sites)
+      if (key.equals (site.name))
+        return site;
     return null;
+  }
+
+  String getSelectedName ()
+  {
+    return comboBox.getSelectionModel ().getSelectedItem ();
+  }
+
+  int getSelectedIndex ()
+  {
+    return comboBox.getSelectionModel ().getSelectedIndex ();
   }
 
   ComboBox<String> getComboBox ()
   {
     return comboBox;
+  }
+
+  Button getEditButton ()
+  {
+    return editListButton;
   }
 
   private Node buttons ()
