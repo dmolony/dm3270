@@ -75,7 +75,6 @@ public class Console extends Application
   private ReplayStage replayStage;
 
   private final String userHome = System.getProperty ("user.home");
-  private boolean reset;
 
   private boolean release;
 
@@ -86,15 +85,10 @@ public class Console extends Application
   {
     super.init ();
 
+    prefs = Preferences.userNodeForPackage (this.getClass ());
     for (String raw : getParameters ().getRaw ())
       if (raw.equals ("-reset"))
-        reset = true;
-  }
-
-  @Override
-  public void start (Stage dialogStage) throws Exception
-  {
-    prefs = Preferences.userNodeForPackage (this.getClass ());
+        prefs.clear ();
 
     if (false)
     {
@@ -103,10 +97,11 @@ public class Console extends Application
       for (String key : keys)
         System.out.printf ("%-14s : %s%n", key, prefs.get (key, ""));
     }
+  }
 
-    if (reset)
-      prefs.clear ();
-
+  @Override
+  public void start (Stage dialogStage) throws Exception
+  {
     String fileText = prefs.get ("ReplayFile", "spy01.txt");
     String optionSelected = prefs.get ("Function", "Terminal");
     String fontSelected = prefs.get ("FontName", "Monospaced");
