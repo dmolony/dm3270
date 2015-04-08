@@ -7,14 +7,15 @@ class Site
   public final TextField name = new TextField ();
   public final TextField url = new TextField ();
   public final TextField port = new TextField ();
+  public final TextField script = new TextField ();
+  TextField[] fieldList = { name, url, port, script };
 
-  public Site (String name, String url, int port)
+  public Site (String name, String url, int port, String script)
   {
     this.name.setText (name);
     this.url.setText (url);
     this.port.setText (port + "");
-
-    this.port.setMaxWidth (50);
+    this.script.setText (script);
   }
 
   public String getName ()
@@ -29,6 +30,39 @@ class Site
 
   public int getPort ()
   {
-    return Integer.parseInt (port.getText ());
+    try
+    {
+      int portValue = Integer.parseInt (port.getText ());
+      if (portValue <= 0)
+      {
+        System.out.println ("Invalid port value: " + port.getText ());
+        port.setText ("23");
+        portValue = 23;
+      }
+      return portValue;
+    }
+    catch (NumberFormatException e)
+    {
+      System.out.println ("Invalid port value: " + port.getText ());
+      port.setText ("23");
+      return 23;
+    }
+  }
+
+  public String getScript ()
+  {
+    return script.getText ();
+  }
+
+  public TextField getTextField (int index)
+  {
+    return fieldList[index];
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("Site [name=%s, url=%s, port=%d, script=%s", getName (),
+                          getURL (), getPort (), getScript ());
   }
 }

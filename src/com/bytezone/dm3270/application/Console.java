@@ -31,7 +31,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
@@ -330,27 +329,6 @@ public class Console extends Application
     savePreferences ();
   }
 
-  private int getPort (TextField textField)
-  {
-    try
-    {
-      int value = Integer.parseInt (textField.getText ());
-      if (value <= 0)
-      {
-        System.out.println ("Invalid port value: " + textField.getText ());
-        textField.setText ("23");
-        value = 23;
-      }
-      return value;
-    }
-    catch (NumberFormatException e)
-    {
-      System.out.println ("Invalid port value: " + textField.getText ());
-      textField.setText ("23");
-      return 23;
-    }
-  }
-
   private ObservableList<String> getSessionFiles ()
   {
     String[] locations = new String[2];
@@ -387,9 +365,6 @@ public class Console extends Application
 
   private void savePreferences ()
   {
-    //    prefs.put ("SERVER", serverName.getText ());
-    //    prefs.put ("SERVER_PORT", serverPort.getText ());
-    //    prefs.put ("CLIENT_PORT", clientPort.getText ());
     prefs.put ("FILE_NAME", fileComboBox.getValue ());
     prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
     prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());

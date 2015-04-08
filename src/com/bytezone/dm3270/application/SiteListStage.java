@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -21,8 +22,8 @@ public class SiteListStage extends BasicStage
 {
   private final Preferences prefs;
   private final List<Site> sites = new ArrayList<> ();
-  private final ComboBox<String> comboBox;
-  private final Button editListButton;
+  private final ComboBox<String> comboBox = new ComboBox<> ();
+  private final Button editListButton = new Button ("Edit...");
   private Button cancelButton, saveButton;
 
   public SiteListStage (Preferences prefs, String key, int max, String windowTitle)
@@ -32,35 +33,36 @@ public class SiteListStage extends BasicStage
 
     readPrefs (key, max);
 
-    VBox vbox = new VBox ();
-    vbox.setSpacing (5);
-    vbox.setPadding (new Insets (5, 5, 5, 5));    // trbl
+    String[] headings = { "Site name", "URL", "Port", "Script" };
+    int[] columnWidths = { 100, 150, 50, 100 };
 
-    HBox titleBox = new HBox ();
-    titleBox.getChildren ().addAll (new Label ("Site name"), new Label ("URL"),
-                                    new Label ("Port"));
-    vbox.getChildren ().add (titleBox);
+    HBox hbox = new HBox ();
+    hbox.setSpacing (5);
+    hbox.setPadding (new Insets (0, 15, 0, 15));    // trbl
 
-    for (Site site : sites)
+    for (int i = 0; i < headings.length; i++)
     {
-      HBox hbox = new HBox ();
-      hbox.setSpacing (15);
-      hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
-      hbox.getChildren ().addAll (site.name, site.url, site.port);
-      vbox.getChildren ().add (hbox);
-    }
+      VBox vbox = new VBox ();
+      vbox.setSpacing (5);
+      vbox.setPadding (new Insets (5, 5, 5, 5));    // trbl
 
-    List<String> list = new ArrayList<> ();
-    for (Site site : sites)
-      list.add (site.getName ());
-    ObservableList<String> observableList = FXCollections.observableList (list);
-    comboBox = new ComboBox<> (observableList);
-    editListButton = new Button ("Edit...");
+      Label heading = new Label (headings[i]);
+      vbox.getChildren ().add (heading);
+
+      for (Site site : sites)
+      {
+        TextField textField = site.getTextField (i);
+        textField.setMaxWidth (columnWidths[i]);
+        vbox.getChildren ().add (textField);
+      }
+
+      hbox.getChildren ().add (vbox);
+    }
 
     //set previous selection
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setCenter (vbox);
+    borderPane.setCenter (hbox);
     borderPane.setBottom (buttons ());
 
     Scene scene = new Scene (borderPane);
@@ -75,8 +77,16 @@ public class SiteListStage extends BasicStage
     editListButton.setOnAction (e -> this.show ());
   }
 
+  //  private void edit ()
+  //  {
+  //    this.show ();
+  //    Site currentSite = getSelectedSite ();
+  //  }
+
   private void readPrefs (String key, int max)
   {
+    List<String> siteNames = new ArrayList<> ();
+    int selectedIndex = prefs.getInt (String.format ("%sSelected", key), 0);
     int count = 0;
     while (count < max)
     {
@@ -85,27 +95,51 @@ public class SiteListStage extends BasicStage
       String name = prefs.get (keyName + "Name", "");
       String url = prefs.get (keyName + "URL", "");
       int port = prefs.getInt (keyName + "Port", 23);
+      String script = prefs.get (keyName + "Script", "");
 
       if (port <= 0)
         port = 23;
 
+      Site site = null;
       if (name.isEmpty () || url.isEmpty ())
-        sites.add (new Site ("", "", 23));
+        site = new Site ("", "", 23, "");
       else
-        sites.add (new Site (name, url, port));
+      {
+        site = new Site (name, url, port, script);
+        siteNames.add (name);
+      }
+      sites.add (site);
     }
+
+    updateComboBox (siteNames, selectedIndex);
   }
 
   private void savePrefs (String key)
   {
+    int selectedIndex = getSelectedIndex ();
+    List<String> siteNames = new ArrayList<> ();
+    prefs.putInt (String.format ("%sSelected", key), getSelectedIndex ());
     for (int i = 0; i < sites.size (); i++)
     {
       Site site = sites.get (i);
       String keyName = String.format ("%s%02d", key, i);
-      prefs.put (keyName + "Name", site.name.getText ());
+      String name = site.name.getText ();
+      prefs.put (keyName + "Name", name);
       prefs.put (keyName + "URL", site.url.getText ());
       prefs.put (keyName + "Port", site.port.getText ());
+      prefs.put (keyName + "Script", site.script.getText ());
+      if (name != null && !name.isEmpty ())
+        siteNames.add (name);
     }
+    updateComboBox (siteNames, selectedIndex);
+  }
+
+  private void updateComboBox (List<String> names, int selectedIndex)
+  {
+    ObservableList<String> ol = FXCollections.observableArrayList (names);
+    if (ol != null)
+      comboBox.setItems (ol);
+    comboBox.getSelectionModel ().select (selectedIndex);
   }
 
   Site getSelectedSite ()
@@ -114,7 +148,7 @@ public class SiteListStage extends BasicStage
     if (key == null || key.isEmpty ())
       return null;
     for (Site site : sites)
-      if (key.equals (site.name))
+      if (key.equals (site.getName ()))
         return site;
     return null;
   }
@@ -142,7 +176,7 @@ public class SiteListStage extends BasicStage
   private Node buttons ()
   {
     HBox box = new HBox (10);
-    saveButton = new Button ("OK");
+    saveButton = new Button ("Save");
     saveButton.setDefaultButton (true);
     cancelButton = new Button ("Cancel");
     cancelButton.setCancelButton (true);
