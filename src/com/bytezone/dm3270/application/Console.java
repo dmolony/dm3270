@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
@@ -74,23 +75,43 @@ public class Console extends Application
   private ReplayStage replayStage;
 
   private final String userHome = System.getProperty ("user.home");
+  private boolean reset;
 
   private boolean release;
 
   private final MenuBar menuBar = new MenuBar ();
 
   @Override
+  public void init () throws Exception
+  {
+    super.init ();
+
+    for (String raw : getParameters ().getRaw ())
+      if (raw.equals ("-reset"))
+        reset = true;
+  }
+
+  @Override
   public void start (Stage dialogStage) throws Exception
   {
     prefs = Preferences.userNodeForPackage (this.getClass ());
-    String serverText = prefs.get ("SERVER", "your.server.com");
-    String serverPortText = prefs.get ("SERVER_PORT", "23");
-    String clientPortText = prefs.get ("CLIENT_PORT", "2323");
-    String fileText = prefs.get ("FILE_NAME", "spy01.txt");
-    String optionSelected = prefs.get ("OPTION", "Replay");
-    String fontSelected = prefs.get ("FONT", "Monospaced");
-    String sizeSelected = prefs.get ("SIZE", "16");
-    String runMode = prefs.get ("RUNMODE", "Release");
+
+    if (false)
+    {
+      String[] keys = prefs.keys ();
+      Arrays.sort (keys);
+      for (String key : keys)
+        System.out.printf ("%-14s : %s%n", key, prefs.get (key, ""));
+    }
+
+    if (reset)
+      prefs.clear ();
+
+    String fileText = prefs.get ("ReplayFile", "spy01.txt");
+    String optionSelected = prefs.get ("Function", "Terminal");
+    String fontSelected = prefs.get ("FontName", "Monospaced");
+    String sizeSelected = prefs.get ("FontSize", "16");
+    String runMode = prefs.get ("Mode", "Release");
 
     SiteListStage serverSitesListStage =
         new SiteListStage (prefs, "Server", 5, "Server Sites");
@@ -136,8 +157,8 @@ public class Console extends Application
     {
       panel.getChildren //
           ().addAll (row ("Function", row1), row ("", row2),
-                     row ("Server URL", serverComboBox, editServersButton),
-                     row ("Client port", clientComboBox, editClientsButton),
+                     row ("Server", serverComboBox, editServersButton),
+                     row ("Client", clientComboBox, editClientsButton),
                      row ("Prevent 3270-E", prevent3270E),
                      row ("Session file", fileComboBox),      //
                      row ("", buttons ()));
@@ -279,7 +300,7 @@ public class Console extends Application
               else
               {
                 Site mainframe =
-                    new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, "");
+                    new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT);
                 spyStage =
                     new SpyStage (screen, mainframe, clientSite, prevent3270E
                         .isSelected ());
@@ -387,11 +408,11 @@ public class Console extends Application
 
   private void savePreferences ()
   {
-    prefs.put ("FILE_NAME", fileComboBox.getValue ());
-    prefs.put ("OPTION", (String) group.getSelectedToggle ().getUserData ());
-    prefs.put ("FONT", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
-    prefs.put ("SIZE", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
-    prefs.put ("RUNMODE", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
+    prefs.put ("Function", (String) group.getSelectedToggle ().getUserData ());
+    prefs.put ("FontName", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
+    prefs.put ("FontSize", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
+    prefs.put ("Mode", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
+    prefs.put ("ReplayFile", fileComboBox.getValue ());
   }
 
   private void setDisable (boolean server, boolean client, boolean pr, boolean fn)

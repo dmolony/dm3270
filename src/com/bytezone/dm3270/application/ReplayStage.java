@@ -56,8 +56,8 @@ public class ReplayStage extends BasicStage
     label.setFont (new Font ("Arial", 20));
     label.setPadding (new Insets (10, 10, 10, 10));    // trbl
 
-    showTelnet = prefs.getBoolean ("SHOW_TELNET", false);
-    showExtended = prefs.getBoolean ("SHOW_EXTENDED", false);
+    showTelnet = prefs.getBoolean ("ShowTelnet", false);
+    showExtended = prefs.getBoolean ("ShowExtended", false);
 
     final HBox checkBoxes = new HBox ();
     checkBoxes.setSpacing (15);
@@ -180,7 +180,7 @@ public class ReplayStage extends BasicStage
 
   public void disconnect ()
   {
-    prefs.putBoolean ("SHOW_TELNET", showTelnetCB.isSelected ());
-    prefs.putBoolean ("SHOW_EXTENDED", show3270ECB.isSelected ());
+    prefs.putBoolean ("ShowTelnet", showTelnetCB.isSelected ());
+    prefs.putBoolean ("ShowExtended", show3270ECB.isSelected ());
   }
 }

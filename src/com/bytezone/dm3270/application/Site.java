@@ -7,15 +7,15 @@ class Site
   public final TextField name = new TextField ();
   public final TextField url = new TextField ();
   public final TextField port = new TextField ();
-  public final TextField script = new TextField ();
-  TextField[] fieldList = { name, url, port, script };
+  //  public final TextField script = new TextField ();
+  TextField[] fieldList = { name, url, port };
 
-  public Site (String name, String url, int port, String script)
+  public Site (String name, String url, int port)
   {
     this.name.setText (name);
     this.url.setText (url);
     this.port.setText (port + "");
-    this.script.setText (script);
+    //    this.script.setText (script);
   }
 
   public String getName ()
@@ -49,10 +49,10 @@ class Site
     }
   }
 
-  public String getScript ()
-  {
-    return script.getText ();
-  }
+  //  public String getScript ()
+  //  {
+  //    return script.getText ();
+  //  }
 
   public TextField getTextField (int index)
   {
@@ -62,7 +62,7 @@ class Site
   @Override
   public String toString ()
   {
-    return String.format ("Site [name=%s, url=%s, port=%d, script=%s", getName (),
-                          getURL (), getPort (), getScript ());
+    return String.format ("Site [name=%s, url=%s, port=%d]", getName (), getURL (),
+                          getPort ());
   }
 }

@@ -33,7 +33,7 @@ public class SiteListStage extends BasicStage
 
     readPrefs (key, max);
 
-    String[] headings = { "Site name", "URL", "Port", "Script" };
+    String[] headings = { "Site name", "URL", "Port" };
     int[] columnWidths = { 100, 150, 50, 100 };
 
     HBox hbox = new HBox ();
@@ -87,17 +87,17 @@ public class SiteListStage extends BasicStage
       String name = prefs.get (keyName + "Name", "");
       String url = prefs.get (keyName + "URL", "");
       int port = prefs.getInt (keyName + "Port", 23);
-      String script = prefs.get (keyName + "Script", "");
+      //      String script = prefs.get (keyName + "Script", "");
 
       if (port <= 0)
         port = 23;
 
       Site site = null;
       if (name.isEmpty () || url.isEmpty ())
-        site = new Site ("", "", 23, "");
+        site = new Site ("", "", 23);
       else
       {
-        site = new Site (name, url, port, script);
+        site = new Site (name, url, port);
         siteNames.add (name);
       }
       sites.add (site);
@@ -110,7 +110,7 @@ public class SiteListStage extends BasicStage
   {
     int selectedIndex = getSelectedIndex ();
     List<String> siteNames = new ArrayList<> ();
-    prefs.putInt (String.format ("%sSelected", key), getSelectedIndex ());
+
     for (int i = 0; i < sites.size (); i++)
     {
       Site site = sites.get (i);
@@ -119,11 +119,16 @@ public class SiteListStage extends BasicStage
       prefs.put (keyName + "Name", name);
       prefs.put (keyName + "URL", site.url.getText ());
       prefs.put (keyName + "Port", site.port.getText ());
-      prefs.put (keyName + "Script", site.script.getText ());
       if (name != null && !name.isEmpty ())
         siteNames.add (name);
     }
-    updateComboBox (siteNames, selectedIndex);
+
+    if (selectedIndex >= 0 && selectedIndex < sites.size ())
+      updateComboBox (siteNames, selectedIndex);
+    else if (sites.size () > 0)
+      updateComboBox (siteNames, 0);
+
+    prefs.putInt (String.format ("%sSelected", key), getSelectedIndex ());
   }
 
   private void updateComboBox (List<String> names, int selectedIndex)
