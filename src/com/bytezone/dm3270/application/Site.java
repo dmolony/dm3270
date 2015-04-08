@@ -7,15 +7,13 @@ class Site
   public final TextField name = new TextField ();
   public final TextField url = new TextField ();
   public final TextField port = new TextField ();
-  //  public final TextField script = new TextField ();
   TextField[] fieldList = { name, url, port };
 
   public Site (String name, String url, int port)
   {
     this.name.setText (name);
     this.url.setText (url);
-    this.port.setText (port + "");
-    //    this.script.setText (script);
+    this.port.setText (port == 23 && name.isEmpty () ? "" : port + "");
   }
 
   public String getName ()
@@ -48,11 +46,6 @@ class Site
       return 23;
     }
   }
-
-  //  public String getScript ()
-  //  {
-  //    return script.getText ();
-  //  }
 
   public TextField getTextField (int index)
   {

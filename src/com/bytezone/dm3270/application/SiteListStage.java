@@ -87,7 +87,6 @@ public class SiteListStage extends BasicStage
       String name = prefs.get (keyName + "Name", "");
       String url = prefs.get (keyName + "URL", "");
       int port = prefs.getInt (keyName + "Port", 23);
-      //      String script = prefs.get (keyName + "Script", "");
 
       if (port <= 0)
         port = 23;
