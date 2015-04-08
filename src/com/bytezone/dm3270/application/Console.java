@@ -249,25 +249,47 @@ public class Console extends Application
               break;
 
             case "Terminal":
-              consoleStage = new ConsoleStage (screen);
-              consoleStage.centerOnScreen ();
-              consoleStage.show ();
-              consoleStage.connect (serverSite);
+              if (serverSite == null)
+              {
+                Alert alert = new Alert (AlertType.ERROR, "No server selected");
+                alert.getDialogPane ().setHeaderText (null);
+                Optional<ButtonType> result = alert.showAndWait ();
+                if (result.isPresent () && result.get () == ButtonType.OK)
+                  dialogStage.show ();
+              }
+              else
+              {
+                consoleStage = new ConsoleStage (screen);
+                consoleStage.centerOnScreen ();
+                consoleStage.show ();
+                consoleStage.connect (serverSite);
+              }
 
               break;
 
             case "Test":
-              // ensure that serverSite is using localhost:5555
-              // clientSite should be localhost:2323
-              spyStage =
-                  new SpyStage (screen, serverSite, clientSite, prevent3270E
-                      .isSelected ());
-              spyStage.show ();
-              spyStage.startServer ();
+              if (clientSite == null)
+              {
+                Alert alert = new Alert (AlertType.ERROR, "No client selected");
+                alert.getDialogPane ().setHeaderText (null);
+                Optional<ButtonType> result = alert.showAndWait ();
+                if (result.isPresent () && result.get () == ButtonType.OK)
+                  dialogStage.show ();
+              }
+              else
+              {
+                Site mainframe =
+                    new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, "");
+                spyStage =
+                    new SpyStage (screen, mainframe, clientSite, prevent3270E
+                        .isSelected ());
+                spyStage.show ();
+                spyStage.startServer ();
 
-              mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
-              mainframeStage.show ();
-              mainframeStage.startServer ();
+                mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
+                mainframeStage.show ();
+                mainframeStage.startServer ();
+              }
 
               break;
           }

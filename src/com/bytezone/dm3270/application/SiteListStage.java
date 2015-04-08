@@ -59,8 +59,6 @@ public class SiteListStage extends BasicStage
       hbox.getChildren ().add (vbox);
     }
 
-    //set previous selection
-
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (hbox);
     borderPane.setBottom (buttons ());
@@ -76,12 +74,6 @@ public class SiteListStage extends BasicStage
     cancelButton.setOnAction (e -> this.hide ());
     editListButton.setOnAction (e -> this.show ());
   }
-
-  //  private void edit ()
-  //  {
-  //    this.show ();
-  //    Site currentSite = getSelectedSite ();
-  //  }
 
   private void readPrefs (String key, int max)
   {
