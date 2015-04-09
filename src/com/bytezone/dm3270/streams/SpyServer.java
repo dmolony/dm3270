@@ -72,7 +72,7 @@ public class SpyServer implements Runnable
           new TelnetSocket (Source.SERVER, serverSocket, new TelnetListener (
               Source.SERVER, session));
 
-      // link will connect both sockets to each other
+      // TelnetSocket.link() will connect both sockets to each other (bidirectional)
       serverTelnetSocket.link (clientTelnetSocket);
 
       // stop the session from using tn3270E mode
@@ -95,8 +95,6 @@ public class SpyServer implements Runnable
       e.printStackTrace ();
       close ();
     }
-
-    System.out.println ("SpyServer closed");
   }
 
   public TelnetSocket getListener (Source source)

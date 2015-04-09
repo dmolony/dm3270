@@ -158,19 +158,20 @@ public class Session implements Iterable<SessionRecord>
     if (sessionRecord == null)
       throw new IllegalArgumentException ("DataRecord is null");
 
-    dataRecords.add (sessionRecord);       // should be concurrent?
+    dataRecords.add (sessionRecord);       // should this be concurrent?
 
+    // this code checks to see whether it can identify the client and/or server
     if (sessionMode == SessionMode.REPLAY && sessionRecord.isCommand ())
-    {
-      Command command = sessionRecord.getCommand ();
       if (clientName == null && sessionRecord.getSource () == Source.CLIENT)
-      {
-        if (command instanceof ReadStructuredFieldCommand)
-          clientName = ((ReadStructuredFieldCommand) command).getClientName ();
-      }
+        checkClientName (sessionRecord.getCommand ());
       else if (serverName == null && sessionRecord.getSource () == Source.SERVER)
-        checkServerName (command);
-    }
+        checkServerName (sessionRecord.getCommand ());
+  }
+
+  private void checkClientName (Command command)
+  {
+    if (command instanceof ReadStructuredFieldCommand)
+      clientName = ((ReadStructuredFieldCommand) command).getClientName ();
   }
 
   private void checkServerName (Command command)
