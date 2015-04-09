@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
@@ -25,19 +26,17 @@ public class SpyServer implements Runnable
   private TelnetSocket serverTelnetSocket;
   private final Session session;
 
-  public SpyServer (String serverURL, int serverPort, int clientPort, Session session)
+  public SpyServer (Site server, int clientPort, Session session)
   {
-    if (serverURL == null || serverURL.isEmpty ())
+    if (server == null)
       throw new IllegalArgumentException ("Server cannot be null or empty");
-    if (serverPort <= 0)
-      throw new IllegalArgumentException ("Server Port must be a positive integer");
     if (clientPort <= 0)
       throw new IllegalArgumentException ("Client Port must be a positive integer");
     if (session == null)
       throw new IllegalArgumentException ("Session cannot be null");
 
-    this.serverURL = serverURL;
-    this.serverPort = serverPort;
+    serverURL = server.getURL ();
+    serverPort = server.getPort ();
     this.clientPort = clientPort;
     this.session = session;
   }
@@ -73,8 +72,8 @@ public class SpyServer implements Runnable
           new TelnetSocket (Source.SERVER, serverSocket, new TelnetListener (
               Source.SERVER, session));
 
+      // link will connect both sockets to each other
       serverTelnetSocket.link (clientTelnetSocket);
-      clientTelnetSocket.link (serverTelnetSocket);
 
       // stop the session from using tn3270E mode
       serverTelnetSocket.prevent3270E (prevent3270E);

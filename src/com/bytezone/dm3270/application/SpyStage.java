@@ -37,9 +37,7 @@ public class SpyStage extends BasicTelnetStage
   {
     session = new Session (screen, new TelnetState (), SessionMode.SPY);
 
-    spyServer =
-        new SpyServer (serverSite.getURL (), serverSite.getPort (),
-            clientSite.getPort (), session);
+    spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
     spyServer.prevent3270E (prevent3270E);
 
     final TextArea textArea = getTextArea (600);

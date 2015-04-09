@@ -2,7 +2,7 @@ package com.bytezone.dm3270.application;
 
 import javafx.scene.control.TextField;
 
-class Site
+public class Site
 {
   public final TextField name = new TextField ();
   public final TextField url = new TextField ();

@@ -67,6 +67,7 @@ public class TelnetSocket implements Runnable
   public void link (TelnetSocket partner)
   {
     this.partner = partner;
+    partner.partner = this;
   }
 
   public void prevent3270E (boolean value)
