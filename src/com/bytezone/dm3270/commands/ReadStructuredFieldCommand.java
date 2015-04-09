@@ -32,9 +32,12 @@ import com.bytezone.dm3270.structuredfields.StructuredField;
 public class ReadStructuredFieldCommand extends Command
 {
   private static Map<String, String> clientNames = new HashMap<> ();
+
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private static final String line = "\n----------------------------------------"
       + "-------------------------------";
+
+  boolean isQueryReply;
   private String clientName = "";
   private String signature;
 
@@ -65,7 +68,6 @@ public class ReadStructuredFieldCommand extends Command
     super (buffer, offset, length, screen);
 
     assert data[0] == (byte) 0x88;
-    boolean isQueryReply = false;
 
     int ptr = 1;
     int max = data.length;
@@ -211,8 +213,11 @@ public class ReadStructuredFieldCommand extends Command
   {
     StringBuilder text = new StringBuilder (String.format ("RSF (%d):", fields.size ()));
 
-    text.append (String.format ("%nChecksum     : %s", signature));
-    text.append (String.format ("%nClient name  : %s", clientName));
+    if (isQueryReply)
+    {
+      text.append (String.format ("%nChecksum     : %s", signature));
+      text.append (String.format ("%nClient name  : %s", clientName));
+    }
 
     for (StructuredField sf : fields)
     {

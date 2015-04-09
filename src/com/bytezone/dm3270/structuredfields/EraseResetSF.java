@@ -26,6 +26,12 @@ public class EraseResetSF extends StructuredField
   }
 
   @Override
+  public void process ()
+  {
+    // what to do?
+  }
+
+  @Override
   public String toString ()
   {
     StringBuilder text = new StringBuilder ("Struct Field : 03 Erase/Reset\n");

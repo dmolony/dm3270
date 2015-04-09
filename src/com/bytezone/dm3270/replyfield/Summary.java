@@ -49,7 +49,7 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
     return replyList.iterator ();
   }
 
-  private boolean found (byte type)
+  private boolean isProvided (byte type)
   {
     for (QueryReplyField reply : replies)
       if (reply.replyType.type == type)
@@ -57,7 +57,7 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
     return false;
   }
 
-  private boolean found2 (byte type)
+  private boolean isListed (byte type)
   {
     for (int i = 2; i < data.length; i++)
       if (data[i] == type)
@@ -72,12 +72,19 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
 
     for (int i = 2; i < data.length; i++)
       text.append (String.format ("%n  %-30s  %s", getReplyType (data[i]),
-                                  found (data[i]) ? "" : "** missing **"));
+                                  isProvided (data[i]) ? "" : "** missing **"));
+
     // check for QueryReplyFields sent but not listed in the summary
+    List<QueryReplyField> missingFields = new ArrayList<> ();
     for (QueryReplyField reply : replies)
+      if (!isListed (reply.replyType.type))
+        missingFields.add (reply);
+
+    if (missingFields.size () > 0)
     {
-      if (!found2 (reply.replyType.type))
-        text.append (String.format ("%n       Not in summary: %s", reply.replyType));
+      text.append ("\n\nNot listed in Summary:");
+      for (QueryReplyField qrf : missingFields)
+        text.append (String.format ("%n  %s", qrf.replyType));
     }
 
     return text.toString ();
