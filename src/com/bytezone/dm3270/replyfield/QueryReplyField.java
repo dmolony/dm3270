@@ -31,7 +31,7 @@ public abstract class QueryReplyField
 
   protected byte[] data;            // data read from a saved session
   protected final ReplyType replyType;
-  protected String replyName = "";
+  //  protected String replyName = "";
   protected byte[] reply;           // data created by us
 
   // change this to a treemap or an enum
@@ -171,7 +171,7 @@ public abstract class QueryReplyField
 
   public String brief ()
   {
-    return String.format ("Type  : %02X %s", data[1], replyName);
+    return String.format ("Type  : %02X %s", data[1], replyType.name);
   }
 
   @Override
@@ -191,6 +191,12 @@ public abstract class QueryReplyField
     {
       this.type = type;
       this.name = name;
+    }
+
+    @Override
+    public String toString ()
+    {
+      return String.format ("%02X %s", type, name);
     }
   }
 }

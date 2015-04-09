@@ -6,7 +6,8 @@ import java.util.List;
 
 public class Summary extends QueryReplyField implements Iterable<QueryReplyField>
 {
-  List<QueryReplyField> replyList;
+  List<QueryReplyField> replyList;        // replies we build
+  List<QueryReplyField> replies;          // actual replies from REPLAY
 
   public Summary (List<QueryReplyField> replies)
   {
@@ -37,10 +38,23 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
     return data.length - 2;
   }
 
+  public void addReplyFields (List<QueryReplyField> replies)
+  {
+    this.replies = replies;
+  }
+
   @Override
   public Iterator<QueryReplyField> iterator ()
   {
     return replyList.iterator ();
+  }
+
+  private boolean found (byte type)
+  {
+    for (QueryReplyField reply : replies)
+      if (reply.replyType.type == type)
+        return true;
+    return false;
   }
 
   @Override
@@ -49,7 +63,9 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
     StringBuilder text = new StringBuilder (super.toString ());
 
     for (int i = 2; i < data.length; i++)
-      text.append (String.format ("%n  %02X %s", data[i], getReplyType (data[i]).name));
+      text.append (String.format ("%n  %-30s  %s", getReplyType (data[i]),
+                                  found (data[i]) ? "" : "** missing **"));
+    // check for QueryReplyFields sent but not listed in the summary
 
     return text.toString ();
   }

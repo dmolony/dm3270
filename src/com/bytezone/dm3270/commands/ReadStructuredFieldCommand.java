@@ -36,6 +36,10 @@ public class ReadStructuredFieldCommand extends Command
   private static final String line = "\n----------------------------------------"
       + "-------------------------------";
   private String clientName = "";
+  private String signature;
+
+  private Summary summary;
+  private final List<QueryReplyField> replies = new ArrayList<> ();
 
   static
   {
@@ -77,6 +81,10 @@ public class ReadStructuredFieldCommand extends Command
           QueryReplySF queryReply = new QueryReplySF (data, ptr, size, screen);
           fields.add (queryReply);
           isQueryReply = true;
+          QueryReplyField qrf = queryReply.getReplyField ();
+          if (qrf instanceof Summary)
+            summary = (Summary) qrf;
+          replies.add (qrf);
           break;
 
         case StructuredField.INBOUND_3270DS:
@@ -92,7 +100,10 @@ public class ReadStructuredFieldCommand extends Command
     }
 
     if (isQueryReply)
+    {
       clientName = getClientName (data);
+      summary.addReplyFields (replies);
+    }
   }
 
   private String getClientName (byte[] buffer)
@@ -100,7 +111,7 @@ public class ReadStructuredFieldCommand extends Command
     try
     {
       byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
-      String signature = DatatypeConverter.printHexBinary (digest);
+      signature = DatatypeConverter.printHexBinary (digest);
       String clientName = clientNames.get (signature);
       return clientName == null ? signature : clientName;
     }
@@ -200,12 +211,16 @@ public class ReadStructuredFieldCommand extends Command
   {
     StringBuilder text = new StringBuilder (String.format ("RSF (%d):", fields.size ()));
 
+    text.append (String.format ("%nChecksum     : %s", signature));
+    text.append (String.format ("%nClient name  : %s", clientName));
+
     for (StructuredField sf : fields)
     {
       text.append (line);
       text.append ("\n");
       text.append (sf);
     }
+
     if (fields.size () > 0)
       text.append (line);
 
