@@ -44,9 +44,10 @@ import com.bytezone.dm3270.display.Screen;
 
 public class Console extends Application
 {
-  private static String[] fontNames = { //
-      "Consolas", "Source Code Pro", "Anonymous Pro", "Inconsolata", "Monaco", "Menlo",
-          "M+ 2m", "PT Mono", "Luculent", "DejaVu Sans Mono", "Monospaced" };
+  private static String[] preferredFontNames = { //
+      "Andale Mono", "Anonymous Pro", "Arial", "Consolas", "Courier New",
+          "DejaVu Sans Mono", "Inconsolata", "Luculent", "Menlo", "Monaco", "M+ 2m",
+          "PT Mono", "Source Code Pro", "Zapfino", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
 
@@ -104,7 +105,7 @@ public class Console extends Application
   {
     String fileText = prefs.get ("ReplayFile", "spy01.txt");
     String optionSelected = prefs.get ("Function", "Terminal");
-    String fontSelected = prefs.get ("FontName", "Monospaced");
+    String fontSelected = prefs.get ("FontName", "");
     String sizeSelected = prefs.get ("FontSize", "16");
     String runMode = prefs.get ("Mode", "Release");
 
@@ -317,10 +318,22 @@ public class Console extends Application
     Menu menuDebug = new Menu ("Mode");
 
     List<String> families = Font.getFamilies ();
-    for (String fontName : fontNames)
+    //    for (String name : families)
+    //      System.out.println (name);
+    for (String fontName : preferredFontNames)
     {
-      boolean disable = !families.contains (fontName);
+      boolean fontExists = families.contains (fontName);
+      boolean disable = !fontExists;
+      if (fontSelected.isEmpty () && fontExists)
+        fontSelected = fontName;
       setMenuItem (fontName, fontGroup, menuFont, fontSelected, disable);
+    }
+
+    // select Monospaced if there is still no font selected
+    if (fontGroup.getSelectedToggle () == null)
+    {
+      ObservableList<Toggle> toggles = fontGroup.getToggles ();
+      fontGroup.selectToggle (toggles.get (toggles.size () - 1));
     }
 
     menuFont.getItems ().add (new SeparatorMenuItem ());

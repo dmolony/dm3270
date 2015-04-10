@@ -23,7 +23,7 @@ public class QueryReplySF extends StructuredField
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-    text.append (String.format ("Struct Field : %02X QueryReply\n", type));
+    text.append (String.format ("Struct Field : %02X QueryReply%n", type));
     text.append (queryReplyField);
     return text.toString ();
   }

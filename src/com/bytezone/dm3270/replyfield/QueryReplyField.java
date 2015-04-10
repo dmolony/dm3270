@@ -204,7 +204,7 @@ public abstract class QueryReplyField
     String message =
         summary == null ? "no summary" : summary.isListed (replyType.type) ? ""
             : "** missing **";
-    text.append (String.format ("  Type       : %-30s %s", replyType, message));
+    text.append (String.format ("  Type       : %-30s %s%n", replyType, message));
     return text.toString ();
   }
 
