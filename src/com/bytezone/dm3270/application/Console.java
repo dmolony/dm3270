@@ -114,7 +114,7 @@ public class Console extends Application
     SiteListStage clientSitesListStage =
         new SiteListStage (prefs, "Client", 5, "Client Sites");
 
-    String[] optionList = { "Record", "Replay", "Terminal", "Test" };
+    String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
     Node row1 = options (optionList, group, 0, 2);
     Node row2 = options (optionList, group, 2, 2);
 
@@ -178,7 +178,7 @@ public class Console extends Application
 
         switch ((String) newToggle.getUserData ())
         {
-          case "Record":
+          case "Spy":
             setDisable (false, false, false, true);
             break;
 
@@ -227,12 +227,31 @@ public class Console extends Application
           String optionText = (String) group.getSelectedToggle ().getUserData ();
           switch (optionText)
           {
-            case "Record":
-              spyStage =
-                  new SpyStage (screen, serverSite, clientSite, prevent3270E
-                      .isSelected ());
-              spyStage.show ();
-              spyStage.startServer ();
+            case "Spy":
+              if (serverSite == null)
+              {
+                Alert alert = new Alert (AlertType.ERROR, "No server selected");
+                alert.getDialogPane ().setHeaderText (null);
+                Optional<ButtonType> result = alert.showAndWait ();
+                if (result.isPresent () && result.get () == ButtonType.OK)
+                  dialogStage.show ();
+              }
+              else if (clientSite == null)
+              {
+                Alert alert = new Alert (AlertType.ERROR, "No client selected");
+                alert.getDialogPane ().setHeaderText (null);
+                Optional<ButtonType> result = alert.showAndWait ();
+                if (result.isPresent () && result.get () == ButtonType.OK)
+                  dialogStage.show ();
+              }
+              else
+              {
+                spyStage =
+                    new SpyStage (screen, serverSite, clientSite, prevent3270E
+                        .isSelected ());
+                spyStage.show ();
+                spyStage.startServer ();
+              }
 
               break;
 
