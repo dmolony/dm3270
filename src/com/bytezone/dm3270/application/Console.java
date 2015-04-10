@@ -155,7 +155,7 @@ public class Console extends Application
           ().addAll (row ("Function", row1), row ("", row2),
                      row ("Server", serverComboBox, editServersButton),
                      row ("Client", clientComboBox, editClientsButton),
-                     row ("Prevent 3270-E", prevent3270E),
+                     //                     row ("Prevent 3270-E", prevent3270E),
                      row ("Session file", fileComboBox),      //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
@@ -497,7 +497,8 @@ public class Console extends Application
     HBox row = new HBox (10);
     row.setAlignment (Pos.CENTER_LEFT);
     Label label = new Label (labelText);
-    label.setMinWidth (100);
+    label.setMinWidth (80);
+    label.setAlignment (Pos.CENTER_RIGHT);
     row.getChildren ().add (label);
     for (Node node : field)
       row.getChildren ().add (node);
