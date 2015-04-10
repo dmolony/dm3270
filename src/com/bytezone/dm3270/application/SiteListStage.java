@@ -36,31 +36,39 @@ public class SiteListStage extends BasicStage
     String[] headings = { "Site name", "URL", "Port" };
     int[] columnWidths = { 100, 150, 50, 100 };
 
+    VBox vbox = new VBox ();
+    vbox.setSpacing (5);
+    vbox.setPadding (new Insets (0, 15, 0, 15));    // trbl
+
+    // headings
     HBox hbox = new HBox ();
     hbox.setSpacing (5);
-    hbox.setPadding (new Insets (0, 15, 0, 15));    // trbl
-
+    hbox.setPadding (new Insets (10, 5, 0, 5));    // trbl
     for (int i = 0; i < headings.length; i++)
     {
-      VBox vbox = new VBox ();
-      vbox.setSpacing (5);
-      vbox.setPadding (new Insets (5, 5, 5, 5));    // trbl
-
       Label heading = new Label (headings[i]);
-      vbox.getChildren ().add (heading);
+      hbox.getChildren ().add (heading);
+      heading.setMinWidth (columnWidths[i]);
+    }
+    vbox.getChildren ().add (hbox);
 
-      for (Site site : sites)
+    // input fields
+    for (Site site : sites)
+    {
+      hbox = new HBox ();
+      hbox.setSpacing (5);
+      hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
+      for (int i = 0; i < headings.length; i++)
       {
         TextField textField = site.getTextField (i);
         textField.setMaxWidth (columnWidths[i]);
-        vbox.getChildren ().add (textField);
+        hbox.getChildren ().add (textField);
       }
-
-      hbox.getChildren ().add (vbox);
+      vbox.getChildren ().add (hbox);
     }
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setCenter (hbox);
+    borderPane.setCenter (vbox);
     borderPane.setBottom (buttons ());
 
     Scene scene = new Scene (borderPane);
