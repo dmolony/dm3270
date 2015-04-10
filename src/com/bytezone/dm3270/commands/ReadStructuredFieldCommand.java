@@ -35,13 +35,10 @@ public class ReadStructuredFieldCommand extends Command
 
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private static final String line = "\n----------------------------------------"
-      + "-------------------------------";
+      + "-----------------------------";
 
-  boolean isQueryReply;
   private String clientName = "";
   private String signature;
-
-  private Summary summary;
   private final List<QueryReplyField> replies = new ArrayList<> ();
 
   static
@@ -82,11 +79,7 @@ public class ReadStructuredFieldCommand extends Command
         case StructuredField.QUERY_REPLY:
           QueryReplySF queryReply = new QueryReplySF (data, ptr, size, screen);
           fields.add (queryReply);
-          isQueryReply = true;
-          QueryReplyField qrf = queryReply.getReplyField ();
-          if (qrf instanceof Summary)
-            summary = (Summary) qrf;
-          replies.add (qrf);
+          replies.add (queryReply.getReplyField ());
           break;
 
         case StructuredField.INBOUND_3270DS:
@@ -101,10 +94,11 @@ public class ReadStructuredFieldCommand extends Command
       ptr += size;
     }
 
-    if (isQueryReply)
+    if (replies.size () > 0)
     {
       clientName = getClientName (data);
-      summary.addReplyFields (replies);
+      for (QueryReplyField reply : replies)
+        reply.addReplyFields (replies);         // allow each QRF to see all the others
     }
   }
 
@@ -213,7 +207,7 @@ public class ReadStructuredFieldCommand extends Command
   {
     StringBuilder text = new StringBuilder (String.format ("RSF (%d):", fields.size ()));
 
-    if (isQueryReply)
+    if (replies.size () > 0)
     {
       text.append (String.format ("%nChecksum     : %s", signature));
       text.append (String.format ("%nClient name  : %s", clientName));

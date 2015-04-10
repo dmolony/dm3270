@@ -29,10 +29,10 @@ public abstract class QueryReplyField
   public final static byte GRAPHIC_COLOR_REPLY = (byte) 0xB4;
   public final static byte GRAPHIC_SYMBOL_SETS_REPLY = (byte) 0xB6;
 
-  protected byte[] data;            // data read from a saved session
+  protected byte[] data;                            // data read from a saved session
   protected final ReplyType replyType;
-  //  protected String replyName = "";
-  protected byte[] reply;           // data created by us
+  protected byte[] reply;                           // data created by us
+  protected List<QueryReplyField> replies;          // actual replies from REPLAY
 
   // change this to a treemap or an enum
   public static final List<ReplyType> replyTypes = new ArrayList<> ();
@@ -128,6 +128,28 @@ public abstract class QueryReplyField
     replyType = getReplyType (buffer[1]);
   }
 
+  // Called from ReadStructuredFieldCommand when in REPLAY mode
+  public void addReplyFields (List<QueryReplyField> replies)
+  {
+    this.replies = replies;
+  }
+
+  protected boolean isProvided (byte type)
+  {
+    for (QueryReplyField reply : replies)
+      if (reply.replyType.type == type)
+        return true;
+    return false;
+  }
+
+  protected Summary getSummary ()
+  {
+    for (QueryReplyField reply : replies)
+      if (reply.replyType.type == SUMMARY_QUERY_REPLY)
+        return (Summary) reply;
+    return null;
+  }
+
   protected int createReply (int size)
   {
     size += 4;                              // we add 4 bytes at the beginning
@@ -178,7 +200,11 @@ public abstract class QueryReplyField
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-    text.append (String.format ("  Type       : %02X %s", replyType.type, replyType.name));
+    Summary summary = getSummary ();
+    String message =
+        summary == null ? "no summary" : summary.isListed (replyType.type) ? ""
+            : "** missing **";
+    text.append (String.format ("  Type       : %-30s %s", replyType, message));
     return text.toString ();
   }
 

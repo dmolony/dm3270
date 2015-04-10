@@ -7,7 +7,6 @@ import java.util.List;
 public class Summary extends QueryReplyField implements Iterable<QueryReplyField>
 {
   List<QueryReplyField> replyList;        // replies we build
-  List<QueryReplyField> replies;          // actual replies from REPLAY
 
   public Summary (List<QueryReplyField> replies)
   {
@@ -38,31 +37,18 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
     return data.length - 2;
   }
 
-  public void addReplyFields (List<QueryReplyField> replies)
+  protected boolean isListed (byte type)
   {
-    this.replies = replies;
+    for (int i = 2; i < data.length; i++)
+      if (data[i] == type)
+        return true;
+    return false;
   }
 
   @Override
   public Iterator<QueryReplyField> iterator ()
   {
     return replyList.iterator ();
-  }
-
-  private boolean isProvided (byte type)
-  {
-    for (QueryReplyField reply : replies)
-      if (reply.replyType.type == type)
-        return true;
-    return false;
-  }
-
-  private boolean isListed (byte type)
-  {
-    for (int i = 2; i < data.length; i++)
-      if (data[i] == type)
-        return true;
-    return false;
   }
 
   @Override
@@ -75,7 +61,7 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
                                   isProvided (data[i]) ? "" : "** missing **"));
 
     // check for QueryReplyFields sent but not listed in the summary
-    List<QueryReplyField> missingFields = new ArrayList<> ();
+    List<QueryReplyField> missingFields = new ArrayList<> (4);
     for (QueryReplyField reply : replies)
       if (!isListed (reply.replyType.type))
         missingFields.add (reply);
