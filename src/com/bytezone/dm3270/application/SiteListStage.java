@@ -26,14 +26,14 @@ public class SiteListStage extends BasicStage
   private final Button editListButton = new Button ("Edit...");
   private Button cancelButton, saveButton;
 
-  public SiteListStage (Preferences prefs, String key, int max, String windowTitle)
+  public SiteListStage (Preferences prefs, String key, int max)
   {
     this.prefs = prefs;
-    setTitle (windowTitle);
+    setTitle ("Site Manager");
 
     readPrefs (key, max);
 
-    String[] headings = { "Site name", "URL", "Port" };
+    String[] headings = { key + " name", "URL", "Port" };
     int[] columnWidths = { 100, 150, 50, 100 };
 
     VBox vbox = new VBox ();
@@ -44,6 +44,7 @@ public class SiteListStage extends BasicStage
     HBox hbox = new HBox ();
     hbox.setSpacing (5);
     hbox.setPadding (new Insets (10, 5, 0, 5));    // trbl
+
     for (int i = 0; i < headings.length; i++)
     {
       Label heading = new Label (headings[i]);

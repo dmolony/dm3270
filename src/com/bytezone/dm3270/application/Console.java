@@ -109,10 +109,8 @@ public class Console extends Application
     String sizeSelected = prefs.get ("FontSize", "16");
     String runMode = prefs.get ("Mode", "Release");
 
-    SiteListStage serverSitesListStage =
-        new SiteListStage (prefs, "Server", 5, "Server Sites");
-    SiteListStage clientSitesListStage =
-        new SiteListStage (prefs, "Client", 5, "Client Sites");
+    SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5);
+    SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5);
 
     String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
     Node row1 = options (optionList, group, 0, 2);
