@@ -481,9 +481,4 @@ public class Console extends Application
                    Integer.parseInt (selectedFontSize.getText ()));
     return new Screen (24, 80, font);
   }
-
-  public static void main (String[] args)
-  {
-    launch (args);
-  }
 }
