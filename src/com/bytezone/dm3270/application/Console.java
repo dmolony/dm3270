@@ -151,6 +151,7 @@ public class Console extends Application
       panel.getChildren ().addAll (row ("Server", serverComboBox, editServersButton),
                                    row ("", buttons ()));
       dialogStage.setTitle ("Connect to Server");
+      panel.setPadding (new Insets (0, 30, 0, 0));       // trbl
     }
     else
     {
@@ -159,7 +160,7 @@ public class Console extends Application
                      row ("Server", serverComboBox, editServersButton),
                      row ("Client", clientComboBox, editClientsButton),
                      //                     row ("Prevent 3270-E", prevent3270E),
-                     row ("Session file", fileComboBox),      //
+                     row ("Replay file", fileComboBox),      //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
       if (sessionFiles.size () == 0)
@@ -500,7 +501,7 @@ public class Console extends Application
     HBox row = new HBox (10);
     row.setAlignment (Pos.CENTER_LEFT);
     Label label = new Label (labelText);
-    label.setMinWidth (80);
+    label.setMinWidth (65);
     label.setAlignment (Pos.CENTER_RIGHT);
     row.getChildren ().add (label);
     for (Node node : field)
