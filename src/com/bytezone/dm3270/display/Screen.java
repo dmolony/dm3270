@@ -23,8 +23,7 @@ import com.bytezone.dm3270.structuredfields.SetReplyMode;
 public class Screen extends Canvas
 {
   private static final boolean DONT_REBUILD_FIELDS = false;
-
-  private static byte[] buffer = new byte[4096];
+  private static final byte[] buffer = new byte[4096];
 
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
@@ -57,7 +56,7 @@ public class Screen extends Canvas
     this.function = function;
 
     GraphicsContext gc = getGraphicsContext2D ();
-    gc.translate (0.5, 0.5);                            // what does this do?
+    //    gc.translate (0.5, 0.5);                            // what does this do?
     characterSize = new CharacterSize (font);
     setFont (font);
 
