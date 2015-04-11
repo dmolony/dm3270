@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javafx.application.Platform;
 
+import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -16,7 +17,6 @@ import com.bytezone.dm3270.extended.ResponseCommand;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.extended.UnbindCommand;
 import com.bytezone.dm3270.session.Session;
-import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
@@ -35,7 +35,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   // convenience variables obtained from the Session parameter
   private final TelnetState telnetState;
   private final Screen screen;
-  private final SessionMode sessionMode;
+  //  private final SessionMode sessionMode;
+  private final Function function;
 
   // current state of the transmission
   private final byte[] data = new byte[4096];
@@ -58,9 +59,11 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
     this.screen = session.getScreen ();
     this.telnetState = session.getTelnetState ();
-    this.sessionMode = session.getSessionMode ();
+    //    this.sessionMode = session.getSessionMode ();
+    this.function = screen.getFunction ();
 
-    assert sessionMode == SessionMode.REPLAY || sessionMode == SessionMode.SPY;
+    //    assert sessionMode == SessionMode.REPLAY || sessionMode == SessionMode.SPY;
+    assert function == Function.REPLAY || function == Function.SPY;
   }
 
   // Use this when not recording the session and running in TERMINAL mode.
@@ -68,7 +71,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   {
     this.screen = screen;
     this.telnetState = telnetState;
-    this.sessionMode = SessionMode.TERMINAL;      // acting as a terminal
+    //    this.sessionMode = SessionMode.TERMINAL;      // acting as a terminal
+    this.function = screen.getFunction ();
     this.source = Source.SERVER;                  // listening to a server
     this.session = null;
   }
@@ -93,7 +97,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
     telnetProcessor.listen (buffer);     // will call one of the processXXX routines
 
-    if (sessionMode == SessionMode.TERMINAL)
+    //    if (sessionMode == SessionMode.TERMINAL)
+    if (function == Function.TERMINAL)
       telnetState.setLastAccess (dateTime, buffer.length);
   }
 
@@ -108,7 +113,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
       session.add (sessionRecord);
     }
 
-    if (sessionMode == SessionMode.TERMINAL)
+    //    if (sessionMode == SessionMode.TERMINAL)
+    if (function == Function.TERMINAL)
     {
       if (sessionRecordType == SessionRecordType.TELNET)      // no gui involved
         processMessage (message);

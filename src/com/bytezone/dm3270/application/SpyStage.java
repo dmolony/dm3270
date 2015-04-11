@@ -18,7 +18,6 @@ import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
-import com.bytezone.dm3270.session.Session.SessionMode;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
@@ -35,7 +34,7 @@ public class SpyStage extends BasicTelnetStage
 
   public SpyStage (Screen screen, Site serverSite, Site clientSite, boolean prevent3270E)
   {
-    session = new Session (screen, new TelnetState (), SessionMode.SPY);
+    session = new Session (screen, new TelnetState ());
 
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
     spyServer.prevent3270E (prevent3270E);

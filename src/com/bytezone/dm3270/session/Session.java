@@ -12,6 +12,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -31,7 +32,8 @@ public class Session implements Iterable<SessionRecord>
 {
   private final ObservableList<SessionRecord> dataRecords = FXCollections
       .observableArrayList ();
-  private final SessionMode sessionMode;
+  //  private final SessionMode sessionMode;
+  private final Function function;
   private final Screen screen;
   private final TelnetState telnetState = new TelnetState ();
 
@@ -39,20 +41,21 @@ public class Session implements Iterable<SessionRecord>
   private String serverName = null;
   private final List<String> labels = new ArrayList<> ();
 
-  public enum SessionMode
-  {
-    SPY, REPLAY, TERMINAL
-  }
+  //  public enum SessionMode
+  //  {
+  //    SPY, REPLAY, TERMINAL
+  //  }
 
   /**
    * Creates a new, empty session in either Spy or Terminal mode.
    * 
    * @param mode
    */
-  public Session (Screen screen, TelnetState telnetState, SessionMode mode)
+  public Session (Screen screen, TelnetState telnetState)
   {
     this.screen = screen;
-    sessionMode = mode;
+    //    sessionMode = mode;
+    this.function = screen.getFunction ();
   }
 
   /**
@@ -64,7 +67,8 @@ public class Session implements Iterable<SessionRecord>
    */
   public Session (Screen screen, List<String> lines)
   {
-    sessionMode = SessionMode.REPLAY;
+    //    sessionMode = SessionMode.REPLAY;
+    this.function = screen.getFunction ();
     this.screen = screen;
 
     SessionReader server = new SessionReader (Source.SERVER, lines);
@@ -75,7 +79,8 @@ public class Session implements Iterable<SessionRecord>
 
   public Session (Screen screen, Path path)
   {
-    sessionMode = SessionMode.REPLAY;
+    //    sessionMode = SessionMode.REPLAY;
+    this.function = screen.getFunction ();
     this.screen = screen;
 
     SessionReader server = new SessionReader (Source.SERVER, path);
@@ -145,10 +150,10 @@ public class Session implements Iterable<SessionRecord>
    * @return SessionMode
    */
 
-  public SessionMode getSessionMode ()
-  {
-    return sessionMode;
-  }
+  //  public SessionMode getSessionMode ()
+  //  {
+  //    return sessionMode;
+  //  }
 
   /**
    * Called by the TelnetListener after it has converted the command into
@@ -164,7 +169,8 @@ public class Session implements Iterable<SessionRecord>
     dataRecords.add (sessionRecord);       // should this be concurrent?
 
     // this code checks to see whether it can identify the client and/or server
-    if (sessionMode == SessionMode.REPLAY && sessionRecord.isCommand ())
+    //    if (sessionMode == SessionMode.REPLAY && sessionRecord.isCommand ())
+    if (function == Function.REPLAY && sessionRecord.isCommand ())
       if (clientName == null && sessionRecord.getSource () == Source.CLIENT)
         checkClientName (sessionRecord.getCommand ());
       else if (serverName == null && sessionRecord.getSource () == Source.SERVER)

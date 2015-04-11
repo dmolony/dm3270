@@ -76,6 +76,11 @@ public class Screen extends Canvas
     getGraphicsContext2D ().setFont (font);
   }
 
+  public Function getFunction ()
+  {
+    return function;
+  }
+
   public void displayText (String text)
   {
     GraphicsContext gc = getGraphicsContext2D ();
