@@ -30,10 +30,6 @@ public class ScreenPosition
   private ScreenContext screenContext;
   private final ScreenContext baseContext;
 
-  private final boolean expanded = false;
-  private boolean topLine;        // testing
-  private boolean bottomLine;     // testing
-
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
 
@@ -198,19 +194,13 @@ public class ScreenPosition
     {
       gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.backgroundColor
           : screenContext.foregroundColor : screenContext.foregroundColor);
-      if (expanded)
-        gc.fillRect (x + .15, y + .15, charWidth - .3, charHeight - .3);
-      else
-        gc.fillRect (x + .15, y + .15, charWidth - .3, charHeight - .3);
+      gc.fillRect (x + .15, y + .15, charWidth - .3, charHeight - .3);
     }
     else
     {
       gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.foregroundColor
           : screenContext.backgroundColor : screenContext.backgroundColor);
-      if (expanded)
-        gc.fillRect (x, y, charWidth + 1.4, charHeight + 1.4);
-      else
-        gc.fillRect (x, y, charWidth + .4, charHeight + .4);
+      gc.fillRect (x, y, charWidth + .5, charHeight + .5);
     }
 
     // Draw foreground
@@ -241,23 +231,6 @@ public class ScreenPosition
       {
         gc.setStroke (screenContext.foregroundColor);
         double y2 = y + charHeight;
-        if (expanded)
-          gc.strokeLine (x, y2, x + charWidth + 1.5, y2);
-        else
-          gc.strokeLine (x, y2, x + charWidth, y2);
-      }
-
-      if (topLine && expanded)
-      {
-        gc.setStroke (Color.WHITE);
-        double y2 = y - 0.8;
-        gc.strokeLine (x, y2, x + charWidth, y2);
-      }
-
-      if (bottomLine && expanded)
-      {
-        gc.setStroke (Color.WHITE);
-        double y2 = y + charHeight + 0.8;
         gc.strokeLine (x, y2, x + charWidth, y2);
       }
     }
@@ -266,13 +239,11 @@ public class ScreenPosition
   private void doGraphics (double x, double y)
   {
     double dx = 4.5;
-    double extra = expanded ? 1 : 0;
-    //    gc.setLineWidth (1.5);
 
     switch (value)
     {
       case HORIZONTAL_LINE:
-        gc.strokeLine (x, y + 10, x + characterSize.getWidth () + extra, y + 10);
+        gc.strokeLine (x, y + 10, x + characterSize.getWidth (), y + 10);
         break;
 
       case VERTICAL_LINE:
@@ -308,10 +279,7 @@ public class ScreenPosition
   public void erase (GraphicsContext gc, double x, double y)
   {
     gc.setFill (screenContext.backgroundColor);
-    if (expanded)
-      gc.fillRect (x, y, characterSize.getWidth () + 1, characterSize.getHeight () + 1);
-    else
-      gc.fillRect (x, y, characterSize.getWidth (), characterSize.getHeight ());
+    gc.fillRect (x, y, characterSize.getWidth (), characterSize.getHeight ());
   }
 
   @Override

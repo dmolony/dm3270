@@ -36,11 +36,6 @@ public class Screen extends Canvas
   private final float xOffset = 4;      // padding left and right
   private final float yOffset = 4;      // padding top and bottom
 
-  // spacing between characters for outlining
-  private final boolean expanded = false;
-  private final double expandedWidth = .5;
-  private final double expandedHeight = 1.5;
-
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
   private boolean insertMode;
@@ -76,10 +71,8 @@ public class Screen extends Canvas
   {
     characterSize.changeFont (font);
 
-    setWidth (characterSize.getWidth () * columns + xOffset * 2
-        + (expanded ? (columns - 1) * expandedWidth : 0));
-    setHeight (characterSize.getHeight () * rows + yOffset * 2
-        + (expanded ? (rows + 1) * expandedHeight : 0));
+    setWidth (characterSize.getWidth () * columns + xOffset * 2);
+    setHeight (characterSize.getHeight () * rows + yOffset * 2);
 
     getGraphicsContext2D ().setFont (font);
   }
@@ -191,11 +184,8 @@ public class Screen extends Canvas
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    double x =
-        xOffset + col * characterSize.getWidth () + (expanded ? col * expandedWidth : 0);
-    double y =
-        yOffset + row * characterSize.getHeight ()
-            + (expanded ? (row + 1) * expandedHeight : 0);
+    double x = xOffset + col * characterSize.getWidth ();
+    double y = yOffset + row * characterSize.getHeight ();
 
     screenPosition.draw (x, y, hasCursor);
   }
