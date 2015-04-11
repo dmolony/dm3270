@@ -13,10 +13,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.buffers.ReplyBuffer;
+import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.commands.WriteCommand;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
@@ -232,6 +235,16 @@ public class Session implements Iterable<SessionRecord>
       {
         writer.printf ("%s %s %s%n", dataRecord.getSource () == Source.CLIENT ? "Client"
             : "Server", dataRecord.isGenuine () ? " " : "*", dataRecord.getDateTime ());
+
+        ReplyBuffer message = dataRecord.getMessage ();
+        if (message instanceof TN3270ExtendedCommand)
+          message = ((TN3270ExtendedCommand) message).getCommand ();
+
+        if (message instanceof AIDCommand)
+        {
+          AIDCommand aidCommand = (AIDCommand) message;
+          aidCommand.scramble ();
+        }
 
         // write the data buffer after adding back the double-FF bytes
         writer.println (Utility.toHex (dataRecord.getMessage ().getTelnetData ()));

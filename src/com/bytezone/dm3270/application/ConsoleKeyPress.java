@@ -35,7 +35,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     KeyCode keyCodePressed = e.getCode ();
 
-    if (e.isControlDown ())
+    if (e.isControlDown ())       // should allow user to choose modifier key
     {
       switch (keyCodePressed)
       {

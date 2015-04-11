@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.ColorAttribute;
@@ -30,14 +31,15 @@ public class Screen extends Canvas
   private final FieldManager fieldManager = new FieldManager (this);
   private final ContextManager contextHandler = new ContextManager ();
   private final Cursor cursor = new Cursor (this);
+  private final Function function;
 
   private final float xOffset = 4;      // padding left and right
   private final float yOffset = 4;      // padding top and bottom
 
   // spacing between characters for outlining
-  private final boolean expanded = true;
+  private final boolean expanded = false;
   private final double expandedWidth = .5;
-  private final double expandedHeight = 1.6;
+  private final double expandedHeight = 1.5;
 
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
@@ -52,17 +54,17 @@ public class Screen extends Canvas
   public final int columns;
   public final int screenSize;
 
-  public Screen (int rows, int columns, Font font)
+  public Screen (int rows, int columns, Font font, Function function)
   {
     this.rows = rows;
     this.columns = columns;
     screenSize = rows * columns;
+    this.function = function;
 
     GraphicsContext gc = getGraphicsContext2D ();
     gc.translate (0.5, 0.5);                            // what does this do?
     characterSize = new CharacterSize (font);
     setFont (font);
-    //    System.out.println (characterSize);
 
     screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = contextHandler.getBase ();
@@ -442,7 +444,8 @@ public class Screen extends Canvas
   {
     keyboardLocked = true;
     notifyKeyboardStatusChange ();
-    cursor.setVisible (false);
+    if (function == Function.TERMINAL)
+      cursor.setVisible (false);
   }
 
   public void resetModified ()

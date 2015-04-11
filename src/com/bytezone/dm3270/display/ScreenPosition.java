@@ -30,7 +30,7 @@ public class ScreenPosition
   private ScreenContext screenContext;
   private final ScreenContext baseContext;
 
-  private final boolean expanded = true;
+  private final boolean expanded = false;
   private boolean topLine;        // testing
   private boolean bottomLine;     // testing
 
