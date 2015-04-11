@@ -242,6 +242,7 @@ public class Session implements Iterable<SessionRecord>
         writer.printf ("%s %s %s%n", dataRecord.getSource () == Source.CLIENT ? "Client"
             : "Server", dataRecord.isGenuine () ? " " : "*", dataRecord.getDateTime ());
 
+        // scramble user input
         ReplyBuffer message = dataRecord.getMessage ();
         if (message instanceof TN3270ExtendedCommand)
           message = ((TN3270ExtendedCommand) message).getCommand ();

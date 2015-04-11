@@ -86,6 +86,7 @@ public abstract class Order
     return buffer;
   }
 
+  // TextOrder should override this
   public int pack (byte[] buffer, int offset)
   {
     int ptr = offset;

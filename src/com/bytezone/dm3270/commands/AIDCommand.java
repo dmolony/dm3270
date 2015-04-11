@@ -57,9 +57,10 @@ public class AIDCommand extends Command implements BufferAddressSource
 
   public AIDCommand (Screen screen, byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length, screen);    // copies buffer[offset:length] to data[]
 
-    keyCommand = buffer[offset];
+    //    keyCommand = buffer[offset];
+    keyCommand = data[0];
     key = findKey (keyCommand);
 
     if (length <= 1)
@@ -68,16 +69,20 @@ public class AIDCommand extends Command implements BufferAddressSource
       return;
     }
 
-    cursorAddress = new BufferAddress (buffer[offset + 1], buffer[offset + 2]);
+    //    cursorAddress = new BufferAddress (buffer[offset + 1], buffer[offset + 2]);
+    cursorAddress = new BufferAddress (data[1], data[2]);
 
-    int ptr = offset + 3;
-    int max = offset + length;
+    //    int ptr = offset + 3;
+    int ptr = 3;
+    //    int max = offset + length;
+    int max = length;
     Order previousOrder = null;
     AIDField currentAIDField = null;
 
     while (ptr < max)
     {
-      Order order = Order.getOrder (buffer, ptr, max);
+      //      Order order = Order.getOrder (buffer, ptr, max);
+      Order order = Order.getOrder (data, ptr, max);
       if (!order.rejected ())
       {
         if (previousOrder != null && previousOrder.matches (order))
@@ -126,7 +131,11 @@ public class AIDCommand extends Command implements BufferAddressSource
       return;
     System.out.printf ("AID : %s%n", keyNames[key]);
     for (AIDField aidField : aidFields)
+    {
       System.out.println (aidField);
+      aidField.scramble ();
+      System.out.println (aidField);
+    }
     System.out.println ("--------------------------");
   }
 
@@ -275,6 +284,13 @@ public class AIDCommand extends Command implements BufferAddressSource
     public int getLocation ()
     {
       return sbaOrder.getBufferAddress ().getLocation ();
+    }
+
+    public void scramble ()
+    {
+      for (Order order : orders)
+        if (order instanceof TextOrder)
+          ((TextOrder) order).scramble ();
     }
 
     public boolean hasData ()

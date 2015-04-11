@@ -9,12 +9,17 @@ import com.bytezone.dm3270.display.Screen;
 
 public class TextOrder extends Order
 {
+  private int bufferOffset;
+  byte[] originalBuffer;
+
   public TextOrder (byte[] buffer, int ptr, int max)
   {
+    bufferOffset = ptr;             // save for later scrambling
+    originalBuffer = buffer;
+
     int dataLength = getDataLength (buffer, ptr, max);
     this.buffer = new byte[dataLength];
     System.arraycopy (buffer, ptr, this.buffer, 0, dataLength);
-    //    ptr += dataLength;
   }
 
   public TextOrder (String text)
@@ -44,6 +49,12 @@ public class TextOrder extends Order
     return length;
   }
 
+  public void scramble ()
+  {
+    for (int ptr = 0; ptr < buffer.length; ptr++)
+      originalBuffer[bufferOffset + ptr] = 0x7B;
+  }
+
   public String getTextString ()
   {
     return buffer.length == 0 ? "" : "[" + Utility.getString (buffer) + "]";
@@ -52,22 +63,11 @@ public class TextOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    //    Cursor cursor = screenHandler.getCursor ();
-    //    for (byte b : buffer)
-    //    {
-    //      ScreenPosition sp = cursor.getScreenPosition ();
-    //      sp.reset ();
-    //      sp.clearAttributes ();
-    //      sp.setCharacter (b);
-    //      cursor.moveRight ();      // processes unapplied character attributes
-    //    }
-
-    Cursor cursor2 = screen.getScreenCursor ();
+    Cursor cursor = screen.getScreenCursor ();
     for (byte b : buffer)
     {
-      //      System.out.printf ("setting %02X at %d%n", b, cursor2.getLocation ());
-      cursor2.setChar (b);
-      cursor2.move (Direction.RIGHT);
+      cursor.setChar (b);
+      cursor.move (Direction.RIGHT);
     }
   }
 
