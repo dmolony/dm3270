@@ -95,7 +95,10 @@ public class SpyStage extends BasicTelnetStage
       fileChooser.setTitle ("Save Session");
       File file = fileChooser.showSaveDialog (this);
       if (file != null)
+      {
+        btnSave.setDisable (true);      // no going back
         session.safeSave (file);
+      }
     });
 
     setOnCloseRequest (new EventHandler<WindowEvent> ()

@@ -231,14 +231,12 @@ public class Session implements Iterable<SessionRecord>
         if (safeFlag)
         {
           ReplyBuffer message = dataRecord.getMessage ();
+
           if (message instanceof TN3270ExtendedCommand)
             message = ((TN3270ExtendedCommand) message).getCommand ();
 
           if (message instanceof AIDCommand)
-          {
-            AIDCommand aidCommand = (AIDCommand) message;
-            aidCommand.scramble ();
-          }
+            ((AIDCommand) message).scramble ();
         }
 
         // write the data buffer after adding back the double-FF bytes

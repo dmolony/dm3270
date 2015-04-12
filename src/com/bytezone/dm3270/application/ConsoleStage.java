@@ -16,7 +16,6 @@ import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
@@ -61,24 +60,20 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
 
-    if (false)
-    {
-      ToolBar toolbar = new ToolBar ();
-      Button btnClear = new Button ("Clear");
-      Button btnReset = new Button ("Reset");
-      toolbar.getItems ().add (btnClear);
-      toolbar.getItems ().add (btnReset);
-      toolbar.getItems ().add (new Button ("Help"));
+    ToolBar toolbar = new ToolBar ();
+    Button btnBack = new Button ("<");
+    Button btnForward = new Button (">");
+    toolbar.getItems ().addAll (btnBack, btnForward);
 
-      byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
-      Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
-      btnClear.setOnAction (e -> clearCommand.process ());
+    //      byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
+    //      Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
+    //      btnClear.setOnAction (e -> clearCommand.process ());
+    //
+    //      byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
+    //      Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
+    //      btnReset.setOnAction (e -> resetCommand.process ());
 
-      byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
-      Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
-      btnReset.setOnAction (e -> resetCommand.process ());
-      borderPane.setTop (toolbar);
-    }
+    borderPane.setTop (toolbar);
 
     HBox hbox0 = new HBox ();
     hbox0.setPadding (new Insets (2, 12, 2, 4));       // trbl
@@ -128,6 +123,14 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       {
         Platform.exit ();
       }
+    });
+
+    btnBack.setOnAction ( (e) -> {
+      System.out.println ("back");
+    });
+
+    btnForward.setOnAction ( (e) -> {
+      System.out.println ("forward");
     });
   }
 
