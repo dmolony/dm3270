@@ -243,7 +243,7 @@ public class ScreenPosition
         break;
 
       case VERTICAL_LINE:
-        gc.strokeLine (x + dx, y, x + dx, y + characterSize.getHeight () + 1);
+        gc.strokeLine (x + dx, y, x + dx, y + characterSize.getHeight ());
         break;
 
       case TOP_LEFT:
