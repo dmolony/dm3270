@@ -191,17 +191,12 @@ public class ScreenPosition
 
     // Draw background
     if (hasCursor)
-    {
       gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.backgroundColor
           : screenContext.foregroundColor : screenContext.foregroundColor);
-      gc.fillRect (x + .15, y + .15, charWidth - .3, charHeight - .3);
-    }
     else
-    {
       gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.foregroundColor
           : screenContext.backgroundColor : screenContext.backgroundColor);
-      gc.fillRect (x, y, charWidth + .5, charHeight + .5);
-    }
+    gc.fillRect (x, y, charWidth, charHeight);
 
     // Draw foreground
     if (isVisible)
@@ -230,7 +225,7 @@ public class ScreenPosition
       if (screenContext.underscore)
       {
         gc.setStroke (screenContext.foregroundColor);
-        double y2 = y + charHeight;
+        double y2 = y + charHeight - 1;
         gc.strokeLine (x, y2, x + charWidth, y2);
       }
     }
