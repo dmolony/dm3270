@@ -64,7 +64,6 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   {
     this.screen = screen;
     this.telnetState = telnetState;
-    //    this.sessionMode = SessionMode.TERMINAL;      // acting as a terminal
     this.function = screen.getFunction ();
     this.source = Source.SERVER;                  // listening to a server
     this.session = null;
