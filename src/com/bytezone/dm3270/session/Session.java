@@ -12,6 +12,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -64,7 +65,10 @@ public class Session implements Iterable<SessionRecord>
   public Session (Screen screen, List<String> lines)
   {
     //    sessionMode = SessionMode.REPLAY;
-    this.function = screen.getFunction ();
+    if (screen == null)
+      function = Console.Function.TEST;
+    else
+      function = screen.getFunction ();
     this.screen = screen;
 
     SessionReader server = new SessionReader (Source.SERVER, lines);

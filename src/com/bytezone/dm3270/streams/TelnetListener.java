@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javafx.application.Platform;
 
+import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
@@ -35,13 +36,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   // convenience variables obtained from the Session parameter
   private final TelnetState telnetState;
   private final Screen screen;
-  //  private final SessionMode sessionMode;
   private final Function function;
-
-  // current state of the transmission
-  private final byte[] data = new byte[4096];
-  private int dataPtr;
-  private byte lastByte;
 
   private CommandHeader currentCommandHeader;
   private LocalDateTime currentDateTime;
@@ -59,11 +54,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
     this.screen = session.getScreen ();
     this.telnetState = session.getTelnetState ();
-    //    this.sessionMode = session.getSessionMode ();
-    this.function = screen.getFunction ();
+    function = screen != null ? screen.getFunction () : Console.Function.TEST;
 
-    //    assert sessionMode == SessionMode.REPLAY || sessionMode == SessionMode.SPY;
-    assert function == Function.REPLAY || function == Function.SPY;
+    assert function != Console.Function.TERMINAL;
   }
 
   // Use this when not recording the session and running in TERMINAL mode.

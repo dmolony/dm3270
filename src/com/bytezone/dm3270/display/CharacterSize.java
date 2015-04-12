@@ -8,9 +8,9 @@ import com.sun.javafx.tk.Toolkit;
 public class CharacterSize
 {
   public Font font;
-  private float height;
-  private float width;
-  private float ascent;
+  private int height;
+  private int width;
+  private int ascent;
 
   public CharacterSize (Font font)
   {
@@ -35,8 +35,8 @@ public class CharacterSize
       height = (int) (fm.getLineHeight () + 0.99);
       ascent = (int) (fm.getAscent () + 0.99);
 
-      float ratio = height / width;
-      System.out.printf ("%-10.10s h %f, w %f, r %f%n", font.getFamily (), height, width,
+      float ratio = (float) height / width;
+      System.out.printf ("%-14.14s h %d, w %d, r %f%n", font.getFamily (), height, width,
                          ratio);
       if (ratio < 1.8)
       {
