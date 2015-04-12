@@ -129,14 +129,14 @@ public class AIDCommand extends Command implements BufferAddressSource
   {
     if (aidFields.size () == 0)
       return;
-    System.out.printf ("AID : %s%n", keyNames[key]);
+    //    System.out.printf ("AID : %s%n", keyNames[key]);
     for (AIDField aidField : aidFields)
     {
-      System.out.println (aidField);
+      //      System.out.println (aidField);
       aidField.scramble ();
-      System.out.println (aidField);
+      //      System.out.println (aidField);
     }
-    System.out.println ("--------------------------");
+    //    System.out.println ("--------------------------");
   }
 
   // copy modified fields back to the screen - only used in Replay mode

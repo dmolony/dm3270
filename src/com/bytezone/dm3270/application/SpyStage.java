@@ -41,12 +41,14 @@ public class SpyStage extends BasicTelnetStage
 
     final TextArea textArea = getTextArea (600);
 
-    Button btnSave = new Button ("Save");
+    Button btnSave = new Button ("Full Save");
+    Button btnScramble = new Button ("Safe Save");
 
     btnSave.setPrefWidth (BUTTON_WIDTH);
+    btnScramble.setPrefWidth (BUTTON_WIDTH);
 
     final HBox hbox = getHBox ();
-    hbox.getChildren ().addAll (btnSave);
+    hbox.getChildren ().addAll (btnSave, btnScramble);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
@@ -86,6 +88,14 @@ public class SpyStage extends BasicTelnetStage
       File file = fileChooser.showSaveDialog (this);
       if (file != null)
         session.save (file);
+    });
+
+    btnScramble.setOnAction ( (e) -> {
+      FileChooser fileChooser = new FileChooser ();
+      fileChooser.setTitle ("Save Session");
+      File file = fileChooser.showSaveDialog (this);
+      if (file != null)
+        session.safeSave (file);
     });
 
     setOnCloseRequest (new EventHandler<WindowEvent> ()

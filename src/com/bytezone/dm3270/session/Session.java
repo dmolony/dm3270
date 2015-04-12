@@ -40,11 +40,7 @@ public class Session implements Iterable<SessionRecord>
   private String clientName = null;
   private String serverName = null;
   private final List<String> labels = new ArrayList<> ();
-
-  //  public enum SessionMode
-  //  {
-  //    SPY, REPLAY, TERMINAL
-  //  }
+  private boolean safeFlag;
 
   /**
    * Creates a new, empty session in either Spy or Terminal mode.
@@ -145,17 +141,6 @@ public class Session implements Iterable<SessionRecord>
   }
 
   /**
-   * Returns one of Spy, Replay or Terminal.
-   * 
-   * @return SessionMode
-   */
-
-  //  public SessionMode getSessionMode ()
-  //  {
-  //    return sessionMode;
-  //  }
-
-  /**
    * Called by the TelnetListener after it has converted the command into
    * a DataRecord. Traffic could be from either source (Client or Server).
    * 
@@ -243,14 +228,17 @@ public class Session implements Iterable<SessionRecord>
             : "Server", dataRecord.isGenuine () ? " " : "*", dataRecord.getDateTime ());
 
         // scramble user input
-        ReplyBuffer message = dataRecord.getMessage ();
-        if (message instanceof TN3270ExtendedCommand)
-          message = ((TN3270ExtendedCommand) message).getCommand ();
-
-        if (message instanceof AIDCommand)
+        if (safeFlag)
         {
-          AIDCommand aidCommand = (AIDCommand) message;
-          aidCommand.scramble ();
+          ReplyBuffer message = dataRecord.getMessage ();
+          if (message instanceof TN3270ExtendedCommand)
+            message = ((TN3270ExtendedCommand) message).getCommand ();
+
+          if (message instanceof AIDCommand)
+          {
+            AIDCommand aidCommand = (AIDCommand) message;
+            aidCommand.scramble ();
+          }
         }
 
         // write the data buffer after adding back the double-FF bytes
@@ -262,6 +250,13 @@ public class Session implements Iterable<SessionRecord>
     {
       e.printStackTrace ();
     }
+  }
+
+  public void safeSave (File file)
+  {
+    safeFlag = true;
+    save (file);
+    safeFlag = false;
   }
 
   /**
