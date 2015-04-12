@@ -24,29 +24,29 @@ public class CharacterSize
       this.font = font;
       FontMetrics fm = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
 
-      if (true)
+      //      width = fm.computeStringWidth ("W");
+      //      height = fm.getLineHeight ();
+      //      ascent = fm.getAscent ();
+      //
+      //      float ratio = height / width;
+      //      System.out.printf ("%-10.10s h %f, w %f, r %f%n", font.getFamily (), height, width,
+      //                         ratio);
+      width = (int) (fm.computeStringWidth ("W") + 0.99);
+      height = (int) (fm.getLineHeight () + 0.99);
+      ascent = (int) (fm.getAscent () + 0.99);
+
+      float ratio = height / width;
+      System.out.printf ("%-10.10s h %f, w %f, r %f%n", font.getFamily (), height, width,
+                         ratio);
+      if (ratio < 1.8)
       {
-        width = (float) (((int) fm.computeStringWidth ("W")) + 1.0);
-        height = (float) (((int) fm.getLineHeight ()) + 1.0);
-        ascent = (float) (((int) fm.getAscent ()) + 1.0);
-        float ratio = height / width;
-        System.out.printf ("Height %f, Width %f, ratio %f%n", height, width, ratio);
-        if (ratio < 1.8)
-        {
-          ++height;
-          System.out.println ("bumping height");
-        }
-        else if (ratio > 2.4)
-        {
-          ++width;
-          System.out.println ("bumping width");
-        }
+        ++height;
+        System.out.println ("bumping height");
       }
-      else
+      else if (ratio > 2.4)
       {
-        width = fm.computeStringWidth ("w");
-        height = fm.getLineHeight ();
-        ascent = fm.getAscent ();
+        ++width;
+        System.out.println ("bumping width");
       }
     }
   }

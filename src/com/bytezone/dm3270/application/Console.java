@@ -74,9 +74,7 @@ public class Console extends Application
   private ReplayStage replayStage;
 
   private final String userHome = System.getProperty ("user.home");
-
   private boolean release;
-
   private final MenuBar menuBar = new MenuBar ();
 
   public enum Function
@@ -138,10 +136,10 @@ public class Console extends Application
     editClientsButton = clientSitesListStage.getEditButton ();
     editClientsButton.setStyle ("-fx-font-size: 10;");
 
-    int width = 200;
-    fileComboBox.setPrefWidth (width / 1.5);
-    serverComboBox.setPrefWidth (width / 1.5);
-    clientComboBox.setPrefWidth (width / 1.5);
+    int width = 150;
+    fileComboBox.setPrefWidth (width);
+    serverComboBox.setPrefWidth (width);
+    clientComboBox.setPrefWidth (width);
 
     release = runMode.equals ("Release");
     if (release)
@@ -339,15 +337,15 @@ public class Console extends Application
     Menu menuDebug = new Menu ("Mode");
 
     List<String> families = Font.getFamilies ();
-    //    for (String name : families)
-    //      System.out.println (name);
+    //    CharacterSize characterSize = new CharacterSize (Font.font ("Monospaced", 18));
     for (String fontName : preferredFontNames)
     {
       boolean fontExists = families.contains (fontName);
-      boolean disable = !fontExists;
+      //      if (fontExists)
+      //        characterSize.changeFont (Font.font (fontName, 18));
       if (fontSelected.isEmpty () && fontExists)
         fontSelected = fontName;
-      setMenuItem (fontName, fontGroup, menuFont, fontSelected, disable);
+      setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
     }
 
     // select Monospaced if there is still no font selected
