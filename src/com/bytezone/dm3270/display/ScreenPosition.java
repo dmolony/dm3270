@@ -233,13 +233,13 @@ public class ScreenPosition
 
   private void doGraphics (double x, double y)
   {
-    double dx = 5;        // should it be half the width?
-                   // what about dy?
+    double dx = characterSize.getWidth () / 2;
+    double dy = characterSize.getHeight () / 2;
 
     switch (value)
     {
       case HORIZONTAL_LINE:
-        gc.strokeLine (x, y + 10, x + characterSize.getWidth (), y + 10);
+        gc.strokeLine (x, y + dy, x + characterSize.getWidth (), y + dy);
         break;
 
       case VERTICAL_LINE:
@@ -247,23 +247,23 @@ public class ScreenPosition
         break;
 
       case TOP_LEFT:
-        gc.strokeLine (x + dx, y + 11, x + dx, y + 20);
-        gc.strokeLine (x + dx, y + 10, x + 10, y + 10);
+        gc.strokeLine (x + dx, y + dy, x + dx, y + 2 * dy);         // vertical
+        gc.strokeLine (x + dx, y + dy, x + 2 * dx, y + dy);         // horizontal
         break;
 
       case TOP_RIGHT:
-        gc.strokeLine (x + dx, y + 11, x + dx, y + 20);
-        gc.strokeLine (x, y + 10, x + dx, y + 10);
+        gc.strokeLine (x + dx, y + dy, x + dx, y + 2 * dy);         // vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);                  // horizontal
         break;
 
       case BOTTOM_LEFT:
-        gc.strokeLine (x + dx, y, x + dx, y + 10);
-        gc.strokeLine (x + dx, y + 10, x + 10, y + 10);
+        gc.strokeLine (x + dx, y, x + dx, y + dy);                  // vertical
+        gc.strokeLine (x + dx, y + dy, x + 2 * dx, y + dy);         // horizontal
         break;
 
       case BOTTOM_RIGHT:
-        gc.strokeLine (x + dx, y, x + dx, y + 10);
-        gc.strokeLine (x, y + 10, x + dx, y + 10);
+        gc.strokeLine (x + dx, y, x + dx, y + dy);                  // vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);                  // horizontal
         break;
 
       default:
