@@ -233,7 +233,8 @@ public class ScreenPosition
 
   private void doGraphics (double x, double y)
   {
-    double dx = 4.5;
+    double dx = 5;        // should it be half the width?
+                   // what about dy?
 
     switch (value)
     {
