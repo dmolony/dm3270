@@ -42,7 +42,7 @@ public class SpyStage extends BasicTelnetStage
     final TextArea textArea = getTextArea (600);
 
     Button btnSave = new Button ("Full Save");
-    Button btnScramble = new Button ("Safe Save");
+    Button btnScramble = new Button ("Redacted");
 
     btnSave.setPrefWidth (BUTTON_WIDTH);
     btnScramble.setPrefWidth (BUTTON_WIDTH);

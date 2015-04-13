@@ -118,7 +118,7 @@ public class TelnetProcessor
           continue;
         }
 
-        System.err.println ("Unknown command");   // handle error somehow
+        System.err.printf ("Unknown command: %02X%n", thisByte);   // handle error somehow
       }
       else if (command != 0)                // the third byte has arrived (in thisByte)
       {

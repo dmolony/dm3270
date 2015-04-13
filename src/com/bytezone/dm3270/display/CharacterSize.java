@@ -24,44 +24,35 @@ public class CharacterSize
       this.font = font;
       FontMetrics fm = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
 
-      //      width = fm.computeStringWidth ("W");
-      //      height = fm.getLineHeight ();
-      //      ascent = fm.getAscent ();
-      //
-      //      float ratio = height / width;
-      //      System.out.printf ("%-10.10s h %f, w %f, r %f%n", font.getFamily (), height, width,
-      //                         ratio);
       width = (int) (fm.computeStringWidth ("W") + 0.99);
       height = (int) (fm.getLineHeight () + 0.99);
       ascent = (int) (fm.getAscent () + 0.99);
 
       float ratio = (float) height / width;
-      System.out.printf ("%-14.14s h %d, w %d, r %f%n", font.getFamily (), height, width,
-                         ratio);
       if (ratio < 1.8)
       {
         ++height;
-        System.out.println ("bumping height");
+        System.out.println ("adjusting height");
       }
       else if (ratio > 2.4)
       {
         ++width;
-        System.out.println ("bumping width");
+        System.out.println ("adjusting width");
       }
     }
   }
 
-  public float getWidth ()
+  public int getWidth ()
   {
     return width;
   }
 
-  public float getHeight ()
+  public int getHeight ()
   {
     return height;
   }
 
-  public float getAscent ()
+  public int getAscent ()
   {
     return ascent;
   }
@@ -69,7 +60,7 @@ public class CharacterSize
   @Override
   public String toString ()
   {
-    return String.format ("[Font=%s, height=%2.2f, width=%2.2f, ascent=%2.2f]",
-                          font.getName (), height, width, ascent);
+    return String.format ("[Font=%s, height=%d, width=%d, ascent=%d, ratio=%2.2f]",
+                          font.getName (), height, width, ascent, (float) height / width);
   }
 }

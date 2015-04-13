@@ -32,8 +32,8 @@ public class Screen extends Canvas
   private final Cursor cursor = new Cursor (this);
   private final Function function;
 
-  private final float xOffset = 4;      // padding left and right
-  private final float yOffset = 4;      // padding top and bottom
+  private final int xOffset = 4;      // padding left and right
+  private final int yOffset = 4;      // padding top and bottom
 
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
@@ -188,8 +188,8 @@ public class Screen extends Canvas
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    double x = xOffset + col * characterSize.getWidth ();
-    double y = yOffset + row * characterSize.getHeight ();
+    int x = xOffset + col * characterSize.getWidth ();
+    int y = yOffset + row * characterSize.getHeight ();
 
     screenPosition.draw (x, y, hasCursor);
   }

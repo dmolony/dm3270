@@ -183,11 +183,11 @@ public class ScreenPosition
     return ptr;
   }
 
-  public void draw (double x, double y, boolean hasCursor)
+  public void draw (int x, int y, boolean hasCursor)
   {
-    double charWidth = characterSize.getWidth ();
-    double charHeight = characterSize.getHeight ();
-    double ascent = characterSize.getAscent ();
+    int charWidth = characterSize.getWidth ();
+    int charHeight = characterSize.getHeight ();
+    int ascent = characterSize.getAscent ();
 
     // Draw background
     if (hasCursor)
@@ -225,40 +225,42 @@ public class ScreenPosition
       if (screenContext.underscore)
       {
         gc.setStroke (screenContext.foregroundColor);
-        double y2 = y + charHeight - 1;
+        int y2 = y + charHeight - 1;
         gc.strokeLine (x, y2, x + charWidth, y2);
       }
     }
   }
 
-  private void doGraphics (double x, double y)
+  private void doGraphics (int x, int y)
   {
-    double dx = characterSize.getWidth () / 2;
-    double dy = characterSize.getHeight () / 2;
+    int width = characterSize.getWidth ();
+    int height = characterSize.getHeight ();
+    int dx = width / 2;
+    int dy = height / 2;
 
     switch (value)
     {
       case HORIZONTAL_LINE:
-        gc.strokeLine (x, y + dy, x + characterSize.getWidth (), y + dy);
+        gc.strokeLine (x, y + dy, x + width, y + dy);
         break;
 
       case VERTICAL_LINE:
-        gc.strokeLine (x + dx, y, x + dx, y + characterSize.getHeight ());
+        gc.strokeLine (x + dx, y, x + dx, y + height);
         break;
 
       case TOP_LEFT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + 2 * dy);         // vertical
-        gc.strokeLine (x + dx, y + dy, x + 2 * dx, y + dy);         // horizontal
+        gc.strokeLine (x + dx, y + dy, x + dx, y + height);         // vertical
+        gc.strokeLine (x + dx, y + dy, x + width, y + dy);         // horizontal
         break;
 
       case TOP_RIGHT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + 2 * dy);         // vertical
+        gc.strokeLine (x + dx, y + dy, x + dx, y + height);         // vertical
         gc.strokeLine (x, y + dy, x + dx, y + dy);                  // horizontal
         break;
 
       case BOTTOM_LEFT:
         gc.strokeLine (x + dx, y, x + dx, y + dy);                  // vertical
-        gc.strokeLine (x + dx, y + dy, x + 2 * dx, y + dy);         // horizontal
+        gc.strokeLine (x + dx, y + dy, x + width, y + dy);          // horizontal
         break;
 
       case BOTTOM_RIGHT:
@@ -272,7 +274,7 @@ public class ScreenPosition
     }
   }
 
-  public void erase (GraphicsContext gc, double x, double y)
+  public void erase (GraphicsContext gc, int x, int y)
   {
     gc.setFill (screenContext.backgroundColor);
     gc.fillRect (x, y, characterSize.getWidth (), characterSize.getHeight ());
