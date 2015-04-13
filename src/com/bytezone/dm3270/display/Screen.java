@@ -1,18 +1,28 @@
 package com.bytezone.dm3270.display;
 
+import static com.bytezone.dm3270.application.Console.Function.TERMINAL;
+import static com.bytezone.dm3270.attributes.Attribute.AttributeType.RESET;
+import static com.bytezone.dm3270.commands.AIDCommand.NO_AID_SPECIFIED;
+import static com.bytezone.dm3270.orders.Order.SET_ATTRIBUTE;
+import static com.bytezone.dm3270.orders.Order.START_FIELD;
+import static com.bytezone.dm3270.orders.Order.START_FIELD_EXTENDED;
+import static com.bytezone.dm3270.structuredfields.SetReplyMode.RM_CHARACTER;
+
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.attributes.Attribute;
-import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -39,6 +49,9 @@ public class Screen extends Canvas
   private boolean keyboardLocked;
   private boolean insertMode;
   private boolean readModifiedAll = false;
+
+  private final boolean recording = true;
+  private final List<ImageView> screens = new ArrayList<> ();
 
   private byte currentAID;
   private byte replyMode;
@@ -349,15 +362,15 @@ public class Screen extends Canvas
 
     if (replyMode == SetReplyMode.RM_FIELD)
     {
-      buffer[ptr++] = Order.START_FIELD;
+      buffer[ptr++] = START_FIELD;
       buffer[ptr++] = sfa.getAttributeValue ();
     }
     else
     {
-      buffer[ptr++] = Order.START_FIELD_EXTENDED;
+      buffer[ptr++] = START_FIELD_EXTENDED;
 
       List<Attribute> attributes = sp.getAttributes ();
-      buffer[ptr++] = (byte) (attributes.size () + 1);    // include StartFieldAttribute
+      buffer[ptr++] = (byte) (attributes.size () + 1);    // +1 for StartFieldAttribute
 
       ptr = sfa.pack (buffer, ptr);                       // pack the SFA first
       for (Attribute attribute : attributes)
@@ -368,11 +381,11 @@ public class Screen extends Canvas
 
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
-    if (replyMode == SetReplyMode.RM_CHARACTER)
+    if (replyMode == RM_CHARACTER)
       for (Attribute attribute : sp.getAttributes ())
-        if (attribute.getAttributeType () == AttributeType.RESET)
+        if (attribute.getAttributeType () == RESET)
         {
-          buffer[ptr++] = Order.SET_ATTRIBUTE;
+          buffer[ptr++] = SET_ATTRIBUTE;
           ptr = attribute.pack (buffer, ptr);
         }
         else
@@ -430,7 +443,7 @@ public class Screen extends Canvas
   {
     keyboardLocked = false;
     notifyKeyboardStatusChange ();
-    setAID (AIDCommand.NO_AID_SPECIFIED);
+    setAID (NO_AID_SPECIFIED);
     cursor.setVisible (true);
   }
 
@@ -438,22 +451,20 @@ public class Screen extends Canvas
   {
     keyboardLocked = true;
     notifyKeyboardStatusChange ();
-    if (function == Function.TERMINAL)
+    if (function == TERMINAL)
       cursor.setVisible (false);
+    if (recording)
+    {
+      System.out.println ("copying screen");
+      screens.add (copy ());
+    }
   }
 
   public void resetModified ()
   {
-    int fieldsReset = 0;
     for (Field field : getUnprotectedFields ())
       if (field.isModified ())
-      {
         field.setModified (false);
-        ++fieldsReset;
-      }
-
-    //    if (fieldsReset > 0)
-    //      System.out.printf ("Fields reset: %d%n", fieldsReset);
   }
 
   public boolean isKeyboardLocked ()
@@ -481,6 +492,28 @@ public class Screen extends Canvas
   public void removeStatusChangeListener (KeyboardStatusListener listener)
   {
     keyboardStatusListeners.remove (listener);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Screen image
+  // ---------------------------------------------------------------------------------//
+
+  private ImageView copy ()
+  {
+    // Create a copy of the current canvas
+    WritableImage wim = new WritableImage ((int) getWidth (), (int) getHeight ());
+    snapshot (null, wim);
+    ImageView iv = new ImageView ();
+    iv.setImage (wim);
+    return iv;
+  }
+
+  public ImageView getImageView (int index)
+  {
+    int position = screens.size () - index;
+    if (position >= 0 && position < screens.size ())
+      return screens.get (position);
+    return null;
   }
 
   // ---------------------------------------------------------------------------------//

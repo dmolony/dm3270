@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -43,6 +44,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private Thread terminalServerThread;
 
   private int commandHeaderCount;
+  private int screenIndex;
 
   public ConsoleStage (Screen screen)
   {
@@ -126,11 +128,33 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     });
 
     btnBack.setOnAction ( (e) -> {
-      System.out.println ("back");
+      System.out.println (screenIndex);
+      ImageView imageView = screen.getImageView (++screenIndex);
+      if (imageView == null)
+      {
+        screenIndex = 0;
+        borderPane.setCenter (screen);
+      }
+      else
+      {
+        BorderPane.setMargin (imageView, new Insets (margin, margin, 0, margin));
+        borderPane.setCenter (imageView);
+      }
     });
 
     btnForward.setOnAction ( (e) -> {
-      System.out.println ("forward");
+      System.out.println (screenIndex);
+      ImageView imageView = screen.getImageView (--screenIndex);
+      if (imageView == null)
+      {
+        screenIndex = 0;
+        borderPane.setCenter (screen);
+      }
+      else
+      {
+        BorderPane.setMargin (imageView, new Insets (margin, margin, 0, margin));
+        borderPane.setCenter (imageView);
+      }
     });
   }
 
