@@ -451,13 +451,12 @@ public class Screen extends Canvas
   {
     keyboardLocked = true;
     notifyKeyboardStatusChange ();
+
     if (function == TERMINAL)
       cursor.setVisible (false);
+
     if (recording)
-    {
-      System.out.println ("copying screen");
       screens.add (copy ());
-    }
   }
 
   public void resetModified ()

@@ -128,7 +128,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     });
 
     btnBack.setOnAction ( (e) -> {
-      System.out.println (screenIndex);
       ImageView imageView = screen.getImageView (++screenIndex);
       if (imageView == null)
       {
@@ -143,7 +142,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     });
 
     btnForward.setOnAction ( (e) -> {
-      System.out.println (screenIndex);
       ImageView imageView = screen.getImageView (--screenIndex);
       if (imageView == null)
       {
