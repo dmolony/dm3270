@@ -5,7 +5,6 @@ import java.util.prefs.Preferences;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -13,15 +12,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TabPane.TabClosingPolicy;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,7 +30,6 @@ import com.bytezone.dm3270.session.SessionTable;
 
 public class ReplayStage extends BasicStage
 {
-  private static final int TEXT_WIDTH = 540;
   private final SessionTable table = new SessionTable ();
   private final Preferences prefs;
 
@@ -66,31 +59,12 @@ public class ReplayStage extends BasicStage
     final VBox leftPane = getVBox ();
     leftPane.getChildren ().addAll (table, checkBoxes);
 
-    TabPane tabPane = new TabPane ();
-    tabPane.setSide (Side.TOP);
-    tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
-
-    final TextArea commandTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea replyTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea screenTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea fieldsTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
-
-    final Tab tabCommand = getTab ("Command", commandTextArea);
-    final Tab tabReply = getTab ("Reply", replyTextArea);
-    final Tab tabScreen = getTab ("Screen", screenTextArea);
-    final Tab tabFields = getTab ("Fields", fieldsTextArea);
-    final Tab tabBuffer = getTab ("Buffer", bufferTextArea);
-    final Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
-
-    tabPane.getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
-                               tabReplyBuffer);
+    CommandPane commandPane = new CommandPane (screen, table, DO_PROCESS);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
 
-    splitPane.getItems ().addAll (leftPane, tabPane);
+    splitPane.getItems ().addAll (leftPane, commandPane);
     splitPane.setDividerPositions (0.37f);
 
     BorderPane borderPane = new BorderPane ();
@@ -144,15 +118,6 @@ public class ReplayStage extends BasicStage
     showTelnetCB.setSelected (showTelnet);
     show3270ECB.setSelected (true);
     show3270ECB.setSelected (showExtended);
-
-    table
-        .getSelectionModel ()
-        .selectedItemProperty ()
-        .addListener ( (ObservableValue<? extends SessionRecord> observable,
-                          SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue, commandTextArea, bufferTextArea,
-                                 replyTextArea, replyBufferTextArea, fieldsTextArea,
-                                 screenTextArea, DO_PROCESS, screen));
 
     Rectangle2D primaryScreenBounds =
         javafx.stage.Screen.getPrimary ().getVisualBounds ();

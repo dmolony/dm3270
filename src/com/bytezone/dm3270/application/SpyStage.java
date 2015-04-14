@@ -3,22 +3,20 @@ package com.bytezone.dm3270.application;
 import java.io.File;
 
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
-import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
 import com.bytezone.dm3270.streams.TelnetState;
@@ -39,7 +37,7 @@ public class SpyStage extends BasicTelnetStage
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
     spyServer.prevent3270E (prevent3270E);
 
-    final TextArea textArea = getTextArea (600);
+    CommandPane commandPane = new CommandPane (screen, table, DONT_PROCESS);
 
     Button btnSave = new Button ("Full Save");
     Button btnScramble = new Button ("Redacted");
@@ -47,24 +45,25 @@ public class SpyStage extends BasicTelnetStage
     btnSave.setPrefWidth (BUTTON_WIDTH);
     btnScramble.setPrefWidth (BUTTON_WIDTH);
 
-    final HBox hbox = getHBox ();
+    final HBox hbox = new HBox ();
+    hbox.setSpacing (15);
     hbox.getChildren ().addAll (btnSave, btnScramble);
+
+    final VBox leftPane = getVBox ();
+    leftPane.getChildren ().addAll (table, hbox);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
 
-    splitPane.getItems ().addAll (table, textArea);
+    splitPane.getItems ().addAll (leftPane, commandPane);
     splitPane.setDividerPositions (0.35f);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);
-    borderPane.setBottom (hbox);
 
-    Scene scene = new Scene (borderPane, 900, 800);     // width/height
+    Scene scene = new Scene (borderPane);
     setTitle ("Terminal Spy");
     setScene (scene);
-    setX (80);
-    setY (30);
 
     String message =
         String.format ("Connect a terminal to localhost:%d%n%n"
@@ -73,14 +72,6 @@ public class SpyStage extends BasicTelnetStage
 
     table.setPlaceholder (new Label (message));
     table.setItems (session.getDataRecords ());
-
-    table
-        .getSelectionModel ()
-        .selectedItemProperty ()
-        .addListener ( (ObservableValue<? extends SessionRecord> observable,
-                          SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue, textArea, null, null, null, null, null,
-                                 DONT_PROCESS, screen));
 
     btnSave.setOnAction ( (e) -> {
       FileChooser fileChooser = new FileChooser ();

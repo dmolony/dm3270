@@ -65,7 +65,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     ToolBar toolbar = new ToolBar ();
     Button btnBack = new Button ("<");
     Button btnForward = new Button (">");
-    toolbar.getItems ().addAll (btnBack, btnForward);
+    Button btnCurrent = new Button ("+");
+    toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
 
     //      byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
     //      Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
@@ -153,6 +154,11 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
         BorderPane.setMargin (imageView, new Insets (margin, margin, 0, margin));
         borderPane.setCenter (imageView);
       }
+    });
+
+    btnCurrent.setOnAction ( (e) -> {
+      screenIndex = 0;
+      borderPane.setCenter (screen);
     });
   }
 

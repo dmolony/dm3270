@@ -34,6 +34,7 @@ public class Screen extends Canvas
 {
   private static final boolean DONT_REBUILD_FIELDS = false;
   private static final byte[] buffer = new byte[4096];
+  private static final int MAX_SCREENS = 5;
 
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
@@ -69,7 +70,6 @@ public class Screen extends Canvas
     this.function = function;
 
     GraphicsContext gc = getGraphicsContext2D ();
-    //    gc.translate (0.5, 0.5);                            // what does this do?
     characterSize = new CharacterSize (font);
     setFont (font);
 
@@ -456,7 +456,11 @@ public class Screen extends Canvas
       cursor.setVisible (false);
 
     if (recording)
+    {
       screens.add (copy ());
+      if (screens.size () > MAX_SCREENS)
+        screens.remove (0);
+    }
   }
 
   public void resetModified ()
