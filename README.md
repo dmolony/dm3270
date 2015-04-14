@@ -11,7 +11,7 @@ The four functions available in Debug Mode are Spy, Replay, Terminal and Test. T
 ![Debug Connection](resources/connect2.png?raw=true "debug connection")
 #### Spy Function
 Waits for a terminal emulator to connect to the client, and then it completes the connection to the server. The mainframe session can be used as normal, however all communication buffers are collected and can be saved in a session file to replay later. The session file should be named spy99.txt, where 99 is any two-digit number.
-![Spy screen](resources/spy2.png?raw=true "spy screen")
+![Spy screen](resources/spy.png?raw=true "spy screen")
 #### Replay Function
 Uses the dm3270 terminal to replay the commands that were previously recorded in a session file. Individual buffers can be selected and examined. The anticipated reply message (if any) is also displayed. Each command (both client and server) is sent to the terminal for processing.
 ![Replay screen](resources/replay2.png?raw=true "replay screen")
