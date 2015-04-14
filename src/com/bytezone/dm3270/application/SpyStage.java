@@ -61,8 +61,9 @@ public class SpyStage extends BasicTelnetStage
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);
 
-    Scene scene = new Scene (borderPane);
     setTitle ("Terminal Spy");
+
+    Scene scene = new Scene (borderPane);
     setScene (scene);
 
     String message =
@@ -72,6 +73,18 @@ public class SpyStage extends BasicTelnetStage
 
     table.setPlaceholder (new Label (message));
     table.setItems (session.getDataRecords ());
+
+    //    Rectangle2D primaryScreenBounds =
+    //        javafx.stage.Screen.getPrimary ().getVisualBounds ();
+    //    String osName = System.getProperty ("os.name");
+    //    if (osName.startsWith ("Mac"))
+    //    {
+    //      System.out.println (primaryScreenBounds.getMinX ()
+    //          + primaryScreenBounds.getWidth ());
+    //      System.out.println (primaryScreenBounds.getMinY ());
+    //    }
+    setX (1200);
+    setY (20);
 
     btnSave.setOnAction ( (e) -> {
       FileChooser fileChooser = new FileChooser ();
