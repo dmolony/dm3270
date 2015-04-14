@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.application;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,6 +39,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.display.Screen;
@@ -65,7 +67,9 @@ public class Console extends Application
   private Button okButton = new Button ("OK");
   private Button cancelButton = new Button ("Cancel");
   private final ToggleGroup group = new ToggleGroup ();
+
   private Preferences prefs;
+  String spyFolder;
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
@@ -112,6 +116,7 @@ public class Console extends Application
     String fontSelected = prefs.get ("FontName", "");
     String sizeSelected = prefs.get ("FontSize", "16");
     String runMode = prefs.get ("Mode", "Release");
+    spyFolder = prefs.get ("SpyFolder", "");
 
     SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5);
     SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5);
@@ -124,7 +129,7 @@ public class Console extends Application
 
     prevent3270E = new CheckBox ();
 
-    ObservableList<String> sessionFiles = getSessionFiles ();
+    ObservableList<String> sessionFiles = getSessionFiles (spyFolder);
     fileComboBox = new ComboBox<> (sessionFiles);
     fileComboBox.setVisibleRowCount (12);
     fileComboBox.getSelectionModel ().select (fileText);
@@ -165,7 +170,7 @@ public class Console extends Application
                      row ("Server", serverComboBox, editServersButton),
                      row ("Client", clientComboBox, editClientsButton),
                      //                     row ("Prevent 3270-E", prevent3270E),
-                     row ("Replay file", fileComboBox, editLocationButton),      //
+                     row ("Replay", fileComboBox, editLocationButton),      //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
       if (sessionFiles.size () == 0)
@@ -340,18 +345,17 @@ public class Console extends Application
           }
         });
 
-    cancelButton.setOnAction ( (e) -> dialogStage.hide ());
+    cancelButton.setOnAction (e -> dialogStage.hide ());
+
+    editLocationButton.setOnAction (e -> editLocation (dialogStage));
 
     Menu menuFont = new Menu ("Fonts");
     Menu menuDebug = new Menu ("Mode");
 
     List<String> families = Font.getFamilies ();
-    //    CharacterSize characterSize = new CharacterSize (Font.font ("Monospaced", 18));
     for (String fontName : preferredFontNames)
     {
       boolean fontExists = families.contains (fontName);
-      //      if (fontExists)
-      //        characterSize.changeFont (Font.font (fontName, 18));
       if (fontSelected.isEmpty () && fontExists)
         fontSelected = fontName;
       setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
@@ -408,31 +412,39 @@ public class Console extends Application
     savePreferences ();
   }
 
-  private ObservableList<String> getSessionFiles ()
+  private void editLocation (Stage stage)
   {
-    String[] locations = new String[2];
-    locations[0] = userHome + "/Dropbox/Mainframe documentation/";
-    locations[1] = userHome + "/dm3270/";
+    DirectoryChooser chooser = new DirectoryChooser ();
+    chooser.setTitle ("Choose Spy Folder");
+    File currentLocation = spyFolder.isEmpty () ? null : new File (spyFolder);
+    if (currentLocation != null && currentLocation.exists ())
+      chooser.setInitialDirectory (currentLocation);
+
+    File selectedDirectory = chooser.showDialog (stage);
+    if (selectedDirectory != null)
+    {
+      spyFolder = selectedDirectory.getAbsolutePath ();
+      fileComboBox.getItems ().clear ();
+      fileComboBox.setItems (getSessionFiles (spyFolder));
+    }
+  }
+
+  private ObservableList<String> getSessionFiles (String folderName)
+  {
     List<Path> files = null;
 
-    for (String filename : locations)
+    try
     {
-      Path path = Paths.get (filename);
-      if (!Files.exists (path) || !Files.isDirectory (path))
-        continue;
-
-      try
-      {
+      Path path = Paths.get (folderName);
+      if (Files.exists (path) && Files.isDirectory (path))
         files =
             Files.list (path)
                 .filter (p -> p.getFileName ().toString ().matches ("spy[0-9]{2}\\.txt"))
                 .collect (Collectors.toList ());
-        break;
-      }
-      catch (IOException e)
-      {
-        e.printStackTrace ();
-      }
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace ();
     }
 
     if (files == null)
@@ -449,6 +461,7 @@ public class Console extends Application
     prefs.put ("FontSize", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
     prefs.put ("Mode", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
     prefs.put ("ReplayFile", fileComboBox.getValue ());
+    prefs.put ("SpyFolder", spyFolder);
   }
 
   private void setDisable (boolean server, boolean client, boolean pr, boolean fn)
