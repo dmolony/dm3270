@@ -50,6 +50,8 @@ public class Console extends Application
           "Source Code Pro", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
+  private static final int EDIT_BUTTON_WIDTH = 50;
+  private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
 
   private ComboBox<String> fileComboBox;
   private ComboBox<String> serverComboBox;
@@ -58,6 +60,7 @@ public class Console extends Application
 
   Button editServersButton;
   Button editClientsButton;
+  Button editLocationButton;
 
   private Button okButton = new Button ("OK");
   private Button cancelButton = new Button ("Cancel");
@@ -129,12 +132,18 @@ public class Console extends Application
     serverComboBox = serverSitesListStage.getComboBox ();
     serverComboBox.setVisibleRowCount (6);
     editServersButton = serverSitesListStage.getEditButton ();
-    editServersButton.setStyle ("-fx-font-size: 10;");
+    editServersButton.setStyle (EDIT_BUTTON_FONT_SIZE);
+    editServersButton.setMinWidth (EDIT_BUTTON_WIDTH);
 
     clientComboBox = clientSitesListStage.getComboBox ();
     clientComboBox.setVisibleRowCount (4);
     editClientsButton = clientSitesListStage.getEditButton ();
-    editClientsButton.setStyle ("-fx-font-size: 10;");
+    editClientsButton.setStyle (EDIT_BUTTON_FONT_SIZE);
+    editClientsButton.setMinWidth (EDIT_BUTTON_WIDTH);
+
+    editLocationButton = new Button ("Locate");
+    editLocationButton.setStyle (EDIT_BUTTON_FONT_SIZE);
+    editLocationButton.setMinWidth (EDIT_BUTTON_WIDTH);
 
     int width = 150;
     fileComboBox.setPrefWidth (width);
@@ -156,7 +165,7 @@ public class Console extends Application
                      row ("Server", serverComboBox, editServersButton),
                      row ("Client", clientComboBox, editClientsButton),
                      //                     row ("Prevent 3270-E", prevent3270E),
-                     row ("Replay file", fileComboBox),      //
+                     row ("Replay file", fileComboBox, editLocationButton),      //
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
       if (sessionFiles.size () == 0)
@@ -450,6 +459,7 @@ public class Console extends Application
     editClientsButton.setDisable (client);
     prevent3270E.setDisable (pr);
     fileComboBox.setDisable (fn);
+    editLocationButton.setDisable (fn);
   }
 
   private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
