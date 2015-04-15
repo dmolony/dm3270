@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
 
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
@@ -33,7 +35,6 @@ public class Session implements Iterable<SessionRecord>
 {
   private final ObservableList<SessionRecord> dataRecords = FXCollections
       .observableArrayList ();
-  //  private final SessionMode sessionMode;
   private final Function function;
   private final Screen screen;
   private final TelnetState telnetState = new TelnetState ();
@@ -42,6 +43,7 @@ public class Session implements Iterable<SessionRecord>
   private String serverName = null;
   private final List<String> labels = new ArrayList<> ();
   private boolean safeFlag;
+  private final Label headerLabel = new Label ();
 
   /**
    * Creates a new, empty session in either Spy or Terminal mode.
@@ -51,7 +53,6 @@ public class Session implements Iterable<SessionRecord>
   public Session (Screen screen, TelnetState telnetState)
   {
     this.screen = screen;
-    //    sessionMode = mode;
     this.function = screen.getFunction ();
   }
 
@@ -64,7 +65,6 @@ public class Session implements Iterable<SessionRecord>
    */
   public Session (Screen screen, List<String> lines)
   {
-    //    sessionMode = SessionMode.REPLAY;
     if (screen == null)
       function = Console.Function.TEST;
     else
@@ -79,7 +79,6 @@ public class Session implements Iterable<SessionRecord>
 
   public Session (Screen screen, Path path)
   {
-    //    sessionMode = SessionMode.REPLAY;
     this.function = screen.getFunction ();
     this.screen = screen;
 
@@ -134,14 +133,19 @@ public class Session implements Iterable<SessionRecord>
     return dataRecords.size ();
   }
 
-  public String getClientName ()
+  private String getClientName ()
   {
     return clientName == null ? "Unknown" : clientName;
   }
 
-  public String getServerName ()
+  private String getServerName ()
   {
     return serverName == null ? "Unknown" : serverName;
+  }
+
+  public Label getHeaderLabel ()
+  {
+    return headerLabel;
   }
 
   /**
@@ -158,8 +162,7 @@ public class Session implements Iterable<SessionRecord>
     dataRecords.add (sessionRecord);       // should this be concurrent?
 
     // this code checks to see whether it can identify the client and/or server
-    //    if (sessionMode == SessionMode.REPLAY && sessionRecord.isCommand ())
-    if (function == Function.REPLAY && sessionRecord.isCommand ())
+    if (function != Function.TERMINAL && sessionRecord.isCommand ())
       if (clientName == null && sessionRecord.getSource () == Source.CLIENT)
         checkClientName (sessionRecord.getCommand ());
       else if (serverName == null && sessionRecord.getSource () == Source.SERVER)
@@ -169,7 +172,11 @@ public class Session implements Iterable<SessionRecord>
   private void checkClientName (Command command)
   {
     if (command instanceof ReadStructuredFieldCommand)
+    {
       clientName = ((ReadStructuredFieldCommand) command).getClientName ();
+      if (clientName != null)
+        notifyChangeListeners ();
+    }
   }
 
   private void checkServerName (Command command)
@@ -198,8 +205,17 @@ public class Session implements Iterable<SessionRecord>
         }
       }
 
-    if (serverName == null)
-      serverName = "Unknown";
+    if (serverName != null)
+      notifyChangeListeners ();
+  }
+
+  private void notifyChangeListeners ()
+  {
+    System.out.printf ("Server: %s, Client: %s%n", getServerName (), getClientName ());
+
+    Platform.runLater ( () -> headerLabel.setText (String.format ("%s : %s",
+                                                                  getServerName (),
+                                                                  getClientName ())));
   }
 
   public ObservableList<SessionRecord> getDataRecords ()

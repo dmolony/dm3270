@@ -4,6 +4,7 @@ import java.io.File;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,6 +13,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 
@@ -37,6 +39,10 @@ public class SpyStage extends BasicTelnetStage
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
     spyServer.prevent3270E (prevent3270E);
 
+    final Label label = session.getHeaderLabel ();
+    label.setFont (new Font ("Arial", 20));
+    label.setPadding (new Insets (10, 10, 10, 10));    // trbl
+
     CommandPane commandPane = new CommandPane (screen, table, DONT_PROCESS);
 
     Button btnSave = new Button ("Full Save");
@@ -56,10 +62,11 @@ public class SpyStage extends BasicTelnetStage
     splitPane.setOrientation (Orientation.HORIZONTAL);
 
     splitPane.getItems ().addAll (leftPane, commandPane);
-    splitPane.setDividerPositions (0.35f);
+    splitPane.setDividerPositions (0.37f);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);
+    borderPane.setTop (label);
 
     setTitle ("Terminal Spy");
 

@@ -44,8 +44,7 @@ public class ReplayStage extends BasicStage
     Session session = new Session (screen, path);
     this.prefs = prefs;
 
-    final Label label =
-        new Label (session.getClientName () + " : " + session.getServerName ());
+    final Label label = session.getHeaderLabel ();
     label.setFont (new Font ("Arial", 20));
     label.setPadding (new Insets (10, 10, 10, 10));    // trbl
 
