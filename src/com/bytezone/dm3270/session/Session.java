@@ -211,8 +211,6 @@ public class Session implements Iterable<SessionRecord>
 
   private void notifyChangeListeners ()
   {
-    System.out.printf ("Server: %s, Client: %s%n", getServerName (), getClientName ());
-
     Platform.runLater ( () -> headerLabel.setText (String.format ("%s : %s",
                                                                   getServerName (),
                                                                   getClientName ())));

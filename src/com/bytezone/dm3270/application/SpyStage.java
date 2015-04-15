@@ -27,14 +27,13 @@ public class SpyStage extends BasicTelnetStage
 {
   private static final int BUTTON_WIDTH = 105;
 
-  private final SessionTable table = new SessionTable ();
   private SpyServer spyServer;
-  private final Session session;
   private Thread serverThread;
 
   public SpyStage (Screen screen, Site serverSite, Site clientSite, boolean prevent3270E)
   {
-    session = new Session (screen, new TelnetState ());
+    SessionTable table = new SessionTable ();
+    Session session = new Session (screen, new TelnetState ());
 
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
     spyServer.prevent3270E (prevent3270E);

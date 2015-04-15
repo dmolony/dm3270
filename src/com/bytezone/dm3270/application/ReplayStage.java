@@ -30,17 +30,13 @@ import com.bytezone.dm3270.session.SessionTable;
 
 public class ReplayStage extends BasicStage
 {
-  private final SessionTable table = new SessionTable ();
   private final Preferences prefs;
-
-  private boolean showTelnet;
-  private boolean showExtended;
-
   private final CheckBox showTelnetCB = new CheckBox ("Show telnet");
   private final CheckBox show3270ECB = new CheckBox ("Show 3270-E");
 
   public ReplayStage (Screen screen, Path path, Preferences prefs)
   {
+    SessionTable table = new SessionTable ();
     Session session = new Session (screen, path);
     this.prefs = prefs;
 
@@ -48,8 +44,8 @@ public class ReplayStage extends BasicStage
     label.setFont (new Font ("Arial", 20));
     label.setPadding (new Insets (10, 10, 10, 10));    // trbl
 
-    showTelnet = prefs.getBoolean ("ShowTelnet", false);
-    showExtended = prefs.getBoolean ("ShowExtended", false);
+    boolean showTelnet = prefs.getBoolean ("ShowTelnet", false);
+    boolean showExtended = prefs.getBoolean ("ShowExtended", false);
 
     final HBox checkBoxes = new HBox ();
     checkBoxes.setSpacing (15);
