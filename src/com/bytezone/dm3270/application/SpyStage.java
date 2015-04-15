@@ -42,7 +42,8 @@ public class SpyStage extends BasicTelnetStage
     label.setFont (new Font ("Arial", 20));
     label.setPadding (new Insets (10, 10, 10, 10));    // trbl
 
-    CommandPane commandPane = new CommandPane (screen, table, DONT_PROCESS);
+    CommandPane commandPane =
+        new CommandPane (screen, table, ProcessInstruction.DontProcess);
 
     Button btnSave = new Button ("Full Save");
     Button btnScramble = new Button ("Redacted");

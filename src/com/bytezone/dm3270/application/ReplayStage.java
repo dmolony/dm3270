@@ -54,7 +54,8 @@ public class ReplayStage extends BasicStage
     final VBox leftPane = getVBox ();
     leftPane.getChildren ().addAll (table, checkBoxes);
 
-    CommandPane commandPane = new CommandPane (screen, table, DO_PROCESS);
+    CommandPane commandPane =
+        new CommandPane (screen, table, ProcessInstruction.DoProcess);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);

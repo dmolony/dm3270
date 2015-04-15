@@ -7,6 +7,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 
+import com.bytezone.dm3270.application.BasicStage.ProcessInstruction;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -22,7 +23,7 @@ public class CommandPane extends TabPane
 {
   private static final int TEXT_WIDTH = 540;
 
-  public CommandPane (Screen screen, SessionTable table, boolean process)
+  public CommandPane (Screen screen, SessionTable table, ProcessInstruction process)
   {
     //    TabPane tabPane = new TabPane ();
     setSide (Side.TOP);
@@ -57,7 +58,8 @@ public class CommandPane extends TabPane
 
   protected void replay (SessionRecord sessionRecord, TextArea textArea,
       TextArea bufferTextArea, TextArea replyTextArea, TextArea replyBufferTextArea,
-      TextArea fieldsTextArea, TextArea screenTextArea, boolean process, Screen screen)
+      TextArea fieldsTextArea, TextArea screenTextArea, ProcessInstruction process,
+      Screen screen)
   {
     if (sessionRecord == null)     // nothing selected
       return;
@@ -75,7 +77,7 @@ public class CommandPane extends TabPane
 
     ReplyBuffer message = sessionRecord.getMessage ();
 
-    if (process)
+    if (process == ProcessInstruction.DoProcess)
       message.process ();       // only process the message when in Replay mode
 
     Buffer reply = message.getReply ();

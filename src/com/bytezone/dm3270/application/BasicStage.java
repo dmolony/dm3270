@@ -14,8 +14,13 @@ import javafx.stage.Stage;
 
 public class BasicStage extends Stage
 {
-  protected static final boolean DONT_PROCESS = false;
-  protected static final boolean DO_PROCESS = true;
+  //  protected static final boolean DONT_PROCESS = false;
+  //  protected static final boolean DO_PROCESS = true;
+
+  enum ProcessInstruction
+  {
+    DoProcess, DontProcess
+  }
 
   protected HBox getHBox ()
   {
