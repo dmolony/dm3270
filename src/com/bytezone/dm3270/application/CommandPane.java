@@ -19,22 +19,24 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
-public class CommandPane extends TabPane
+class CommandPane extends TabPane
 {
   private static final int TEXT_WIDTH = 540;
 
+  private final TextArea commandTextArea = getTextArea (TEXT_WIDTH);
+  private final TextArea replyTextArea = getTextArea (TEXT_WIDTH);
+  private final TextArea screenTextArea = getTextArea (TEXT_WIDTH);
+  private final TextArea fieldsTextArea = getTextArea (TEXT_WIDTH);
+  private final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
+  private final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
+
+  private final ProcessInstruction process;
+  private final Screen screen;
+
   public CommandPane (Screen screen, SessionTable table, ProcessInstruction process)
   {
-    //    TabPane tabPane = new TabPane ();
     setSide (Side.TOP);
     setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
-
-    final TextArea commandTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea replyTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea screenTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea fieldsTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
-    final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
 
     final Tab tabCommand = getTab ("Command", commandTextArea);
     final Tab tabReply = getTab ("Reply", replyTextArea);
@@ -42,6 +44,9 @@ public class CommandPane extends TabPane
     final Tab tabFields = getTab ("Fields", fieldsTextArea);
     final Tab tabBuffer = getTab ("Buffer", bufferTextArea);
     final Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
+
+    this.process = process;
+    this.screen = screen;
 
     getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
                        tabReplyBuffer);
@@ -51,15 +56,10 @@ public class CommandPane extends TabPane
         .selectedItemProperty ()
         .addListener ( (ObservableValue<? extends SessionRecord> observable,
                           SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue, commandTextArea, bufferTextArea,
-                                 replyTextArea, replyBufferTextArea, fieldsTextArea,
-                                 screenTextArea, process, screen));
+                      -> replay (newValue));
   }
 
-  protected void replay (SessionRecord sessionRecord, TextArea textArea,
-      TextArea bufferTextArea, TextArea replyTextArea, TextArea replyBufferTextArea,
-      TextArea fieldsTextArea, TextArea screenTextArea, ProcessInstruction process,
-      Screen screen)
+  protected void replay (SessionRecord sessionRecord)
   {
     if (sessionRecord == null)     // nothing selected
       return;
@@ -82,76 +82,57 @@ public class CommandPane extends TabPane
 
     Buffer reply = message.getReply ();
 
-    if (textArea != null)
-    {
-      textArea.setText ("");
+    commandTextArea.setText ("");
 
-      if (commandHeader != null)
+    if (commandHeader != null)
+    {
+      commandTextArea.appendText (commandHeader.toString ());
+      commandTextArea.appendText ("\n\n");
+    }
+
+    commandTextArea.appendText (message.toString ());
+    commandTextArea.positionCaret (0);
+
+    bufferTextArea.setText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
+    bufferTextArea.positionCaret (0);
+
+    if (sessionRecord.getSource () == Source.SERVER)
+    {
+      fieldsTextArea.setText (screen.getFieldText ());
+      fieldsTextArea.positionCaret (0);
+    }
+
+    screenTextArea.setText (screen.getScreenText ());
+    screenTextArea.positionCaret (0);
+
+    replyTextArea.setText ("");
+    if (reply != null && reply.size () > 0)
+    {
+      replyTextArea.setText ("");
+
+      if (reply instanceof MultiBuffer)
       {
-        textArea.appendText (commandHeader.toString ());
-        textArea.appendText ("\n\n");
-      }
-
-      textArea.appendText (message.toString ());
-      textArea.positionCaret (0);
-    }
-
-    if (bufferTextArea != null)
-    {
-      bufferTextArea.setText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
-      bufferTextArea.positionCaret (0);
-    }
-
-    if (fieldsTextArea != null)
-    {
-      if (sessionRecord.getSource () == Source.SERVER)
-      {
-        fieldsTextArea.setText (screen.getFieldText ());
-        fieldsTextArea.positionCaret (0);
-      }
-    }
-
-    if (screenTextArea != null)
-    {
-      screenTextArea.setText (screen.getScreenText ());
-      screenTextArea.positionCaret (0);
-    }
-
-    if (replyTextArea != null)
-    {
-      if (reply == null || reply.size () == 0)
-        replyTextArea.setText ("");
-      else
-      {
-        replyTextArea.setText ("");
-
-        if (reply instanceof MultiBuffer)
+        int buffers = ((MultiBuffer) reply).totalBuffers ();
+        for (int i = 0; i < buffers; i++)
         {
-          int buffers = ((MultiBuffer) reply).totalBuffers ();
-          for (int i = 0; i < buffers; i++)
-          {
-            appendCommand (replyTextArea, ((MultiBuffer) reply).getBuffer (i));
-            replyTextArea.appendText ("\n\n");
-          }
-          replyTextArea.deleteText (replyTextArea.getLength () - 2,
-                                    replyTextArea.getLength ());
+          appendCommand (replyTextArea, ((MultiBuffer) reply).getBuffer (i));
+          replyTextArea.appendText ("\n\n");
         }
-        else
-          appendCommand (replyTextArea, reply);
-
-        replyTextArea.positionCaret (0);
+        replyTextArea.deleteText (replyTextArea.getLength () - 2,
+                                  replyTextArea.getLength ());
       }
+      else
+        appendCommand (replyTextArea, reply);
+
+      replyTextArea.positionCaret (0);
     }
 
-    if (replyBufferTextArea != null)
+    if (reply == null || reply.size () == 0)
+      replyBufferTextArea.setText ("");
+    else
     {
-      if (reply == null || reply.size () == 0)
-        replyBufferTextArea.setText ("");
-      else
-      {
-        replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
-        replyBufferTextArea.positionCaret (0);
-      }
+      replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
+      replyBufferTextArea.positionCaret (0);
     }
   }
 
@@ -170,7 +151,7 @@ public class CommandPane extends TabPane
     textArea.appendText (buffer.toString ());
   }
 
-  protected Tab getTab (String name, TextArea textArea)
+  private Tab getTab (String name, TextArea textArea)
   {
     Tab tab = new Tab ();
     tab.setText (name);
@@ -178,7 +159,7 @@ public class CommandPane extends TabPane
     return tab;
   }
 
-  protected TextArea getTextArea (int width)
+  private TextArea getTextArea (int width)
   {
     TextArea textArea = new TextArea ();
     textArea.setEditable (false);
