@@ -138,7 +138,6 @@ class CommandPane extends TabPane
 
   private void appendCommand (TextArea textArea, Buffer buffer)
   {
-
     if (buffer instanceof AbstractExtendedCommand)
     {
       CommandHeader header = ((AbstractExtendedCommand) buffer).getCommandHeader ();

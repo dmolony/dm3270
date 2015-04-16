@@ -45,6 +45,8 @@ public class TelnetSocket implements Runnable
   public TelnetSocket (Source source, Socket socket, BufferListener listener)
       throws IOException
   {
+    if (source == null)
+      throw new IllegalArgumentException ("Source cannot be null");
     if (socket == null)
       throw new IllegalArgumentException ("Socket cannot be null");
     if (listener == null)
