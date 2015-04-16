@@ -95,6 +95,10 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           sendAID (AIDCommand.AID_PA3);
           break;
 
+        case T:
+          consoleStage.toggleToolbar ();
+          break;
+
         default:
           break;
       }
