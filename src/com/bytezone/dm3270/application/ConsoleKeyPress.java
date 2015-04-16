@@ -30,10 +30,24 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   {
     e.consume ();
 
+    KeyCode keyCodePressed = e.getCode ();
+
+    if (e.isMetaDown ())
+    {
+      if (keyCodePressed == KeyCode.LEFT)
+      {
+        consoleStage.back ();
+        return;
+      }
+      if (keyCodePressed == KeyCode.RIGHT)
+      {
+        consoleStage.forward ();
+        return;
+      }
+    }
+
     if (screen.isKeyboardLocked ())
       return;
-
-    KeyCode keyCodePressed = e.getCode ();
 
     if (e.isControlDown ())       // should allow user to choose modifier key
     {

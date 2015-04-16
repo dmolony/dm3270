@@ -53,6 +53,7 @@ public class Screen extends Canvas
 
   private final boolean recording = true;
   private final List<ImageView> screens = new ArrayList<> ();
+  private ScreenHistory screenHistory;
 
   private byte currentAID;
   private byte replyMode;
@@ -511,12 +512,22 @@ public class Screen extends Canvas
     return iv;
   }
 
-  public ImageView getImageView (int index)
+  public ScreenHistory pause ()           // triggered by cmd-h
   {
-    int position = screens.size () - index;
-    if (position >= 0 && position < screens.size ())
-      return screens.get (position);
-    return null;
+    assert screenHistory == null;
+    screenHistory = new ScreenHistory ();
+    screenHistory.keyboardLocked = keyboardLocked;
+    screenHistory.screens = this.screens;
+    screenHistory.currentScreen = screens.size () - 1;
+
+    return screenHistory;
+  }
+
+  public void resume ()                  // also triggered by cmd-h
+  {
+    assert screenHistory != null;
+    keyboardLocked = screenHistory.keyboardLocked;
+    screenHistory = null;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -546,5 +557,49 @@ public class Screen extends Canvas
     text.append (fieldManager.getTotalsText ());
 
     return text.toString ();
+  }
+
+  public class ScreenHistory
+  {
+    private List<ImageView> screens;
+    private boolean keyboardLocked;
+    private int currentScreen;
+
+    public boolean hasNext ()
+    {
+      return currentScreen < screens.size () - 1;
+    }
+
+    public boolean hasPrevious ()
+    {
+      return currentScreen > 0;
+    }
+
+    public ImageView next ()
+    {
+      if (hasNext ())
+        return screens.get (++currentScreen);
+      return null;
+    }
+
+    public ImageView current ()
+    {
+      return screens.get (currentScreen);
+    }
+
+    public ImageView previous ()
+    {
+      if (hasPrevious ())
+        return screens.get (--currentScreen);
+      return null;
+    }
+
+    //    public ImageView getImageView (int index)
+    //    {
+    //      int position = screens.size () - index;
+    //      if (position >= 0 && position < screens.size ())
+    //        return screens.get (position);
+    //      return null;
+    //    }
   }
 }

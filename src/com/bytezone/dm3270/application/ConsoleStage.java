@@ -22,6 +22,7 @@ import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.Screen.ScreenHistory;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.streams.TelnetListener;
@@ -31,6 +32,8 @@ import com.bytezone.dm3270.streams.TerminalServer;
 public class ConsoleStage extends Stage implements FieldChangeListener,
     CursorMoveListener, KeyboardStatusListener
 {
+  private static int margin = 4;
+
   private final Screen screen;
   private final Label status = new Label ();
   private final Label insertMode = new Label ();
@@ -44,7 +47,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private Thread terminalServerThread;
 
   private int commandHeaderCount;
-  private int screenIndex;
+  private final BorderPane borderPane = new BorderPane ();
+  private ScreenHistory screenHistory;
 
   public ConsoleStage (Screen screen)
   {
@@ -56,10 +60,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     setTitle ("dm3270");
 
-    int margin = 4;
     BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
 
-    BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (screen);
 
     ToolBar toolbar = new ToolBar ();
@@ -129,37 +131,48 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     });
 
     btnBack.setOnAction ( (e) -> {
-      ImageView imageView = screen.getImageView (++screenIndex);
-      if (imageView == null)
-      {
-        screenIndex = 0;
-        borderPane.setCenter (screen);
-      }
-      else
-      {
-        BorderPane.setMargin (imageView, new Insets (margin, margin, 0, margin));
-        borderPane.setCenter (imageView);
-      }
+      back ();
     });
 
     btnForward.setOnAction ( (e) -> {
-      ImageView imageView = screen.getImageView (--screenIndex);
-      if (imageView == null)
-      {
-        screenIndex = 0;
-        borderPane.setCenter (screen);
-      }
-      else
-      {
-        BorderPane.setMargin (imageView, new Insets (margin, margin, 0, margin));
-        borderPane.setCenter (imageView);
-      }
+      forward ();
     });
 
     btnCurrent.setOnAction ( (e) -> {
-      screenIndex = 0;
+      screen.resume ();
       borderPane.setCenter (screen);
     });
+  }
+
+  public void back ()
+  {
+    if (screenHistory == null)
+      screenHistory = screen.pause ();
+
+    setView (screenHistory.previous ());
+  }
+
+  public void forward ()
+  {
+    if (screenHistory == null)
+      screenHistory = screen.pause ();
+
+    setView (screenHistory.next ());
+  }
+
+  private void setView (ImageView imageView)
+  {
+    if (imageView == null)
+    {
+      screen.resume ();
+      screenHistory = null;
+      borderPane.setCenter (screen);
+    }
+    else
+    {
+      BorderPane.setMargin (imageView, new Insets (margin, margin, 0, margin));
+      borderPane.setCenter (imageView);
+    }
   }
 
   public void sendAID (AIDCommand command)
