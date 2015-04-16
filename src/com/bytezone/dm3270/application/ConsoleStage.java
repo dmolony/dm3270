@@ -48,7 +48,11 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
   private int commandHeaderCount;
   private final BorderPane borderPane = new BorderPane ();
+
   private ScreenHistory screenHistory;
+  private final Button btnBack = new Button ("<");
+  private final Button btnForward = new Button (">");
+  private final Button btnCurrent = new Button ("+");
 
   public ConsoleStage (Screen screen)
   {
@@ -65,10 +69,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     borderPane.setCenter (screen);
 
     ToolBar toolbar = new ToolBar ();
-    Button btnBack = new Button ("<");
-    Button btnForward = new Button (">");
-    Button btnCurrent = new Button ("+");
     toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
+    btnBack.setDisable (true);
+    btnForward.setDisable (true);
 
     //      byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
     //      Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
@@ -139,7 +142,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     });
 
     btnCurrent.setOnAction ( (e) -> {
-      setView (null);
+      toggleHistory ();
     });
   }
 
@@ -151,9 +154,15 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
       if (screenHistory == null)          // no history to show
         return;
       setView (screenHistory.current ());
+      btnBack.setDisable (false);
+      btnForward.setDisable (false);
     }
     else
+    {
       setView (null);
+      btnBack.setDisable (true);
+      btnForward.setDisable (true);
+    }
   }
 
   public void back ()

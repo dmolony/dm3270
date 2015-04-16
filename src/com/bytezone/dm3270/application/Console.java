@@ -229,6 +229,7 @@ public class Console extends Application
         group.selectToggle (group.getToggles ().get (2));
     }
 
+    okButton.setDefaultButton (true);
     okButton
         .setOnAction ( (e) -> {
 
