@@ -9,7 +9,6 @@ import static com.bytezone.dm3270.orders.Order.START_FIELD_EXTENDED;
 import static com.bytezone.dm3270.structuredfields.SetReplyMode.RM_CHARACTER;
 
 import java.awt.Toolkit;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +33,6 @@ public class Screen extends Canvas
 {
   private static final boolean DONT_REBUILD_FIELDS = false;
   private static final byte[] buffer = new byte[4096];
-  private static final int MAX_SCREENS = 15;
 
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
@@ -52,7 +50,7 @@ public class Screen extends Canvas
   private boolean readModifiedAll = false;
 
   private final boolean recording = true;
-  private final List<ImageView> screens = new ArrayList<> ();
+  //  private final List<ImageView> screens = new ArrayList<> ();
   private final ScreenHistory screenHistory = new ScreenHistory ();
 
   private byte currentAID;
@@ -458,9 +456,7 @@ public class Screen extends Canvas
 
     if (recording)
     {
-      screens.add (copy ());
-      if (screens.size () > MAX_SCREENS)
-        screens.remove (0);
+      screenHistory.add (copy ());
     }
   }
 
@@ -515,9 +511,8 @@ public class Screen extends Canvas
   public ScreenHistory pause ()           // triggered by cmd-h
   {
     assert !screenHistory.isPaused ();
-    screenHistory.pause (keyboardLocked, screens);
+    screenHistory.pause (keyboardLocked);
     keyboardLocked = true;
-
     return screenHistory;
   }
 

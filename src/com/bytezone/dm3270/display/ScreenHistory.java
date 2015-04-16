@@ -1,33 +1,45 @@
 package com.bytezone.dm3270.display;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.image.ImageView;
 
 public class ScreenHistory
 {
-  private List<ImageView> screens;
+  private static final int MAX_SCREENS = 15;
+
+  private final List<ImageView> screens = new ArrayList<> ();
   private boolean keyboardLocked;
   private boolean paused;
-  private int currentScreen;
+  private int currentScreen = -1;       // never been set
 
   public boolean isPaused ()
   {
     return paused;
   }
 
-  public void pause (boolean keyboardLocked, List<ImageView> screens)
+  public void pause (boolean keyboardLocked)
   {
     this.keyboardLocked = keyboardLocked;
-    this.screens = screens;
     paused = true;
+    if (currentScreen < 0)
+      currentScreen = screens.size () - 1;
   }
 
   public boolean resume ()
   {
-    screens = null;
     paused = false;
     return keyboardLocked;
+  }
+
+  public void add (ImageView imageView)
+  {
+    screens.add (imageView);
+    if (screens.size () > MAX_SCREENS)
+      screens.remove (0);
+    else if (currentScreen >= 0 && currentScreen < screens.size () - 1)
+      ++currentScreen;
   }
 
   public boolean hasNext ()
@@ -58,12 +70,4 @@ public class ScreenHistory
       return screens.get (--currentScreen);
     return null;
   }
-
-  //    public ImageView getImageView (int index)
-  //    {
-  //      int position = screens.size () - index;
-  //      if (position >= 0 && position < screens.size ())
-  //        return screens.get (position);
-  //      return null;
-  //    }
 }
