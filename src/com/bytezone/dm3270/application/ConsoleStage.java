@@ -148,6 +148,8 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     if (screenHistory == null)
     {
       screenHistory = screen.pause ();
+      if (screenHistory == null)          // no history to show
+        return;
       setView (screenHistory.current ());
     }
     else

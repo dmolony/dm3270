@@ -14,6 +14,11 @@ public class ScreenHistory
   private boolean paused;
   private int currentScreen = -1;       // never been set
 
+  public int size ()
+  {
+    return screens.size ();
+  }
+
   public boolean isPaused ()
   {
     return paused;
@@ -21,6 +26,7 @@ public class ScreenHistory
 
   public void pause (boolean keyboardLocked)
   {
+    assert !paused;
     this.keyboardLocked = keyboardLocked;
     paused = true;
     if (currentScreen < 0)
@@ -29,6 +35,7 @@ public class ScreenHistory
 
   public boolean resume ()
   {
+    assert paused;
     paused = false;
     return keyboardLocked;
   }
@@ -36,19 +43,24 @@ public class ScreenHistory
   public void add (ImageView imageView)
   {
     screens.add (imageView);
+
     if (screens.size () > MAX_SCREENS)
+    {
       screens.remove (0);
-    else if (currentScreen >= 0 && currentScreen < screens.size () - 1)
-      ++currentScreen;
+      if (currentScreen > 0)
+        --currentScreen;
+    }
   }
 
   public boolean hasNext ()
   {
+    assert paused;
     return currentScreen < screens.size () - 1;
   }
 
   public boolean hasPrevious ()
   {
+    assert paused;
     return currentScreen > 0;
   }
 
@@ -61,6 +73,7 @@ public class ScreenHistory
 
   public ImageView current ()
   {
+    assert paused;
     return screens.get (currentScreen);
   }
 

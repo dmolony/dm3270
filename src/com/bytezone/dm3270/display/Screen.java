@@ -277,7 +277,7 @@ public class Screen extends Canvas
   // ---------------------------------------------------------------------------------//
 
   // called from ConsoleKeyPress.handle() in response to a user command
-  // called from readModifiedFields(0x..) below
+  // called from this.readModifiedFields(0x..) below
   public AIDCommand readModifiedFields ()
   {
     // pack the AID
@@ -495,19 +495,19 @@ public class Screen extends Canvas
   // Screen image
   // ---------------------------------------------------------------------------------//
 
+  // Create a copy of the current canvas
   private ImageView copy ()
   {
-    // Create a copy of the current canvas
     WritableImage wim = new WritableImage ((int) getWidth (), (int) getHeight ());
     snapshot (null, wim);
-    ImageView iv = new ImageView ();
-    iv.setImage (wim);
-    return iv;
+    return new ImageView (wim);
   }
 
   public ScreenHistory pause ()           // triggered by cmd-h
   {
-    assert !screenHistory.isPaused ();
+    if (screenHistory.size () == 0)
+      return null;
+
     screenHistory.pause (keyboardLocked);
     keyboardLocked = true;
     return screenHistory;
@@ -515,7 +515,6 @@ public class Screen extends Canvas
 
   public void resume ()                  // also triggered by cmd-h
   {
-    assert screenHistory.isPaused ();
     keyboardLocked = screenHistory.resume ();
   }
 
