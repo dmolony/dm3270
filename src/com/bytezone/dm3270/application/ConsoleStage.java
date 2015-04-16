@@ -22,7 +22,7 @@ import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.Screen.ScreenHistory;
+import com.bytezone.dm3270.display.ScreenHistory;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.streams.TelnetListener;
@@ -139,34 +139,40 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     });
 
     btnCurrent.setOnAction ( (e) -> {
-      screen.resume ();
-      borderPane.setCenter (screen);
+      setView (null);
     });
+  }
+
+  public void toggleHistory ()
+  {
+    if (screenHistory == null)
+    {
+      screenHistory = screen.pause ();
+      setView (screenHistory.current ());
+    }
+    else
+      setView (null);
   }
 
   public void back ()
   {
-    if (screenHistory == null)
-      screenHistory = screen.pause ();
-
-    setView (screenHistory.previous ());
+    if (screenHistory != null && screenHistory.hasPrevious ())
+      setView (screenHistory.previous ());
   }
 
   public void forward ()
   {
-    if (screenHistory == null)
-      screenHistory = screen.pause ();
-
-    setView (screenHistory.next ());
+    if (screenHistory != null && screenHistory.hasNext ())
+      setView (screenHistory.next ());
   }
 
   private void setView (ImageView imageView)
   {
     if (imageView == null)
     {
-      screen.resume ();
       screenHistory = null;
       borderPane.setCenter (screen);
+      screen.resume ();
     }
     else
     {

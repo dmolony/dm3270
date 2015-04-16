@@ -34,7 +34,7 @@ public class Screen extends Canvas
 {
   private static final boolean DONT_REBUILD_FIELDS = false;
   private static final byte[] buffer = new byte[4096];
-  private static final int MAX_SCREENS = 5;
+  private static final int MAX_SCREENS = 15;
 
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
@@ -53,7 +53,7 @@ public class Screen extends Canvas
 
   private final boolean recording = true;
   private final List<ImageView> screens = new ArrayList<> ();
-  private ScreenHistory screenHistory;
+  private final ScreenHistory screenHistory = new ScreenHistory ();
 
   private byte currentAID;
   private byte replyMode;
@@ -514,20 +514,17 @@ public class Screen extends Canvas
 
   public ScreenHistory pause ()           // triggered by cmd-h
   {
-    assert screenHistory == null;
-    screenHistory = new ScreenHistory ();
-    screenHistory.keyboardLocked = keyboardLocked;
-    screenHistory.screens = this.screens;
-    screenHistory.currentScreen = screens.size () - 1;
+    assert !screenHistory.isPaused ();
+    screenHistory.pause (keyboardLocked, screens);
+    keyboardLocked = true;
 
     return screenHistory;
   }
 
   public void resume ()                  // also triggered by cmd-h
   {
-    assert screenHistory != null;
-    keyboardLocked = screenHistory.keyboardLocked;
-    screenHistory = null;
+    assert screenHistory.isPaused ();
+    keyboardLocked = screenHistory.resume ();
   }
 
   // ---------------------------------------------------------------------------------//
@@ -557,49 +554,5 @@ public class Screen extends Canvas
     text.append (fieldManager.getTotalsText ());
 
     return text.toString ();
-  }
-
-  public class ScreenHistory
-  {
-    private List<ImageView> screens;
-    private boolean keyboardLocked;
-    private int currentScreen;
-
-    public boolean hasNext ()
-    {
-      return currentScreen < screens.size () - 1;
-    }
-
-    public boolean hasPrevious ()
-    {
-      return currentScreen > 0;
-    }
-
-    public ImageView next ()
-    {
-      if (hasNext ())
-        return screens.get (++currentScreen);
-      return null;
-    }
-
-    public ImageView current ()
-    {
-      return screens.get (currentScreen);
-    }
-
-    public ImageView previous ()
-    {
-      if (hasPrevious ())
-        return screens.get (--currentScreen);
-      return null;
-    }
-
-    //    public ImageView getImageView (int index)
-    //    {
-    //      int position = screens.size () - index;
-    //      if (position >= 0 && position < screens.size ())
-    //        return screens.get (position);
-    //      return null;
-    //    }
   }
 }
