@@ -4,7 +4,7 @@ Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses Ja
 The program defaults to Release Mode, which means that only the Terminal function is available (see below). To enable the other functions you will need to change the Debug menu option and restart. This is the dialog box you will see when running in Release Mode.  
 ![Default Connection](resources/connect1.png?raw=true "default connection")
 #### Site List
-To add to or edit the list of sites that you wish to connect to, click the edit button on the connection screen.  
+To edit the list of sites that you wish to connect to, click the edit button on the connection screen.  
 ![Sites](resources/sitelist.png?raw=true "site list")
 #### Functions
 The four functions available in Debug Mode are Spy, Replay, Terminal and Test. These are described below. Only the terminal function is available when in Release Mode, but all four are enabled if you switch to Debug Mode. This is the dialog box you will see when running in Debug Mode.  
