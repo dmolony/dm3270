@@ -50,7 +50,6 @@ public class Screen extends Canvas
   private boolean readModifiedAll = false;
 
   private final boolean recording = true;
-  //  private final List<ImageView> screens = new ArrayList<> ();
   private final ScreenHistory screenHistory = new ScreenHistory ();
 
   private byte currentAID;
@@ -455,9 +454,7 @@ public class Screen extends Canvas
       cursor.setVisible (false);
 
     if (recording)
-    {
       screenHistory.add (copy ());
-    }
   }
 
   public void resetModified ()
