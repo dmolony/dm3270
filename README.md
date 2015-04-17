@@ -15,5 +15,6 @@ Connects to the specified server. This is the only function available in Release
 #### Other features
 * [Key commands](resources/commands.md)
 * [Menus](resources/menus.md)
+* [Debug functions](resources/functions.md)
 * [Screen history](resources/history.md)
-* Scripts
+* Scripting
