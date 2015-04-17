@@ -1,4 +1,4 @@
-#### Functions
+### Functions
 The four functions available in Debug Mode are Spy, Replay, Terminal and Test. These are described below. Only the terminal function is available when in Release Mode, but all four are enabled if you switch to Debug Mode. This is the dialog box you will see when running in Debug Mode.  
 ![Debug Connection](connect2.png?raw=true "debug connection")
 #### Spy Function
