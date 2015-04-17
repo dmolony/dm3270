@@ -34,7 +34,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     if (e.isControlDown ())       // should allow user to choose modifier key
     {
-      if (keyCodePressed == KeyCode.H)
+      if (keyCodePressed == KeyCode.S)
       {
         consoleStage.toggleHistory ();
         return;
@@ -61,10 +61,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       switch (keyCodePressed)
       {
         case ENTER:
-          cursor.newLine ();
-          break;
-
-        case TAB:
           cursor.newLine ();
           break;
 

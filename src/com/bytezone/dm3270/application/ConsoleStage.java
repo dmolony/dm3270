@@ -52,7 +52,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private ScreenHistory screenHistory;
   private final Button btnBack = new Button ("<");
   private final Button btnForward = new Button (">");
-  private final Button btnCurrent = new Button ("History");
+  private final Button btnCurrent = new Button ("Screens");
 
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
