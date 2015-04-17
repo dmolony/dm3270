@@ -1,5 +1,5 @@
 ### Functions
-The four functions available in Debug Mode are Spy, Replay, Terminal and Test. These are described below. Only the terminal function is available when in Release Mode, but all four are enabled if you switch to Debug Mode. This is the dialog box you will see when running in Debug Mode.  
+Four functions available in Debug Mode - Spy, Replay, Terminal and Test. Only the terminal function is available when in Release Mode, but all four are enabled if you switch to Debug Mode. This is the dialog box you will see when running in Debug Mode.  
 ![Debug Connection](connect2.png?raw=true "debug connection")
 #### Spy Function
 Waits for a terminal emulator to connect to the client, and then it completes the connection to the server. The mainframe session can be used as normal, however all communication buffers are collected and can be saved in a session file to replay later. For security purposes the file can be saved with all user input redacted, in order to prevent any passwords being saved. The session file should be named spy99.txt, where 99 is any two-digit number.
