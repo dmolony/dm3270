@@ -10,10 +10,6 @@ To edit the list of sites that you wish to connect to, click the edit button on 
 #### Terminal Function
 Connects to the specified server. This is the only function available in Release Mode.
 ![Terminal screen](resources/terminal.png?raw=true "dm3270")
-#### Menus
-There are two menus which are only available from the first screen. There you may choose the font and font size for the terminal screen, and whether to run in Debug or Release mode. The fonts listed are the only ones that dm3270 will attempt to load, and then only if you have them installed on your machine. Most of the fonts are freely available on the web.  
-![Fonts](resources/fonts.png?raw=true "fonts")
-![Debug](resources/debug.png?raw=true "debug")
 #### Keys
 Not all keys are available on all platforms, and some keys aren't available at all. To help with this, the following shortcuts are available. These will probably change after some more testing on Windows.
 * Home - ctrl-h
