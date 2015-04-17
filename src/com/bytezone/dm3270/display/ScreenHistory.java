@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 
 public class ScreenHistory
 {
-  private static final int MAX_SCREENS = 15;
+  private static final int MAX_SCREENS = 20;
 
   private final List<ImageView> screens = new ArrayList<> ();
   private boolean keyboardLocked;
