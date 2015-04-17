@@ -3,10 +3,12 @@ package com.bytezone.dm3270.application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -32,7 +34,7 @@ import com.bytezone.dm3270.streams.TerminalServer;
 public class ConsoleStage extends Stage implements FieldChangeListener,
     CursorMoveListener, KeyboardStatusListener
 {
-  private static int margin = 4;
+  private final static int MARGIN = 4;
 
   private final Screen screen;
   private final Label status = new Label ();
@@ -67,7 +69,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     setTitle ("dm3270");
 
-    BorderPane.setMargin (screen, new Insets (margin, margin, 0, margin));
+    BorderPane.setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
     borderPane.setCenter (screen);
 
@@ -87,23 +89,30 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     //    toolbarVisible = true;
     toggleToolbar ();
 
+    Separator[] separators = new Separator[6];
+    for (int i = 0; i < separators.length; i++)
+    {
+      separators[i] = new Separator ();
+      separators[i].setOrientation (Orientation.VERTICAL);
+    }
+
     HBox hbox0 = new HBox ();
-    hbox0.setPadding (new Insets (2, 12, 2, 4));       // trbl
+    hbox0.setPadding (new Insets (2, 12, 2, MARGIN));       // trbl
     hbox0.setSpacing (10);
     hbox0.setAlignment (Pos.CENTER_LEFT);
-    hbox0.getChildren ().add (fieldLocation);
+    hbox0.getChildren ().addAll (fieldLocation, separators[0], insertMode, separators[3]);
 
     HBox hbox1 = new HBox ();
-    hbox1.setPadding (new Insets (2, 12, 2, 12));       // trbl
+    hbox1.setPadding (new Insets (2, 20, 2, 20));       // trbl
     hbox1.setSpacing (10);
     hbox1.setAlignment (Pos.CENTER);
-    hbox1.getChildren ().add (status);
+    hbox1.getChildren ().addAll (status);
 
     HBox hbox2 = new HBox ();
-    hbox2.setPadding (new Insets (2, 4, 2, 12));        // trbl
-    hbox2.setSpacing (20);
+    hbox2.setPadding (new Insets (2, MARGIN, 2, 12));        // trbl
+    hbox2.setSpacing (10);
     hbox2.setAlignment (Pos.CENTER_RIGHT);
-    hbox2.getChildren ().addAll (insertMode, fieldType, cursorLocation);
+    hbox2.getChildren ().addAll (separators[4], fieldType, separators[5], cursorLocation);
 
     Font font = Font.font ("Monospaced", 14);
     status.setFont (font);
@@ -207,7 +216,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     }
     else
     {
-      BorderPane.setMargin (imageView, new Insets (margin, margin, 0, margin));
+      BorderPane.setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
       borderPane.setCenter (imageView);
     }
   }
@@ -306,6 +315,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   public void keyboardStatusChanged (boolean keyboardLocked, boolean insert)
   {
     status.setText (keyboardLocked ? "Inhibit" : "       ");
-    insertMode.setText (insert ? "Insert " : "       ");
+    insertMode.setText (insert ? "Insert" : "      ");
   }
 }
