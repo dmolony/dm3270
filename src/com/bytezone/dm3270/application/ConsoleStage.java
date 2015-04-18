@@ -161,18 +161,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
   public void toggleToolbar ()
   {
-    if (toolbarVisible)
-    {
-      borderPane.setTop (null);
-      toolbarVisible = false;
-      sizeToScene ();
-    }
-    else
-    {
-      borderPane.setTop (toolbar);
-      toolbarVisible = true;
-      sizeToScene ();
-    }
+    toolbarVisible = !toolbarVisible;
+    borderPane.setTop (toolbarVisible ? toolbar : null);
+    sizeToScene ();
   }
 
   public void toggleHistory ()
