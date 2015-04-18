@@ -33,6 +33,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     CursorMoveListener, KeyboardStatusListener
 {
   private final static int MARGIN = 4;
+  private final static int GAP = 12;
 
   private final Screen screen;
   private final Label status = new Label ();
@@ -75,42 +76,33 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     btnBack.setDisable (true);
     btnForward.setDisable (true);
 
-    //      byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
-    //      Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
-    //      btnClear.setOnAction (e -> clearCommand.process ());
+    //    byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
+    //    Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
+    //    btnClear.setOnAction (e -> clearCommand.process ());
     //
-    //      byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
-    //      Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
-    //      btnReset.setOnAction (e -> resetCommand.process ());
+    //    byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
+    //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
+    //    btnReset.setOnAction (e -> resetCommand.process ());
 
     //    borderPane.setTop (toolbar);
     //    toolbarVisible = true;
     toggleToolbar ();
 
-    Separator[] separators = new Separator[6];
-    for (int i = 0; i < separators.length; i++)
+    Separator[] div = new Separator[4];
+    for (int i = 0; i < div.length; i++)
     {
-      separators[i] = new Separator ();
-      separators[i].setOrientation (Orientation.VERTICAL);
+      div[i] = new Separator ();
+      div[i].setOrientation (Orientation.VERTICAL);
     }
 
-    HBox hbox0 = new HBox ();
-    hbox0.setPadding (new Insets (2, 12, 2, MARGIN));       // trbl
-    hbox0.setSpacing (10);
-    hbox0.setAlignment (Pos.CENTER_LEFT);
-    hbox0.getChildren ().addAll (fieldLocation, separators[0], insertMode, separators[3]);
+    HBox left = getHBox (new Insets (2, GAP, 2, MARGIN), Pos.CENTER_LEFT);
+    left.getChildren ().addAll (fieldLocation, div[0], insertMode, div[1]);
 
-    HBox hbox1 = new HBox ();
-    hbox1.setPadding (new Insets (2, 20, 2, 20));       // trbl
-    hbox1.setSpacing (10);
-    hbox1.setAlignment (Pos.CENTER);
-    hbox1.getChildren ().addAll (status);
+    HBox center = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
+    center.getChildren ().addAll (status);
 
-    HBox hbox2 = new HBox ();
-    hbox2.setPadding (new Insets (2, MARGIN, 2, 12));        // trbl
-    hbox2.setSpacing (10);
-    hbox2.setAlignment (Pos.CENTER_RIGHT);
-    hbox2.getChildren ().addAll (separators[4], fieldType, separators[5], cursorLocation);
+    HBox right = getHBox (new Insets (2, MARGIN, 2, GAP), Pos.CENTER_RIGHT);
+    right.getChildren ().addAll (div[2], fieldType, div[3], cursorLocation);
 
     Font font = Font.font ("Monospaced", 14);
     status.setFont (font);
@@ -120,9 +112,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     fieldLocation.setFont (font);
 
     BorderPane statusPane = new BorderPane ();
-    statusPane.setLeft (hbox0);
-    statusPane.setCenter (hbox1);
-    statusPane.setRight (hbox2);
+    statusPane.setLeft (left);
+    statusPane.setCenter (center);
+    statusPane.setRight (right);
     borderPane.setBottom (statusPane);
 
     setScene (new Scene (borderPane));
@@ -140,6 +132,15 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     btnBack.setOnAction (e -> back ());
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
+  }
+
+  private HBox getHBox (Insets insets, Pos alignment)
+  {
+    HBox hbox = new HBox ();
+    hbox.setPadding (insets);
+    hbox.setSpacing (10);
+    hbox.setAlignment (alignment);
+    return hbox;
   }
 
   public void toggleToolbar ()
