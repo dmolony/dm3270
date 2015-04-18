@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.application;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -15,7 +14,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -137,26 +135,11 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     screen.requestFocus ();
 
-    setOnCloseRequest (new EventHandler<WindowEvent> ()
-    {
-      @Override
-      public void handle (WindowEvent we)
-      {
-        Platform.exit ();
-      }
-    });
+    setOnCloseRequest (e -> Platform.exit ());
 
-    btnBack.setOnAction ( (e) -> {
-      back ();
-    });
-
-    btnForward.setOnAction ( (e) -> {
-      forward ();
-    });
-
-    btnCurrent.setOnAction ( (e) -> {
-      toggleHistory ();
-    });
+    btnBack.setOnAction (e -> back ());
+    btnForward.setOnAction (e -> forward ());
+    btnCurrent.setOnAction (e -> toggleHistory ());
   }
 
   public void toggleToolbar ()
