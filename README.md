@@ -1,5 +1,6 @@
 # dm3270
-Yet another TN3270 Terminal Emulator. This one is written in Java 8, and uses JavaFX. Please ensure that you are using the latest java version as JavaFX ~~has fewer bugs~~ improves with every release. At present Java 8 update 40 is the minimum version requred.
+#### Installation
+Download dm3270.jar from the [release page](/releases). Install the latest version of Java from Oracle (Java 8 is required). Double-click the jar file, or enter 'java -jar dm3270.jar' in the terminal.
 #### Connection
 Select a server from the drop-down list and press OK.  
 ![Default Connection](resources/connect1.png?raw=true "default connection")
