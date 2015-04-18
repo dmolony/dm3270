@@ -12,7 +12,7 @@ To edit the list of servers, click the edit button on the connection screen.
 Connects to the specified server. This is the only function available in Release Mode.
 ![Terminal screen](resources/terminal.png?raw=true "dm3270")
 #### Other features
-* [Key commands](resources/commands.md)
+* [Commands](resources/commands.md)
 * [Menus](resources/menus.md)
 * [Debug functions](resources/functions.md)
 * [Screen history](resources/history.md)
