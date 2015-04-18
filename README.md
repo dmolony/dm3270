@@ -10,7 +10,7 @@ To edit the list of servers, click the edit button on the connection screen.
 #### Terminal Function
 Connects to the specified server.  
 ![Terminal screen](resources/terminal.png?raw=true "dm3270")
-#### Other features
+#### Documentation
 * [Commands](resources/commands.md)
 * [Menus](resources/menus.md)
 * [Debug functions](resources/functions.md)
