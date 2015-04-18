@@ -1,4 +1,4 @@
-#### Keys
+#### Commands/Keys
 Not all keys are available on all platforms, and some keys aren't available at all. To help with this, the following shortcuts are available. These will probably change after some more testing on Windows.
 * Home - ctrl-h
 * Erase EOL - ctrl-del
