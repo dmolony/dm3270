@@ -7,6 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
@@ -49,12 +52,14 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
   private int commandHeaderCount;
   private final BorderPane borderPane = new BorderPane ();
+  private final BorderPane topPane = new BorderPane ();
 
   private ScreenHistory screenHistory;
   private final Button btnBack = new Button ("<");
   private final Button btnForward = new Button (">");
   private final Button btnCurrent = new Button ("Screens");
 
+  private final MenuBar menuBar = new MenuBar ();
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
 
@@ -70,6 +75,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
 
     BorderPane.setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
+    borderPane.setTop (topPane);
     borderPane.setCenter (screen);
 
     toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
@@ -84,8 +90,16 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    //    borderPane.setTop (toolbar);
-    //    toolbarVisible = true;
+    Menu menuCommands = new Menu ("Commands");
+    MenuItem menuItemToggleToolbar = new MenuItem ("Toggle toolbar");
+    menuCommands.getItems ().addAll (menuItemToggleToolbar);
+    menuBar.getMenus ().addAll (menuCommands);
+    topPane.setTop (menuBar);
+
+    final String os = System.getProperty ("os.name");
+    if (os != null && os.startsWith ("Mac"))
+      menuBar.useSystemMenuBarProperty ().set (true);
+
     toggleToolbar ();
 
     Separator[] div = new Separator[4];
@@ -146,7 +160,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   public void toggleToolbar ()
   {
     toolbarVisible = !toolbarVisible;
-    borderPane.setTop (toolbarVisible ? toolbar : null);
+    topPane.setBottom (toolbarVisible ? toolbar : null);
     sizeToScene ();
   }
 

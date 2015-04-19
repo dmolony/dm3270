@@ -347,7 +347,6 @@ public class Console extends Application
         });
 
     cancelButton.setOnAction (e -> dialogStage.hide ());
-
     editLocationButton.setOnAction (e -> editLocation (dialogStage));
 
     Menu menuFont = new Menu ("Fonts");
