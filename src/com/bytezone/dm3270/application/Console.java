@@ -118,8 +118,8 @@ public class Console extends Application
     String runMode = prefs.get ("Mode", "Release");
     spyFolder = prefs.get ("SpyFolder", "");
 
-    SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5);
-    SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5);
+    SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
+    SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
 
     String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
     Node row1 = options (optionList, group, 0, 2);
@@ -330,7 +330,7 @@ public class Console extends Application
               else
               {
                 Site mainframe =
-                    new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT);
+                    new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
                 spyStage =
                     new SpyStage (createScreen (Function.TEST), mainframe, clientSite,
                         prevent3270E.isSelected ());

@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -26,15 +27,21 @@ public class SiteListStage extends BasicStage
   private final Button editListButton = new Button ("Edit...");
   private Button cancelButton, saveButton;
 
-  public SiteListStage (Preferences prefs, String key, int max)
+  public enum Type
+  {
+    TEXT, NUMBER, BOOLEAN
+  }
+
+  public SiteListStage (Preferences prefs, String key, int max, boolean show3270e)
   {
     this.prefs = prefs;
     setTitle ("Site Manager");
 
     readPrefs (key, max);
 
-    String[] headings = { key + " name", "URL", "Port" };
-    int[] columnWidths = { 100, 150, 50, 100 };
+    String[] headings = { key + " name", "URL", "Port", "3270-E" };
+    int[] columnWidths = { 100, 150, 50, 50 };
+    Type[] fieldTypes = { Type.TEXT, Type.TEXT, Type.NUMBER, Type.BOOLEAN };
 
     VBox vbox = new VBox ();
     vbox.setSpacing (5);
@@ -61,9 +68,17 @@ public class SiteListStage extends BasicStage
       hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
       for (int i = 0; i < headings.length; i++)
       {
-        TextField textField = site.getTextField (i);
-        textField.setMaxWidth (columnWidths[i]);
-        hbox.getChildren ().add (textField);
+        if (fieldTypes[i] == Type.TEXT || fieldTypes[i] == Type.NUMBER)
+        {
+          TextField textField = site.getTextField (i);
+          textField.setMaxWidth (columnWidths[i]);
+          hbox.getChildren ().add (textField);
+        }
+        else if (fieldTypes[i] == Type.BOOLEAN)
+        {
+          CheckBox checkBox = site.getCheckBoxField (i);
+          hbox.getChildren ().add (checkBox);
+        }
       }
       vbox.getChildren ().add (hbox);
     }
@@ -96,16 +111,17 @@ public class SiteListStage extends BasicStage
       String name = prefs.get (keyName + "Name", "");
       String url = prefs.get (keyName + "URL", "");
       int port = prefs.getInt (keyName + "Port", 23);
+      boolean extended = prefs.getBoolean (keyName + "Extended", true);
 
       if (port <= 0)
         port = 23;
 
       Site site = null;
       if (name.isEmpty () || url.isEmpty ())
-        site = new Site ("", "", 23);
+        site = new Site ("", "", 23, false);
       else
       {
-        site = new Site (name, url, port);
+        site = new Site (name, url, port, extended);
         siteNames.add (name);
       }
       sites.add (site);
@@ -124,9 +140,13 @@ public class SiteListStage extends BasicStage
       Site site = sites.get (i);
       String keyName = String.format ("%s%02d", key, i);
       String name = site.name.getText ();
+      boolean extended = site.getExtended ();
+
       prefs.put (keyName + "Name", name);
       prefs.put (keyName + "URL", site.url.getText ());
       prefs.put (keyName + "Port", site.port.getText ());
+      prefs.putBoolean (keyName + "Extended", extended);
+
       if (name != null && !name.isEmpty ())
         siteNames.add (name);
     }

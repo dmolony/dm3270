@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.application;
 
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 
 public class Site
@@ -7,13 +8,17 @@ public class Site
   public final TextField name = new TextField ();
   public final TextField url = new TextField ();
   public final TextField port = new TextField ();
-  TextField[] fieldList = { name, url, port };
+  public final CheckBox extended = new CheckBox ();
 
-  public Site (String name, String url, int port)
+  private final TextField[] TextFieldieldList = { name, url, port, null };
+  private final CheckBox[] checkBoxFieldList = { null, null, null, extended };
+
+  public Site (String name, String url, int port, boolean extended)
   {
     this.name.setText (name);
     this.url.setText (url);
     this.port.setText (port == 23 && name.isEmpty () ? "" : port + "");
+    this.extended.setSelected (extended);
   }
 
   public String getName ()
@@ -47,9 +52,19 @@ public class Site
     }
   }
 
+  public boolean getExtended ()
+  {
+    return extended.isSelected ();
+  }
+
   public TextField getTextField (int index)
   {
-    return fieldList[index];
+    return TextFieldieldList[index];
+  }
+
+  public CheckBox getCheckBoxField (int index)
+  {
+    return checkBoxFieldList[index];
   }
 
   @Override
