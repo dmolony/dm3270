@@ -100,7 +100,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     if (os != null && os.startsWith ("Mac"))
       menuBar.useSystemMenuBarProperty ().set (true);
 
-    toggleToolbar ();
+    menuItemToggleToolbar.setOnAction ( (e) -> toggleToolbar ());
 
     Separator[] div = new Separator[4];
     for (int i = 0; i < div.length; i++)
