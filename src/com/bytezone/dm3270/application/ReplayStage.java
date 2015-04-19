@@ -8,7 +8,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
@@ -20,7 +19,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
@@ -78,7 +76,7 @@ public class ReplayStage extends BasicStage
     sortedData.comparatorProperty ().bind (table.comparatorProperty ());
     table.setItems (sortedData);
 
-    ChangeListener<? super Boolean> changeListener1 =
+    ChangeListener<? super Boolean> changeListener =
         ( (observable, oldValue, newValue) -> {
 
           // get the previously selected line
@@ -107,8 +105,8 @@ public class ReplayStage extends BasicStage
           }
         });
 
-    showTelnetCB.selectedProperty ().addListener (changeListener1);
-    show3270ECB.selectedProperty ().addListener (changeListener1);
+    showTelnetCB.selectedProperty ().addListener (changeListener);
+    show3270ECB.selectedProperty ().addListener (changeListener);
 
     showTelnetCB.setSelected (true);      // must be a bug
     showTelnetCB.setSelected (showTelnet);
@@ -129,14 +127,7 @@ public class ReplayStage extends BasicStage
     if (dataRecord != null)
       table.getSelectionModel ().select (dataRecord);
 
-    setOnCloseRequest (new EventHandler<WindowEvent> ()
-    {
-      @Override
-      public void handle (WindowEvent we)
-      {
-        Platform.exit ();
-      }
-    });
+    setOnCloseRequest (e -> Platform.exit ());
   }
 
   public void disconnect ()

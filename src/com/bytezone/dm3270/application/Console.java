@@ -230,122 +230,8 @@ public class Console extends Application
     }
 
     okButton.setDefaultButton (true);
-    okButton
-        .setOnAction ( (e) -> {
-
-          dialogStage.hide ();
-
-          Site serverSite = serverSitesListStage.getSelectedSite ();
-          Site clientSite = clientSitesListStage.getSelectedSite ();
-
-          String optionText = (String) group.getSelectedToggle ().getUserData ();
-          switch (optionText)
-          {
-            case "Spy":
-              if (serverSite == null)
-              {
-                Alert alert = new Alert (AlertType.ERROR, "No server selected");
-                alert.getDialogPane ().setHeaderText (null);
-                Optional<ButtonType> result = alert.showAndWait ();
-                if (result.isPresent () && result.get () == ButtonType.OK)
-                  dialogStage.show ();
-              }
-              else if (clientSite == null)
-              {
-                Alert alert = new Alert (AlertType.ERROR, "No client selected");
-                alert.getDialogPane ().setHeaderText (null);
-                Optional<ButtonType> result = alert.showAndWait ();
-                if (result.isPresent () && result.get () == ButtonType.OK)
-                  dialogStage.show ();
-              }
-              else
-              {
-                spyStage =
-                    new SpyStage (createScreen (Function.SPY), serverSite, clientSite,
-                        prevent3270E.isSelected ());
-                spyStage.show ();
-                spyStage.startServer ();
-              }
-
-              break;
-
-            case "Replay":
-              String selectedFileName = fileComboBox.getValue ();
-              String file =
-                  userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
-              Path path = Paths.get (file);
-              if (!Files.exists (path))
-              {
-                file = userHome + "/dm3270/" + selectedFileName;
-                path = Paths.get (file);
-              }
-
-              if (Files.exists (path))
-              {
-                Screen screen = createScreen (Function.REPLAY);
-                consoleStage = new ConsoleStage (screen);
-                consoleStage.show ();
-                replayStage = new ReplayStage (screen, path, prefs);
-                replayStage.show ();
-              }
-              else
-              {
-                Alert alert = new Alert (AlertType.ERROR, file + " does not exist");
-                alert.getDialogPane ().setHeaderText (null);
-                Optional<ButtonType> result = alert.showAndWait ();
-                if (result.isPresent () && result.get () == ButtonType.OK)
-                  dialogStage.show ();
-              }
-
-              break;
-
-            case "Terminal":
-              if (serverSite == null)
-              {
-                Alert alert = new Alert (AlertType.ERROR, "No server selected");
-                alert.getDialogPane ().setHeaderText (null);
-                Optional<ButtonType> result = alert.showAndWait ();
-                if (result.isPresent () && result.get () == ButtonType.OK)
-                  dialogStage.show ();
-              }
-              else
-              {
-                consoleStage = new ConsoleStage (createScreen (Function.TERMINAL));
-                consoleStage.centerOnScreen ();
-                consoleStage.show ();
-                consoleStage.connect (serverSite);
-              }
-
-              break;
-
-            case "Test":
-              if (clientSite == null)
-              {
-                Alert alert = new Alert (AlertType.ERROR, "No client selected");
-                alert.getDialogPane ().setHeaderText (null);
-                Optional<ButtonType> result = alert.showAndWait ();
-                if (result.isPresent () && result.get () == ButtonType.OK)
-                  dialogStage.show ();
-              }
-              else
-              {
-                Site mainframe =
-                    new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
-                spyStage =
-                    new SpyStage (createScreen (Function.TEST), mainframe, clientSite,
-                        prevent3270E.isSelected ());
-                spyStage.show ();
-                spyStage.startServer ();
-
-                mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
-                mainframeStage.show ();
-                mainframeStage.startServer ();
-              }
-
-              break;
-          }
-        });
-
+    okButton.setOnAction (e -> okButton (dialogStage, serverSitesListStage,
+                                         clientSitesListStage));
     cancelButton.setOnAction (e -> dialogStage.hide ());
     editLocationButton.setOnAction (e -> editLocation (dialogStage));
 
@@ -392,6 +278,114 @@ public class Console extends Application
 
     dialogStage.setScene (new Scene (borderPane));
     dialogStage.show ();
+  }
+
+  private void okButton (Stage dialogStage, SiteListStage serverSitesListStage,
+      SiteListStage clientSitesListStage)
+  {
+    dialogStage.hide ();
+
+    Site serverSite = serverSitesListStage.getSelectedSite ();
+    Site clientSite = clientSitesListStage.getSelectedSite ();
+
+    String optionText = (String) group.getSelectedToggle ().getUserData ();
+    switch (optionText)
+    {
+      case "Spy":
+        if (serverSite == null)
+        {
+          if (showAlert ("No server selected"))
+            dialogStage.show ();
+        }
+        else if (clientSite == null)
+        {
+          if (showAlert ("No client selected"))
+            dialogStage.show ();
+        }
+        else
+        {
+          spyStage =
+              new SpyStage (createScreen (Function.SPY), serverSite, clientSite,
+                  prevent3270E.isSelected ());
+          spyStage.show ();
+          spyStage.startServer ();
+        }
+
+        break;
+
+      case "Replay":
+        String selectedFileName = fileComboBox.getValue ();
+        String file = userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
+        Path path = Paths.get (file);
+        if (!Files.exists (path))
+        {
+          file = userHome + "/dm3270/" + selectedFileName;
+          path = Paths.get (file);
+        }
+
+        if (Files.exists (path))
+        {
+          Screen screen = createScreen (Function.REPLAY);
+          consoleStage = new ConsoleStage (screen);
+          consoleStage.show ();
+          replayStage = new ReplayStage (screen, path, prefs);
+          replayStage.show ();
+        }
+        else
+        {
+          if (showAlert (file + " does not exist"))
+            dialogStage.show ();
+        }
+
+        break;
+
+      case "Terminal":
+        if (serverSite == null)
+        {
+          if (showAlert ("No server selected"))
+            dialogStage.show ();
+        }
+        else
+        {
+          consoleStage = new ConsoleStage (createScreen (Function.TERMINAL));
+          consoleStage.centerOnScreen ();
+          consoleStage.show ();
+          consoleStage.connect (serverSite);
+        }
+
+        break;
+
+      case "Test":
+        if (clientSite == null)
+        {
+          if (showAlert ("No client selected"))
+            dialogStage.show ();
+        }
+        else
+        {
+          Site mainframe =
+              new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
+          spyStage =
+              new SpyStage (createScreen (Function.TEST), mainframe, clientSite,
+                  prevent3270E.isSelected ());
+          spyStage.show ();
+          spyStage.startServer ();
+
+          mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
+          mainframeStage.show ();
+          mainframeStage.startServer ();
+        }
+
+        break;
+    }
+  }
+
+  private boolean showAlert (String message)
+  {
+    Alert alert = new Alert (AlertType.ERROR, message);
+    alert.getDialogPane ().setHeaderText (null);
+    Optional<ButtonType> result = alert.showAndWait ();
+    return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
   @Override
