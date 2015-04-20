@@ -241,8 +241,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     if (server == null)
       throw new IllegalArgumentException ("Server must not be null");
 
-    telnetState.setDo3270Extended (true);    // set preferences for this session
-    telnetState.setDoTerminalType (true);    // set preferences for this session
+    // set preferences for this session
+    telnetState.setDo3270Extended (server.getExtended ());
+    telnetState.setDoTerminalType (true);
 
     telnetListener = new TelnetListener (screen, telnetState);
     terminalServer =
