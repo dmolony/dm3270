@@ -11,7 +11,6 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -25,7 +24,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
-import javafx.stage.WindowEvent;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
@@ -135,14 +133,7 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 
     prepareButtons ();
 
-    setOnCloseRequest (new EventHandler<WindowEvent> ()
-    {
-      @Override
-      public void handle (WindowEvent we)
-      {
-        Platform.exit ();
-      }
-    });
+    setOnCloseRequest (e -> Platform.exit ());
   }
 
   public void startServer ()
