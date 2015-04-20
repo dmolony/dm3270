@@ -84,6 +84,16 @@ public class SessionRecord
       setTime (timeFormatter.format (dateTime));
   }
 
+  public boolean isTelnet ()
+  {
+    return sessionRecordType == SessionRecordType.TELNET;
+  }
+
+  public boolean isTN3270Extended ()
+  {
+    return sessionRecordType == SessionRecordType.TN3270E;
+  }
+
   public boolean isCommand ()
   {
     return message instanceof Command || message instanceof TN3270ExtendedCommand;

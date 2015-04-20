@@ -82,18 +82,12 @@ public class ReplayStage extends BasicStage
           // get the previously selected line
           SessionRecord selectedRecord = table.getSelectionModel ().getSelectedItem ();
 
+          // change the filter predicate
           filteredData.setPredicate (dataRecord -> {
-
-            boolean isTelnet =
-                dataRecord.getDataRecordType () == SessionRecordType.TELNET;
-            if (!showTelnetCB.isSelected () && isTelnet)
+            if (dataRecord.isTelnet () && !showTelnetCB.isSelected ())
               return false;
-
-            boolean isTN3270Ext =
-                dataRecord.getDataRecordType () == SessionRecordType.TN3270E;
-            if (!show3270ECB.isSelected () && isTN3270Ext)
+            if (dataRecord.isTN3270Extended () && !show3270ECB.isSelected ())
               return false;
-
             return true;      // show the record
             });
 
@@ -108,9 +102,13 @@ public class ReplayStage extends BasicStage
     showTelnetCB.selectedProperty ().addListener (changeListener);
     show3270ECB.selectedProperty ().addListener (changeListener);
 
-    showTelnetCB.setSelected (true);      // must be a bug
+    if (true)       // this sucks - remove it when java works properly
+    {
+      showTelnetCB.setSelected (true);      // must be a bug
+      show3270ECB.setSelected (true);
+    }
+
     showTelnetCB.setSelected (showTelnet);
-    show3270ECB.setSelected (true);
     show3270ECB.setSelected (showExtended);
 
     Rectangle2D primaryScreenBounds =
