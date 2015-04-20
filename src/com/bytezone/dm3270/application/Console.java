@@ -178,8 +178,6 @@ public class Console extends Application
                      row ("Replay", fileComboBox, editLocationButton),
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
-      if (sessionFiles.size () == 0)
-        ((RadioButton) group.getToggles ().get (1)).setDisable (true);
     }
 
     HBox hBox = new HBox (10);
