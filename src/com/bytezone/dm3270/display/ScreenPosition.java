@@ -238,7 +238,7 @@ public class ScreenPosition
     int height = characterSize.getHeight ();
     int dx = width / 2;
     int dy = height / 2;
-    gc.translate (0.5, 0.5);
+    gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
 
     switch (value)
     {
@@ -274,7 +274,7 @@ public class ScreenPosition
         gc.fillText (getChar () + "", x, y + characterSize.getAscent ());
         System.out.printf ("Unknown graphics character: %02X%n", value);
     }
-    gc.translate (-0.5, -0.5);
+    gc.translate (-0.5, -0.5);        // restore coordinate grid
   }
 
   public void erase (GraphicsContext gc, int x, int y)
