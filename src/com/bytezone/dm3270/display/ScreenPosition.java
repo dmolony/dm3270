@@ -220,13 +220,14 @@ public class ScreenPosition
       {
         gc.setFill (color);
         gc.fillText (getChar () + "", x, y + ascent);       // can we speed this up?
-      }
 
-      if (screenContext.underscore)
-      {
-        gc.setStroke (screenContext.foregroundColor);
-        int y2 = y + charHeight - 1;
-        gc.strokeLine (x, y2, x + charWidth, y2);
+        if (screenContext.underscore)
+        {
+          gc.setStroke (screenContext.foregroundColor);
+          double y2 = y + charHeight - 1.5;
+          double x2 = x + 0.5;
+          gc.strokeLine (x2, y2, x2 + charWidth, y2);
+        }
       }
     }
   }
@@ -237,6 +238,7 @@ public class ScreenPosition
     int height = characterSize.getHeight ();
     int dx = width / 2;
     int dy = height / 2;
+    gc.translate (0.5, 0.5);
 
     switch (value)
     {
@@ -272,6 +274,7 @@ public class ScreenPosition
         gc.fillText (getChar () + "", x, y + characterSize.getAscent ());
         System.out.printf ("Unknown graphics character: %02X%n", value);
     }
+    gc.translate (-0.5, -0.5);
   }
 
   public void erase (GraphicsContext gc, int x, int y)
