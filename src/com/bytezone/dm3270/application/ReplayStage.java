@@ -77,27 +77,7 @@ public class ReplayStage extends BasicStage
     table.setItems (sortedData);
 
     ChangeListener<? super Boolean> changeListener =
-        ( (observable, oldValue, newValue) -> {
-
-          // get the previously selected line
-          SessionRecord selectedRecord = table.getSelectionModel ().getSelectedItem ();
-
-          // change the filter predicate
-          filteredData.setPredicate (dataRecord -> {
-            if (dataRecord.isTelnet () && !showTelnetCB.isSelected ())
-              return false;
-            if (dataRecord.isTN3270Extended () && !show3270ECB.isSelected ())
-              return false;
-            return true;      // show the record
-            });
-
-          // restore the previously selected item (if it is still visible)
-          if (selectedRecord != null)
-          {
-            table.getSelectionModel ().select (selectedRecord);
-            table.requestFocus ();
-          }
-        });
+        ( (observable, oldValue, newValue) -> change (table, filteredData));
 
     showTelnetCB.selectedProperty ().addListener (changeListener);
     show3270ECB.selectedProperty ().addListener (changeListener);
@@ -126,6 +106,24 @@ public class ReplayStage extends BasicStage
       table.getSelectionModel ().select (dataRecord);
 
     setOnCloseRequest (e -> Platform.exit ());
+  }
+
+  private void change (SessionTable table, FilteredList<SessionRecord> filteredData)
+  {
+    // get the previously selected line
+    SessionRecord selectedRecord = table.getSelectionModel ().getSelectedItem ();
+
+    // change the filter predicate
+    filteredData.setPredicate (sessionRecord -> sessionRecord.isTN3270 ()
+        || (sessionRecord.isTelnet () && showTelnetCB.isSelected ())
+        || (sessionRecord.isTN3270Extended () && show3270ECB.isSelected ()));
+
+    // restore the previously selected item (if it is still visible)
+    if (selectedRecord != null)
+    {
+      table.getSelectionModel ().select (selectedRecord);
+      table.requestFocus ();
+    }
   }
 
   public void disconnect ()

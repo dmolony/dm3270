@@ -89,6 +89,11 @@ public class SessionRecord
     return sessionRecordType == SessionRecordType.TELNET;
   }
 
+  public boolean isTN3270 ()
+  {
+    return sessionRecordType == SessionRecordType.TN3270;
+  }
+
   public boolean isTN3270Extended ()
   {
     return sessionRecordType == SessionRecordType.TN3270E;
