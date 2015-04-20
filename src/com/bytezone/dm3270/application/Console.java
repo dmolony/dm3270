@@ -117,6 +117,8 @@ public class Console extends Application
     String sizeSelected = prefs.get ("FontSize", "16");
     String runMode = prefs.get ("Mode", "Release");
     spyFolder = prefs.get ("SpyFolder", "");
+    String serverSelected = prefs.get ("ServerName", "");
+    String clientSelected = prefs.get ("ClientName", "");
 
     SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
     SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
@@ -135,13 +137,17 @@ public class Console extends Application
     fileComboBox.getSelectionModel ().select (fileText);
 
     serverComboBox = serverSitesListStage.getComboBox ();
-    serverComboBox.setVisibleRowCount (6);
+    serverComboBox.setVisibleRowCount (5);
+    serverComboBox.getSelectionModel ().select (serverSelected);
+
     editServersButton = serverSitesListStage.getEditButton ();
     editServersButton.setStyle (EDIT_BUTTON_FONT_SIZE);
     editServersButton.setMinWidth (EDIT_BUTTON_WIDTH);
 
     clientComboBox = clientSitesListStage.getComboBox ();
-    clientComboBox.setVisibleRowCount (4);
+    clientComboBox.setVisibleRowCount (5);
+    clientComboBox.getSelectionModel ().select (clientSelected);
+
     editClientsButton = clientSitesListStage.getEditButton ();
     editClientsButton.setStyle (EDIT_BUTTON_FONT_SIZE);
     editClientsButton.setMinWidth (EDIT_BUTTON_WIDTH);
@@ -455,6 +461,8 @@ public class Console extends Application
     prefs.put ("Mode", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
     prefs.put ("ReplayFile", fileComboBox.getValue ());
     prefs.put ("SpyFolder", spyFolder);
+    prefs.put ("ServerName", serverComboBox.getSelectionModel ().getSelectedItem ());
+    prefs.put ("ClientName", clientComboBox.getSelectionModel ().getSelectedItem ());
   }
 
   private void setDisable (boolean server, boolean client, boolean pr, boolean fn)

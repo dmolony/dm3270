@@ -67,17 +67,11 @@ public class ReplayStage extends BasicStage
 
     setTitle ("Replay Commands - " + path.getFileName ());
 
-    Scene scene = new Scene (borderPane);
-    setScene (scene);
-
     ObservableList<SessionRecord> masterData = session.getDataRecords ();
     FilteredList<SessionRecord> filteredData = new FilteredList<> (masterData, p -> true);
-    SortedList<SessionRecord> sortedData = new SortedList<> (filteredData);
-    sortedData.comparatorProperty ().bind (table.comparatorProperty ());
-    table.setItems (sortedData);
 
     ChangeListener<? super Boolean> changeListener =
-        ( (observable, oldValue, newValue) -> change (table, filteredData));
+        (observable, oldValue, newValue) -> change (table, filteredData);
 
     showTelnetCB.selectedProperty ().addListener (changeListener);
     show3270ECB.selectedProperty ().addListener (changeListener);
@@ -90,6 +84,10 @@ public class ReplayStage extends BasicStage
 
     showTelnetCB.setSelected (showTelnet);
     show3270ECB.setSelected (showExtended);
+
+    SortedList<SessionRecord> sortedData = new SortedList<> (filteredData);
+    sortedData.comparatorProperty ().bind (table.comparatorProperty ());
+    table.setItems (sortedData);
 
     Rectangle2D primaryScreenBounds =
         javafx.stage.Screen.getPrimary ().getVisualBounds ();
@@ -106,6 +104,9 @@ public class ReplayStage extends BasicStage
       table.getSelectionModel ().select (dataRecord);
 
     setOnCloseRequest (e -> Platform.exit ());
+
+    Scene scene = new Scene (borderPane);
+    setScene (scene);
   }
 
   private void change (SessionTable table, FilteredList<SessionRecord> filteredData)
