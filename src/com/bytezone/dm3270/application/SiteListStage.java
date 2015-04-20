@@ -40,7 +40,7 @@ public class SiteListStage extends BasicStage
     readPrefs (key, max);
 
     String[] headings = { key + " name", "URL", "Port", "3270-E" };
-    int[] columnWidths = { 100, 150, 50, 50 };
+    int[] columnWidths = { 150, 150, 50, 50 };
     Type[] fieldTypes = { Type.TEXT, Type.TEXT, Type.NUMBER, Type.BOOLEAN };
 
     VBox vbox = new VBox ();
@@ -76,8 +76,12 @@ public class SiteListStage extends BasicStage
         }
         else if (fieldTypes[i] == Type.BOOLEAN)
         {
+          HBox box = new HBox ();
           CheckBox checkBox = site.getCheckBoxField (i);
-          hbox.getChildren ().add (checkBox);
+          box.setPrefWidth (columnWidths[i]);
+          box.setAlignment (Pos.CENTER);
+          box.getChildren ().add (checkBox);
+          hbox.getChildren ().add (box);
         }
       }
       vbox.getChildren ().add (hbox);

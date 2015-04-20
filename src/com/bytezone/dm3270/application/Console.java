@@ -169,8 +169,7 @@ public class Console extends Application
           ().addAll (row ("Function", row1), row ("", row2),
                      row ("Server", serverComboBox, editServersButton),
                      row ("Client", clientComboBox, editClientsButton),
-                     //                     row ("Prevent 3270-E", prevent3270E),
-                     row ("Replay", fileComboBox, editLocationButton),      //
+                     row ("Replay", fileComboBox, editLocationButton),
                      row ("", buttons ()));
       dialogStage.setTitle ("Choose Function");
       if (sessionFiles.size () == 0)
