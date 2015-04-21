@@ -11,6 +11,7 @@ To edit the list of servers, click the edit button on the connection screen.
 Connects to the specified server.  
 ![Terminal screen](resources/terminal.png?raw=true "OSX")
 ![Terminal screen](resources/winterminal.png?raw=true "Windows")
+![Terminal screen](resources/linuxterminal.png?raw=true "Ubuntu")
 #### Documentation
 * [Commands](resources/commands.md)
 * [Menus](resources/menus.md)
