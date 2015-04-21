@@ -226,8 +226,7 @@ public class ScreenPosition
         if (screenContext.underscore)
         {
           gc.setStroke (screenContext.foregroundColor);
-          y2 = y + charHeight - 1.5;
-          x2 = x + 0.5;
+          y2 = y + charHeight - 2.5;
           gc.strokeLine (x2, y2, x2 + charWidth, y2);
         }
       }

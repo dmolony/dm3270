@@ -7,10 +7,13 @@ import com.sun.javafx.tk.Toolkit;
 
 public class CharacterSize
 {
-  public Font font;
+  private Font font;
+  private FontMetrics fontMetrics;
   private int height;
   private int width;
   private int ascent;
+  private int descent;
+  private int leading;
 
   public CharacterSize (Font font)
   {
@@ -22,23 +25,13 @@ public class CharacterSize
     if (font != this.font)
     {
       this.font = font;
-      FontMetrics fm = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
+      this.fontMetrics = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
 
-      width = (int) (fm.computeStringWidth ("W") + 0.99);
-      height = (int) (fm.getLineHeight () + 0.99);
-      ascent = (int) (fm.getAscent () + 0.99);
-
-      float ratio = (float) height / width;
-      if (ratio < 1.8)
-      {
-        ++height;
-        System.out.println ("adjusting height");
-      }
-      else if (ratio > 2.4)
-      {
-        ++width;
-        System.out.println ("adjusting width");
-      }
+      width = (int) (fontMetrics.computeStringWidth ("W") + 0.99);
+      height = (int) (fontMetrics.getLineHeight () + 0.99);
+      ascent = (int) (fontMetrics.getMaxAscent () + 0.99);
+      descent = (int) (fontMetrics.getMaxDescent () + 0.99);
+      leading = height - ascent - descent;
     }
   }
 
@@ -57,10 +50,22 @@ public class CharacterSize
     return ascent;
   }
 
+  public int getDescent ()
+  {
+    return descent;
+  }
+
+  public int getLeading ()
+  {
+    return leading;
+  }
+
   @Override
   public String toString ()
   {
-    return String.format ("[Font=%s, height=%d, width=%d, ascent=%d, ratio=%2.2f]",
-                          font.getName (), height, width, ascent, (float) height / width);
+    return String.format ("[Font=%s, height=%d, width=%d, ascent=%d, descent=%d, "
+                              + "leading=%d, ratio=%2.2f]", font.getName (), height,
+                          width, ascent, descent,
+                          leading, (float) height / width);
   }
 }
