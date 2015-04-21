@@ -188,6 +188,8 @@ public class ScreenPosition
     int charWidth = characterSize.getWidth ();
     int charHeight = characterSize.getHeight ();
     int ascent = characterSize.getAscent ();
+    double x2 = x + 0.5;
+    double y2 = y + 0.5;
 
     // Draw background
     if (hasCursor)
@@ -196,7 +198,7 @@ public class ScreenPosition
     else
       gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.foregroundColor
           : screenContext.backgroundColor : screenContext.backgroundColor);
-    gc.fillRect (x, y, charWidth, charHeight);
+    gc.fillRect (x2, y2, charWidth, charHeight - 1);
 
     // Draw foreground
     if (isVisible)
@@ -219,13 +221,13 @@ public class ScreenPosition
       else
       {
         gc.setFill (color);
-        gc.fillText (getChar () + "", x, y + ascent);       // can we speed this up?
+        gc.fillText (getChar () + "", x2, y2 + ascent);       // can we speed this up?
 
         if (screenContext.underscore)
         {
           gc.setStroke (screenContext.foregroundColor);
-          double y2 = y + charHeight - 1.5;
-          double x2 = x + 0.5;
+          y2 = y + charHeight - 1.5;
+          x2 = x + 0.5;
           gc.strokeLine (x2, y2, x2 + charWidth, y2);
         }
       }

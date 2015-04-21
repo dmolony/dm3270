@@ -447,8 +447,9 @@ public class Console extends Application
     if (files == null)
       files = new ArrayList<Path> ();      // empty list
 
-    return FXCollections.observableArrayList (files.stream ()
-        .map (p -> p.getFileName ().toString ()).collect (Collectors.toList ()));
+    return FXCollections
+        .observableArrayList (files.stream ().map (p -> p.getFileName ().toString ())
+            .sorted ().collect (Collectors.toList ()));
   }
 
   private void savePreferences ()
