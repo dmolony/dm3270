@@ -9,7 +9,8 @@ To edit the list of servers, click the edit button on the connection screen.
 ![Sites](resources/sitelist.png?raw=true "site list")
 #### Terminal Function
 Connects to the specified server.  
-![Terminal screen](resources/terminal.png?raw=true "dm3270")
+![Terminal screen](resources/terminal.png?raw=true "OSX")
+![Terminal screen](resources/winterminal.png?raw=true "Windows")
 #### Documentation
 * [Commands](resources/commands.md)
 * [Menus](resources/menus.md)
