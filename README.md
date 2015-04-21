@@ -9,7 +9,9 @@ To edit the list of servers, click the edit button on the connection screen.
 ![Sites](resources/sitelist.png?raw=true "site list")
 #### Terminal Function
 Connects to the specified server.  
+  
 ![Terminal screen](resources/osxterminal.png?raw=true "OSX")
+  
 ![Terminal screen](resources/winterminal.png?raw=true "Windows")
   
 ![Terminal screen](resources/linuxterminal.png?raw=true "Ubuntu")
