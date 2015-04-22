@@ -217,32 +217,39 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
       e.printStackTrace ();
     }
 
-    Session session = new Session (null, lines);
-    List<String> labels = session.getLabels ();
-
-    SessionRecord dr = createCommand ();
-    session.add (dr);
-    labels.add ("Test");
-
-    int buttonNo = 0;
-    for (SessionRecord sessionRecord : session)
+    try
     {
-      if (buttonNo < buttons.size ())
+      Session session = new Session (null, lines);
+      List<String> labels = session.getLabels ();
+
+      SessionRecord dr = createCommand ();
+      session.add (dr);
+      labels.add ("Test");
+
+      int buttonNo = 0;
+      for (SessionRecord sessionRecord : session)
       {
-        Button button = buttons.get (buttonNo);
-        button.setOnAction ( (x) -> {
-          textArea.setText (sessionRecord.getMessage ().toString ());
-          textArea.appendText ("\n\n");
-          textArea.appendText (Utility.toHex (sessionRecord.getBuffer ()));
-          textArea.positionCaret (0);
-          mainframeServer.write (sessionRecord.getMessage ().getTelnetData ());
-        });
+        if (buttonNo < buttons.size ())
+        {
+          Button button = buttons.get (buttonNo);
+          button.setOnAction ( (x) -> {
+            textArea.setText (sessionRecord.getMessage ().toString ());
+            textArea.appendText ("\n\n");
+            textArea.appendText (Utility.toHex (sessionRecord.getBuffer ()));
+            textArea.positionCaret (0);
+            mainframeServer.write (sessionRecord.getMessage ().getTelnetData ());
+          });
 
-        if (buttonNo < labels.size ())
-          button.setText (labels.get (buttonNo));
+          if (buttonNo < labels.size ())
+            button.setText (labels.get (buttonNo));
 
-        buttonNo++;
+          buttonNo++;
+        }
       }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace ();
     }
 
     btnReadBuffer.setOnAction ( (x) -> {

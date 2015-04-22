@@ -330,9 +330,17 @@ public class Console extends Application
         {
           Screen screen = createScreen (Function.REPLAY);
           consoleStage = new ConsoleStage (screen);
-          consoleStage.show ();
-          replayStage = new ReplayStage (screen, path, prefs);
-          replayStage.show ();
+          try
+          {
+            replayStage = new ReplayStage (screen, path, prefs);
+            consoleStage.show ();
+            replayStage.show ();
+          }
+          catch (Exception e)
+          {
+            if (showAlert ("Error reading file"))
+              dialogStage.show ();
+          }
         }
         else
         {

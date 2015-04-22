@@ -62,7 +62,7 @@ public class SessionReader
     return lines;
   }
 
-  public int next ()
+  public int next () throws Exception
   {
     if (nextLine >= lines.size ())
       return 0;
@@ -86,7 +86,7 @@ public class SessionReader
     return bytesWritten;
   }
 
-  public byte[] nextBuffer ()
+  public byte[] nextBuffer () throws Exception
   {
     int bytesRead = next ();
     byte[] data = new byte[bytesRead];
@@ -184,26 +184,33 @@ public class SessionReader
     SessionReader server = new SessionReader (Source.SERVER, Paths.get (filename));
     SessionReader client = new SessionReader (Source.CLIENT, Paths.get (filename));
 
-    while (client.nextLineNo () != server.nextLineNo ())    // both finished
+    try
     {
-      if (client.nextLineNo () < server.nextLineNo ())
+      while (client.nextLineNo () != server.nextLineNo ())    // both finished
       {
-        System.out.println ("-----------------< Client >--------------------");
-        while (client.nextLineNo () < server.nextLineNo ())
-          if (mode == 1)
-            print (client.getBufferLines ());
-          else
-            print (client.nextBuffer ());
+        if (client.nextLineNo () < server.nextLineNo ())
+        {
+          System.out.println ("-----------------< Client >--------------------");
+          while (client.nextLineNo () < server.nextLineNo ())
+            if (mode == 1)
+              print (client.getBufferLines ());
+            else
+              print (client.nextBuffer ());
+        }
+        else
+        {
+          System.out.println ("-----------------< Server >--------------------");
+          while (server.nextLineNo () < client.nextLineNo ())
+            if (mode == 1)
+              print (server.getBufferLines ());
+            else
+              print (server.nextBuffer ());
+        }
       }
-      else
-      {
-        System.out.println ("-----------------< Server >--------------------");
-        while (server.nextLineNo () < client.nextLineNo ())
-          if (mode == 1)
-            print (server.getBufferLines ());
-          else
-            print (server.nextBuffer ());
-      }
+    }
+    catch (Exception e)
+    {
+      System.out.println ("Exception reading file");
     }
   }
 

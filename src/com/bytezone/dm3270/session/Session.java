@@ -63,7 +63,7 @@ public class Session implements Iterable<SessionRecord>
    * 
    * @param filename
    */
-  public Session (Screen screen, List<String> lines)
+  public Session (Screen screen, List<String> lines) throws Exception
   {
     if (screen == null)
       function = Console.Function.TEST;
@@ -77,7 +77,7 @@ public class Session implements Iterable<SessionRecord>
     init (client, server);
   }
 
-  public Session (Screen screen, Path path)
+  public Session (Screen screen, Path path) throws Exception
   {
     this.function = screen.getFunction ();
     this.screen = screen;
@@ -88,7 +88,7 @@ public class Session implements Iterable<SessionRecord>
     init (client, server);
   }
 
-  private void init (SessionReader client, SessionReader server)
+  private void init (SessionReader client, SessionReader server) throws Exception
   {
     telnetState.setDo3270Extended (true);
     telnetState.setDoTerminalType (true);
