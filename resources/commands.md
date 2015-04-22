@@ -1,16 +1,16 @@
 #### Commands/Keys
-Not all keys are available on all platforms, and some keys aren't available at all. To help with this, the following shortcuts are available. These will probably change after some more testing on Windows.
-* Home - ctrl-h
-* Erase EOL - ctrl-del
-* Return - crtl-enter
-* Insert - ctrl-i
-* PA1/2/3 - ctrl-F1/F2/F3
-* Show/hide toolbar - ctlr-t
-* Screen History - ctrl-s
-* Previous/next history screen - ctrl-(left/right)-arrow
+Not all keys are available on all platforms, and some keys aren't available at all. To help with this, the following shortcuts are available. These will probably change after some more testing.
 
 | Function                  | OSX             | Windows         | Linux           |
 |---------------------------|-----------------|-----------------|-----------------|
+|Home (first input field)   | control-h       | home            | ?               |
 |Insert mode                | control-i       | ?               | ?               |
 |Erase EOL                  | control-delete  | ?               | ?               |
 |Linefeed (new line)        | control-enter   | ?               | ?               |
+|Delete forwards            | fn-delete       | delete          | ?               | 
+|Delete backwards           | delete          | backspace       | ?               | 
+|Screen history             | control-s       | ?               | ?               | 
+|  - previous screen        | control-left    | ?               | ?               |
+|  - next screen            | control-right   | ?               | ?               |
+|Toolbar display            | control-t       | ?               | ?               |
+|PA1/PA2/PA3                | control-F1/F2/F3| ?               | ?               |
