@@ -14,3 +14,4 @@ Not all keys are available on all platforms, and some keys aren't available at a
 |  --- next screen          | control-right   | ?               | ?               |
 |Toolbar display            | control-t       | ?               | ?               |
 |PA1/PA2/PA3                | control-F1/F2/F3| ?               | ?               |
+|Exit program               | command-q       | close box       | close box       |
