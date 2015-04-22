@@ -25,7 +25,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -58,7 +57,6 @@ public class Console extends Application
   private ComboBox<String> fileComboBox;
   private ComboBox<String> serverComboBox;
   private ComboBox<String> clientComboBox;
-  private CheckBox prevent3270E;
 
   Button editServersButton;
   Button editClientsButton;
@@ -128,8 +126,6 @@ public class Console extends Application
 
     VBox panel = new VBox (10);
 
-    prevent3270E = new CheckBox ();
-
     ObservableList<String> sessionFiles = getSessionFiles (spyFolder);
     fileComboBox = new ComboBox<> (sessionFiles);
     fileComboBox.setVisibleRowCount (12);
@@ -195,19 +191,19 @@ public class Console extends Application
         switch ((String) newToggle.getUserData ())
         {
           case "Spy":
-            setDisable (false, false, false, true);
+            setDisable (false, false, true);
             break;
 
           case "Replay":
-            setDisable (true, true, true, false);
+            setDisable (true, true, false);
             break;
 
           case "Terminal":
-            setDisable (false, true, true, true);
+            setDisable (false, true, true);
             break;
 
           case "Test":
-            setDisable (true, false, true, true);
+            setDisable (true, false, true);
             break;
         }
       }
@@ -296,9 +292,7 @@ public class Console extends Application
       case "Spy":
         if (serverSite != null && clientSite != null)
         {
-          spyStage =
-              new SpyStage (createScreen (Function.SPY), serverSite, clientSite,
-                  prevent3270E.isSelected ());
+          spyStage = new SpyStage (createScreen (Function.SPY), serverSite, clientSite);
           spyStage.show ();
           spyStage.startServer ();
         }
@@ -347,9 +341,7 @@ public class Console extends Application
         {
           Site mainframe =
               new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
-          spyStage =
-              new SpyStage (createScreen (Function.TEST), mainframe, clientSite,
-                  prevent3270E.isSelected ());
+          spyStage = new SpyStage (createScreen (Function.TEST), mainframe, clientSite);
           spyStage.show ();
           spyStage.startServer ();
 
@@ -445,15 +437,14 @@ public class Console extends Application
     prefs.put ("ClientName", clientComboBox.getSelectionModel ().getSelectedItem ());
   }
 
-  private void setDisable (boolean server, boolean client, boolean pr, boolean fn)
+  private void setDisable (boolean server, boolean client, boolean files)
   {
     serverComboBox.setDisable (server);
     editServersButton.setDisable (server);
     clientComboBox.setDisable (client);
     editClientsButton.setDisable (client);
-    prevent3270E.setDisable (pr);
-    fileComboBox.setDisable (fn);
-    editLocationButton.setDisable (fn);
+    fileComboBox.setDisable (files);
+    editLocationButton.setDisable (files);
   }
 
   private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,

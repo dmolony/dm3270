@@ -28,13 +28,12 @@ public class SpyStage extends BasicTelnetStage
   private SpyServer spyServer;
   private Thread serverThread;
 
-  public SpyStage (Screen screen, Site serverSite, Site clientSite, boolean prevent3270E)
+  public SpyStage (Screen screen, Site serverSite, Site clientSite)
   {
     SessionTable table = new SessionTable ();
     Session session = new Session (screen, new TelnetState ());
 
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
-    spyServer.prevent3270E (prevent3270E);
 
     final Label label = session.getHeaderLabel ();
     label.setFont (new Font ("Arial", 20));
