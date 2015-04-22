@@ -64,13 +64,13 @@ public class Console extends Application
   Button editClientsButton;
   Button editLocationButton;
 
-  private Button okButton = new Button ("OK");
-  private Button cancelButton = new Button ("Cancel");
-  private final ToggleGroup group = new ToggleGroup ();
+  private final Button okButton = new Button ("Connect");
+  private final Button cancelButton = new Button ("Cancel");
 
   private Preferences prefs;
   String spyFolder;
 
+  private final ToggleGroup functionsGroup = new ToggleGroup ();
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
   private final ToggleGroup releaseGroup = new ToggleGroup ();
@@ -80,7 +80,6 @@ public class Console extends Application
   private ConsoleStage consoleStage;
   private ReplayStage replayStage;
 
-  private final String userHome = System.getProperty ("user.home");
   private boolean release;
   private final MenuBar menuBar = new MenuBar ();
 
@@ -124,8 +123,8 @@ public class Console extends Application
     SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
 
     String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
-    Node row1 = options (optionList, group, 0, 2);
-    Node row2 = options (optionList, group, 2, 2);
+    Node row1 = options (optionList, functionsGroup, 0, 2);
+    Node row2 = options (optionList, functionsGroup, 2, 2);
 
     VBox panel = new VBox (10);
 
@@ -184,7 +183,7 @@ public class Console extends Application
     HBox.setMargin (panel, new Insets (10));
     hBox.getChildren ().addAll (panel);
 
-    group.selectedToggleProperty ().addListener (new ChangeListener<Toggle> ()
+    functionsGroup.selectedToggleProperty ().addListener (new ChangeListener<Toggle> ()
     {
       @Override
       public void changed (ObservableValue<? extends Toggle> ov, Toggle oldToggle,
@@ -215,7 +214,7 @@ public class Console extends Application
     });
 
     if (release)
-      group.selectToggle (group.getToggles ().get (2));
+      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));
     else
     {
       boolean found = false;
@@ -223,13 +222,13 @@ public class Console extends Application
       {
         if (optionList[i].equals (optionSelected))
         {
-          group.selectToggle (group.getToggles ().get (i));
+          functionsGroup.selectToggle (functionsGroup.getToggles ().get (i));
           found = true;
           break;
         }
       }
       if (!found)
-        group.selectToggle (group.getToggles ().get (2));
+        functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));
     }
 
     okButton.setDefaultButton (true);
@@ -291,7 +290,7 @@ public class Console extends Application
     Site serverSite = serverSitesListStage.getSelectedSite ();
     Site clientSite = clientSitesListStage.getSelectedSite ();
 
-    String optionText = (String) group.getSelectedToggle ().getUserData ();
+    String optionText = (String) functionsGroup.getSelectedToggle ().getUserData ();
     switch (optionText)
     {
       case "Spy":
@@ -436,7 +435,7 @@ public class Console extends Application
 
   private void savePreferences ()
   {
-    prefs.put ("Function", (String) group.getSelectedToggle ().getUserData ());
+    prefs.put ("Function", (String) functionsGroup.getSelectedToggle ().getUserData ());
     prefs.put ("FontName", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("FontSize", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
     prefs.put ("Mode", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
@@ -487,9 +486,7 @@ public class Console extends Application
   private Node buttons ()
   {
     HBox box = new HBox (10);
-    okButton = new Button ("OK");
     okButton.setDefaultButton (true);
-    cancelButton = new Button ("Cancel");
     cancelButton.setCancelButton (true);
     okButton.setPrefWidth (80);
     cancelButton.setPrefWidth (80);
