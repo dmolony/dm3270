@@ -295,17 +295,7 @@ public class Console extends Application
     switch (optionText)
     {
       case "Spy":
-        if (serverSite == null)
-        {
-          if (showAlert ("No server selected"))
-            dialogStage.show ();
-        }
-        else if (clientSite == null)
-        {
-          if (showAlert ("No client selected"))
-            dialogStage.show ();
-        }
-        else
+        if (serverSite != null && clientSite != null)
         {
           spyStage =
               new SpyStage (createScreen (Function.SPY), serverSite, clientSite,
@@ -313,19 +303,19 @@ public class Console extends Application
           spyStage.show ();
           spyStage.startServer ();
         }
+        else if (showAlert (serverSite == null ? "No server selected"
+            : "No client selected"))
+          dialogStage.show ();
 
         break;
 
       case "Replay":
-        String selectedFileName = fileComboBox.getValue ();
-        Path path = Paths.get (spyFolder + "/" + selectedFileName);
-
+        Path path = Paths.get (spyFolder + "/" + fileComboBox.getValue ());
         if (Files.exists (path))
-        {
-          Screen screen = createScreen (Function.REPLAY);
-          consoleStage = new ConsoleStage (screen);
           try
           {
+            Screen screen = createScreen (Function.REPLAY);
+            consoleStage = new ConsoleStage (screen);
             replayStage = new ReplayStage (screen, path, prefs);
             consoleStage.show ();
             replayStage.show ();
@@ -335,38 +325,26 @@ public class Console extends Application
             if (showAlert ("Error reading file"))
               dialogStage.show ();
           }
-        }
-        else
-        {
-          if (showAlert (path + " does not exist"))
-            dialogStage.show ();
-        }
+        else if (showAlert (path + " does not exist"))
+          dialogStage.show ();
 
         break;
 
       case "Terminal":
-        if (serverSite == null)
-        {
-          if (showAlert ("No server selected"))
-            dialogStage.show ();
-        }
-        else
+        if (serverSite != null)
         {
           consoleStage = new ConsoleStage (createScreen (Function.TERMINAL));
           consoleStage.centerOnScreen ();
           consoleStage.show ();
           consoleStage.connect (serverSite);
         }
+        else if (showAlert ("No server selected"))
+          dialogStage.show ();
 
         break;
 
       case "Test":
-        if (clientSite == null)
-        {
-          if (showAlert ("No client selected"))
-            dialogStage.show ();
-        }
-        else
+        if (clientSite != null)
         {
           Site mainframe =
               new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
@@ -380,6 +358,8 @@ public class Console extends Application
           mainframeStage.show ();
           mainframeStage.startServer ();
         }
+        else if (showAlert ("No client selected"))
+          dialogStage.show ();
 
         break;
     }
