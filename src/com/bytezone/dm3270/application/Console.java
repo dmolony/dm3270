@@ -318,13 +318,7 @@ public class Console extends Application
 
       case "Replay":
         String selectedFileName = fileComboBox.getValue ();
-        String file = userHome + "/Dropbox/Mainframe documentation/" + selectedFileName;
-        Path path = Paths.get (file);
-        if (!Files.exists (path))
-        {
-          file = userHome + "/dm3270/" + selectedFileName;
-          path = Paths.get (file);
-        }
+        Path path = Paths.get (spyFolder + "/" + selectedFileName);
 
         if (Files.exists (path))
         {
@@ -344,7 +338,7 @@ public class Console extends Application
         }
         else
         {
-          if (showAlert (file + " does not exist"))
+          if (showAlert (path + " does not exist"))
             dialogStage.show ();
         }
 
