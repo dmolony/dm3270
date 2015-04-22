@@ -10,7 +10,7 @@ Not all keys are available on all platforms, and some keys aren't available at a
 |Delete forwards            | fn-delete       | delete          | ?               | 
 |Delete backwards           | delete          | backspace       | ?               | 
 |Screen history             | control-s       | ?               | ?               | 
-|  - previous screen        | control-left    | ?               | ?               |
-|  - next screen            | control-right   | ?               | ?               |
+|  --- previous screen      | control-left    | ?               | ?               |
+|  --- next screen          | control-right   | ?               | ?               |
 |Toolbar display            | control-t       | ?               | ?               |
 |PA1/PA2/PA3                | control-F1/F2/F3| ?               | ?               |
