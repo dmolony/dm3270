@@ -8,3 +8,9 @@ Not all keys are available on all platforms, and some keys aren't available at a
 * Show/hide toolbar - ctlr-t
 * Screen History - ctrl-s
 * Previous/next history screen - ctrl-(left/right)-arrow
+
+| Function                  | OSX             | Windows         | Linux           |
+|---------------------------|-----------------|-----------------|-----------------|
+|Insert mode                | control-i       | ?               | ?               |
+|Erase EOL                  | control-delete  | ?               | ?               |
+|Linefeed (new line)        | control-enter   | ?               | ?               |
