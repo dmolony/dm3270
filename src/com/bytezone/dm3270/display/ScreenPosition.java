@@ -190,7 +190,8 @@ public class ScreenPosition
     int ascent = characterSize.getAscent ();
     int descent = characterSize.getDescent ();
 
-    Color color = null;
+    Color foregroundColor = null;
+    Color backgroundColor = null;
 
     gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
 
@@ -200,29 +201,31 @@ public class ScreenPosition
       if (hasCursor)
         if (screenContext.reverseVideo)
         {
-          gc.setFill (screenContext.backgroundColor);
-          color = screenContext.foregroundColor;
+          backgroundColor = screenContext.backgroundColor;
+          foregroundColor = screenContext.foregroundColor;
         }
         else
         {
-          gc.setFill (screenContext.foregroundColor);
-          color = screenContext.backgroundColor;
+          backgroundColor = screenContext.foregroundColor;
+          foregroundColor = screenContext.backgroundColor;
         }
       else if (screenContext.reverseVideo)
       {
-        gc.setFill (screenContext.foregroundColor);
-        color = screenContext.backgroundColor;
+        backgroundColor = screenContext.foregroundColor;
+        foregroundColor = screenContext.backgroundColor;
       }
       else
       {
-        gc.setFill (screenContext.backgroundColor);
-        color = screenContext.foregroundColor;
+        backgroundColor = screenContext.backgroundColor;
+        foregroundColor = screenContext.foregroundColor;
       }
     }
     else if (hasCursor)
-      gc.setFill (screenContext.foregroundColor);
+      backgroundColor = screenContext.foregroundColor;
     else
-      gc.setFill (screenContext.backgroundColor);
+      backgroundColor = screenContext.backgroundColor;
+
+    gc.setFill (backgroundColor);
 
     // without the offset Windows will leave ghosting behind (even though we have
     // translated the screen coordinates)
@@ -234,10 +237,10 @@ public class ScreenPosition
     // Draw foreground
     if (isVisible)
       if (isGraphics)
-        doGraphics (color, x, y);
+        doGraphics (foregroundColor, backgroundColor, hasCursor, x, y);
       else
       {
-        gc.setFill (color);
+        gc.setFill (foregroundColor);
         gc.fillText (getChar () + "", x, y + ascent);       // can we speed this up?
 
         if (screenContext.underscore)
@@ -250,14 +253,15 @@ public class ScreenPosition
     gc.translate (-0.5, -0.5);        // restore coordinate grid
   }
 
-  private void doGraphics (Color color, int x, int y)
+  private void doGraphics (Color foregroundColor, Color backgroundColor,
+      boolean hasCursor, int x, int y)
   {
     int width = characterSize.getWidth ();
     int height = characterSize.getHeight ();
     int dx = width / 2;
     int dy = height / 2;
 
-    gc.setStroke (color);
+    gc.setStroke (foregroundColor);
 
     switch (value)
     {
@@ -292,6 +296,13 @@ public class ScreenPosition
       default:
         gc.fillText (getChar () + "", x, y + characterSize.getAscent ());
         System.out.printf ("Unknown graphics character: %02X%n", value);
+    }
+
+    if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
+    {
+      gc.setStroke (backgroundColor);
+      dy = characterSize.getAscent () + characterSize.getDescent () + 1;
+      gc.strokeLine (x + dx, y + dy, x + dx, y + dy + characterSize.getLeading ());
     }
   }
 
