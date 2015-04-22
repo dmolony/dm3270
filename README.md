@@ -11,12 +11,12 @@ Select a server from the drop-down list and click OK. If there are no servers li
 Enter your server details.  
 ![Sites](resources/sitelist.png?raw=true "site list")
 #### Terminal Function
-Works with Mac OS X, Windows or Linux. See the [commands page](resources/commands.md) for differences between the platforms.  
-  
+Works with Mac OS X, Windows or Linux. See the [commands page](resources/commands.md) for differences between the platforms.
+##### Mac OS X
 ![Terminal screen](resources/osxterminal.png?raw=true "OSX")
-  
+##### Windows
 ![Terminal screen](resources/winterminal.png?raw=true "Windows")
-  
+##### Linux
 ![Terminal screen](resources/linuxterminal.png?raw=true "Ubuntu")
 #### Documentation
 * [Commands](resources/commands.md)
