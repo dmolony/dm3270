@@ -4,7 +4,7 @@ Not all keys are available on all platforms, and some keys aren't available at a
 | Function                  | OSX             | Windows         | Linux           |
 |---------------------------|-----------------|-----------------|-----------------|
 |Home (first input field)   | control-h       | home            | ?               |
-|Insert mode                | control-i       | ?               | ?               |
+|Insert mode                | control-i       | insert          | ?               |
 |Erase EOL                  | control-delete  | ?               | ?               |
 |Linefeed (new line)        | control-enter   | ?               | ?               |
 |Delete forwards            | fn-delete       | delete          | ?               | 
