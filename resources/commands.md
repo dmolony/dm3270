@@ -1,5 +1,5 @@
 #### Commands/Keys
-Not all keys are available on all platforms, and some keys aren't available at all. To help with this, the following shortcuts are available. These will probably change after some more testing.
+Not all keys are available on all platforms, and some keys aren't available at all. To help with this, the following shortcuts can be used. These may change after more testing.
 
 | Function                  | OSX             | Windows         | Linux           |
 |---------------------------|-----------------|-----------------|-----------------|
