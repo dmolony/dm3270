@@ -5,13 +5,13 @@
 * Double-click the jar file, or enter 'java -jar dm3270.jar' in the terminal.
 
 #### Connection
-Select a server from the drop-down list and press OK.  
+Select a server from the drop-down list and click OK. If there are no servers listed, click the edit button.  
 ![Default Connection](resources/connect1.png?raw=true "default connection")
 #### Server List
-To edit the list of servers, click the edit button on the connection screen.  
+Enter your server details.  
 ![Sites](resources/sitelist.png?raw=true "site list")
 #### Terminal Function
-Connects to the specified server.  
+Works with Mac OS X, Windows or Linux. See the [commands page](resources/commands.md) for differences between the platforms.  
   
 ![Terminal screen](resources/osxterminal.png?raw=true "OSX")
   
