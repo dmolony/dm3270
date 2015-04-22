@@ -188,58 +188,76 @@ public class ScreenPosition
     int charWidth = characterSize.getWidth ();
     int charHeight = characterSize.getHeight ();
     int ascent = characterSize.getAscent ();
-    double x2 = x + 0.5;
-    double y2 = y + 0.5;
+    int descent = characterSize.getDescent ();
+
+    Color color = null;
+
+    gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
 
     // Draw background
-    if (hasCursor)
-      gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.backgroundColor
-          : screenContext.foregroundColor : screenContext.foregroundColor);
-    else
-      gc.setFill (isVisible ? screenContext.reverseVideo ? screenContext.foregroundColor
-          : screenContext.backgroundColor : screenContext.backgroundColor);
-    gc.fillRect (x2, y2, charWidth, charHeight - 1);
-
-    // Draw foreground
     if (isVisible)
     {
-      Color color;
       if (hasCursor)
-        color =
-            screenContext.reverseVideo ? screenContext.foregroundColor
-                : screenContext.backgroundColor;
-      else
-        color =
-            screenContext.reverseVideo ? screenContext.backgroundColor
-                : screenContext.foregroundColor;
-
-      if (isGraphics)
+        if (screenContext.reverseVideo)
+        {
+          gc.setFill (screenContext.backgroundColor);
+          color = screenContext.foregroundColor;
+        }
+        else
+        {
+          gc.setFill (screenContext.foregroundColor);
+          color = screenContext.backgroundColor;
+        }
+      else if (screenContext.reverseVideo)
       {
-        gc.setStroke (color);
-        doGraphics (x, y);
+        gc.setFill (screenContext.foregroundColor);
+        color = screenContext.backgroundColor;
       }
       else
       {
+        gc.setFill (screenContext.backgroundColor);
+        color = screenContext.foregroundColor;
+      }
+    }
+    else if (hasCursor)
+      gc.setFill (screenContext.foregroundColor);
+    else
+      gc.setFill (screenContext.backgroundColor);
+
+    // without the offset Windows will leave ghosting behind (even though we have
+    // translated the screen coordinates)
+    if (hasCursor)
+      gc.fillRect (x + 0.5, y + 0.5, charWidth, ascent + descent);
+    else
+      gc.fillRect (x + 0.5, y + 0.5, charWidth, charHeight);
+
+    // Draw foreground
+    if (isVisible)
+      if (isGraphics)
+        doGraphics (color, x, y);
+      else
+      {
         gc.setFill (color);
-        gc.fillText (getChar () + "", x2, y2 + ascent);       // can we speed this up?
+        gc.fillText (getChar () + "", x, y + ascent);       // can we speed this up?
 
         if (screenContext.underscore)
         {
           gc.setStroke (screenContext.foregroundColor);
-          y2 = y + charHeight - 2.5;
-          gc.strokeLine (x2, y2, x2 + charWidth, y2);
+          double y2 = y + ascent + descent + 1;
+          gc.strokeLine (x, y2, x + charWidth, y2);
         }
       }
-    }
+    gc.translate (-0.5, -0.5);        // restore coordinate grid
   }
 
-  private void doGraphics (int x, int y)
+  private void doGraphics (Color color, int x, int y)
   {
     int width = characterSize.getWidth ();
     int height = characterSize.getHeight ();
     int dx = width / 2;
     int dy = height / 2;
-    gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
+
+    gc.setStroke (color);
 
     switch (value)
     {
@@ -275,13 +293,6 @@ public class ScreenPosition
         gc.fillText (getChar () + "", x, y + characterSize.getAscent ());
         System.out.printf ("Unknown graphics character: %02X%n", value);
     }
-    gc.translate (-0.5, -0.5);        // restore coordinate grid
-  }
-
-  public void erase (GraphicsContext gc, int x, int y)
-  {
-    gc.setFill (screenContext.backgroundColor);
-    gc.fillRect (x, y, characterSize.getWidth (), characterSize.getHeight ());
   }
 
   @Override
