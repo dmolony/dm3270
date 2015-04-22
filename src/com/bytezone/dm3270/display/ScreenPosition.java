@@ -275,7 +275,7 @@ public class ScreenPosition
 
       case TOP_LEFT:
         gc.strokeLine (x + dx, y + dy, x + dx, y + height);         // vertical
-        gc.strokeLine (x + dx, y + dy, x + width, y + dy);         // horizontal
+        gc.strokeLine (x + dx, y + dy, x + width, y + dy);          // horizontal
         break;
 
       case TOP_RIGHT:
@@ -301,8 +301,8 @@ public class ScreenPosition
     if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
     {
       gc.setStroke (backgroundColor);
-      dy = characterSize.getAscent () + characterSize.getDescent () + 1;
-      gc.strokeLine (x + dx, y + dy, x + dx, y + dy + characterSize.getLeading ());
+      dy = y + characterSize.getAscent () + characterSize.getDescent () + 1;
+      gc.strokeLine (x + dx, dy, x + dx, y + height);
     }
   }
 

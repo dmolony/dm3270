@@ -469,7 +469,7 @@ public class Console extends Application
 
   private Node options (String[] options, ToggleGroup group, int offset, int length)
   {
-    HBox node = new HBox (10);
+    HBox hbox = new HBox (10);
 
     for (int i = offset, max = offset + length; i < max; i++)
     {
@@ -478,42 +478,40 @@ public class Console extends Application
       rb.setUserData (option);
       rb.setPrefWidth (100);
       rb.setToggleGroup (group);
-      node.getChildren ().add (rb);
+      hbox.getChildren ().add (rb);
     }
-    return node;
+    return hbox;
   }
 
   private Node buttons ()
   {
-    HBox box = new HBox (10);
+    HBox hbox = new HBox (10);
     okButton.setDefaultButton (true);
     cancelButton.setCancelButton (true);
     okButton.setPrefWidth (80);
     cancelButton.setPrefWidth (80);
-    box.getChildren ().addAll (cancelButton, okButton);
-    return box;
+    hbox.getChildren ().addAll (cancelButton, okButton);
+    return hbox;
   }
 
   private Node row (String labelText, Node... field)
   {
-    HBox row = new HBox (10);
-    row.setAlignment (Pos.CENTER_LEFT);
+    HBox hbox = new HBox (10);
+    hbox.setAlignment (Pos.CENTER_LEFT);
     Label label = new Label (labelText);
     label.setMinWidth (65);
     label.setAlignment (Pos.CENTER_RIGHT);
-    row.getChildren ().add (label);
-    for (Node node : field)
-      row.getChildren ().add (node);
-    return row;
+    hbox.getChildren ().add (label);
+    hbox.getChildren ().addAll (field);
+    return hbox;
   }
 
   private Screen createScreen (Function function)
   {
     RadioMenuItem selectedFontName = (RadioMenuItem) fontGroup.getSelectedToggle ();
     RadioMenuItem selectedFontSize = (RadioMenuItem) sizeGroup.getSelectedToggle ();
-    Font font =
-        Font.font (selectedFontName.getText (),
-                   Integer.parseInt (selectedFontSize.getText ()));
+    Font font = Font.font (selectedFontName.getText (),     //
+                           Integer.parseInt (selectedFontSize.getText ()));
     return new Screen (24, 80, font, function);
   }
 }
