@@ -11,8 +11,8 @@ import com.bytezone.dm3270.display.Screen;
 
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
-  private final String os = System.getProperty ("os.name");
-  private final boolean isMac = os != null && os.startsWith ("Mac");
+  //  private final String os = System.getProperty ("os.name");
+  //  private final boolean isMac = os != null && os.startsWith ("Mac");
 
   private final Screen screen;
   private final ConsolePane consoleStage;
@@ -32,29 +32,22 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     KeyCode keyCodePressed = e.getCode ();
 
-    if (e.isControlDown ())       // should allow user to choose modifier key
+    if (keyCodePressed == KeyCode.S)
     {
-      if (keyCodePressed == KeyCode.S)
-      {
-        consoleStage.toggleHistory ();
-        return;
-      }
-
-      if (keyCodePressed == KeyCode.LEFT)
-      {
-        consoleStage.back ();
-        return;
-      }
-
-      if (keyCodePressed == KeyCode.RIGHT)
-      {
-        consoleStage.forward ();
-        return;
-      }
+      consoleStage.toggleHistory ();
+      return;
     }
 
     if (screen.isKeyboardLocked ())
+    {
+      if (e.isControlDown ())       // should allow user to choose modifier key
+        if (keyCodePressed == KeyCode.LEFT)
+          consoleStage.back ();
+        else if (keyCodePressed == KeyCode.RIGHT)
+          consoleStage.forward ();
+
       return;
+    }
 
     if (e.isControlDown ())       // should allow user to choose modifier key
     {
@@ -65,18 +58,18 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case BACK_SPACE:
-          if (isMac)
-            cursor.eraseEOL ();
+          //          if (isMac)
+          cursor.eraseEOL ();
           break;
 
         case H:
-          if (isMac)
-            cursor.home ();
+          //          if (isMac)
+          cursor.home ();
           break;
 
         case I:
-          if (isMac)
-            screen.toggleInsertMode ();
+          //          if (isMac)
+          screen.toggleInsertMode ();
           break;
 
         case F1:

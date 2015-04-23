@@ -56,19 +56,23 @@ public class Console extends Application
   private static final int EDIT_BUTTON_WIDTH = 50;
   private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
 
+  private Stage primaryStage;
   private ComboBox<String> fileComboBox;
   private ComboBox<String> serverComboBox;
   private ComboBox<String> clientComboBox;
 
-  Button editServersButton;
-  Button editClientsButton;
-  Button editLocationButton;
+  private Button editServersButton;
+  private Button editClientsButton;
+  private Button editLocationButton;
+
+  private SiteListStage serverSitesListStage;
+  private SiteListStage clientSitesListStage;
 
   private final Button okButton = new Button ("Connect");
   private final Button cancelButton = new Button ("Cancel");
 
   private Preferences prefs;
-  String spyFolder;
+  private String spyFolder;
 
   private final ToggleGroup functionsGroup = new ToggleGroup ();
   private final ToggleGroup fontGroup = new ToggleGroup ();
@@ -110,6 +114,8 @@ public class Console extends Application
   @Override
   public void start (Stage primaryStage) throws Exception
   {
+    this.primaryStage = primaryStage;
+
     String fileText = prefs.get ("ReplayFile", "");
     String optionSelected = prefs.get ("Function", "Terminal");
     String fontSelected = prefs.get ("FontName", "");
@@ -119,8 +125,8 @@ public class Console extends Application
     String serverSelected = prefs.get ("ServerName", "");
     String clientSelected = prefs.get ("ClientName", "");
 
-    SiteListStage serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
-    SiteListStage clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
+    serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
+    clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
 
     String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
     Node row1 = options (optionList, functionsGroup, 0, 2);
@@ -231,10 +237,9 @@ public class Console extends Application
     }
 
     okButton.setDefaultButton (true);
-    okButton.setOnAction (e -> okButton (primaryStage, serverSitesListStage,
-                                         clientSitesListStage));
+    okButton.setOnAction (e -> startSelectedFunction ());
     cancelButton.setOnAction (e -> primaryStage.hide ());
-    editLocationButton.setOnAction (e -> editLocation (primaryStage));
+    editLocationButton.setOnAction (e -> editLocation ());
 
     Menu menuFont = new Menu ("Fonts");
     Menu menuDebug = new Menu ("Mode");
@@ -283,8 +288,7 @@ public class Console extends Application
     primaryStage.show ();
   }
 
-  private void okButton (Stage primaryStage, SiteListStage serverSitesListStage,
-      SiteListStage clientSitesListStage)
+  private void startSelectedFunction ()
   {
     primaryStage.hide ();
 
@@ -409,7 +413,7 @@ public class Console extends Application
     savePreferences ();
   }
 
-  private void editLocation (Stage stage)
+  private void editLocation ()
   {
     DirectoryChooser chooser = new DirectoryChooser ();
     chooser.setTitle ("Choose Spy Folder");
@@ -417,7 +421,7 @@ public class Console extends Application
     if (currentLocation != null && currentLocation.exists ())
       chooser.setInitialDirectory (currentLocation);
 
-    File selectedDirectory = chooser.showDialog (stage);
+    File selectedDirectory = chooser.showDialog (primaryStage);
     if (selectedDirectory != null)
     {
       spyFolder = selectedDirectory.getAbsolutePath ();
