@@ -12,12 +12,12 @@ import com.bytezone.dm3270.display.Screen;
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
   private final Screen screen;
-  private final ConsolePane consoleStage;
+  private final ConsolePane consolePane;
   private final Cursor cursor;
 
-  public ConsoleKeyPress (ConsolePane console, Screen screen)
+  public ConsoleKeyPress (ConsolePane consolePane, Screen screen)
   {
-    this.consoleStage = console;
+    this.consolePane = consolePane;
     this.screen = screen;
     this.cursor = screen.getScreenCursor ();
   }
@@ -31,7 +31,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     if (e.isControlDown () && keyCodePressed == KeyCode.S)
     {
-      consoleStage.toggleHistory ();
+      consolePane.toggleHistory ();
       return;
     }
 
@@ -39,9 +39,9 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     {
       if (e.isControlDown ())       // should allow user to choose modifier key
         if (keyCodePressed == KeyCode.LEFT)
-          consoleStage.back ();
+          consolePane.back ();
         else if (keyCodePressed == KeyCode.RIGHT)
-          consoleStage.forward ();
+          consolePane.forward ();
 
       return;
     }
@@ -80,7 +80,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case T:
-          consoleStage.toggleToolbar ();
+          consolePane.toggleToolbar ();
           break;
 
         default:
@@ -175,6 +175,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     screen.setAID (aid);
 
     AIDCommand command = screen.readModifiedFields ();
-    consoleStage.sendAID (command);
+    consolePane.sendAID (command);
   }
 }
