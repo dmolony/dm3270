@@ -32,6 +32,7 @@ public class CharacterSize
       ascent = (int) (fontMetrics.getMaxAscent () + 0.99);
       descent = (int) (fontMetrics.getMaxDescent () + 0.99);
       leading = height - ascent - descent;
+      System.out.println (this);
     }
   }
 
