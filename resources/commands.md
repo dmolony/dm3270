@@ -9,9 +9,9 @@ Not all keys are available on all platforms, and some keys aren't available at a
 |Linefeed (new line)        | control-enter   | ?               | ?               |
 |Delete forwards            | fn-delete       | delete          | ?               | 
 |Delete backwards           | delete          | backspace       | ?               | 
-|Screen history             | control-s       | ?               | ?               | 
-|  --- previous screen      | control-left    | ?               | ?               |
-|  --- next screen          | control-right   | ?               | ?               |
+|Screen history             | control-s       | ?               | control-s       | 
+|  --- previous screen      | control-left    | ?               | control-left    |
+|  --- next screen          | control-right   | ?               | control-right   |
 |Toolbar display            | control-t       | ?               | control-t       |
 |PA1/PA2/PA3                | control-F1/F2/F3| ?               | ?               |
 |Exit program               | command-q       | close box       | close box       |
