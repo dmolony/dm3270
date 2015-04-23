@@ -52,24 +52,24 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
   private static final int HEIGHT = 800;
   private static final int BUTTON_WIDTH = 120;
 
-  private final List<Button> buttons = new ArrayList<> ();
-  private final TextArea textArea = getTextArea (600);
-  private MainframeServer mainframeServer;
-
-  final RadioButton btnFieldMode;
-  final RadioButton btnExtendedFieldMode;
-  final RadioButton btnCharacterMode;
-
-  final Button btnReadBuffer;
-  final Button btnReadModified;
-  final Button btnReadModifiedAll;
-  final Button btnEraseAllUnprotected;
-  final Button btnProgramTab;
-
   private static boolean UNPROTECTED = false;
   private static boolean PROTECTED = true;
   private static boolean ALPHA = false;
   private static boolean NUMERIC = true;
+
+  private final List<Button> buttons = new ArrayList<> ();
+  private final TextArea textArea = getTextArea (600);
+  private MainframeServer mainframeServer;
+
+  private final RadioButton btnFieldMode;
+  private final RadioButton btnExtendedFieldMode;
+  private final RadioButton btnCharacterMode;
+
+  private final Button btnReadBuffer;
+  private final Button btnReadModified;
+  private final Button btnReadModifiedAll;
+  private final Button btnEraseAllUnprotected;
+  private final Button btnProgramTab;
 
   private final List<Attribute> attributes = new ArrayList<> ();
   private final StartFieldAttribute fldOut = new StartFieldAttribute (
