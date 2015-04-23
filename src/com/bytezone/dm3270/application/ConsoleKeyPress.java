@@ -15,10 +15,10 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   private final boolean isMac = os != null && os.startsWith ("Mac");
 
   private final Screen screen;
-  private final ConsoleStage consoleStage;
+  private final ConsolePane consoleStage;
   private final Cursor cursor;
 
-  public ConsoleKeyPress (ConsoleStage console, Screen screen)
+  public ConsoleKeyPress (ConsolePane console, Screen screen)
   {
     this.consoleStage = console;
     this.screen = screen;

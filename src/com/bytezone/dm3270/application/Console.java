@@ -13,6 +13,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -75,7 +76,7 @@ public class Console extends Application
 
   private MainframeStage mainframeStage;
   private SpyStage spyStage;
-  private ConsoleStage consoleStage;
+  private ConsolePane consolePane;
   private ReplayStage replayStage;
 
   private boolean release;
@@ -106,7 +107,7 @@ public class Console extends Application
   }
 
   @Override
-  public void start (Stage dialogStage) throws Exception
+  public void start (Stage primaryStage) throws Exception
   {
     String fileText = prefs.get ("ReplayFile", "spy01.txt");
     String optionSelected = prefs.get ("Function", "Terminal");
@@ -161,7 +162,7 @@ public class Console extends Application
     {
       panel.getChildren ().addAll (row ("Server", serverComboBox, editServersButton),
                                    row ("", buttons ()));
-      dialogStage.setTitle ("Connect to Server");
+      primaryStage.setTitle ("Connect to Server");
       panel.setPadding (new Insets (0, 30, 0, 0));       // trbl
     }
     else
@@ -172,7 +173,7 @@ public class Console extends Application
                      row ("Client", clientComboBox, editClientsButton),
                      row ("Replay", fileComboBox, editLocationButton),
                      row ("", buttons ()));
-      dialogStage.setTitle ("Choose Function");
+      primaryStage.setTitle ("Choose Function");
     }
 
     HBox hBox = new HBox (10);
@@ -228,10 +229,10 @@ public class Console extends Application
     }
 
     okButton.setDefaultButton (true);
-    okButton.setOnAction (e -> okButton (dialogStage, serverSitesListStage,
+    okButton.setOnAction (e -> okButton (primaryStage, serverSitesListStage,
                                          clientSitesListStage));
-    cancelButton.setOnAction (e -> dialogStage.hide ());
-    editLocationButton.setOnAction (e -> editLocation (dialogStage));
+    cancelButton.setOnAction (e -> primaryStage.hide ());
+    editLocationButton.setOnAction (e -> editLocation (primaryStage));
 
     Menu menuFont = new Menu ("Fonts");
     Menu menuDebug = new Menu ("Mode");
@@ -274,14 +275,14 @@ public class Console extends Application
     borderPane.setTop (menuBar);
     borderPane.setCenter (hBox);
 
-    dialogStage.setScene (new Scene (borderPane));
-    dialogStage.show ();
+    primaryStage.setScene (new Scene (borderPane));
+    primaryStage.show ();
   }
 
-  private void okButton (Stage dialogStage, SiteListStage serverSitesListStage,
+  private void okButton (Stage primaryStage, SiteListStage serverSitesListStage,
       SiteListStage clientSitesListStage)
   {
-    dialogStage.hide ();
+    primaryStage.hide ();
 
     Site serverSite = serverSitesListStage.getSelectedSite ();
     Site clientSite = clientSitesListStage.getSelectedSite ();
@@ -298,7 +299,7 @@ public class Console extends Application
         }
         else if (showAlert (serverSite == null ? "No server selected"
             : "No client selected"))
-          dialogStage.show ();
+          primaryStage.show ();
 
         break;
 
@@ -307,32 +308,32 @@ public class Console extends Application
         if (Files.exists (path))
           try
           {
-            Screen screen = createScreen (Function.REPLAY);
-            consoleStage = new ConsoleStage (screen);
+            Screen screen = setConsole (primaryStage, Function.REPLAY);
             replayStage = new ReplayStage (screen, path, prefs);
-            consoleStage.show ();
+            primaryStage.show ();
             replayStage.show ();
           }
           catch (Exception e)
           {
+            e.printStackTrace ();
             if (showAlert ("Error reading file"))
-              dialogStage.show ();
+              primaryStage.show ();
           }
         else if (showAlert (path + " does not exist"))
-          dialogStage.show ();
+          primaryStage.show ();
 
         break;
 
       case "Terminal":
         if (serverSite != null)
         {
-          consoleStage = new ConsoleStage (createScreen (Function.TERMINAL));
-          consoleStage.centerOnScreen ();
-          consoleStage.show ();
-          consoleStage.connect (serverSite);
+          setConsole (primaryStage, Function.TERMINAL);
+          primaryStage.centerOnScreen ();
+          primaryStage.show ();
+          consolePane.connect (serverSite);
         }
         else if (showAlert ("No server selected"))
-          dialogStage.show ();
+          primaryStage.show ();
 
         break;
 
@@ -350,7 +351,7 @@ public class Console extends Application
           mainframeStage.startServer ();
         }
         else if (showAlert ("No client selected"))
-          dialogStage.show ();
+          primaryStage.show ();
 
         break;
     }
@@ -364,6 +365,26 @@ public class Console extends Application
     return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
+  private Screen setConsole (Stage primaryStage, Function function)
+  {
+    Screen screen = createScreen (function);
+    consolePane = new ConsolePane (screen);
+
+    Scene scene = new Scene (consolePane);
+    primaryStage.setScene (scene);
+    primaryStage.resizableProperty ().setValue (Boolean.FALSE);
+    primaryStage.setX (0);
+    primaryStage.setY (0);
+    primaryStage.sizeToScene ();
+    primaryStage.setTitle ("dm3270");
+    primaryStage.setOnCloseRequest (e -> Platform.exit ());
+
+    scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
+    scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
+
+    return screen;
+  }
+
   @Override
   public void stop ()
   {
@@ -373,8 +394,8 @@ public class Console extends Application
     if (spyStage != null)
       spyStage.disconnect ();
 
-    if (consoleStage != null)
-      consoleStage.disconnect ();
+    if (consolePane != null)
+      consolePane.disconnect ();
 
     if (replayStage != null)
       replayStage.disconnect ();

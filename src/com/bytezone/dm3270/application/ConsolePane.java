@@ -1,10 +1,8 @@
 package com.bytezone.dm3270.application;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -32,7 +30,7 @@ import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
 
-public class ConsoleStage extends Stage implements FieldChangeListener,
+public class ConsolePane extends BorderPane implements FieldChangeListener,
     CursorMoveListener, KeyboardStatusListener
 {
   private final static int MARGIN = 4;
@@ -51,7 +49,6 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private Thread terminalServerThread;
 
   private int commandHeaderCount;
-  private final BorderPane borderPane = new BorderPane ();
   private final BorderPane topPane = new BorderPane ();
 
   private ScreenHistory screenHistory;
@@ -63,21 +60,20 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
 
-  public ConsoleStage (Screen screen)
+  public ConsolePane (Screen screen)
   {
     this.screen = screen;
-    assert false;
 
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
     screen.addStatusChangeListener (this);
 
-    setTitle ("dm3270");
+    //    setTitle ("dm3270");
 
-    BorderPane.setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
+    setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
-    borderPane.setTop (topPane);
-    borderPane.setCenter (screen);
+    setTop (topPane);
+    setCenter (screen);
 
     toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
     btnBack.setDisable (true);
@@ -130,19 +126,9 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     statusPane.setLeft (left);
     statusPane.setCenter (center);
     statusPane.setRight (right);
-    borderPane.setBottom (statusPane);
-
-    setScene (new Scene (borderPane));
-    resizableProperty ().setValue (Boolean.FALSE);
-    setX (0);
-    setY (0);
-
-    //    getScene ().setOnKeyPressed (new ConsoleKeyPress (this, screen));
-    getScene ().setOnKeyTyped (new ConsoleKeyEvent (screen));
+    setBottom (statusPane);
 
     screen.requestFocus ();
-
-    setOnCloseRequest (e -> Platform.exit ());
 
     btnBack.setOnAction (e -> back ());
     btnForward.setOnAction (e -> forward ());
@@ -162,7 +148,7 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
   {
     toolbarVisible = !toolbarVisible;
     topPane.setBottom (toolbarVisible ? toolbar : null);
-    sizeToScene ();
+    ((Stage) getScene ().getWindow ()).sizeToScene ();
   }
 
   public void toggleHistory ()
@@ -201,13 +187,13 @@ public class ConsoleStage extends Stage implements FieldChangeListener,
     if (imageView == null)
     {
       screenHistory = null;
-      borderPane.setCenter (screen);
+      setCenter (screen);
       screen.resume ();
     }
     else
     {
       BorderPane.setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
-      borderPane.setCenter (imageView);
+      setCenter (imageView);
     }
   }
 
