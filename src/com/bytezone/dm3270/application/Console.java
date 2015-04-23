@@ -43,6 +43,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.session.Session;
 
 public class Console extends Application
 {
@@ -80,7 +81,7 @@ public class Console extends Application
   private ReplayStage replayStage;
 
   private boolean release;
-  private final MenuBar menuBar = new MenuBar ();
+  private MenuBar menuBar = new MenuBar ();
 
   public enum Function
   {
@@ -109,7 +110,7 @@ public class Console extends Application
   @Override
   public void start (Stage primaryStage) throws Exception
   {
-    String fileText = prefs.get ("ReplayFile", "spy01.txt");
+    String fileText = prefs.get ("ReplayFile", "");
     String optionSelected = prefs.get ("Function", "Terminal");
     String fontSelected = prefs.get ("FontName", "");
     String sizeSelected = prefs.get ("FontSize", "16");
@@ -130,7 +131,8 @@ public class Console extends Application
     ObservableList<String> sessionFiles = getSessionFiles (spyFolder);
     fileComboBox = new ComboBox<> (sessionFiles);
     fileComboBox.setVisibleRowCount (12);
-    fileComboBox.getSelectionModel ().select (fileText);
+    if (!fileText.isEmpty ())
+      fileComboBox.getSelectionModel ().select (fileText);
 
     serverComboBox = serverSitesListStage.getComboBox ();
     serverComboBox.setVisibleRowCount (5);
@@ -275,6 +277,8 @@ public class Console extends Application
     borderPane.setTop (menuBar);
     borderPane.setCenter (hBox);
 
+    primaryStage.resizableProperty ().setValue (Boolean.FALSE);
+    primaryStage.setOnCloseRequest (e -> Platform.exit ());
     primaryStage.setScene (new Scene (borderPane));
     primaryStage.show ();
   }
@@ -308,8 +312,10 @@ public class Console extends Application
         if (Files.exists (path))
           try
           {
-            Screen screen = setConsole (primaryStage, Function.REPLAY);
-            replayStage = new ReplayStage (screen, path, prefs);
+            Screen screen = createScreen (Function.REPLAY);
+            Session session = new Session (screen, path);     // can throw Exception
+            setConsole (primaryStage, screen);
+            replayStage = new ReplayStage (screen, session, path, prefs);
             primaryStage.show ();
             replayStage.show ();
           }
@@ -327,7 +333,8 @@ public class Console extends Application
       case "Terminal":
         if (serverSite != null)
         {
-          setConsole (primaryStage, Function.TERMINAL);
+          Screen screen = createScreen (Function.TERMINAL);
+          setConsole (primaryStage, screen);
           primaryStage.centerOnScreen ();
           primaryStage.show ();
           consolePane.connect (serverSite);
@@ -365,22 +372,21 @@ public class Console extends Application
     return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
-  private Screen setConsole (Stage primaryStage, Function function)
+  private Screen setConsole (Stage primaryStage, Screen screen)
   {
-    Screen screen = createScreen (function);
     consolePane = new ConsolePane (screen);
 
     Scene scene = new Scene (consolePane);
     primaryStage.setScene (scene);
-    primaryStage.resizableProperty ().setValue (Boolean.FALSE);
     primaryStage.setX (0);
     primaryStage.setY (0);
     primaryStage.sizeToScene ();
     primaryStage.setTitle ("dm3270");
-    primaryStage.setOnCloseRequest (e -> Platform.exit ());
 
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
+
+    menuBar = consolePane.getMenuBar ();
 
     return screen;
   }

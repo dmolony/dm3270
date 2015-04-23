@@ -32,10 +32,9 @@ public class ReplayStage extends BasicStage
   private final CheckBox showTelnetCB = new CheckBox ("Show telnet");
   private final CheckBox show3270ECB = new CheckBox ("Show 3270-E");
 
-  public ReplayStage (Screen screen, Path path, Preferences prefs) throws Exception
+  public ReplayStage (Screen screen, Session session, Path path, Preferences prefs)
   {
     SessionTable table = new SessionTable ();
-    Session session = new Session (screen, path);
     this.prefs = prefs;
 
     final Label label = session.getHeaderLabel ();

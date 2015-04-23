@@ -68,8 +68,6 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     screen.getScreenCursor ().addCursorMoveListener (this);
     screen.addStatusChangeListener (this);
 
-    //    setTitle ("dm3270");
-
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
     setTop (topPane);
@@ -133,6 +131,11 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     btnBack.setOnAction (e -> back ());
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
+  }
+
+  public MenuBar getMenuBar ()
+  {
+    return menuBar;
   }
 
   private HBox getHBox (Insets insets, Pos alignment)
