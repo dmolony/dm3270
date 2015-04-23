@@ -30,8 +30,8 @@ import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
 
-public class ConsolePane extends BorderPane implements FieldChangeListener,
-    CursorMoveListener, KeyboardStatusListener
+class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveListener,
+    KeyboardStatusListener
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;

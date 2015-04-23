@@ -26,7 +26,7 @@ import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
 
-public class ReplayStage extends BasicStage
+class ReplayStage extends BasicStage
 {
   private final Preferences prefs;
   private final CheckBox showTelnetCB = new CheckBox ("Show telnet");
