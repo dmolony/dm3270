@@ -5,6 +5,7 @@ Monospaced comes by default with Java, the others may have to be installed. Here
 * http://hivelogic.com/articles/top-10-programming-fonts
 * http://www.slant.co/topics/67/~what-are-the-best-programming-fonts
 * http://stackoverflow.com/questions/4689/recommended-fonts-for-programming
+* http://wesbos.com/programming-fonts/
 
 ![Fonts](fonts.png?raw=true "fonts")
 ![Debug](debug.png?raw=true "debug")
