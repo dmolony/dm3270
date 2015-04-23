@@ -11,9 +11,6 @@ import com.bytezone.dm3270.display.Screen;
 
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
-  //  private final String os = System.getProperty ("os.name");
-  //  private final boolean isMac = os != null && os.startsWith ("Mac");
-
   private final Screen screen;
   private final ConsolePane consoleStage;
   private final Cursor cursor;
@@ -32,7 +29,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     KeyCode keyCodePressed = e.getCode ();
 
-    if (keyCodePressed == KeyCode.S)
+    if (e.isControlDown () && keyCodePressed == KeyCode.S)
     {
       consoleStage.toggleHistory ();
       return;
@@ -58,17 +55,15 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case BACK_SPACE:
-          //          if (isMac)
+        case DELETE:
           cursor.eraseEOL ();
           break;
 
         case H:
-          //          if (isMac)
           cursor.home ();
           break;
 
         case I:
-          //          if (isMac)
           screen.toggleInsertMode ();
           break;
 
