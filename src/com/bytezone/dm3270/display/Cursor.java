@@ -233,7 +233,8 @@ public class Cursor
         newField = currentField.getNextUnprotectedField ();
     }
 
-    moveTo (newField.getFirstLocation ());
+    if (newField != null)
+      moveTo (newField.getFirstLocation ());
   }
 
   public void newLine ()
