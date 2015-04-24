@@ -292,6 +292,7 @@ public class Console extends Application
   private void startSelectedFunction ()
   {
     primaryStage.hide ();
+    String errorMessage = "";
 
     Site serverSite = serverSitesListStage.getSelectedSite ();
     Site clientSite = clientSitesListStage.getSelectedSite ();
@@ -301,12 +302,14 @@ public class Console extends Application
     {
       case "Replay":
         Path path = Paths.get (spyFolder + "/" + fileComboBox.getValue ());
-        if (Files.exists (path))
+        if (!Files.exists (path))
+          errorMessage = path + " does not exist";
+        else
           try
           {
             Screen screen = createScreen (Function.REPLAY);
             Session session = new Session (screen, path);     // can throw Exception
-            setConsole (screen);                              // reassigns primaryStage
+            setConsolePane (screen);                              // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
@@ -314,36 +317,36 @@ public class Console extends Application
           catch (Exception e)
           {
             e.printStackTrace ();
-            if (showAlert ("Error reading file"))
-              primaryStage.show ();
+            errorMessage = "Error reading file";
           }
-        else if (showAlert (path + " does not exist"))
-          primaryStage.show ();
 
         break;
 
       case "Terminal":
-        if (serverSite != null)
+        if (serverSite == null)
+          errorMessage = "No server selected";
+        else
         {
-          setConsole (createScreen (Function.TERMINAL));
+          setConsolePane (createScreen (Function.TERMINAL));
           consolePane.connect (serverSite);
         }
-        else if (showAlert ("No server selected"))
-          primaryStage.show ();
 
         break;
 
       case "Spy":
-        if (serverSite != null && clientSite != null)
+        if (serverSite == null)
+          errorMessage = "No server selected";
+        else if (clientSite == null)
+          errorMessage = "No client selected";
+        else
           setSpyPane (createScreen (Function.SPY), serverSite, clientSite);
-        else if (showAlert (serverSite == null ? "No server selected"
-            : "No client selected"))
-          primaryStage.show ();
 
         break;
 
       case "Test":
-        if (clientSite != null)
+        if (clientSite == null)
+          errorMessage = "No client selected";
+        else
         {
           Site mainframe =
               new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
@@ -354,23 +357,22 @@ public class Console extends Application
           mainframeStage.show ();
           mainframeStage.startServer ();
         }
-        else if (showAlert ("No client selected"))
-          primaryStage.show ();
 
         break;
     }
+
+    if (!errorMessage.isEmpty () && showAlert (errorMessage))
+      primaryStage.show ();
   }
 
-  private void setConsole (Screen screen)
+  private void setConsolePane (Screen screen)
   {
     consolePane = new ConsolePane (screen);
-
     Scene scene = new Scene (consolePane);
-    primaryStage.setScene (scene);
 
+    primaryStage.setScene (scene);
     primaryStage.setX (0);
     primaryStage.setY (0);
-
     primaryStage.sizeToScene ();
     primaryStage.setTitle ("dm3270");
 
@@ -389,11 +391,10 @@ public class Console extends Application
   {
     spyPane = new SpyPane (screen, server, client);
     Scene scene = new Scene (spyPane);
-    primaryStage.setScene (scene);
 
+    primaryStage.setScene (scene);
     primaryStage.setX (1200);
     primaryStage.setY (20);
-
     primaryStage.sizeToScene ();
     primaryStage.setTitle ("Terminal Spy");
 
