@@ -80,10 +80,10 @@ public class Console extends Application
   private final ToggleGroup sizeGroup = new ToggleGroup ();
   private final ToggleGroup releaseGroup = new ToggleGroup ();
 
-  private MainframeStage mainframeStage;
   private SpyPane spyPane;
   private ConsolePane consolePane;
   private ReplayStage replayStage;
+  private MainframeStage mainframeStage;
 
   private boolean release;
   private MenuBar menuBar = new MenuBar ();
@@ -198,44 +198,32 @@ public class Console extends Application
         if (newToggle == null)
           return;
 
-        switch ((String) newToggle.getUserData ())
-        {
-          case "Spy":
-            setDisable (false, false, true);
-            break;
-
-          case "Replay":
-            setDisable (true, true, false);
-            break;
-
-          case "Terminal":
-            setDisable (false, true, true);
-            break;
-
-          case "Test":
-            setDisable (true, false, true);
-            break;
-        }
+        String selection = (String) newToggle.getUserData ();
+        if (selection.equals ("Spy"))
+          setDisable (false, false, true);          // server, client, file
+        else if (selection.equals ("Replay"))
+          setDisable (true, true, false);
+        else if (selection.equals ("Terminal"))
+          setDisable (false, true, true);
+        else if (selection.equals ("Test"))
+          setDisable (true, false, true);
       }
     });
 
     if (release)
-      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));
-    else
-    {
-      boolean found = false;
-      for (int i = 0; i < optionList.length; i++)
+      optionSelected = "Terminal";
+
+    boolean found = false;
+    for (int i = 0; i < optionList.length; i++)
+      if (optionList[i].equals (optionSelected))
       {
-        if (optionList[i].equals (optionSelected))
-        {
-          functionsGroup.selectToggle (functionsGroup.getToggles ().get (i));
-          found = true;
-          break;
-        }
+        functionsGroup.selectToggle (functionsGroup.getToggles ().get (i));
+        found = true;
+        break;
       }
-      if (!found)
-        functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));
-    }
+
+    if (!found)
+      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));
 
     okButton.setDefaultButton (true);
     okButton.setOnAction (e -> startSelectedFunction ());
@@ -265,7 +253,9 @@ public class Console extends Application
 
     setMenuItem ("12", sizeGroup, menuFont, sizeSelected, false);
     setMenuItem ("14", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("15", sizeGroup, menuFont, sizeSelected, false);
     setMenuItem ("16", sizeGroup, menuFont, sizeSelected, false);
+    setMenuItem ("17", sizeGroup, menuFont, sizeSelected, false);
     setMenuItem ("18", sizeGroup, menuFont, sizeSelected, false);
     setMenuItem ("20", sizeGroup, menuFont, sizeSelected, false);
     setMenuItem ("22", sizeGroup, menuFont, sizeSelected, false);
@@ -309,7 +299,7 @@ public class Console extends Application
           {
             Screen screen = createScreen (Function.REPLAY);
             Session session = new Session (screen, path);     // can throw Exception
-            setConsolePane (screen);                              // reassigns primaryStage
+            setConsolePane (screen);                          // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
