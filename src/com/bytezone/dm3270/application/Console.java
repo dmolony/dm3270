@@ -49,8 +49,8 @@ public class Console extends Application
 {
   private static String[] preferredFontNames = { //
       "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
-          "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Luculent", "Menlo", "Monaco",
-          "M+ 2m", "PT Mono", "Source Code Pro", "Monospaced" };
+          "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Luculent", "Menlo",
+          "Monaco", "M+ 2m", "PT Mono", "Source Code Pro", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
   private static final int EDIT_BUTTON_WIDTH = 50;
