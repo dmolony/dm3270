@@ -355,6 +355,7 @@ public class Console extends Application
         {
           Site mainframe =
               new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
+
           spyPane = new SpyPane (createScreen (Function.TEST), mainframe, clientSite);
           setSpyPane ();
           primaryStage.show ();
@@ -385,8 +386,10 @@ public class Console extends Application
 
     Scene scene = new Scene (consolePane);
     primaryStage.setScene (scene);
+
     primaryStage.setX (0);
     primaryStage.setY (0);
+
     primaryStage.sizeToScene ();
     primaryStage.setTitle ("dm3270");
 
@@ -402,7 +405,12 @@ public class Console extends Application
   {
     Scene scene = new Scene (spyPane);
     primaryStage.setScene (scene);
+
+    primaryStage.setX (1200);
+    primaryStage.setY (20);
+
     primaryStage.sizeToScene ();
+    primaryStage.setTitle ("Terminal Spy");
   }
 
   @Override
