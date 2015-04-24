@@ -161,7 +161,7 @@ public class SiteListStage extends Stage
     else if (sites.size () > 0)
       updateComboBox (siteNames, 0);
 
-    prefs.putInt (String.format ("%sSelected", key), getSelectedIndex ());
+    //    prefs.putInt (String.format ("%sSelected", key), getSelectedIndex ());
   }
 
   private void updateComboBox (List<String> names, int selectedIndex)

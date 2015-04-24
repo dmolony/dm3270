@@ -249,7 +249,7 @@ public class Console extends Application
     for (String fontName : preferredFontNames)
     {
       boolean fontExists = families.contains (fontName);
-      if (fontSelected.isEmpty () && fontExists)
+      if (fontExists && fontSelected.isEmpty ())
         fontSelected = fontName;
       setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
     }
@@ -463,7 +463,10 @@ public class Console extends Application
     prefs.put ("FontName", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("FontSize", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
     prefs.put ("Mode", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
-    prefs.put ("ReplayFile", fileComboBox.getValue ());
+
+    String filename = fileComboBox.getValue ();
+    if (filename != null)
+      prefs.put ("ReplayFile", filename);
     prefs.put ("SpyFolder", spyFolder);
     prefs.put ("ServerName", serverComboBox.getSelectionModel ().getSelectedItem ());
     prefs.put ("ClientName", clientComboBox.getSelectionModel ().getSelectedItem ());
