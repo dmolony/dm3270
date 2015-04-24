@@ -24,6 +24,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
@@ -46,7 +47,7 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.MainframeServer;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
-public class MainframeStage extends BasicStage implements Mainframe
+public class MainframeStage extends Stage implements Mainframe
 {
   private static final int WIDTH = 680;
   private static final int HEIGHT = 800;
@@ -57,8 +58,10 @@ public class MainframeStage extends BasicStage implements Mainframe
   private static boolean ALPHA = false;
   private static boolean NUMERIC = true;
 
+  private final GuiFactory factory = new GuiFactory ();
+
   private final List<Button> buttons = new ArrayList<> ();
-  private final TextArea textArea = getTextArea (600);
+  private final TextArea textArea = factory.getTextArea (600);
   private MainframeServer mainframeServer;
 
   private final RadioButton btnFieldMode;
@@ -88,27 +91,28 @@ public class MainframeStage extends BasicStage implements Mainframe
     mainframeServer = new MainframeServer (mainframePort);
     mainframeServer.setStage (this);
 
-    final VBox vBox = getVBox ();
+    final VBox vBox = factory.getVBox ();
 
     for (int i = 0; i < 10; i++)
-      buttons.add (getButton ("Empty", vBox, BUTTON_WIDTH));
+      buttons.add (factory.getButton ("Empty", vBox, BUTTON_WIDTH));
 
     Separator separator = new Separator ();
     separator.setOrientation (Orientation.HORIZONTAL);
     vBox.getChildren ().add (separator);
 
-    btnReadBuffer = getButton ("Read Buffer", vBox, BUTTON_WIDTH);
-    btnReadModified = getButton ("Read Modified", vBox, BUTTON_WIDTH);
-    btnReadModifiedAll = getButton ("Read Mod All", vBox, BUTTON_WIDTH);
-    btnEraseAllUnprotected = getButton ("Erase All Unpr", vBox, BUTTON_WIDTH);
-    btnProgramTab = getButton ("Program Tab", vBox, BUTTON_WIDTH);
+    btnReadBuffer = factory.getButton ("Read Buffer", vBox, BUTTON_WIDTH);
+    btnReadModified = factory.getButton ("Read Modified", vBox, BUTTON_WIDTH);
+    btnReadModifiedAll = factory.getButton ("Read Mod All", vBox, BUTTON_WIDTH);
+    btnEraseAllUnprotected = factory.getButton ("Erase All Unpr", vBox, BUTTON_WIDTH);
+    btnProgramTab = factory.getButton ("Program Tab", vBox, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
-    final HBox hbox = getHBox ();
-    btnFieldMode = getRadioButton ("Field Mode", hbox, modeGroup);
-    btnExtendedFieldMode = getRadioButton ("Extended Field Mode", hbox, modeGroup);
-    btnCharacterMode = getRadioButton ("Character Mode", hbox, modeGroup);
+    final HBox hbox = factory.getHBox ();
+    btnFieldMode = factory.getRadioButton ("Field Mode", hbox, modeGroup);
+    btnExtendedFieldMode =
+        factory.getRadioButton ("Extended Field Mode", hbox, modeGroup);
+    btnCharacterMode = factory.getRadioButton ("Character Mode", hbox, modeGroup);
     btnFieldMode.setSelected (true);        // match the default setting
 
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());

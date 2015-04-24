@@ -19,14 +19,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
+import com.bytezone.dm3270.application.GuiFactory.ProcessInstruction;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
 
-class ReplayStage extends BasicStage
+class ReplayStage extends Stage
 {
   private final Preferences prefs;
   private final CheckBox showTelnetCB = new CheckBox ("Show telnet");
@@ -124,6 +126,14 @@ class ReplayStage extends BasicStage
       table.getSelectionModel ().select (selectedRecord);
       table.requestFocus ();
     }
+  }
+
+  protected VBox getVBox ()
+  {
+    VBox vbox = new VBox ();
+    vbox.setSpacing (15);
+    vbox.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    return vbox;
   }
 
   public void disconnect ()

@@ -14,14 +14,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import com.bytezone.dm3270.application.GuiFactory.ProcessInstruction;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
 import com.bytezone.dm3270.streams.TelnetState;
 
-public class SpyStage extends BasicStage
+public class SpyStage extends Stage
 {
   private static final int BUTTON_WIDTH = 105;
 
@@ -110,6 +112,14 @@ public class SpyStage extends BasicStage
     });
 
     setOnCloseRequest (e -> Platform.exit ());
+  }
+
+  protected VBox getVBox ()
+  {
+    VBox vbox = new VBox ();
+    vbox.setSpacing (15);
+    vbox.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    return vbox;
   }
 
   public void startServer ()

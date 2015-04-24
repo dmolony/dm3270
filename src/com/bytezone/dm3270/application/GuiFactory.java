@@ -10,9 +10,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
-public class BasicStage extends Stage
+public class GuiFactory
 {
   //  protected static final boolean DONT_PROCESS = false;
   //  protected static final boolean DO_PROCESS = true;

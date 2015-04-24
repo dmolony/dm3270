@@ -18,8 +18,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-public class SiteListStage extends BasicStage
+public class SiteListStage extends Stage
 {
   private final Preferences prefs;
   private final List<Site> sites = new ArrayList<> ();
