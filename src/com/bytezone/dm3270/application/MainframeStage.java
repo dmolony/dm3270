@@ -46,7 +46,7 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.MainframeServer;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
-public class MainframeStage extends BasicTelnetStage implements Mainframe
+public class MainframeStage extends BasicStage implements Mainframe
 {
   private static final int WIDTH = 680;
   private static final int HEIGHT = 800;
@@ -70,6 +70,8 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
   private final Button btnReadModifiedAll;
   private final Button btnEraseAllUnprotected;
   private final Button btnProgramTab;
+
+  private final CommandFactory commandFactory = new CommandFactory ();
 
   private final List<Attribute> attributes = new ArrayList<> ();
   private final StartFieldAttribute fldOut = new StartFieldAttribute (
@@ -253,23 +255,27 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
     }
 
     btnReadBuffer.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand (Command.READ_BUFFER_F2));
+      mainframeServer.write (commandFactory
+          .createReadBufferCommand (Command.READ_BUFFER_F2));
     });
 
     btnReadModified.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand (Command.READ_MODIFIED_F6));
+      mainframeServer.write (commandFactory
+          .createReadBufferCommand (Command.READ_MODIFIED_F6));
     });
 
     btnReadModifiedAll.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
+      mainframeServer.write (commandFactory
+          .createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
     });
 
     btnEraseAllUnprotected.setOnAction ( (x) -> {
-      mainframeServer.write (createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F));
+      mainframeServer.write (commandFactory
+          .createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F));
     });
 
     btnProgramTab.setOnAction ( (x) -> {
-      mainframeServer.write (createProgramTabCommand ());
+      mainframeServer.write (commandFactory.createProgramTabCommand ());
     });
   }
 
@@ -286,8 +292,9 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
 
     if (command instanceof AIDCommand && ((AIDCommand) command).isPAKey ())
     {
-      mainframeServer.write (createSetReplyModeCommand ((byte) 2));
-      mainframeServer.write (createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
+      mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 2));
+      mainframeServer.write (commandFactory
+          .createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
     }
   }
 
@@ -326,11 +333,11 @@ public class MainframeStage extends BasicTelnetStage implements Mainframe
       try
       {
         if (t1 == btnFieldMode)
-          mainframeServer.write (createSetReplyModeCommand ((byte) 0x00));
+          mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x00));
         else if (t1 == btnExtendedFieldMode)
-          mainframeServer.write (createSetReplyModeCommand ((byte) 0x01));
+          mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x01));
         else if (t1 == btnCharacterMode)
-          mainframeServer.write (createSetReplyModeCommand ((byte) 0x02));
+          mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x02));
       }
       catch (Exception e)
       {

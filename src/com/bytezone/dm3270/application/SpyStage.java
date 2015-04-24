@@ -21,7 +21,7 @@ import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
 import com.bytezone.dm3270.streams.TelnetState;
 
-public class SpyStage extends BasicTelnetStage
+public class SpyStage extends BasicStage
 {
   private static final int BUTTON_WIDTH = 105;
 

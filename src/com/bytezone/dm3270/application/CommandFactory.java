@@ -6,7 +6,7 @@ import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 
-public class BasicTelnetStage extends BasicStage
+class CommandFactory
 {
   boolean direct = true;
 
