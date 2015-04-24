@@ -12,18 +12,15 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.Attribute;
@@ -61,7 +58,7 @@ public class MainframeStage extends Stage implements Mainframe
   private final GuiFactory factory = new GuiFactory ();
 
   private final List<Button> buttons = new ArrayList<> ();
-  private final TextArea textArea = factory.getTextArea (600);
+  //  private final TextArea textArea = factory.getTextArea (600);
   private MainframeServer mainframeServer;
 
   private final RadioButton btnFieldMode;
@@ -118,24 +115,25 @@ public class MainframeStage extends Stage implements Mainframe
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setLeft (vBox);
-    borderPane.setCenter (textArea);
+    borderPane.setCenter (vBox);
+    //    borderPane.setCenter (textArea);
     borderPane.setBottom (hbox);
 
-    Scene scene = new Scene (borderPane, WIDTH, HEIGHT);
+    //    Scene scene = new Scene (borderPane, WIDTH, HEIGHT);
+    Scene scene = new Scene (borderPane);
     setTitle ("Mainframe: " + mainframePort);
     setScene (scene);
 
-    Rectangle2D screen = Screen.getPrimary ().getVisualBounds ();
-    if (screen.getWidth () > 1800)
-      setX (screen.getMinX () + screen.getWidth () - WIDTH - 320);
-    else
-      setX (screen.getMinX () + screen.getWidth () - WIDTH - 20);
-
-    if (screen.getHeight () > 1200)
-      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 140);
-    else
-      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 40);
+    //    Rectangle2D screen = Screen.getPrimary ().getVisualBounds ();
+    //    if (screen.getWidth () > 1800)
+    //      setX (screen.getMinX () + screen.getWidth () - WIDTH - 320);
+    //    else
+    //      setX (screen.getMinX () + screen.getWidth () - WIDTH - 20);
+    //
+    //    if (screen.getHeight () > 1200)
+    //      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 140);
+    //    else
+    //      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 40);
 
     prepareButtons ();
 
@@ -239,12 +237,12 @@ public class MainframeStage extends Stage implements Mainframe
         {
           Button button = buttons.get (buttonNo);
           button.setOnAction ( (x) -> {
-            textArea.setText (sessionRecord.getMessage ().toString ());
-            textArea.appendText ("\n\n");
-            textArea.appendText (Utility.toHex (sessionRecord.getBuffer ()));
-            textArea.positionCaret (0);
-            mainframeServer.write (sessionRecord.getMessage ().getTelnetData ());
-          });
+            //            textArea.setText (sessionRecord.getMessage ().toString ());
+            //            textArea.appendText ("\n\n");
+            //            textArea.appendText (Utility.toHex (sessionRecord.getBuffer ()));
+            //            textArea.positionCaret (0);
+              mainframeServer.write (sessionRecord.getMessage ().getTelnetData ());
+            });
 
           if (buttonNo < labels.size ())
             button.setText (labels.get (buttonNo));
@@ -286,10 +284,10 @@ public class MainframeStage extends Stage implements Mainframe
   @Override
   public void receiveCommand (Command command)
   {
-    textArea.setText (command.toString ());
-    textArea.appendText ("\n\n");
-    textArea.appendText (Utility.toHex (command.getData ()));
-    textArea.positionCaret (0);
+    //    textArea.setText (command.toString ());
+    //    textArea.appendText ("\n\n");
+    //    textArea.appendText (Utility.toHex (command.getData ()));
+    //    textArea.positionCaret (0);
 
     if (command instanceof ReadStructuredFieldCommand)
       enableButtons (true);

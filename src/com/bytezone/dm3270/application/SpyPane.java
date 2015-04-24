@@ -2,10 +2,8 @@ package com.bytezone.dm3270.application;
 
 import java.io.File;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
@@ -14,7 +12,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.GuiFactory.ProcessInstruction;
 import com.bytezone.dm3270.display.Screen;
@@ -23,14 +20,14 @@ import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
 import com.bytezone.dm3270.streams.TelnetState;
 
-public class SpyStage extends Stage
+public class SpyPane extends BorderPane
 {
   private static final int BUTTON_WIDTH = 105;
 
   private SpyServer spyServer;
   private Thread serverThread;
 
-  public SpyStage (Screen screen, Site serverSite, Site clientSite)
+  public SpyPane (Screen screen, Site serverSite, Site clientSite)
   {
     SessionTable table = new SessionTable ();
     Session session = new Session (screen, new TelnetState ());
@@ -63,14 +60,14 @@ public class SpyStage extends Stage
     splitPane.getItems ().addAll (leftPane, commandPane);
     splitPane.setDividerPositions (0.37f);
 
-    BorderPane borderPane = new BorderPane ();
-    borderPane.setCenter (splitPane);
-    borderPane.setTop (label);
+    //    BorderPane borderPane = new BorderPane ();
+    setCenter (splitPane);
+    setTop (label);
 
-    setTitle ("Terminal Spy");
+    //    setTitle ("Terminal Spy");
 
-    Scene scene = new Scene (borderPane);
-    setScene (scene);
+    //    Scene scene = new Scene (borderPane);
+    //    setScene (scene);
 
     String message =
         String.format ("Connect a terminal to localhost:%d%n%n"
@@ -89,13 +86,14 @@ public class SpyStage extends Stage
     //          + primaryScreenBounds.getWidth ());
     //      System.out.println (primaryScreenBounds.getMinY ());
     //    }
-    setX (1200);
-    setY (20);
+
+    //    setX (1200);
+    //    setY (20);
 
     btnSave.setOnAction ( (e) -> {
       FileChooser fileChooser = new FileChooser ();
       fileChooser.setTitle ("Save Session");
-      File file = fileChooser.showSaveDialog (this);
+      File file = fileChooser.showSaveDialog (this.getScene ().getWindow ());
       if (file != null)
         session.save (file);
     });
@@ -103,7 +101,7 @@ public class SpyStage extends Stage
     btnScramble.setOnAction ( (e) -> {
       FileChooser fileChooser = new FileChooser ();
       fileChooser.setTitle ("Save Session");
-      File file = fileChooser.showSaveDialog (this);
+      File file = fileChooser.showSaveDialog (this.getScene ().getWindow ());
       if (file != null)
       {
         btnSave.setDisable (true);      // no going back
@@ -111,7 +109,7 @@ public class SpyStage extends Stage
       }
     });
 
-    setOnCloseRequest (e -> Platform.exit ());
+    //    setOnCloseRequest (e -> Platform.exit ());
   }
 
   protected VBox getVBox ()

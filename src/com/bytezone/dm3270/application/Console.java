@@ -81,7 +81,7 @@ public class Console extends Application
   private final ToggleGroup releaseGroup = new ToggleGroup ();
 
   private MainframeStage mainframeStage;
-  private SpyStage spyStage;
+  private SpyPane spyPane;
   private ConsolePane consolePane;
   private ReplayStage replayStage;
 
@@ -302,9 +302,10 @@ public class Console extends Application
       case "Spy":
         if (serverSite != null && clientSite != null)
         {
-          spyStage = new SpyStage (createScreen (Function.SPY), serverSite, clientSite);
-          spyStage.show ();
-          spyStage.startServer ();
+          spyPane = new SpyPane (createScreen (Function.SPY), serverSite, clientSite);
+          setSpyPane ();
+          primaryStage.show ();
+          spyPane.startServer ();
         }
         else if (showAlert (serverSite == null ? "No server selected"
             : "No client selected"))
@@ -354,9 +355,10 @@ public class Console extends Application
         {
           Site mainframe =
               new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
-          spyStage = new SpyStage (createScreen (Function.TEST), mainframe, clientSite);
-          spyStage.show ();
-          spyStage.startServer ();
+          spyPane = new SpyPane (createScreen (Function.TEST), mainframe, clientSite);
+          setSpyPane ();
+          primaryStage.show ();
+          spyPane.startServer ();
 
           mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
           mainframeStage.show ();
@@ -396,14 +398,21 @@ public class Console extends Application
     return screen;
   }
 
+  private void setSpyPane ()
+  {
+    Scene scene = new Scene (spyPane);
+    primaryStage.setScene (scene);
+    primaryStage.sizeToScene ();
+  }
+
   @Override
   public void stop ()
   {
     if (mainframeStage != null)
       mainframeStage.disconnect ();
 
-    if (spyStage != null)
-      spyStage.disconnect ();
+    if (spyPane != null)
+      spyPane.disconnect ();
 
     if (consolePane != null)
       consolePane.disconnect ();
