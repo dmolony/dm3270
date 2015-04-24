@@ -307,7 +307,6 @@ public class Console extends Application
             Screen screen = createScreen (Function.REPLAY);
             Session session = new Session (screen, path);     // can throw Exception
             setConsole (screen);                              // reassigns primaryStage
-            primaryStage.show ();
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
@@ -327,8 +326,6 @@ public class Console extends Application
         if (serverSite != null)
         {
           setConsole (createScreen (Function.TERMINAL));
-          primaryStage.centerOnScreen ();
-          primaryStage.show ();
           consolePane.connect (serverSite);
         }
         else if (showAlert ("No server selected"))
@@ -381,6 +378,11 @@ public class Console extends Application
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
     menuBar = consolePane.getMenuBar ();
+
+    if (screen.getFunction () == Function.TERMINAL)
+      primaryStage.centerOnScreen ();
+
+    primaryStage.show ();
   }
 
   private void setSpyPane (Screen screen, Site server, Site client)
