@@ -299,20 +299,6 @@ public class Console extends Application
     String optionText = (String) functionsGroup.getSelectedToggle ().getUserData ();
     switch (optionText)
     {
-      case "Spy":
-        if (serverSite != null && clientSite != null)
-        {
-          spyPane = new SpyPane (createScreen (Function.SPY), serverSite, clientSite);
-          setSpyPane ();
-          primaryStage.show ();
-          spyPane.startServer ();
-        }
-        else if (showAlert (serverSite == null ? "No server selected"
-            : "No client selected"))
-          primaryStage.show ();
-
-        break;
-
       case "Replay":
         Path path = Paths.get (spyFolder + "/" + fileComboBox.getValue ());
         if (Files.exists (path))
@@ -320,9 +306,10 @@ public class Console extends Application
           {
             Screen screen = createScreen (Function.REPLAY);
             Session session = new Session (screen, path);     // can throw Exception
-            setConsole (primaryStage, screen);
-            replayStage = new ReplayStage (screen, session, path, prefs);
+            setConsole (screen);                              // reassigns primaryStage
             primaryStage.show ();
+
+            replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
           }
           catch (Exception e)
@@ -339,13 +326,21 @@ public class Console extends Application
       case "Terminal":
         if (serverSite != null)
         {
-          Screen screen = createScreen (Function.TERMINAL);
-          setConsole (primaryStage, screen);
+          setConsole (createScreen (Function.TERMINAL));
           primaryStage.centerOnScreen ();
           primaryStage.show ();
           consolePane.connect (serverSite);
         }
         else if (showAlert ("No server selected"))
+          primaryStage.show ();
+
+        break;
+
+      case "Spy":
+        if (serverSite != null && clientSite != null)
+          setSpyPane (createScreen (Function.SPY), serverSite, clientSite);
+        else if (showAlert (serverSite == null ? "No server selected"
+            : "No client selected"))
           primaryStage.show ();
 
         break;
@@ -356,10 +351,7 @@ public class Console extends Application
           Site mainframe =
               new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
 
-          spyPane = new SpyPane (createScreen (Function.TEST), mainframe, clientSite);
-          setSpyPane ();
-          primaryStage.show ();
-          spyPane.startServer ();
+          setSpyPane (createScreen (Function.TEST), mainframe, clientSite);
 
           mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
           mainframeStage.show ();
@@ -372,15 +364,7 @@ public class Console extends Application
     }
   }
 
-  private boolean showAlert (String message)
-  {
-    Alert alert = new Alert (AlertType.ERROR, message);
-    alert.getDialogPane ().setHeaderText (null);
-    Optional<ButtonType> result = alert.showAndWait ();
-    return (result.isPresent () && result.get () == ButtonType.OK);
-  }
-
-  private Screen setConsole (Stage primaryStage, Screen screen)
+  private void setConsole (Screen screen)
   {
     consolePane = new ConsolePane (screen);
 
@@ -397,12 +381,11 @@ public class Console extends Application
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
     menuBar = consolePane.getMenuBar ();
-
-    return screen;
   }
 
-  private void setSpyPane ()
+  private void setSpyPane (Screen screen, Site server, Site client)
   {
+    spyPane = new SpyPane (screen, server, client);
     Scene scene = new Scene (spyPane);
     primaryStage.setScene (scene);
 
@@ -411,6 +394,17 @@ public class Console extends Application
 
     primaryStage.sizeToScene ();
     primaryStage.setTitle ("Terminal Spy");
+
+    primaryStage.show ();
+    spyPane.startServer ();
+  }
+
+  private boolean showAlert (String message)
+  {
+    Alert alert = new Alert (AlertType.ERROR, message);
+    alert.getDialogPane ().setHeaderText (null);
+    Optional<ButtonType> result = alert.showAndWait ();
+    return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
   @Override

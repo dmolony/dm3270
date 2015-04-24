@@ -22,7 +22,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.GuiFactory.ProcessInstruction;
-import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
@@ -34,7 +33,7 @@ class ReplayStage extends Stage
   private final CheckBox showTelnetCB = new CheckBox ("Show telnet");
   private final CheckBox show3270ECB = new CheckBox ("Show 3270-E");
 
-  public ReplayStage (Screen screen, Session session, Path path, Preferences prefs)
+  public ReplayStage (Session session, Path path, Preferences prefs)
   {
     SessionTable table = new SessionTable ();
     this.prefs = prefs;
@@ -54,7 +53,7 @@ class ReplayStage extends Stage
     leftPane.getChildren ().addAll (table, checkBoxes);
 
     CommandPane commandPane =
-        new CommandPane (screen, table, ProcessInstruction.DoProcess);
+        new CommandPane (session.getScreen (), table, ProcessInstruction.DoProcess);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
