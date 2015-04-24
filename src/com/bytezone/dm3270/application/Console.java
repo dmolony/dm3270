@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -56,6 +54,8 @@ public class Console extends Application
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
   private static final int EDIT_BUTTON_WIDTH = 50;
   private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
+  private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
+      MAINFRAME_EMULATOR_PORT, true);
 
   private Stage primaryStage;
   private ComboBox<String> fileComboBox;
@@ -189,26 +189,21 @@ public class Console extends Application
     HBox.setMargin (panel, new Insets (10));
     hBox.getChildren ().addAll (panel);
 
-    functionsGroup.selectedToggleProperty ().addListener (new ChangeListener<Toggle> ()
-    {
-      @Override
-      public void changed (ObservableValue<? extends Toggle> ov, Toggle oldToggle,
-          Toggle newToggle)
-      {
-        if (newToggle == null)
-          return;
-
-        String selection = (String) newToggle.getUserData ();
-        if (selection.equals ("Spy"))
-          setDisable (false, false, true);          // server, client, file
-        else if (selection.equals ("Replay"))
-          setDisable (true, true, false);
-        else if (selection.equals ("Terminal"))
-          setDisable (false, true, true);
-        else if (selection.equals ("Test"))
-          setDisable (true, false, true);
-      }
-    });
+    functionsGroup.selectedToggleProperty ()
+        .addListener ( (ov, oldToggle, newToggle) -> {
+          if (newToggle != null)
+          {
+            String selection = (String) newToggle.getUserData ();
+            if (selection.equals ("Spy"))
+              setDisable (false, false, true);          // server, client, file
+            else if (selection.equals ("Replay"))
+              setDisable (true, true, false);
+            else if (selection.equals ("Terminal"))
+              setDisable (false, true, true);
+            else if (selection.equals ("Test"))
+              setDisable (true, false, true);
+          }
+        });
 
     if (release)
       optionSelected = "Terminal";
@@ -223,7 +218,7 @@ public class Console extends Application
       }
 
     if (!found)
-      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));
+      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
 
     okButton.setDefaultButton (true);
     okButton.setOnAction (e -> startSelectedFunction ());
@@ -250,15 +245,9 @@ public class Console extends Application
     }
 
     menuFont.getItems ().add (new SeparatorMenuItem ());
-
-    setMenuItem ("12", sizeGroup, menuFont, sizeSelected, false);
-    setMenuItem ("14", sizeGroup, menuFont, sizeSelected, false);
-    setMenuItem ("15", sizeGroup, menuFont, sizeSelected, false);
-    setMenuItem ("16", sizeGroup, menuFont, sizeSelected, false);
-    setMenuItem ("17", sizeGroup, menuFont, sizeSelected, false);
-    setMenuItem ("18", sizeGroup, menuFont, sizeSelected, false);
-    setMenuItem ("20", sizeGroup, menuFont, sizeSelected, false);
-    setMenuItem ("22", sizeGroup, menuFont, sizeSelected, false);
+    String[] menuSizes = { "12", "14", "15", "16", "17", "18", "20", "22" };
+    for (String menuSize : menuSizes)
+      setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
 
     setMenuItem ("Debug", releaseGroup, menuDebug, runMode, false);
     setMenuItem ("Release", releaseGroup, menuDebug, runMode, false);
@@ -338,11 +327,7 @@ public class Console extends Application
           errorMessage = "No client selected";
         else
         {
-          Site mainframe =
-              new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true);
-
-          setSpyPane (createScreen (Function.TEST), mainframe, clientSite);
-
+          setSpyPane (createScreen (Function.TEST), DEFAULT_MAINFRAME, clientSite);
           mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
           mainframeStage.show ();
           mainframeStage.startServer ();
