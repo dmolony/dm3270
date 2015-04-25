@@ -1,7 +1,7 @@
 ### Functions
 Four functions are available in Debug Mode - Spy, Replay, Terminal and Test. To enable Debug Mode you need to select it from the [Mode menu](menus.md) and restart.
 
-Note that the Locate button next to the spy files list is to identify the *folder* that contains the spy files.  
+Note that the Locate button next to the spy files list is to identify the **folder** that contains the spy files.  
 ![Debug Connection](connect2.png?raw=true "debug connection")
 #### Spy Function
 Waits for a terminal emulator to connect to the client, and then it completes the connection to the server. The mainframe session can be used as normal, however all communication buffers are collected and can be saved in a session file to replay later. For security purposes the file can be saved with all user input redacted, in order to prevent any passwords being saved. The session file should be named spy99.txt, where 99 is any two-digit number.
