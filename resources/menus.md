@@ -7,5 +7,8 @@ Monospaced comes by default with Java, the others may have to be installed. Here
 * http://stackoverflow.com/questions/4689/recommended-fonts-for-programming
 * http://wesbos.com/programming-fonts/
 
+##### Font menu
 ![Fonts](fonts.png?raw=true "fonts")
+
+##### Mode menu
 ![Debug](debug.png?raw=true "debug")
