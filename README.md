@@ -5,7 +5,7 @@
 * Double-click the jar file, or enter 'java -jar dm3270.jar' in the terminal.
 
 #### Connection
-Select a server from the drop-down list and click OK. If there are no servers listed, click the edit button.  
+Select a server from the drop-down list and click OK. If there are no servers listed yet, click the edit button.  
 ![Default Connection](resources/connect1.png?raw=true "default connection")
 #### Server List
 Enter your server details.  
