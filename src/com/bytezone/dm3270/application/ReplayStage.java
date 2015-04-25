@@ -21,7 +21,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import com.bytezone.dm3270.application.GuiFactory.ProcessInstruction;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
@@ -53,7 +52,8 @@ class ReplayStage extends Stage
     leftPane.getChildren ().addAll (table, checkBoxes);
 
     CommandPane commandPane =
-        new CommandPane (session.getScreen (), table, ProcessInstruction.DoProcess);
+        new CommandPane (session.getScreen (), table,
+            CommandPane.ProcessInstruction.DoProcess);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);

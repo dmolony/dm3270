@@ -19,7 +19,6 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -46,8 +45,6 @@ import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
 public class MainframeStage extends Stage implements Mainframe
 {
-  private static final int WIDTH = 680;
-  private static final int HEIGHT = 800;
   private static final int BUTTON_WIDTH = 120;
 
   private static boolean UNPROTECTED = false;
@@ -58,7 +55,6 @@ public class MainframeStage extends Stage implements Mainframe
   private final GuiFactory factory = new GuiFactory ();
 
   private final List<Button> buttons = new ArrayList<> ();
-  //  private final TextArea textArea = factory.getTextArea (600);
   private MainframeServer mainframeServer;
 
   private final RadioButton btnFieldMode;
@@ -88,38 +84,35 @@ public class MainframeStage extends Stage implements Mainframe
     mainframeServer = new MainframeServer (mainframePort);
     mainframeServer.setStage (this);
 
-    final VBox vBox = factory.getVBox ();
+    final VBox vbox1 = factory.getVBox ();
 
     for (int i = 0; i < 10; i++)
-      buttons.add (factory.getButton ("Empty", vBox, BUTTON_WIDTH));
+      buttons.add (factory.getButton ("Empty", vbox1, BUTTON_WIDTH));
 
     Separator separator = new Separator ();
     separator.setOrientation (Orientation.HORIZONTAL);
-    vBox.getChildren ().add (separator);
 
-    btnReadBuffer = factory.getButton ("Read Buffer", vBox, BUTTON_WIDTH);
-    btnReadModified = factory.getButton ("Read Modified", vBox, BUTTON_WIDTH);
-    btnReadModifiedAll = factory.getButton ("Read Mod All", vBox, BUTTON_WIDTH);
-    btnEraseAllUnprotected = factory.getButton ("Erase All Unpr", vBox, BUTTON_WIDTH);
-    btnProgramTab = factory.getButton ("Program Tab", vBox, BUTTON_WIDTH);
+    final VBox vbox2 = factory.getVBox ();
+    btnReadBuffer = factory.getButton ("Read Buffer", vbox2, BUTTON_WIDTH);
+    btnReadModified = factory.getButton ("Read Modified", vbox2, BUTTON_WIDTH);
+    btnReadModifiedAll = factory.getButton ("Read Mod All", vbox2, BUTTON_WIDTH);
+    btnEraseAllUnprotected = factory.getButton ("Erase All Unpr", vbox2, BUTTON_WIDTH);
+    btnProgramTab = factory.getButton ("Program Tab", vbox2, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
-    final HBox hbox = factory.getHBox ();
-    btnFieldMode = factory.getRadioButton ("Field Mode", hbox, modeGroup);
+    btnFieldMode = factory.getRadioButton ("Field Mode", vbox2, modeGroup);
     btnExtendedFieldMode =
-        factory.getRadioButton ("Extended Field Mode", hbox, modeGroup);
-    btnCharacterMode = factory.getRadioButton ("Character Mode", hbox, modeGroup);
+        factory.getRadioButton ("Extended Field Mode", vbox2, modeGroup);
+    btnCharacterMode = factory.getRadioButton ("Character Mode", vbox2, modeGroup);
     btnFieldMode.setSelected (true);        // match the default setting
 
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setCenter (vBox);
-    //    borderPane.setCenter (textArea);
-    borderPane.setBottom (hbox);
+    borderPane.setLeft (vbox1);
+    borderPane.setRight (vbox2);
 
-    //    Scene scene = new Scene (borderPane, WIDTH, HEIGHT);
     Scene scene = new Scene (borderPane);
     setTitle ("Mainframe: " + mainframePort);
     setScene (scene);
@@ -134,6 +127,9 @@ public class MainframeStage extends Stage implements Mainframe
     //      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 140);
     //    else
     //      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 40);
+
+    setX (1000);
+    setY (100);
 
     prepareButtons ();
 
@@ -310,6 +306,10 @@ public class MainframeStage extends Stage implements Mainframe
     btnReadModifiedAll.setDisable (!enable);
     btnEraseAllUnprotected.setDisable (!enable);
     btnProgramTab.setDisable (!enable);
+
+    btnFieldMode.setDisable (!enable);
+    btnExtendedFieldMode.setDisable (!enable);
+    btnCharacterMode.setDisable (!enable);
 
     toFront ();
     buttons.get (3).fire ();        // ISPF (Erase Write)

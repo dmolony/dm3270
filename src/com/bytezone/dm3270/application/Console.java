@@ -100,7 +100,7 @@ public class Console extends Application
 
     prefs = Preferences.userNodeForPackage (this.getClass ());
     for (String raw : getParameters ().getRaw ())
-      if (raw.equals ("-reset"))
+      if (raw.equalsIgnoreCase ("-reset"))
         prefs.clear ();
 
     if (false)
@@ -117,12 +117,12 @@ public class Console extends Application
   {
     this.primaryStage = primaryStage;
 
+    spyFolder = prefs.get ("SpyFolder", "");
     String fileText = prefs.get ("ReplayFile", "");
     String optionSelected = prefs.get ("Function", "Terminal");
     String fontSelected = prefs.get ("FontName", "");
     String sizeSelected = prefs.get ("FontSize", "16");
     String runMode = prefs.get ("Mode", "Release");
-    spyFolder = prefs.get ("SpyFolder", "");
     String serverSelected = prefs.get ("ServerName", "");
     String clientSelected = prefs.get ("ClientName", "");
 
@@ -194,13 +194,13 @@ public class Console extends Application
           if (newToggle != null)
           {
             String selection = (String) newToggle.getUserData ();
-            if (selection.equals ("Spy"))
+            if (selection.equals (optionList[0]))
               setDisable (false, false, true);          // server, client, file
-            else if (selection.equals ("Replay"))
+            else if (selection.equals (optionList[1]))
               setDisable (true, true, false);
-            else if (selection.equals ("Terminal"))
+            else if (selection.equals (optionList[2]))
               setDisable (false, true, true);
-            else if (selection.equals ("Test"))
+            else if (selection.equals (optionList[3]))
               setDisable (true, false, true);
           }
         });
@@ -346,9 +346,9 @@ public class Console extends Application
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);
+    primaryStage.sizeToScene ();
     primaryStage.setX (0);
     primaryStage.setY (0);
-    primaryStage.sizeToScene ();
     primaryStage.setTitle ("dm3270");
 
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
@@ -368,9 +368,9 @@ public class Console extends Application
     Scene scene = new Scene (spyPane);
 
     primaryStage.setScene (scene);
-    primaryStage.setX (1200);
-    primaryStage.setY (20);
     primaryStage.sizeToScene ();
+    primaryStage.setX (0);
+    primaryStage.setY (0);
     primaryStage.setTitle ("Terminal Spy");
 
     primaryStage.show ();

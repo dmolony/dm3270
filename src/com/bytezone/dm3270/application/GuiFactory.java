@@ -11,17 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class GuiFactory
+class GuiFactory
 {
-  //  protected static final boolean DONT_PROCESS = false;
-  //  protected static final boolean DO_PROCESS = true;
-
-  enum ProcessInstruction
-  {
-    DoProcess, DontProcess
-  }
-
-  protected HBox getHBox ()
+  HBox getHBox ()
   {
     HBox hbox = new HBox ();
     hbox.setSpacing (15);
@@ -30,7 +22,7 @@ public class GuiFactory
     return hbox;
   }
 
-  protected VBox getVBox ()
+  VBox getVBox ()
   {
     VBox vbox = new VBox ();
     vbox.setSpacing (15);
@@ -38,7 +30,7 @@ public class GuiFactory
     return vbox;
   }
 
-  protected Button getButton (String name, VBox vbox, int width)
+  Button getButton (String name, VBox vbox, int width)
   {
     Button button = new Button (name);
     button.setPrefWidth (width);
@@ -47,7 +39,7 @@ public class GuiFactory
     return button;
   }
 
-  protected Button getButton (String name, HBox hbox, int width)
+  Button getButton (String name, HBox hbox, int width)
   {
     Button button = new Button (name);
     button.setPrefWidth (width);
@@ -56,7 +48,7 @@ public class GuiFactory
     return button;
   }
 
-  protected TextArea getTextArea (int width)
+  TextArea getTextArea (int width)
   {
     TextArea textArea = new TextArea ();
     textArea.setEditable (false);
@@ -65,7 +57,7 @@ public class GuiFactory
     return textArea;
   }
 
-  protected Tab getTab (String name, TextArea textArea)
+  Tab getTab (String name, TextArea textArea)
   {
     Tab tab = new Tab ();
     tab.setText (name);
@@ -73,11 +65,21 @@ public class GuiFactory
     return tab;
   }
 
-  protected RadioButton getRadioButton (String text, HBox hbox, ToggleGroup group)
+  RadioButton getRadioButton (String text, HBox hbox, ToggleGroup group)
   {
     RadioButton button = new RadioButton (text);
     hbox.getChildren ().add (button);
     button.setToggleGroup (group);
+    button.setDisable (true);
+    return button;
+  }
+
+  RadioButton getRadioButton (String text, VBox vbox, ToggleGroup group)
+  {
+    RadioButton button = new RadioButton (text);
+    vbox.getChildren ().add (button);
+    button.setToggleGroup (group);
+    button.setDisable (true);
     return button;
   }
 }

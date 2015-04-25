@@ -7,7 +7,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 
-import com.bytezone.dm3270.application.GuiFactory.ProcessInstruction;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -32,6 +31,11 @@ class CommandPane extends TabPane
 
   private final ProcessInstruction process;
   private final Screen screen;
+
+  enum ProcessInstruction
+  {
+    DoProcess, DontProcess
+  }
 
   public CommandPane (Screen screen, SessionTable table, ProcessInstruction process)
   {

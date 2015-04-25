@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 
-import com.bytezone.dm3270.application.GuiFactory.ProcessInstruction;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionTable;
@@ -39,7 +38,7 @@ public class SpyPane extends BorderPane
     label.setPadding (new Insets (10, 10, 10, 10));    // trbl
 
     CommandPane commandPane =
-        new CommandPane (screen, table, ProcessInstruction.DontProcess);
+        new CommandPane (screen, table, CommandPane.ProcessInstruction.DontProcess);
 
     Button btnSave = new Button ("Full Save");
     Button btnScramble = new Button ("Redacted");
