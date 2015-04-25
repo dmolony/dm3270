@@ -117,17 +117,6 @@ public class MainframeStage extends Stage implements Mainframe
     setTitle ("Mainframe: " + mainframePort);
     setScene (scene);
 
-    //    Rectangle2D screen = Screen.getPrimary ().getVisualBounds ();
-    //    if (screen.getWidth () > 1800)
-    //      setX (screen.getMinX () + screen.getWidth () - WIDTH - 320);
-    //    else
-    //      setX (screen.getMinX () + screen.getWidth () - WIDTH - 20);
-    //
-    //    if (screen.getHeight () > 1200)
-    //      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 140);
-    //    else
-    //      setY (screen.getMinY () + screen.getHeight () - HEIGHT - 40);
-
     setX (1000);
     setY (100);
 
@@ -232,13 +221,8 @@ public class MainframeStage extends Stage implements Mainframe
         if (buttonNo < buttons.size ())
         {
           Button button = buttons.get (buttonNo);
-          button.setOnAction ( (x) -> {
-            //            textArea.setText (sessionRecord.getMessage ().toString ());
-            //            textArea.appendText ("\n\n");
-            //            textArea.appendText (Utility.toHex (sessionRecord.getBuffer ()));
-            //            textArea.positionCaret (0);
-              mainframeServer.write (sessionRecord.getMessage ().getTelnetData ());
-            });
+          button.setOnAction (x -> mainframeServer.write (sessionRecord.getMessage ()
+              .getTelnetData ()));
 
           if (buttonNo < labels.size ())
             button.setText (labels.get (buttonNo));
@@ -280,11 +264,6 @@ public class MainframeStage extends Stage implements Mainframe
   @Override
   public void receiveCommand (Command command)
   {
-    //    textArea.setText (command.toString ());
-    //    textArea.appendText ("\n\n");
-    //    textArea.appendText (Utility.toHex (command.getData ()));
-    //    textArea.positionCaret (0);
-
     if (command instanceof ReadStructuredFieldCommand)
       enableButtons (true);
 
@@ -332,19 +311,12 @@ public class MainframeStage extends Stage implements Mainframe
     @Override
     public void changed (ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1)
     {
-      try
-      {
-        if (t1 == btnFieldMode)
-          mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x00));
-        else if (t1 == btnExtendedFieldMode)
-          mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x01));
-        else if (t1 == btnCharacterMode)
-          mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x02));
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace ();
-      }
+      if (t1 == btnFieldMode)
+        mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x00));
+      else if (t1 == btnExtendedFieldMode)
+        mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x01));
+      else if (t1 == btnCharacterMode)
+        mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x02));
     }
   }
 }
