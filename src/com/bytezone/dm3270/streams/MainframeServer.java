@@ -50,20 +50,20 @@ public class MainframeServer implements Runnable
       clientIn = clientSocket.getInputStream ();
       clientOut = clientSocket.getOutputStream ();
 
-      writex (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.TERMINAL_TYPE);
-      read (1);
+      writeMany (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.TERMINAL_TYPE);
+      readAtLeast (1);
 
-      writex (TelnetCommand.IAC, TelnetCommand.SB, TelnetSubcommand.TERMINAL_TYPE,
-              TerminalTypeSubcommand.OPTION_SEND, TelnetCommand.IAC, TelnetCommand.SE);
-      read (1);
+      writeMany (TelnetCommand.IAC, TelnetCommand.SB, TelnetSubcommand.TERMINAL_TYPE,
+                 TerminalTypeSubcommand.OPTION_SEND, TelnetCommand.IAC, TelnetCommand.SE);
+      readAtLeast (1);
 
-      writex (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.EOR);
-      writex (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.EOR);
-      read (6);
+      writeMany (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.EOR);
+      writeMany (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.EOR);
+      readAtLeast (6);
 
-      writex (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.BINARY);
-      writex (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.BINARY);
-      read (6);
+      writeMany (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.BINARY);
+      writeMany (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.BINARY);
+      readAtLeast (6);
 
       // send Query to find out what the terminal supports
       byte[] cmd = { (byte) 0xF3, 0x00, 0x06, 0x40, 0x00,   //
@@ -87,7 +87,7 @@ public class MainframeServer implements Runnable
     }
     catch (SocketException e)     // caused by closing the clientServerSocket
     {
-      System.out.println ("oops, rug pulled");
+      System.out.println ("Connection attempt cancelled");
     }
     catch (IOException e)
     {
@@ -142,13 +142,13 @@ public class MainframeServer implements Runnable
     return ptr;
   }
 
-  private void read (int bytesToRead) throws IOException
+  private void readAtLeast (int bytesToRead) throws IOException
   {
     while (bytesToRead > 0)
       bytesToRead -= clientIn.read (buffer);      // blocks
   }
 
-  private void writex (byte... buffer) throws IOException
+  private void writeMany (byte... buffer) throws IOException
   {
     write (buffer);
   }
@@ -173,11 +173,6 @@ public class MainframeServer implements Runnable
   {
     byte[] buffer = command.getTelnetData ();
     write (buffer);
-  }
-
-  public int getPort ()
-  {
-    return port;
   }
 
   public void close ()
