@@ -8,7 +8,7 @@ Waits for a terminal emulator to connect to the client, and then it completes th
 Uses the dm3270 terminal to replay the commands that were previously recorded in a session file. Individual buffers can be selected and examined. The anticipated reply message (if any) is also displayed. Each command (both client and server) is sent to the terminal for processing.
 ![Replay screen](replay2.png?raw=true "replay screen")
 #### Test Function
-Waits for a terminal emulator to connect to the client port specifed. The program is now acting as a server, and it can be used to send the terminal various 3270 commands. Any replies from the terminal are displayed. The session can also be saved for later replaying.
+Waits for a terminal emulator to connect to the client port specifed. The program is now acting as a server, and it can be used to send the terminal various 3270 commands. Used together with the Spy window so that all buffers can be displayed, and saved if required.  
 ![Mainframe screen](mainframe.png?raw=true "mainframe screen")
 #### Terminal Function
 Connects to the specified server. This is the only function available in Release Mode.
