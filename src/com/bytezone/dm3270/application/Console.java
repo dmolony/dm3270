@@ -416,7 +416,10 @@ public class Console extends Application
     {
       spyFolder = selectedDirectory.getAbsolutePath ();
       fileComboBox.getItems ().clear ();
-      fileComboBox.setItems (getSessionFiles (spyFolder));
+      ObservableList<String> files = getSessionFiles (spyFolder);
+      fileComboBox.setItems (files);
+      if (files.size () > 0)
+        fileComboBox.getSelectionModel ().select (0);
     }
   }
 
@@ -429,8 +432,10 @@ public class Console extends Application
       Path path = Paths.get (folderName);
       if (Files.exists (path) && Files.isDirectory (path))
         files =
-            Files.list (path)
-                .filter (p -> p.getFileName ().toString ().matches ("spy[0-9]{2}\\.txt"))
+            Files
+                .list (path)
+                .filter (p -> p.getFileName ().toString ()
+                             .matches ("[sS][Pp][yY][0-9]{1,4}\\.[tT][xX][tT]"))
                 .collect (Collectors.toList ());
     }
     catch (IOException e)
