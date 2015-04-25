@@ -157,7 +157,7 @@ public class Console extends Application
     editClientsButton.setStyle (EDIT_BUTTON_FONT_SIZE);
     editClientsButton.setMinWidth (EDIT_BUTTON_WIDTH);
 
-    editLocationButton = new Button ("Locate");
+    editLocationButton = new Button ("Folder...");
     editLocationButton.setStyle (EDIT_BUTTON_FONT_SIZE);
     editLocationButton.setMinWidth (EDIT_BUTTON_WIDTH);
 
