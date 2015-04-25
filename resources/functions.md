@@ -9,7 +9,7 @@ Uses the dm3270 terminal to replay the commands that were previously recorded in
 ![Replay screen](replay2.png?raw=true "replay screen")
 #### Test Function
 Waits for a terminal emulator to connect to the client port specifed. The program is now acting as a server, and it can be used to send the terminal various 3270 commands. Any replies from the terminal are displayed. The session can also be saved for later replaying.
-![Mainframe screen](server.png?raw=true "mainframe screen")
+![Mainframe screen](mainframe.png?raw=true "mainframe screen")
 #### Terminal Function
 Connects to the specified server. This is the only function available in Release Mode.
 ![Terminal screen](terminal.png?raw=true "dm3270")
