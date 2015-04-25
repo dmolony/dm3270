@@ -52,6 +52,7 @@ public class Console extends Application
           "Source Code Pro", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
+  private static final int COMBO_BOX_WIDTH = 150;
   private static final int EDIT_BUTTON_WIDTH = 50;
   private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
   private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
@@ -117,14 +118,12 @@ public class Console extends Application
   {
     this.primaryStage = primaryStage;
 
-    spyFolder = prefs.get ("SpyFolder", "");
-    String fileText = prefs.get ("ReplayFile", "");
     String optionSelected = prefs.get ("Function", "Terminal");
     String fontSelected = prefs.get ("FontName", "");
     String sizeSelected = prefs.get ("FontSize", "16");
+
     String runMode = prefs.get ("Mode", "Release");
-    String serverSelected = prefs.get ("ServerName", "");
-    String clientSelected = prefs.get ("ClientName", "");
+    release = runMode.equals ("Release");
 
     serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
     clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
@@ -133,40 +132,8 @@ public class Console extends Application
     Node row1 = options (optionList, functionsGroup, 0, 2);
     Node row2 = options (optionList, functionsGroup, 2, 2);
 
-    VBox panel = new VBox (10);
+    VBox panel = buildComboBoxes ();
 
-    ObservableList<String> sessionFiles = getSessionFiles (spyFolder);
-    fileComboBox = new ComboBox<> (sessionFiles);
-    fileComboBox.setVisibleRowCount (12);
-    if (!fileText.isEmpty ())
-      fileComboBox.getSelectionModel ().select (fileText);
-
-    serverComboBox = serverSitesListStage.getComboBox ();
-    serverComboBox.setVisibleRowCount (5);
-    serverComboBox.getSelectionModel ().select (serverSelected);
-
-    editServersButton = serverSitesListStage.getEditButton ();
-    editServersButton.setStyle (EDIT_BUTTON_FONT_SIZE);
-    editServersButton.setMinWidth (EDIT_BUTTON_WIDTH);
-
-    clientComboBox = clientSitesListStage.getComboBox ();
-    clientComboBox.setVisibleRowCount (5);
-    clientComboBox.getSelectionModel ().select (clientSelected);
-
-    editClientsButton = clientSitesListStage.getEditButton ();
-    editClientsButton.setStyle (EDIT_BUTTON_FONT_SIZE);
-    editClientsButton.setMinWidth (EDIT_BUTTON_WIDTH);
-
-    editLocationButton = new Button ("Folder...");
-    editLocationButton.setStyle (EDIT_BUTTON_FONT_SIZE);
-    editLocationButton.setMinWidth (EDIT_BUTTON_WIDTH);
-
-    int width = 150;
-    fileComboBox.setPrefWidth (width);
-    serverComboBox.setPrefWidth (width);
-    clientComboBox.setPrefWidth (width);
-
-    release = runMode.equals ("Release");
     if (release)
     {
       panel.getChildren ().addAll (row ("Server", serverComboBox, editServersButton),
@@ -220,9 +187,6 @@ public class Console extends Application
     if (!found)
       functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
 
-    okButton.setDefaultButton (true);
-    okButton.setOnAction (e -> startSelectedFunction ());
-    cancelButton.setOnAction (e -> primaryStage.hide ());
     editLocationButton.setOnAction (e -> editLocation ());
 
     Menu menuFont = new Menu ("Fonts");
@@ -461,6 +425,7 @@ public class Console extends Application
     String filename = fileComboBox.getValue ();
     if (filename != null)
       prefs.put ("ReplayFile", filename);
+
     prefs.put ("SpyFolder", spyFolder);
     prefs.put ("ServerName", serverComboBox.getSelectionModel ().getSelectedItem ());
     prefs.put ("ClientName", clientComboBox.getSelectionModel ().getSelectedItem ());
@@ -500,17 +465,65 @@ public class Console extends Application
       rb.setToggleGroup (group);
       hbox.getChildren ().add (rb);
     }
+
     return hbox;
+  }
+
+  private VBox buildComboBoxes ()
+  {
+    VBox panel = new VBox (10);
+
+    spyFolder = prefs.get ("SpyFolder", "");
+    String fileText = prefs.get ("ReplayFile", "");
+
+    fileComboBox = new ComboBox<> (getSessionFiles (spyFolder));
+    fileComboBox.setPrefWidth (COMBO_BOX_WIDTH);
+    fileComboBox.setVisibleRowCount (15);
+    fileComboBox.getSelectionModel ().select (fileText);
+
+    String serverSelected = prefs.get ("ServerName", "");
+
+    serverComboBox = serverSitesListStage.getComboBox ();
+    serverComboBox.setPrefWidth (COMBO_BOX_WIDTH);
+    serverComboBox.setVisibleRowCount (5);
+    serverComboBox.getSelectionModel ().select (serverSelected);
+
+    String clientSelected = prefs.get ("ClientName", "");
+
+    clientComboBox = clientSitesListStage.getComboBox ();
+    clientComboBox.setPrefWidth (COMBO_BOX_WIDTH);
+    clientComboBox.setVisibleRowCount (5);
+    clientComboBox.getSelectionModel ().select (clientSelected);
+
+    editServersButton = serverSitesListStage.getEditButton ();
+    editServersButton.setStyle (EDIT_BUTTON_FONT_SIZE);
+    editServersButton.setMinWidth (EDIT_BUTTON_WIDTH);
+
+    editClientsButton = clientSitesListStage.getEditButton ();
+    editClientsButton.setStyle (EDIT_BUTTON_FONT_SIZE);
+    editClientsButton.setMinWidth (EDIT_BUTTON_WIDTH);
+
+    editLocationButton = new Button ("Folder...");
+    editLocationButton.setStyle (EDIT_BUTTON_FONT_SIZE);
+    editLocationButton.setMinWidth (EDIT_BUTTON_WIDTH);
+
+    return panel;
   }
 
   private Node buttons ()
   {
     HBox hbox = new HBox (10);
+
     okButton.setDefaultButton (true);
-    cancelButton.setCancelButton (true);
     okButton.setPrefWidth (80);
+    okButton.setOnAction (e -> startSelectedFunction ());
+
+    cancelButton.setCancelButton (true);
     cancelButton.setPrefWidth (80);
+    cancelButton.setOnAction (e -> primaryStage.hide ());
+
     hbox.getChildren ().addAll (cancelButton, okButton);
+
     return hbox;
   }
 
@@ -518,11 +531,14 @@ public class Console extends Application
   {
     HBox hbox = new HBox (10);
     hbox.setAlignment (Pos.CENTER_LEFT);
+
     Label label = new Label (labelText);
     label.setMinWidth (65);
     label.setAlignment (Pos.CENTER_RIGHT);
+
     hbox.getChildren ().add (label);
     hbox.getChildren ().addAll (field);
+
     return hbox;
   }
 
