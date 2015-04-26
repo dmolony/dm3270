@@ -87,7 +87,8 @@ public class Console extends Application
   private MainframeStage mainframeStage;
 
   private boolean release;
-  private MenuBar menuBar = new MenuBar ();
+  private final MenuBar menuBar = new MenuBar ();
+  private final String os = System.getProperty ("os.name");
 
   public enum Function
   {
@@ -114,9 +115,9 @@ public class Console extends Application
   }
 
   @Override
-  public void start (Stage primaryStage) throws Exception
+  public void start (Stage primaryStagex) throws Exception
   {
-    this.primaryStage = primaryStage;
+    this.primaryStage = primaryStagex;
 
     String optionSelected = prefs.get ("Function", "Terminal");
     String fontSelected = prefs.get ("FontName", "");
@@ -218,7 +219,6 @@ public class Console extends Application
 
     menuBar.getMenus ().addAll (menuFont, menuDebug);
 
-    final String os = System.getProperty ("os.name");
     if (os != null && os.startsWith ("Mac"))
       menuBar.useSystemMenuBarProperty ().set (true);
 
@@ -234,6 +234,7 @@ public class Console extends Application
 
   private void startSelectedFunction ()
   {
+    menuBar.useSystemMenuBarProperty ().set (false);
     primaryStage.hide ();
     String errorMessage = "";
 
@@ -306,7 +307,7 @@ public class Console extends Application
 
   private void setConsolePane (Screen screen)
   {
-    consolePane = new ConsolePane (screen);
+    consolePane = new ConsolePane (screen, menuBar);
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);
@@ -318,7 +319,8 @@ public class Console extends Application
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
-    menuBar = consolePane.getMenuBar ();
+    if (os != null && os.startsWith ("Mac"))
+      menuBar.useSystemMenuBarProperty ().set (true);
 
     if (screen.getFunction () == Function.TERMINAL)
       primaryStage.centerOnScreen ();

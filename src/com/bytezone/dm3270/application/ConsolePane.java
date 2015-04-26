@@ -56,11 +56,12 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final Button btnForward = new Button (">");
   private final Button btnCurrent = new Button ("Screens");
 
-  private final MenuBar menuBar = new MenuBar ();
+  //  private final MenuBar menuBar = new MenuBar ();
+  private final Menu menuCommands = new Menu ("Commands");
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
 
-  public ConsolePane (Screen screen)
+  public ConsolePane (Screen screen, MenuBar menuBar)
   {
     this.screen = screen;
 
@@ -85,15 +86,18 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    Menu menuCommands = new Menu ("Commands");
     MenuItem menuItemToggleToolbar = new MenuItem ("Toggle toolbar");
     menuCommands.getItems ().addAll (menuItemToggleToolbar);
-    menuBar.getMenus ().addAll (menuCommands);
+    menuBar.getMenus ().add (menuCommands);
     topPane.setTop (menuBar);
 
-    final String os = System.getProperty ("os.name");
-    if (os != null && os.startsWith ("Mac"))
-      menuBar.useSystemMenuBarProperty ().set (true);
+    System.out.println (menuBar);
+    System.out.println (menuBar.getMenus ().size ());
+    System.out.println (menuBar.isUseSystemMenuBar ());
+
+    //    final String os = System.getProperty ("os.name");
+    //    if (os != null && os.startsWith ("Mac"))
+    //      menuBar.useSystemMenuBarProperty ().set (true);
 
     menuItemToggleToolbar.setOnAction ( (e) -> toggleToolbar ());
 
@@ -131,11 +135,6 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     btnBack.setOnAction (e -> back ());
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
-  }
-
-  public MenuBar getMenuBar ()
-  {
-    return menuBar;
   }
 
   private HBox getHBox (Insets insets, Pos alignment)
