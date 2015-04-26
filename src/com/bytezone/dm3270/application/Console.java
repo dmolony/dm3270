@@ -57,6 +57,8 @@ public class Console extends Application
   private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
   private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
       MAINFRAME_EMULATOR_PORT, true);
+  private final static String OS = System.getProperty ("os.name");
+  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private Stage primaryStage;
   private ComboBox<String> fileComboBox;
@@ -88,8 +90,6 @@ public class Console extends Application
 
   private boolean release;
   private final MenuBar menuBar = new MenuBar ();
-  private final String os = System.getProperty ("os.name");
-  private final boolean useSystemMenuBar = os != null && os.startsWith ("Mac");
 
   public enum Function
   {
@@ -220,7 +220,7 @@ public class Console extends Application
 
     menuBar.getMenus ().addAll (menuFont, menuDebug);
 
-    if (useSystemMenuBar)
+    if (SYSTEM_MENUBAR)
       menuBar.useSystemMenuBarProperty ().set (true);
 
     BorderPane borderPane = new BorderPane ();
@@ -235,7 +235,7 @@ public class Console extends Application
 
   private void startSelectedFunction ()
   {
-    if (useSystemMenuBar)
+    if (SYSTEM_MENUBAR)
       menuBar.useSystemMenuBarProperty ().set (false);
     primaryStage.hide ();
     String errorMessage = "";
@@ -321,7 +321,7 @@ public class Console extends Application
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
-    if (useSystemMenuBar)
+    if (SYSTEM_MENUBAR)
       menuBar.useSystemMenuBarProperty ().set (true);
 
     if (screen.getFunction () == Function.TERMINAL)

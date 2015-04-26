@@ -35,6 +35,8 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;
+  private final static String OS = System.getProperty ("os.name");
+  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private final Screen screen;
   private final Label status = new Label ();
@@ -91,9 +93,9 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     menuBar.getMenus ().add (menuCommands);
     topPane.setTop (menuBar);
 
-    System.out.println (menuBar);
-    System.out.println (menuBar.getMenus ().size ());
-    System.out.println (menuBar.isUseSystemMenuBar ());
+    //    System.out.println (menuBar);
+    //    System.out.println (menuBar.getMenus ().size ());
+    //    System.out.println (menuBar.isUseSystemMenuBar ());
 
     //    final String os = System.getProperty ("os.name");
     //    if (os != null && os.startsWith ("Mac"))
