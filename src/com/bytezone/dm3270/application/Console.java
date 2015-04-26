@@ -89,6 +89,7 @@ public class Console extends Application
   private boolean release;
   private final MenuBar menuBar = new MenuBar ();
   private final String os = System.getProperty ("os.name");
+  private final boolean useSystemMenuBar = os != null && os.startsWith ("Mac");
 
   public enum Function
   {
@@ -219,7 +220,7 @@ public class Console extends Application
 
     menuBar.getMenus ().addAll (menuFont, menuDebug);
 
-    if (os != null && os.startsWith ("Mac"))
+    if (useSystemMenuBar)
       menuBar.useSystemMenuBarProperty ().set (true);
 
     BorderPane borderPane = new BorderPane ();
@@ -234,7 +235,8 @@ public class Console extends Application
 
   private void startSelectedFunction ()
   {
-    menuBar.useSystemMenuBarProperty ().set (false);
+    if (useSystemMenuBar)
+      menuBar.useSystemMenuBarProperty ().set (false);
     primaryStage.hide ();
     String errorMessage = "";
 
@@ -319,7 +321,7 @@ public class Console extends Application
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
-    if (os != null && os.startsWith ("Mac"))
+    if (useSystemMenuBar)
       menuBar.useSystemMenuBarProperty ().set (true);
 
     if (screen.getFunction () == Function.TERMINAL)
