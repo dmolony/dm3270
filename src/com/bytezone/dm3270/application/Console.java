@@ -403,7 +403,7 @@ public class Console extends Application
             Files
                 .list (path)
                 .filter (p -> p.getFileName ().toString ()
-                             .matches ("[sS][Pp][yY][0-9]{1,4}\\.[tT][xX][tT]"))
+                             .matches ("[sS][Pp][yY][0-9]{1,4}(\\.[tT][xX][tT])*"))
                 .collect (Collectors.toList ());
     }
     catch (IOException e)
