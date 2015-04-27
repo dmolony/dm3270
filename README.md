@@ -1,7 +1,7 @@
 # dm3270
 #### Installation
 * Download dm3270.jar from the [releases](https://github.com/dmolony/dm3270/releases) page.
-* Install the latest version of the [Java Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (Java 8 is the minimum required).
+* Install the latest version of the [Java Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (JRE or JDK).
 * Double-click the jar file, or enter 'java -jar dm3270.jar' in the terminal.
 
 #### Connection
