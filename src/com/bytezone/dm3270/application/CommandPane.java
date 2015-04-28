@@ -10,13 +10,11 @@ import javafx.scene.text.Font;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
-import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.extended.AbstractExtendedCommand;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
-import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
 class CommandPane extends TabPane
 {
@@ -30,14 +28,15 @@ class CommandPane extends TabPane
   private final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
 
   private final ProcessInstruction process;
-  private final Screen screen;
+
+  //  private final Screen screen;
 
   enum ProcessInstruction
   {
     DoProcess, DontProcess
   }
 
-  public CommandPane (Screen screen, SessionTable table, ProcessInstruction process)
+  public CommandPane (SessionTable table, ProcessInstruction process)
   {
     setSide (Side.TOP);
     setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
@@ -50,7 +49,7 @@ class CommandPane extends TabPane
     final Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
 
     this.process = process;
-    this.screen = screen;
+    //    this.screen = screen;
 
     getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
                        tabReplyBuffer);
@@ -100,14 +99,14 @@ class CommandPane extends TabPane
     bufferTextArea.setText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
     bufferTextArea.positionCaret (0);
 
-    if (sessionRecord.getSource () == Source.SERVER)
-    {
-      fieldsTextArea.setText (screen.getFieldText ());
-      fieldsTextArea.positionCaret (0);
-    }
-
-    screenTextArea.setText (screen.getScreenText ());
-    screenTextArea.positionCaret (0);
+    //    if (sessionRecord.getSource () == Source.SERVER)
+    //    {
+    //      fieldsTextArea.setText (screen.getFieldText ());
+    //      fieldsTextArea.positionCaret (0);
+    //    }
+    //
+    //    screenTextArea.setText (screen.getScreenText ());
+    //    screenTextArea.positionCaret (0);
 
     replyTextArea.setText ("");
     if (reply != null && reply.size () > 0)

@@ -4,22 +4,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -28,24 +20,16 @@ import com.bytezone.dm3270.session.Session;
 
 public class Console extends Application
 {
-  private static String[] preferredFontNames = { //
-      "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
-          "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
-          "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 2m", "PT Mono",
-          "Source Code Pro", "Monospaced" };
-
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
   private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
       MAINFRAME_EMULATOR_PORT, true);
-  private final static String OS = System.getProperty ("os.name");
-  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
+  //  private final static String OS = System.getProperty ("os.name");
+  //  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private Stage primaryStage;
 
   private Preferences prefs;
-
-  private final ToggleGroup fontGroup = new ToggleGroup ();
-  private final ToggleGroup sizeGroup = new ToggleGroup ();
+  private Screen screen;
 
   private OptionStage optionStage;
   private SpyPane spyPane;
@@ -53,7 +37,7 @@ public class Console extends Application
   private ReplayStage replayStage;
   private MainframeStage mainframeStage;
 
-  private final MenuBar menuBar = new MenuBar ();
+  //  private final MenuBar menuBar = new MenuBar ();
 
   public enum Function
   {
@@ -85,31 +69,31 @@ public class Console extends Application
     this.primaryStage = primaryStagex;
     optionStage = new OptionStage (prefs);
 
-    String fontSelected = prefs.get ("FontName", "");
-    String sizeSelected = prefs.get ("FontSize", "16");
-
-    Menu menuFont = new Menu ("Fonts");
-
-    List<String> families = Font.getFamilies ();
-    for (String fontName : preferredFontNames)
-    {
-      boolean fontExists = families.contains (fontName);
-      if (fontExists && fontSelected.isEmpty ())
-        fontSelected = fontName;
-      setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
-    }
-
-    // select Monospaced if there is still no font selected
-    if (fontGroup.getSelectedToggle () == null)
-    {
-      ObservableList<Toggle> toggles = fontGroup.getToggles ();
-      fontGroup.selectToggle (toggles.get (toggles.size () - 1));
-    }
-
-    menuFont.getItems ().add (new SeparatorMenuItem ());
-    String[] menuSizes = { "12", "14", "15", "16", "17", "18", "20", "22" };
-    for (String menuSize : menuSizes)
-      setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
+    //    String fontSelected = prefs.get ("FontName", "");
+    //    String sizeSelected = prefs.get ("FontSize", "16");
+    //
+    //    Menu menuFont = new Menu ("Fonts");
+    //
+    //    List<String> families = Font.getFamilies ();
+    //    for (String fontName : preferredFontNames)
+    //    {
+    //      boolean fontExists = families.contains (fontName);
+    //      if (fontExists && fontSelected.isEmpty ())
+    //        fontSelected = fontName;
+    //      setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
+    //    }
+    //
+    //    // select Monospaced if there is still no font selected
+    //    if (fontGroup.getSelectedToggle () == null)
+    //    {
+    //      ObservableList<Toggle> toggles = fontGroup.getToggles ();
+    //      fontGroup.selectToggle (toggles.get (toggles.size () - 1));
+    //    }
+    //
+    //    menuFont.getItems ().add (new SeparatorMenuItem ());
+    //    String[] menuSizes = { "12", "14", "15", "16", "17", "18", "20", "22" };
+    //    for (String menuSize : menuSizes)
+    //      setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
 
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());
     optionStage.cancelButton.setOnAction (e -> primaryStage.hide ());
@@ -193,7 +177,7 @@ public class Console extends Application
 
   private void setConsolePane (Screen screen)
   {
-    consolePane = new ConsolePane (screen, menuBar);
+    consolePane = new ConsolePane (screen, prefs);
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);
@@ -205,8 +189,8 @@ public class Console extends Application
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
-    if (SYSTEM_MENUBAR)
-      menuBar.useSystemMenuBarProperty ().set (true);
+    //    if (SYSTEM_MENUBAR)
+    //      menuBar.useSystemMenuBarProperty ().set (true);
 
     if (screen.getFunction () == Function.TERMINAL)
       primaryStage.centerOnScreen ();
@@ -259,8 +243,14 @@ public class Console extends Application
   {
     prefs.put ("Function", (String) optionStage.functionsGroup.getSelectedToggle ()
         .getUserData ());
-    prefs.put ("FontName", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
-    prefs.put ("FontSize", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
+
+    if (screen != null)
+    {
+      Font font = screen.getFont ();
+      prefs.put ("FontName", font.getName ());
+      prefs.put ("FontSize", "" + (int) font.getSize ());
+    }
+
     prefs
         .put ("Mode", optionStage.toggleModeMenuItem.isSelected () ? "Release" : "Debug");
 
@@ -275,23 +265,15 @@ public class Console extends Application
         .getSelectedItem ());
   }
 
-  private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
-      String selectedItemName, boolean disable)
-  {
-    RadioMenuItem item = new RadioMenuItem (itemName);
-    item.setToggleGroup (toggleGroup);
-    menu.getItems ().add (item);
-    if (itemName.equals (selectedItemName))
-      item.setSelected (true);
-    item.setDisable (disable);
-  }
-
   private Screen createScreen (Function function)
   {
-    RadioMenuItem selectedFontName = (RadioMenuItem) fontGroup.getSelectedToggle ();
-    RadioMenuItem selectedFontSize = (RadioMenuItem) sizeGroup.getSelectedToggle ();
-    Font font = Font.font (selectedFontName.getText (),     //
-                           Integer.parseInt (selectedFontSize.getText ()));
-    return new Screen (24, 80, font, function);
+    //    RadioMenuItem selectedFontName =
+    //        (RadioMenuItem) consolePane.fontGroup.getSelectedToggle ();
+    //    RadioMenuItem selectedFontSize =
+    //        (RadioMenuItem) consolePane.sizeGroup.getSelectedToggle ();
+    //    Font font = Font.font (selectedFontName.getText (),     //
+    //                           Integer.parseInt (selectedFontSize.getText ()));
+    screen = new Screen (24, 80, prefs, function);
+    return screen;
   }
 }

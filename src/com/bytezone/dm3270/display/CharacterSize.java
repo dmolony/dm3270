@@ -20,6 +20,11 @@ public class CharacterSize
     changeFont (font);
   }
 
+  public Font getFont ()
+  {
+    return font;
+  }
+
   public void changeFont (Font font)
   {
     if (font != this.font)

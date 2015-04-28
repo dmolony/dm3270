@@ -1,5 +1,9 @@
 package com.bytezone.dm3270.application;
 
+import java.util.List;
+import java.util.prefs.Preferences;
+
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -8,7 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Separator;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -33,10 +41,15 @@ import com.bytezone.dm3270.streams.TerminalServer;
 class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveListener,
     KeyboardStatusListener
 {
+  private static String[] preferredFontNames = { //
+      "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
+          "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
+          "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 2m", "PT Mono",
+          "Source Code Pro", "Monospaced" };
   private final static int MARGIN = 4;
   private final static int GAP = 12;
   private final static String OS = System.getProperty ("os.name");
-  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
+  //  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private final Screen screen;
   private final Label status = new Label ();
@@ -58,12 +71,16 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final Button btnForward = new Button (">");
   private final Button btnCurrent = new Button ("Screens");
 
-  //  private final MenuBar menuBar = new MenuBar ();
+  private final MenuBar menuBar = new MenuBar ();
   private final Menu menuCommands = new Menu ("Commands");
+
+  final ToggleGroup fontGroup = new ToggleGroup ();
+  final ToggleGroup sizeGroup = new ToggleGroup ();
+
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
 
-  public ConsolePane (Screen screen, MenuBar menuBar)
+  public ConsolePane (Screen screen, Preferences prefs)
   {
     this.screen = screen;
 
@@ -92,6 +109,32 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     menuCommands.getItems ().addAll (menuItemToggleToolbar);
     menuBar.getMenus ().add (menuCommands);
     topPane.setTop (menuBar);
+
+    String fontSelected = prefs.get ("FontName", "");
+    String sizeSelected = prefs.get ("FontSize", "16");
+
+    Menu menuFont = new Menu ("Fonts");
+
+    List<String> families = Font.getFamilies ();
+    for (String fontName : preferredFontNames)
+    {
+      boolean fontExists = families.contains (fontName);
+      if (fontExists && fontSelected.isEmpty ())
+        fontSelected = fontName;
+      setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
+    }
+
+    // select Monospaced if there is still no font selected
+    if (fontGroup.getSelectedToggle () == null)
+    {
+      ObservableList<Toggle> toggles = fontGroup.getToggles ();
+      fontGroup.selectToggle (toggles.get (toggles.size () - 1));
+    }
+
+    menuFont.getItems ().add (new SeparatorMenuItem ());
+    String[] menuSizes = { "12", "14", "15", "16", "17", "18", "20", "22" };
+    for (String menuSize : menuSizes)
+      setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
 
     //    System.out.println (menuBar);
     //    System.out.println (menuBar.getMenus ().size ());
@@ -297,5 +340,16 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   {
     status.setText (keyboardLocked ? "Inhibit" : "       ");
     insertMode.setText (insert ? "Insert" : "      ");
+  }
+
+  private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
+      String selectedItemName, boolean disable)
+  {
+    RadioMenuItem item = new RadioMenuItem (itemName);
+    item.setToggleGroup (toggleGroup);
+    menu.getItems ().add (item);
+    if (itemName.equals (selectedItemName))
+      item.setSelected (true);
+    item.setDisable (disable);
   }
 }

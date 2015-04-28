@@ -38,7 +38,7 @@ public class SpyPane extends BorderPane
     label.setPadding (new Insets (10, 10, 10, 10));    // trbl
 
     CommandPane commandPane =
-        new CommandPane (screen, table, CommandPane.ProcessInstruction.DontProcess);
+        new CommandPane (table, CommandPane.ProcessInstruction.DontProcess);
 
     Button btnSave = new Button ("Full Save");
     Button btnScramble = new Button ("Redacted");

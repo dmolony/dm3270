@@ -89,7 +89,6 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
     telnetProcessor.listen (buffer);     // will call one of the processXXX routines
 
-    //    if (sessionMode == SessionMode.TERMINAL)
     if (function == Function.TERMINAL)
       telnetState.setLastAccess (dateTime, buffer.length);
   }

@@ -52,8 +52,7 @@ class ReplayStage extends Stage
     leftPane.getChildren ().addAll (table, checkBoxes);
 
     CommandPane commandPane =
-        new CommandPane (session.getScreen (), table,
-            CommandPane.ProcessInstruction.DoProcess);
+        new CommandPane (table, CommandPane.ProcessInstruction.DoProcess);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);

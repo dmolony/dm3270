@@ -12,6 +12,7 @@ import java.awt.Toolkit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -60,14 +61,18 @@ public class Screen extends Canvas
   public final int columns;
   public final int screenSize;
 
-  public Screen (int rows, int columns, Font font, Function function)
+  public Screen (int rows, int columns, Preferences prefs, Function function)
   {
     this.rows = rows;
     this.columns = columns;
     screenSize = rows * columns;
     this.function = function;
 
+    String fontSelected = prefs.get ("FontName", "Monospaced");
+    String sizeSelected = prefs.get ("FontSize", "16");
+
     GraphicsContext gc = getGraphicsContext2D ();
+    Font font = Font.font (fontSelected, Integer.parseInt (sizeSelected));
     characterSize = new CharacterSize (font);
     setFont (font);
 
@@ -84,7 +89,14 @@ public class Screen extends Canvas
     setWidth (characterSize.getWidth () * columns + xOffset * 2);
     setHeight (characterSize.getHeight () * rows + yOffset * 2);
 
+    // resize??
+
     getGraphicsContext2D ().setFont (font);
+  }
+
+  public Font getFont ()
+  {
+    return characterSize.getFont ();
   }
 
   public Function getFunction ()
