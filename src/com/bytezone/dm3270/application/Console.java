@@ -1,43 +1,26 @@
 package com.bytezone.dm3270.application;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.display.Screen;
@@ -52,43 +35,24 @@ public class Console extends Application
           "Source Code Pro", "Monospaced" };
 
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
-  private static final int COMBO_BOX_WIDTH = 150;
-  private static final int EDIT_BUTTON_WIDTH = 50;
-  private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
   private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
       MAINFRAME_EMULATOR_PORT, true);
   private final static String OS = System.getProperty ("os.name");
   private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private Stage primaryStage;
-  private ComboBox<String> fileComboBox;
-  private ComboBox<String> serverComboBox;
-  private ComboBox<String> clientComboBox;
-
-  private Button editServersButton;
-  private Button editClientsButton;
-  private Button editLocationButton;
-
-  private SiteListStage serverSitesListStage;
-  private SiteListStage clientSitesListStage;
-
-  private final Button okButton = new Button ("Connect");
-  private final Button cancelButton = new Button ("Cancel");
 
   private Preferences prefs;
-  private String spyFolder;
 
-  private final ToggleGroup functionsGroup = new ToggleGroup ();
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
-  private final ToggleGroup releaseGroup = new ToggleGroup ();
 
+  private OptionStage optionStage;
   private SpyPane spyPane;
   private ConsolePane consolePane;
   private ReplayStage replayStage;
   private MainframeStage mainframeStage;
 
-  private boolean release;
   private final MenuBar menuBar = new MenuBar ();
 
   public enum Function
@@ -119,80 +83,12 @@ public class Console extends Application
   public void start (Stage primaryStagex) throws Exception
   {
     this.primaryStage = primaryStagex;
+    optionStage = new OptionStage (prefs);
 
-    String optionSelected = prefs.get ("Function", "Terminal");
     String fontSelected = prefs.get ("FontName", "");
     String sizeSelected = prefs.get ("FontSize", "16");
 
-    String runMode = prefs.get ("Mode", "Release");
-    release = runMode.equals ("Release");
-
-    serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
-    clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
-
-    String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
-    Node row1 = options (optionList, functionsGroup, 0, 2);
-    Node row2 = options (optionList, functionsGroup, 2, 2);
-
-    VBox panel = buildComboBoxes ();
-
-    if (release)
-    {
-      panel.getChildren ().addAll (row ("Server", serverComboBox, editServersButton),
-                                   row ("", buttons ()));
-      primaryStage.setTitle ("Connect to Server");
-      panel.setPadding (new Insets (0, 30, 0, 0));       // trbl
-    }
-    else
-    {
-      panel.getChildren //
-          ().addAll (row ("Function", row1), row ("", row2),
-                     row ("Server", serverComboBox, editServersButton),
-                     row ("Client", clientComboBox, editClientsButton),
-                     row ("Replay", fileComboBox, editLocationButton),
-                     row ("", buttons ()));
-      primaryStage.setTitle ("Choose Function");
-    }
-
-    HBox hBox = new HBox (10);
-    HBox.setMargin (panel, new Insets (10));
-    hBox.getChildren ().addAll (panel);
-
-    functionsGroup.selectedToggleProperty ()
-        .addListener ( (ov, oldToggle, newToggle) -> {
-          if (newToggle != null)
-          {
-            String selection = (String) newToggle.getUserData ();
-            if (selection.equals (optionList[0]))
-              setDisable (false, false, true);          // server, client, file
-            else if (selection.equals (optionList[1]))
-              setDisable (true, true, false);
-            else if (selection.equals (optionList[2]))
-              setDisable (false, true, true);
-            else if (selection.equals (optionList[3]))
-              setDisable (true, false, true);
-          }
-        });
-
-    if (release)
-      optionSelected = "Terminal";
-
-    boolean found = false;
-    for (int i = 0; i < optionList.length; i++)
-      if (optionList[i].equals (optionSelected))
-      {
-        functionsGroup.selectToggle (functionsGroup.getToggles ().get (i));
-        found = true;
-        break;
-      }
-
-    if (!found)
-      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
-
-    editLocationButton.setOnAction (e -> editLocation ());
-
     Menu menuFont = new Menu ("Fonts");
-    Menu menuDebug = new Menu ("Mode");
 
     List<String> families = Font.getFamilies ();
     for (String fontName : preferredFontNames)
@@ -215,39 +111,28 @@ public class Console extends Application
     for (String menuSize : menuSizes)
       setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
 
-    setMenuItem ("Debug", releaseGroup, menuDebug, runMode, false);
-    setMenuItem ("Release", releaseGroup, menuDebug, runMode, false);
+    optionStage.okButton.setOnAction (e -> startSelectedFunction ());
+    optionStage.cancelButton.setOnAction (e -> primaryStage.hide ());
+    optionStage.show ();
 
-    menuBar.getMenus ().addAll (menuFont, menuDebug);
-
-    if (SYSTEM_MENUBAR)
-      menuBar.useSystemMenuBarProperty ().set (true);
-
-    BorderPane borderPane = new BorderPane ();
-    borderPane.setTop (menuBar);
-    borderPane.setCenter (hBox);
-
-    primaryStage.resizableProperty ().setValue (Boolean.FALSE);
-    primaryStage.setOnCloseRequest (e -> Platform.exit ());
-    primaryStage.setScene (new Scene (borderPane));
-    primaryStage.show ();
   }
 
   private void startSelectedFunction ()
   {
-    if (SYSTEM_MENUBAR)
-      menuBar.useSystemMenuBarProperty ().set (false);
     primaryStage.hide ();
     String errorMessage = "";
 
-    Site serverSite = serverSitesListStage.getSelectedSite ();
-    Site clientSite = clientSitesListStage.getSelectedSite ();
+    Site serverSite = optionStage.serverSitesListStage.getSelectedSite ();
+    Site clientSite = optionStage.clientSitesListStage.getSelectedSite ();
 
-    String optionText = (String) functionsGroup.getSelectedToggle ().getUserData ();
+    String optionText =
+        (String) optionStage.functionsGroup.getSelectedToggle ().getUserData ();
     switch (optionText)
     {
       case "Replay":
-        Path path = Paths.get (spyFolder + "/" + fileComboBox.getValue ());
+        Path path =
+            Paths
+                .get (optionStage.spyFolder + "/" + optionStage.fileComboBox.getValue ());
         if (!Files.exists (path))
           errorMessage = path + " does not exist";
         else
@@ -371,78 +256,25 @@ public class Console extends Application
     savePreferences ();
   }
 
-  private void editLocation ()
-  {
-    DirectoryChooser chooser = new DirectoryChooser ();
-    chooser.setTitle ("Choose Spy Folder");
-    File currentLocation = spyFolder.isEmpty () ? null : new File (spyFolder);
-    if (currentLocation != null && currentLocation.exists ())
-      chooser.setInitialDirectory (currentLocation);
-
-    File selectedDirectory = chooser.showDialog (primaryStage);
-    if (selectedDirectory != null)
-    {
-      spyFolder = selectedDirectory.getAbsolutePath ();
-      fileComboBox.getItems ().clear ();
-      ObservableList<String> files = getSessionFiles (spyFolder);
-      fileComboBox.setItems (files);
-      if (files.size () > 0)
-        fileComboBox.getSelectionModel ().select (0);
-    }
-  }
-
-  private ObservableList<String> getSessionFiles (String folderName)
-  {
-    List<Path> files = null;
-
-    try
-    {
-      Path path = Paths.get (folderName);
-      if (Files.exists (path) && Files.isDirectory (path))
-        files =
-            Files
-                .list (path)
-                .filter (p -> p.getFileName ().toString ()
-                             .matches ("[sS][Pp][yY][0-9]{1,4}(\\.[tT][xX][tT])*"))
-                .collect (Collectors.toList ());
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace ();
-    }
-
-    if (files == null)
-      files = new ArrayList<Path> ();      // empty list
-
-    return FXCollections
-        .observableArrayList (files.stream ().map (p -> p.getFileName ().toString ())
-            .sorted ().collect (Collectors.toList ()));
-  }
-
   private void savePreferences ()
   {
-    prefs.put ("Function", (String) functionsGroup.getSelectedToggle ().getUserData ());
+    prefs.put ("Function", (String) optionStage.functionsGroup.getSelectedToggle ()
+        .getUserData ());
     prefs.put ("FontName", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("FontSize", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
-    prefs.put ("Mode", ((RadioMenuItem) releaseGroup.getSelectedToggle ()).getText ());
+    prefs
+        .put ("Mode",
+              ((RadioMenuItem) optionStage.releaseGroup.getSelectedToggle ()).getText ());
 
-    String filename = fileComboBox.getValue ();
+    String filename = optionStage.fileComboBox.getValue ();
     if (filename != null)
       prefs.put ("ReplayFile", filename);
 
-    prefs.put ("SpyFolder", spyFolder);
-    prefs.put ("ServerName", serverComboBox.getSelectionModel ().getSelectedItem ());
-    prefs.put ("ClientName", clientComboBox.getSelectionModel ().getSelectedItem ());
-  }
-
-  private void setDisable (boolean server, boolean client, boolean files)
-  {
-    serverComboBox.setDisable (server);
-    editServersButton.setDisable (server);
-    clientComboBox.setDisable (client);
-    editClientsButton.setDisable (client);
-    fileComboBox.setDisable (files);
-    editLocationButton.setDisable (files);
+    prefs.put ("SpyFolder", optionStage.spyFolder);
+    prefs.put ("ServerName", optionStage.serverComboBox.getSelectionModel ()
+        .getSelectedItem ());
+    prefs.put ("ClientName", optionStage.clientComboBox.getSelectionModel ()
+        .getSelectedItem ());
   }
 
   private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
@@ -454,96 +286,6 @@ public class Console extends Application
     if (itemName.equals (selectedItemName))
       item.setSelected (true);
     item.setDisable (disable);
-  }
-
-  private Node options (String[] options, ToggleGroup group, int offset, int length)
-  {
-    HBox hbox = new HBox (10);
-
-    for (int i = offset, max = offset + length; i < max; i++)
-    {
-      String option = options[i];
-      RadioButton rb = new RadioButton (option);
-      rb.setUserData (option);
-      rb.setPrefWidth (100);
-      rb.setToggleGroup (group);
-      hbox.getChildren ().add (rb);
-    }
-
-    return hbox;
-  }
-
-  private VBox buildComboBoxes ()
-  {
-    VBox panel = new VBox (10);
-
-    spyFolder = prefs.get ("SpyFolder", "");
-    String fileText = prefs.get ("ReplayFile", "");
-
-    fileComboBox = new ComboBox<> (getSessionFiles (spyFolder));
-    fileComboBox.setPrefWidth (COMBO_BOX_WIDTH);
-    fileComboBox.setVisibleRowCount (15);
-    fileComboBox.getSelectionModel ().select (fileText);
-
-    String serverSelected = prefs.get ("ServerName", "");
-
-    serverComboBox = serverSitesListStage.getComboBox ();
-    serverComboBox.setPrefWidth (COMBO_BOX_WIDTH);
-    serverComboBox.setVisibleRowCount (5);
-    serverComboBox.getSelectionModel ().select (serverSelected);
-
-    String clientSelected = prefs.get ("ClientName", "");
-
-    clientComboBox = clientSitesListStage.getComboBox ();
-    clientComboBox.setPrefWidth (COMBO_BOX_WIDTH);
-    clientComboBox.setVisibleRowCount (5);
-    clientComboBox.getSelectionModel ().select (clientSelected);
-
-    editServersButton = serverSitesListStage.getEditButton ();
-    editServersButton.setStyle (EDIT_BUTTON_FONT_SIZE);
-    editServersButton.setMinWidth (EDIT_BUTTON_WIDTH);
-
-    editClientsButton = clientSitesListStage.getEditButton ();
-    editClientsButton.setStyle (EDIT_BUTTON_FONT_SIZE);
-    editClientsButton.setMinWidth (EDIT_BUTTON_WIDTH);
-
-    editLocationButton = new Button ("Folder...");
-    editLocationButton.setStyle (EDIT_BUTTON_FONT_SIZE);
-    editLocationButton.setMinWidth (EDIT_BUTTON_WIDTH);
-
-    return panel;
-  }
-
-  private Node buttons ()
-  {
-    HBox hbox = new HBox (10);
-
-    okButton.setDefaultButton (true);
-    okButton.setPrefWidth (80);
-    okButton.setOnAction (e -> startSelectedFunction ());
-
-    cancelButton.setCancelButton (true);
-    cancelButton.setPrefWidth (80);
-    cancelButton.setOnAction (e -> primaryStage.hide ());
-
-    hbox.getChildren ().addAll (cancelButton, okButton);
-
-    return hbox;
-  }
-
-  private Node row (String labelText, Node... field)
-  {
-    HBox hbox = new HBox (10);
-    hbox.setAlignment (Pos.CENTER_LEFT);
-
-    Label label = new Label (labelText);
-    label.setMinWidth (65);
-    label.setAlignment (Pos.CENTER_RIGHT);
-
-    hbox.getChildren ().add (label);
-    hbox.getChildren ().addAll (field);
-
-    return hbox;
   }
 
   private Screen createScreen (Function function)

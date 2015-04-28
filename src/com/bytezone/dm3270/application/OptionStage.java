@@ -36,28 +36,30 @@ public class OptionStage extends Stage
   private static final int COMBO_BOX_WIDTH = 150;
   private static final int EDIT_BUTTON_WIDTH = 50;
   private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
+  private final static String OS = System.getProperty ("os.name");
+  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private final boolean release;
 
-  private ComboBox<String> fileComboBox;
-  private ComboBox<String> serverComboBox;
-  private ComboBox<String> clientComboBox;
+  ComboBox<String> fileComboBox;
+  ComboBox<String> serverComboBox;
+  ComboBox<String> clientComboBox;
 
   private Button editServersButton;
   private Button editClientsButton;
   private Button editLocationButton;
 
-  private final SiteListStage serverSitesListStage;
-  private final SiteListStage clientSitesListStage;
+  final SiteListStage serverSitesListStage;
+  final SiteListStage clientSitesListStage;
 
-  private final Button okButton = new Button ("Connect");
-  private final Button cancelButton = new Button ("Cancel");
+  final Button okButton = new Button ("Connect");
+  final Button cancelButton = new Button ("Cancel");
 
   private final Preferences prefs;
-  private String spyFolder;
+  String spyFolder;
 
-  private final ToggleGroup functionsGroup = new ToggleGroup ();
-  private final ToggleGroup releaseGroup = new ToggleGroup ();
+  final ToggleGroup functionsGroup = new ToggleGroup ();
+  final ToggleGroup releaseGroup = new ToggleGroup ();
 
   private final MenuBar menuBar = new MenuBar ();
 
@@ -139,6 +141,8 @@ public class OptionStage extends Stage
     setMenuItem ("Release", releaseGroup, menuDebug, runMode, false);
 
     menuBar.getMenus ().addAll (menuDebug);
+    if (SYSTEM_MENUBAR)
+      menuBar.useSystemMenuBarProperty ().set (true);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setTop (menuBar);
