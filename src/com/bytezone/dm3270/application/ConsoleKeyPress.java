@@ -29,11 +29,11 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     KeyCode keyCodePressed = e.getCode ();
 
-    if (e.isControlDown () && keyCodePressed == KeyCode.S)
-    {
-      consolePane.toggleHistory ();
-      return;
-    }
+    //    if (e.isControlDown () && keyCodePressed == KeyCode.S)
+    //    {
+    //      consolePane.toggleHistory ();
+    //      return;
+    //    }
 
     if (screen.isKeyboardLocked ())
     {
@@ -77,10 +77,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
         case F3:
           sendAID (AIDCommand.AID_PA3);
-          break;
-
-        case T:
-          consolePane.toggleToolbar ();
           break;
 
         default:

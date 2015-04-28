@@ -19,6 +19,9 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -49,7 +52,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final static int MARGIN = 4;
   private final static int GAP = 12;
   private final static String OS = System.getProperty ("os.name");
-  //  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
+  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private final Screen screen;
   private final Label status = new Label ();
@@ -72,10 +75,9 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final Button btnCurrent = new Button ("Screens");
 
   private final MenuBar menuBar = new MenuBar ();
-  private final Menu menuCommands = new Menu ("Commands");
 
-  final ToggleGroup fontGroup = new ToggleGroup ();
-  final ToggleGroup sizeGroup = new ToggleGroup ();
+  private final ToggleGroup fontGroup = new ToggleGroup ();
+  private final ToggleGroup sizeGroup = new ToggleGroup ();
 
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
@@ -90,12 +92,13 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
-    setTop (topPane);
-    setCenter (screen);
-
     toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
     btnBack.setDisable (true);
     btnForward.setDisable (true);
+
+    btnBack.setOnAction (e -> back ());
+    btnForward.setOnAction (e -> forward ());
+    btnCurrent.setOnAction (e -> toggleHistory ());
 
     //    byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
     //    Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
@@ -105,13 +108,43 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    MenuItem menuItemToggleToolbar = new MenuItem ("Toggle toolbar");
-    menuCommands.getItems ().addAll (menuItemToggleToolbar);
-    menuBar.getMenus ().add (menuCommands);
+    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu ());
     topPane.setTop (menuBar);
 
-    String fontSelected = prefs.get ("FontName", "");
-    String sizeSelected = prefs.get ("FontSize", "16");
+    if (SYSTEM_MENUBAR)
+      menuBar.useSystemMenuBarProperty ().set (true);
+
+    setTop (topPane);
+    setCenter (screen);
+    setBottom (getStatusBar ());
+
+    screen.requestFocus ();
+  }
+
+  private Menu getCommandsMenu ()
+  {
+    Menu menuCommands = new Menu ("Commands");
+
+    MenuItem menuItemToggleToolbar = new MenuItem ("Toolbar");
+    menuItemToggleToolbar.setOnAction ( (e) -> toggleToolbar ());
+    menuItemToggleToolbar.setAccelerator (new KeyCodeCombination (KeyCode.T,
+        KeyCombination.META_DOWN));
+
+    MenuItem menuItemToggleScreens = new MenuItem ("Show previous screens");
+    menuItemToggleScreens.setOnAction ( (e) -> toggleHistory ());
+    menuItemToggleScreens.setAccelerator (new KeyCodeCombination (KeyCode.S,
+        KeyCombination.META_DOWN));
+
+    menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens);
+
+    return menuCommands;
+  }
+
+  private Menu getFontMenu ()
+  {
+    Font font = screen.getFont ();
+    String fontSelected = font.getName ();
+    String sizeSelected = "" + (int) font.getSize ();
 
     Menu menuFont = new Menu ("Fonts");
 
@@ -136,16 +169,11 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     for (String menuSize : menuSizes)
       setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
 
-    //    System.out.println (menuBar);
-    //    System.out.println (menuBar.getMenus ().size ());
-    //    System.out.println (menuBar.isUseSystemMenuBar ());
+    return menuFont;
+  }
 
-    //    final String os = System.getProperty ("os.name");
-    //    if (os != null && os.startsWith ("Mac"))
-    //      menuBar.useSystemMenuBarProperty ().set (true);
-
-    menuItemToggleToolbar.setOnAction ( (e) -> toggleToolbar ());
-
+  private BorderPane getStatusBar ()
+  {
     Separator[] div = new Separator[4];
     for (int i = 0; i < div.length; i++)
     {
@@ -162,24 +190,19 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     HBox right = getHBox (new Insets (2, MARGIN, 2, GAP), Pos.CENTER_RIGHT);
     right.getChildren ().addAll (div[2], fieldType, div[3], cursorLocation);
 
-    Font font = Font.font ("Monospaced", 14);
-    status.setFont (font);
-    insertMode.setFont (font);
-    cursorLocation.setFont (font);
-    fieldType.setFont (font);
-    fieldLocation.setFont (font);
+    Font statusBarFont = Font.font ("Monospaced", 14);
+    status.setFont (statusBarFont);
+    insertMode.setFont (statusBarFont);
+    cursorLocation.setFont (statusBarFont);
+    fieldType.setFont (statusBarFont);
+    fieldLocation.setFont (statusBarFont);
 
     BorderPane statusPane = new BorderPane ();
     statusPane.setLeft (left);
     statusPane.setCenter (center);
     statusPane.setRight (right);
-    setBottom (statusPane);
 
-    screen.requestFocus ();
-
-    btnBack.setOnAction (e -> back ());
-    btnForward.setOnAction (e -> forward ());
-    btnCurrent.setOnAction (e -> toggleHistory ());
+    return statusPane;
   }
 
   private HBox getHBox (Insets insets, Pos alignment)
@@ -191,14 +214,14 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     return hbox;
   }
 
-  public void toggleToolbar ()
+  private void toggleToolbar ()
   {
     toolbarVisible = !toolbarVisible;
     topPane.setBottom (toolbarVisible ? toolbar : null);
     ((Stage) getScene ().getWindow ()).sizeToScene ();
   }
 
-  public void toggleHistory ()
+  private void toggleHistory ()
   {
     if (screenHistory == null)
     {
