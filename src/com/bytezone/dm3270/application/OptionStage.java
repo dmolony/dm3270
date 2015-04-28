@@ -19,14 +19,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -61,16 +63,16 @@ public class OptionStage extends Stage
   String spyFolder;
 
   final ToggleGroup functionsGroup = new ToggleGroup ();
-  final ToggleGroup releaseGroup = new ToggleGroup ();
+  private final String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
 
   private final BorderPane innerPane = new BorderPane ();
   private final BorderPane outerPane = new BorderPane ();
   private final VBox functionsBox = new VBox (10);
   private final HBox serverBox;
   private final VBox clientSpyBox = new VBox (10);
+  private HBox buttonsBox = new HBox (10);
 
-  //  VBox releasePanel, debugPanel;
-
+  CheckMenuItem toggleModeMenuItem;
   private final MenuBar menuBar = new MenuBar ();
 
   private enum Mode
@@ -90,45 +92,37 @@ public class OptionStage extends Stage
     serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
     clientSitesListStage = new SiteListStage (prefs, "Client", 5, false);
 
-    String[] optionList = { "Spy", "Replay", "Terminal", "Test" };
     Node row1 = options (optionList, functionsGroup, 0, 2);
     Node row2 = options (optionList, functionsGroup, 2, 2);
 
     buildComboBoxes ();
-    innerPane.setPadding (new Insets (10));
-    outerPane.setPadding (new Insets (0, 10, 10, 10));     // trbl
 
     HBox functionsBox1 = row ("Function", row1);
     HBox functionsBox2 = row ("", row2);
     functionsBox.getChildren ().addAll (functionsBox1, functionsBox2);
+    functionsBox.setPadding (new Insets (10, 10, 0, 10));
 
     serverBox = row ("Server", serverComboBox, editServersButton);
-    serverBox.setPadding (new Insets (10, 0, 10, 0));     // trbl
+    serverBox.setPadding (new Insets (10, 10, 10, 10));     // trbl
 
     HBox clientBox = row ("Client", clientComboBox, editClientsButton);
     HBox spyBox = row ("Replay", fileComboBox, editLocationButton);
     clientSpyBox.getChildren ().addAll (clientBox, spyBox);
+    clientSpyBox.setPadding (new Insets (0, 10, 10, 10));
+
+    buttonsBox = buttons ();
+    buttonsBox.setPadding (new Insets (10, 10, 10, 10));
 
     innerPane.setTop (functionsBox);
     innerPane.setCenter (serverBox);
     outerPane.setCenter (innerPane);
-    outerPane.setBottom (buttons ());
+    outerPane.setBottom (buttonsBox);
     setMode (release ? Mode.RELEASE : Mode.DEBUG);
 
     functionsGroup.selectedToggleProperty ()
         .addListener ( (ov, oldToggle, newToggle) -> {
           if (newToggle != null)
-          {
-            String selection = (String) newToggle.getUserData ();
-            if (selection.equals (optionList[0]))
-              setDisable (false, false, true);          // server, client, file
-            else if (selection.equals (optionList[1]))
-              setDisable (true, true, false);
-            else if (selection.equals (optionList[2]))
-              setDisable (false, true, true);
-            else if (selection.equals (optionList[3]))
-              setDisable (true, false, true);
-          }
+            disableButtons ((String) newToggle.getUserData ());
         });
 
     if (release)
@@ -145,17 +139,20 @@ public class OptionStage extends Stage
 
     if (!found)
       functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
+    disableButtons (optionSelected);
 
     editLocationButton.setOnAction (e -> editLocation ());
 
     Menu menuDebug = new Menu ("Mode");
-    MenuItem debugMenuItem =
-        setMenuItem ("Debug", releaseGroup, menuDebug, runMode, false);
-    MenuItem releaseMenuItem =
-        setMenuItem ("Release", releaseGroup, menuDebug, runMode, false);
+    toggleModeMenuItem = new CheckMenuItem ("Release mode");
+    menuDebug.getItems ().add (toggleModeMenuItem);
+    String mode = prefs.get ("Mode", "Release");
+    toggleModeMenuItem.setSelected (mode.equals ("Release"));
 
-    debugMenuItem.setOnAction (e -> switchMode (e));
-    releaseMenuItem.setOnAction (e -> switchMode (e));
+    toggleModeMenuItem.setOnAction (e -> switchMode (e));
+
+    toggleModeMenuItem.setAccelerator (new KeyCodeCombination (KeyCode.M,
+        KeyCombination.META_DOWN));
 
     menuBar.getMenus ().addAll (menuDebug);
     if (SYSTEM_MENUBAR)
@@ -170,8 +167,8 @@ public class OptionStage extends Stage
 
   private void switchMode (ActionEvent e)
   {
-    String text = ((RadioMenuItem) e.getSource ()).getText ();
-    setMode (text.equals ("Debug") ? Mode.DEBUG : Mode.RELEASE);
+    CheckMenuItem menuItem = (CheckMenuItem) e.getSource ();
+    setMode (menuItem.isSelected () ? Mode.RELEASE : Mode.DEBUG);
   }
 
   private void setMode (Mode mode)
@@ -187,21 +184,11 @@ public class OptionStage extends Stage
       innerPane.setTop (null);
       innerPane.setBottom (null);
       setTitle ("Connect to Server");
+      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
     }
 
+    okButton.requestFocus ();
     sizeToScene ();
-  }
-
-  private MenuItem setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
-      String selectedItemName, boolean disable)
-  {
-    RadioMenuItem item = new RadioMenuItem (itemName);
-    item.setToggleGroup (toggleGroup);
-    menu.getItems ().add (item);
-    if (itemName.equals (selectedItemName))
-      item.setSelected (true);
-    item.setDisable (disable);
-    return item;
   }
 
   private void editLocation ()
@@ -267,6 +254,18 @@ public class OptionStage extends Stage
     }
 
     return hbox;
+  }
+
+  private void disableButtons (String selection)
+  {
+    if (selection.equals (optionList[0]))
+      setDisable (false, false, true);          // server, client, file
+    else if (selection.equals (optionList[1]))
+      setDisable (true, true, false);
+    else if (selection.equals (optionList[2]))
+      setDisable (false, true, true);
+    else if (selection.equals (optionList[3]))
+      setDisable (true, false, true);
   }
 
   private void setDisable (boolean server, boolean client, boolean files)
@@ -340,7 +339,7 @@ public class OptionStage extends Stage
     hbox.setAlignment (Pos.CENTER_LEFT);
 
     Label label = new Label (labelText);
-    label.setMinWidth (65);
+    label.setMinWidth (50);
     label.setAlignment (Pos.CENTER_RIGHT);
 
     hbox.getChildren ().add (label);

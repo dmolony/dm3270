@@ -262,8 +262,7 @@ public class Console extends Application
     prefs.put ("FontName", ((RadioMenuItem) fontGroup.getSelectedToggle ()).getText ());
     prefs.put ("FontSize", ((RadioMenuItem) sizeGroup.getSelectedToggle ()).getText ());
     prefs
-        .put ("Mode",
-              ((RadioMenuItem) optionStage.releaseGroup.getSelectedToggle ()).getText ());
+        .put ("Mode", optionStage.toggleModeMenuItem.isSelected () ? "Release" : "Debug");
 
     String filename = optionStage.fileComboBox.getValue ();
     if (filename != null)
