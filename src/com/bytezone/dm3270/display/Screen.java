@@ -96,18 +96,12 @@ public class Screen extends Canvas
     if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
       return;
 
-    eraseScreen ();
     setFont (name, size);
     ((Stage) getScene ().getWindow ()).sizeToScene ();
 
     eraseScreen ();
     drawScreen (false);
   }
-
-  //  public Font getFont ()
-  //  {
-  //    return characterSize.getFont ();
-  //  }
 
   public String getFontName ()
   {
