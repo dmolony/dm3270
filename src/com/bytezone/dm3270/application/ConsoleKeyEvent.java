@@ -18,8 +18,6 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent e)       // onKeyTyped
   {
-    e.consume ();
-
     if (screen.isKeyboardLocked ())
       return;
 
@@ -30,7 +28,10 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
       {
         char ch = c.charAt (0);
         if (ch >= 32 && ch < 0x7F)
+        {
           screen.getScreenCursor ().typeChar ((byte) Utility.asc2ebc[ch]);
+          e.consume ();
+        }
       }
     }
   }
