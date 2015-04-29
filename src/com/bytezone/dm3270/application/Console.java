@@ -67,7 +67,7 @@ public class Console extends Application
     optionStage = new OptionStage (prefs);
 
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());
-    optionStage.cancelButton.setOnAction (e -> primaryStage.hide ());
+    optionStage.cancelButton.setOnAction (e -> optionStage.hide ());
     optionStage.show ();
   }
 
