@@ -25,7 +25,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent e)
   {
-    e.consume ();
+    //    e.consume ();
 
     KeyCode keyCodePressed = e.getCode ();
 
@@ -39,9 +39,15 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     {
       if (e.isControlDown ())       // should allow user to choose modifier key
         if (keyCodePressed == KeyCode.LEFT)
+        {
           consolePane.back ();
+          e.consume ();
+        }
         else if (keyCodePressed == KeyCode.RIGHT)
+        {
           consolePane.forward ();
+          e.consume ();
+        }
 
       return;
     }
@@ -52,31 +58,38 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       {
         case ENTER:
           cursor.newLine ();
+          e.consume ();
           break;
 
         case BACK_SPACE:
         case DELETE:
           cursor.eraseEOL ();
+          e.consume ();
           break;
 
         case H:
           cursor.home ();
+          e.consume ();
           break;
 
         case I:
           screen.toggleInsertMode ();
+          e.consume ();
           break;
 
         case F1:
           sendAID (AIDCommand.AID_PA1);
+          e.consume ();
           break;
 
         case F2:
           sendAID (AIDCommand.AID_PA2);
+          e.consume ();
           break;
 
         case F3:
           sendAID (AIDCommand.AID_PA3);
+          e.consume ();
           break;
 
         default:
@@ -90,18 +103,22 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       {
         case LEFT:
           cursor.move (Direction.LEFT);
+          e.consume ();
           break;
 
         case RIGHT:
           cursor.move (Direction.RIGHT);
+          e.consume ();
           break;
 
         case UP:
           cursor.move (Direction.UP);
+          e.consume ();
           break;
 
         case DOWN:
           cursor.move (Direction.DOWN);
+          e.consume ();
           break;
 
         default:
@@ -113,34 +130,42 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       {
         case ENTER:
           sendAID (AIDCommand.AID_ENTER_KEY);
+          e.consume ();
           break;
 
         case TAB:
           cursor.tab (e.isShiftDown ());
+          e.consume ();
           break;
 
         case BACK_SPACE:
           cursor.backspace ();
+          e.consume ();
           break;
 
         case DELETE:
           cursor.delete ();
+          e.consume ();
           break;
 
         case END:
           cursor.eraseEOL ();
+          e.consume ();
           break;
 
         case INSERT:
           screen.toggleInsertMode ();
+          e.consume ();
           break;
 
         case HOME:
           cursor.home ();
+          e.consume ();
           break;
 
         case ESCAPE:
           System.out.println ("escape");    // CLR key?
+          e.consume ();
           break;
 
         default:
@@ -160,6 +185,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
             if (e.isShiftDown ())
               pfKey += 12;
             sendAID (AIDCommand.PFKeyValues[pfKey]);
+            e.consume ();
           }
           break;
       }

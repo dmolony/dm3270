@@ -128,12 +128,12 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     MenuItem menuItemToggleToolbar = new MenuItem ("Toolbar");
     menuItemToggleToolbar.setOnAction ( (e) -> toggleToolbar ());
     menuItemToggleToolbar.setAccelerator (new KeyCodeCombination (KeyCode.T,
-        KeyCombination.META_DOWN));
+        KeyCombination.SHORTCUT_DOWN));
 
     MenuItem menuItemToggleScreens = new MenuItem ("Show previous screens");
     menuItemToggleScreens.setOnAction ( (e) -> toggleHistory ());
     menuItemToggleScreens.setAccelerator (new KeyCodeCombination (KeyCode.S,
-        KeyCombination.META_DOWN));
+        KeyCombination.SHORTCUT_DOWN));
 
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens);
 

@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -59,9 +60,10 @@ public class Console extends Application
   }
 
   @Override
-  public void start (Stage primaryStagex) throws Exception
+  public void start (Stage primaryStage) throws Exception
   {
-    this.primaryStage = primaryStagex;
+    this.primaryStage = primaryStage;
+    primaryStage.setOnCloseRequest (e -> Platform.exit ());
     optionStage = new OptionStage (prefs);
 
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());
@@ -158,9 +160,6 @@ public class Console extends Application
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
-    //    if (SYSTEM_MENUBAR)
-    //      menuBar.useSystemMenuBarProperty ().set (true);
-
     if (screen.getFunction () == Function.TERMINAL)
       primaryStage.centerOnScreen ();
 
@@ -193,6 +192,8 @@ public class Console extends Application
   @Override
   public void stop ()
   {
+    //    System.out.println ("Stopping");
+
     if (mainframeStage != null)
       mainframeStage.disconnect ();
 
@@ -215,7 +216,6 @@ public class Console extends Application
 
     if (screen != null)
     {
-      //      Font font = screen.getFont ();
       prefs.put ("FontName", screen.getFontName ());
       prefs.put ("FontSize", "" + screen.getFontSize ());
     }
@@ -236,12 +236,6 @@ public class Console extends Application
 
   private Screen createScreen (Function function)
   {
-    //    RadioMenuItem selectedFontName =
-    //        (RadioMenuItem) consolePane.fontGroup.getSelectedToggle ();
-    //    RadioMenuItem selectedFontSize =
-    //        (RadioMenuItem) consolePane.sizeGroup.getSelectedToggle ();
-    //    Font font = Font.font (selectedFontName.getText (),     //
-    //                           Integer.parseInt (selectedFontSize.getText ()));
     screen = new Screen (24, 80, prefs, function);
     return screen;
   }
