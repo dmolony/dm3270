@@ -23,4 +23,4 @@ Runs anywhere. See the [commands](resources/commands.md) page for differences be
 * [Menus](resources/menus.md)
 * [Debug functions](resources/functions.md)
 * [Screen history](resources/history.md)
-* Scripting
+* [Plugins](resources/plugins.md)
