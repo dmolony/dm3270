@@ -269,7 +269,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     }
     else
     {
-      //      BorderPane.setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
+      BorderPane.setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
       setCenter (imageView);
     }
   }
