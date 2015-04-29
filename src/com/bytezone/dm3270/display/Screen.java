@@ -72,7 +72,6 @@ public class Screen extends Canvas
     String sizeSelected = prefs.get ("FontSize", "16");
 
     GraphicsContext gc = getGraphicsContext2D ();
-    //    Font font = Font.font (fontSelected, Integer.parseInt (sizeSelected));
     characterSize = new CharacterSize ();
     setFont (fontSelected, Integer.parseInt (sizeSelected));
 
@@ -101,6 +100,7 @@ public class Screen extends Canvas
     setFont (name, size);
     ((Stage) getScene ().getWindow ()).sizeToScene ();
 
+    eraseScreen ();
     drawScreen (false);
   }
 

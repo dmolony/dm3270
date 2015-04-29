@@ -18,10 +18,6 @@ public class CharacterSize
   private int descent;
   private int leading;
 
-  public CharacterSize ()
-  {
-  }
-
   public Font getFont ()
   {
     return font;
@@ -42,7 +38,6 @@ public class CharacterSize
     Font font = Font.font (name, size);
     if (font != this.font)
     {
-      System.out.println (font);
       this.font = font;
       this.name = name;
       this.size = size;
@@ -57,10 +52,10 @@ public class CharacterSize
 
       if (leading < 1)
       {
-        System.out.println (this);
+        //        System.out.println (this);
         leading = 1;
         height = ascent + descent + leading;
-        System.out.println (this);
+        //        System.out.println (this);
       }
     }
   }
