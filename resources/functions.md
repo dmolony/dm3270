@@ -1,5 +1,5 @@
 ### Functions
-Four functions are available in Debug Mode - Spy, Replay, Terminal and Test. To enable Debug Mode you need to select it from the [Mode menu](menus.md) and restart.
+Four functions are available in Debug Mode - Spy, Replay, Terminal and Test. To enable Debug Mode you need to select it from the [Mode menu](menus.md).
 
 Note that the Folder button next to the Replay files list is to identify the **folder** that contains the saved session files. All of the files in this folder that match the name 'spy99.txt' (where 99 is any two digit number) will be added to the files list.  
 ![Debug Connection](connect2.png?raw=true "debug connection")
