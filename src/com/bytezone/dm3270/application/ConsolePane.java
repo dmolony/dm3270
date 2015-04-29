@@ -90,7 +90,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     screen.getScreenCursor ().addCursorMoveListener (this);
     screen.addStatusChangeListener (this);
 
-    setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
+    //    setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
     toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
     btnBack.setDisable (true);
@@ -142,9 +142,8 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
 
   private Menu getFontMenu ()
   {
-    Font font = screen.getFont ();
-    String fontSelected = font.getName ();
-    String sizeSelected = "" + (int) font.getSize ();
+    String fontSelected = screen.getFontName ();
+    String sizeSelected = "" + screen.getFontSize ();
 
     Menu menuFont = new Menu ("Fonts");
 
@@ -152,6 +151,12 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     for (String fontName : preferredFontNames)
     {
       boolean fontExists = families.contains (fontName);
+      if (fontExists)
+      {
+        Font font2 = Font.font (fontName, 16);
+        System.out.printf ("Font name: %-20s, Family name: %-20s, my name: %-20s%n",
+                           font2.getName (), font2.getFamily (), fontName);
+      }
       if (fontExists && fontSelected.isEmpty ())
         fontSelected = fontName;
       setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
@@ -170,6 +175,15 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
 
     return menuFont;
+  }
+
+  private void selectFont ()
+  {
+    String fontName = (String) fontGroup.getSelectedToggle ().getUserData ();
+    int fontSize =
+        Integer.parseInt ((String) sizeGroup.getSelectedToggle ().getUserData ());
+    //    Font font = Font.font (fontName, fontSize);
+    screen.adjustFont (fontName, fontSize);
   }
 
   private BorderPane getStatusBar ()
@@ -262,7 +276,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     }
     else
     {
-      BorderPane.setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
+      //      BorderPane.setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
       setCenter (imageView);
     }
   }
@@ -374,5 +388,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     if (itemName.equals (selectedItemName))
       item.setSelected (true);
     item.setDisable (disable);
+    item.setUserData (itemName);
+    item.setOnAction (e -> selectFont ());
   }
 }

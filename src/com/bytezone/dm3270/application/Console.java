@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.display.Screen;
@@ -23,8 +22,6 @@ public class Console extends Application
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
   private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
       MAINFRAME_EMULATOR_PORT, true);
-  //  private final static String OS = System.getProperty ("os.name");
-  //  private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private Stage primaryStage;
 
@@ -36,8 +33,6 @@ public class Console extends Application
   private ConsolePane consolePane;
   private ReplayStage replayStage;
   private MainframeStage mainframeStage;
-
-  //  private final MenuBar menuBar = new MenuBar ();
 
   public enum Function
   {
@@ -69,32 +64,6 @@ public class Console extends Application
     this.primaryStage = primaryStagex;
     optionStage = new OptionStage (prefs);
 
-    //    String fontSelected = prefs.get ("FontName", "");
-    //    String sizeSelected = prefs.get ("FontSize", "16");
-    //
-    //    Menu menuFont = new Menu ("Fonts");
-    //
-    //    List<String> families = Font.getFamilies ();
-    //    for (String fontName : preferredFontNames)
-    //    {
-    //      boolean fontExists = families.contains (fontName);
-    //      if (fontExists && fontSelected.isEmpty ())
-    //        fontSelected = fontName;
-    //      setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
-    //    }
-    //
-    //    // select Monospaced if there is still no font selected
-    //    if (fontGroup.getSelectedToggle () == null)
-    //    {
-    //      ObservableList<Toggle> toggles = fontGroup.getToggles ();
-    //      fontGroup.selectToggle (toggles.get (toggles.size () - 1));
-    //    }
-    //
-    //    menuFont.getItems ().add (new SeparatorMenuItem ());
-    //    String[] menuSizes = { "12", "14", "15", "16", "17", "18", "20", "22" };
-    //    for (String menuSize : menuSizes)
-    //      setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
-
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());
     optionStage.cancelButton.setOnAction (e -> primaryStage.hide ());
     optionStage.show ();
@@ -102,7 +71,7 @@ public class Console extends Application
 
   private void startSelectedFunction ()
   {
-    primaryStage.hide ();
+    optionStage.hide ();
     String errorMessage = "";
 
     Site serverSite = optionStage.serverSitesListStage.getSelectedSite ();
@@ -246,9 +215,9 @@ public class Console extends Application
 
     if (screen != null)
     {
-      Font font = screen.getFont ();
-      prefs.put ("FontName", font.getName ());
-      prefs.put ("FontSize", "" + (int) font.getSize ());
+      //      Font font = screen.getFont ();
+      prefs.put ("FontName", screen.getFontName ());
+      prefs.put ("FontSize", "" + screen.getFontSize ());
     }
 
     prefs

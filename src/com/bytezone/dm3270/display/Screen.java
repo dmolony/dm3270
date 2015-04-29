@@ -19,7 +19,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.attributes.Attribute;
@@ -72,9 +72,9 @@ public class Screen extends Canvas
     String sizeSelected = prefs.get ("FontSize", "16");
 
     GraphicsContext gc = getGraphicsContext2D ();
-    Font font = Font.font (fontSelected, Integer.parseInt (sizeSelected));
-    characterSize = new CharacterSize (font);
-    setFont (font);
+    //    Font font = Font.font (fontSelected, Integer.parseInt (sizeSelected));
+    characterSize = new CharacterSize ();
+    setFont (fontSelected, Integer.parseInt (sizeSelected));
 
     screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = contextHandler.getBase ();
@@ -82,21 +82,41 @@ public class Screen extends Canvas
       screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
   }
 
-  private void setFont (Font font)
+  private void setFont (String name, int size)
   {
-    characterSize.changeFont (font);
+    characterSize.changeFont (name, size);
 
     setWidth (characterSize.getWidth () * columns + xOffset * 2);
     setHeight (characterSize.getHeight () * rows + yOffset * 2);
 
-    // resize??
-
-    getGraphicsContext2D ().setFont (font);
+    getGraphicsContext2D ().setFont (characterSize.getFont ());
   }
 
-  public Font getFont ()
+  public void adjustFont (String name, int size)
   {
-    return characterSize.getFont ();
+    if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
+      return;
+
+    eraseScreen ();
+    setFont (name, size);
+    ((Stage) getScene ().getWindow ()).sizeToScene ();
+
+    drawScreen (false);
+  }
+
+  //  public Font getFont ()
+  //  {
+  //    return characterSize.getFont ();
+  //  }
+
+  public String getFontName ()
+  {
+    return characterSize.getName ();
+  }
+
+  public int getFontSize ()
+  {
+    return characterSize.getSize ();
   }
 
   public Function getFunction ()
@@ -219,14 +239,19 @@ public class Screen extends Canvas
 
   public void clearScreen ()
   {
-    GraphicsContext gc = getGraphicsContext2D ();
-    gc.setFill (Color.BLACK);
-    gc.fillRect (0, 0, getWidth (), getHeight ());
+    eraseScreen ();
 
     for (ScreenPosition sp : screenPositions)
       sp.reset ();
 
     cursor.moveTo (0);
+  }
+
+  private void eraseScreen ()
+  {
+    GraphicsContext gc = getGraphicsContext2D ();
+    gc.setFill (Color.BLACK);
+    gc.fillRect (0, 0, getWidth (), getHeight ());
   }
 
   @Override

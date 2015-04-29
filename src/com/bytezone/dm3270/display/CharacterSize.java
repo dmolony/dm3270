@@ -8,6 +8,9 @@ import com.sun.javafx.tk.Toolkit;
 public class CharacterSize
 {
   private Font font;
+  private String name;
+  private int size;
+
   private FontMetrics fontMetrics;
   private int height;
   private int width;
@@ -15,9 +18,8 @@ public class CharacterSize
   private int descent;
   private int leading;
 
-  public CharacterSize (Font font)
+  public CharacterSize ()
   {
-    changeFont (font);
   }
 
   public Font getFont ()
@@ -25,11 +27,26 @@ public class CharacterSize
     return font;
   }
 
-  public void changeFont (Font font)
+  public String getName ()
   {
+    return name;
+  }
+
+  public int getSize ()
+  {
+    return size;
+  }
+
+  public void changeFont (String name, int size)
+  {
+    Font font = Font.font (name, size);
     if (font != this.font)
     {
+      System.out.println (font);
       this.font = font;
+      this.name = name;
+      this.size = size;
+
       this.fontMetrics = Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);
 
       width = (int) (fontMetrics.computeStringWidth ("W") + 0.99);
