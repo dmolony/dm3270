@@ -152,7 +152,7 @@ public class OptionStage extends Stage
     toggleModeMenuItem.setOnAction (e -> switchMode (e));
 
     toggleModeMenuItem.setAccelerator (new KeyCodeCombination (KeyCode.M,
-        KeyCombination.META_DOWN));
+        KeyCombination.SHORTCUT_DOWN));
 
     menuBar.getMenus ().addAll (menuDebug);
     if (SYSTEM_MENUBAR)
