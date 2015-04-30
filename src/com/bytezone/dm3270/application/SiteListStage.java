@@ -107,7 +107,6 @@ public class SiteListStage extends Stage
   private void readPrefs (String key, int max)
   {
     List<String> siteNames = new ArrayList<> ();
-    int selectedIndex = prefs.getInt (String.format ("%sSelected", key), 0);
     int count = 0;
     while (count < max)
     {
@@ -132,7 +131,7 @@ public class SiteListStage extends Stage
       sites.add (site);
     }
 
-    updateComboBox (siteNames, selectedIndex);
+    updateComboBox (siteNames, 0);
   }
 
   private void savePrefs (String key)
@@ -156,20 +155,20 @@ public class SiteListStage extends Stage
         siteNames.add (name);
     }
 
-    if (selectedIndex >= 0 && selectedIndex < sites.size ())
+    if (selectedIndex >= 0 && selectedIndex < siteNames.size ())
       updateComboBox (siteNames, selectedIndex);
     else if (sites.size () > 0)
       updateComboBox (siteNames, 0);
-
-    //    prefs.putInt (String.format ("%sSelected", key), getSelectedIndex ());
   }
 
   private void updateComboBox (List<String> names, int selectedIndex)
   {
     ObservableList<String> ol = FXCollections.observableArrayList (names);
     if (ol != null)
+    {
       comboBox.setItems (ol);
-    comboBox.getSelectionModel ().select (selectedIndex);
+      comboBox.getSelectionModel ().select (selectedIndex);
+    }
   }
 
   Site getSelectedSite ()

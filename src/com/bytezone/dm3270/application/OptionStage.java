@@ -146,8 +146,8 @@ public class OptionStage extends Stage
     Menu menuDebug = new Menu ("Mode");
     toggleModeMenuItem = new CheckMenuItem ("Release mode");
     menuDebug.getItems ().add (toggleModeMenuItem);
-    String mode = prefs.get ("Mode", "Release");
-    toggleModeMenuItem.setSelected (mode.equals ("Release"));
+    //    String mode = prefs.get ("Mode", "Release");
+    toggleModeMenuItem.setSelected (runMode.equals ("Release"));
 
     toggleModeMenuItem.setOnAction (e -> switchMode (e));
 
