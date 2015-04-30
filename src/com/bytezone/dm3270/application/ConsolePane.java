@@ -25,7 +25,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -224,7 +223,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   {
     historyBox = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
     historyBox.getChildren ().add (historyLabel);
-    Font statusBarFont = Font.font ("Monospaced", FontWeight.BOLD, 14);
+    Font statusBarFont = Font.font ("Monospaced", 14);
     historyLabel.setFont (statusBarFont);
   }
 
