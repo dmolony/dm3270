@@ -302,7 +302,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     {
       setCenter (imageView);
       setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
-      setStyle ("-fx-background-color: yellow;");
+      setStyle ("-fx-background-color: navajowhite;");
     }
   }
 
