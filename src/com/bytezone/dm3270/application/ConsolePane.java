@@ -78,6 +78,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final Label historyLabel = new Label ();
 
   private final BorderPane statusPane;
+  private final PluginsStage pluginsStage;
 
   private final MenuBar menuBar = new MenuBar ();
 
@@ -105,6 +106,8 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
 
+    pluginsStage = new PluginsStage (prefs);
+
     //    byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
     //    Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
     //    btnClear.setOnAction (e -> clearCommand.process ());
@@ -113,7 +116,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu ());
+    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu (), getPluginMenu ());
     topPane.setTop (menuBar);
 
     if (SYSTEM_MENUBAR)
@@ -145,6 +148,17 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens);
 
     return menuCommands;
+  }
+
+  private Menu getPluginMenu ()
+  {
+    Menu menuPlugins = new Menu ("Plugins");
+
+    MenuItem itemEditPlugins = new MenuItem ("Edit plugins");
+    itemEditPlugins.setOnAction (e -> pluginsStage.show ());
+    menuPlugins.getItems ().add (itemEditPlugins);
+
+    return menuPlugins;
   }
 
   private Menu getFontMenu ()
