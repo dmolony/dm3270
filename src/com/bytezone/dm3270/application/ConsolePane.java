@@ -25,6 +25,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -74,6 +75,11 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final Button btnForward = new Button (">");
   private final Button btnCurrent = new Button ("Screens");
 
+  private HBox historyBox;
+  private final Label historyLabel = new Label ();
+
+  private final BorderPane statusPane;
+
   private final MenuBar menuBar = new MenuBar ();
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
@@ -116,7 +122,9 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
 
     setTop (topPane);
     setCenter (screen);
-    setBottom (getStatusBar ());
+    setBottom (statusPane = getStatusBar ());
+
+    setHistoryBar ();
 
     screen.requestFocus ();
   }
@@ -212,6 +220,14 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     return statusPane;
   }
 
+  private void setHistoryBar ()
+  {
+    historyBox = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
+    historyBox.getChildren ().add (historyLabel);
+    Font statusBarFont = Font.font ("Monospaced", FontWeight.BOLD, 14);
+    historyLabel.setFont (statusBarFont);
+  }
+
   private HBox getHBox (Insets insets, Pos alignment)
   {
     HBox hbox = new HBox ();
@@ -238,25 +254,40 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       setView (screenHistory.current ());
       btnBack.setDisable (false);
       btnForward.setDisable (false);
+      setBottom (historyBox);
+      historyLabel.setText (String.format ("Screen %02d of %02d",
+                                           screenHistory.getCurrentIndex () + 1,
+                                           screenHistory.size ()));
     }
     else
     {
       setView (null);
       btnBack.setDisable (true);
       btnForward.setDisable (true);
+      setBottom (statusPane);
     }
   }
 
   public void back ()
   {
     if (screenHistory != null && screenHistory.hasPrevious ())
+    {
       setView (screenHistory.previous ());
+      historyLabel.setText (String.format ("Screen %02d of %02d",
+                                           screenHistory.getCurrentIndex () + 1,
+                                           screenHistory.size ()));
+    }
   }
 
   public void forward ()
   {
     if (screenHistory != null && screenHistory.hasNext ())
+    {
       setView (screenHistory.next ());
+      historyLabel.setText (String.format ("Screen %02d of %02d",
+                                           screenHistory.getCurrentIndex () + 1,
+                                           screenHistory.size ()));
+    }
   }
 
   private void setView (ImageView imageView)
@@ -266,11 +297,13 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       screenHistory = null;
       setCenter (screen);
       screen.resume ();
+      setStyle (null);
     }
     else
     {
-      BorderPane.setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
       setCenter (imageView);
+      setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
+      setStyle ("-fx-background-color: yellow;");
     }
   }
 

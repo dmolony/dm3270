@@ -71,6 +71,11 @@ public class ScreenHistory
     return null;
   }
 
+  public int getCurrentIndex ()
+  {
+    return currentScreen;
+  }
+
   public ImageView current ()
   {
     assert paused;
