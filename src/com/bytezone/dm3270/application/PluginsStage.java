@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -14,6 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import com.bytezone.dm3270.plugins.Plugin;
 
 public class PluginsStage extends PreferencesStage
 {
@@ -53,7 +57,7 @@ public class PluginsStage extends PreferencesStage
     vbox.getChildren ().add (hbox);
 
     // input fields
-    for (PluginEntry plugin : plugins)
+    for (PluginEntry pluginEntry : plugins)
     {
       hbox = new HBox ();
       hbox.setSpacing (5);
@@ -63,7 +67,7 @@ public class PluginsStage extends PreferencesStage
       {
         if (fieldTypes[i] == Type.TEXT || fieldTypes[i] == Type.NUMBER)
         {
-          TextField textField = plugin.getTextField (i);
+          TextField textField = pluginEntry.getTextField (i);
           textField.setPrefWidth (columnWidths[i]);
           hbox.getChildren ().add (textField);
         }
@@ -86,6 +90,20 @@ public class PluginsStage extends PreferencesStage
     cancelButton.setOnAction (e -> this.hide ());
   }
 
+  private void instantiateAll ()
+  {
+    for (PluginEntry pluginEntry : plugins)
+    {
+      Plugin plugin = pluginEntry.instantiate ();
+      if (plugin != null)
+      {
+        //        plugin.activate ();
+        //        System.out.println (plugin.process (new PluginScreen ()));
+        //        plugin.deactivate ();
+      }
+    }
+  }
+
   public Menu getMenu ()
   {
     return menu;
@@ -99,15 +117,26 @@ public class PluginsStage extends PreferencesStage
     itemEditPlugins.setOnAction (e -> show ());
     menu.getItems ().addAll (itemEditPlugins, new SeparatorMenuItem ());
 
-    for (PluginEntry plugin : plugins)
+    for (PluginEntry pluginEntry : plugins)
     {
-      String text = plugin.name.getText ();
+      String text = pluginEntry.name.getText ();
       if (!text.isEmpty ())
       {
-        MenuItem menuItem = new MenuItem (text);
+        CheckMenuItem menuItem = new CheckMenuItem (text);
         menu.getItems ().add (menuItem);
+        pluginEntry.instantiate ();
+        menuItem.setDisable (pluginEntry.plugin == null);
+        menuItem.setUserData (pluginEntry);
+        menuItem.setOnAction (e -> itemSelected (e));
       }
     }
+  }
+
+  private void itemSelected (ActionEvent e)
+  {
+    CheckMenuItem menuItem = ((CheckMenuItem) e.getSource ());
+    PluginEntry pluginEntry = (PluginEntry) menuItem.getUserData ();
+    pluginEntry.select (menuItem.isSelected ());
   }
 
   private void readPrefs ()
@@ -132,9 +161,11 @@ public class PluginsStage extends PreferencesStage
 
   private class PluginEntry
   {
-    TextField name = new TextField ();
-    TextField className = new TextField ();
-    TextField[] textFieldList = { name, className };
+    private final TextField name = new TextField ();
+    private final TextField className = new TextField ();
+    private final TextField[] textFieldList = { name, className };
+    private Plugin plugin;
+    private boolean isActivated;
 
     public PluginEntry (String name, String className)
     {
@@ -145,6 +176,39 @@ public class PluginsStage extends PreferencesStage
     public TextField getTextField (int index)
     {
       return textFieldList[index];
+    }
+
+    public void select (boolean activate)
+    {
+      if (activate)
+        plugin.activate ();
+      else
+        plugin.deactivate ();
+      isActivated = activate;
+    }
+
+    public boolean isActivated ()
+    {
+      return isActivated;
+    }
+
+    public Plugin instantiate ()
+    {
+      try
+      {
+        plugin = null;
+        String classNameText = className.getText ();
+        if (!classNameText.isEmpty ())
+        {
+          Class<?> c = Class.forName (classNameText);
+          if (c != null)
+            plugin = (Plugin) c.newInstance ();
+        }
+      }
+      catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
+      {
+      }
+      return plugin;
     }
   }
 }

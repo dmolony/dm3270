@@ -146,7 +146,6 @@ public class OptionStage extends Stage
     Menu menuDebug = new Menu ("Mode");
     toggleModeMenuItem = new CheckMenuItem ("Release mode");
     menuDebug.getItems ().add (toggleModeMenuItem);
-    //    String mode = prefs.get ("Mode", "Release");
     toggleModeMenuItem.setSelected (runMode.equals ("Release"));
 
     toggleModeMenuItem.setOnAction (e -> switchMode (e));
@@ -160,9 +159,10 @@ public class OptionStage extends Stage
 
     outerPane.setTop (menuBar);
 
-    resizableProperty ().setValue (Boolean.FALSE);
+    setResizable (false);
     setOnCloseRequest (e -> Platform.exit ());
     setScene (new Scene (outerPane));
+    okButton.requestFocus ();
   }
 
   private void switchMode (ActionEvent e)

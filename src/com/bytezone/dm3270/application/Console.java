@@ -66,6 +66,7 @@ public class Console extends Application
   {
     this.primaryStage = primaryStage;
     primaryStage.setOnCloseRequest (e -> Platform.exit ());
+    primaryStage.setResizable (false);
     optionStage = new OptionStage (prefs);
 
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());

@@ -247,7 +247,7 @@ public class ScreenPosition
         {
           gc.setStroke (screenContext.foregroundColor);
           double y2 = y + ascent + descent + 1;
-          gc.strokeLine (x, y2, x + charWidth, y2);
+          gc.strokeLine (x + 1, y2, x + 1 + charWidth, y2);
         }
       }
     gc.translate (-0.5, -0.5);        // restore coordinate grid
