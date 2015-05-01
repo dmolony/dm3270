@@ -10,6 +10,7 @@
 * Download dm3270.jar from the [releases](https://github.com/dmolony/dm3270/releases) page.
 * Install the **latest** version of the [Java Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (JRE or JDK).
 * Double-click the jar file, or enter 'java -jar dm3270.jar' in the terminal.
+
 ### Connection
 Select a server from the drop-down list and click OK. If there are no servers listed yet, click the edit button.  
 ![Default Connection](resources/connect1.png?raw=true "default connection")
