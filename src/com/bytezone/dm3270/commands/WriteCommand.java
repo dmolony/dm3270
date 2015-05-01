@@ -102,6 +102,8 @@ public class WriteCommand extends Command
       int newCursorLocation = screen.getScreenCursor ().getLocation ();
       System.out.printf ("Cursor now at %d%n", newCursorLocation);
     }
+
+    screen.writeFinished ();
   }
 
   // Used by Session.checkServerName() when searching for the server's name

@@ -22,12 +22,15 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
+import com.bytezone.dm3270.application.PluginsStage;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
+import com.bytezone.dm3270.plugins.PluginResult;
+import com.bytezone.dm3270.plugins.PluginScreen;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class Screen extends Canvas
@@ -56,6 +59,8 @@ public class Screen extends Canvas
   private byte currentAID;
   private byte replyMode;
   private byte[] replyTypes = new byte[0];
+
+  private PluginsStage pluginsStage;
 
   public final int rows;
   public final int columns;
@@ -116,6 +121,11 @@ public class Screen extends Canvas
   public Function getFunction ()
   {
     return function;
+  }
+
+  public void setPlugins (PluginsStage pluginsStage)
+  {
+    this.pluginsStage = pluginsStage;
   }
 
   public void displayText (String text)
@@ -303,6 +313,17 @@ public class Screen extends Canvas
     return replyTypes;
   }
 
+  public void writeFinished ()
+  {
+    if (!keyboardLocked && pluginsStage != null && pluginsStage.activePlugins () > 0)
+    {
+      PluginScreen pluginScreen = new PluginScreen ();
+      PluginResult reply = pluginsStage.processAll (pluginScreen);
+      if (reply != null)
+        System.out.println (reply);
+    }
+  }
+
   // ---------------------------------------------------------------------------------//
   // Convert screen contents to an AID command
   // ---------------------------------------------------------------------------------//
@@ -470,10 +491,11 @@ public class Screen extends Canvas
 
   public void restoreKeyboard ()
   {
-    keyboardLocked = false;
     notifyKeyboardStatusChange ();
     setAID (NO_AID_SPECIFIED);
+
     cursor.setVisible (true);
+    keyboardLocked = false;
   }
 
   public void lockKeyboard ()

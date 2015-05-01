@@ -18,6 +18,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import com.bytezone.dm3270.plugins.Plugin;
+import com.bytezone.dm3270.plugins.PluginResult;
+import com.bytezone.dm3270.plugins.PluginScreen;
 
 public class PluginsStage extends PreferencesStage
 {
@@ -90,18 +92,37 @@ public class PluginsStage extends PreferencesStage
     cancelButton.setOnAction (e -> this.hide ());
   }
 
-  private void instantiateAll ()
+  public PluginResult processAll (PluginScreen pluginScreen)
   {
+    PluginResult result = null;
     for (PluginEntry pluginEntry : plugins)
     {
-      Plugin plugin = pluginEntry.instantiate ();
-      if (plugin != null)
-      {
-        //        plugin.activate ();
-        //        System.out.println (plugin.process (new PluginScreen ()));
-        //        plugin.deactivate ();
-      }
+      Plugin plugin = pluginEntry.plugin;
+      if (plugin != null && pluginEntry.isActivated)
+        try
+        {
+          PluginResult pluginResult = plugin.process (pluginScreen);
+          if (result == null)
+            result = pluginResult;      // only the first result is processed
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace ();
+        }
     }
+    return result;
+  }
+
+  public int activePlugins ()
+  {
+    int activePlugins = 0;
+    for (PluginEntry pluginEntry : plugins)
+    {
+      Plugin plugin = pluginEntry.plugin;
+      if (plugin != null && pluginEntry.isActivated)
+        ++activePlugins;
+    }
+    return activePlugins;
   }
 
   public Menu getMenu ()

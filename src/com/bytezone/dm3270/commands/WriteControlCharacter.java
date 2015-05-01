@@ -34,10 +34,10 @@ public class WriteControlCharacter
       screen.startPrinter ();
     if (soundAlarm)
       screen.soundAlarm ();
-    if (restoreKeyboard)
-      screen.restoreKeyboard ();
     if (resetModified)
       screen.resetModified ();
+    if (restoreKeyboard)
+      screen.restoreKeyboard ();
   }
 
   @Override
