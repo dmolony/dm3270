@@ -241,10 +241,12 @@ public class Field implements Iterable<ScreenPosition>
   public ScreenField getScreenField ()
   {
     int firstLocation = getFirstLocation ();
-    int row = firstLocation / 80;
-    int column = firstLocation % 80;
+    int row = firstLocation / screen.columns;
+    int column = firstLocation % screen.columns;
     int length = getDisplayLength ();
-    ScreenField screenField = new ScreenField (row, column, length, getText ());
+    ScreenField screenField =
+        new ScreenField (row, column, length, isProtected (),
+            startFieldAttribute.isAlphanumeric (), getText ());
     return screenField;
   }
 

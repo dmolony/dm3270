@@ -61,6 +61,7 @@ public class Screen extends Canvas
   private byte[] replyTypes = new byte[0];
 
   private PluginsStage pluginsStage;
+  private int sequence;
 
   public final int rows;
   public final int columns;
@@ -317,10 +318,10 @@ public class Screen extends Canvas
   {
     if (!keyboardLocked && pluginsStage != null && pluginsStage.activePlugins () > 0)
     {
-      PluginScreen pluginScreen = fieldManager.getPluginScreen ();
+      PluginScreen pluginScreen = fieldManager.getPluginScreen (sequence++);
       PluginResult reply = pluginsStage.processAll (pluginScreen);
-      //      if (reply != null)
-      //        System.out.println (reply);
+      if (reply != null)
+        System.out.println (reply);
     }
   }
 

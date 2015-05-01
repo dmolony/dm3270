@@ -16,8 +16,6 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.plugins.Plugin;
-import com.bytezone.dm3270.plugins.PluginScreen;
 import com.bytezone.dm3270.session.Session;
 
 public class Console extends Application
@@ -72,16 +70,6 @@ public class Console extends Application
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());
     optionStage.cancelButton.setOnAction (e -> optionStage.hide ());
     optionStage.show ();
-
-    if (false)
-    {
-      String pluginName = "com.bytezone.plugintest.MyPlugin";
-      Class<?> c = Class.forName (pluginName);
-      Plugin p = (Plugin) c.newInstance ();
-      p.activate ();
-      System.out.println (p.process (new PluginScreen ()));
-      p.deactivate ();
-    }
   }
 
   private void startSelectedFunction ()
