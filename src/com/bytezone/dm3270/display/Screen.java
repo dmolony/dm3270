@@ -317,10 +317,10 @@ public class Screen extends Canvas
   {
     if (!keyboardLocked && pluginsStage != null && pluginsStage.activePlugins () > 0)
     {
-      PluginScreen pluginScreen = new PluginScreen ();
+      PluginScreen pluginScreen = fieldManager.getPluginScreen ();
       PluginResult reply = pluginsStage.processAll (pluginScreen);
-      if (reply != null)
-        System.out.println (reply);
+      //      if (reply != null)
+      //        System.out.println (reply);
     }
   }
 

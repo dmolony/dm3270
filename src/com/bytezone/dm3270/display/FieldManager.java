@@ -3,6 +3,8 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.plugins.PluginScreen;
+
 public class FieldManager
 {
   private final Screen screen;
@@ -14,8 +16,6 @@ public class FieldManager
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
   private final List<Field> emptyFields = new ArrayList<> ();
-
-  //  private final List<Field> hiddenFields = new ArrayList<> ();
 
   public FieldManager (Screen screen)
   {
@@ -116,8 +116,6 @@ public class FieldManager
     dataPositions += field.getDisplayLength ();
     if (field.getDisplayLength () == 0)
       emptyFields.add (field);
-    //    if (field.isHidden ())
-    //      hiddenFields.add (field);
     if (field.isUnprotected ())
       inputPositions += field.getDisplayLength ();
     if (field.isHidden ())
@@ -168,6 +166,16 @@ public class FieldManager
     return unprotectedFields.get (0);
   }
 
+  public PluginScreen getPluginScreen ()
+  {
+    PluginScreen pluginScreen = new PluginScreen ();
+
+    for (Field field : fields)
+      pluginScreen.add (field.getScreenField ());
+
+    return pluginScreen;
+  }
+
   // ---------------------------------------------------------------------------------//
   // Debugging
   // ---------------------------------------------------------------------------------//
@@ -178,7 +186,6 @@ public class FieldManager
 
     text.append (String.format ("Start fields     : %4d%n", fields.size ()));
     text.append (String.format ("  Zero length    : %4d%n", emptyFields.size ()));
-    //    text.append (String.format ("  Hidden         : %d%n", hiddenFields.size ()));
     text.append (String.format ("  Unprotected    : %4d   (%d hidden)%n",
                                 unprotectedFields.size (), hiddenUnprotectedFields));
     text.append (String.format ("  Protected      : %4d   (%d hidden)%n%n",

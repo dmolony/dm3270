@@ -7,6 +7,7 @@ import java.util.List;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.plugins.ScreenField;
 
 public class Field implements Iterable<ScreenPosition>
 {
@@ -235,6 +236,16 @@ public class Field implements Iterable<ScreenPosition>
         break;
       position = screen.validate (position + 1);
     }
+  }
+
+  public ScreenField getScreenField ()
+  {
+    int firstLocation = getFirstLocation ();
+    int row = firstLocation / 80;
+    int column = firstLocation % 80;
+    int length = getDisplayLength ();
+    ScreenField screenField = new ScreenField (row, column, length, getText ());
+    return screenField;
   }
 
   public String toStringWithLinks ()
