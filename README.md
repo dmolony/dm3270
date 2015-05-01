@@ -5,6 +5,7 @@
 * [Debug functions](resources/functions.md)
 * [Screen history](resources/history.md)
 * [Plugins](resources/plugins.md)
+
 ### Installation
 * Download dm3270.jar from the [releases](https://github.com/dmolony/dm3270/releases) page.
 * Install the **latest** version of the [Java Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (JRE or JDK).
