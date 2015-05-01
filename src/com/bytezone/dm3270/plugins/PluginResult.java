@@ -5,10 +5,10 @@ import java.util.List;
 
 public class PluginResult
 {
-  List<ScreenAction> actions = new ArrayList<> ();
+  List<ScreenField> fieldsChanged = new ArrayList<> ();
 
-  public void add (ScreenAction action)
+  public void add (ScreenField field)
   {
-    actions.add (action);
+    fieldsChanged.add (field);
   }
 }
