@@ -10,7 +10,7 @@ public class Site
   public final TextField port = new TextField ();
   public final CheckBox extended = new CheckBox ();
 
-  private final TextField[] TextFieldieldList = { name, url, port, null };
+  private final TextField[] textFieldList = { name, url, port, null };
   private final CheckBox[] checkBoxFieldList = { null, null, null, extended };
 
   public Site (String name, String url, int port, boolean extended)
@@ -59,7 +59,7 @@ public class Site
 
   public TextField getTextField (int index)
   {
-    return TextFieldieldList[index];
+    return textFieldList[index];
   }
 
   public CheckBox getCheckBoxField (int index)

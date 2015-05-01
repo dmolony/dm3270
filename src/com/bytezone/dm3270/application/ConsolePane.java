@@ -116,7 +116,8 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu (), getPluginMenu ());
+    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu (),
+                                pluginsStage.getMenu ());
     topPane.setTop (menuBar);
 
     if (SYSTEM_MENUBAR)
@@ -148,17 +149,6 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens);
 
     return menuCommands;
-  }
-
-  private Menu getPluginMenu ()
-  {
-    Menu menuPlugins = new Menu ("Plugins");
-
-    MenuItem itemEditPlugins = new MenuItem ("Edit plugins");
-    itemEditPlugins.setOnAction (e -> pluginsStage.show ());
-    menuPlugins.getItems ().add (itemEditPlugins);
-
-    return menuPlugins;
   }
 
   private Menu getFontMenu ()

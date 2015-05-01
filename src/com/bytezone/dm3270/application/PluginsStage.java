@@ -5,31 +5,30 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-import com.bytezone.dm3270.application.SiteListStage.Type;
-
-public class PluginsStage extends Stage
+public class PluginsStage extends PreferencesStage
 {
-  private final Preferences prefs;
-  private final List<PluginEntry> plugins = new ArrayList<> ();
-  private Button cancelButton, saveButton;
+  private static final int MAX_PLUGINS = 10;
+  private final List<PluginEntry> plugins = new ArrayList<> (MAX_PLUGINS);
+  private Menu menu;
 
   public PluginsStage (Preferences prefs)
   {
-    this.prefs = prefs;
+    super (prefs);
     setTitle ("Plugin Manager");
 
     readPrefs ();
+
+    setMenu ();
 
     String[] headings = { "Menu entry", "Class name" };
     int[] columnWidths = { 130, 300 };
@@ -50,18 +49,21 @@ public class PluginsStage extends Stage
       hbox.getChildren ().add (heading);
       heading.setPrefWidth (columnWidths[i]);
     }
+
     vbox.getChildren ().add (hbox);
+
     // input fields
     for (PluginEntry plugin : plugins)
     {
       hbox = new HBox ();
       hbox.setSpacing (5);
       hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
+
       for (int i = 0; i < headings.length; i++)
       {
         if (fieldTypes[i] == Type.TEXT || fieldTypes[i] == Type.NUMBER)
         {
-          TextField textField = new TextField (plugin.name);
+          TextField textField = plugin.getTextField (i);
           textField.setPrefWidth (columnWidths[i]);
           hbox.getChildren ().add (textField);
         }
@@ -84,35 +86,65 @@ public class PluginsStage extends Stage
     cancelButton.setOnAction (e -> this.hide ());
   }
 
+  public Menu getMenu ()
+  {
+    return menu;
+  }
+
+  private void setMenu ()
+  {
+    menu = new Menu ("Plugins");
+
+    MenuItem itemEditPlugins = new MenuItem ("Edit plugins");
+    itemEditPlugins.setOnAction (e -> show ());
+    menu.getItems ().addAll (itemEditPlugins, new SeparatorMenuItem ());
+
+    for (PluginEntry plugin : plugins)
+    {
+      String text = plugin.name.getText ();
+      if (!text.isEmpty ())
+      {
+        MenuItem menuItem = new MenuItem (text);
+        menu.getItems ().add (menuItem);
+      }
+    }
+  }
+
   private void readPrefs ()
   {
-    for (int i = 0; i < 10; i++)
-      plugins.add (new PluginEntry ());
+    for (int i = 0; i < MAX_PLUGINS; i++)
+    {
+      String pluginName = prefs.get (String.format ("PluginName-%02d", i), "");
+      String pluginClass = prefs.get (String.format ("PluginClass-%02d", i), "");
+      plugins.add (new PluginEntry (pluginName, pluginClass));
+    }
   }
 
   private void savePrefs ()
   {
-
-  }
-
-  private Node buttons ()
-  {
-    HBox box = new HBox (10);
-    saveButton = new Button ("Save");
-    saveButton.setDefaultButton (true);
-    cancelButton = new Button ("Cancel");
-    cancelButton.setCancelButton (true);
-    saveButton.setPrefWidth (80);
-    cancelButton.setPrefWidth (80);
-    box.getChildren ().addAll (cancelButton, saveButton);
-    box.setAlignment (Pos.BASELINE_CENTER);
-    box.setPadding (new Insets (10, 10, 10, 10));    // trbl
-    return box;
+    for (int i = 0; i < MAX_PLUGINS; i++)
+    {
+      PluginEntry plugin = plugins.get (i);
+      prefs.put (String.format ("PluginName-%02d", i), plugin.name.getText ());
+      prefs.put (String.format ("PluginClass-%02d", i), plugin.className.getText ());
+    }
   }
 
   private class PluginEntry
   {
-    String name = "";
-    String className = "";
+    TextField name = new TextField ();
+    TextField className = new TextField ();
+    TextField[] textFieldList = { name, className };
+
+    public PluginEntry (String name, String className)
+    {
+      this.name.setText (name);
+      this.className.setText (className);
+    }
+
+    public TextField getTextField (int index)
+    {
+      return textFieldList[index];
+    }
   }
 }

@@ -8,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -18,24 +17,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class SiteListStage extends Stage
+public class SiteListStage extends PreferencesStage
 {
-  private final Preferences prefs;
   private final List<Site> sites = new ArrayList<> ();
   private final ComboBox<String> comboBox = new ComboBox<> ();
   private final Button editListButton = new Button ("Edit...");
-  private Button cancelButton, saveButton;
-
-  public enum Type
-  {
-    TEXT, NUMBER, BOOLEAN
-  }
 
   public SiteListStage (Preferences prefs, String key, int max, boolean show3270e)
   {
-    this.prefs = prefs;
+    super (prefs);
+
     setTitle ("Site Manager");
 
     readPrefs (key, max);
@@ -200,20 +192,5 @@ public class SiteListStage extends Stage
   Button getEditButton ()
   {
     return editListButton;
-  }
-
-  private Node buttons ()
-  {
-    HBox box = new HBox (10);
-    saveButton = new Button ("Save");
-    saveButton.setDefaultButton (true);
-    cancelButton = new Button ("Cancel");
-    cancelButton.setCancelButton (true);
-    saveButton.setPrefWidth (80);
-    cancelButton.setPrefWidth (80);
-    box.getChildren ().addAll (cancelButton, saveButton);
-    box.setAlignment (Pos.BASELINE_CENTER);
-    box.setPadding (new Insets (10, 10, 10, 10));    // trbl
-    return box;
   }
 }
