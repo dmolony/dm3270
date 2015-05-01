@@ -166,9 +166,9 @@ public class FieldManager
     return unprotectedFields.get (0);
   }
 
-  public PluginScreen getPluginScreen (int sequence, long md5)
+  public PluginScreen getPluginScreen (int sequence, long md5, int row, int column)
   {
-    PluginScreen pluginScreen = new PluginScreen (sequence, md5);
+    PluginScreen pluginScreen = new PluginScreen (sequence, md5, row, column);
 
     for (Field field : fields)
       pluginScreen.add (field.getScreenField ());
