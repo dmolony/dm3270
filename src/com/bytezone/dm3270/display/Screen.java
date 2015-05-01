@@ -318,7 +318,7 @@ public class Screen extends Canvas
   {
     if (!keyboardLocked && pluginsStage != null && pluginsStage.activePlugins () > 0)
     {
-      PluginScreen pluginScreen = fieldManager.getPluginScreen (sequence++);
+      PluginScreen pluginScreen = fieldManager.getPluginScreen (sequence++, 0);
       PluginResult reply = pluginsStage.processAll (pluginScreen);
       if (reply != null)
         System.out.println (reply);

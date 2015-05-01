@@ -96,20 +96,21 @@ public class PluginsStage extends PreferencesStage
   {
     PluginResult result = null;
     for (PluginEntry pluginEntry : plugins)
-    {
-      Plugin plugin = pluginEntry.plugin;
-      if (plugin != null && pluginEntry.isActivated)
-        try
-        {
-          PluginResult pluginResult = plugin.process (pluginScreen);
-          if (result == null)
-            result = pluginResult;      // only the first result is processed
-        }
-        catch (Exception e)
-        {
-          e.printStackTrace ();
-        }
-    }
+      if (pluginEntry.isActivated)
+      {
+        Plugin plugin = pluginEntry.plugin;
+        if (plugin != null && plugin.doesAuto ())
+          try
+          {
+            PluginResult pluginResult = plugin.processAuto (pluginScreen);
+            if (result == null)
+              result = pluginResult;      // only the first result is processed
+          }
+          catch (Exception e)
+          {
+            e.printStackTrace ();
+          }
+      }
     return result;
   }
 
