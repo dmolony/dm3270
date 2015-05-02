@@ -316,6 +316,7 @@ public class Screen extends Canvas
     return replyTypes;
   }
 
+  // called from WriteCommand.process()
   public void writeFinished ()
   {
     if (!keyboardLocked && pluginsStage != null && pluginsStage.activePlugins () > 0)
@@ -330,6 +331,7 @@ public class Screen extends Canvas
     }
   }
 
+  // called from PluginsStage.itemSelected() -> PluginEntry.select()
   public void processPluginRequest (Plugin plugin)
   {
     int cursorPosition = cursor.getLocation ();
