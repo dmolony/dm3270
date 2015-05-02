@@ -37,6 +37,7 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenHistory;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
+import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;

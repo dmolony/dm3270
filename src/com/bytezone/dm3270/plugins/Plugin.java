@@ -15,7 +15,7 @@ public interface Plugin
 
   public void deactivate ();
 
-  boolean doesAuto ();
+  public boolean doesAuto ();
 
-  boolean doesRequest ();
+  public boolean doesRequest ();
 }

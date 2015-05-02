@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.application;
+package com.bytezone.dm3270.plugins;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,14 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import com.bytezone.dm3270.plugins.Plugin;
-import com.bytezone.dm3270.plugins.PluginResult;
-import com.bytezone.dm3270.plugins.PluginScreen;
+import com.bytezone.dm3270.application.PreferencesStage;
 
 public class PluginsStage extends PreferencesStage
 {
@@ -203,7 +204,19 @@ public class PluginsStage extends PreferencesStage
     public void select (boolean activate)
     {
       if (activate)
+      {
         plugin.activate ();
+        System.out.println (plugin.doesRequest ());
+        if (plugin.doesRequest ())
+        {
+          MenuItem menuItem = new MenuItem (name.getText ());
+          menuItem.setOnAction (e -> plugin.processRequest (null));
+          menuItem.setAccelerator (new KeyCodeCombination (KeyCode.DIGIT1,
+              KeyCombination.SHORTCUT_DOWN));
+          menu.getItems ().add (new SeparatorMenuItem ());
+          menu.getItems ().add (menuItem);
+        }
+      }
       else
         plugin.deactivate ();
       isActivated = activate;

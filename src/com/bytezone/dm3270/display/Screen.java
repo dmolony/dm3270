@@ -22,7 +22,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
-import com.bytezone.dm3270.application.PluginsStage;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -31,6 +30,7 @@ import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.plugins.PluginResult;
 import com.bytezone.dm3270.plugins.PluginScreen;
+import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class Screen extends Canvas

@@ -48,7 +48,8 @@ public class PluginResult
         text.append (String.format ("  Field..... %s%n", field.newData));
     }
 
-    text.deleteCharAt (text.length () - 1);
+    if (text.length () > 0)
+      text.deleteCharAt (text.length () - 1);
 
     return text.toString ();
   }
