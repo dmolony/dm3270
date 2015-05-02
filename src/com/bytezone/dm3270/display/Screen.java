@@ -508,11 +508,10 @@ public class Screen extends Canvas
 
   public void restoreKeyboard ()
   {
-    notifyKeyboardStatusChange ();
     setAID (NO_AID_SPECIFIED);
-
     cursor.setVisible (true);
     keyboardLocked = false;
+    notifyKeyboardStatusChange ();
   }
 
   public void lockKeyboard ()
