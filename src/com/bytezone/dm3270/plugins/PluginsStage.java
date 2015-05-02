@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -21,12 +22,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import com.bytezone.dm3270.application.PreferencesStage;
+import com.bytezone.dm3270.display.Screen;
 
 public class PluginsStage extends PreferencesStage
 {
   private static final int MAX_PLUGINS = 10;
+  private static KeyCode[] keyCodes = { KeyCode.DIGIT1, KeyCode.DIGIT2, KeyCode.DIGIT3,
+                                       KeyCode.DIGIT4, KeyCode.DIGIT5, KeyCode.DIGIT6,
+                                       KeyCode.DIGIT7, KeyCode.DIGIT8, KeyCode.DIGIT9,
+                                       KeyCode.DIGIT0 };
+
   private final List<PluginEntry> plugins = new ArrayList<> (MAX_PLUGINS);
   private Menu menu;
+  private int requestMenus;
+  private int baseMenuSize;
+  private Screen screen;
 
   public PluginsStage (Preferences prefs)
   {
@@ -34,7 +44,6 @@ public class PluginsStage extends PreferencesStage
     setTitle ("Plugin Manager");
 
     readPrefs ();
-
     setMenu ();
 
     String[] headings = { "Menu entry", "Class name" };
@@ -91,6 +100,11 @@ public class PluginsStage extends PreferencesStage
     });
 
     cancelButton.setOnAction (e -> this.hide ());
+  }
+
+  public void setScreen (Screen screen)
+  {
+    this.screen = screen;
   }
 
   public PluginResult processAll (PluginScreen pluginScreen)
@@ -153,6 +167,7 @@ public class PluginsStage extends PreferencesStage
         menuItem.setOnAction (e -> itemSelected (e));
       }
     }
+    baseMenuSize = menu.getItems ().size ();
   }
 
   private void itemSelected (ActionEvent e)
@@ -160,6 +175,19 @@ public class PluginsStage extends PreferencesStage
     CheckMenuItem menuItem = ((CheckMenuItem) e.getSource ());
     PluginEntry pluginEntry = (PluginEntry) menuItem.getUserData ();
     pluginEntry.select (menuItem.isSelected ());
+    rebuildMenu ();
+  }
+
+  private void rebuildMenu ()
+  {
+    ObservableList<MenuItem> items = menu.getItems ();
+    while (items.size () > baseMenuSize)
+      items.remove (menu.getItems ().size () - 1);
+    menu.getItems ().add (new SeparatorMenuItem ());
+
+    for (PluginEntry pluginEntry : plugins)
+      if (pluginEntry.isActivated && pluginEntry.menuItem != null)
+        items.add (pluginEntry.menuItem);
   }
 
   private void readPrefs ()
@@ -189,6 +217,7 @@ public class PluginsStage extends PreferencesStage
     private final TextField[] textFieldList = { name, className };
     private Plugin plugin;
     private boolean isActivated;
+    private MenuItem menuItem;          // used to trigger a Request
 
     public PluginEntry (String name, String className)
     {
@@ -204,27 +233,19 @@ public class PluginsStage extends PreferencesStage
     public void select (boolean activate)
     {
       if (activate)
-      {
         plugin.activate ();
-        System.out.println (plugin.doesRequest ());
-        if (plugin.doesRequest ())
-        {
-          MenuItem menuItem = new MenuItem (name.getText ());
-          menuItem.setOnAction (e -> plugin.processRequest (null));
-          menuItem.setAccelerator (new KeyCodeCombination (KeyCode.DIGIT1,
-              KeyCombination.SHORTCUT_DOWN));
-          menu.getItems ().add (new SeparatorMenuItem ());
-          menu.getItems ().add (menuItem);
-        }
-      }
       else
         plugin.deactivate ();
-      isActivated = activate;
-    }
 
-    public boolean isActivated ()
-    {
-      return isActivated;
+      if (menuItem == null && plugin.doesRequest ())
+      {
+        menuItem = new MenuItem (name.getText ());
+        menuItem.setOnAction (e -> screen.processPluginRequest (plugin));
+        menuItem.setAccelerator (new KeyCodeCombination (keyCodes[requestMenus++],
+            KeyCombination.SHORTCUT_DOWN));
+      }
+
+      isActivated = activate;
     }
 
     public Plugin instantiate ()

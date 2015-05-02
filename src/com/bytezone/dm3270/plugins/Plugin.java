@@ -11,7 +11,7 @@ public interface Plugin
 
   public PluginResult processAuto (PluginScreen screen);
 
-  public PluginResult processRequest (PluginScreen screen);
+  public PluginResult processOnRequest (PluginScreen screen);
 
   public void deactivate ();
 

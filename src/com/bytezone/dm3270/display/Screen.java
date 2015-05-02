@@ -28,6 +28,7 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
+import com.bytezone.dm3270.plugins.Plugin;
 import com.bytezone.dm3270.plugins.PluginResult;
 import com.bytezone.dm3270.plugins.PluginScreen;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -127,6 +128,7 @@ public class Screen extends Canvas
   public void setPlugins (PluginsStage pluginsStage)
   {
     this.pluginsStage = pluginsStage;
+    pluginsStage.setScreen (this);
   }
 
   public void displayText (String text)
@@ -326,6 +328,17 @@ public class Screen extends Canvas
       if (reply != null)
         System.out.println (reply);
     }
+  }
+
+  public void processPluginRequest (Plugin plugin)
+  {
+    int cursorPosition = cursor.getLocation ();
+    PluginScreen pluginScreen =
+        fieldManager.getPluginScreen (sequence++, 0, cursorPosition / columns,
+                                      cursorPosition % columns);
+    PluginResult reply = plugin.processOnRequest (pluginScreen);
+    if (reply != null)
+      System.out.println (reply);
   }
 
   // ---------------------------------------------------------------------------------//
