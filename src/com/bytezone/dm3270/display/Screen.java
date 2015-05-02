@@ -316,10 +316,16 @@ public class Screen extends Canvas
     return replyTypes;
   }
 
-  // called from WriteCommand.process()
-  public void writeFinished ()
+  // ---------------------------------------------------------------------------------//
+  // Process plugins
+  // ---------------------------------------------------------------------------------//
+
+  // called from WriteCommand.process() after unlocking keyboard
+  public void processPluginAuto ()
   {
-    if (!keyboardLocked && pluginsStage != null && pluginsStage.activePlugins () > 0)
+    assert !keyboardLocked;
+
+    if (pluginsStage != null && pluginsStage.activePlugins () > 0)
     {
       int cursorPosition = cursor.getLocation ();
       PluginScreen pluginScreen =
@@ -331,7 +337,8 @@ public class Screen extends Canvas
     }
   }
 
-  // called from PluginsStage.itemSelected() -> PluginEntry.select()
+  // created by PluginsStage.itemSelected() -> PluginEntry.select()
+  // which sets menuItem.setOnAction (e -> screen.processPluginRequest (plugin))
   public void processPluginRequest (Plugin plugin)
   {
     int cursorPosition = cursor.getLocation ();
