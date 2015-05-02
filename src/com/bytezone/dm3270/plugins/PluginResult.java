@@ -3,35 +3,35 @@ package com.bytezone.dm3270.plugins;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.input.KeyCode;
+
 public class PluginResult
 {
   private final List<ScreenField> fieldsChanged = new ArrayList<> ();
-  private int key;
+  private KeyCode key;
   private int cursorRow;
   private int cursorColumn;
   private boolean cursorMoved;
-  private boolean keyPressed;
   private boolean showScreen;
 
-  protected void add (ScreenField field)
+  public void add (ScreenField field)
   {
     fieldsChanged.add (field);
   }
 
-  protected void setKey (int key)
+  public void setKey (KeyCode key)
   {
     this.key = key;
-    keyPressed = true;
   }
 
-  protected void setCursor (int row, int column)
+  public void setCursor (int row, int column)
   {
     cursorRow = row;
     cursorColumn = column;
     cursorMoved = true;
   }
 
-  protected void setShowScreen (boolean showScreen)
+  public void setShowScreen (boolean showScreen)
   {
     this.showScreen = showScreen;
   }
@@ -46,21 +46,21 @@ public class PluginResult
   {
     StringBuilder text = new StringBuilder ();
 
-    if (keyPressed)
-      text.append (String.format ("Key pressed.... %d%n", key));
-
-    if (cursorMoved)
-      text.append (String.format ("Cursor...... %d / %d%n", cursorRow, cursorColumn));
+    text.append (String.format ("Key pressed .... %s%n", key == null ? "None" : key));
+    text.append (String.format ("Cursor ......... %s%n",
+                                cursorMoved ? String.format ("%d / %d", cursorRow,
+                                                             cursorColumn) : "None"));
+    text.append (String.format ("Show screen .... %s%n", showScreen));
 
     if (fieldsChanged.size () > 0)
     {
-      text.append ("Fields changed..\n");
+      text.append ("Fields changed:\n");
       for (ScreenField field : fieldsChanged)
-        text.append (String.format ("  Field..... %s%n", field.newData));
+        text.append (String.format ("    %02d / %02d .... %s%n", field.row, field.column,
+                                    field.newData));
     }
 
-    if (text.length () > 0)
-      text.deleteCharAt (text.length () - 1);
+    text.deleteCharAt (text.length () - 1);
 
     return text.toString ();
   }
