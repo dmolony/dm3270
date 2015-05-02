@@ -2,6 +2,7 @@ package com.bytezone.dm3270.plugins;
 
 public class ScreenField
 {
+  public final int location;
   public final int row;
   public final int column;
   public final int length;
@@ -10,9 +11,10 @@ public class ScreenField
   public final String data;
   public String newData;
 
-  public ScreenField (int row, int column, int length, boolean isProtected,
+  public ScreenField (int location, int row, int column, int length, boolean isProtected,
       boolean isAlpha, String data)
   {
+    this.location = location;
     this.row = row;
     this.column = column;
     this.length = length;

@@ -19,6 +19,11 @@ public class PluginResult
     fieldsChanged.add (field);
   }
 
+  public List<ScreenField> getScreenFields ()
+  {
+    return fieldsChanged;
+  }
+
   public void setKey (KeyCode key)
   {
     this.key = key;
@@ -39,6 +44,21 @@ public class PluginResult
   public boolean getShowScreen ()
   {
     return showScreen;
+  }
+
+  public boolean cursorMoved ()
+  {
+    return cursorMoved;
+  }
+
+  public int getCursorRow ()
+  {
+    return cursorRow;
+  }
+
+  public int getCursorColumn ()
+  {
+    return cursorColumn;
   }
 
   @Override

@@ -59,7 +59,6 @@ public class AIDCommand extends Command implements BufferAddressSource
   {
     super (buffer, offset, length, screen);    // copies buffer[offset:length] to data[]
 
-    //    keyCommand = buffer[offset];
     keyCommand = data[0];
     key = findKey (keyCommand);
 
@@ -69,19 +68,15 @@ public class AIDCommand extends Command implements BufferAddressSource
       return;
     }
 
-    //    cursorAddress = new BufferAddress (buffer[offset + 1], buffer[offset + 2]);
     cursorAddress = new BufferAddress (data[1], data[2]);
 
-    //    int ptr = offset + 3;
     int ptr = 3;
-    //    int max = offset + length;
     int max = length;
     Order previousOrder = null;
     AIDField currentAIDField = null;
 
     while (ptr < max)
     {
-      //      Order order = Order.getOrder (buffer, ptr, max);
       Order order = Order.getOrder (data, ptr, max);
       if (!order.rejected ())
       {

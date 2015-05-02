@@ -48,7 +48,7 @@ public class Cursor
     draw ();
   }
 
-  public boolean getVisible ()
+  public boolean isVisible ()
   {
     return visible;
   }

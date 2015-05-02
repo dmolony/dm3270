@@ -225,12 +225,9 @@ public class Field implements Iterable<ScreenPosition>
     assert startPosition != endPosition;
     int position = screen.validate (startPosition + 1);
     int ptr = 0;
-    //    System.out.printf ("Start: %d, End: %d%n", startPosition, endPosition);
-    //    System.out.println (Utility.toHex (buffer));
 
     while (true)
     {
-      //      System.out.printf ("Position: %d%n", position);
       screen.getScreenPosition (position).setChar (buffer[ptr++]);
       if (position == endPosition || ptr == buffer.length)
         break;
@@ -245,7 +242,7 @@ public class Field implements Iterable<ScreenPosition>
     int column = firstLocation % screen.columns;
     int length = getDisplayLength ();
     ScreenField screenField =
-        new ScreenField (row, column, length, isProtected (),
+        new ScreenField (firstLocation, row, column, length, isProtected (),
             startFieldAttribute.isAlphanumeric (), getText ());
     return screenField;
   }

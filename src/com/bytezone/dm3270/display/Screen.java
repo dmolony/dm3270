@@ -9,6 +9,7 @@ import static com.bytezone.dm3270.orders.Order.START_FIELD_EXTENDED;
 import static com.bytezone.dm3270.structuredfields.SetReplyMode.RM_CHARACTER;
 
 import java.awt.Toolkit;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ import com.bytezone.dm3270.plugins.Plugin;
 import com.bytezone.dm3270.plugins.PluginResult;
 import com.bytezone.dm3270.plugins.PluginScreen;
 import com.bytezone.dm3270.plugins.PluginsStage;
+import com.bytezone.dm3270.plugins.ScreenField;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class Screen extends Canvas
@@ -347,7 +349,46 @@ public class Screen extends Canvas
                                       cursorPosition % columns);
     PluginResult reply = plugin.processOnRequest (pluginScreen);
     if (reply != null)
+    {
       System.out.println (reply);
+      processReply (reply);
+    }
+  }
+
+  private void processReply (PluginResult reply)
+  {
+
+    for (ScreenField screenField : reply.getScreenFields ())
+    {
+      Field field = getField (screenField.location);    // uses first display location
+      assert field != null;
+      if (field != null)    // should be impossible
+      {
+        if (screenField.newData == null)
+        {
+          // erase field?
+        }
+        else
+        {
+          try
+          {
+            // should this type the characters instead?
+            field.setText (screenField.newData.getBytes ("CP1047"));
+          }
+          catch (UnsupportedEncodingException e)
+          {
+            e.printStackTrace ();
+          }
+        }
+        field.draw ();
+      }
+    }
+
+    if (reply.cursorMoved ())
+    {
+      int newLocation = reply.getCursorRow () * columns + reply.getCursorColumn ();
+      cursor.moveTo (newLocation);
+    }
   }
 
   // ---------------------------------------------------------------------------------//
