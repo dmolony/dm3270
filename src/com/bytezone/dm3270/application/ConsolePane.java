@@ -3,6 +3,7 @@ package com.bytezone.dm3270.application;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -149,6 +150,15 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
         KeyCombination.SHORTCUT_DOWN));
 
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens);
+
+    if (!SYSTEM_MENUBAR)
+    {
+      MenuItem quitMenuItem = new MenuItem ("Quit");
+      menuCommands.getItems ().addAll (new SeparatorMenuItem (), quitMenuItem);
+      quitMenuItem.setOnAction (e -> Platform.exit ());
+      quitMenuItem.setAccelerator (new KeyCodeCombination (KeyCode.Q,
+          KeyCombination.SHORTCUT_DOWN));
+    }
 
     return menuCommands;
   }

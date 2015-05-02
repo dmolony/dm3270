@@ -572,7 +572,7 @@ public class Screen extends Canvas
     return new ImageView (wim);
   }
 
-  public ScreenHistory pause ()           // triggered by cmd-h
+  public ScreenHistory pause ()           // triggered by cmd-s
   {
     if (screenHistory.size () == 0)
       return null;
@@ -582,7 +582,7 @@ public class Screen extends Canvas
     return screenHistory;
   }
 
-  public void resume ()                  // also triggered by cmd-h
+  public void resume ()                  // also triggered by cmd-s
   {
     keyboardLocked = screenHistory.resume ();
   }

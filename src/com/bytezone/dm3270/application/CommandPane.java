@@ -29,8 +29,6 @@ class CommandPane extends TabPane
 
   private final ProcessInstruction process;
 
-  //  private final Screen screen;
-
   enum ProcessInstruction
   {
     DoProcess, DontProcess
@@ -49,7 +47,6 @@ class CommandPane extends TabPane
     final Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
 
     this.process = process;
-    //    this.screen = screen;
 
     getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
                        tabReplyBuffer);

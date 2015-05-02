@@ -24,7 +24,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -144,20 +146,28 @@ public class OptionStage extends Stage
     editLocationButton.setOnAction (e -> editLocation ());
 
     Menu menuDebug = new Menu ("Mode");
+    menuBar.getMenus ().add (menuDebug);
+    outerPane.setTop (menuBar);
+
     toggleModeMenuItem = new CheckMenuItem ("Release mode");
     menuDebug.getItems ().add (toggleModeMenuItem);
-    toggleModeMenuItem.setSelected (runMode.equals ("Release"));
 
+    toggleModeMenuItem.setSelected (runMode.equals ("Release"));
     toggleModeMenuItem.setOnAction (e -> switchMode (e));
 
     toggleModeMenuItem.setAccelerator (new KeyCodeCombination (KeyCode.M,
         KeyCombination.SHORTCUT_DOWN));
 
-    menuBar.getMenus ().addAll (menuDebug);
     if (SYSTEM_MENUBAR)
       menuBar.useSystemMenuBarProperty ().set (true);
-
-    outerPane.setTop (menuBar);
+    else
+    {
+      MenuItem quitMenuItem = new MenuItem ("Quit");
+      menuDebug.getItems ().addAll (new SeparatorMenuItem (), quitMenuItem);
+      quitMenuItem.setOnAction (e -> Platform.exit ());
+      quitMenuItem.setAccelerator (new KeyCodeCombination (KeyCode.Q,
+          KeyCombination.SHORTCUT_DOWN));
+    }
 
     setResizable (false);
     setOnCloseRequest (e -> Platform.exit ());
