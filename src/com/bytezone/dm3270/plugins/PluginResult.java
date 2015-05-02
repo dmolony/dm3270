@@ -11,23 +11,34 @@ public class PluginResult
   private int cursorColumn;
   private boolean cursorMoved;
   private boolean keyPressed;
+  private boolean showScreen;
 
-  public void add (ScreenField field)
+  protected void add (ScreenField field)
   {
     fieldsChanged.add (field);
   }
 
-  public void setKey (int key)
+  protected void setKey (int key)
   {
     this.key = key;
     keyPressed = true;
   }
 
-  public void setCursor (int row, int column)
+  protected void setCursor (int row, int column)
   {
     cursorRow = row;
     cursorColumn = column;
     cursorMoved = true;
+  }
+
+  protected void setShowScreen (boolean showScreen)
+  {
+    this.showScreen = showScreen;
+  }
+
+  public boolean getShowScreen ()
+  {
+    return showScreen;
   }
 
   @Override
