@@ -381,7 +381,7 @@ public class Screen extends Canvas
             e.printStackTrace ();
           }
         }
-        field.draw ();
+        field.draw ();      // draws the field without a cursor
       }
     }
 

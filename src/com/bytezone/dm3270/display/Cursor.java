@@ -83,11 +83,15 @@ public class Cursor
       {
         int start = currentField.getCursorOffset ();
         int end = currentField.getDisplayLength ();
+
+        // don't lose data from the end of the field
+        if (currentField.getByteAt (end) != 0)      // and 0x40?
+          return;
+
         currentField.push (start, end);
         currentField.draw ();     // draws the field without the cursor
       }
 
-      //      System.out.printf ("Setting %d to %d%n", currentPosition, value);
       screen.getScreenPosition (currentPosition).setChar (value);
       currentField.setModified (true);
 
