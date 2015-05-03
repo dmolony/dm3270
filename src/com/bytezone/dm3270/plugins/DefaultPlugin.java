@@ -1,41 +1,26 @@
 package com.bytezone.dm3270.plugins;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.DatatypeConverter;
+
 public abstract class DefaultPlugin implements Plugin
 {
-  @Override
-  public void activate ()
+  protected String getMD5 (byte[] buffer)
   {
-  }
-
-  @Override
-  public void deactivate ()
-  {
-  }
-
-  @Override
-  public boolean doesAuto ()
-  {
-    return true;
-  }
-
-  @Override
-  public boolean doesRequest ()
-  {
-    return false;
-  }
-
-  @Override
-  public PluginReply processOnRequest (PluginScreen screen)
-  {
-    return null;
-  }
-
-  protected long getMD5 ()
-  {
-    return 0;
+    try
+    {
+      byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
+      return DatatypeConverter.printHexBinary (digest);
+    }
+    catch (NoSuchAlgorithmException e)
+    {
+      e.printStackTrace ();
+    }
+    return "";
   }
 
   protected int countModifiableFields (PluginScreen screen)

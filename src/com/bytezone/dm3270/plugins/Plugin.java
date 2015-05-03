@@ -2,20 +2,33 @@ package com.bytezone.dm3270.plugins;
 
 public interface Plugin
 {
-  public enum ProcessType
+  default void activate ()
   {
-    AUTO, REQUEST
+
   }
 
-  public void activate ();
+  default void deactivate ()
+  {
 
-  public PluginReply processAuto (PluginScreen screen);
+  }
 
-  public PluginReply processOnRequest (PluginScreen screen);
+  default boolean doesAuto ()
+  {
+    return false;
+  }
 
-  public void deactivate ();
+  default boolean doesRequest ()
+  {
+    return false;
+  }
 
-  public boolean doesAuto ();
+  default PluginReply processAuto (PluginScreen screen)
+  {
+    return null;
+  }
 
-  public boolean doesRequest ();
+  default PluginReply processOnRequest (PluginScreen screen)
+  {
+    return null;
+  }
 }
