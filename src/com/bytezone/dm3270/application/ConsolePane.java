@@ -322,6 +322,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     }
   }
 
+  // called from ConsoleKeyPress.sendAID()
   public void sendAID (AIDCommand command)
   {
     if (telnetState != null && telnetState.does3270Extended ())
@@ -336,7 +337,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       sendData (command.getTelnetData ());
   }
 
-  public void sendData (byte[] buffer)
+  private void sendData (byte[] buffer)
   {
     if (buffer == null)
     {

@@ -194,7 +194,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     screen.lockKeyboard ();
     screen.setAID (aid);
 
-    AIDCommand command = screen.readModifiedFields ();
-    consolePane.sendAID (command);
+    consolePane.sendAID (screen.readModifiedFields ());
   }
 }
