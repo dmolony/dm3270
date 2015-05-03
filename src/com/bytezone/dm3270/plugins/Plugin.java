@@ -4,12 +4,10 @@ public interface Plugin
 {
   default void activate ()
   {
-
   }
 
   default void deactivate ()
   {
-
   }
 
   default boolean doesAuto ()
@@ -22,13 +20,11 @@ public interface Plugin
     return false;
   }
 
-  default PluginReply processAuto (PluginScreen screen)
+  default void processAuto (PluginData screen)
   {
-    return null;
   }
 
-  default PluginReply processOnRequest (PluginScreen screen)
+  default void processRequest (PluginData screen)
   {
-    return null;
   }
 }

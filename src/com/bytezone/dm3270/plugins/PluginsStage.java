@@ -107,9 +107,8 @@ public class PluginsStage extends PreferencesStage
     this.screen = screen;
   }
 
-  public PluginReply processAll (PluginScreen pluginScreen)
+  public void processAll (PluginData pluginScreen)
   {
-    PluginReply result = null;
     for (PluginEntry pluginEntry : plugins)
       if (pluginEntry.isActivated)
       {
@@ -117,16 +116,15 @@ public class PluginsStage extends PreferencesStage
         if (plugin != null && plugin.doesAuto ())
           try
           {
-            PluginReply pluginResult = plugin.processAuto (pluginScreen);
-            if (result == null)
-              result = pluginResult;      // only the first result is processed
+            plugin.processAuto (pluginScreen);
+            //            if (result == null)
+            //              result = pluginResult;      // only the first result is processed
           }
           catch (Exception e)
           {
             e.printStackTrace ();
           }
       }
-    return result;
   }
 
   public int activePlugins ()

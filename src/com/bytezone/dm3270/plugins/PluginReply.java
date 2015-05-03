@@ -5,7 +5,7 @@ import java.util.List;
 
 import javafx.scene.input.KeyCode;
 
-public class PluginReply
+class PluginReply
 {
   private final List<ScreenField> fieldsChanged = new ArrayList<> ();
   private KeyCode key;

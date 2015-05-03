@@ -30,8 +30,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.plugins.Plugin;
-import com.bytezone.dm3270.plugins.PluginReply;
-import com.bytezone.dm3270.plugins.PluginScreen;
+import com.bytezone.dm3270.plugins.PluginData;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.plugins.ScreenField;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
@@ -330,12 +329,11 @@ public class Screen extends Canvas
     if (pluginsStage != null && pluginsStage.activePlugins () > 0)
     {
       int cursorPosition = cursor.getLocation ();
-      PluginScreen pluginScreen =
-          fieldManager.getPluginScreen (sequence++, 0, cursorPosition / columns,
+      PluginData pluginData =
+          fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
                                         cursorPosition % columns);
-      PluginReply reply = pluginsStage.processAll (pluginScreen);
-      if (reply != null)
-        processReply (reply);
+      pluginsStage.processAll (pluginData);
+      processReply (pluginData);
     }
   }
 
@@ -344,25 +342,24 @@ public class Screen extends Canvas
   public void processPluginRequest (Plugin plugin)
   {
     int cursorPosition = cursor.getLocation ();
-    PluginScreen pluginScreen =
-        fieldManager.getPluginScreen (sequence++, 0, cursorPosition / columns,
+    PluginData pluginData =
+        fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
                                       cursorPosition % columns);
-    PluginReply reply = plugin.processOnRequest (pluginScreen);
-    if (reply != null)
-      processReply (reply);
+    plugin.processRequest (pluginData);
+    processReply (pluginData);
   }
 
-  private void processReply (PluginReply reply)
+  private void processReply (PluginData data)
   {
     int currentLocation = cursor.getLocation ();
 
-    System.out.println (reply);
+    System.out.println (data);
 
     boolean isVisible = cursor.isVisible ();
     if (isVisible)
       cursor.setVisible (false);
 
-    for (ScreenField screenField : reply.getScreenFields ())
+    for (ScreenField screenField : data.changedFields)
     {
       Field field = getField (screenField.location);    // uses first display location
       assert field != null;
@@ -388,9 +385,9 @@ public class Screen extends Canvas
       }
     }
 
-    if (reply.cursorMoved ())
+    if (data.cursorMoved ())
     {
-      int newLocation = reply.getCursorRow () * columns + reply.getCursorColumn ();
+      int newLocation = data.cursorRow * columns + data.cursorColumn;
       if (newLocation != currentLocation)
         cursor.moveTo (newLocation);
     }

@@ -3,7 +3,8 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.plugins.PluginScreen;
+import com.bytezone.dm3270.plugins.PluginData;
+import com.bytezone.dm3270.plugins.ScreenField;
 
 public class FieldManager
 {
@@ -166,14 +167,12 @@ public class FieldManager
     return unprotectedFields.get (0);
   }
 
-  public PluginScreen getPluginScreen (int sequence, long md5, int row, int column)
+  public PluginData getPluginScreen (int sequence, int row, int column)
   {
-    PluginScreen pluginScreen = new PluginScreen (sequence, md5, row, column);
-
+    List<ScreenField> screenFields = new ArrayList<> ();
     for (Field field : fields)
-      pluginScreen.add (field.getScreenField ());
-
-    return pluginScreen;
+      screenFields.add (field.getScreenField ());
+    return new PluginData (sequence, row, column, screenFields);
   }
 
   // ---------------------------------------------------------------------------------//
