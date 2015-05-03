@@ -5,7 +5,7 @@ import java.util.List;
 
 import javafx.scene.input.KeyCode;
 
-public class PluginResult
+public class PluginReply
 {
   private final List<ScreenField> fieldsChanged = new ArrayList<> ();
   private KeyCode key;
@@ -27,6 +27,11 @@ public class PluginResult
   public void setKey (KeyCode key)
   {
     this.key = key;
+  }
+
+  public KeyCode getKey ()
+  {
+    return key;
   }
 
   public void setCursor (int row, int column)

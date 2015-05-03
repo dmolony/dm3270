@@ -107,9 +107,9 @@ public class PluginsStage extends PreferencesStage
     this.screen = screen;
   }
 
-  public PluginResult processAll (PluginScreen pluginScreen)
+  public PluginReply processAll (PluginScreen pluginScreen)
   {
-    PluginResult result = null;
+    PluginReply result = null;
     for (PluginEntry pluginEntry : plugins)
       if (pluginEntry.isActivated)
       {
@@ -117,7 +117,7 @@ public class PluginsStage extends PreferencesStage
         if (plugin != null && plugin.doesAuto ())
           try
           {
-            PluginResult pluginResult = plugin.processAuto (pluginScreen);
+            PluginReply pluginResult = plugin.processAuto (pluginScreen);
             if (result == null)
               result = pluginResult;      // only the first result is processed
           }

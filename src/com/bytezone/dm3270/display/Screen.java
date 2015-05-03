@@ -30,7 +30,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.plugins.Plugin;
-import com.bytezone.dm3270.plugins.PluginResult;
+import com.bytezone.dm3270.plugins.PluginReply;
 import com.bytezone.dm3270.plugins.PluginScreen;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.plugins.ScreenField;
@@ -333,7 +333,7 @@ public class Screen extends Canvas
       PluginScreen pluginScreen =
           fieldManager.getPluginScreen (sequence++, 0, cursorPosition / columns,
                                         cursorPosition % columns);
-      PluginResult reply = pluginsStage.processAll (pluginScreen);
+      PluginReply reply = pluginsStage.processAll (pluginScreen);
       if (reply != null)
         System.out.println (reply);
     }
@@ -347,7 +347,7 @@ public class Screen extends Canvas
     PluginScreen pluginScreen =
         fieldManager.getPluginScreen (sequence++, 0, cursorPosition / columns,
                                       cursorPosition % columns);
-    PluginResult reply = plugin.processOnRequest (pluginScreen);
+    PluginReply reply = plugin.processOnRequest (pluginScreen);
     if (reply != null)
     {
       System.out.println (reply);
@@ -355,10 +355,13 @@ public class Screen extends Canvas
     }
   }
 
-  private void processReply (PluginResult reply)
+  private void processReply (PluginReply reply)
   {
     int currentLocation = cursor.getLocation ();
-    cursor.setVisible (false);
+
+    boolean isVisible = cursor.isVisible ();
+    if (isVisible)
+      cursor.setVisible (false);
 
     for (ScreenField screenField : reply.getScreenFields ())
     {
@@ -395,7 +398,11 @@ public class Screen extends Canvas
     else
       cursor.moveTo (currentLocation);
 
-    cursor.setVisible (true);
+    if (isVisible)
+      cursor.setVisible (true);
+
+    //    if (reply.getKey () != null)
+    //      sendAID (AIDCommand.AID_ENTER_KEY);
   }
 
   // ---------------------------------------------------------------------------------//

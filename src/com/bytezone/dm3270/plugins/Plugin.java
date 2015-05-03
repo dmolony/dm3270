@@ -9,9 +9,9 @@ public interface Plugin
 
   public void activate ();
 
-  public PluginResult processAuto (PluginScreen screen);
+  public PluginReply processAuto (PluginScreen screen);
 
-  public PluginResult processOnRequest (PluginScreen screen);
+  public PluginReply processOnRequest (PluginScreen screen);
 
   public void deactivate ();
 

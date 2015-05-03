@@ -28,7 +28,7 @@ public abstract class DefaultPlugin implements Plugin
   }
 
   @Override
-  public PluginResult processOnRequest (PluginScreen screen)
+  public PluginReply processOnRequest (PluginScreen screen)
   {
     return null;
   }
