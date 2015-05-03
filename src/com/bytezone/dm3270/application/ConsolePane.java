@@ -283,7 +283,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     }
   }
 
-  public void back ()
+  void back ()
   {
     if (screenHistory != null && screenHistory.hasPrevious ())
     {
@@ -294,7 +294,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     }
   }
 
-  public void forward ()
+  void forward ()
   {
     if (screenHistory != null && screenHistory.hasNext ())
     {
@@ -323,30 +323,27 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   }
 
   // called from ConsoleKeyPress.sendAID()
-  public void sendAID (AIDCommand command)
+  void sendAID (byte aid)
   {
-    if (telnetState != null && telnetState.does3270Extended ())
+    if (screen.isInsertMode ())
+      screen.toggleInsertMode ();
+    screen.lockKeyboard ();
+    screen.setAID (aid);
+
+    AIDCommand command = screen.readModifiedFields ();
+
+    assert telnetState != null;
+
+    if (telnetState.does3270Extended ())
     {
       byte[] buffer = new byte[5];
       Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
       CommandHeader header = new CommandHeader (buffer);
       TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header, command);
-      sendData (extendedCommand.getTelnetData ());
+      telnetState.write (extendedCommand.getTelnetData ());
     }
     else
-      sendData (command.getTelnetData ());
-  }
-
-  private void sendData (byte[] buffer)
-  {
-    if (buffer == null)
-    {
-      System.out.println ("Sending null!");
-      return;
-    }
-
-    if (telnetState != null)
-      telnetState.write (buffer);
+      telnetState.write (command.getTelnetData ());
   }
 
   public void connect (Site server)

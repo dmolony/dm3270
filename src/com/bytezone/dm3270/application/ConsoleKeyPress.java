@@ -33,16 +33,18 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     if (screen.isKeyboardLocked ())
     {
+      e.consume ();       // always consume it when the keyboard is locked
+
       if (e.isControlDown ())       // should allow user to choose modifier key
         if (keyCodePressed == KeyCode.LEFT)
         {
           consolePane.back ();
-          e.consume ();
+          //          e.consume ();
         }
         else if (keyCodePressed == KeyCode.RIGHT)
         {
           consolePane.forward ();
-          e.consume ();
+          //          e.consume ();
         }
 
       return;
@@ -74,17 +76,17 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case F1:
-          sendAID (AIDCommand.AID_PA1);
+          consolePane.sendAID (AIDCommand.AID_PA1);
           e.consume ();
           break;
 
         case F2:
-          sendAID (AIDCommand.AID_PA2);
+          consolePane.sendAID (AIDCommand.AID_PA2);
           e.consume ();
           break;
 
         case F3:
-          sendAID (AIDCommand.AID_PA3);
+          consolePane.sendAID (AIDCommand.AID_PA3);
           e.consume ();
           break;
 
@@ -125,7 +127,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       switch (keyCodePressed)
       {
         case ENTER:
-          sendAID (AIDCommand.AID_ENTER_KEY);
+          consolePane.sendAID (AIDCommand.AID_ENTER_KEY);
           e.consume ();
           break;
 
@@ -180,20 +182,10 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           {
             if (e.isShiftDown ())
               pfKey += 12;
-            sendAID (AIDCommand.getKey ("PF" + pfKey));
+            consolePane.sendAID (AIDCommand.getKey ("PF" + pfKey));
             e.consume ();
           }
           break;
       }
-  }
-
-  private void sendAID (byte aid)
-  {
-    if (screen.isInsertMode ())
-      screen.toggleInsertMode ();
-    screen.lockKeyboard ();
-    screen.setAID (aid);
-
-    consolePane.sendAID (screen.readModifiedFields ());
   }
 }
