@@ -11,6 +11,10 @@ import com.bytezone.dm3270.display.Screen;
 
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
+  private static final KeyCode[] PFKeyCodes = //
+      { KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6,
+       KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12 };
+
   private final Screen screen;
   private final ConsolePane consolePane;
   private final Cursor cursor;
@@ -162,8 +166,8 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
         default:
           boolean found = false;
-          int pfKey = 0;
-          for (KeyCode keyCode : AIDCommand.PFKeyCodes)
+          int pfKey = 1;
+          for (KeyCode keyCode : PFKeyCodes)
           {
             if (keyCode == keyCodePressed)
             {
@@ -176,7 +180,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           {
             if (e.isShiftDown ())
               pfKey += 12;
-            sendAID (AIDCommand.PFKeyValues[pfKey]);
+            sendAID (AIDCommand.getKey ("PF" + pfKey));
             e.consume ();
           }
           break;
