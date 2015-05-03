@@ -189,6 +189,8 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
   private void sendAID (byte aid)
   {
+    if (screen.isInsertMode ())
+      screen.toggleInsertMode ();
     screen.lockKeyboard ();
     screen.setAID (aid);
 

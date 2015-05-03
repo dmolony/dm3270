@@ -24,13 +24,13 @@ public class AIDCommand extends Command implements BufferAddressSource
 
   private static byte[] keys = { //
           0,
-          (byte) 0x60,
-          (byte) 0x7D, //
+          NO_AID_SPECIFIED,
+          AID_ENTER_KEY, //
           (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
           (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
           (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
           (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C, //
-          (byte) 0x6C, (byte) 0x6E, (byte) 0x6B, (byte) 0x6D, (byte) 0x6A, (byte) 0x61 };
+          AID_PA1, AID_PA2, AID_PA3, AID_CLEAR, (byte) 0x6A, AID_READ_PARTITION };
 
   private static String[] keyNames = { //
       "Not found",
