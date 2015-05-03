@@ -357,6 +357,8 @@ public class Screen extends Canvas
 
   private void processReply (PluginResult reply)
   {
+    int currentLocation = cursor.getLocation ();
+    cursor.setVisible (false);
 
     for (ScreenField screenField : reply.getScreenFields ())
     {
@@ -387,8 +389,13 @@ public class Screen extends Canvas
     if (reply.cursorMoved ())
     {
       int newLocation = reply.getCursorRow () * columns + reply.getCursorColumn ();
-      cursor.moveTo (newLocation);
+      if (newLocation != currentLocation)
+        cursor.moveTo (newLocation);
     }
+    else
+      cursor.moveTo (currentLocation);
+
+    cursor.setVisible (true);
   }
 
   // ---------------------------------------------------------------------------------//

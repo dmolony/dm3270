@@ -25,15 +25,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent e)
   {
-    //    e.consume ();
-
     KeyCode keyCodePressed = e.getCode ();
-
-    //    if (e.isControlDown () && keyCodePressed == KeyCode.S)
-    //    {
-    //      consolePane.toggleHistory ();
-    //      return;
-    //    }
 
     if (screen.isKeyboardLocked ())
     {
