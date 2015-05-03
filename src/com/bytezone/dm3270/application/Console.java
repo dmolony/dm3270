@@ -22,7 +22,7 @@ public class Console extends Application
 {
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
   private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
-      MAINFRAME_EMULATOR_PORT, true);
+      MAINFRAME_EMULATOR_PORT, true, false);
 
   private Stage primaryStage;
 
@@ -95,7 +95,7 @@ public class Console extends Application
           {
             Screen screen = createScreen (Function.REPLAY);
             Session session = new Session (screen, path);     // can throw Exception
-            setConsolePane (screen);                          // reassigns primaryStage
+            setConsolePane (screen, null);                    // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
@@ -113,7 +113,7 @@ public class Console extends Application
           errorMessage = "No server selected";
         else
         {
-          setConsolePane (createScreen (Function.TERMINAL));
+          setConsolePane (createScreen (Function.TERMINAL), serverSite);
           consolePane.connect (serverSite);
         }
 
@@ -147,9 +147,9 @@ public class Console extends Application
       optionStage.show ();
   }
 
-  private void setConsolePane (Screen screen)
+  private void setConsolePane (Screen screen, Site server)
   {
-    consolePane = new ConsolePane (screen, prefs);
+    consolePane = new ConsolePane (screen, server, prefs);
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);

@@ -32,9 +32,9 @@ public class SiteListStage extends PreferencesStage
 
     readPrefs (key, max);
 
-    String[] headings = { key + " name", "URL", "Port", "3270-E" };
-    int[] columnWidths = { 150, 150, 50, 50 };
-    Type[] fieldTypes = { Type.TEXT, Type.TEXT, Type.NUMBER, Type.BOOLEAN };
+    String[] headings = { key + " name", "URL", "Port", "3270-E", "Plugins" };
+    int[] columnWidths = { 150, 150, 50, 50, 50 };
+    Type[] fieldTypes = { Type.TEXT, Type.TEXT, Type.NUMBER, Type.BOOLEAN, Type.BOOLEAN };
 
     VBox vbox = new VBox ();
     vbox.setSpacing (5);
@@ -108,16 +108,17 @@ public class SiteListStage extends PreferencesStage
       String url = prefs.get (keyName + "URL", "");
       int port = prefs.getInt (keyName + "Port", 23);
       boolean extended = prefs.getBoolean (keyName + "Extended", true);
+      boolean plugins = prefs.getBoolean (keyName + "Plugins", false);
 
       if (port <= 0)
         port = 23;
 
       Site site = null;
       if (name.isEmpty () || url.isEmpty ())
-        site = new Site ("", "", 23, false);
+        site = new Site ("", "", 23, false, false);
       else
       {
-        site = new Site (name, url, port, extended);
+        site = new Site (name, url, port, extended, plugins);
         siteNames.add (name);
       }
       sites.add (site);
@@ -137,11 +138,13 @@ public class SiteListStage extends PreferencesStage
       String keyName = String.format ("%s%02d", key, i);
       String name = site.name.getText ();
       boolean extended = site.getExtended ();
+      boolean plugins = site.getPlugins ();
 
       prefs.put (keyName + "Name", name);
       prefs.put (keyName + "URL", site.url.getText ());
       prefs.put (keyName + "Port", site.port.getText ());
       prefs.putBoolean (keyName + "Extended", extended);
+      prefs.putBoolean (keyName + "Plugins", plugins);
 
       if (name != null && !name.isEmpty ())
         siteNames.add (name);

@@ -7,7 +7,9 @@ import java.util.prefs.Preferences;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -22,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import com.bytezone.dm3270.application.PreferencesStage;
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 
 public class PluginsStage extends PreferencesStage
@@ -44,11 +47,11 @@ public class PluginsStage extends PreferencesStage
     setTitle ("Plugin Manager");
 
     readPrefs ();
-    setMenu ();
+    //    setMenu ();
 
-    String[] headings = { "Menu entry", "Class name" };
-    int[] columnWidths = { 130, 300 };
-    Type[] fieldTypes = { Type.TEXT, Type.TEXT };
+    String[] headings = { "Menu entry", "Class name", "Active" };
+    int[] columnWidths = { 130, 300, 60 };
+    Type[] fieldTypes = { Type.TEXT, Type.TEXT, Type.BOOLEAN };
 
     VBox vbox = new VBox ();
     vbox.setSpacing (5);
@@ -64,6 +67,8 @@ public class PluginsStage extends PreferencesStage
       Label heading = new Label (headings[i]);
       hbox.getChildren ().add (heading);
       heading.setPrefWidth (columnWidths[i]);
+      if (fieldTypes[i] == Type.BOOLEAN)
+        heading.setAlignment (Pos.CENTER);
     }
 
     vbox.getChildren ().add (hbox);
@@ -82,6 +87,15 @@ public class PluginsStage extends PreferencesStage
           TextField textField = pluginEntry.getTextField (i);
           textField.setPrefWidth (columnWidths[i]);
           hbox.getChildren ().add (textField);
+        }
+        else if (fieldTypes[i] == Type.BOOLEAN)
+        {
+          HBox box = new HBox ();
+          CheckBox checkBox = pluginEntry.getCheckBox (i);
+          box.setPrefWidth (columnWidths[i]);
+          box.setAlignment (Pos.CENTER);
+          box.getChildren ().add (checkBox);
+          hbox.getChildren ().add (box);
         }
       }
       vbox.getChildren ().add (hbox);
@@ -139,12 +153,18 @@ public class PluginsStage extends PreferencesStage
     return activePlugins;
   }
 
-  public Menu getMenu ()
+  public Menu getMenu (Site site)
   {
+    setMenu (site);
     return menu;
   }
 
-  private void setMenu ()
+  public boolean allowsPlugins ()
+  {
+    return true;
+  }
+
+  private void setMenu (Site site)
   {
     menu = new Menu ("Plugins");
 
@@ -194,7 +214,9 @@ public class PluginsStage extends PreferencesStage
     {
       String pluginName = prefs.get (String.format ("PluginName-%02d", i), "");
       String pluginClass = prefs.get (String.format ("PluginClass-%02d", i), "");
-      plugins.add (new PluginEntry (pluginName, pluginClass));
+      boolean pluginActivate =
+          prefs.getBoolean (String.format ("PluginActivate-%02d", i), false);
+      plugins.add (new PluginEntry (pluginName, pluginClass, pluginActivate));
     }
   }
 
@@ -205,6 +227,8 @@ public class PluginsStage extends PreferencesStage
       PluginEntry plugin = plugins.get (i);
       prefs.put (String.format ("PluginName-%02d", i), plugin.name.getText ());
       prefs.put (String.format ("PluginClass-%02d", i), plugin.className.getText ());
+      prefs.putBoolean (String.format ("PluginActivate-%02d", i),
+                        plugin.activate.isSelected ());
     }
   }
 
@@ -212,20 +236,30 @@ public class PluginsStage extends PreferencesStage
   {
     private final TextField name = new TextField ();
     private final TextField className = new TextField ();
-    private final TextField[] textFieldList = { name, className };
+    private final CheckBox activate = new CheckBox ();
+
+    private final TextField[] textFieldList = { name, className, null };
+    private final CheckBox[] checkBoxList = { null, null, activate };
+
     private Plugin plugin;
     private boolean isActivated;
     private MenuItem menuItem;          // used to trigger a Request
 
-    public PluginEntry (String name, String className)
+    public PluginEntry (String name, String className, boolean activate)
     {
       this.name.setText (name);
       this.className.setText (className);
+      this.activate.setSelected (activate);
     }
 
     public TextField getTextField (int index)
     {
       return textFieldList[index];
+    }
+
+    public CheckBox getCheckBox (int index)
+    {
+      return checkBoxList[index];
     }
 
     public void select (boolean activate)

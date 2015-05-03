@@ -9,16 +9,18 @@ public class Site
   public final TextField url = new TextField ();
   public final TextField port = new TextField ();
   public final CheckBox extended = new CheckBox ();
+  public final CheckBox plugins = new CheckBox ();
 
   private final TextField[] textFieldList = { name, url, port, null };
-  private final CheckBox[] checkBoxFieldList = { null, null, null, extended };
+  private final CheckBox[] checkBoxFieldList = { null, null, null, extended, plugins };
 
-  public Site (String name, String url, int port, boolean extended)
+  public Site (String name, String url, int port, boolean extended, boolean plugins)
   {
     this.name.setText (name);
     this.url.setText (url);
     this.port.setText (port == 23 && name.isEmpty () ? "" : port + "");
     this.extended.setSelected (extended);
+    this.plugins.setSelected (plugins);
   }
 
   public String getName ()
@@ -55,6 +57,11 @@ public class Site
   public boolean getExtended ()
   {
     return extended.isSelected ();
+  }
+
+  public boolean getPlugins ()
+  {
+    return plugins.isSelected ();
   }
 
   public TextField getTextField (int index)

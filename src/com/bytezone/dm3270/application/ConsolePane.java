@@ -90,7 +90,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
 
-  public ConsolePane (Screen screen, Preferences prefs)
+  public ConsolePane (Screen screen, Site server, Preferences prefs)
   {
     this.screen = screen;
 
@@ -119,8 +119,10 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu (),
-                                pluginsStage.getMenu ());
+    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu ());
+    if (server == null || server.getPlugins ())     // allow null for testing
+      menuBar.getMenus ().add (pluginsStage.getMenu (server));
+
     topPane.setTop (menuBar);
 
     if (SYSTEM_MENUBAR)
