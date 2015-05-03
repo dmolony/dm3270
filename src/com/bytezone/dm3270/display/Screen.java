@@ -335,7 +335,7 @@ public class Screen extends Canvas
                                         cursorPosition % columns);
       PluginReply reply = pluginsStage.processAll (pluginScreen);
       if (reply != null)
-        System.out.println (reply);
+        processReply (reply);
     }
   }
 
@@ -349,15 +349,14 @@ public class Screen extends Canvas
                                       cursorPosition % columns);
     PluginReply reply = plugin.processOnRequest (pluginScreen);
     if (reply != null)
-    {
-      System.out.println (reply);
       processReply (reply);
-    }
   }
 
   private void processReply (PluginReply reply)
   {
     int currentLocation = cursor.getLocation ();
+
+    System.out.println (reply);
 
     boolean isVisible = cursor.isVisible ();
     if (isVisible)
