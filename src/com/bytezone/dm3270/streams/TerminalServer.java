@@ -81,6 +81,7 @@ public class TerminalServer implements Runnable
   {
     if (serverOut == null)
     {
+      // the no-op may come here if the program is not closed after disconnection
       System.out.println ("serverOut is null in TerminalServer");
       return;
     }
