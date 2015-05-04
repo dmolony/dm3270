@@ -20,8 +20,8 @@ public class PluginData
   public PluginData (int sequence, int row, int column, List<ScreenField> fields)
   {
     this.sequence = sequence;
-    initialCursorRow = row;
-    initialCursorColumn = column;
+    cursorRow = initialCursorRow = row;
+    cursorColumn = initialCursorColumn = column;
     screenFields = fields;
   }
 

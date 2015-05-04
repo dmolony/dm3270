@@ -233,6 +233,8 @@ public class Screen extends Canvas
       cursor.setVisible (true);
     }
 
+    // should process plugins here
+
     drawPosition (cursor.getLocation (), true);
   }
 
@@ -352,8 +354,6 @@ public class Screen extends Canvas
   private void processReply (PluginData data)
   {
     int currentLocation = cursor.getLocation ();
-
-    System.out.println (data);
 
     boolean isVisible = cursor.isVisible ();
     if (isVisible)

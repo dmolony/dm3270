@@ -242,6 +242,7 @@ public class Console extends Application
   private Screen createScreen (Function function)
   {
     screen = new Screen (24, 80, prefs, function);
+    screen.setPlugins (pluginsStage);
     return screen;
   }
 }

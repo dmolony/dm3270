@@ -179,6 +179,7 @@ public class PluginsStage extends PreferencesStage
     itemEditPlugins.setOnAction (e -> show ());
     menu.getItems ().addAll (itemEditPlugins, new SeparatorMenuItem ());
 
+    int activeCount = 0;
     for (PluginEntry pluginEntry : plugins)
     {
       String text = pluginEntry.name.getText ();
@@ -187,12 +188,33 @@ public class PluginsStage extends PreferencesStage
         CheckMenuItem menuItem = new CheckMenuItem (text);
         menu.getItems ().add (menuItem);
         pluginEntry.instantiate ();
-        menuItem.setDisable (pluginEntry.plugin == null);
-        menuItem.setUserData (pluginEntry);
-        menuItem.setOnAction (e -> itemSelected (e));
+        if (pluginEntry.plugin == null)
+          menuItem.setDisable (true);
+        else
+        {
+          menuItem.setUserData (pluginEntry);
+          if (pluginEntry.activate.isSelected ())
+          {
+            activeCount++;
+            menuItem.setSelected (true);
+          }
+          menuItem.setOnAction (e -> itemSelected (e));
+        }
       }
     }
+
     baseMenuSize = menu.getItems ().size ();
+
+    if (activeCount > 0)
+    {
+      menu.getItems ().add (new SeparatorMenuItem ());
+      for (PluginEntry pluginEntry : plugins)
+        if (pluginEntry.activate.isSelected ())
+        {
+          pluginEntry.select (true);
+          menu.getItems ().add (pluginEntry.menuItem);
+        }
+    }
   }
 
   private void itemSelected (ActionEvent e)

@@ -110,8 +110,6 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
 
-    screen.setPlugins (pluginsStage);
-
     //    byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
     //    Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
     //    btnClear.setOnAction (e -> clearCommand.process ());
