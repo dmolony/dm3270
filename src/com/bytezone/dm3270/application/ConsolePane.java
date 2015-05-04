@@ -119,11 +119,10 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
     menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu ());
-    if (server == null || server.getPlugins ())     // allow null for testing
+    if (server == null || server.getPlugins ())     // allow null for replay testing
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
     topPane.setTop (menuBar);
-
     if (SYSTEM_MENUBAR)
       menuBar.useSystemMenuBarProperty ().set (true);
 
@@ -145,7 +144,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     menuItemToggleToolbar.setAccelerator (new KeyCodeCombination (KeyCode.T,
         KeyCombination.SHORTCUT_DOWN));
 
-    MenuItem menuItemToggleScreens = new MenuItem ("Show previous screens");
+    MenuItem menuItemToggleScreens = new MenuItem ("Screen history");
     menuItemToggleScreens.setOnAction ( (e) -> toggleHistory ());
     menuItemToggleScreens.setAccelerator (new KeyCodeCombination (KeyCode.S,
         KeyCombination.SHORTCUT_DOWN));
