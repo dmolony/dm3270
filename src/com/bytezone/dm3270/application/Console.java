@@ -16,6 +16,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.session.Session;
 
 public class Console extends Application
@@ -34,6 +35,7 @@ public class Console extends Application
   private ConsolePane consolePane;
   private ReplayStage replayStage;
   private MainframeStage mainframeStage;
+  private PluginsStage pluginsStage;
 
   public enum Function
   {
@@ -65,7 +67,9 @@ public class Console extends Application
     this.primaryStage = primaryStage;
     primaryStage.setOnCloseRequest (e -> Platform.exit ());
     primaryStage.setResizable (false);
-    optionStage = new OptionStage (prefs);
+
+    pluginsStage = new PluginsStage (prefs);
+    optionStage = new OptionStage (prefs, pluginsStage);
 
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());
     optionStage.cancelButton.setOnAction (e -> optionStage.hide ());
@@ -149,7 +153,7 @@ public class Console extends Application
 
   private void setConsolePane (Screen screen, Site server)
   {
-    consolePane = new ConsolePane (screen, server, prefs);
+    consolePane = new ConsolePane (screen, server, prefs, pluginsStage);
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);

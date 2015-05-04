@@ -37,6 +37,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import com.bytezone.dm3270.plugins.PluginsStage;
+
 public class OptionStage extends Stage
 {
   private static final int COMBO_BOX_WIDTH = 150;
@@ -82,7 +84,7 @@ public class OptionStage extends Stage
     DEBUG, RELEASE
   }
 
-  public OptionStage (Preferences prefs)
+  public OptionStage (Preferences prefs, PluginsStage pluginsStage)
   {
     this.prefs = prefs;
 
@@ -145,12 +147,12 @@ public class OptionStage extends Stage
 
     editLocationButton.setOnAction (e -> editLocation ());
 
-    Menu menuDebug = new Menu ("Mode");
-    menuBar.getMenus ().add (menuDebug);
+    Menu menuCommands = new Menu ("Commands");
+    menuBar.getMenus ().add (menuCommands);
     outerPane.setTop (menuBar);
 
     toggleModeMenuItem = new CheckMenuItem ("Release mode");
-    menuDebug.getItems ().add (toggleModeMenuItem);
+    menuCommands.getItems ().addAll (toggleModeMenuItem, pluginsStage.getEditMenuItem ());
 
     toggleModeMenuItem.setSelected (runMode.equals ("Release"));
     toggleModeMenuItem.setOnAction (e -> switchMode (e));
@@ -163,7 +165,7 @@ public class OptionStage extends Stage
     else
     {
       MenuItem quitMenuItem = new MenuItem ("Quit");
-      menuDebug.getItems ().addAll (new SeparatorMenuItem (), quitMenuItem);
+      menuCommands.getItems ().addAll (new SeparatorMenuItem (), quitMenuItem);
       quitMenuItem.setOnAction (e -> Platform.exit ());
       quitMenuItem.setAccelerator (new KeyCodeCombination (KeyCode.Q,
           KeyCombination.SHORTCUT_DOWN));

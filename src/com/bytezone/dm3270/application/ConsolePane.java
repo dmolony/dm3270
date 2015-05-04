@@ -90,9 +90,11 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
 
-  public ConsolePane (Screen screen, Site server, Preferences prefs)
+  public ConsolePane (Screen screen, Site server, Preferences prefs,
+      PluginsStage pluginsStage)
   {
     this.screen = screen;
+    this.pluginsStage = pluginsStage;
 
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
@@ -108,7 +110,6 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
 
-    pluginsStage = new PluginsStage (prefs);
     screen.setPlugins (pluginsStage);
 
     //    byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };

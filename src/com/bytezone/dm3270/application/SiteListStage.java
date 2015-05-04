@@ -59,6 +59,7 @@ public class SiteListStage extends PreferencesStage
       hbox = new HBox ();
       hbox.setSpacing (5);
       hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
+
       for (int i = 0; i < headings.length; i++)
       {
         if (fieldTypes[i] == Type.TEXT || fieldTypes[i] == Type.NUMBER)

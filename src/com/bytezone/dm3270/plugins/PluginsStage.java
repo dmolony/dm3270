@@ -37,6 +37,7 @@ public class PluginsStage extends PreferencesStage
 
   private final List<PluginEntry> plugins = new ArrayList<> (MAX_PLUGINS);
   private Menu menu;
+  private final MenuItem editMenuItem = new MenuItem ("Edit plugins");
   private int requestMenus;
   private int baseMenuSize;
   private Screen screen;
@@ -47,7 +48,8 @@ public class PluginsStage extends PreferencesStage
     setTitle ("Plugin Manager");
 
     readPrefs ();
-    //    setMenu ();
+
+    editMenuItem.setOnAction (e -> this.show ());
 
     String[] headings = { "Menu entry", "Class name", "Active" };
     int[] columnWidths = { 130, 300, 60 };
@@ -157,6 +159,11 @@ public class PluginsStage extends PreferencesStage
   {
     setMenu (site);
     return menu;
+  }
+
+  public MenuItem getEditMenuItem ()
+  {
+    return editMenuItem;
   }
 
   public boolean allowsPlugins ()
