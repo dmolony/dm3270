@@ -78,9 +78,9 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
 
   private HBox historyBox;
   private final Label historyLabel = new Label ();
+  private Font defaultFont;
 
   private final BorderPane statusPane;
-  private final PluginsStage pluginsStage;
 
   private final MenuBar menuBar = new MenuBar ();
 
@@ -94,7 +94,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       PluginsStage pluginsStage)
   {
     this.screen = screen;
-    this.pluginsStage = pluginsStage;
+    System.out.println (javafx.stage.Screen.getPrimary ().getDpi ());
 
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
@@ -180,6 +180,9 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
     }
 
+    if (!fontSelected.isEmpty ())
+      defaultFont = Font.font (fontSelected, 14);
+
     // select Monospaced if there is still no font selected
     if (fontGroup.getSelectedToggle () == null)
     {
@@ -221,7 +224,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     HBox right = getHBox (new Insets (2, MARGIN, 2, GAP), Pos.CENTER_RIGHT);
     right.getChildren ().addAll (div[2], fieldType, div[3], cursorLocation);
 
-    Font statusBarFont = Font.font ("Monospaced", 14);
+    Font statusBarFont = defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
     status.setFont (statusBarFont);
     insertMode.setFont (statusBarFont);
     cursorLocation.setFont (statusBarFont);
@@ -240,7 +243,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
   {
     historyBox = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
     historyBox.getChildren ().add (historyLabel);
-    Font statusBarFont = Font.font ("Monospaced", 14);
+    Font statusBarFont = defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
     historyLabel.setFont (statusBarFont);
   }
 
