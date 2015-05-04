@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.plugins;
 
+
 public class ScreenField
 {
   public final int location;
@@ -21,6 +22,17 @@ public class ScreenField
     this.isProtected = isProtected;
     this.isAlpha = isAlpha;
     this.data = data;
+  }
+
+  public boolean isModifiableLength (int length)
+  {
+    return !isProtected && this.length == length;
+  }
+
+  public void change (String newValue, PluginData data)
+  {
+    newData = newValue;
+    data.addChangedField (this);
   }
 
   @Override

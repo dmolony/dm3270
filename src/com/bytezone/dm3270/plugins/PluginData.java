@@ -27,7 +27,8 @@ public class PluginData
 
   public void addChangedField (ScreenField field)
   {
-    changedFields.add (field);
+    if (!changedFields.contains (field))
+      changedFields.add (field);
   }
 
   public void setKey (KeyCode key)
