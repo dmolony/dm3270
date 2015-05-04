@@ -375,6 +375,7 @@ public class Screen extends Canvas
           {
             // should this type the characters instead?
             field.setText (screenField.newData.getBytes ("CP1047"));
+            field.setModified (true);
           }
           catch (UnsupportedEncodingException e)
           {

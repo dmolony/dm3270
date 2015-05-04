@@ -26,6 +26,6 @@ public class ScreenField
   @Override
   public String toString ()
   {
-    return String.format ("%2d  %2d  %4d  %s", row, column, length, data);
+    return String.format ("%2d  %2d  %4d  %-50.50s", row, column, length, data);
   }
 }

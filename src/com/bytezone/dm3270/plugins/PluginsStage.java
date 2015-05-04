@@ -183,22 +183,24 @@ public class PluginsStage extends PreferencesStage
     for (PluginEntry pluginEntry : plugins)
     {
       String text = pluginEntry.name.getText ();
-      if (!text.isEmpty ())
+      if (text.isEmpty ())
+        continue;
+
+      CheckMenuItem menuItem = new CheckMenuItem (text);
+      menu.getItems ().add (menuItem);
+      pluginEntry.instantiate ();
+
+      if (pluginEntry.plugin == null)
+        menuItem.setDisable (true);
+      else
       {
-        CheckMenuItem menuItem = new CheckMenuItem (text);
-        menu.getItems ().add (menuItem);
-        pluginEntry.instantiate ();
-        if (pluginEntry.plugin == null)
-          menuItem.setDisable (true);
-        else
+        menuItem.setUserData (pluginEntry);
+        menuItem.setOnAction (e -> itemSelected (e));
+        if (pluginEntry.isAutoActivate ())
         {
-          menuItem.setUserData (pluginEntry);
-          if (pluginEntry.activate.isSelected ())
-          {
-            activeCount++;
-            menuItem.setSelected (true);
-          }
-          menuItem.setOnAction (e -> itemSelected (e));
+          activeCount++;
+          menuItem.setSelected (true);
+          pluginEntry.select (true);
         }
       }
     }
@@ -209,11 +211,8 @@ public class PluginsStage extends PreferencesStage
     {
       menu.getItems ().add (new SeparatorMenuItem ());
       for (PluginEntry pluginEntry : plugins)
-        if (pluginEntry.activate.isSelected ())
-        {
-          pluginEntry.select (true);
-          menu.getItems ().add (pluginEntry.menuItem);
-        }
+        if (pluginEntry.isAutoActivate () && pluginEntry.plugin.doesRequest ())
+          menu.getItems ().add (pluginEntry.requestMenuItem);
     }
   }
 
@@ -227,14 +226,15 @@ public class PluginsStage extends PreferencesStage
 
   private void rebuildMenu ()
   {
+    System.out.println ("rebuilding");
     ObservableList<MenuItem> items = menu.getItems ();
     while (items.size () > baseMenuSize)
       items.remove (menu.getItems ().size () - 1);
     menu.getItems ().add (new SeparatorMenuItem ());
 
     for (PluginEntry pluginEntry : plugins)
-      if (pluginEntry.isActivated && pluginEntry.menuItem != null)
-        items.add (pluginEntry.menuItem);
+      if (pluginEntry.isActivated && pluginEntry.requestMenuItem != null)
+        items.add (pluginEntry.requestMenuItem);
   }
 
   private void readPrefs ()
@@ -272,7 +272,7 @@ public class PluginsStage extends PreferencesStage
 
     private Plugin plugin;
     private boolean isActivated;
-    private MenuItem menuItem;          // used to trigger a Request
+    private MenuItem requestMenuItem;          // used to trigger a Request
 
     public PluginEntry (String name, String className, boolean activate)
     {
@@ -291,6 +291,11 @@ public class PluginsStage extends PreferencesStage
       return checkBoxList[index];
     }
 
+    public boolean isAutoActivate ()
+    {
+      return activate.isSelected ();
+    }
+
     public void select (boolean activate)
     {
       if (activate)
@@ -298,11 +303,11 @@ public class PluginsStage extends PreferencesStage
       else
         plugin.deactivate ();
 
-      if (menuItem == null && plugin.doesRequest ())
+      if (requestMenuItem == null && plugin.doesRequest ())
       {
-        menuItem = new MenuItem (name.getText ());
-        menuItem.setOnAction (e -> screen.processPluginRequest (plugin));
-        menuItem.setAccelerator (new KeyCodeCombination (keyCodes[requestMenus++],
+        requestMenuItem = new MenuItem (name.getText ());
+        requestMenuItem.setOnAction (e -> screen.processPluginRequest (plugin));
+        requestMenuItem.setAccelerator (new KeyCodeCombination (keyCodes[requestMenus++],
             KeyCombination.SHORTCUT_DOWN));
       }
 
