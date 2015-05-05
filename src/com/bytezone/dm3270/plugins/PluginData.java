@@ -31,9 +31,42 @@ public class PluginData
       changedFields.add (field);
   }
 
+  public String trimField (int index)
+  {
+    if (index >= 0 && index < screenFields.size ())
+    {
+      String data = screenFields.get (index).data;
+      if (data != null)
+        return data.trim ();
+    }
+    return "";
+  }
+
   public void setKey (KeyCode key)
   {
     this.key = key;
+  }
+
+  public ScreenField getField (int index)
+  {
+    if (index >= 0 && index < screenFields.size ())
+    {
+      ScreenField field = screenFields.get (index);
+      field.setData (this);
+      return field;
+    }
+    return null;
+  }
+
+  public String listFields (PluginData data)
+  {
+    StringBuilder text = new StringBuilder ();
+    int count = 0;
+    for (ScreenField field : data.screenFields)
+      text.append (String.format ("%3d  %s%n", count++, field));
+    if (text.length () > 0)
+      text.deleteCharAt (text.length () - 1);
+    return text.toString ();
   }
 
   public void setNewCursorPosition (int row, int column)
