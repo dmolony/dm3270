@@ -334,8 +334,10 @@ public class Screen extends Canvas
       PluginData pluginData =
           fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
                                         cursorPosition % columns);
+
       System.out.println ("--------------------------------------------");
       System.out.println (pluginData);
+
       pluginsStage.processAll (pluginData);
       processReply (pluginData);
     }
