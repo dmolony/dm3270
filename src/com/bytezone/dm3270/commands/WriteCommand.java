@@ -104,7 +104,7 @@ public class WriteCommand extends Command
       System.out.printf ("Cursor now at %d%n", newCursorLocation);
     }
 
-    if (!screen.isKeyboardLocked ())
+    if (!screen.isKeyboardLocked () && orders.size () > 0)
       screen.processPluginAuto ();
   }
 

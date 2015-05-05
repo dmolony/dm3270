@@ -233,7 +233,7 @@ public class Screen extends Canvas
       cursor.setVisible (true);
     }
 
-    // should process plugins here
+    // should process plugins here (if WRITE with data)
 
     drawPosition (cursor.getLocation (), true);
   }
