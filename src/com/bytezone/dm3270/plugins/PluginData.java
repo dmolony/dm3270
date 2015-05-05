@@ -58,11 +58,11 @@ public class PluginData
     return null;
   }
 
-  public String listFields (PluginData data)
+  public String listFields ()
   {
     StringBuilder text = new StringBuilder ();
     int count = 0;
-    for (ScreenField field : data.screenFields)
+    for (ScreenField field : screenFields)
       text.append (String.format ("%3d  %s%n", count++, field));
     if (text.length () > 0)
       text.deleteCharAt (text.length () - 1);
@@ -75,8 +75,33 @@ public class PluginData
     cursorColumn = column;
   }
 
+  public List<ScreenField> getModifiableFields ()
+  {
+    List<ScreenField> fields = new ArrayList<> ();
+    for (ScreenField field : screenFields)
+      if (!field.isProtected)
+        fields.add (field);
+    return fields;
+  }
+
   public boolean cursorMoved ()
   {
     return initialCursorRow != cursorRow || initialCursorColumn != cursorColumn;
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("Sequence      : %d%n", sequence));
+    text.append (String.format ("Screen fields : %d%n", screenFields.size ()));
+    text.append (String.format ("Modifiable    : %d%n", getModifiableFields ().size ()));
+
+    int count = 0;
+    for (ScreenField sf : screenFields)
+      text.append (String.format ("  %2d field    : %s%n", count++, sf));
+
+    return text.toString ();
   }
 }
