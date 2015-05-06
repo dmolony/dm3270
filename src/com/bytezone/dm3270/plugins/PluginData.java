@@ -3,8 +3,6 @@ package com.bytezone.dm3270.plugins;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.input.KeyCode;
-
 public class PluginData
 {
   public final int sequence;
@@ -14,7 +12,7 @@ public class PluginData
 
   public int cursorRow;
   public int cursorColumn;
-  public KeyCode key;
+  public byte key;
   public final List<ScreenField> changedFields = new ArrayList<> ();
 
   public PluginData (int sequence, int row, int column, List<ScreenField> fields)
@@ -42,9 +40,14 @@ public class PluginData
     return "";
   }
 
-  public void setKey (KeyCode key)
+  public void setKey (byte key)
   {
     this.key = key;
+  }
+
+  public byte getKey ()
+  {
+    return key;
   }
 
   public ScreenField getField (int index)

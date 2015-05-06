@@ -324,7 +324,7 @@ public class Screen extends Canvas
   // ---------------------------------------------------------------------------------//
 
   // called from WriteCommand.process() after unlocking keyboard
-  public void processPluginAuto ()
+  public AIDCommand processPluginAuto ()
   {
     assert !keyboardLocked;
 
@@ -342,8 +342,9 @@ public class Screen extends Canvas
       }
 
       pluginsStage.processAll (pluginData);
-      processReply (pluginData);
+      return processReply (pluginData);
     }
+    return null;
   }
 
   // created by PluginsStage.itemSelected() -> PluginEntry.select()
@@ -358,7 +359,7 @@ public class Screen extends Canvas
     processReply (pluginData);
   }
 
-  private void processReply (PluginData data)
+  private AIDCommand processReply (PluginData data)
   {
     int currentLocation = cursor.getLocation ();
 
@@ -405,8 +406,14 @@ public class Screen extends Canvas
     if (isVisible)
       cursor.setVisible (true);
 
-    //    if (reply.getKey () != null)
-    //      sendAID (AIDCommand.AID_ENTER_KEY);
+    if (data.getKey () != 0)
+    {
+      setAID (data.getKey ());
+      AIDCommand command = readModifiedFields ();
+      System.out.println (command);
+      return command;
+    }
+    return null;
   }
 
   // ---------------------------------------------------------------------------------//

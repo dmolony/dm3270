@@ -106,7 +106,7 @@ public class WriteCommand extends Command
     }
 
     if (!screen.isKeyboardLocked () && orders.size () > 0)
-      screen.processPluginAuto ();
+      reply = screen.processPluginAuto ();
   }
 
   // Used by Session.checkServerName() when searching for the server's name
