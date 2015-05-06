@@ -94,7 +94,6 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       PluginsStage pluginsStage)
   {
     this.screen = screen;
-    System.out.println (javafx.stage.Screen.getPrimary ().getDpi ());
 
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
