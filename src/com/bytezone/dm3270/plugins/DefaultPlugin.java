@@ -23,46 +23,46 @@ public abstract class DefaultPlugin implements Plugin
     return "";
   }
 
-  protected int countModifiableFields (PluginData screen)
+  protected int countModifiableFields (PluginData data)
   {
     int count = 0;
-    for (ScreenField field : screen.screenFields)
+    for (ScreenField field : data.screenFields)
       if (!field.isProtected)
         ++count;
     return count;
   }
 
-  protected List<ScreenField> getModifiableFields (PluginData screen)
+  protected List<ScreenField> getModifiableFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : screen.screenFields)
+    for (ScreenField field : data.screenFields)
       if (!field.isProtected)
         fields.add (field);
     return fields;
   }
 
-  protected List<ScreenField> getProtectedFields (PluginData screen)
+  protected List<ScreenField> getProtectedFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : screen.screenFields)
+    for (ScreenField field : data.screenFields)
       if (field.isProtected)
         fields.add (field);
     return fields;
   }
 
-  protected List<ScreenField> getAlphanumericFields (PluginData screen)
+  protected List<ScreenField> getAlphanumericFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : screen.screenFields)
+    for (ScreenField field : data.screenFields)
       if (field.isAlpha)
         fields.add (field);
     return fields;
   }
 
-  protected List<ScreenField> getNumericFields (PluginData screen)
+  protected List<ScreenField> getNumericFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : screen.screenFields)
+    for (ScreenField field : data.screenFields)
       if (!field.isAlpha)
         fields.add (field);
     return fields;

@@ -109,7 +109,8 @@ public class Console extends Application
             replayStage.setX (primaryScreenBounds.getMinX ()
                 + primaryScreenBounds.getWidth () - 300);
             replayStage.setY (primaryScreenBounds.getMinY ());
-            replayStage.setHeight (primaryScreenBounds.getHeight () - 20);
+            double height = primaryScreenBounds.getHeight ();
+            replayStage.setHeight (Math.min (height, 1200));
             replayStage.show ();
           }
           catch (Exception e)
