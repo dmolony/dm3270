@@ -10,7 +10,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -34,7 +33,6 @@ class ReplayStage extends Stage
 
   public ReplayStage (Session session, Path path, Preferences prefs)
   {
-    SessionTable table = new SessionTable ();
     this.prefs = prefs;
 
     final Label label = session.getHeaderLabel ();
@@ -46,23 +44,22 @@ class ReplayStage extends Stage
 
     final HBox checkBoxes = new HBox ();
     checkBoxes.setSpacing (15);
+    checkBoxes.setPadding (new Insets (10, 10, 10, 10));    // trbl
     checkBoxes.getChildren ().addAll (showTelnetCB, show3270ECB);
 
-    final VBox leftPane = getVBox ();
-    leftPane.getChildren ().addAll (table, checkBoxes);
-
+    SessionTable table = new SessionTable ();
     CommandPane commandPane =
         new CommandPane (table, CommandPane.ProcessInstruction.DoProcess);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
-
-    splitPane.getItems ().addAll (leftPane, commandPane);
+    splitPane.getItems ().addAll (table, commandPane);
     splitPane.setDividerPositions (0.37f);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (splitPane);
     borderPane.setTop (label);
+    borderPane.setBottom (checkBoxes);
 
     setTitle ("Replay Commands - " + path.getFileName ());
 
@@ -88,15 +85,6 @@ class ReplayStage extends Stage
     sortedData.comparatorProperty ().bind (table.comparatorProperty ());
     table.setItems (sortedData);
 
-    Rectangle2D primaryScreenBounds =
-        javafx.stage.Screen.getPrimary ().getVisualBounds ();
-    String osName = System.getProperty ("os.name");
-    if (osName.startsWith ("Mac"))
-    {
-      setX (primaryScreenBounds.getMinX () + primaryScreenBounds.getWidth ());
-      setY (primaryScreenBounds.getMinY ());
-    }
-
     // show the first displayable screen
     SessionRecord dataRecord = session.getNext (SessionRecordType.TN3270);
     if (dataRecord != null)
@@ -106,6 +94,16 @@ class ReplayStage extends Stage
 
     Scene scene = new Scene (borderPane);
     setScene (scene);
+
+    //    Rectangle2D primaryScreenBounds =
+    //        javafx.stage.Screen.getPrimary ().getVisualBounds ();
+    //    System.out.println (primaryScreenBounds);
+    //    String osName = System.getProperty ("os.name");
+    //    if (osName.startsWith ("Mac"))
+    //    {
+    //    setX (primaryScreenBounds.getMinX () + primaryScreenBounds.getWidth ());
+    //    setY (primaryScreenBounds.getMinY ());
+    //    }
   }
 
   private void change (SessionTable table, FilteredList<SessionRecord> filteredData)

@@ -9,6 +9,7 @@ import java.util.prefs.Preferences;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -26,6 +27,7 @@ public class Console extends Application
       MAINFRAME_EMULATOR_PORT, true, false);
 
   private Stage primaryStage;
+  private Rectangle2D primaryScreenBounds;
 
   private Preferences prefs;
   private Screen screen;
@@ -71,6 +73,8 @@ public class Console extends Application
     pluginsStage = new PluginsStage (prefs);
     optionStage = new OptionStage (prefs, pluginsStage);
 
+    primaryScreenBounds = javafx.stage.Screen.getPrimary ().getVisualBounds ();
+
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());
     optionStage.cancelButton.setOnAction (e -> optionStage.hide ());
     optionStage.show ();
@@ -102,12 +106,16 @@ public class Console extends Application
             setConsolePane (screen, null);                    // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
+            replayStage.setX (primaryScreenBounds.getMinX ()
+                + primaryScreenBounds.getWidth () - 300);
+            replayStage.setY (primaryScreenBounds.getMinY ());
+            replayStage.setHeight (primaryScreenBounds.getHeight () - 20);
             replayStage.show ();
           }
           catch (Exception e)
           {
             e.printStackTrace ();
-            errorMessage = "Error reading file";
+            errorMessage = "Error creating replay window";
           }
 
         break;
