@@ -37,7 +37,7 @@ public class PluginsStage extends PreferencesStage
 
   private final List<PluginEntry> plugins = new ArrayList<> (MAX_PLUGINS);
   private Menu menu;
-  private final MenuItem editMenuItem = new MenuItem ("Edit plugins");
+  private final MenuItem editMenuItem = new MenuItem ("Plugin Manager...");
   private int requestMenus;
   private int baseMenuSize;
   private Screen screen;
@@ -133,8 +133,8 @@ public class PluginsStage extends PreferencesStage
           try
           {
             plugin.processAuto (pluginScreen);
-            //            if (result == null)
-            //              result = pluginResult;      // only the first result is processed
+            //     if (result == null)
+            //       result = pluginResult;      // only the first result is processed
           }
           catch (Exception e)
           {
@@ -174,10 +174,6 @@ public class PluginsStage extends PreferencesStage
   private void setMenu (Site site)
   {
     menu = new Menu ("Plugins");
-
-    MenuItem itemEditPlugins = new MenuItem ("Edit plugins");
-    itemEditPlugins.setOnAction (e -> show ());
-    menu.getItems ().addAll (itemEditPlugins, new SeparatorMenuItem ());
 
     int activeCount = 0;
     for (PluginEntry pluginEntry : plugins)
