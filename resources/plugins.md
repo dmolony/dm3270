@@ -21,10 +21,10 @@ public interface Plugin
   {
     return false;
   }
-  default void processAuto (PluginData screen)
+  default void processAuto (PluginData data)
   {
   }
-  default void processRequest (PluginData screen)
+  default void processRequest (PluginData data)
   {
   }
 }
