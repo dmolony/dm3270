@@ -35,10 +35,10 @@ public interface Plugin
 }
 ```
 #### Linking
-Use the Plugins Manager to connect the class name to a command name. The command will appear as a menu item on the Plugins menu.
-##### Plugins Manager
+Use the Plugin Manager to connect the class name to a command name. The command will appear as a menu item on the Plugins menu.
+##### Plugin Manager
 ![Plugins](plugins.png?raw=true "plugin list")
 ##### Plugins Menu
-![Plugins](pluginmenu.png?raw=true "plugin menu")
+![Plugins](pluginmenu.png?raw=true "plugins menu")
 #### Activation
-Select the plugin from the plugins menu. Plugins that are defined as Auto are made active automatically.
+Select the plugin from the plugins menu. Plugins that are defined as Auto are made active by default.
