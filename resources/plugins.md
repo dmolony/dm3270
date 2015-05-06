@@ -41,4 +41,4 @@ Use the Plugin Manager to connect the class name to a command name. The command 
 ##### Plugins Menu
 ![Plugins](pluginmenu.png?raw=true "plugins menu")
 #### Activation
-Select the plugin from the plugins menu. Plugins that are defined as Auto are made active by default.
+Select the plugin from the plugins menu. Plugins that are defined as Active are automatically activated.
