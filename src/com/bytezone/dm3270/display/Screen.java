@@ -410,7 +410,6 @@ public class Screen extends Canvas
     {
       setAID (data.getKey ());
       AIDCommand command = readModifiedFields ();
-      System.out.println (command);
       return command;
     }
     return null;
