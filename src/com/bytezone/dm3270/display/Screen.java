@@ -390,7 +390,7 @@ public class Screen extends Canvas
 
     for (ScreenField screenField : data.changedFields)
     {
-      Field field = getField (screenField.location);    // uses first display location
+      Field field = getField (screenField.location.location);   // first display location
       assert field != null;
       if (field != null)    // should be impossible
       {
@@ -417,7 +417,6 @@ public class Screen extends Canvas
 
     if (data.cursorMoved ())
     {
-      //      int newLocation = data.cursorRow * columns + data.cursorColumn;
       int newLocation = data.newCursorLocation.location;
       if (newLocation != currentLocation)
         cursor.moveTo (newLocation);

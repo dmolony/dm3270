@@ -4,9 +4,7 @@ public class ScreenField
 {
   private PluginData pluginData;
 
-  public final int location;
-  public final int row;
-  public final int column;
+  public final ScreenLocation location;
   public final int length;
   public final boolean isProtected;
   public final boolean isAlpha;
@@ -17,9 +15,7 @@ public class ScreenField
   public ScreenField (int location, int row, int column, int length, boolean isProtected,
       boolean isAlpha, String data)
   {
-    this.location = location;
-    this.row = row;
-    this.column = column;
+    this.location = new ScreenLocation (location);
     this.length = length;
     this.isProtected = isProtected;
     this.isAlpha = isAlpha;
@@ -48,9 +44,29 @@ public class ScreenField
     this.pluginData = pluginData;
   }
 
+  public boolean contains (ScreenLocation position)
+  {
+    if (location.location == position.location)
+      return true;
+
+    int first = location.location - 1;      // include attribute position
+    int last = first + length;
+
+    // normalise first and last positions
+    while (first < 0)
+      first += ScreenLocation.screenLocations;
+    while (last > ScreenLocation.screenLocations)
+      last -= ScreenLocation.screenLocations;
+
+    if (first <= last)
+      return position.location >= first && position.location <= last;
+    return position.location >= first || position.location <= last;
+  }
+
   @Override
   public String toString ()
   {
-    return String.format ("%2d  %2d  %4d  %-50.50s", row, column, length, data);
+    return String.format ("%2d  %2d  %4d  %-50.50s", location.row, location.column,
+                          length, data);
   }
 }

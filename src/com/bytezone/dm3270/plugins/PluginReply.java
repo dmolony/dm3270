@@ -81,8 +81,8 @@ class PluginReply
     {
       text.append ("Fields changed:\n");
       for (ScreenField field : fieldsChanged)
-        text.append (String.format ("    %02d / %02d .... %s%n", field.row, field.column,
-                                    field.newData));
+        text.append (String.format ("    %02d / %02d .... %s%n", field.location.row,
+                                    field.location.column, field.newData));
     }
 
     text.deleteCharAt (text.length () - 1);

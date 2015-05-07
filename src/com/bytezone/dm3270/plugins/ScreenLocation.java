@@ -2,9 +2,9 @@ package com.bytezone.dm3270.plugins;
 
 public class ScreenLocation
 {
-  public static final int screenRows = 24;
-  public static final int screenColumns = 80;
-  public static final int screenLocations = 1920;
+  static final int screenRows = 24;
+  static final int screenColumns = 80;
+  static final int screenLocations = 1920;
 
   public final int row;
   public final int column;

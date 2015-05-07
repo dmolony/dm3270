@@ -7,12 +7,8 @@ public class PluginData
 {
   public final int sequence;
   public final List<ScreenField> screenFields;
-  //  public final int initialCursorRow;
-  //  public final int initialCursorColumn;
   public final ScreenLocation initialCursorLocation;
 
-  //  public int cursorRow;
-  //  public int cursorColumn;
   public ScreenLocation newCursorLocation;
   public byte key;
   public final List<ScreenField> changedFields = new ArrayList<> ();
@@ -20,8 +16,6 @@ public class PluginData
   public PluginData (int sequence, int row, int column, List<ScreenField> fields)
   {
     this.sequence = sequence;
-    //    cursorRow = initialCursorRow = row;
-    //    cursorColumn = initialCursorColumn = column;
     initialCursorLocation = new ScreenLocation (row, column);
     screenFields = fields;
   }
@@ -64,6 +58,15 @@ public class PluginData
     return null;
   }
 
+  public ScreenField getField (ScreenLocation location)
+  {
+    for (ScreenField field : screenFields)
+      if (field.contains (location))
+        return field;
+
+    return null;
+  }
+
   public String listFields ()
   {
     StringBuilder text = new StringBuilder ();
@@ -77,8 +80,6 @@ public class PluginData
 
   public void setNewCursorPosition (int row, int column)
   {
-    //    cursorRow = row;
-    //    cursorColumn = column;
     newCursorLocation = new ScreenLocation (row, column);
   }
 
@@ -93,7 +94,6 @@ public class PluginData
 
   public boolean cursorMoved ()
   {
-    //    return initialCursorRow != cursorRow || initialCursorColumn != cursorColumn;
     return newCursorLocation != null;
   }
 
