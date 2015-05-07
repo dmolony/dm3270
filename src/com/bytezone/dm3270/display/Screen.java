@@ -38,7 +38,6 @@ import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class Screen extends Canvas
 {
-  private static final boolean DONT_REBUILD_FIELDS = false;
   private static final byte[] buffer = new byte[4096];
 
   private final ScreenPosition[] screenPositions;
@@ -70,6 +69,11 @@ public class Screen extends Canvas
   public final int rows;
   public final int columns;
   public final int screenSize;
+
+  public enum BuildInstruction
+  {
+    BUILD_FIELDS, DONT_BUILD_FIELDS
+  }
 
   public Screen (int rows, int columns, Preferences prefs, Function function)
   {
@@ -110,7 +114,7 @@ public class Screen extends Canvas
     ((Stage) getScene ().getWindow ()).sizeToScene ();
 
     eraseScreen ();
-    drawScreen (false);
+    drawScreen (BuildInstruction.DONT_BUILD_FIELDS);
   }
 
   public String getFontName ()
@@ -210,7 +214,7 @@ public class Screen extends Canvas
     restoreKeyboard ();
     resetModified ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
-    drawScreen (DONT_REBUILD_FIELDS);
+    drawScreen (BuildInstruction.DONT_BUILD_FIELDS);
 
     if (firstUnprotectedField != null)
       cursor.moveTo (firstUnprotectedField.getFirstLocation ());
@@ -223,9 +227,9 @@ public class Screen extends Canvas
     drawPosition (screenPositions[position], row, col, hasCursor);
   }
 
-  public void drawScreen (boolean buildFields)
+  public void drawScreen (BuildInstruction buildFields)
   {
-    if (buildFields)
+    if (buildFields == BuildInstruction.BUILD_FIELDS)
       fieldManager.buildFields ();      // what about resetModified?
 
     int pos = 0;

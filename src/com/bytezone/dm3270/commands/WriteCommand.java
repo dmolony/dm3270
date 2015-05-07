@@ -5,14 +5,13 @@ import java.util.List;
 
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.Screen.BuildInstruction;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 
 public class WriteCommand extends Command
 {
-  private static final boolean REBUILD_FIELDS = true;
-
-  private final boolean erase;
+  private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
 
@@ -20,7 +19,7 @@ public class WriteCommand extends Command
   {
     super (buffer, offset, length, screen);
 
-    this.erase = erase;
+    this.eraseWrite = erase;
 
     // ?????
     // I think that this command (when sourced from a WSF command) has an address
@@ -61,7 +60,7 @@ public class WriteCommand extends Command
     super (null);
 
     this.writeControlCharacter = wcc;
-    this.erase = erase;
+    this.eraseWrite = erase;
     this.orders.addAll (orders);
 
     // create new data buffer
@@ -90,7 +89,7 @@ public class WriteCommand extends Command
     int cursorLocation = cursor.getLocation ();
     screen.lockKeyboard ();
 
-    if (erase)
+    if (eraseWrite)
       screen.clearScreen ();
 
     if (orders.size () > 0)
@@ -99,13 +98,12 @@ public class WriteCommand extends Command
         order.process (screen);
 
       cursor.moveTo (cursorLocation);
-      screen.drawScreen (REBUILD_FIELDS);
+      screen.drawScreen (BuildInstruction.BUILD_FIELDS);
     }
 
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);     // may unlock the keyboard
 
-    System.out.println ("hhhhheeerrrreeee");
     if (!screen.isKeyboardLocked () && screen.countFields () > 0)
       reply = screen.processPluginAuto ();
   }
@@ -119,7 +117,7 @@ public class WriteCommand extends Command
   @Override
   public String getName ()
   {
-    return erase ? "Erase Write" : "Write";
+    return eraseWrite ? "Erase Write" : "Write";
   }
 
   @Override
