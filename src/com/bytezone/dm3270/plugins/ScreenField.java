@@ -2,6 +2,8 @@ package com.bytezone.dm3270.plugins;
 
 public class ScreenField
 {
+  private PluginData pluginData;
+
   public final int location;
   public final int row;
   public final int column;
@@ -9,8 +11,8 @@ public class ScreenField
   public final boolean isProtected;
   public final boolean isAlpha;
   public final String data;
+
   public String newData;
-  private PluginData pluginData;
 
   public ScreenField (int location, int row, int column, int length, boolean isProtected,
       boolean isAlpha, String data)
@@ -37,6 +39,7 @@ public class ScreenField
 
   public void change (String newValue)
   {
+    assert pluginData != null;
     change (newValue, pluginData);
   }
 
