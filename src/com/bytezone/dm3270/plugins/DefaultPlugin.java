@@ -23,7 +23,17 @@ public abstract class DefaultPlugin implements Plugin
     return "";
   }
 
-  protected int countModifiableFields (PluginData data)
+  //  protected static ScreenField getCursorField (PluginData data)
+  //  {
+  //    for (ScreenField field : data.screenFields)
+  //    {
+  //      if (field.contains (data.cursorRow, data.cursorColumn))
+  //        return field;
+  //    }
+  //    return null;
+  //  }
+
+  protected static int countModifiableFields (PluginData data)
   {
     int count = 0;
     for (ScreenField field : data.screenFields)
@@ -32,7 +42,7 @@ public abstract class DefaultPlugin implements Plugin
     return count;
   }
 
-  protected List<ScreenField> getModifiableFields (PluginData data)
+  protected static List<ScreenField> getModifiableFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
     for (ScreenField field : data.screenFields)
@@ -41,7 +51,7 @@ public abstract class DefaultPlugin implements Plugin
     return fields;
   }
 
-  protected List<ScreenField> getProtectedFields (PluginData data)
+  protected static List<ScreenField> getProtectedFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
     for (ScreenField field : data.screenFields)
@@ -50,7 +60,7 @@ public abstract class DefaultPlugin implements Plugin
     return fields;
   }
 
-  protected List<ScreenField> getAlphanumericFields (PluginData data)
+  protected static List<ScreenField> getAlphanumericFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
     for (ScreenField field : data.screenFields)
@@ -59,7 +69,7 @@ public abstract class DefaultPlugin implements Plugin
     return fields;
   }
 
-  protected List<ScreenField> getNumericFields (PluginData data)
+  protected static List<ScreenField> getNumericFields (PluginData data)
   {
     List<ScreenField> fields = new ArrayList<> ();
     for (ScreenField field : data.screenFields)

@@ -144,6 +144,11 @@ public class FieldManager
     return fields;
   }
 
+  public int size ()
+  {
+    return fields.size ();
+  }
+
   public void drawFields ()
   {
     for (Field field : fields)

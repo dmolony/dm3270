@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
+import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -46,6 +47,7 @@ public class Screen extends Canvas
   private final ContextManager contextHandler = new ContextManager ();
   private final Cursor cursor = new Cursor (this);
   private final Function function;
+  private ConsolePane consolePane;
 
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
@@ -124,6 +126,11 @@ public class Screen extends Canvas
   public Function getFunction ()
   {
     return function;
+  }
+
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    this.consolePane = consolePane;
   }
 
   public void setPlugins (PluginsStage pluginsStage)
@@ -270,6 +277,11 @@ public class Screen extends Canvas
     return false;
   }
 
+  public int countFields ()
+  {
+    return fieldManager.size ();
+  }
+
   public Field getField (int position)
   {
     return fieldManager.getField (position);
@@ -351,12 +363,17 @@ public class Screen extends Canvas
   // which sets menuItem.setOnAction (e -> screen.processPluginRequest (plugin))
   public void processPluginRequest (Plugin plugin)
   {
+    assert consolePane != null;
     int cursorPosition = cursor.getLocation ();
     PluginData pluginData =
         fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
                                       cursorPosition % columns);
     plugin.processRequest (pluginData);
-    processReply (pluginData);
+    AIDCommand command = processReply (pluginData);
+    if (command != null)
+    {
+      consolePane.sendAID (command);
+    }
   }
 
   private AIDCommand processReply (PluginData data)

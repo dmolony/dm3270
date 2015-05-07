@@ -105,7 +105,8 @@ public class WriteCommand extends Command
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);     // may unlock the keyboard
 
-    if (!screen.isKeyboardLocked () && orders.size () > 0)
+    System.out.println ("hhhhheeerrrreeee");
+    if (!screen.isKeyboardLocked () && screen.countFields () > 0)
       reply = screen.processPluginAuto ();
   }
 

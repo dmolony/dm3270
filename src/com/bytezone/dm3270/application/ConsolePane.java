@@ -43,8 +43,8 @@ import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
 
-class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveListener,
-    KeyboardStatusListener
+public class ConsolePane extends BorderPane implements FieldChangeListener,
+    CursorMoveListener, KeyboardStatusListener
 {
   private static String[] preferredFontNames = { //
       "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
@@ -94,6 +94,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
       PluginsStage pluginsStage)
   {
     this.screen = screen;
+    this.screen.setConsolePane (this);
 
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
@@ -324,7 +325,7 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     }
   }
 
-  // called from ConsoleKeyPress.sendAID()
+  // called from ConsoleKeyPress.handle (KeyEvent e)
   void sendAID (byte aid)
   {
     if (screen.isInsertMode ())
@@ -333,6 +334,30 @@ class ConsolePane extends BorderPane implements FieldChangeListener, CursorMoveL
     screen.setAID (aid);
 
     AIDCommand command = screen.readModifiedFields ();
+
+    assert telnetState != null;
+
+    if (telnetState.does3270Extended ())
+    {
+      byte[] buffer = new byte[5];
+      Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
+      CommandHeader header = new CommandHeader (buffer);
+      TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header, command);
+      telnetState.write (extendedCommand.getTelnetData ());
+    }
+    else
+      telnetState.write (command.getTelnetData ());
+  }
+
+  // called from Screen.processPluginRequest (Plugin plugin)
+  public void sendAID (AIDCommand command)
+  {
+    //    if (screen.isInsertMode ())
+    //      screen.toggleInsertMode ();
+    //    screen.lockKeyboard ();
+    //    screen.setAID (aid);
+
+    //    AIDCommand command = screen.readModifiedFields ();
 
     assert telnetState != null;
 
