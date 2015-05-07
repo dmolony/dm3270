@@ -21,6 +21,12 @@ public class ScreenLocation
   {
     this.row = row;
     this.column = column;
-    location = row * column;
+    location = row * screenColumns + column;
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("[Location=%d, Row=%d, Column=%d]", location, row, column);
   }
 }

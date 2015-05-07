@@ -67,6 +67,11 @@ public class PluginData
     return null;
   }
 
+  public ScreenField getCursorField ()
+  {
+    return getField (initialCursorLocation);
+  }
+
   public String listFields ()
   {
     StringBuilder text = new StringBuilder ();
