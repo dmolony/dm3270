@@ -74,7 +74,7 @@ public class Console extends Application
     optionStage = new OptionStage (prefs, pluginsStage);
 
     primaryScreenBounds = javafx.stage.Screen.getPrimary ().getVisualBounds ();
-    if (true)
+    if (false)
       System.out.println (javafx.stage.Screen.getPrimary ().getDpi ());
 
     optionStage.okButton.setOnAction (e -> startSelectedFunction ());

@@ -59,21 +59,28 @@ public class WriteCommand extends Command
   public WriteCommand (WriteControlCharacter wcc, boolean erase, List<Order> orders)
   {
     super (null);
+
     this.writeControlCharacter = wcc;
     this.erase = erase;
     this.orders.addAll (orders);
 
-    // create buffer
-    int length = 2;     // command + wcc
+    // create new data buffer
+    int length = 2;                   // command + WCC
     for (Order order : orders)
       length += order.size ();
-
     data = new byte[length];
+
     int ptr = 0;
+
+    // add the command and WCC
     data[ptr++] = erase ? ERASE_WRITE_F5 : WRITE_F1;
     data[ptr++] = wcc.getValue ();
+
+    // add each order
     for (Order order : orders)
       ptr = order.pack (data, ptr);
+
+    assert ptr == data.length;
   }
 
   @Override
@@ -97,13 +104,6 @@ public class WriteCommand extends Command
 
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);     // may unlock the keyboard
-
-    if (false)
-    {
-      screen.getScreenCursor ().moveTo (cursorLocation);
-      int newCursorLocation = screen.getScreenCursor ().getLocation ();
-      System.out.printf ("Cursor now at %d%n", newCursorLocation);
-    }
 
     if (!screen.isKeyboardLocked () && orders.size () > 0)
       reply = screen.processPluginAuto ();
