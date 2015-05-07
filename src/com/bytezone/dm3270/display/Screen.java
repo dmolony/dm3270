@@ -417,7 +417,8 @@ public class Screen extends Canvas
 
     if (data.cursorMoved ())
     {
-      int newLocation = data.cursorRow * columns + data.cursorColumn;
+      //      int newLocation = data.cursorRow * columns + data.cursorColumn;
+      int newLocation = data.newCursorLocation.location;
       if (newLocation != currentLocation)
         cursor.moveTo (newLocation);
     }
