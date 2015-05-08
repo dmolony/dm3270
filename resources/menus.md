@@ -1,7 +1,7 @@
 #### Menus
 The Commands menu is available from the first screen, and the Fonts and Plugins menus are available from the console screen.
 ##### Commands menu
-![Debug](commandsmenu.png?raw=true "debug")
+![Debug](commandsmenu.png?raw=true "debug")  
 Select Release Mode to switch between Release Mode and Debug Mode. Select Plugins to bring up the Plugin Manager.
 ##### Font menu
 ![Fonts](fonts.png?raw=true "fonts")
