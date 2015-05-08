@@ -14,5 +14,5 @@ Monospaced comes by default with Java, the others may have to be installed. Here
 * http://wesbos.com/programming-fonts/
 
 ##### Plugins menu  
-![Plugins](pluginsmenu.png?raw=true "plugins")  
+![Plugins](pluginmenu.png?raw=true "plugins")  
 The Plugin Manager is where you link your plugins to their menu command names.
