@@ -4,7 +4,7 @@ The Commands menu is available from the first screen, and the Fonts and Plugins 
 ![Debug](commandsmenu.png?raw=true "debug")  
 Select Release Mode to switch between Release Mode and Debug Mode. Select Plugins to bring up the Plugin Manager.
 ##### Font menu
-![Fonts](fonts.png?raw=true "fonts")
+![Fonts](fonts.png?raw=true "fonts")  
 Here you may choose the font and font size for the terminal screen, and whether to run in Debug or Release mode. The fonts listed are the only ones that dm3270 will attempt to load, and then only if you have them installed on your machine. Most of the fonts are freely available on the web.
 
 Monospaced comes by default with Java, the others may have to be installed. Here are some links you may find helpful.
