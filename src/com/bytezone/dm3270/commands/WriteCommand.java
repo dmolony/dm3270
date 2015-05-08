@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.Screen.BuildInstruction;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 
@@ -98,7 +97,8 @@ public class WriteCommand extends Command
         order.process (screen);
 
       cursor.moveTo (cursorLocation);
-      screen.drawScreen (BuildInstruction.BUILD_FIELDS);
+      screen.buildFields ();
+      screen.drawScreen ();
     }
 
     if (writeControlCharacter != null)

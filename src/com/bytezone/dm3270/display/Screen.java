@@ -114,7 +114,7 @@ public class Screen extends Canvas
     ((Stage) getScene ().getWindow ()).sizeToScene ();
 
     eraseScreen ();
-    drawScreen (BuildInstruction.DONT_BUILD_FIELDS);
+    drawScreen ();
   }
 
   public String getFontName ()
@@ -220,7 +220,7 @@ public class Screen extends Canvas
     restoreKeyboard ();
     resetModified ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
-    drawScreen (BuildInstruction.DONT_BUILD_FIELDS);
+    drawScreen ();
 
     if (firstUnprotectedField != null)
       cursor.moveTo (firstUnprotectedField.getFirstLocation ());
@@ -233,11 +233,13 @@ public class Screen extends Canvas
     drawPosition (screenPositions[position], row, col, hasCursor);
   }
 
-  public void drawScreen (BuildInstruction buildFields)
+  public void buildFields ()
   {
-    if (buildFields == BuildInstruction.BUILD_FIELDS)
-      fieldManager.buildFields ();      // what about resetModified?
+    fieldManager.buildFields ();      // what about resetModified?
+  }
 
+  public void drawScreen ()
+  {
     int pos = 0;
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
@@ -249,8 +251,6 @@ public class Screen extends Canvas
       insertedCursorPosition = -1;
       cursor.setVisible (true);
     }
-
-    // should process plugins here (if WRITE with data)
 
     drawPosition (cursor.getLocation (), true);
   }
