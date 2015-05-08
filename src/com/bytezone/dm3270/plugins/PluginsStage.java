@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -51,50 +50,33 @@ public class PluginsStage extends PreferencesStage
 
     editMenuItem.setOnAction (e -> this.show ());
 
-    String[] headings = { "Menu entry", "Class name", "Active" };
-    int[] columnWidths = { 130, 300, 60 };
-    Type[] fieldTypes = { Type.TEXT, Type.TEXT, Type.BOOLEAN };
+    fields.add (new PreferenceField ("Menu entry", 130, Type.TEXT));
+    fields.add (new PreferenceField ("Class name", 300, Type.TEXT));
+    fields.add (new PreferenceField ("Active", 60, Type.BOOLEAN));
 
-    VBox vbox = new VBox ();
-    vbox.setSpacing (5);
-    vbox.setPadding (new Insets (0, 15, 0, 15));    // trbl
-
-    // headings
-    HBox hbox = new HBox ();
-    hbox.setSpacing (5);
-    hbox.setPadding (new Insets (10, 5, 0, 5));    // trbl
-
-    for (int i = 0; i < headings.length; i++)
-    {
-      Label heading = new Label (headings[i]);
-      hbox.getChildren ().add (heading);
-      heading.setPrefWidth (columnWidths[i]);
-      if (fieldTypes[i] == Type.BOOLEAN)
-        heading.setAlignment (Pos.CENTER);
-    }
-
-    vbox.getChildren ().add (hbox);
+    VBox vbox = getHeadings ();
 
     // input fields
     for (PluginEntry pluginEntry : plugins)
     {
-      hbox = new HBox ();
+      HBox hbox = new HBox ();
       hbox.setSpacing (5);
       hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
 
-      for (int i = 0; i < headings.length; i++)
+      for (int i = 0; i < fields.size (); i++)
       {
-        if (fieldTypes[i] == Type.TEXT || fieldTypes[i] == Type.NUMBER)
+        PreferenceField field = fields.get (i);
+        if (field.type == Type.TEXT || field.type == Type.NUMBER)
         {
           TextField textField = pluginEntry.getTextField (i);
-          textField.setPrefWidth (columnWidths[i]);
+          textField.setPrefWidth (field.width);
           hbox.getChildren ().add (textField);
         }
-        else if (fieldTypes[i] == Type.BOOLEAN)
+        else if (field.type == Type.BOOLEAN)
         {
           HBox box = new HBox ();
           CheckBox checkBox = pluginEntry.getCheckBox (i);
-          box.setPrefWidth (columnWidths[i]);
+          box.setPrefWidth (field.width);
           box.setAlignment (Pos.CENTER);
           box.getChildren ().add (checkBox);
           hbox.getChildren ().add (box);

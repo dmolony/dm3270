@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -32,47 +31,35 @@ public class SiteListStage extends PreferencesStage
 
     readPrefs (key, max);
 
-    String[] headings = { key + " name", "URL", "Port", "3270-E", "Plugins" };
-    int[] columnWidths = { 150, 150, 50, 50, 50 };
-    Type[] fieldTypes = { Type.TEXT, Type.TEXT, Type.NUMBER, Type.BOOLEAN, Type.BOOLEAN };
+    fields.add (new PreferenceField (key + " name", 150, Type.TEXT));
+    fields.add (new PreferenceField ("URL", 150, Type.TEXT));
+    fields.add (new PreferenceField ("Port", 50, Type.NUMBER));
+    fields.add (new PreferenceField ("3270-E", 50, Type.BOOLEAN));
+    fields.add (new PreferenceField ("Plugins", 50, Type.BOOLEAN));
 
-    VBox vbox = new VBox ();
-    vbox.setSpacing (5);
-    vbox.setPadding (new Insets (0, 15, 0, 15));    // trbl
-
-    // headings
-    HBox hbox = new HBox ();
-    hbox.setSpacing (5);
-    hbox.setPadding (new Insets (10, 5, 0, 5));    // trbl
-
-    for (int i = 0; i < headings.length; i++)
-    {
-      Label heading = new Label (headings[i]);
-      hbox.getChildren ().add (heading);
-      heading.setMinWidth (columnWidths[i]);
-    }
-    vbox.getChildren ().add (hbox);
+    VBox vbox = getHeadings ();
 
     // input fields
     for (Site site : sites)
     {
-      hbox = new HBox ();
+      HBox hbox = new HBox ();
       hbox.setSpacing (5);
       hbox.setPadding (new Insets (0, 5, 0, 5));    // trbl
 
-      for (int i = 0; i < headings.length; i++)
+      for (int i = 0; i < fields.size (); i++)
       {
-        if (fieldTypes[i] == Type.TEXT || fieldTypes[i] == Type.NUMBER)
+        PreferenceField field = fields.get (i);
+        if (field.type == Type.TEXT || field.type == Type.NUMBER)
         {
           TextField textField = site.getTextField (i);
-          textField.setMaxWidth (columnWidths[i]);
+          textField.setMaxWidth (field.width);
           hbox.getChildren ().add (textField);
         }
-        else if (fieldTypes[i] == Type.BOOLEAN)
+        else if (field.type == Type.BOOLEAN)
         {
           HBox box = new HBox ();
           CheckBox checkBox = site.getCheckBoxField (i);
-          box.setPrefWidth (columnWidths[i]);
+          box.setPrefWidth (field.width);
           box.setAlignment (Pos.CENTER);
           box.getChildren ().add (checkBox);
           hbox.getChildren ().add (box);
