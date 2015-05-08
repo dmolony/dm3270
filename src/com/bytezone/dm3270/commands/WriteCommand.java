@@ -87,6 +87,7 @@ public class WriteCommand extends Command
     Cursor cursor = screen.getScreenCursor ();
     int cursorLocation = cursor.getLocation ();
     screen.lockKeyboard ();
+    boolean drawScreen = false;
 
     if (eraseWrite)
       screen.clearScreen ();
@@ -98,14 +99,20 @@ public class WriteCommand extends Command
 
       cursor.moveTo (cursorLocation);
       screen.buildFields ();
-      screen.drawScreen ();
+      drawScreen = true;
     }
 
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);     // may unlock the keyboard
 
     if (!screen.isKeyboardLocked () && screen.countFields () > 0)
+    {
       reply = screen.processPluginAuto ();
+      // check for suppressDisplay
+    }
+
+    if (drawScreen)
+      screen.drawScreen ();
   }
 
   // Used by Session.checkServerName() when searching for the server's name

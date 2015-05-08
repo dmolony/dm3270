@@ -12,6 +12,7 @@ public class PluginData
   public ScreenLocation newCursorLocation;
   public byte key;
   public final List<ScreenField> changedFields = new ArrayList<> ();
+  public boolean suppressDisplay;
 
   public PluginData (int sequence, int row, int column, List<ScreenField> fields)
   {
