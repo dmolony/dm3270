@@ -12,5 +12,5 @@ Monospaced comes by default with Java, the others may have to be installed. Here
 * http://www.slant.co/topics/67/~what-are-the-best-programming-fonts
 * http://stackoverflow.com/questions/4689/recommended-fonts-for-programming
 * http://wesbos.com/programming-fonts/
-* ##### Plugins menu
+##### Plugins menu  
 ![Plugins](plugins.png?raw=true "plugins")  
