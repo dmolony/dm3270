@@ -7,6 +7,7 @@ public class ScreenField
   public final ScreenLocation location;
   public final int length;
   public final boolean isProtected;
+  public final boolean isModifiable;
   public final boolean isAlpha;
   public final String data;
 
@@ -18,6 +19,7 @@ public class ScreenField
     this.location = new ScreenLocation (location);
     this.length = length;
     this.isProtected = isProtected;
+    this.isModifiable = !isProtected;
     this.isAlpha = isAlpha;
     this.data = data;
   }
