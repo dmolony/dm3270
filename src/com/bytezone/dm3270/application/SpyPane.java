@@ -48,25 +48,18 @@ public class SpyPane extends BorderPane
 
     final HBox hbox = new HBox ();
     hbox.setSpacing (15);
+    hbox.setPadding (new Insets (10, 10, 10, 10));    // trbl
     hbox.getChildren ().addAll (btnSave, btnScramble);
-
-    final VBox leftPane = getVBox ();
-    leftPane.getChildren ().addAll (table, hbox);
 
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
 
-    splitPane.getItems ().addAll (leftPane, commandPane);
+    splitPane.getItems ().addAll (table, commandPane);
     splitPane.setDividerPositions (0.37f);
 
-    //    BorderPane borderPane = new BorderPane ();
     setCenter (splitPane);
     setTop (label);
-
-    //    setTitle ("Terminal Spy");
-
-    //    Scene scene = new Scene (borderPane);
-    //    setScene (scene);
+    setBottom (hbox);
 
     String message =
         String.format ("Connect a terminal to localhost:%d%n%n"
@@ -75,19 +68,6 @@ public class SpyPane extends BorderPane
 
     table.setPlaceholder (new Label (message));
     table.setItems (session.getDataRecords ());
-
-    //    Rectangle2D primaryScreenBounds =
-    //        javafx.stage.Screen.getPrimary ().getVisualBounds ();
-    //    String osName = System.getProperty ("os.name");
-    //    if (osName.startsWith ("Mac"))
-    //    {
-    //      System.out.println (primaryScreenBounds.getMinX ()
-    //          + primaryScreenBounds.getWidth ());
-    //      System.out.println (primaryScreenBounds.getMinY ());
-    //    }
-
-    //    setX (1200);
-    //    setY (20);
 
     btnSave.setOnAction ( (e) -> {
       FileChooser fileChooser = new FileChooser ();
@@ -107,8 +87,6 @@ public class SpyPane extends BorderPane
         session.safeSave (file);
       }
     });
-
-    //    setOnCloseRequest (e -> Platform.exit ());
   }
 
   protected VBox getVBox ()

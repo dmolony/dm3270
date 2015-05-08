@@ -140,7 +140,9 @@ public class Console extends Application
         else if (clientSite == null)
           errorMessage = "No client selected";
         else
+        {
           setSpyPane (createScreen (Function.SPY), serverSite, clientSite);
+        }
 
         break;
 
@@ -185,13 +187,15 @@ public class Console extends Application
   private void setSpyPane (Screen screen, Site server, Site client)
   {
     spyPane = new SpyPane (screen, server, client);
-    Scene scene = new Scene (spyPane);
 
-    primaryStage.setScene (scene);
-    primaryStage.sizeToScene ();
+    primaryStage.setScene (new Scene (spyPane));
+    //    primaryStage.sizeToScene ();
     primaryStage.setX (0);
     primaryStage.setY (0);
     primaryStage.setTitle ("Terminal Spy");
+
+    double height = primaryScreenBounds.getHeight () - 20;
+    primaryStage.setHeight (Math.min (height, 1200));
 
     primaryStage.show ();
     spyPane.startServer ();

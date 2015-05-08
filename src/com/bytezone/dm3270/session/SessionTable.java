@@ -10,7 +10,6 @@ public class SessionTable extends TableView<SessionRecord>
 {
   public SessionTable ()
   {
-    //    setPrefHeight (500);
     setStyle ("-fx-font-size: 11;");
     setFixedCellSize (20.0);
 
