@@ -24,6 +24,11 @@ public class ScreenLocation
     location = row * screenColumns + column;
   }
 
+  public boolean matches (ScreenLocation other)
+  {
+    return this.location == other.location;
+  }
+
   @Override
   public String toString ()
   {

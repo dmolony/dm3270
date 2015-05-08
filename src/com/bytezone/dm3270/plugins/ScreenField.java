@@ -66,7 +66,12 @@ public class ScreenField
   @Override
   public String toString ()
   {
-    return String.format ("%2d  %2d  %4d  %-50.50s", location.row, location.column,
-                          length, data);
+    if (data == null || data.length () <= 40)
+      return String.format ("%2d  %2d  %4d  %s", location.row, location.column, length,
+                            data);
+    String line1 = data.substring (0, 40);
+    String line2 = data.substring (40);
+    return String.format ("%2d  %2d  %4d  %s%n                              %s",
+                          location.row, location.column, length, line1, line2);
   }
 }

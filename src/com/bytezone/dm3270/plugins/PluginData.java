@@ -110,6 +110,7 @@ public class PluginData
     text.append (String.format ("Sequence      : %d%n", sequence));
     text.append (String.format ("Screen fields : %d%n", screenFields.size ()));
     text.append (String.format ("Modifiable    : %d%n", getModifiableFields ().size ()));
+    text.append (String.format ("Cursor field  : %s%n", getCursorField ()));
 
     int count = 0;
     for (ScreenField sf : screenFields)
