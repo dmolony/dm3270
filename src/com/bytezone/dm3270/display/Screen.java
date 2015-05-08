@@ -190,6 +190,12 @@ public class Screen extends Canvas
     return contextHandler;
   }
 
+  public void resetInsertMode ()
+  {
+    if (insertMode)
+      toggleInsertMode ();
+  }
+
   public void toggleInsertMode ()
   {
     insertMode = !insertMode;

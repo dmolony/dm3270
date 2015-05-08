@@ -28,6 +28,7 @@ public class WriteControlCharacter
 
   public void process (Screen screen)
   {
+    screen.resetInsertMode ();
     if (resetPartition)
       screen.resetPartition ();
     if (startPrinter)

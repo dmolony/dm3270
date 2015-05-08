@@ -207,21 +207,21 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
 
   private BorderPane getStatusBar ()
   {
-    Separator[] div = new Separator[4];
+    Separator[] div = new Separator[6];
     for (int i = 0; i < div.length; i++)
     {
       div[i] = new Separator ();
       div[i].setOrientation (Orientation.VERTICAL);
     }
 
-    HBox left = getHBox (new Insets (2, GAP, 2, MARGIN), Pos.CENTER_LEFT);
-    left.getChildren ().addAll (fieldLocation, div[0], insertMode, div[1]);
+    HBox left = getHBox (new Insets (2, GAP, 2, 3), Pos.CENTER_LEFT);
+    left.getChildren ().addAll (div[0], fieldLocation, div[1], insertMode, div[2]);
 
     HBox center = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
     center.getChildren ().addAll (status);
 
-    HBox right = getHBox (new Insets (2, MARGIN, 2, GAP), Pos.CENTER_RIGHT);
-    right.getChildren ().addAll (div[2], fieldType, div[3], cursorLocation);
+    HBox right = getHBox (new Insets (2, 0, 2, GAP), Pos.CENTER_RIGHT);
+    right.getChildren ().addAll (div[3], fieldType, div[4], cursorLocation, div[5]);
 
     Font statusBarFont = defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
     status.setFont (statusBarFont);
