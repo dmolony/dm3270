@@ -47,6 +47,11 @@ public class PluginData
     return key;
   }
 
+  public int size ()
+  {
+    return screenFields.size ();
+  }
+
   public ScreenField getField (int index)
   {
     if (index >= 0 && index < screenFields.size ())
