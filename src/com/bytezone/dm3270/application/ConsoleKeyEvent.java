@@ -18,10 +18,10 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent e)       // onKeyTyped
   {
-    if (screen.isKeyboardLocked ())
+    if (screen.isKeyboardLocked () || e.isMetaDown () || e.isControlDown ())
       return;
 
-    if (e.getCode () == KeyCode.UNDEFINED && !e.isMetaDown ())
+    if (e.getCode () == KeyCode.UNDEFINED)
     {
       String c = e.getCharacter ();
       if (!c.isEmpty ())

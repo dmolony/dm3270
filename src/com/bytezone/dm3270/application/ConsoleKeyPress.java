@@ -37,15 +37,9 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
       if (e.isControlDown ())       // should allow user to choose modifier key
         if (keyCodePressed == KeyCode.LEFT)
-        {
           consolePane.back ();
-          //          e.consume ();
-        }
         else if (keyCodePressed == KeyCode.RIGHT)
-        {
           consolePane.forward ();
-          //          e.consume ();
-        }
 
       return;
     }
