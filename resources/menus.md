@@ -1,8 +1,9 @@
 #### Menus
-The Commands menu is available from the first screen, and the Font and Plugins menus are available from the console screen.
+The Commands menu is available from all screens, and the Font and Plugins menus are available from the console screen.
 ##### Commands menu
 Select Release Mode to switch between Release Mode and Debug Mode. The Plugins Manager allows you to modify the list of available [plugins](plugins.md).  
-![Debug](commandsmenu.png?raw=true "debug")  
+![Commands](commands1menu.png?raw=true "commands")  
+![Commands](commands2menu.png?raw=true "commands")  
 ##### Font menu
 Here you may choose the font and font size for the terminal screen, and whether to run in Debug or Release mode. The fonts listed are the only ones that dm3270 will attempt to load, and then only if you have them installed on your machine. Most of the fonts are freely available on the web.  
 ![Fonts](fonts.png?raw=true "fonts")  
