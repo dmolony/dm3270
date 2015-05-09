@@ -1,10 +1,8 @@
 package com.bytezone.dm3270.application;
 
-import java.util.List;
 import java.util.prefs.Preferences;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -13,11 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -33,6 +28,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
+import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenHistory;
@@ -46,11 +42,6 @@ import com.bytezone.dm3270.streams.TerminalServer;
 public class ConsolePane extends BorderPane implements FieldChangeListener,
     CursorMoveListener, KeyboardStatusListener
 {
-  private static String[] preferredFontNames = { //
-      "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
-          "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
-          "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 2m", "PT Mono",
-          "Source Code Pro", "Monospaced" };
   private final static int MARGIN = 4;
   private final static int GAP = 12;
   private final static String OS = System.getProperty ("os.name");
@@ -78,14 +69,11 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
 
   private HBox historyBox;
   private final Label historyLabel = new Label ();
-  private Font defaultFont;
 
   private final BorderPane statusPane;
 
   private final MenuBar menuBar = new MenuBar ();
-
-  private final ToggleGroup fontGroup = new ToggleGroup ();
-  private final ToggleGroup sizeGroup = new ToggleGroup ();
+  private final FontManager fontManager;
 
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
@@ -118,7 +106,9 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    menuBar.getMenus ().addAll (getCommandsMenu (), getFontMenu ());
+    fontManager = new FontManager (screen);
+
+    menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
     if (server == null || server.getPlugins ())     // allow null for replay testing
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
@@ -163,48 +153,6 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     return menuCommands;
   }
 
-  private Menu getFontMenu ()
-  {
-    String fontSelected = screen.getFontName ();
-    String sizeSelected = "" + screen.getFontSize ();
-
-    Menu menuFont = new Menu ("Fonts");
-
-    List<String> families = Font.getFamilies ();
-    for (String fontName : preferredFontNames)
-    {
-      boolean fontExists = families.contains (fontName);
-      if (fontExists && fontSelected.isEmpty ())
-        fontSelected = fontName;
-      setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
-    }
-
-    if (!fontSelected.isEmpty ())
-      defaultFont = Font.font (fontSelected, 14);
-
-    // select Monospaced if there is still no font selected
-    if (fontGroup.getSelectedToggle () == null)
-    {
-      ObservableList<Toggle> toggles = fontGroup.getToggles ();
-      fontGroup.selectToggle (toggles.get (toggles.size () - 1));
-    }
-
-    menuFont.getItems ().add (new SeparatorMenuItem ());
-    String[] menuSizes = { "12", "14", "15", "16", "17", "18", "20", "22" };
-    for (String menuSize : menuSizes)
-      setMenuItem (menuSize, sizeGroup, menuFont, sizeSelected, false);
-
-    return menuFont;
-  }
-
-  private void selectFont ()
-  {
-    String fontName = (String) fontGroup.getSelectedToggle ().getUserData ();
-    int fontSize =
-        Integer.parseInt ((String) sizeGroup.getSelectedToggle ().getUserData ());
-    screen.adjustFont (fontName, fontSize);
-  }
-
   private BorderPane getStatusBar ()
   {
     Separator[] div = new Separator[6];
@@ -223,7 +171,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     HBox right = getHBox (new Insets (2, 0, 2, GAP), Pos.CENTER_RIGHT);
     right.getChildren ().addAll (div[3], fieldType, div[4], cursorLocation, div[5]);
 
-    Font statusBarFont = defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
+    Font statusBarFont = fontManager.getDefaultFont ();
     status.setFont (statusBarFont);
     insertMode.setFont (statusBarFont);
     cursorLocation.setFont (statusBarFont);
@@ -242,7 +190,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   {
     historyBox = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
     historyBox.getChildren ().add (historyLabel);
-    Font statusBarFont = defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
+    Font statusBarFont = fontManager.getDefaultFont ();
     historyLabel.setFont (statusBarFont);
   }
 
@@ -352,13 +300,6 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   // called from Screen.processPluginRequest (Plugin plugin)
   public void sendAID (AIDCommand command)
   {
-    //    if (screen.isInsertMode ())
-    //      screen.toggleInsertMode ();
-    //    screen.lockKeyboard ();
-    //    screen.setAID (aid);
-
-    //    AIDCommand command = screen.readModifiedFields ();
-
     assert telnetState != null;
 
     if (telnetState.does3270Extended ())
@@ -443,18 +384,5 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   {
     status.setText (keyboardLocked ? "Inhibit" : "       ");
     insertMode.setText (insert ? "Insert" : "      ");
-  }
-
-  private void setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
-      String selectedItemName, boolean disable)
-  {
-    RadioMenuItem item = new RadioMenuItem (itemName);
-    item.setToggleGroup (toggleGroup);
-    menu.getItems ().add (item);
-    if (itemName.equals (selectedItemName))
-      item.setSelected (true);
-    item.setDisable (disable);
-    item.setUserData (itemName);
-    item.setOnAction (e -> selectFont ());
   }
 }
