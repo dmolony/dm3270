@@ -19,7 +19,15 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
   public void handle (KeyEvent e)       // onKeyTyped
   {
     if (screen.isKeyboardLocked () || e.isMetaDown () || e.isControlDown ())
+    {
+      // seems to be a bug in java
+      if (e.isMetaDown () && e.getCharacter ().charAt (0) == '-')
+      {
+        screen.doFontSmaller ();
+        e.consume ();
+      }
       return;
+    }
 
     if (e.getCode () == KeyCode.UNDEFINED)
     {

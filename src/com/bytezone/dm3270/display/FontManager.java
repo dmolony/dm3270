@@ -32,6 +32,7 @@ public class FontManager
   public FontManager (Screen screen)
   {
     this.screen = screen;
+    screen.setFontManager (this);
   }
 
   public Menu getFontMenu ()
@@ -105,7 +106,7 @@ public class FontManager
     return item;
   }
 
-  private void smaller ()
+  public void smaller ()
   {
     int selectedSize = getSelectedSize ();
     for (int i = 1; i < fontSizes.length; i++)

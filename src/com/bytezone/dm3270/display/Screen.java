@@ -44,6 +44,7 @@ public class Screen extends Canvas
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
   private final ContextManager contextHandler = new ContextManager ();
+  private FontManager fontManager;
   private final Cursor cursor = new Cursor (this);
   private final Function function;
   private ConsolePane consolePane;
@@ -93,6 +94,16 @@ public class Screen extends Canvas
     ScreenContext baseContext = contextHandler.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
       screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
+  }
+
+  public void setFontManager (FontManager fontManager)
+  {
+    this.fontManager = fontManager;
+  }
+
+  public void doFontSmaller ()
+  {
+    fontManager.smaller ();
   }
 
   private void setFont (String name, int size)
