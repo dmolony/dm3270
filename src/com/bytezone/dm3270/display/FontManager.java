@@ -21,8 +21,7 @@ public class FontManager
           "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
           "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 2m", "PT Mono",
           "Source Code Pro", "Monospaced" };
-  private static final int[] fontSizes = { //
-      12, 14, 15, 16, 17, 18, 20, 22 };
+  private static final int[] fontSizes = { 12, 14, 15, 16, 17, 18, 20, 22 };
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
@@ -64,14 +63,17 @@ public class FontManager
 
     // add increase/decrease size commands
     menuFont.getItems ().add (new SeparatorMenuItem ());
+
     MenuItem smaller = new MenuItem ("Smaller font");
     smaller.setAccelerator (new KeyCodeCombination (KeyCode.MINUS,
         KeyCombination.SHORTCUT_DOWN));
     smaller.setOnAction (e -> smaller ());
+
     MenuItem bigger = new MenuItem ("Larger font");
     bigger.setAccelerator (new KeyCodeCombination (KeyCode.PLUS,
         KeyCombination.SHORTCUT_DOWN));
     bigger.setOnAction (e -> bigger ());
+
     menuFont.getItems ().addAll (smaller, bigger);
 
     // add font sizes
@@ -106,33 +108,25 @@ public class FontManager
   private void smaller ()
   {
     int selectedSize = getSelectedSize ();
-    for (int i = 0; i < fontSizes.length; i++)
-    {
+    for (int i = 1; i < fontSizes.length; i++)
       if (fontSizes[i] == selectedSize)
       {
-        if (i == 0)
-          return;
         sizeGroup.selectToggle (fontSizeItems[i - 1]);
         fontSizeItems[i - 1].fire ();
         break;
       }
-    }
   }
 
   private void bigger ()
   {
     int selectedSize = getSelectedSize ();
-    for (int i = 0; i < fontSizes.length; i++)
-    {
+    for (int i = 0; i < fontSizes.length - 1; i++)
       if (fontSizes[i] == selectedSize)
       {
-        if (i == fontSizes.length - 1)
-          return;
         sizeGroup.selectToggle (fontSizeItems[i + 1]);
         fontSizeItems[i + 1].fire ();
         break;
       }
-    }
   }
 
   private int getSelectedSize ()
