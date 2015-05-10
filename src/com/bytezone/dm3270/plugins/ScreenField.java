@@ -65,15 +65,30 @@ public class ScreenField
     return position.location >= first || position.location <= last;
   }
 
+  private String rightTrim ()
+  {
+    if (data == null || data.isEmpty ())
+      return "";
+    byte[] bytes = data.getBytes ();
+    int ptr = bytes.length - 1;
+    while (ptr > 0 && (bytes[ptr] == 0 || bytes[ptr] == 0x20))
+      ptr--;
+    return data.substring (0, ptr);
+  }
+
   @Override
   public String toString ()
   {
     if (data == null || data.length () <= 40)
       return String.format ("%2d  %2d  %4d  %s", location.row, location.column, length,
                             data);
-    String line1 = data.substring (0, 40);
-    String line2 = data.substring (40);
-    return String.format ("%2d  %2d  %4d  %s%n                              %s",
-                          location.row, location.column, length, line1, line2);
+    String dataTrim = rightTrim ();
+    if (dataTrim == null || dataTrim.length () <= 40)
+      return String.format ("%2d  %2d  %4d  %s", location.row, location.column, length,
+                            dataTrim);
+    String line1 = dataTrim.substring (0, 40);
+    String line2 = dataTrim.substring (40);
+    return String.format ("%2d  %2d  %4d  %s%n              %s", location.row,
+                          location.column, length, line1, line2);
   }
 }

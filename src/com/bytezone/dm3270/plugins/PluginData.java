@@ -120,7 +120,11 @@ public class PluginData
 
     int count = 0;
     for (ScreenField sf : screenFields)
-      text.append (String.format ("  %2d field    : %s%n", count++, sf));
+    {
+      String fieldText =
+          String.format ("%s%s", sf.isProtected ? "P" : "p", sf.isAlpha ? "A" : "a");
+      text.append (String.format (" %3d : %s %s%n", count++, fieldText, sf));
+    }
 
     return text.toString ();
   }
