@@ -31,6 +31,8 @@ public class Console extends Application
 
   private Preferences prefs;
   private Screen screen;
+  private final com.bytezone.dm3270.application.Parameters parameters =
+      new com.bytezone.dm3270.application.Parameters ();
 
   private OptionStage optionStage;
   private SpyPane spyPane;
