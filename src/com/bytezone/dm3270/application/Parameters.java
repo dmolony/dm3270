@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class Parameters
 {
-  //  String fileName = "dm3270/prefs.txt";
   List<SiteParameters> siteParameters = new ArrayList<> ();
 
   public Parameters ()
@@ -29,6 +28,14 @@ public class Parameters
       else if (line.length () > 0)
         currentSiteParameters.addParameter (line);
     }
+  }
+
+  public SiteParameters getSiteParameters (String name)
+  {
+    for (SiteParameters sp : siteParameters)
+      if (sp.siteName.equals (name))
+        return sp;
+    return null;
   }
 
   private List<String> getLines ()
@@ -58,14 +65,14 @@ public class Parameters
     return text.toString ();
   }
 
-  class SiteParameters
+  public class SiteParameters
   {
     String siteName;
     Map<String, String> parameters = new HashMap<> ();
 
     public SiteParameters (String line)
     {
-      siteName = line.substring (1, line.length () - 2);
+      siteName = line.substring (1, line.length () - 1);
     }
 
     public void addParameter (String line)
@@ -73,6 +80,11 @@ public class Parameters
       String[] data = line.split ("=");
       assert data.length == 2;
       parameters.put (data[0], data[1]);
+    }
+
+    public String getParameter (String key)
+    {
+      return parameters.get (key);
     }
 
     @Override
