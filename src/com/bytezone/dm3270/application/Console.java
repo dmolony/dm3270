@@ -108,8 +108,7 @@ public class Console extends Application
             setConsolePane (screen, null);                    // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
-            replayStage.setX (primaryScreenBounds.getMinX ()
-                + primaryScreenBounds.getWidth () - 300);
+            replayStage.setX (800);
             replayStage.setY (primaryScreenBounds.getMinY ());
             double height = primaryScreenBounds.getHeight ();
             replayStage.setHeight (Math.min (height, 1200));

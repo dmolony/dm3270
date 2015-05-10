@@ -18,7 +18,8 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent e)       // onKeyTyped
   {
-    if (screen.isKeyboardLocked () || e.isMetaDown () || e.isControlDown ())
+    if (screen.isKeyboardLocked () || e.isMetaDown () || e.isControlDown ()
+        || e.isAltDown ())
     {
       // seems to be a bug in java
       if (e.isMetaDown () && e.getCharacter ().charAt (0) == '-')   // osx fix
