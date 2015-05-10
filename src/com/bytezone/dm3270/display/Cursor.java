@@ -75,6 +75,7 @@ public class Cursor
   // ---------------------------------------------------------------------------------//
 
   // called from ConsoleKeyEvent when the user types
+  // called from AIDCommand.checkForPrettyMove()
   public void typeChar (byte value)
   {
     if (currentField != null && currentField.isUnprotected ())
@@ -85,7 +86,8 @@ public class Cursor
         int end = currentField.getDisplayLength ();
 
         // don't lose data from the end of the field
-        if (currentField.getByteAt (end) != 0)      // and 0x40?
+        byte lastByte = currentField.getByteAt (end);
+        if (lastByte != 0x00 && lastByte != 0x40)
           return;
 
         currentField.push (start, end);

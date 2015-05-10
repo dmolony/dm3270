@@ -21,7 +21,7 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
     if (screen.isKeyboardLocked () || e.isMetaDown () || e.isControlDown ())
     {
       // seems to be a bug in java
-      if (e.isMetaDown () && e.getCharacter ().charAt (0) == '-')
+      if (e.isMetaDown () && e.getCharacter ().charAt (0) == '-')   // osx fix
       {
         screen.doFontSmaller ();
         e.consume ();
