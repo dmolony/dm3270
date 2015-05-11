@@ -32,6 +32,6 @@ public class ScreenLocation
   @Override
   public String toString ()
   {
-    return String.format ("[Location=%d, Row=%d, Column=%d]", location, row, column);
+    return String.format ("[Location=%4d, Row=%2d, Column=%2d]", location, row, column);
   }
 }
