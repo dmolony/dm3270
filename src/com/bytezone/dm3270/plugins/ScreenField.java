@@ -69,26 +69,29 @@ public class ScreenField
   {
     if (data == null || data.isEmpty ())
       return "";
-    byte[] bytes = data.getBytes ();
-    int ptr = bytes.length - 1;
-    while (ptr > 0 && (bytes[ptr] == 0 || bytes[ptr] == 0x20))
+    int ptr = data.length () - 1;
+    while (ptr >= 0 && (data.charAt (ptr) == 0 || data.charAt (ptr) == 0x20))
       ptr--;
-    return data.substring (0, ptr);
+    return data.substring (0, ptr + 1);
   }
 
   @Override
   public String toString ()
   {
-    if (data == null || data.length () <= 40)
-      return String.format ("%2d  %2d  %4d  %s", location.row, location.column, length,
-                            data);
-    String dataTrim = rightTrim ();
-    if (dataTrim == null || dataTrim.length () <= 40)
-      return String.format ("%2d  %2d  %4d  %s", location.row, location.column, length,
-                            dataTrim);
-    String line1 = dataTrim.substring (0, 40);
-    String line2 = dataTrim.substring (40);
-    return String.format ("%2d  %2d  %4d  %s%n              %s", location.row,
-                          location.column, length, line1, line2);
+    String trim = rightTrim ();
+    String left1 =
+        String.format ("%2d  %2d  %4d  ", location.row, location.column, length);
+    String left2 = "              ";
+    StringBuilder text = new StringBuilder (left1);
+    while (trim.length () > 40)
+    {
+      text.append (trim.substring (0, 40));
+      text.append ("\n");
+      text.append (left2);
+      trim = trim.substring (40);
+    }
+    text.append (trim);
+
+    return text.toString ();
   }
 }
