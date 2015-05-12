@@ -10,39 +10,50 @@ public class ScreenField
   private PluginData pluginData;
 
   public final ScreenLocation location;
+  public final int sequence;
   public final int length;
   public final boolean isProtected;
   public final boolean isModifiable;
   public final boolean isAlpha;
   public final boolean isVisible;
+  public final boolean isAltered;
   public final String data;
 
   private StringProperty fieldValue;
+  private IntegerProperty sequenceValue;
   private IntegerProperty row;
   private IntegerProperty column;
   private IntegerProperty lengthValue;
   private StringProperty modifiable;
   private StringProperty visible;
+  private StringProperty altered;
+  private StringProperty format;
 
   public String newData;
 
-  public ScreenField (int location, int row, int column, int length, boolean isProtected,
-      boolean isAlpha, boolean isVisible, String data)
+  public ScreenField (int sequence, int location, int row, int column, int length,
+      boolean isProtected, boolean isAlpha, boolean isVisible, boolean isAltered,
+      String data)
   {
     this.location = new ScreenLocation (location);
+    this.sequence = sequence;
     this.length = length;
     this.isProtected = isProtected;
     this.isModifiable = !isProtected;
     this.isAlpha = isAlpha;
     this.isVisible = isVisible;
+    this.isAltered = isAltered;
     this.data = data;
 
     setFieldValue (data);
+    setSequence (sequence);
     setRow (this.location.row);
     setColumn (this.location.column);
     setLength (length);
     setModifiable (isModifiable ? "yes" : "no");
     setVisible (isVisible ? "yes" : "no");
+    setAltered (isAltered ? "yes" : "no");
+    setFormat (isAlpha ? "A" : "A/N");
   }
 
   public boolean isModifiableLength (int length)
@@ -157,6 +168,69 @@ public class ScreenField
     if (visible == null)
       visible = new SimpleStringProperty (this, "visible");
     return visible;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // altered property
+  //----------------------------------------------------------------------------------//
+
+  public void setAltered (String value)
+  {
+    alteredProperty ().set (value);
+  }
+
+  public String getAltered ()
+  {
+    return alteredProperty ().get ();
+  }
+
+  public StringProperty alteredProperty ()
+  {
+    if (altered == null)
+      altered = new SimpleStringProperty (this, "altered");
+    return altered;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // alpha property
+  //----------------------------------------------------------------------------------//
+
+  public void setFormat (String value)
+  {
+    formatProperty ().set (value);
+  }
+
+  public String getFormat ()
+  {
+    return formatProperty ().get ();
+  }
+
+  public StringProperty formatProperty ()
+  {
+    if (format == null)
+      format = new SimpleStringProperty (this, "format");
+    return format;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // sequence property
+  //----------------------------------------------------------------------------------//
+
+  public void setSequence (Integer value)
+  {
+    sequenceProperty ().set (value);
+  }
+
+  public Integer getSequence ()
+  {
+    return sequenceProperty ().get ();
+  }
+
+  public IntegerProperty sequenceProperty ()
+  {
+    if (sequenceValue == null)
+      sequenceValue = new SimpleIntegerProperty (this, "sequence");
+    return sequenceValue;
   }
 
   //----------------------------------------------------------------------------------//

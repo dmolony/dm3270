@@ -250,15 +250,15 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
-  public ScreenField getScreenField ()
+  public ScreenField getScreenField (int screenSequence, int fieldSequence)
   {
     int firstLocation = getFirstLocation ();
     int row = firstLocation / screen.columns;
     int column = firstLocation % screen.columns;
     int length = getDisplayLength ();
     ScreenField screenField =
-        new ScreenField (firstLocation, row, column, length, isProtected (),
-            isAlphanumeric (), isVisible (), getText ());
+        new ScreenField (fieldSequence, firstLocation, row, column, length,
+            isProtected (), isAlphanumeric (), isVisible (), isModified (), getText ());
     return screenField;
   }
 

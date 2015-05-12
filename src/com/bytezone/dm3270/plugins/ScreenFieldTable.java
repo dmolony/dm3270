@@ -13,6 +13,10 @@ public class ScreenFieldTable extends TableView<ScreenField>
     setStyle ("-fx-font-size: 11; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
+    TableColumn<ScreenField, Integer> sequence = new TableColumn<> ("Seq");
+    sequence.setPrefWidth (50);
+    sequence.setCellValueFactory (new PropertyValueFactory<> ("sequence"));
+
     TableColumn<ScreenField, Integer> row = new TableColumn<> ("Row");
     row.setPrefWidth (50);
     row.setCellValueFactory (new PropertyValueFactory<> ("row"));
@@ -33,11 +37,20 @@ public class ScreenFieldTable extends TableView<ScreenField>
     visible.setPrefWidth (80);
     visible.setCellValueFactory (new PropertyValueFactory<> ("visible"));
 
+    TableColumn<ScreenField, String> altered = new TableColumn<> ("Altered");
+    altered.setPrefWidth (80);
+    altered.setCellValueFactory (new PropertyValueFactory<> ("altered"));
+
+    TableColumn<ScreenField, String> format = new TableColumn<> ("Format");
+    format.setPrefWidth (50);
+    format.setCellValueFactory (new PropertyValueFactory<> ("format"));
+
     TableColumn<ScreenField, String> fieldValue = new TableColumn<> ("Field value");
     fieldValue.setPrefWidth (600);
     fieldValue.setCellValueFactory (new PropertyValueFactory<> ("fieldValue"));
 
-    getColumns ().setAll (row, column, length, modifiable, visible, fieldValue);
+    getColumns ().setAll (sequence, row, column, length, format, visible, modifiable,
+                          altered, fieldValue);
 
     Callback<TableColumn<ScreenField, Integer>, //
     TableCell<ScreenField, Integer>> rightJustified =
@@ -89,10 +102,13 @@ public class ScreenFieldTable extends TableView<ScreenField>
           }
         };
 
+    sequence.setCellFactory (rightJustified);
     row.setCellFactory (rightJustified);
     column.setCellFactory (rightJustified);
     length.setCellFactory (rightJustified);
     modifiable.setCellFactory (centreJustified);
     visible.setCellFactory (centreJustified);
+    altered.setCellFactory (centreJustified);
+    format.setCellFactory (centreJustified);
   }
 }

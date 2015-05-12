@@ -175,8 +175,9 @@ public class FieldManager
   public PluginData getPluginScreen (int sequence, int row, int column)
   {
     List<ScreenField> screenFields = new ArrayList<> ();
+    int count = 0;
     for (Field field : fields)
-      screenFields.add (field.getScreenField ());
+      screenFields.add (field.getScreenField (sequence, count++));
     return new PluginData (sequence, row, column, screenFields);
   }
 
