@@ -1,5 +1,10 @@
 package com.bytezone.dm3270.plugins;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class ScreenField
 {
   private PluginData pluginData;
@@ -10,6 +15,11 @@ public class ScreenField
   public final boolean isModifiable;
   public final boolean isAlpha;
   public final String data;
+
+  private StringProperty fieldValue;
+  private IntegerProperty row;
+  private IntegerProperty column;
+  private IntegerProperty lengthValue;
 
   public String newData;
 
@@ -22,6 +32,11 @@ public class ScreenField
     this.isModifiable = !isProtected;
     this.isAlpha = isAlpha;
     this.data = data;
+
+    setFieldValue (data);
+    setRow (this.location.row);
+    setColumn (this.location.column);
+    setLength (length);
   }
 
   public boolean isModifiableLength (int length)
@@ -73,6 +88,90 @@ public class ScreenField
     while (ptr >= 0 && (data.charAt (ptr) == 0 || data.charAt (ptr) == 0x20))
       ptr--;
     return data.substring (0, ptr + 1);
+  }
+
+  //----------------------------------------------------------------------------------//
+  // fieldValue property
+  //----------------------------------------------------------------------------------//
+
+  public void setFieldValue (String value)
+  {
+    fieldValueProperty ().set (value);
+  }
+
+  public String getFieldValue ()
+  {
+    return fieldValueProperty ().get ();
+  }
+
+  public StringProperty fieldValueProperty ()
+  {
+    if (fieldValue == null)
+      fieldValue = new SimpleStringProperty (this, "fieldValue");
+    return fieldValue;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // row property
+  //----------------------------------------------------------------------------------//
+
+  public void setRow (Integer value)
+  {
+    rowProperty ().set (value);
+  }
+
+  public Integer getRow ()
+  {
+    return rowProperty ().get ();
+  }
+
+  public IntegerProperty rowProperty ()
+  {
+    if (row == null)
+      row = new SimpleIntegerProperty (this, "row");
+    return row;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // column property
+  //----------------------------------------------------------------------------------//
+
+  public void setColumn (Integer value)
+  {
+    columnProperty ().set (value);
+  }
+
+  public Integer getColumn ()
+  {
+    return columnProperty ().get ();
+  }
+
+  public IntegerProperty columnProperty ()
+  {
+    if (column == null)
+      column = new SimpleIntegerProperty (this, "column");
+    return column;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // length property
+  //----------------------------------------------------------------------------------//
+
+  public void setLength (Integer value)
+  {
+    lengthProperty ().set (value);
+  }
+
+  public Integer getLength ()
+  {
+    return lengthProperty ().get ();
+  }
+
+  public IntegerProperty lengthProperty ()
+  {
+    if (lengthValue == null)
+      lengthValue = new SimpleIntegerProperty (this, "length");
+    return lengthValue;
   }
 
   @Override
