@@ -72,6 +72,11 @@ public class StartFieldAttribute extends Attribute
     return isHidden;
   }
 
+  public boolean isVisible ()            // V/v - Visible/not visible
+  {
+    return !isHidden;
+  }
+
   public boolean isIntensified ()       // I/i - Intensified/not intensified
   {
     return isHighIntensity;

@@ -143,9 +143,19 @@ public class Field implements Iterable<ScreenPosition>
     return !startFieldAttribute.isProtected ();
   }
 
+  public boolean isAlphanumeric ()
+  {
+    return startFieldAttribute.isAlphanumeric ();
+  }
+
   public boolean isModified ()
   {
     return startFieldAttribute.isModified ();
+  }
+
+  public boolean isVisible ()
+  {
+    return startFieldAttribute.isVisible ();
   }
 
   public void setModified (boolean modified)
@@ -248,7 +258,7 @@ public class Field implements Iterable<ScreenPosition>
     int length = getDisplayLength ();
     ScreenField screenField =
         new ScreenField (firstLocation, row, column, length, isProtected (),
-            startFieldAttribute.isAlphanumeric (), getText ());
+            isAlphanumeric (), isVisible (), getText ());
     return screenField;
   }
 

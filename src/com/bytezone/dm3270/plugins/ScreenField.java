@@ -14,29 +14,35 @@ public class ScreenField
   public final boolean isProtected;
   public final boolean isModifiable;
   public final boolean isAlpha;
+  public final boolean isVisible;
   public final String data;
 
   private StringProperty fieldValue;
   private IntegerProperty row;
   private IntegerProperty column;
   private IntegerProperty lengthValue;
+  private StringProperty modifiable;
+  private StringProperty visible;
 
   public String newData;
 
   public ScreenField (int location, int row, int column, int length, boolean isProtected,
-      boolean isAlpha, String data)
+      boolean isAlpha, boolean isVisible, String data)
   {
     this.location = new ScreenLocation (location);
     this.length = length;
     this.isProtected = isProtected;
     this.isModifiable = !isProtected;
     this.isAlpha = isAlpha;
+    this.isVisible = isVisible;
     this.data = data;
 
     setFieldValue (data);
     setRow (this.location.row);
     setColumn (this.location.column);
     setLength (length);
+    setModifiable (isModifiable ? "yes" : "no");
+    setVisible (isVisible ? "yes" : "no");
   }
 
   public boolean isModifiableLength (int length)
@@ -109,6 +115,48 @@ public class ScreenField
     if (fieldValue == null)
       fieldValue = new SimpleStringProperty (this, "fieldValue");
     return fieldValue;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // modifiable property
+  //----------------------------------------------------------------------------------//
+
+  public void setModifiable (String value)
+  {
+    modifiableeProperty ().set (value);
+  }
+
+  public String getModifiable ()
+  {
+    return modifiableeProperty ().get ();
+  }
+
+  public StringProperty modifiableeProperty ()
+  {
+    if (modifiable == null)
+      modifiable = new SimpleStringProperty (this, "modifiable");
+    return modifiable;
+  }
+
+  //----------------------------------------------------------------------------------//
+  // visible property
+  //----------------------------------------------------------------------------------//
+
+  public void setVisible (String value)
+  {
+    visibleProperty ().set (value);
+  }
+
+  public String getVisible ()
+  {
+    return visibleProperty ().get ();
+  }
+
+  public StringProperty visibleProperty ()
+  {
+    if (visible == null)
+      visible = new SimpleStringProperty (this, "visible");
+    return visible;
   }
 
   //----------------------------------------------------------------------------------//

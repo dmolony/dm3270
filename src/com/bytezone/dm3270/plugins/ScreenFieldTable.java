@@ -25,11 +25,19 @@ public class ScreenFieldTable extends TableView<ScreenField>
     length.setPrefWidth (80);
     length.setCellValueFactory (new PropertyValueFactory<> ("length"));
 
+    TableColumn<ScreenField, String> modifiable = new TableColumn<> ("Modifiable");
+    modifiable.setPrefWidth (80);
+    modifiable.setCellValueFactory (new PropertyValueFactory<> ("modifiable"));
+
+    TableColumn<ScreenField, String> visible = new TableColumn<> ("Visible");
+    visible.setPrefWidth (80);
+    visible.setCellValueFactory (new PropertyValueFactory<> ("visible"));
+
     TableColumn<ScreenField, String> fieldValue = new TableColumn<> ("Field value");
     fieldValue.setPrefWidth (600);
     fieldValue.setCellValueFactory (new PropertyValueFactory<> ("fieldValue"));
 
-    getColumns ().setAll (row, column, length, fieldValue);
+    getColumns ().setAll (row, column, length, modifiable, visible, fieldValue);
 
     Callback<TableColumn<ScreenField, Integer>, //
     TableCell<ScreenField, Integer>> rightJustified =
@@ -57,8 +65,34 @@ public class ScreenFieldTable extends TableView<ScreenField>
           }
         };
 
+    Callback<TableColumn<ScreenField, String>, //
+    TableCell<ScreenField, String>> centreJustified =
+        new Callback<TableColumn<ScreenField, String>, //
+        TableCell<ScreenField, String>> ()
+        {
+          @Override
+          public TableCell<ScreenField, String> call (TableColumn<ScreenField, String> p)
+          {
+            TableCell<ScreenField, String> cell = new TableCell<ScreenField, String> ()
+            {
+              @Override
+              public void updateItem (String item, boolean empty)
+              {
+                super.updateItem (item, empty);
+                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+                setGraphic (null);
+              }
+            };
+
+            cell.setStyle ("-fx-alignment: center;");
+            return cell;
+          }
+        };
+
     row.setCellFactory (rightJustified);
     column.setCellFactory (rightJustified);
     length.setCellFactory (rightJustified);
+    modifiable.setCellFactory (centreJustified);
+    visible.setCellFactory (centreJustified);
   }
 }
