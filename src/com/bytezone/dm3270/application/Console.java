@@ -31,8 +31,6 @@ public class Console extends Application
 
   private Preferences prefs;
   private Screen screen;
-  private final com.bytezone.dm3270.application.Parameters parameters =
-      new com.bytezone.dm3270.application.Parameters ();
 
   private OptionStage optionStage;
   private SpyPane spyPane;
@@ -173,7 +171,8 @@ public class Console extends Application
     primaryStage.setScene (scene);
     primaryStage.sizeToScene ();
     primaryStage.setX (0);
-    primaryStage.setY (0);
+    //    primaryStage.setY (0);
+    primaryStage.setY (primaryScreenBounds.getMinY () + 100);
     primaryStage.setTitle ("dm3270");
 
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
