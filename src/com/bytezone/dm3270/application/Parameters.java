@@ -44,14 +44,17 @@ public class Parameters
     try
     {
       Path path = Paths.get (home, "dm3270", "prefs.txt");
-      List<String> lines = Files.readAllLines (path);
-      return lines;
+      if (Files.exists (path) && !Files.isDirectory (path))
+      {
+        List<String> lines = Files.readAllLines (path);
+        return lines;
+      }
     }
     catch (IOException e)
     {
       e.printStackTrace ();
-      return new ArrayList<String> ();
     }
+    return new ArrayList<String> ();
   }
 
   @Override
@@ -85,6 +88,11 @@ public class Parameters
     public String getParameter (String key)
     {
       return parameters.get (key);
+    }
+
+    public String getName ()
+    {
+      return siteName;
     }
 
     @Override

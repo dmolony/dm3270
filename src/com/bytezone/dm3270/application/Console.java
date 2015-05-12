@@ -190,7 +190,6 @@ public class Console extends Application
     spyPane = new SpyPane (screen, server, client);
 
     primaryStage.setScene (new Scene (spyPane));
-    //    primaryStage.sizeToScene ();
     primaryStage.setX (0);
     primaryStage.setY (0);
     primaryStage.setTitle ("Terminal Spy");
@@ -213,8 +212,6 @@ public class Console extends Application
   @Override
   public void stop ()
   {
-    //    System.out.println ("Stopping");
-
     if (mainframeStage != null)
       mainframeStage.disconnect ();
 
