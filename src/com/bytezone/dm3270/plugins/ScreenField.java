@@ -43,7 +43,7 @@ public class ScreenField
     this.isAlpha = isAlpha;
     this.isVisible = isVisible;
     this.isAltered = isAltered;
-    this.data = data;
+    this.data = data.trim ();
 
     setFieldValue (data);
     setSequence (sequence);

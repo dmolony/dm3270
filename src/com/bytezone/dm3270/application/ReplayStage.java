@@ -94,16 +94,6 @@ class ReplayStage extends Stage
 
     Scene scene = new Scene (borderPane);
     setScene (scene);
-
-    //    Rectangle2D primaryScreenBounds =
-    //        javafx.stage.Screen.getPrimary ().getVisualBounds ();
-    //    System.out.println (primaryScreenBounds);
-    //    String osName = System.getProperty ("os.name");
-    //    if (osName.startsWith ("Mac"))
-    //    {
-    //    setX (primaryScreenBounds.getMinX () + primaryScreenBounds.getWidth ());
-    //    setY (primaryScreenBounds.getMinY ());
-    //    }
   }
 
   private void change (SessionTable table, FilteredList<SessionRecord> filteredData)
