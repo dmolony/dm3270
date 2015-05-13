@@ -28,6 +28,7 @@ public class Console extends Application
 
   private Stage primaryStage;
   private Rectangle2D primaryScreenBounds;
+  private WindowSaver consoleWindowSaver;
 
   private Preferences prefs;
   private Screen screen;
@@ -169,11 +170,15 @@ public class Console extends Application
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);
-    primaryStage.sizeToScene ();
-    primaryStage.setX (0);
-    //    primaryStage.setY (0);
-    primaryStage.setY (primaryScreenBounds.getMinY () + 100);
     primaryStage.setTitle ("dm3270");
+
+    consoleWindowSaver = new WindowSaver (prefs, primaryStage, "Console");
+    if (!consoleWindowSaver.restoreWindow ())
+    {
+      primaryStage.sizeToScene ();
+      primaryStage.setX (0);
+      primaryStage.setY (primaryScreenBounds.getMinY () + 100);
+    }
 
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
@@ -249,6 +254,9 @@ public class Console extends Application
         .getSelectedItem ());
     prefs.put ("ClientName", optionStage.clientComboBox.getSelectionModel ()
         .getSelectedItem ());
+
+    if (consoleWindowSaver != null)
+      consoleWindowSaver.saveWindow ();
   }
 
   private Screen createScreen (Function function)
