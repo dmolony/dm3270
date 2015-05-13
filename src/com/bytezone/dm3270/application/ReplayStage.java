@@ -10,6 +10,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -30,10 +31,13 @@ class ReplayStage extends Stage
   private final Preferences prefs;
   private final CheckBox showTelnetCB = new CheckBox ("Show telnet");
   private final CheckBox show3270ECB = new CheckBox ("Show 3270-E");
+  private final WindowSaver windowSaver;
+  private Rectangle2D primaryScreenBounds;
 
   public ReplayStage (Session session, Path path, Preferences prefs)
   {
     this.prefs = prefs;
+    windowSaver = new WindowSaver (prefs, this, "Replay");
 
     final Label label = session.getHeaderLabel ();
     label.setFont (new Font ("Arial", 20));
@@ -92,6 +96,15 @@ class ReplayStage extends Stage
 
     setOnCloseRequest (e -> Platform.exit ());
 
+    if (!windowSaver.restoreWindow ())
+    {
+      primaryScreenBounds = javafx.stage.Screen.getPrimary ().getVisualBounds ();
+      setX (800);
+      setY (primaryScreenBounds.getMinY ());
+      double height = primaryScreenBounds.getHeight ();
+      setHeight (Math.min (height, 1200));
+    }
+
     Scene scene = new Scene (borderPane);
     setScene (scene);
   }
@@ -126,5 +139,6 @@ class ReplayStage extends Stage
   {
     prefs.putBoolean ("ShowTelnet", showTelnetCB.isSelected ());
     prefs.putBoolean ("ShowExtended", show3270ECB.isSelected ());
+    windowSaver.saveWindow ();
   }
 }

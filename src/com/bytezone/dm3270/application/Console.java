@@ -29,6 +29,7 @@ public class Console extends Application
   private Stage primaryStage;
   private Rectangle2D primaryScreenBounds;
   private WindowSaver consoleWindowSaver;
+  private WindowSaver spyWindowSaver;
 
   private Preferences prefs;
   private Screen screen;
@@ -109,10 +110,10 @@ public class Console extends Application
             setConsolePane (screen, null);                    // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
-            replayStage.setX (800);
-            replayStage.setY (primaryScreenBounds.getMinY ());
-            double height = primaryScreenBounds.getHeight ();
-            replayStage.setHeight (Math.min (height, 1200));
+            //            replayStage.setX (800);
+            //            replayStage.setY (primaryScreenBounds.getMinY ());
+            //            double height = primaryScreenBounds.getHeight ();
+            //            replayStage.setHeight (Math.min (height, 1200));
             replayStage.show ();
           }
           catch (Exception e)
@@ -194,12 +195,17 @@ public class Console extends Application
     spyPane = new SpyPane (screen, server, client);
 
     primaryStage.setScene (new Scene (spyPane));
-    primaryStage.setX (0);
-    primaryStage.setY (0);
     primaryStage.setTitle ("Terminal Spy");
 
-    double height = primaryScreenBounds.getHeight () - 20;
-    primaryStage.setHeight (Math.min (height, 1200));
+    spyWindowSaver = new WindowSaver (prefs, primaryStage, "Spy");
+    if (!spyWindowSaver.restoreWindow ())
+    {
+      primaryStage.setX (0);
+      primaryStage.setY (0);
+
+      double height = primaryScreenBounds.getHeight () - 20;
+      primaryStage.setHeight (Math.min (height, 1200));
+    }
 
     primaryStage.show ();
     spyPane.startServer ();
@@ -257,6 +263,9 @@ public class Console extends Application
 
     if (consoleWindowSaver != null)
       consoleWindowSaver.saveWindow ();
+
+    if (spyWindowSaver != null)
+      spyWindowSaver.saveWindow ();
   }
 
   private Screen createScreen (Function function)

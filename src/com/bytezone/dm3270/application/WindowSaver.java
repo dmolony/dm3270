@@ -32,7 +32,7 @@ public class WindowSaver
     Double height = prefs.getDouble (key + "Height", -1.0);
     Double width = prefs.getDouble (key + "Width", -1.0);
 
-    if (x != -1.0)
+    if (width != -1.0)
     {
       stage.setX (x);
       stage.setY (y);
