@@ -50,7 +50,7 @@ public class ScreenField
     setRow (this.location.row);
     setColumn (this.location.column);
     setLength (length);
-    setModifiable (isModifiable ? "yes" : "no");
+    setModifiable (!isProtected ? "yes" : "no");
     setVisible (isVisible ? "yes" : "no");
     setAltered (isAltered ? "yes" : "no");
     setFormat (isAlpha ? "A" : "A/N");
