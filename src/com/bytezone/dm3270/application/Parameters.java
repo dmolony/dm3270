@@ -45,16 +45,13 @@ public class Parameters
     {
       Path path = Paths.get (home, "dm3270", "prefs.txt");
       if (Files.exists (path) && !Files.isDirectory (path))
-      {
-        List<String> lines = Files.readAllLines (path);
-        return lines;
-      }
+        return Files.readAllLines (path);
     }
     catch (IOException e)
     {
       e.printStackTrace ();
     }
-    return new ArrayList<String> ();
+    return new ArrayList<String> ();        // empty list
   }
 
   @Override
