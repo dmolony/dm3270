@@ -110,10 +110,6 @@ public class Console extends Application
             setConsolePane (screen, null);                    // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
-            //            replayStage.setX (800);
-            //            replayStage.setY (primaryScreenBounds.getMinY ());
-            //            double height = primaryScreenBounds.getHeight ();
-            //            replayStage.setHeight (Math.min (height, 1200));
             replayStage.show ();
           }
           catch (Exception e)
@@ -141,9 +137,7 @@ public class Console extends Application
         else if (clientSite == null)
           errorMessage = "No client selected";
         else
-        {
           setSpyPane (createScreen (Function.SPY), serverSite, clientSite);
-        }
 
         break;
 
@@ -173,19 +167,28 @@ public class Console extends Application
     primaryStage.setScene (scene);
     primaryStage.setTitle ("dm3270");
 
-    consoleWindowSaver = new WindowSaver (prefs, primaryStage, "Console");
-    if (!consoleWindowSaver.restoreWindow ())
+    if (screen.getFunction () == Function.TERMINAL)
     {
-      primaryStage.sizeToScene ();
-      primaryStage.setX (0);
-      primaryStage.setY (primaryScreenBounds.getMinY () + 100);
+      consoleWindowSaver = new WindowSaver (prefs, primaryStage, "Terminal");
+      if (!consoleWindowSaver.restoreWindow ())
+      {
+        primaryStage.sizeToScene ();
+        primaryStage.centerOnScreen ();
+      }
+    }
+    else
+    {
+      consoleWindowSaver = new WindowSaver (prefs, primaryStage, "Console");
+      if (!consoleWindowSaver.restoreWindow ())
+      {
+        primaryStage.sizeToScene ();
+        primaryStage.setX (0);
+        primaryStage.setY (primaryScreenBounds.getMinY () + 100);
+      }
     }
 
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
-
-    if (screen.getFunction () == Function.TERMINAL)
-      primaryStage.centerOnScreen ();
 
     primaryStage.show ();
   }
