@@ -20,6 +20,8 @@ public class AIDCommand extends Command implements BufferAddressSource
   public static final byte AID_PA1 = 0x6C;
   public static final byte AID_PA2 = 0x6E;
   public static final byte AID_PA3 = 0x6B;
+  public static final byte AID_PF7 = (byte) 0xF7;
+  public static final byte AID_PF8 = (byte) 0xF8;
   public static final byte AID_CLEAR = 0x6D;
 
   private static byte[] keys = { //
