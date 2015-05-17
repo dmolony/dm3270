@@ -17,7 +17,7 @@ public class ScreenField
   public final boolean isAlpha;
   public final boolean isVisible;
   public final boolean isAltered;
-  public final String data;
+  //  public final String data;
 
   private StringProperty fieldValue;
   private IntegerProperty sequenceValue;
@@ -43,9 +43,9 @@ public class ScreenField
     this.isAlpha = isAlpha;
     this.isVisible = isVisible;
     this.isAltered = isAltered;
-    this.data = data.trim ();
+    //    this.data = data.trim ();
 
-    setFieldValue (data);
+    setFieldValue (data.trim ());
     setSequence (sequence);
     setRow (this.location.row);
     setColumn (this.location.column);
@@ -99,6 +99,7 @@ public class ScreenField
 
   private String rightTrim ()
   {
+    String data = getFieldValue ();
     if (data == null || data.isEmpty ())
       return "";
     int ptr = data.length () - 1;

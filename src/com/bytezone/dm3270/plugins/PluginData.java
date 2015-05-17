@@ -31,9 +31,9 @@ public class PluginData
   {
     if (index >= 0 && index < screenFields.size ())
     {
-      String data = screenFields.get (index).data;
+      String data = screenFields.get (index).getFieldValue ();
       if (data != null)
-        return data.trim ();
+        return data.trim ();      // has already been trimmed
     }
     return "";
   }
