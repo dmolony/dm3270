@@ -11,7 +11,7 @@ public class ScreenField
 
   public final ScreenLocation location;
   public final int sequence;
-  public final int length;
+  //  public final int length;
   public final boolean isProtected;
   public final boolean isModifiable;
   public final boolean isAlpha;
@@ -37,7 +37,7 @@ public class ScreenField
   {
     this.location = new ScreenLocation (location);
     this.sequence = sequence;
-    this.length = length;
+    //    this.length = length;
     this.isProtected = isProtected;
     this.isModifiable = !isProtected;
     this.isAlpha = isAlpha;
@@ -58,7 +58,7 @@ public class ScreenField
 
   public boolean isModifiableLength (int length)
   {
-    return !isProtected && this.length == length;
+    return !isProtected && this.getLength () == length;
   }
 
   public void change (String newValue, PluginData data)
@@ -84,7 +84,7 @@ public class ScreenField
       return true;
 
     int first = location.location - 1;      // include attribute position
-    int last = first + length;
+    int last = first + getLength ();
 
     // normalise first and last positions
     while (first < 0)
@@ -301,7 +301,7 @@ public class ScreenField
   {
     String trim = rightTrim ();
     String left1 =
-        String.format ("%2d  %2d  %4d  ", location.row, location.column, length);
+        String.format ("%2d  %2d  %4d  ", location.row, location.column, getLength ());
     String left2 = "              ";
     StringBuilder text = new StringBuilder (left1);
     while (trim.length () > 40)
