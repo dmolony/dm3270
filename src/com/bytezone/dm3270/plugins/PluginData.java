@@ -33,7 +33,7 @@ public class PluginData
     {
       String data = screenFields.get (index).getFieldValue ();
       if (data != null)
-        return data.trim ();      // has already been trimmed
+        return data.trim ();
     }
     return "";
   }

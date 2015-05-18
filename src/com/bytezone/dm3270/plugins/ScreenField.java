@@ -45,7 +45,7 @@ public class ScreenField
     this.isAltered = isAltered;
     //    this.data = data.trim ();
 
-    setFieldValue (data.trim ());
+    setFieldValue (data);
     setSequence (sequence);
     setRow (this.location.row);
     setColumn (this.location.column);
