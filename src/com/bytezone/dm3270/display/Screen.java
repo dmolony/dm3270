@@ -210,7 +210,7 @@ public class Screen extends Canvas
   public void toggleInsertMode ()
   {
     insertMode = !insertMode;
-    notifyKeyboardStatusChange ();
+    notifyKeyboardStatusChange ("");
   }
 
   public boolean isInsertMode ()
@@ -623,13 +623,13 @@ public class Screen extends Canvas
     setAID (NO_AID_SPECIFIED);
     cursor.setVisible (true);
     keyboardLocked = false;
-    notifyKeyboardStatusChange ();
+    notifyKeyboardStatusChange ("");
   }
 
-  public void lockKeyboard ()
+  public void lockKeyboard (String keyName)
   {
     keyboardLocked = true;
-    notifyKeyboardStatusChange ();
+    notifyKeyboardStatusChange (keyName);
 
     if (function == TERMINAL)
       cursor.setVisible (false);
@@ -656,10 +656,10 @@ public class Screen extends Canvas
 
   private final Set<KeyboardStatusListener> keyboardStatusListeners = new HashSet<> ();
 
-  void notifyKeyboardStatusChange ()
+  void notifyKeyboardStatusChange (String keyName)
   {
     for (KeyboardStatusListener listener : keyboardStatusListeners)
-      listener.keyboardStatusChanged (keyboardLocked, insertMode);
+      listener.keyboardStatusChanged (keyboardLocked, keyName, insertMode);
   }
 
   public void addStatusChangeListener (KeyboardStatusListener listener)

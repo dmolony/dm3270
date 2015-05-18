@@ -70,17 +70,17 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case F1:
-          consolePane.sendAID (AIDCommand.AID_PA1);
+          consolePane.sendAID (AIDCommand.AID_PA1, "PA1");
           e.consume ();
           break;
 
         case F2:
-          consolePane.sendAID (AIDCommand.AID_PA2);
+          consolePane.sendAID (AIDCommand.AID_PA2, "PA2");
           e.consume ();
           break;
 
         case F3:
-          consolePane.sendAID (AIDCommand.AID_PA3);
+          consolePane.sendAID (AIDCommand.AID_PA3, "PA3");
           e.consume ();
           break;
 
@@ -121,7 +121,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       switch (keyCodePressed)
       {
         case ENTER:
-          consolePane.sendAID (AIDCommand.AID_ENTER_KEY);
+          consolePane.sendAID (AIDCommand.AID_ENTER_KEY, "ENTR");
           e.consume ();
           break;
 
@@ -176,7 +176,8 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           {
             if (e.isShiftDown ())
               pfKey += 12;
-            consolePane.sendAID (AIDCommand.getKey ("PF" + pfKey));
+            String keyName = "PF" + pfKey;
+            consolePane.sendAID (AIDCommand.getKey (keyName), keyName);
             e.consume ();
           }
           break;

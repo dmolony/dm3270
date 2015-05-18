@@ -86,7 +86,7 @@ public class WriteCommand extends Command
   {
     Cursor cursor = screen.getScreenCursor ();
     int cursorLocation = cursor.getLocation ();
-    screen.lockKeyboard ();
+    screen.lockKeyboard ("Inhibit");
     boolean drawScreen = false;
 
     if (eraseWrite)

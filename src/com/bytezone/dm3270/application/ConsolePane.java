@@ -274,11 +274,11 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   }
 
   // called from ConsoleKeyPress.handle (KeyEvent e)
-  void sendAID (byte aid)
+  void sendAID (byte aid, String name)
   {
     if (screen.isInsertMode ())
       screen.toggleInsertMode ();
-    screen.lockKeyboard ();
+    screen.lockKeyboard (name);
     screen.setAID (aid);
 
     AIDCommand command = screen.readModifiedFields ();
@@ -380,9 +380,10 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   }
 
   @Override
-  public void keyboardStatusChanged (boolean keyboardLocked, boolean insert)
+  public void keyboardStatusChanged (boolean keyboardLocked, String keyName,
+      boolean insert)
   {
-    status.setText (keyboardLocked ? "Inhibit" : "       ");
+    status.setText (keyboardLocked ? keyName : "       ");
     insertMode.setText (insert ? "Insert" : "      ");
   }
 }

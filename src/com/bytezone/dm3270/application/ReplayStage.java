@@ -9,12 +9,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -55,13 +53,14 @@ class ReplayStage extends Stage
     CommandPane commandPane =
         new CommandPane (table, CommandPane.ProcessInstruction.DoProcess);
 
-    SplitPane splitPane = new SplitPane ();
-    splitPane.setOrientation (Orientation.HORIZONTAL);
-    splitPane.getItems ().addAll (table, commandPane);
-    splitPane.setDividerPositions (0.37f);
+    //    SplitPane splitPane = new SplitPane ();
+    //    splitPane.setOrientation (Orientation.HORIZONTAL);
+    //    splitPane.getItems ().addAll (table, commandPane);
+    //    splitPane.setDividerPositions (0.37f);
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setCenter (splitPane);
+    borderPane.setLeft (table);
+    borderPane.setCenter (commandPane);
     borderPane.setTop (label);
     borderPane.setBottom (checkBoxes);
 

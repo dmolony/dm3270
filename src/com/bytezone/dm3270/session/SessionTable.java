@@ -28,7 +28,7 @@ public class SessionTable extends TableView<SessionRecord>
     commandCol.setPrefWidth (70);
     commandCol.setCellValueFactory (new PropertyValueFactory<> ("commandName"));
 
-    sizeCol.setPrefWidth (40);
+    sizeCol.setPrefWidth (60);
     sizeCol.setCellValueFactory (new PropertyValueFactory<> ("bufferSize"));
 
     timeCol.setPrefWidth (42);
@@ -40,7 +40,7 @@ public class SessionTable extends TableView<SessionRecord>
     getColumns ().add (commandCol);
     getColumns ().add (sizeCol);
 
-    setTableMenuButtonVisible (true);
+    //    setTableMenuButtonVisible (true);
 
     Callback<TableColumn<SessionRecord, Integer>, //
     TableCell<SessionRecord, Integer>> rightJustified =
@@ -58,8 +58,7 @@ public class SessionTable extends TableView<SessionRecord>
                   public void updateItem (Integer item, boolean empty)
                   {
                     super.updateItem (item, empty);
-                    setText (empty ? null : getItem () == null ? "0" : //
-                        String.format ("%,d", getItem ()));
+                    setText (empty ? null : String.format ("%,d    ", getItem ()));
                     setGraphic (null);
                   }
                 };
