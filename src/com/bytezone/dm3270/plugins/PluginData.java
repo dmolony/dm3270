@@ -68,7 +68,22 @@ public class PluginData
   {
     for (ScreenField field : screenFields)
       if (field.contains (location))
+      {
+        field.setData (this);
         return field;
+      }
+
+    return null;
+  }
+
+  public ScreenField getField (String value)
+  {
+    for (ScreenField field : screenFields)
+      if (field.getFieldValue ().equals (value))
+      {
+        field.setData (this);
+        return field;
+      }
 
     return null;
   }
