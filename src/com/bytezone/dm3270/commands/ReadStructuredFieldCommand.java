@@ -25,7 +25,7 @@ import com.bytezone.dm3270.replyfield.ReplyModes;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.replyfield.UsableArea;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
-import com.bytezone.dm3270.structuredfields.FileTransferSF;
+import com.bytezone.dm3270.structuredfields.FileTransferInboundSF;
 import com.bytezone.dm3270.structuredfields.Inbound3270DS;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
@@ -36,7 +36,7 @@ public class ReadStructuredFieldCommand extends Command
 
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private static final String line = "\n----------------------------------------"
-      + "-----------------------------";
+      + "---------------------------------";
 
   private String clientName = "";
   private String signature;
@@ -89,8 +89,7 @@ public class ReadStructuredFieldCommand extends Command
           break;
 
         case StructuredField.IND$FILE:
-          System.out.printf ("IND$FILE inbound not written yet%n");
-          fields.add (new FileTransferSF (data, ptr, size, screen));
+          fields.add (new FileTransferInboundSF (data, ptr, size, screen));
           break;
 
         default:
