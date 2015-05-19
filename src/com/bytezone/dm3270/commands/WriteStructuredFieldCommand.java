@@ -9,6 +9,7 @@ import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
 import com.bytezone.dm3270.structuredfields.EraseResetSF;
+import com.bytezone.dm3270.structuredfields.FileTransferSF;
 import com.bytezone.dm3270.structuredfields.Outbound3270DS;
 import com.bytezone.dm3270.structuredfields.ReadPartitionSF;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
@@ -63,6 +64,11 @@ public class WriteStructuredFieldCommand extends Command
 
         case StructuredField.ERASE_RESET:
           fields.add (new EraseResetSF (buffer, ptr, size, screen));
+          break;
+
+        case StructuredField.IND$FILE:
+          System.out.println ("IND$FILE (D0) not written yet");
+          fields.add (new FileTransferSF (buffer, ptr, size, screen));
           break;
 
         default:

@@ -24,6 +24,8 @@ public abstract class StructuredField extends AbstractTN3270Command
   public final static byte INBOUND_3270DS = (byte) 0x80;
   public final static byte QUERY_REPLY = (byte) 0x81;
 
+  public final static byte IND$FILE = (byte) 0xD0;
+
   protected byte type;
 
   public StructuredField (byte[] buffer, int offset, int length, Screen screen)
