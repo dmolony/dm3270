@@ -357,6 +357,7 @@ public class Screen extends Canvas
   // ---------------------------------------------------------------------------------//
 
   // called from WriteCommand.process() after unlocking keyboard
+  // will eventually be called before unlocking the keyboard
   public AIDCommand processPluginAuto ()
   {
     assert !keyboardLocked;
@@ -375,7 +376,10 @@ public class Screen extends Canvas
       }
 
       pluginsStage.processAll (pluginData);
-      return processReply (pluginData);
+      AIDCommand command = processReply (pluginData);
+      if (command != null)
+        lockKeyboard (command.getKeyName ());
+      return command;
     }
     return null;
   }
@@ -393,6 +397,7 @@ public class Screen extends Canvas
     AIDCommand command = processReply (pluginData);
     if (command != null)
     {
+      lockKeyboard (command.getKeyName ());
       consolePane.sendAID (command);
     }
   }
@@ -433,11 +438,7 @@ public class Screen extends Canvas
     }
 
     if (data.cursorMoved ())
-    {
-      int newLocation = data.newCursorLocation.location;
-      if (newLocation != currentLocation)
-        cursor.moveTo (newLocation);
-    }
+      cursor.moveTo (data.getNewCursorLocation ());
     else
       cursor.moveTo (currentLocation);
 

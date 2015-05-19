@@ -109,6 +109,11 @@ public class PluginData
     newCursorLocation = new ScreenLocation (row, column);
   }
 
+  public int getNewCursorLocation ()
+  {
+    return newCursorLocation.location;
+  }
+
   public List<ScreenField> getModifiableFields ()
   {
     List<ScreenField> fields = new ArrayList<> ();
