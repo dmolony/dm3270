@@ -9,6 +9,11 @@ public class FileTransferInboundSF extends StructuredField
   public FileTransferInboundSF (byte[] buffer, int offset, int length, Screen screen)
   {
     super (buffer, offset, length, screen);
+
+    System.out.println ();
+    System.out.println (this);
+    System.out.println ("-----------------------------------------"
+        + "------------------------------");
   }
 
   @Override
