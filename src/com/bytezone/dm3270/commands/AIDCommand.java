@@ -150,7 +150,7 @@ public class AIDCommand extends Command implements BufferAddressSource
     if (cursorAddress != null)
       screen.getScreenCursor ().moveTo (cursorAddress.getLocation ());
 
-    System.out.println ("locking: " + keyNames[key]);
+    //    System.out.println ("locking: " + keyNames[key]);
     screen.lockKeyboard (keyNames[key]);
   }
 
