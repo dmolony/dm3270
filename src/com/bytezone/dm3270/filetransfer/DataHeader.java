@@ -17,6 +17,6 @@ public class DataHeader
   @Override
   public String toString ()
   {
-    return Utility.toHex (header).substring (6);
+    return String.format ("header    : %s", Utility.toHexString (header));
   }
 }

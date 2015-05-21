@@ -11,4 +11,10 @@ public class RecordNumber extends DataRecord
     super (data, offset);
     recordNumber = Utility.unsignedLong (data, 2);
   }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("recnum    : %s", Utility.toHexString (data));
+  }
 }

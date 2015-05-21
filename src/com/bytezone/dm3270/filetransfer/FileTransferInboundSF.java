@@ -16,7 +16,6 @@ public class FileTransferInboundSF extends StructuredField
   private boolean ebcdic;
   private DataHeader header;
   private final List<DataRecord> extraBytes = new ArrayList<> ();
-  private RecordNumber recordNumber;
 
   public FileTransferInboundSF (byte[] buffer, int offset, int length, Screen screen)
   {
@@ -45,7 +44,8 @@ public class FileTransferInboundSF extends StructuredField
         if (subtype == 0x05)            // transfer buffer
         {
           int buflen = Utility.unsignedShort (data, 12) - 5;
-          recordNumber = new RecordNumber (data, 3);
+          extraBytes.add (new RecordNumber (data, 3));
+          header = new DataHeader (data, 9);
 
           ebcdic = true;
           transferBuffer = new byte[buflen];
@@ -61,8 +61,7 @@ public class FileTransferInboundSF extends StructuredField
 
       case 0x47:                        // acknowledge DATA
         // subtype 0x05
-        //        extraBytes.add (new DataRecord (data, 3));
-        recordNumber = new RecordNumber (data, 3);
+        extraBytes.add (new RecordNumber (data, 3));
         if (data.length != 9)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -87,12 +86,12 @@ public class FileTransferInboundSF extends StructuredField
     StringBuilder text = new StringBuilder ("Struct Field : D0 File Transfer Inbound\n");
     text.append (String.format ("   type      : %02X%n", rectype));
     text.append (String.format ("   subtype   : %02X", subtype));
-    if (recordNumber != null)
-      text.append (String.format ("%n   recnum    : %s", recordNumber));
 
     for (DataRecord extra : extraBytes)
-      //      if (!extra.isEmpty ())
-      text.append ("\n   record    : " + extra);
+      text.append (String.format ("\n   %s", extra));
+
+    if (header != null)
+      text.append (String.format ("\n   %s", header));
 
     if (transferBuffer != null)
     {

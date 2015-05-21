@@ -21,6 +21,6 @@ public class DataRecord
   @Override
   public String toString ()
   {
-    return Utility.toHex (data).substring (6);
+    return String.format ("record    : %s", Utility.toHexString (data));
   }
 }
