@@ -125,21 +125,28 @@ public class FileTransferOutbound extends StructuredField
   {
     switch (rectype)
     {
-      case 0x00:                      // get ready for a message or data transfer
+      case 0x00:                      // OPEN request
         if (subtype == 0x12)
         {
           // RSF 0xD0 0x00 0x09
         }
         break;
 
-      case 0x41:                      // finished data transfer
+      case 0x41:                      // CLOSE request
         if (subtype == 0x12)
         {
-          // RSF 0xD0 0x41 0x09
+          // RSF 0xD0 0x41 0x09         CLOSE acknowledgement
         }
         break;
 
-      case 0x46:                      // commence data transfer
+      case 0x45:                      // SET CURSOR request
+        if (subtype == 0x11)
+        {
+
+        }
+        break;
+
+      case 0x46:                      // GET request
         if (subtype == 0x11)
         {
           // RSF 0xD0 0x46 0x05 0x63 0x06 0x00 0x00 0x00 0x01
@@ -157,6 +164,10 @@ public class FileTransferOutbound extends StructuredField
         if (subtype == 0x04)
         {
           // RSF  0xD0 0x47 0x05 0x63 0x06 0x00 0x00 0x00 0x01 
+        }
+        else if (subtype == 0x11)     // INSERT request
+        {
+
         }
         break;
     }
