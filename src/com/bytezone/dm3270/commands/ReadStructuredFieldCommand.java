@@ -11,6 +11,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.filetransfer.FileTransferInboundSF;
 import com.bytezone.dm3270.replyfield.AlphanumericPartitions;
 import com.bytezone.dm3270.replyfield.AuxilliaryDevices;
 import com.bytezone.dm3270.replyfield.CharacterSets;
@@ -25,7 +26,6 @@ import com.bytezone.dm3270.replyfield.ReplyModes;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.replyfield.UsableArea;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
-import com.bytezone.dm3270.structuredfields.FileTransferInboundSF;
 import com.bytezone.dm3270.structuredfields.Inbound3270DS;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;

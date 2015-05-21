@@ -1,20 +1,22 @@
-package com.bytezone.dm3270.structuredfields;
+package com.bytezone.dm3270.filetransfer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class FileTransferInboundSF extends StructuredField
 {
   private final byte rectype;
   private final byte subtype;
 
-  private byte[] transfer;
+  private byte[] transferBuffer;
   private boolean ebcdic;
-  private final List<String> extraBytes = new ArrayList<> ();
-  private RecordHeader recordNumber;
+  private DataHeader header;
+  private final List<DataRecord> extraBytes = new ArrayList<> ();
+  private RecordNumber recordNumber;
 
   public FileTransferInboundSF (byte[] buffer, int offset, int length, Screen screen)
   {
@@ -43,15 +45,15 @@ public class FileTransferInboundSF extends StructuredField
         if (subtype == 0x05)            // transfer buffer
         {
           int buflen = Utility.unsignedShort (data, 12) - 5;
-          recordNumber = new RecordHeader (data, 3);
+          recordNumber = new RecordNumber (data, 3);
 
           ebcdic = true;
-          transfer = new byte[buflen];
-          System.arraycopy (data, 14, transfer, 0, buflen);
+          transferBuffer = new byte[buflen];
+          System.arraycopy (data, 14, transferBuffer, 0, buflen);
         }
         else if (subtype == 0x08)       // no data
         {
-          extraBytes.add (Utility.toHexString (data, 3, 4));
+          extraBytes.add (new DataRecord (data, 3));
           if (data.length != 7)
             System.out.printf ("Unrecognised data length: %d%n", data.length);
         }
@@ -59,13 +61,15 @@ public class FileTransferInboundSF extends StructuredField
 
       case 0x47:                        // acknowledge DATA
         // subtype 0x05
-        extraBytes.add (Utility.toHexString (data, 3, 6));
+        //        extraBytes.add (new DataRecord (data, 3));
+        recordNumber = new RecordNumber (data, 3);
         if (data.length != 9)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       default:
-        extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+        if (data.length > 3)
+          extraBytes.add (new DataRecord (data, 3));
         System.out.printf ("Unknown type: %02X%n", rectype);
     }
 
@@ -84,50 +88,18 @@ public class FileTransferInboundSF extends StructuredField
     text.append (String.format ("   type      : %02X%n", rectype));
     text.append (String.format ("   subtype   : %02X", subtype));
     if (recordNumber != null)
-    {
-      text.append (String.format ("%n   recnumhdr : %s", recordNumber.header));
-      text.append (String.format ("%n   record no : %s", recordNumber.recordNumber));
-      text.append (String.format ("%n   compress  : %s", recordNumber.compression));
-      text.append (String.format ("%n   start flag: %s", recordNumber.startFlag));
-      text.append (String.format ("%n   buflen    : %s (%,d + 5)", recordNumber.bufLen,
-                                  recordNumber.bufferLength));
-    }
+      text.append (String.format ("%n   recnum    : %s", recordNumber));
 
-    for (String extra : extraBytes)
-      if (!extra.isEmpty ())
-        text.append ("\n   extras    : " + extra);
+    for (DataRecord extra : extraBytes)
+      //      if (!extra.isEmpty ())
+      text.append ("\n   record    : " + extra);
 
-    if (transfer != null)
+    if (transferBuffer != null)
     {
       text.append ("\n");
-      text.append (Utility.toHex (transfer, ebcdic));
+      text.append (Utility.toHex (transferBuffer, ebcdic));
     }
 
     return text.toString ();
-  }
-
-  private class RecordHeader
-  {
-    byte[] buffer = new byte[11];
-    int bufferLength;
-    String header;
-    String recordNumber;
-    String compression;
-    String startFlag;
-    String bufLen;
-
-    public RecordHeader (byte[] data, int offset)
-    {
-      System.arraycopy (data, offset, buffer, 0, buffer.length);
-      bufferLength = Utility.unsignedShort (buffer, 9) - 5;
-      header = Utility.toHexString (buffer, 0, 2);
-      recordNumber = Utility.toHexString (buffer, 2, 4);
-      compression = Utility.toHexString (buffer, 6, 2);
-      startFlag = Utility.toHexString (buffer, 8, 1);
-      bufLen = Utility.toHexString (buffer, 9, 2);
-
-      if (buffer[6] == (byte) 0xC0 && buffer[7] == (byte) 0x80)
-        compression += " (not compressed)";
-    }
   }
 }
