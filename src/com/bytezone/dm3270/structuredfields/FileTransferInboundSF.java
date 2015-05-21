@@ -58,9 +58,12 @@ public class FileTransferInboundSF extends StructuredField
         System.out.printf ("Unknown type: %02X%n", rectype);
     }
 
-    System.out.println (this);
-    System.out.println ("-----------------------------------------"
-        + "------------------------------");
+    if (true)
+    {
+      System.out.println (this);
+      System.out.println ("-----------------------------------------"
+          + "------------------------------");
+    }
   }
 
   @Override
