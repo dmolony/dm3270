@@ -27,16 +27,20 @@ public class FileTransferInboundSF extends StructuredField
 
     switch (rectype)
     {
-      case 0x00:
-        extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+      case 0x00:                      // acknowledge OPEN
+        // subtype 0x09
+        if (data.length != 3)
+          System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
-      case 0x41:
-        extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+      case 0x41:                      // acknowledge CLOSE
+        // subtype 0x09
+        if (data.length != 3)
+          System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x46:
-        if (subtype == 0x05)        // transfer buffer
+        if (subtype == 0x05)            // transfer buffer
         {
           int buflen = Utility.unsignedShort (data, 12) - 5;
           recordNumber = new RecordHeader (data, 3);
@@ -45,12 +49,19 @@ public class FileTransferInboundSF extends StructuredField
           transfer = new byte[buflen];
           System.arraycopy (data, 14, transfer, 0, buflen);
         }
-        else
-          extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+        else if (subtype == 0x08)       // no data
+        {
+          extraBytes.add (Utility.toHexString (data, 3, 4));
+          if (data.length != 7)
+            System.out.printf ("Unrecognised data length: %d%n", data.length);
+        }
         break;
 
-      case 0x47:
-        extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+      case 0x47:                        // acknowledge DATA
+        // subtype 0x05
+        extraBytes.add (Utility.toHexString (data, 3, 6));
+        if (data.length != 9)
+          System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       default:

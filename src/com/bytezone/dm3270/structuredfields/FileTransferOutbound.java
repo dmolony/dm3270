@@ -30,36 +30,38 @@ public class FileTransferOutbound extends StructuredField
         if (data.length == 33)
         {
           message = new String (data, 26, 7);
-          extraBytes.add (Utility.toHexString (data, 3, 8));
-          extraBytes.add (Utility.toHexString (data, 11, 8));
-          extraBytes.add (Utility.toHexString (data, 19, 7));
+          extraBytes.add (Utility.toHexString (data, 3, 6));
+          extraBytes.add (Utility.toHexString (data, 9, 10));
+          extraBytes.add (Utility.toHexString (data, 19, 5));
         }
         else if (data.length == 39)
         {
           message = new String (data, 32, 7);
-          extraBytes.add (Utility.toHexString (data, 3, 8));
-          extraBytes.add (Utility.toHexString (data, 11, 8));
-          extraBytes.add (Utility.toHexString (data, 19, 8));
-          extraBytes.add (Utility.toHexString (data, 27, 5));
+          extraBytes.add (Utility.toHexString (data, 3, 6));
+          extraBytes.add (Utility.toHexString (data, 9, 10));
+          extraBytes.add (Utility.toHexString (data, 19, 5));
+          extraBytes.add (Utility.toHexString (data, 24, 6));
         }
         else
-        {
           System.out.printf ("Unrecognised data length: %d%n", data.length);
-          System.out.println (Utility.toHex (data));
-          extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
-        }
         break;
 
       case 0x41:
-        extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+        if (data.length != 3)
+          System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x45:
-        extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+        extraBytes.add (Utility.toHexString (data, 3, 5));
+        extraBytes.add (Utility.toHexString (data, 8, 5));
+        if (data.length != 13)
+          System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x46:
-        extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+        extraBytes.add (Utility.toHexString (data, 3, 4));
+        if (data.length != 7)
+          System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x47:
@@ -81,8 +83,8 @@ public class FileTransferOutbound extends StructuredField
         }
         else if (subtype == 0x11)   // transfer buffer
           extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
-        else if (subtype == 0x05)   // end of transfer buffers
-          extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
+        //        else if (subtype == 0x05)   // end of transfer buffers
+        //          extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
         else
         {
           extraBytes.add (Utility.toHexString (data, 3, data.length - 3));
