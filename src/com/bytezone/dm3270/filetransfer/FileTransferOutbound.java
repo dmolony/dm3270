@@ -15,7 +15,7 @@ public class FileTransferOutbound extends StructuredField
   private byte[] transfer;
   private boolean ebcdic;
   private String message;
-  private DataHeader header;
+  //  private DataHeader header;
   private final List<DataRecord> extraBytes = new ArrayList<> ();
 
   public FileTransferOutbound (byte[] buffer, int offset, int length, Screen screen)
@@ -69,7 +69,8 @@ public class FileTransferOutbound extends StructuredField
       case 0x47:
         if (subtype == 0x04)                  // message or transfer buffer
         {
-          header = new DataHeader (data, 3);
+          DataHeader header = new DataHeader (data, 3);
+          extraBytes.add (header);
           int buflen = header.bufferLength - 5;
           if (data[6] == 0)                   // temp
             message = new String (data, 8, buflen).trim ();
@@ -182,9 +183,6 @@ public class FileTransferOutbound extends StructuredField
 
     for (DataRecord extra : extraBytes)
       text.append (String.format ("\n   %s", extra));
-
-    if (header != null)
-      text.append (String.format ("\n   %s", header));
 
     if (message != null)
       text.append (String.format ("\n   message   : %s", message));

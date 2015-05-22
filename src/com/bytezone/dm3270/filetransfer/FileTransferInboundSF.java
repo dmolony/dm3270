@@ -14,7 +14,6 @@ public class FileTransferInboundSF extends StructuredField
 
   private byte[] transferBuffer;
   private boolean ebcdic;
-  private DataHeader header;
   private final List<DataRecord> extraBytes = new ArrayList<> ();
 
   public FileTransferInboundSF (byte[] buffer, int offset, int length, Screen screen)
@@ -45,7 +44,7 @@ public class FileTransferInboundSF extends StructuredField
         {
           int buflen = Utility.unsignedShort (data, 12) - 5;
           extraBytes.add (new RecordNumber (data, 3));
-          header = new DataHeader (data, 9);
+          extraBytes.add (new DataHeader (data, 9));
 
           ebcdic = true;
           transferBuffer = new byte[buflen];
@@ -89,9 +88,6 @@ public class FileTransferInboundSF extends StructuredField
 
     for (DataRecord extra : extraBytes)
       text.append (String.format ("\n   %s", extra));
-
-    if (header != null)
-      text.append (String.format ("\n   %s", header));
 
     if (transferBuffer != null)
     {

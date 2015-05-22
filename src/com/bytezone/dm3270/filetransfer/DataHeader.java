@@ -2,21 +2,20 @@ package com.bytezone.dm3270.filetransfer;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class DataHeader
+public class DataHeader extends DataRecord
 {
-  byte[] header;
   int bufferLength;
 
   public DataHeader (byte[] data, int offset)
   {
-    header = new byte[5];
-    System.arraycopy (data, offset, header, 0, header.length);
-    bufferLength = Utility.unsignedShort (header, 3);
+    super (new byte[5]);
+    System.arraycopy (data, offset, this.data, 0, 5);
+    bufferLength = Utility.unsignedShort (this.data, 3);
   }
 
   @Override
   public String toString ()
   {
-    return String.format ("header    : %s", Utility.toHexString (header));
+    return String.format ("header    : %s", Utility.toHexString (data));
   }
 }
