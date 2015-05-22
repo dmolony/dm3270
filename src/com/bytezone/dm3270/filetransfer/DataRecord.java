@@ -6,9 +6,11 @@ public class DataRecord
 {
   final byte[] data;
 
-  protected DataRecord (byte[] data)
+  protected DataRecord (byte type, int length)
   {
-    this.data = data;
+    this.data = new byte[length];
+    data[0] = type;
+    data[1] = (byte) data.length;
   }
 
   public DataRecord (byte[] data, int offset)

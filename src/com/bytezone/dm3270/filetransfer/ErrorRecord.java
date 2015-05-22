@@ -4,8 +4,19 @@ import com.bytezone.dm3270.application.Utility;
 
 public class ErrorRecord extends DataRecord
 {
+  public static final int EOF = 0x2200;
+  public static final int RECORD_LENGTH = 4;
+  private static final byte type = 0x69;
+
   private final int errorNumber;
-  private final String errorText;
+  private String errorText;
+
+  public ErrorRecord (int error)
+  {
+    super (type, RECORD_LENGTH);
+    this.errorNumber = error;
+    Utility.packUnsignedShort (error, data, 2);
+  }
 
   public ErrorRecord (byte[] data, int offset)
   {
@@ -13,7 +24,7 @@ public class ErrorRecord extends DataRecord
     errorNumber = Utility.unsignedShort (data, offset + 2);
     if (errorNumber == 0x0100)
       errorText = "Command failed";
-    else if (errorNumber == 0x2200)
+    else if (errorNumber == EOF)
       errorText = "EOF";
     else
       errorText = "Unknown error";

@@ -142,10 +142,13 @@ public class FileTransferOutbound extends FileTransferSF
           byte[] buffer;
           int ptr = 0;
 
-          if (false)                      // have data to send
+          if (true)                       // have data to send
           {
-            int buflen = 2000;
-            buffer = new byte[buflen + 5 + 9 + 3];
+            int buflen = 50;
+            int length =
+                3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.RECORD_LENGTH + buflen;
+            // if CRLF option add 1 to length for the ctrl-z
+            buffer = new byte[length];
 
             buffer[ptr++] = (byte) 0x88;
             ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
@@ -154,19 +157,17 @@ public class FileTransferOutbound extends FileTransferSF
             buffer[ptr++] = (byte) 0x46;
             buffer[ptr++] = (byte) 0x05;
 
-            buffer[ptr++] = (byte) 0x63;      // 6-byte recnum record
-            buffer[ptr++] = (byte) 0x06;
-            ptr = Utility.packUnsignedLong (1, buffer, ptr);
+            RecordNumber recordNumber = new RecordNumber (1);
+            ptr = recordNumber.pack (buffer, ptr);
 
-            buffer[ptr++] = (byte) 0xC0;
-            buffer[ptr++] = (byte) 0x80;
-            buffer[ptr++] = (byte) 0x61;
-            ptr = Utility.packUnsignedShort (buflen + 5, buffer, ptr);
+            DataHeader dataHeader = new DataHeader (buflen, false);
+            ptr = dataHeader.pack (buffer, ptr);
+
             // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
           }
           else
           {
-            buffer = new byte[10];
+            buffer = new byte[3 + 3 + ErrorRecord.RECORD_LENGTH];
 
             buffer[ptr++] = (byte) 0x88;
             ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
@@ -175,10 +176,8 @@ public class FileTransferOutbound extends FileTransferSF
             buffer[ptr++] = (byte) 0x46;
             buffer[ptr++] = (byte) 0x08;
 
-            buffer[ptr++] = (byte) 0x69;      // 4-byte xxx record
-            buffer[ptr++] = (byte) 0x04;
-            buffer[ptr++] = (byte) 0x22;
-            buffer[ptr++] = (byte) 0x00;
+            ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.EOF);
+            ptr = errorRecord.pack (buffer, ptr);
           }
 
           reply = new ReadStructuredFieldCommand (buffer, screen);
@@ -197,6 +196,7 @@ public class FileTransferOutbound extends FileTransferSF
           buffer[ptr++] = (byte) 0xD0;
           buffer[ptr++] = (byte) 0x47;
           buffer[ptr++] = (byte) 0x05;
+
           buffer[ptr++] = (byte) 0x63;        // 6-byte recnum record
           buffer[ptr++] = (byte) 0x06;        // length of this record
           ptr = Utility.packUnsignedLong (1, buffer, ptr);
