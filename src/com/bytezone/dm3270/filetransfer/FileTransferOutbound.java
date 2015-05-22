@@ -16,17 +16,17 @@ public class FileTransferOutbound extends FileTransferSF
         if (data.length == 33)
         {
           message = new String (data, 26, 7);
-          extraBytes.add (new DataRecord (data, 3));
-          extraBytes.add (new DataRecord (data, 9));
-          extraBytes.add (new DataRecord (data, 19));
+          dataRecords.add (new DataRecord (data, 3));
+          dataRecords.add (new DataRecord (data, 9));
+          dataRecords.add (new DataRecord (data, 19));
         }
         else if (data.length == 39)
         {
           message = new String (data, 32, 7);
-          extraBytes.add (new DataRecord (data, 3));
-          extraBytes.add (new DataRecord (data, 9));
-          extraBytes.add (new DataRecord (data, 19));
-          extraBytes.add (new DataRecord (data, 24));
+          dataRecords.add (new DataRecord (data, 3));
+          dataRecords.add (new DataRecord (data, 9));
+          dataRecords.add (new DataRecord (data, 19));
+          dataRecords.add (new DataRecord (data, 24));
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
@@ -38,14 +38,14 @@ public class FileTransferOutbound extends FileTransferSF
         break;
 
       case 0x45:
-        extraBytes.add (new DataRecord (data, 3));
-        extraBytes.add (new DataRecord (data, 8));
+        dataRecords.add (new DataRecord (data, 3));
+        dataRecords.add (new DataRecord (data, 8));
         if (data.length != 13)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x46:
-        extraBytes.add (new DataRecord (data, 3));
+        dataRecords.add (new DataRecord (data, 3));
         if (data.length != 7)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -54,7 +54,7 @@ public class FileTransferOutbound extends FileTransferSF
         if (subtype == 0x04)                  // message or transfer buffer
         {
           DataHeader header = new DataHeader (data, 3);
-          extraBytes.add (header);
+          dataRecords.add (header);
           int buflen = header.bufferLength - 5;
           if (data[6] == 0)                   // temp
             message = new String (data, 8, buflen).trim ();
@@ -66,17 +66,17 @@ public class FileTransferOutbound extends FileTransferSF
           }
         }
         else if (subtype == 0x11)             // transfer buffer
-          extraBytes.add (new DataRecord (data, 3));
+          dataRecords.add (new DataRecord (data, 3));
         else
         {
           if (data.length > 3)
-            extraBytes.add (new DataRecord (data, 3));
+            dataRecords.add (new DataRecord (data, 3));
           System.out.println ("Unknown subtype");
         }
         break;
 
       default:
-        extraBytes.add (new DataRecord (data, 3));
+        dataRecords.add (new DataRecord (data, 3));
         System.out.printf ("Unknown type: %02X%n", rectype);
     }
 

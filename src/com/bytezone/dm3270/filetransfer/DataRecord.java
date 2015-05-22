@@ -23,6 +23,12 @@ public class DataRecord
     return data.length;
   }
 
+  public int pack (byte[] buffer, int ptr)
+  {
+    System.arraycopy (data, 0, buffer, ptr, data.length);
+    return ptr + data.length;
+  }
+
   @Override
   public String toString ()
   {

@@ -27,8 +27,8 @@ public class FileTransferInboundSF extends FileTransferSF
         if (subtype == 0x05)            // transfer buffer
         {
           int buflen = Utility.unsignedShort (data, 12) - 5;
-          extraBytes.add (new RecordNumber (data, 3));
-          extraBytes.add (new DataHeader (data, 9));
+          dataRecords.add (new RecordNumber (data, 3));
+          dataRecords.add (new DataHeader (data, 9));
 
           ebcdic = true;
           transferBuffer = new byte[buflen];
@@ -36,7 +36,7 @@ public class FileTransferInboundSF extends FileTransferSF
         }
         else if (subtype == 0x08)       // no data
         {
-          extraBytes.add (new DataRecord (data, 3));
+          dataRecords.add (new ErrorRecord (data, 3));
           if (data.length != 7)
             System.out.printf ("Unrecognised data length: %d%n", data.length);
         }
@@ -44,14 +44,14 @@ public class FileTransferInboundSF extends FileTransferSF
 
       case 0x47:                        // acknowledge DATA
         // subtype 0x05
-        extraBytes.add (new RecordNumber (data, 3));
+        dataRecords.add (new RecordNumber (data, 3));
         if (data.length != 9)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       default:
         if (data.length > 3)
-          extraBytes.add (new DataRecord (data, 3));
+          dataRecords.add (new DataRecord (data, 3));
         System.out.printf ("Unknown type: %02X%n", rectype);
     }
 

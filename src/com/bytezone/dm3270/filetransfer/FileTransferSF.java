@@ -12,7 +12,7 @@ public class FileTransferSF extends StructuredField
   protected final String direction;
   protected final byte rectype;
   protected final byte subtype;
-  protected final List<DataRecord> extraBytes = new ArrayList<> ();
+  protected final List<DataRecord> dataRecords = new ArrayList<> ();
 
   protected byte[] transferBuffer;
   protected boolean ebcdic;
@@ -55,15 +55,15 @@ public class FileTransferSF extends StructuredField
     text.append (String.format ("   type      : %02X%n", rectype));
     text.append (String.format ("   subtype   : %02X", subtype));
 
-    for (DataRecord extra : extraBytes)
-      text.append (String.format ("\n   %s", extra));
+    for (DataRecord dataRecord : dataRecords)
+      text.append (String.format ("\n   %s", dataRecord));
 
     if (message != null)
       text.append (String.format ("\n   message   : %s", message));
 
     if (transferBuffer != null)
     {
-      text.append ("\n");
+      text.append ("\n\n");
       text.append (Utility.toHex (transferBuffer, ebcdic));
     }
 
