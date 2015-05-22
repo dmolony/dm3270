@@ -13,20 +13,16 @@ public class FileTransferOutbound extends FileTransferSF
     switch (rectype)
     {
       case 0x00:
+        dataRecords.add (new DataRecord (data, 3));
+        dataRecords.add (new DataRecord (data, 9));
+        dataRecords.add (new DataRecord (data, 19));
+
         if (data.length == 33)
-        {
           message = new String (data, 26, 7);
-          dataRecords.add (new DataRecord (data, 3));
-          dataRecords.add (new DataRecord (data, 9));
-          dataRecords.add (new DataRecord (data, 19));
-        }
         else if (data.length == 39)
         {
+          dataRecords.add (new RecordSize (data, 24));
           message = new String (data, 32, 7);
-          dataRecords.add (new DataRecord (data, 3));
-          dataRecords.add (new DataRecord (data, 9));
-          dataRecords.add (new DataRecord (data, 19));
-          dataRecords.add (new DataRecord (data, 24));
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
