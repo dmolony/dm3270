@@ -1,29 +1,13 @@
 package com.bytezone.dm3270.filetransfer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.structuredfields.StructuredField;
 
-public class FileTransferInboundSF extends StructuredField
+public class FileTransferInboundSF extends FileTransferSF
 {
-  private final byte rectype;
-  private final byte subtype;
-
-  private byte[] transferBuffer;
-  private boolean ebcdic;
-  private final List<DataRecord> extraBytes = new ArrayList<> ();
-
   public FileTransferInboundSF (byte[] buffer, int offset, int length, Screen screen)
   {
-    super (buffer, offset, length, screen);
-
-    assert data[0] == (byte) 0xD0;
-
-    rectype = data[1];
-    subtype = data[2];
+    super (buffer, offset, length, screen, "Inbound");
 
     switch (rectype)
     {
@@ -77,24 +61,5 @@ public class FileTransferInboundSF extends StructuredField
       System.out.println ("-----------------------------------------"
           + "------------------------------");
     }
-  }
-
-  @Override
-  public String toString ()
-  {
-    StringBuilder text = new StringBuilder ("Struct Field : D0 File Transfer Inbound\n");
-    text.append (String.format ("   type      : %02X%n", rectype));
-    text.append (String.format ("   subtype   : %02X", subtype));
-
-    for (DataRecord extra : extraBytes)
-      text.append (String.format ("\n   %s", extra));
-
-    if (transferBuffer != null)
-    {
-      text.append ("\n");
-      text.append (Utility.toHex (transferBuffer, ebcdic));
-    }
-
-    return text.toString ();
   }
 }
