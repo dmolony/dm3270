@@ -89,6 +89,7 @@ public class ReadStructuredFieldCommand extends Command
           break;
 
         case StructuredField.IND$FILE:
+          System.out.println (Utility.toHex (buffer, ptr, size));
           fields.add (new FileTransferInboundSF (data, ptr, size, screen));
           break;
 

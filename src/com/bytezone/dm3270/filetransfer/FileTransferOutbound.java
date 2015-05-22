@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.filetransfer;
 
+import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
 
 public class FileTransferOutbound extends FileTransferSF
@@ -95,6 +97,17 @@ public class FileTransferOutbound extends FileTransferSF
         if (subtype == 0x12)
         {
           // RSF 0xD0 0x00 0x09
+          byte[] buffer = new byte[6];
+          int ptr = 0;
+
+          buffer[ptr++] = (byte) 0x88;
+          ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
+
+          buffer[ptr++] = (byte) 0xD0;
+          buffer[ptr++] = (byte) 0x00;
+          buffer[ptr++] = (byte) 0x09;
+
+          reply = new ReadStructuredFieldCommand (buffer, screen);
         }
         break;
 
@@ -102,38 +115,97 @@ public class FileTransferOutbound extends FileTransferSF
         if (subtype == 0x12)
         {
           // RSF 0xD0 0x41 0x09         CLOSE acknowledgement
+          byte[] buffer = new byte[6];
+          int ptr = 0;
+
+          buffer[ptr++] = (byte) 0x88;
+          ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
+
+          buffer[ptr++] = (byte) 0xD0;
+          buffer[ptr++] = (byte) 0x41;
+          buffer[ptr++] = (byte) 0x09;
+
+          reply = new ReadStructuredFieldCommand (buffer, screen);
         }
         break;
 
-      case 0x45:                      // SET CURSOR request
+      case 0x45:                          // SET CURSOR request
         if (subtype == 0x11)
         {
 
         }
         break;
 
-      case 0x46:                      // GET request
+      case 0x46:                          // GET request
         if (subtype == 0x11)
         {
-          // RSF 0xD0 0x46 0x05 0x63 0x06 0x00 0x00 0x00 0x01
-          //     0xC0 0x80 0x61 
-          // 2 length bytes
-          // buffer of data 
-          // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
-          //
-          // or
-          // RSF 0xD0 0x46 0x08 0x69 0x04 0x22 0x00
+          byte[] buffer;
+          int ptr = 0;
+
+          if (false)                       // have data to send
+          {
+            int buflen = 2000;
+            buffer = new byte[buflen + 5 + 9 + 3];
+
+            buffer[ptr++] = (byte) 0x88;
+            ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
+
+            buffer[ptr++] = (byte) 0xD0;
+            buffer[ptr++] = (byte) 0x46;
+            buffer[ptr++] = (byte) 0x05;
+
+            buffer[ptr++] = (byte) 0x63;      // 6-byte recnum record
+            buffer[ptr++] = (byte) 0x06;
+            ptr = Utility.packUnsignedLong (1, buffer, ptr);
+
+            buffer[ptr++] = (byte) 0xC0;
+            buffer[ptr++] = (byte) 0x80;
+            buffer[ptr++] = (byte) 0x61;
+            ptr = Utility.packUnsignedShort (buflen + 5, buffer, 12);
+            // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
+          }
+          else
+          {
+            buffer = new byte[10];
+
+            buffer[ptr++] = (byte) 0x88;
+            ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
+
+            buffer[ptr++] = (byte) 0xD0;
+            buffer[ptr++] = (byte) 0x46;
+            buffer[ptr++] = (byte) 0x08;
+
+            buffer[ptr++] = (byte) 0x69;      // 4-byte xxx record
+            buffer[ptr++] = (byte) 0x04;
+            buffer[ptr++] = (byte) 0x22;
+            buffer[ptr++] = (byte) 0x00;
+          }
+
+          reply = new ReadStructuredFieldCommand (buffer, screen);
         }
         break;
 
-      case 0x47:                      // data transfer buffer
+      case 0x47:                          // data transfer buffer
         if (subtype == 0x04)
         {
-          // RSF  0xD0 0x47 0x05 0x63 0x06 0x00 0x00 0x00 0x01 
+          byte[] buffer = new byte[12];
+          int ptr = 0;
+
+          buffer[ptr++] = (byte) 0x88;
+          ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
+
+          buffer[ptr++] = (byte) 0xD0;
+          buffer[ptr++] = (byte) 0x47;
+          buffer[ptr++] = (byte) 0x05;
+          buffer[ptr++] = (byte) 0x63;        // 6-byte recnum record
+          buffer[ptr++] = (byte) 0x06;        // length of this record
+          ptr = Utility.packUnsignedLong (1, buffer, ptr);
+
+          reply = new ReadStructuredFieldCommand (buffer, screen);
         }
         else if (subtype == 0x11)     // INSERT request
         {
-
+          // do nothing
         }
         break;
     }

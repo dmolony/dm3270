@@ -9,13 +9,14 @@ import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class FileTransferSF extends StructuredField
 {
+  protected final String direction;
   protected final byte rectype;
   protected final byte subtype;
   protected final List<DataRecord> extraBytes = new ArrayList<> ();
+
   protected byte[] transferBuffer;
   protected boolean ebcdic;
   protected String message;
-  protected final String direction;
 
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)
