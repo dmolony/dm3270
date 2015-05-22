@@ -111,7 +111,7 @@ public class FileTransferOutbound extends FileTransferSF
         }
         break;
 
-      case 0x41:                      // CLOSE request
+      case 0x41:                          // CLOSE request
         if (subtype == 0x12)
         {
           // RSF 0xD0 0x41 0x09         CLOSE acknowledgement
@@ -142,7 +142,7 @@ public class FileTransferOutbound extends FileTransferSF
           byte[] buffer;
           int ptr = 0;
 
-          if (false)                       // have data to send
+          if (false)                      // have data to send
           {
             int buflen = 2000;
             buffer = new byte[buflen + 5 + 9 + 3];
@@ -161,7 +161,7 @@ public class FileTransferOutbound extends FileTransferSF
             buffer[ptr++] = (byte) 0xC0;
             buffer[ptr++] = (byte) 0x80;
             buffer[ptr++] = (byte) 0x61;
-            ptr = Utility.packUnsignedShort (buflen + 5, buffer, 12);
+            ptr = Utility.packUnsignedShort (buflen + 5, buffer, ptr);
             // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
           }
           else
