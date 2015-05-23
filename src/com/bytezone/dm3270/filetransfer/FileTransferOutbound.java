@@ -48,8 +48,8 @@ public class FileTransferOutbound extends FileTransferSF
         break;
 
       case 0x47:
-        String transferMessage = screen.getTransferMessage ();
-        ebcdic = "FT:DATA".equals (transferMessage);
+        Transfer transfer = screen.getTransfer ();
+        ebcdic = transfer.isData ();
         if (subtype == 0x04)                  // message or transfer buffer
         {
           DataHeader header = new DataHeader (data, 3);
@@ -57,6 +57,7 @@ public class FileTransferOutbound extends FileTransferSF
           int buflen = header.bufferLength - 5;
           transferBuffer = new byte[buflen];
           System.arraycopy (data, 8, transferBuffer, 0, buflen);
+          transfer.add (transferBuffer);
         }
         else if (subtype == 0x11)             // transfer buffer
           dataRecords.add (new DataRecord (data, 3));

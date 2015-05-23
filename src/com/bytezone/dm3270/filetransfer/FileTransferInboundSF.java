@@ -26,6 +26,7 @@ public class FileTransferInboundSF extends FileTransferSF
       case 0x46:
         if (subtype == 0x05)            // transfer buffer
         {
+          Transfer transfer = screen.getTransfer ();
           int buflen = Utility.unsignedShort (data, 12) - 5;
           dataRecords.add (new RecordNumber (data, 3));
           dataRecords.add (new DataHeader (data, 9));
@@ -33,6 +34,7 @@ public class FileTransferInboundSF extends FileTransferSF
           ebcdic = true;
           transferBuffer = new byte[buflen];
           System.arraycopy (data, 14, transferBuffer, 0, buflen);
+          transfer.add (transferBuffer);
         }
         else if (subtype == 0x08)       // no data
         {

@@ -28,6 +28,7 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.plugins.Plugin;
@@ -56,7 +57,9 @@ public class Screen extends Canvas
   private boolean keyboardLocked;
   private boolean insertMode;
   private boolean readModifiedAll = false;
-  private String transferMessage;
+
+  //  private String transferMessage;
+  private Transfer currentTransfer;
 
   private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
@@ -141,12 +144,18 @@ public class Screen extends Canvas
 
   public void setTransferMessage (String message)
   {
-    transferMessage = message;
+    //    transferMessage = message;
+    currentTransfer = new Transfer (message);
   }
 
-  public String getTransferMessage ()
+  //  public String getTransferMessage ()
+  //  {
+  //    return transferMessage;
+  //  }
+
+  public Transfer getTransfer ()
   {
-    return transferMessage;
+    return currentTransfer;
   }
 
   public Function getFunction ()
