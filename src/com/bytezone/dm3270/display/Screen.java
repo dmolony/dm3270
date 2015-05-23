@@ -56,6 +56,7 @@ public class Screen extends Canvas
   private boolean keyboardLocked;
   private boolean insertMode;
   private boolean readModifiedAll = false;
+  private String transferMessage;
 
   private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
@@ -136,6 +137,16 @@ public class Screen extends Canvas
   public int getFontSize ()
   {
     return characterSize.getSize ();
+  }
+
+  public void setTransferMessage (String message)
+  {
+    transferMessage = message;
+  }
+
+  public String getTransferMessage ()
+  {
+    return transferMessage;
   }
 
   public Function getFunction ()

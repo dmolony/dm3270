@@ -34,7 +34,7 @@ public class DataHeader extends DataRecord
   {
     super ((byte) 0x00, RECORD_LENGTH);
     System.arraycopy (data, offset, this.data, 0, RECORD_LENGTH);
-    bufferLength = Utility.unsignedShort (this.data, 3) - RECORD_LENGTH;
+    bufferLength = Utility.unsignedShort (this.data, 3);
     compressed = data[offset] != (byte) 0xC0 || data[offset + 1] != (byte) 0x80;
   }
 
@@ -43,6 +43,6 @@ public class DataHeader extends DataRecord
   {
     return String.format ("header    : %s (%scompressed, %,d + %d)",
                           Utility.toHexString (data), (compressed ? "" : "un"),
-                          bufferLength, RECORD_LENGTH);
+                          (bufferLength - RECORD_LENGTH), RECORD_LENGTH);
   }
 }

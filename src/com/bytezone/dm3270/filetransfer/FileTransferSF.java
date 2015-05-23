@@ -30,22 +30,22 @@ public class FileTransferSF extends StructuredField
     this.direction = direction;
   }
 
-  protected boolean checkEbcdic (byte[] data, int offset, int length)
-  {
-    int ascii = 0;
-    int ebcdic = 0;
-
-    while (length > 0)
-    {
-      if (data[offset] == 0x20)
-        ascii++;
-      else if (data[offset] == 0x40)
-        ebcdic++;
-      length--;
-      offset++;
-    }
-    return ebcdic > ascii;
-  }
+  //  protected boolean checkEbcdic (byte[] data, int offset, int length)
+  //  {
+  //    int ascii = 0;
+  //    int ebcdic = 0;
+  //
+  //    while (length > 0)
+  //    {
+  //      if (data[offset] == 0x20)
+  //        ascii++;
+  //      else if (data[offset] == 0x40)
+  //        ebcdic++;
+  //      length--;
+  //      offset++;
+  //    }
+  //    return ebcdic > ascii;
+  //  }
 
   @Override
   public String toString ()
