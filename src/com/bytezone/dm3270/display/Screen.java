@@ -142,9 +142,10 @@ public class Screen extends Canvas
     return characterSize.getSize ();
   }
 
-  public void setTransferMessage (String message)
+  public Transfer startNewTransfer (String message)
   {
     currentTransfer = new Transfer (message);
+    return currentTransfer;
   }
 
   public Transfer getTransfer ()

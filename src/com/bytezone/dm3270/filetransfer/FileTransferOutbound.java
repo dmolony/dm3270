@@ -18,15 +18,14 @@ public class FileTransferOutbound extends FileTransferSF
         dataRecords.add (new DataRecord (data, 19));
 
         if (data.length == 33)
-          message = new String (data, 26, 7);
+          screen.startNewTransfer (new String (data, 26, 7));
         else if (data.length == 39)
         {
           dataRecords.add (new RecordSize (data, 24));
-          message = new String (data, 32, 7);
+          screen.startNewTransfer (new String (data, 32, 7));
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
-        screen.setTransferMessage (message);
         break;
 
       case 0x41:
