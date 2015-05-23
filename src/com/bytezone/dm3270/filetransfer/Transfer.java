@@ -36,8 +36,10 @@ public class Transfer
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("Transfer ... : %s", type));
+
+    int bufno = 0;
     for (byte[] buffer : buffers)
-      text.append (String.format ("%n  Buffer ... : %,d", buffer.length));
+      text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.length));
     text.append (String.format ("%nTotal length : %,d", length));
 
     return text.toString ();

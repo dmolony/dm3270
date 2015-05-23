@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.application;
 
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javafx.application.Platform;
@@ -139,7 +141,13 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     menuItemToggleScreens.setAccelerator (new KeyCodeCombination (KeyCode.S,
         KeyCombination.SHORTCUT_DOWN));
 
-    menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens);
+    MenuItem menuItemFileTransfer = new MenuItem ("File transfer");
+    menuItemFileTransfer.setOnAction ( (e) -> fileTransfer ());
+    menuItemFileTransfer.setAccelerator (new KeyCodeCombination (KeyCode.F,
+        KeyCombination.SHORTCUT_DOWN));
+
+    menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
+                                     menuItemFileTransfer);
 
     if (!SYSTEM_MENUBAR)
     {
@@ -232,6 +240,44 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
       btnForward.setDisable (true);
       setBottom (statusPane);
     }
+  }
+
+  private void fileTransfer ()
+  {
+    sendAID (AIDCommand.AID_ENTER_KEY, "ENTR");
+
+    List<Field> fields = screen.getFields ();
+
+    Field field10 = fields.get (10);
+    Field field17 = fields.get (17);
+    Field field18 = fields.get (18);
+    Field field19 = fields.get (19);
+
+    if (field10 == null || field18 == null || field19 == null)
+      return;
+
+    if (!"ISPF Command Shell".equals (field10.getText ()))
+      return;
+
+    Field input = null;
+    if ("===>".equals (field17.getText ()))
+      input = field18;
+    else if ("===>".equals (field18.getText ()))
+      input = field19;
+
+    if (input == null || input.getDisplayLength () != 234)
+      return;
+
+    try
+    {
+      input.setText ("IND$FILE GET TEST".getBytes ("CP1047"));
+      input.setModified (true);
+    }
+    catch (UnsupportedEncodingException e)
+    {
+      e.printStackTrace ();
+    }
+    input.draw ();
   }
 
   void back ()

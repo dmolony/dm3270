@@ -144,14 +144,8 @@ public class Screen extends Canvas
 
   public void setTransferMessage (String message)
   {
-    //    transferMessage = message;
     currentTransfer = new Transfer (message);
   }
-
-  //  public String getTransferMessage ()
-  //  {
-  //    return transferMessage;
-  //  }
 
   public Transfer getTransfer ()
   {

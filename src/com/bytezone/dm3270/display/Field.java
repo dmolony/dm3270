@@ -216,7 +216,7 @@ public class Field implements Iterable<ScreenPosition>
     return screenPositions.get (position).getByte ();
   }
 
-  String getText ()
+  public String getText ()
   {
     if (startPosition == endPosition)
       return "";
