@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
 
 public class FileTransferInboundSF extends FileTransferSF
@@ -27,13 +26,14 @@ public class FileTransferInboundSF extends FileTransferSF
         if (subtype == 0x05)            // transfer buffer
         {
           Transfer transfer = screen.getTransfer ();
-          int buflen = Utility.unsignedShort (data, 12) - 5;
           dataRecords.add (new RecordNumber (data, 3));
-          dataRecords.add (new DataHeader (data, 9));
+
+          DataHeader header = new DataHeader (data, 9);
+          dataRecords.add (header);
 
           ebcdic = true;
-          transferBuffer = new byte[buflen];
-          System.arraycopy (data, 14, transferBuffer, 0, buflen);
+          transferBuffer = new byte[header.bufferLength];
+          System.arraycopy (data, 14, transferBuffer, 0, transferBuffer.length);
           transfer.add (transferBuffer);
         }
         else if (subtype == 0x08)       // no data

@@ -53,9 +53,9 @@ public class FileTransferOutbound extends FileTransferSF
         {
           DataHeader header = new DataHeader (data, 3);
           dataRecords.add (header);
-          int buflen = header.bufferLength - 5;
-          transferBuffer = new byte[buflen];
-          System.arraycopy (data, 8, transferBuffer, 0, buflen);
+
+          transferBuffer = new byte[header.bufferLength];
+          System.arraycopy (data, 8, transferBuffer, 0, transferBuffer.length);
           transfer.add (transferBuffer);
         }
         else if (subtype == 0x11)             // transfer buffer
@@ -177,7 +177,7 @@ public class FileTransferOutbound extends FileTransferSF
         }
         break;
 
-      case 0x47:                          // data transfer buffer
+      case 0x47:                          // receive data transfer buffer
         if (subtype == 0x04)
         {
           Transfer transfer = screen.getTransfer ();
@@ -191,10 +191,8 @@ public class FileTransferOutbound extends FileTransferSF
           buffer[ptr++] = (byte) 0x47;
           buffer[ptr++] = (byte) 0x05;
 
-          buffer[ptr++] = (byte) 0x63;        // 6-byte recnum record
-          buffer[ptr++] = (byte) 0x06;        // length of this record
-
-          ptr = Utility.packUnsignedLong (transfer.size (), buffer, ptr);
+          RecordNumber recordNumber = new RecordNumber (transfer.size ());
+          ptr = recordNumber.pack (buffer, ptr);
 
           reply = new ReadStructuredFieldCommand (buffer, screen);
         }
