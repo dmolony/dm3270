@@ -16,6 +16,7 @@ public class FileTransferSF extends StructuredField
 
   protected byte[] transferBuffer;
   protected boolean ebcdic;
+  protected String transferType;        // outbound only
 
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)
@@ -27,6 +28,11 @@ public class FileTransferSF extends StructuredField
     rectype = data[1];
     subtype = data[2];
     this.direction = direction;
+  }
+
+  protected boolean checkEbcdic (byte[] data)
+  {
+    return checkEbcdic (data, 0, data.length);
   }
 
   protected boolean checkEbcdic (byte[] data, int offset, int length)
@@ -56,6 +62,9 @@ public class FileTransferSF extends StructuredField
 
     for (DataRecord dataRecord : dataRecords)
       text.append (String.format ("\n   %s", dataRecord));
+
+    if (transferType != null)
+      text.append (String.format ("\n   transfer  : %s", transferType));
 
     if (transferBuffer != null)
     {

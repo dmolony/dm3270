@@ -31,7 +31,6 @@ public class FileTransferInboundSF extends FileTransferSF
           DataHeader header = new DataHeader (data, 9);
           dataRecords.add (header);
 
-          ebcdic = true;
           transferBuffer = new byte[header.bufferLength];
           System.arraycopy (data, 14, transferBuffer, 0, transferBuffer.length);
           transfer.add (transferBuffer);
