@@ -3,35 +3,41 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
+// Control Unit Terminal (CUT)
+// Distributed Function Terminal (DFT)
 
 public class Transfer
 {
-  String type;
+  TransferType type;
   List<byte[]> messageBuffers = new ArrayList<> ();
   List<byte[]> dataBuffers = new ArrayList<> ();
   int messageLength;
   int dataLength;
 
+  enum TransferType
+  {
+    MSG, DATA
+  }
+
   public void setCurrentTransfer (String type)
   {
-    this.type = type;
-    if (!isData () && !isMessage ())
-    {
-      this.type = null;
+    if ("FT:DATA".equals (type))
+      this.type = TransferType.DATA;
+    else if ("FT:MSG ".equals (type))
+      this.type = TransferType.MSG;
+    else
       throw new IllegalArgumentException ();
-    }
   }
 
   public void add (byte[] buffer)
   {
-    if (isData ())
+    if (type == TransferType.DATA)
     {
       dataBuffers.add (buffer);
       dataLength += buffer.length;
 
-      System.out.println ("Received buffer:");
-      System.out.println (Utility.toHex (buffer));
+      //      System.out.println ("Received buffer:");
+      //      System.out.println (Utility.toHex (buffer));
     }
     else
     {
@@ -47,12 +53,12 @@ public class Transfer
 
   public boolean isData ()
   {
-    return "FT:DATA".equals (type);
+    return type == TransferType.DATA;
   }
 
   public boolean isMessage ()
   {
-    return "FT:MSG ".equals (type);
+    return type == TransferType.MSG;
   }
 
   @Override
@@ -63,7 +69,7 @@ public class Transfer
     text.append (String.format ("Transfer ... : %s", type));
 
     int bufno = 0;
-    if (isData ())
+    if (type == TransferType.DATA)
     {
       for (byte[] buffer : dataBuffers)
         text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.length));

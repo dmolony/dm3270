@@ -49,6 +49,7 @@ public class ReadStructuredFieldCommand extends Command
     clientNames.put ("19D8CA4B4B59357FBF37FB9B7F38EC21", "x3270");
     clientNames.put ("F960E103861F3920FC3B8AF00D8B8601", "FreeHost");
     clientNames.put ("C1F30DBA8306E1887C7EE2D976C6B24A", "dm3270");
+    clientNames.put ("0BA60960D0116F016EBA4D14E610AA39", "Vista2");
   }
 
   public ReadStructuredFieldCommand (Screen screen)

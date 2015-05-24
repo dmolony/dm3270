@@ -2,7 +2,8 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.application.Utility;
 
-// Required for DFT data transfers
+// Required for DFT data transfers. If this reply is not included, any file transfers
+// will default to CUT mode.
 
 public class DistributedDataManagement extends QueryReplyField
 {
