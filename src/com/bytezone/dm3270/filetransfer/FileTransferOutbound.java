@@ -180,6 +180,7 @@ public class FileTransferOutbound extends FileTransferSF
       case 0x47:                          // data transfer buffer
         if (subtype == 0x04)
         {
+          Transfer transfer = screen.getTransfer ();
           byte[] buffer = new byte[12];
           int ptr = 0;
 
@@ -192,7 +193,8 @@ public class FileTransferOutbound extends FileTransferSF
 
           buffer[ptr++] = (byte) 0x63;        // 6-byte recnum record
           buffer[ptr++] = (byte) 0x06;        // length of this record
-          ptr = Utility.packUnsignedLong (1, buffer, ptr);
+
+          ptr = Utility.packUnsignedLong (transfer.size (), buffer, ptr);
 
           reply = new ReadStructuredFieldCommand (buffer, screen);
         }

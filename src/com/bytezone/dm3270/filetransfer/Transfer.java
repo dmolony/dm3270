@@ -6,18 +6,38 @@ import java.util.List;
 public class Transfer
 {
   String type;
-  List<byte[]> buffers = new ArrayList<> ();
-  int length;
+  List<byte[]> messageBuffers = new ArrayList<> ();
+  List<byte[]> dataBuffers = new ArrayList<> ();
+  int messageLength;
+  int dataLength;
 
-  public Transfer (String type)
+  public void setCurrentTransfer (String type)
   {
     this.type = type;
+    if (!isData () && !isMessage ())
+    {
+      this.type = null;
+      throw new IllegalArgumentException ();
+    }
   }
 
   public void add (byte[] buffer)
   {
-    buffers.add (buffer);
-    length += buffer.length;
+    if (isData ())
+    {
+      dataBuffers.add (buffer);
+      dataLength += buffer.length;
+    }
+    else
+    {
+      messageBuffers.add (buffer);
+      messageLength += buffer.length;
+    }
+  }
+
+  public int size ()
+  {
+    return isData () ? dataBuffers.size () : messageBuffers.size ();
   }
 
   public boolean isData ()
@@ -38,9 +58,18 @@ public class Transfer
     text.append (String.format ("Transfer ... : %s", type));
 
     int bufno = 0;
-    for (byte[] buffer : buffers)
-      text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.length));
-    text.append (String.format ("%nTotal length : %,d", length));
+    if (isData ())
+    {
+      for (byte[] buffer : dataBuffers)
+        text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.length));
+      text.append (String.format ("%nTotal length : %,d", dataLength));
+    }
+    else
+    {
+      for (byte[] buffer : messageBuffers)
+        text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.length));
+      text.append (String.format ("%nTotal length : %,d", messageLength));
+    }
 
     return text.toString ();
   }

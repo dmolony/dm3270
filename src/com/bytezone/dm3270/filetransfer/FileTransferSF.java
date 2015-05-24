@@ -17,8 +17,6 @@ public class FileTransferSF extends StructuredField
   protected byte[] transferBuffer;
   protected boolean ebcdic;
 
-  //  protected String message;
-
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)
   {
@@ -58,9 +56,6 @@ public class FileTransferSF extends StructuredField
 
     for (DataRecord dataRecord : dataRecords)
       text.append (String.format ("\n   %s", dataRecord));
-
-    //    if (message != null)
-    //      text.append (String.format ("\n   message   : %s", message));
 
     if (transferBuffer != null)
     {

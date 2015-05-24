@@ -59,7 +59,7 @@ public class Screen extends Canvas
   private boolean readModifiedAll = false;
 
   //  private String transferMessage;
-  private Transfer currentTransfer;
+  private final Transfer currentTransfer = new Transfer ();
 
   private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
@@ -144,7 +144,7 @@ public class Screen extends Canvas
 
   public Transfer startNewTransfer (String message)
   {
-    currentTransfer = new Transfer (message);
+    currentTransfer.setCurrentTransfer (message);
     return currentTransfer;
   }
 
