@@ -2,6 +2,8 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.application.Utility;
 
+// Required for DFT data transfers
+
 public class DistributedDataManagement extends QueryReplyField
 {
   int flags;
@@ -15,7 +17,14 @@ public class DistributedDataManagement extends QueryReplyField
     super (DISTRIBUTED_DATA_MANAGEMENT_REPLY);
 
     int ptr = createReply (8);
-    checkDataLength (ptr + 8);
+
+    ptr = Utility.packUnsignedShort (0, reply, ptr);
+    ptr = Utility.packUnsignedShort (4096, reply, ptr);
+    ptr = Utility.packUnsignedShort (4096, reply, ptr);
+    reply[ptr++] = 1;
+    reply[ptr++] = 1;
+
+    checkDataLength (ptr);
   }
 
   public DistributedDataManagement (byte[] buffer)

@@ -3,6 +3,8 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.application.Utility;
+
 public class Transfer
 {
   String type;
@@ -27,6 +29,9 @@ public class Transfer
     {
       dataBuffers.add (buffer);
       dataLength += buffer.length;
+
+      System.out.println ("Received buffer:");
+      System.out.println (Utility.toHex (buffer));
     }
     else
     {

@@ -92,6 +92,8 @@ public class TransferStage extends Stage
       if (newToggle != null)
         changeLayout ();
     });
+
+    btnTransfer.setOnAction (e -> doStuff ());
   }
 
   private void changeLayout ()

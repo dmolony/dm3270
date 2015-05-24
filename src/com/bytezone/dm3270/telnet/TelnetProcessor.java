@@ -30,7 +30,7 @@ public class TelnetProcessor
   public static final byte SB_TN3270E = 0x28;
 
   // state variables
-  private final byte[] data = new byte[4096];
+  private final byte[] data = new byte[5000];
   private int dataPtr;
   private boolean pending;              // last byte was IAC, must check next byte
   private boolean weirdData;            // when stream starts with two IACs

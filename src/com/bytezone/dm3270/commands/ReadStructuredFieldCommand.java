@@ -159,6 +159,7 @@ public class ReadStructuredFieldCommand extends Command
       replyFields.add (new AuxilliaryDevices ());
       replyFields.add (partition);
       replyFields.add (new OEMAuxilliaryDevice ());
+      replyFields.add (new DistributedDataManagement ());
     }
     // x3270
     else
