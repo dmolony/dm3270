@@ -22,9 +22,15 @@ public class Transfer
   public void setCurrentTransfer (String type)
   {
     if ("FT:DATA".equals (type))
+    {
       this.type = TransferType.DATA;
+      dataBuffers.clear ();
+    }
     else if ("FT:MSG ".equals (type))
+    {
       this.type = TransferType.MSG;
+      messageBuffers.clear ();
+    }
     else
       throw new IllegalArgumentException ();
   }
