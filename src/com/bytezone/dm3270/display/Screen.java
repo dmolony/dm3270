@@ -58,7 +58,6 @@ public class Screen extends Canvas
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  //  private String transferMessage;
   private final Transfer currentTransfer = new Transfer ();
 
   private final boolean recording = true;

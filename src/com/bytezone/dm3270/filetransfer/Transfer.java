@@ -9,6 +9,8 @@ import java.util.List;
 public class Transfer
 {
   TransferType type;
+  TransferStatus status;
+
   List<byte[]> messageBuffers = new ArrayList<> ();
   List<byte[]> dataBuffers = new ArrayList<> ();
   int messageLength;
@@ -17,6 +19,16 @@ public class Transfer
   enum TransferType
   {
     MSG, DATA
+  }
+
+  enum TransferStatus
+  {
+    OPEN, TRANSFER, CLOSE
+  }
+
+  public void setStatus (TransferStatus status)
+  {
+    this.status = status;
   }
 
   public void setCurrentTransfer (String type)

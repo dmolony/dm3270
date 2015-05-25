@@ -6,6 +6,8 @@ import com.bytezone.dm3270.display.Screen;
 
 public class FileTransferOutbound extends FileTransferSF
 {
+  int bufferNumber;
+
   public FileTransferOutbound (byte[] buffer, int offset, int length, Screen screen)
   {
     super (buffer, offset, length, screen, "Outbound");
@@ -20,19 +22,22 @@ public class FileTransferOutbound extends FileTransferSF
         if (data.length == 33)
         {
           transferType = new String (data, 26, 7);
-          screen.startNewTransfer (transferType);
+          Transfer transfer = screen.startNewTransfer (transferType);
+          transfer.setStatus (Transfer.TransferStatus.OPEN);
         }
         else if (data.length == 39)
         {
           dataRecords.add (new RecordSize (data, 24));
           transferType = new String (data, 32, 7);
-          screen.startNewTransfer (transferType);
+          Transfer transfer = screen.startNewTransfer (transferType);
+          transfer.setStatus (Transfer.TransferStatus.OPEN);
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x41:
+        screen.getTransfer ().setStatus (Transfer.TransferStatus.CLOSE);
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -52,6 +57,7 @@ public class FileTransferOutbound extends FileTransferSF
 
       case 0x47:
         Transfer transfer = screen.getTransfer ();
+        transfer.setStatus (Transfer.TransferStatus.TRANSFER);
         ebcdic = transfer.isData ();
 
         if (subtype == 0x04)                  // message or transfer buffer
@@ -63,6 +69,7 @@ public class FileTransferOutbound extends FileTransferSF
           System.arraycopy (data, 3 + DataHeader.RECORD_LENGTH, transferBuffer, 0,
                             transferBuffer.length);
           transfer.add (transferBuffer);
+          bufferNumber = transfer.size ();
           ebcdic = checkEbcdic (transferBuffer);
         }
         else if (subtype == 0x11)             // transfer buffer
@@ -93,7 +100,7 @@ public class FileTransferOutbound extends FileTransferSF
   {
     switch (rectype)
     {
-      case 0x00:                      // OPEN request
+      case 0x00:                          // OPEN request
         if (subtype == 0x12)
         {
           // RSF 0xD0 0x00 0x09
@@ -198,7 +205,7 @@ public class FileTransferOutbound extends FileTransferSF
           buffer[ptr++] = (byte) 0x47;
           buffer[ptr++] = (byte) 0x05;
 
-          RecordNumber recordNumber = new RecordNumber (transfer.size ());
+          RecordNumber recordNumber = new RecordNumber (bufferNumber);
           ptr = recordNumber.pack (buffer, ptr);
 
           reply = new ReadStructuredFieldCommand (buffer, screen);
