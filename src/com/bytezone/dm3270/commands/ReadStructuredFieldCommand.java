@@ -48,8 +48,9 @@ public class ReadStructuredFieldCommand extends Command
     clientNames.put ("12F0F4557FB72796E8A4398AA694255C", "Vista");
     clientNames.put ("19D8CA4B4B59357FBF37FB9B7F38EC21", "x3270");
     clientNames.put ("F960E103861F3920FC3B8AF00D8B8601", "FreeHost");
-    clientNames.put ("C1F30DBA8306E1887C7EE2D976C6B24A", "dm3270");
+    clientNames.put ("C1F30DBA8306E1887C7EE2D976C6B24A", "dm3270 (old)");
     clientNames.put ("0BA60960D0116F016EBA4D14E610AA39", "Vista2");
+    clientNames.put ("08997C53F68A969853867072174CD882", "dm3270");
   }
 
   public ReadStructuredFieldCommand (Screen screen)
@@ -115,7 +116,7 @@ public class ReadStructuredFieldCommand extends Command
       byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
       signature = DatatypeConverter.printHexBinary (digest);
       String clientName = clientNames.get (signature);
-      return clientName == null ? signature : clientName;
+      return clientName == null ? "Unknown" : clientName;
     }
     catch (NoSuchAlgorithmException e)
     {

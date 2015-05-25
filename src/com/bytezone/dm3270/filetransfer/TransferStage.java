@@ -16,6 +16,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 
@@ -24,7 +26,9 @@ public class TransferStage extends Stage
   private static final int BUTTON_WIDTH = 100;
   private static final int LABEL_WIDTH = 100;
   private static final int TEXT_FIELD_WIDTH = 300;
+
   private final Screen screen;
+  private final ConsolePane consolePane;
 
   private final Button btnTransfer = new Button ("Transfer");
   private final Button btnCancel = new Button ("Cancel");
@@ -41,9 +45,10 @@ public class TransferStage extends Stage
 
   private final ToggleGroup grpDirection = new ToggleGroup ();
 
-  public TransferStage (Screen screen)
+  public TransferStage (Screen screen, ConsolePane consolePane)
   {
     this.screen = screen;
+    this.consolePane = consolePane;
 
     BorderPane root = new BorderPane ();
 
@@ -127,13 +132,21 @@ public class TransferStage extends Stage
 
     try
     {
-      input.setText ("IND$FILE GET TEST".getBytes ("CP1047"));
-      input.setModified (true);
+      String filename = txtMainframeFile.getText ();
+      if (filename != null && !filename.isEmpty ())
+      {
+        String command = "IND$FILE GET " + filename;
+        input.setText (command.getBytes ("CP1047"));
+        input.setModified (true);
+        input.draw ();
+        consolePane.sendAID (AIDCommand.AID_ENTER_KEY, "ENTR");
+      }
+      else
+        System.out.println ("filename not specified");
     }
     catch (UnsupportedEncodingException e)
     {
       e.printStackTrace ();
     }
-    input.draw ();
   }
 }

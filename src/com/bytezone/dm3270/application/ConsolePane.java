@@ -244,9 +244,8 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
 
   private void fileTransfer ()
   {
-    //    sendAID (AIDCommand.AID_ENTER_KEY, "ENTR");
     if (transferStage == null)
-      transferStage = new TransferStage (screen);
+      transferStage = new TransferStage (screen, this);
 
     transferStage.show ();
   }
@@ -291,10 +290,12 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   }
 
   // called from ConsoleKeyPress.handle (KeyEvent e)
-  void sendAID (byte aid, String name)
+  // called from TransferStage.doStuff()
+  public void sendAID (byte aid, String name)
   {
     if (screen.isInsertMode ())
       screen.toggleInsertMode ();
+
     screen.lockKeyboard (name);
     screen.setAID (aid);
 
