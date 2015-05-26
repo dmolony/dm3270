@@ -23,13 +23,13 @@ public class Transfer
 
   enum TransferStatus
   {
-    OPEN, TRANSFER, CLOSE
+    OPEN_DATA, OPEN_MSG, TRANSFER, CLOSE
   }
 
-  public void setStatus (TransferStatus status)
-  {
-    this.status = status;
-  }
+  //  public void setStatus (TransferStatus status)
+  //  {
+  //    this.status = status;
+  //  }
 
   public void setCurrentTransfer (String type)
   {
@@ -37,11 +37,13 @@ public class Transfer
     {
       this.type = TransferType.DATA;
       dataBuffers.clear ();
+      status = TransferStatus.OPEN_DATA;
     }
     else if ("FT:MSG ".equals (type))
     {
       this.type = TransferType.MSG;
       messageBuffers.clear ();
+      status = TransferStatus.OPEN_MSG;
     }
     else
       throw new IllegalArgumentException ();
@@ -53,15 +55,13 @@ public class Transfer
     {
       dataBuffers.add (buffer);
       dataLength += buffer.length;
-
-      //      System.out.println ("Received buffer:");
-      //      System.out.println (Utility.toHex (buffer));
     }
     else
     {
       messageBuffers.add (buffer);
       messageLength += buffer.length;
     }
+    status = TransferStatus.TRANSFER;
   }
 
   public int size ()

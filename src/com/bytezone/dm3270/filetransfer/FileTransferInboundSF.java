@@ -56,7 +56,7 @@ public class FileTransferInboundSF extends FileTransferSF
         System.out.printf ("Unknown type: %02X%n", rectype);
     }
 
-    if (true)
+    if (debug)
     {
       System.out.println (this);
       System.out.println ("-----------------------------------------"
