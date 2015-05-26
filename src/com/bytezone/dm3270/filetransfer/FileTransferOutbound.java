@@ -39,7 +39,6 @@ public class FileTransferOutbound extends FileTransferSF
       // CLOSE
 
       case 0x41:
-        //        screen.getTransfer ().setStatus (Transfer.TransferStatus.CLOSE);
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -48,7 +47,6 @@ public class FileTransferOutbound extends FileTransferSF
 
       case 0x47:
         Transfer transfer = screen.getTransfer ();
-        //        transfer.setStatus (Transfer.TransferStatus.TRANSFER);
         ebcdic = transfer.isData ();
 
         if (subtype == 0x11)                              // always before 0x04
@@ -172,7 +170,7 @@ public class FileTransferOutbound extends FileTransferSF
     if (true)                       // have data to send
     {
       int buflen = 50;
-      int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.RECORD_LENGTH + buflen;
+      int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
       // if CRLF option add 1 to length for the ctrl-z
       buffer = new byte[length];
 
@@ -211,7 +209,6 @@ public class FileTransferOutbound extends FileTransferSF
 
   private void processReceive ()
   {
-    //    Transfer transfer = screen.getTransfer ();
     byte[] buffer = new byte[12];
     int ptr = 0;
 
