@@ -28,12 +28,9 @@ public class FileTransferInboundSF extends FileTransferSF
           Transfer transfer = screen.getTransfer ();
           dataRecords.add (new RecordNumber (data, 3));
 
-          DataHeader header = new DataHeader (data, 9);
-          dataRecords.add (header);
-
-          transferBuffer = new byte[header.bufferLength];
-          System.arraycopy (data, 14, transferBuffer, 0, transferBuffer.length);
-          transfer.add (transferBuffer);
+          dataHeader = new DataHeader (data, 9);
+          transfer.add (dataHeader);
+          ebcdic = checkEbcdic (dataHeader.getBuffer ());
         }
         else if (subtype == 0x08)       // no data
         {

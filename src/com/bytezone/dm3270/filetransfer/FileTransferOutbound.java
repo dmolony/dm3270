@@ -55,15 +55,10 @@ public class FileTransferOutbound extends FileTransferSF
           dataRecords.add (new DataRecord (data, 3));
         else if (subtype == 0x04)                  // message or transfer buffer
         {
-          DataHeader header = new DataHeader (data, 3);
-          dataRecords.add (header);
-
-          transferBuffer = new byte[header.bufferLength];
-          System.arraycopy (data, 3 + DataHeader.RECORD_LENGTH, transferBuffer, 0,
-                            transferBuffer.length);
-          transfer.add (transferBuffer);
+          dataHeader = new DataHeader (data, 3);
+          transfer.add (dataHeader);
           bufferNumber = transfer.size ();
-          ebcdic = checkEbcdic (transferBuffer);
+          ebcdic = checkEbcdic (dataHeader.getBuffer ());
         }
         else
         {

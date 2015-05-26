@@ -11,8 +11,8 @@ public class Transfer
   TransferType type;
   TransferStatus status;
 
-  List<byte[]> messageBuffers = new ArrayList<> ();
-  List<byte[]> dataBuffers = new ArrayList<> ();
+  List<DataHeader> messageBuffers = new ArrayList<> ();
+  List<DataHeader> dataBuffers = new ArrayList<> ();
   int messageLength;
   int dataLength;
 
@@ -49,17 +49,17 @@ public class Transfer
       throw new IllegalArgumentException ();
   }
 
-  public void add (byte[] buffer)
+  public void add (DataHeader dataHeader)
   {
     if (type == TransferType.DATA)
     {
-      dataBuffers.add (buffer);
-      dataLength += buffer.length;
+      dataBuffers.add (dataHeader);
+      dataLength += dataHeader.size ();
     }
     else
     {
-      messageBuffers.add (buffer);
-      messageLength += buffer.length;
+      messageBuffers.add (dataHeader);
+      messageLength += dataHeader.size ();
     }
     status = TransferStatus.TRANSFER;
   }
@@ -89,14 +89,14 @@ public class Transfer
     int bufno = 0;
     if (type == TransferType.DATA)
     {
-      for (byte[] buffer : dataBuffers)
-        text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.length));
+      for (DataHeader buffer : dataBuffers)
+        text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.size ()));
       text.append (String.format ("%nTotal length : %,d", dataLength));
     }
     else
     {
-      for (byte[] buffer : messageBuffers)
-        text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.length));
+      for (DataHeader buffer : messageBuffers)
+        text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.size ()));
       text.append (String.format ("%nTotal length : %,d", messageLength));
     }
 

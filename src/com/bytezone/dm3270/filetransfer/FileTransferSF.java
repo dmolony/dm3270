@@ -14,11 +14,11 @@ public class FileTransferSF extends StructuredField
   protected final byte subtype;
   protected final List<DataRecord> dataRecords = new ArrayList<> ();
 
-  protected byte[] transferBuffer;
+  protected DataHeader dataHeader;
   protected boolean ebcdic;
   protected String transferType;        // outbound only
 
-  protected final boolean debug = false;
+  protected final boolean debug = true;
 
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)
@@ -63,15 +63,16 @@ public class FileTransferSF extends StructuredField
     text.append (String.format ("   subtype   : %02X", subtype));
 
     for (DataRecord dataRecord : dataRecords)
-      text.append (String.format ("\n   %s", dataRecord));
+      text.append (String.format ("%n   %s", dataRecord));
 
     if (transferType != null)
-      text.append (String.format ("\n   transfer  : %s", transferType));
+      text.append (String.format ("%n   transfer  : %s", transferType));
 
-    if (transferBuffer != null)
+    if (dataHeader != null)
     {
+      text.append (String.format ("%n   %s", dataHeader));
       text.append ("\n\n");
-      text.append (Utility.toHex (transferBuffer, ebcdic));
+      text.append (Utility.toHex (dataHeader.getBuffer (), ebcdic));
     }
 
     return text.toString ();
