@@ -24,13 +24,13 @@ public class FileTransferOutbound extends FileTransferSF
         if (data.length == 33)          // OPEN for SEND
         {
           transferType = new String (data, 26, 7);
-          screen.startNewTransfer (transferType);
+          screen.openTransfer (transferType);
         }
         else if (data.length == 39)     // OPEN for RECEIVE
         {
           dataRecords.add (new RecordSize (data, 24));
           transferType = new String (data, 32, 7);
-          screen.startNewTransfer (transferType);
+          screen.openTransfer (transferType);
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
@@ -39,6 +39,7 @@ public class FileTransferOutbound extends FileTransferSF
       // CLOSE
 
       case 0x41:
+        screen.closeTransfer ();
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;

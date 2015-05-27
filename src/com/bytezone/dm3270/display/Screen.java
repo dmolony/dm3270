@@ -143,7 +143,7 @@ public class Screen extends Canvas
     return characterSize.getSize ();
   }
 
-  public Transfer startNewTransfer (String message)
+  public Transfer openTransfer (String message)
   {
     //    if (currentTransfer != null)
     //      transfers.add (currentTransfer);
@@ -155,6 +155,11 @@ public class Screen extends Canvas
   public Transfer getTransfer ()
   {
     return currentTransfer;
+  }
+
+  public void closeTransfer ()
+  {
+
   }
 
   public Function getFunction ()
