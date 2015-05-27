@@ -26,11 +26,6 @@ public class Transfer
     OPEN_DATA, OPEN_MSG, TRANSFER, CLOSE
   }
 
-  //  public void setStatus (TransferStatus status)
-  //  {
-  //    this.status = status;
-  //  }
-
   public void setCurrentTransfer (String type)
   {
     if ("FT:DATA".equals (type))

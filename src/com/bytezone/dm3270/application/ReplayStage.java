@@ -53,11 +53,6 @@ class ReplayStage extends Stage
     CommandPane commandPane =
         new CommandPane (table, CommandPane.ProcessInstruction.DoProcess);
 
-    //    SplitPane splitPane = new SplitPane ();
-    //    splitPane.setOrientation (Orientation.HORIZONTAL);
-    //    splitPane.getItems ().addAll (table, commandPane);
-    //    splitPane.setDividerPositions (0.37f);
-
     BorderPane borderPane = new BorderPane ();
     borderPane.setLeft (table);
     borderPane.setCenter (commandPane);

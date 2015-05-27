@@ -10,6 +10,7 @@ import static com.bytezone.dm3270.structuredfields.SetReplyMode.RM_CHARACTER;
 
 import java.awt.Toolkit;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +59,7 @@ public class Screen extends Canvas
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
+  private final List<Transfer> transfers = new ArrayList<> ();
   private final Transfer currentTransfer = new Transfer ();
 
   private final boolean recording = true;
@@ -143,6 +145,9 @@ public class Screen extends Canvas
 
   public Transfer startNewTransfer (String message)
   {
+    //    if (currentTransfer != null)
+    //      transfers.add (currentTransfer);
+
     currentTransfer.setCurrentTransfer (message);
     return currentTransfer;
   }
