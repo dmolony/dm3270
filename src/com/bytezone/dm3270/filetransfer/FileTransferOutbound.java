@@ -57,6 +57,14 @@ public class FileTransferOutbound extends FileTransferSF
           transfer.add (dataHeader);
           bufferNumber = transfer.size ();
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
+
+          if (false)
+          {
+            System.out.println (transfer.isData () ? "Data:" : "Message:");
+            System.out.println (dataHeader);
+            System.out.println (Utility.toHex (dataHeader.getBuffer (),
+                                               transfer.isData ()));
+          }
         }
         else
         {
