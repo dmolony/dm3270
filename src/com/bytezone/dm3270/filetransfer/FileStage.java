@@ -5,13 +5,17 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -24,6 +28,7 @@ public class FileStage extends Stage
   private final List<Transfer> transfers = new ArrayList<> ();
   private final Preferences prefs;
   private final WindowSaver windowSaver;
+  private final Button hideButton = new Button ("Hide Window");
 
   public FileStage (Preferences prefs)
   {
@@ -34,15 +39,26 @@ public class FileStage extends Stage
     tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
     tabPane.setPrefSize (500, 500);           // width, height
 
+    HBox buttonBox = new HBox ();
+    hideButton.setPrefWidth (150);
+    buttonBox.setAlignment (Pos.CENTER_RIGHT);
+    buttonBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
+
+    hideButton.setOnAction (e -> {
+      closeWindow ();
+      hide ();
+    });
+    buttonBox.getChildren ().add (hideButton);
+
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (tabPane);
+    borderPane.setBottom (buttonBox);
 
     Scene scene = new Scene (borderPane);
     setScene (scene);
 
     if (!windowSaver.restoreWindow ())
       centerOnScreen ();
-    //    show ();
 
     setOnCloseRequest (e -> closeWindow ());
   }
