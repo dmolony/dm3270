@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.filetransfer;
 
+import javafx.application.Platform;
+
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
@@ -34,15 +36,17 @@ public class FileTransferOutbound extends FileTransferSF
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
 
-        Transfer transfer = screen.openTransfer (this);
-        transfer.setCurrentTransfer (transferType);
+        Platform.runLater ( () -> {
+          Transfer transfer = screen.openTransfer (this);
+          transfer.setCurrentTransfer (transferType);
+        });
 
         break;
 
       // CLOSE
 
       case 0x41:
-        screen.closeTransfer (this);
+        Platform.runLater ( () -> screen.closeTransfer (this));
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -50,7 +54,7 @@ public class FileTransferOutbound extends FileTransferSF
       // Receiving data
 
       case 0x47:
-        transfer = screen.getTransfer ();
+        Transfer transfer = screen.getTransfer ();
         if (transfer == null)
         {
           System.out.println ("null 47");
@@ -69,7 +73,7 @@ public class FileTransferOutbound extends FileTransferSF
           bufferNumber = transfer.size ();
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
           if (transfer.isMessage ())
-            screen.closeTransfer (this);
+            Platform.runLater ( () -> screen.closeTransfer (this));
 
           if (false)
           {

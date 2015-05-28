@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -145,11 +144,11 @@ public class FileStage extends Stage
     tab.setContent (textArea);
     textArea.positionCaret (0);
 
-    Platform.runLater ( () -> {
-      tabPane.getTabs ().add (tab);
-      if (!isShowing ())
-        show ();
-    });
+    //    Platform.runLater ( () -> {
+    tabPane.getTabs ().add (tab);
+    if (!isShowing ())
+      show ();
+    //    });
   }
 
   private void closeWindow ()
