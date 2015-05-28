@@ -23,23 +23,26 @@ public class FileTransferOutbound extends FileTransferSF
 
         if (data.length == 33)          // OPEN for SEND
         {
-          transferType = new String (data, 26, 7);
-          screen.openTransfer (transferType);
+          transferType = new String (data, 26, 7);            // FT:MSG. or FT:DATA
         }
         else if (data.length == 39)     // OPEN for RECEIVE
         {
-          dataRecords.add (new RecordSize (data, 24));
-          transferType = new String (data, 32, 7);
-          screen.openTransfer (transferType);
+          RecordSize recordSize = new RecordSize (data, 24);
+          dataRecords.add (recordSize);
+          transferType = new String (data, 32, 7);            // FT:DATA
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
+
+        Transfer transfer = screen.openTransfer (this);
+        transfer.setCurrentTransfer (transferType);
+
         break;
 
       // CLOSE
 
       case 0x41:
-        screen.closeTransfer ();
+        screen.closeTransfer (this);
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -47,7 +50,14 @@ public class FileTransferOutbound extends FileTransferSF
       // Receiving data
 
       case 0x47:
-        Transfer transfer = screen.getTransfer ();
+        transfer = screen.getTransfer ();
+        if (transfer == null)
+        {
+          System.out.println ("null 47");
+          return;
+        }
+        transfer.add (this);
+
         ebcdic = transfer.isData ();
 
         if (subtype == 0x11)                              // always before 0x04
@@ -58,6 +68,8 @@ public class FileTransferOutbound extends FileTransferSF
           transfer.add (dataHeader);
           bufferNumber = transfer.size ();
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
+          if (transfer.isMessage ())
+            screen.closeTransfer (this);
 
           if (false)
           {
@@ -78,6 +90,9 @@ public class FileTransferOutbound extends FileTransferSF
       // Sending data
 
       case 0x45:
+        transfer = screen.getTransfer ();
+        transfer.add (this);
+
         dataRecords.add (new DataRecord (data, 3));
         dataRecords.add (new DataRecord (data, 8));
         if (data.length != 13)
@@ -85,6 +100,9 @@ public class FileTransferOutbound extends FileTransferSF
         break;
 
       case 0x46:
+        transfer = screen.getTransfer ();
+        transfer.add (this);
+
         dataRecords.add (new DataRecord (data, 3));
         if (data.length != 7)
           System.out.printf ("Unrecognised data length: %d%n", data.length);

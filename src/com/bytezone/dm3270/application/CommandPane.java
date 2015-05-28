@@ -18,7 +18,7 @@ import com.bytezone.dm3270.session.SessionTable;
 
 class CommandPane extends TabPane
 {
-  private static final int TEXT_WIDTH = 540;
+  private static final int TEXT_WIDTH = 20;
 
   private final TextArea commandTextArea = getTextArea (TEXT_WIDTH);
   private final TextArea replyTextArea = getTextArea (TEXT_WIDTH);
@@ -163,7 +163,7 @@ class CommandPane extends TabPane
     TextArea textArea = new TextArea ();
     textArea.setEditable (false);
     textArea.setFont (Font.font ("Monospaced", 12));
-    textArea.setPrefWidth (width);
+    //    textArea.setPrefWidth (width);
     return textArea;
   }
 }

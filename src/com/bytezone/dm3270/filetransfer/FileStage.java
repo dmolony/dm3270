@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import javafx.application.Platform;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
@@ -11,8 +12,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.application.WindowSaver;
 
 public class FileStage extends Stage
@@ -39,25 +42,46 @@ public class FileStage extends Stage
 
     if (!windowSaver.restoreWindow ())
       centerOnScreen ();
+    //    show ();
 
     setOnCloseRequest (e -> closeWindow ());
   }
 
-  public void add (Transfer transfer)
+  public void addTransfer (Transfer transfer)
   {
+    System.out.println (transfer);
     transfers.add (transfer);
 
     Tab tab = new Tab ();
     tab.setText ("#" + transfers.size ());
 
     TextArea textArea = new TextArea ();
+    textArea.setEditable (false);
+    textArea.setFont (Font.font ("Monospaced", 12));
     textArea.setText (transfer.toString ());
+    textArea.appendText ("\n");
+
+    if (transfer.isData ())
+      for (DataHeader dataHeader : transfer.dataBuffers)
+      {
+        textArea.appendText ("\n");
+        textArea.appendText (Utility.toHex (dataHeader.getBuffer ()));
+      }
+    else
+      for (DataHeader dataHeader : transfer.messageBuffers)
+      {
+        textArea.appendText ("\n");
+        textArea.appendText (Utility.toHex (dataHeader.getBuffer (), false));
+      }
+
     tab.setContent (textArea);
+    textArea.positionCaret (0);
 
-    tabPane.getTabs ().add (tab);
-
-    if (!isShowing ())
-      show ();
+    Platform.runLater ( () -> {
+      tabPane.getTabs ().add (tab);
+      if (!isShowing ())
+        show ();
+    });
   }
 
   private void closeWindow ()

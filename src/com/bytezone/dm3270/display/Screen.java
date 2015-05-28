@@ -10,7 +10,6 @@ import static com.bytezone.dm3270.structuredfields.SetReplyMode.RM_CHARACTER;
 
 import java.awt.Toolkit;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +28,8 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.filetransfer.FileStage;
+import com.bytezone.dm3270.filetransfer.FileTransferOutbound;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
@@ -59,8 +60,8 @@ public class Screen extends Canvas
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final List<Transfer> transfers = new ArrayList<> ();
-  private final Transfer currentTransfer = new Transfer ();
+  private FileStage fileStage;
+  private Transfer currentTransfer;
 
   private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
@@ -143,12 +144,23 @@ public class Screen extends Canvas
     return characterSize.getSize ();
   }
 
-  public Transfer openTransfer (String message)
+  public void setFileStage (FileStage fileStage)
   {
-    //    if (currentTransfer != null)
-    //      transfers.add (currentTransfer);
+    this.fileStage = fileStage;
+  }
 
-    currentTransfer.setCurrentTransfer (message);
+  public Transfer openTransfer (FileTransferOutbound transferRecord)
+  {
+    // check for existing currentTransfer
+    if (currentTransfer != null)
+      if (fileStage != null)
+      {
+        fileStage.addTransfer (currentTransfer);
+        currentTransfer = null;
+      }
+
+    currentTransfer = new Transfer ();
+    currentTransfer.add (transferRecord);
     return currentTransfer;
   }
 
@@ -157,9 +169,20 @@ public class Screen extends Canvas
     return currentTransfer;
   }
 
-  public void closeTransfer ()
+  public void closeTransfer (FileTransferOutbound transferRecord)
   {
+    if (currentTransfer == null)
+    {
+      System.out.println ("Null");
+      return;
+    }
+    currentTransfer.add (transferRecord);
 
+    if (fileStage != null)
+    {
+      fileStage.addTransfer (currentTransfer);
+      currentTransfer = null;
+    }
   }
 
   public Function getFunction ()

@@ -18,7 +18,7 @@ public class FileTransferSF extends StructuredField
   protected boolean ebcdic;
   protected String transferType;        // outbound only
 
-  protected final boolean debug = true;
+  protected final boolean debug = false;
 
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)

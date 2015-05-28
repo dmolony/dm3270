@@ -11,6 +11,8 @@ public class Transfer
   TransferType type;
   TransferStatus status;
 
+  List<FileTransferOutbound> outboundRecords = new ArrayList<> ();
+
   List<DataHeader> messageBuffers = new ArrayList<> ();
   List<DataHeader> dataBuffers = new ArrayList<> ();
   int messageLength;
@@ -24,6 +26,11 @@ public class Transfer
   enum TransferStatus
   {
     OPEN_DATA, OPEN_MSG, TRANSFER, CLOSE
+  }
+
+  public void add (FileTransferOutbound outboundRecord)
+  {
+    outboundRecords.add (outboundRecord);
   }
 
   public void setCurrentTransfer (String type)
