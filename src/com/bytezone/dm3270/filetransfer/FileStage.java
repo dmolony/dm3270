@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -65,7 +66,6 @@ public class FileStage extends Stage
 
   public void addTransfer (Transfer transfer)
   {
-    System.out.println (transfer);
     transfers.add (transfer);
 
     Tab tab = new Tab ();
@@ -74,21 +74,73 @@ public class FileStage extends Stage
     TextArea textArea = new TextArea ();
     textArea.setEditable (false);
     textArea.setFont (Font.font ("Monospaced", 12));
-    textArea.setText (transfer.toString ());
-    textArea.appendText ("\n");
 
-    if (transfer.isData ())
-      for (DataHeader dataHeader : transfer.dataBuffers)
-      {
-        textArea.appendText ("\n");
-        textArea.appendText (Utility.toHex (dataHeader.getBuffer ()));
-      }
+    if (false)
+    {
+      textArea.setText (transfer.toString ());
+      textArea.appendText ("\n");
+
+      if (transfer.isData ())
+        for (DataHeader dataHeader : transfer.dataBuffers)
+        {
+          textArea.appendText ("\n");
+          textArea.appendText (Utility.toHex (dataHeader.getBuffer ()));
+        }
+      else
+        for (DataHeader dataHeader : transfer.messageBuffers)
+        {
+          textArea.appendText ("\n");
+          textArea.appendText (Utility.toHex (dataHeader.getBuffer (), false));
+        }
+    }
     else
-      for (DataHeader dataHeader : transfer.messageBuffers)
+    {
+      if (transfer.isData ())
       {
-        textArea.appendText ("\n");
-        textArea.appendText (Utility.toHex (dataHeader.getBuffer (), false));
+        StringBuilder text = new StringBuilder ();
+
+        try
+        {
+          String remainder = "";
+          for (DataHeader dataHeader : transfer.dataBuffers)
+          {
+            byte[] buffer = dataHeader.getBuffer ();
+            int bytesLeft = buffer.length;
+            int ptr = 0;
+            int reclen = 80 - remainder.length ();
+
+            while (bytesLeft >= reclen)
+            {
+              text.append (new String (buffer, ptr, reclen, "CP1047"));
+              text.append ('\n');
+              ptr += reclen;
+              bytesLeft -= reclen;
+              reclen = 80;
+            }
+            if (bytesLeft > 0)
+            {
+              remainder = new String (buffer, ptr, bytesLeft, "CP1047");
+              text.append (remainder);
+            }
+          }
+        }
+        catch (UnsupportedEncodingException e)
+        {
+          e.printStackTrace ();
+        }
+
+        System.out.println (text.length ());
+        if (text.charAt (text.length () - 1) == '\n')
+          text.deleteCharAt (text.length () - 1);
+
+        textArea.setText (text.toString ());
       }
+      else
+      {
+        String message = new String (transfer.messageBuffers.get (0).getBuffer ());
+        textArea.setText (message);
+      }
+    }
 
     tab.setContent (textArea);
     textArea.positionCaret (0);
