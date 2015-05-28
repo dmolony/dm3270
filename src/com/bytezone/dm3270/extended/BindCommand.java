@@ -18,6 +18,8 @@ import com.bytezone.dm3270.application.Utility;
  * #define TN3270E_UNBIND_BAD_SENSE 0xfe
  */
 
+//http://publibfp.dhe.ibm.com/cgi-bin/bookmgr/BOOKS/d50a5007/6.3.20
+
 public class BindCommand extends AbstractExtendedCommand
 {
   private final int profile;

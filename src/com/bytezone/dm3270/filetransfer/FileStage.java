@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -74,7 +75,24 @@ public class FileStage extends Stage
     textArea.setEditable (false);
     textArea.setFont (Font.font ("Monospaced", 12));
 
-    if (false)
+    if (true)
+    {
+      LinePrinter linePrinter = new LinePrinter (132);
+      if (transfer.isData ())
+      {
+        byte[] fullBuffer = transfer.getAllDataBuffers ();
+        linePrinter.printBuffer (fullBuffer, 132);
+        textArea.appendText ("\n");
+        textArea.appendText (linePrinter.getOutput ());
+      }
+      else
+        for (DataHeader dataHeader : transfer.messageBuffers)
+        {
+          textArea.appendText ("\n");
+          textArea.appendText (Utility.toHex (dataHeader.getBuffer (), false));
+        }
+    }
+    else if (false)
     {
       textArea.setText (transfer.toString ());
       textArea.appendText ("\n");
@@ -97,6 +115,7 @@ public class FileStage extends Stage
       if (transfer.isData ())
       {
         StringBuilder text = new StringBuilder ();
+        int lineLength = 132;
 
         try
         {
@@ -106,7 +125,7 @@ public class FileStage extends Stage
             byte[] buffer = dataHeader.getBuffer ();
             int bytesLeft = buffer.length;
             int ptr = 0;
-            int reclen = 80 - remainder.length ();
+            int reclen = lineLength - remainder.length ();
 
             while (bytesLeft >= reclen)
             {
@@ -114,7 +133,7 @@ public class FileStage extends Stage
               text.append ('\n');
               ptr += reclen;
               bytesLeft -= reclen;
-              reclen = 80;
+              reclen = lineLength;
             }
             if (bytesLeft > 0)
             {
@@ -128,7 +147,6 @@ public class FileStage extends Stage
           e.printStackTrace ();
         }
 
-        System.out.println (text.length ());
         if (text.charAt (text.length () - 1) == '\n')
           text.deleteCharAt (text.length () - 1);
 
@@ -144,11 +162,11 @@ public class FileStage extends Stage
     tab.setContent (textArea);
     textArea.positionCaret (0);
 
-    //    Platform.runLater ( () -> {
-    tabPane.getTabs ().add (tab);
-    if (!isShowing ())
-      show ();
-    //    });
+    Platform.runLater ( () -> {
+      tabPane.getTabs ().add (tab);
+      if (!isShowing ())
+        show ();
+    });
   }
 
   private void closeWindow ()

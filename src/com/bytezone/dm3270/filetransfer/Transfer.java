@@ -66,6 +66,21 @@ public class Transfer
     status = TransferStatus.TRANSFER;
   }
 
+  public byte[] getAllDataBuffers ()
+  {
+    byte[] fullBuffer = new byte[dataLength];
+
+    int ptr = 0;
+    for (DataHeader dataHeader : dataBuffers)
+    {
+      byte[] buffer = dataHeader.getBuffer ();
+      System.arraycopy (buffer, 0, fullBuffer, ptr, buffer.length);
+      ptr += buffer.length;
+    }
+
+    return fullBuffer;
+  }
+
   public int size ()
   {
     return isData () ? dataBuffers.size () : messageBuffers.size ();
