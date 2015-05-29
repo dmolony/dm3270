@@ -69,6 +69,11 @@ public abstract class Order
     duplicates++;
   }
 
+  public byte getType ()
+  {
+    return buffer[0];
+  }
+
   // this is so that a GraphicsEscapeOrder can override it - it is used to report
   // that there are x duplicate orders.
   public boolean matches (Order order)

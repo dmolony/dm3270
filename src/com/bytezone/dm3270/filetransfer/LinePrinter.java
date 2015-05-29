@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+// http://en.wikipedia.org/wiki/ASA_carriage_control_characters
+
 public class LinePrinter
 {
   private static final String EBCDIC = "CP1047";

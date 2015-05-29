@@ -77,6 +77,8 @@ public class Screen extends Canvas
   public final int columns;
   public final int screenSize;
 
+  private boolean hasCommandField;
+
   public enum BuildInstruction
   {
     BUILD_FIELDS, DONT_BUILD_FIELDS

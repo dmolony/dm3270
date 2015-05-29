@@ -3,6 +3,7 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
@@ -13,6 +14,10 @@ public class WriteCommand extends Command
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
+  private final byte[] systemMessage = { Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
+                                        0x00, Order.START_FIELD,
+                                        Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+  private String systemMessageText;
 
   public WriteCommand (byte[] buffer, int offset, int length, Screen screen, boolean erase)
   {
@@ -51,6 +56,9 @@ public class WriteCommand extends Command
 
       ptr += order.size ();
     }
+
+    // check screen for jobs submitted or finished
+    checkSystemMessage ();
   }
 
   // Used by MainframeStage.createCommand() when building a screen
@@ -113,6 +121,25 @@ public class WriteCommand extends Command
 
     if (drawScreen)
       screen.drawScreen ();
+  }
+
+  private boolean checkSystemMessage ()
+  {
+    if (eraseWrite || orders.size () != 6)
+      return false;
+
+    int ptr = 0;
+    for (Order order : orders)
+    {
+      byte reqType = systemMessage[ptr++];
+      if (reqType != 0 && reqType != order.getType ())
+        return false;
+    }
+
+    systemMessageText = Utility.getString (orders.get (2).getBuffer ());
+    System.out.println (systemMessageText);
+
+    return false;
   }
 
   // Used by Session.checkServerName() when searching for the server's name
