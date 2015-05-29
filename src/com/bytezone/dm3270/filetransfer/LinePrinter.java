@@ -13,36 +13,45 @@ public class LinePrinter
 
   private int currentLine;
   private final int pageSize;
+  private final boolean controlCharacters;
   private final StringBuilder text = new StringBuilder ();
 
-  public LinePrinter (int pageSize)
+  public LinePrinter (int pageSize, boolean controlCharacters)
   {
     this.pageSize = pageSize;
+    this.controlCharacters = controlCharacters;
   }
 
   public void printLine (String line)
   {
-    switch (line.charAt (0))
-    {
-      case '-':
-        lineFeed ();
-      case '0':
-        lineFeed ();
-      case ' ':
-        lineFeed ();
-        break;
+    if (controlCharacters)
+      switch (line.charAt (0))
+      {
+        case '-':
+          lineFeed ();
+        case '0':
+          lineFeed ();
+        case ' ':
+          lineFeed ();
+          break;
 
-      case '1':
-        formFeed ();
-        break;
+        case '1':
+          formFeed ();
+          break;
 
-      default:
-        System.err.println ("Unknown control character : " + line.charAt (0));
-        lineFeed ();
-    }
+        default:
+          System.err.println ("Unknown control character : " + line.charAt (0));
+          lineFeed ();
+      }
+    else
+      lineFeed ();
 
     String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
-    text.append (trimmedLine.isEmpty () ? "" : trimmedLine.substring (1));
+
+    if (controlCharacters)
+      text.append (trimmedLine.isEmpty () ? "" : trimmedLine.substring (1));
+    else
+      text.append (trimmedLine);
   }
 
   public void printFile (Path file, int reclen)

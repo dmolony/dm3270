@@ -22,7 +22,8 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
         || e.isAltDown ())
     {
       // seems to be a bug in java
-      if (e.isMetaDown () && e.getCharacter ().charAt (0) == '-')   // osx fix
+      String key = e.getCharacter ();
+      if (e.isMetaDown () && !key.isEmpty () && key.charAt (0) == '-')   // osx fix
       {
         screen.doFontSmaller ();
         e.consume ();

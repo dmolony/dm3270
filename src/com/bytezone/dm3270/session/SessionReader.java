@@ -27,7 +27,7 @@ public class SessionReader
   private String label;
   private String returnLabel;
 
-  public byte[] buffer = new byte[5000];
+  public byte[] buffer = new byte[16384];
 
   public SessionReader (Source source, List<String> lines)
   {

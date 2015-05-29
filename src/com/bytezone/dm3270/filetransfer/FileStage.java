@@ -97,9 +97,11 @@ public class FileStage extends Stage
 
     if (transfer.isData ())
     {
-      LinePrinter linePrinter = new LinePrinter (88);
       byte[] fullBuffer = transfer.getAllDataBuffers ();
-      linePrinter.printBuffer (fullBuffer, 132);
+      int lineSize = (fullBuffer.length % 132 == 0) ? 132 : 80;
+
+      LinePrinter linePrinter = new LinePrinter (66, lineSize == 132);
+      linePrinter.printBuffer (fullBuffer, lineSize);
       textArea.appendText ("\n");
       textArea.appendText (linePrinter.getOutput ());
     }

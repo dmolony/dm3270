@@ -2,6 +2,8 @@ package com.bytezone.dm3270.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Cursor;
@@ -11,12 +13,21 @@ import com.bytezone.dm3270.orders.TextOrder;
 
 public class WriteCommand extends Command
 {
+  private static final Pattern jobSubmittedPattern = Pattern
+      .compile ("JOB ([A-Z0-9]{1,9})\\(JOB([0-9]{5})\\) SUBMITTED");
+  private static final Pattern jobCompletedPattern = Pattern
+      .compile ("(\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
+          + " \\$HASP(?:\\d)+ ([A-Z0-9]+) .* MAXCC=(\\d+).*");
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
-  private final byte[] systemMessage = { Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
-                                        0x00, Order.START_FIELD,
-                                        Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+  private final byte[] systemMessage1 = { Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
+                                         0x00, Order.START_FIELD,
+                                         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+  private final byte[] systemMessage2 = { Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
+                                         Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
+                                         0x00, Order.START_FIELD,
+                                         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
   private String systemMessageText;
 
   public WriteCommand (byte[] buffer, int offset, int length, Screen screen, boolean erase)
@@ -125,21 +136,56 @@ public class WriteCommand extends Command
 
   private boolean checkSystemMessage ()
   {
-    if (eraseWrite || orders.size () != 6)
-      return false;
-
     int ptr = 0;
-    for (Order order : orders)
+
+    if (!eraseWrite)
     {
-      byte reqType = systemMessage[ptr++];
-      if (reqType != 0 && reqType != order.getType ())
+      if (orders.size () == 6)
+      {
+        for (Order order : orders)
+        {
+          byte reqType = systemMessage1[ptr++];
+          if (reqType != 0 && reqType != order.getType ())
+            return false;
+        }
+        systemMessageText = Utility.getString (orders.get (2).getBuffer ());
+      }
+      else
         return false;
     }
+    else if (orders.size () == 8)
+    {
+      for (Order order : orders)
+      {
+        byte reqType = systemMessage2[ptr++];
+        if (reqType != 0 && reqType != order.getType ())
+          return false;
+      }
+      systemMessageText = Utility.getString (orders.get (4).getBuffer ());
+    }
+    else
+      return false;
 
-    systemMessageText = Utility.getString (orders.get (2).getBuffer ());
-    System.out.println (systemMessageText);
+    //    System.out.println (systemMessageText);
+    Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
+    if (matcher.matches ())
+    {
+      System.out.println ("Job submitted:");
+      System.out.println ("  name : " + matcher.group (1));
+      System.out.println ("  job# : " + matcher.group (2));
+    }
 
-    return false;
+    matcher = jobCompletedPattern.matcher (systemMessageText);
+    if (matcher.matches ())
+    {
+      System.out.println ("Job completed:");
+      System.out.println ("  time : " + matcher.group (1));
+      System.out.println ("  job# : " + matcher.group (2));
+      System.out.println ("  name : " + matcher.group (3));
+      System.out.println ("  cond : " + matcher.group (4));
+    }
+
+    return true;
   }
 
   // Used by Session.checkServerName() when searching for the server's name
