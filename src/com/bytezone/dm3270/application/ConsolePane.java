@@ -34,6 +34,7 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenHistory;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
+import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.filetransfer.TransferStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.streams.TelnetListener;
@@ -60,6 +61,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
   private TransferStage transferStage;
+  private FileStage fileStage;
 
   private int commandHeaderCount;
   private final BorderPane topPane = new BorderPane ();
@@ -132,22 +134,27 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     Menu menuCommands = new Menu ("Commands");
 
     MenuItem menuItemToggleToolbar = new MenuItem ("Toolbar");
-    menuItemToggleToolbar.setOnAction ( (e) -> toggleToolbar ());
+    menuItemToggleToolbar.setOnAction (e -> toggleToolbar ());
     menuItemToggleToolbar.setAccelerator (new KeyCodeCombination (KeyCode.T,
         KeyCombination.SHORTCUT_DOWN));
 
     MenuItem menuItemToggleScreens = new MenuItem ("Screen history");
-    menuItemToggleScreens.setOnAction ( (e) -> toggleHistory ());
+    menuItemToggleScreens.setOnAction (e -> toggleHistory ());
     menuItemToggleScreens.setAccelerator (new KeyCodeCombination (KeyCode.S,
         KeyCombination.SHORTCUT_DOWN));
 
     MenuItem menuItemFileTransfer = new MenuItem ("File transfer");
-    menuItemFileTransfer.setOnAction ( (e) -> fileTransfer ());
+    menuItemFileTransfer.setOnAction (e -> fileTransfer ());
     menuItemFileTransfer.setAccelerator (new KeyCodeCombination (KeyCode.F,
         KeyCombination.SHORTCUT_DOWN));
 
+    MenuItem menuItemReportDisplay = new MenuItem ("Reports");
+    menuItemReportDisplay.setOnAction (e -> fileDisplay ());
+    menuItemReportDisplay.setAccelerator (new KeyCodeCombination (KeyCode.R,
+        KeyCombination.SHORTCUT_DOWN));
+
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-                                     menuItemFileTransfer);
+                                     menuItemFileTransfer, menuItemReportDisplay);
 
     if (!SYSTEM_MENUBAR)
     {
@@ -248,6 +255,14 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
       transferStage = new TransferStage (screen, this);
 
     transferStage.show ();
+  }
+
+  private void fileDisplay ()
+  {
+    if (fileStage == null)
+      fileStage = screen.getFileStage ();
+    if (fileStage != null)
+      fileStage.show ();
   }
 
   void back ()

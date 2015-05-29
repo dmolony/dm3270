@@ -151,6 +151,11 @@ public class Screen extends Canvas
     this.fileStage = fileStage;
   }
 
+  public FileStage getFileStage ()
+  {
+    return fileStage;
+  }
+
   public Transfer openTransfer (FileTransferOutbound transferRecord)
   {
     if (currentTransfer != null)

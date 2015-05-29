@@ -99,6 +99,7 @@ public class TransferStage extends Stage
     });
 
     btnTransfer.setOnAction (e -> doStuff ());
+    btnCancel.setOnAction (e -> close ());
   }
 
   private void changeLayout ()

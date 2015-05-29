@@ -114,11 +114,7 @@ public class FileStage extends Stage
     tab.setContent (textArea);
     textArea.positionCaret (0);
 
-    Platform.runLater ( () -> {
-      tabPane.getTabs ().add (tab);
-      if (!isShowing ())
-        show ();
-    });
+    Platform.runLater ( () -> tabPane.getTabs ().add (tab));
   }
 
   private void closeWindow ()
