@@ -151,13 +151,9 @@ public class Screen extends Canvas
 
   public Transfer openTransfer (FileTransferOutbound transferRecord)
   {
-    // check for existing currentTransfer
     if (currentTransfer != null)
       if (fileStage != null)
-      {
         fileStage.addTransfer (currentTransfer);
-        currentTransfer = null;
-      }
 
     currentTransfer = new Transfer ();
     currentTransfer.add (transferRecord);

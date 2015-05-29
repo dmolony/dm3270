@@ -47,9 +47,7 @@ public class LinePrinter
   {
     try
     {
-      byte[] buffer = Files.readAllBytes (file);
-      for (int ptr = 0; ptr < buffer.length; ptr += reclen)
-        printLine (getString (buffer, ptr, reclen));
+      printBuffer (Files.readAllBytes (file), reclen);
     }
     catch (IOException e)
     {
