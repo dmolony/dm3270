@@ -229,6 +229,14 @@ public class Session implements Iterable<SessionRecord>
     return null;
   }
 
+  public SessionRecord getBySize (int size)
+  {
+    for (SessionRecord dataRecord : dataRecords)
+      if (dataRecord.size () == size)
+        return dataRecord;
+    return null;
+  }
+
   /**
    * Save the session to a file, for later use as a Replay session.
    * 

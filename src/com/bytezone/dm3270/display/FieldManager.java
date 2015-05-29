@@ -126,6 +126,24 @@ public class FieldManager
         ++hiddenUnprotectedFields;
   }
 
+  public List<String> getMenus ()
+  {
+    List<String> menus = new ArrayList<> ();
+    for (Field field : fields)
+    {
+      int location = field.getFirstLocation ();
+      if (location >= screen.columns)
+        break;
+      if (field.isProtected () && field.isVisible () && field.getDisplayLength () > 1)
+      {
+        String text = field.getText ().trim ();
+        if (!text.isEmpty ())
+          menus.add (text);
+      }
+    }
+    return menus;
+  }
+
   public Field getField (int position)      // this needs to be improved
   {
     for (Field field : fields)

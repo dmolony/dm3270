@@ -83,8 +83,10 @@ class ReplayStage extends Stage
     sortedData.comparatorProperty ().bind (table.comparatorProperty ());
     table.setItems (sortedData);
 
-    // show the first displayable screen
-    SessionRecord dataRecord = session.getNext (SessionRecordType.TN3270);
+    // look for the first ISPF screen
+    SessionRecord dataRecord = session.getBySize (2306);
+    if (dataRecord == null)
+      dataRecord = session.getNext (SessionRecordType.TN3270);
     if (dataRecord != null)
       table.getSelectionModel ().select (dataRecord);
 
