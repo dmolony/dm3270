@@ -42,7 +42,7 @@ public class GraphicsEscapeOrder extends Order
   @Override
   public String toString ()
   {
-    String duplicateText = duplicates == 0 ? "" : "x" + (duplicates + 1);
-    return String.format ("GE  : %02X  %s", code, duplicateText);
+    String duplicateText = duplicates == 0 ? "" : "x " + (duplicates + 1);
+    return String.format ("GE  : %02X %s", code, duplicateText);
   }
 }

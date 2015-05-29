@@ -88,7 +88,11 @@ class ReplayStage extends Stage
     if (dataRecord == null)
       dataRecord = session.getNext (SessionRecordType.TN3270);
     if (dataRecord != null)
+    {
       table.getSelectionModel ().select (dataRecord);
+      int index = table.getSelectionModel ().getSelectedIndex ();
+      table.scrollTo (index);
+    }
 
     setOnCloseRequest (e -> Platform.exit ());
 
