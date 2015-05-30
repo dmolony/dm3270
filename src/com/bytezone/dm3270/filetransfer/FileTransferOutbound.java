@@ -71,14 +71,6 @@ public class FileTransferOutbound extends FileTransferSF
 
           if (transfer.isMessage ())              // message transfers don't close
             screen.closeTransfer ();
-
-          if (false)
-          {
-            System.out.println (transfer.isData () ? "Data:" : "Message:");
-            System.out.println (dataHeader);
-            System.out.println (Utility.toHex (dataHeader.getBuffer (),
-                                               transfer.isData ()));
-          }
         }
         else
         {
@@ -137,13 +129,6 @@ public class FileTransferOutbound extends FileTransferSF
           processClose ();
         break;
 
-      case 0x45:                          // SET CURSOR request
-        if (subtype == 0x11)
-        {
-          // do nothing
-        }
-        break;
-
       case 0x46:                          // send data transfer buffer
         if (subtype == 0x11)
           processSend ();
@@ -152,41 +137,19 @@ public class FileTransferOutbound extends FileTransferSF
       case 0x47:                          // receive data transfer buffer
         if (subtype == 0x04)
           processReceive ();
-        else if (subtype == 0x11)         // INSERT request
-        {
-          // do nothing
-        }
         break;
     }
   }
 
   private void processOpen ()
   {
-    byte[] buffer = new byte[6];
-    int ptr = 0;
-
-    buffer[ptr++] = (byte) 0x88;
-    ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
-
-    buffer[ptr++] = (byte) 0xD0;
-    buffer[ptr++] = (byte) 0x00;
-    buffer[ptr++] = (byte) 0x09;
-
+    byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
   }
 
   private void processClose ()
   {
-    byte[] buffer = new byte[6];
-    int ptr = 0;
-
-    buffer[ptr++] = (byte) 0x88;
-    ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
-
-    buffer[ptr++] = (byte) 0xD0;
-    buffer[ptr++] = (byte) 0x41;
-    buffer[ptr++] = (byte) 0x09;
-
+    byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
   }
 
@@ -200,14 +163,9 @@ public class FileTransferOutbound extends FileTransferSF
       int buflen = 50;
       int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
       // if CRLF option add 1 to length for the ctrl-z
-      buffer = new byte[length];
 
-      buffer[ptr++] = (byte) 0x88;
-      ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
-
-      buffer[ptr++] = (byte) 0xD0;
-      buffer[ptr++] = (byte) 0x46;
-      buffer[ptr++] = (byte) 0x05;
+      buffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x05);
+      ptr = 6;
 
       RecordNumber recordNumber = new RecordNumber (1);
       ptr = recordNumber.pack (buffer, ptr);
@@ -219,15 +177,10 @@ public class FileTransferOutbound extends FileTransferSF
     }
     else
     {
-      buffer = new byte[3 + 3 + ErrorRecord.RECORD_LENGTH];
+      int length = 6 + ErrorRecord.RECORD_LENGTH;
+      buffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x08);
 
-      buffer[ptr++] = (byte) 0x88;
-      ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
-
-      buffer[ptr++] = (byte) 0xD0;
-      buffer[ptr++] = (byte) 0x46;
-      buffer[ptr++] = (byte) 0x08;
-
+      ptr = 6;
       ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.EOF);
       ptr = errorRecord.pack (buffer, ptr);
     }
@@ -237,19 +190,28 @@ public class FileTransferOutbound extends FileTransferSF
 
   private void processReceive ()
   {
-    byte[] buffer = new byte[12];
+    int length = 6 + RecordNumber.RECORD_LENGTH;
+    byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
+
+    int ptr = 6;
+    RecordNumber recordNumber = new RecordNumber (bufferNumber);
+    ptr = recordNumber.pack (buffer, ptr);
+
+    reply = new ReadStructuredFieldCommand (buffer, screen);
+  }
+
+  private byte[] getReplyBuffer (int length, byte command, byte subcommand)
+  {
+    byte[] buffer = new byte[length];
     int ptr = 0;
 
     buffer[ptr++] = (byte) 0x88;
     ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
 
     buffer[ptr++] = (byte) 0xD0;
-    buffer[ptr++] = (byte) 0x47;
-    buffer[ptr++] = (byte) 0x05;
+    buffer[ptr++] = command;
+    buffer[ptr++] = subcommand;
 
-    RecordNumber recordNumber = new RecordNumber (bufferNumber);
-    ptr = recordNumber.pack (buffer, ptr);
-
-    reply = new ReadStructuredFieldCommand (buffer, screen);
+    return buffer;
   }
 }
