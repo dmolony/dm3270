@@ -43,15 +43,16 @@ public class LinePrinter
           System.err.println ("Unknown control character : " + line.charAt (0));
           lineFeed ();
       }
-    else
-      lineFeed ();
 
     String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
 
     if (controlCharacters)
       text.append (trimmedLine.isEmpty () ? "" : trimmedLine.substring (1));
     else
+    {
       text.append (trimmedLine);
+      lineFeed ();
+    }
   }
 
   public void printFile (Path file, int reclen)

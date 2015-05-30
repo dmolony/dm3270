@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -33,8 +34,12 @@ public class FileStage extends Stage
 
   private final Label lblLineSize = new Label ("Line size");
   private final Label lblPageSize = new Label ("Page size");
+  private final Label lblHasASACodes = new Label ("Has ASA codes");
+  private final Label lblCRLF = new Label ("CR/LF");
   private final TextField txtLineSize = new TextField ();
   private final TextField txtPageSize = new TextField ();
+  private final CheckBox chkHasASACodes = new CheckBox ();
+  private final CheckBox chkCRLF = new CheckBox ();
 
   public FileStage (Preferences prefs)
   {
@@ -57,7 +62,8 @@ public class FileStage extends Stage
     optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
     txtPageSize.setPrefWidth (60);
     txtLineSize.setPrefWidth (60);
-    optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize, txtLineSize);
+    optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize, txtLineSize,
+                                      lblCRLF, chkCRLF, lblHasASACodes, chkHasASACodes);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
@@ -91,16 +97,25 @@ public class FileStage extends Stage
     TextArea textArea = new TextArea ();
     textArea.setEditable (false);
     textArea.setFont (Font.font ("Monospaced", 12));
+    int[] lineSizes = { 80, 132, 133 };
 
     if (transfer.isData ())
     {
       byte[] fullBuffer = transfer.getAllDataBuffers ();
-      int lineSize = (fullBuffer.length % 132 == 0) ? 132 : 80;
 
-      LinePrinter linePrinter = new LinePrinter (66, lineSize == 132);
+      int lineSize = 80;
+      for (int ls : lineSizes)
+        if (fullBuffer.length % ls == 0)
+        {
+          lineSize = ls;
+          break;
+        }
+
+      boolean hasASA = hasASA (fullBuffer, lineSize);
+
+      LinePrinter linePrinter = new LinePrinter (66, hasASA);
       linePrinter.printBuffer (fullBuffer, lineSize);
-      textArea.appendText ("\n");
-      textArea.appendText (linePrinter.getOutput ());
+      textArea.setText (linePrinter.getOutput ());
     }
     else
     {
@@ -112,6 +127,17 @@ public class FileStage extends Stage
     textArea.positionCaret (0);
 
     Platform.runLater ( () -> tabPane.getTabs ().add (tab));
+  }
+
+  private boolean hasASA (byte[] buffer, int reclen)
+  {
+    for (int i = reclen; i < buffer.length; i += reclen)
+    {
+      byte asa = buffer[i];
+      if (asa != ' ' && asa != '-' && asa != '0' && asa != '1')
+        return false;
+    }
+    return true;
   }
 
   private void closeWindow ()
