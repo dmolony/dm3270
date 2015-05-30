@@ -34,8 +34,8 @@ public class FileStage extends Stage
 
   private final Label lblLineSize = new Label ("Line size");
   private final Label lblPageSize = new Label ("Page size");
-  private final Label lblHasASACodes = new Label ("Has ASA codes");
-  private final Label lblCRLF = new Label ("CR/LF");
+  private final Label lblHasASA = new Label ("ASA");
+  private final Label lblHasCRLF = new Label ("CR/LF");
   private final TextField txtLineSize = new TextField ();
   private final TextField txtPageSize = new TextField ();
   private final CheckBox chkHasASACodes = new CheckBox ();
@@ -63,7 +63,7 @@ public class FileStage extends Stage
     txtPageSize.setPrefWidth (60);
     txtLineSize.setPrefWidth (60);
     optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize, txtLineSize,
-                                      lblCRLF, chkCRLF, lblHasASACodes, chkHasASACodes);
+                                      lblHasCRLF, chkCRLF, lblHasASA, chkHasASACodes);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
@@ -112,9 +112,13 @@ public class FileStage extends Stage
         }
 
       boolean hasASA = hasASA (fullBuffer, lineSize);
+      boolean hasCRLF = hasCRLF (fullBuffer);
 
       LinePrinter linePrinter = new LinePrinter (66, hasASA);
-      linePrinter.printBuffer (fullBuffer, lineSize);
+      if (hasCRLF)
+        linePrinter.printBuffer (fullBuffer);
+      else
+        linePrinter.printBuffer (fullBuffer, lineSize);
       textArea.setText (linePrinter.getOutput ());
     }
     else
@@ -138,6 +142,26 @@ public class FileStage extends Stage
         return false;
     }
     return true;
+  }
+
+  private boolean hasCRLF (byte[] buffer)
+  {
+    int lastCRLF = 0;
+    int totalCRLF = 0;
+    int maxLineLength = 150;
+    int max = Math.min (5 * maxLineLength, buffer.length);
+
+    for (int i = 1; i < max; i++)
+    {
+      if (buffer[i] == 0x0D && buffer[i - 1] == 0x0A)
+      {
+        int recordLength = i - lastCRLF;
+        if (recordLength > maxLineLength)
+          return false;
+        ++totalCRLF;
+      }
+    }
+    return totalCRLF > 0;
   }
 
   private void closeWindow ()

@@ -13,18 +13,18 @@ public class LinePrinter
 
   private int currentLine;
   private final int pageSize;
-  private final boolean controlCharacters;
+  private final boolean hasASA;
   private final StringBuilder text = new StringBuilder ();
 
-  public LinePrinter (int pageSize, boolean controlCharacters)
+  public LinePrinter (int pageSize, boolean hasASA)
   {
     this.pageSize = pageSize;
-    this.controlCharacters = controlCharacters;
+    this.hasASA = hasASA;
   }
 
   public void printLine (String line)
   {
-    if (controlCharacters)
+    if (hasASA)
       switch (line.charAt (0))
       {
         case '-':
@@ -46,7 +46,7 @@ public class LinePrinter
 
     String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
 
-    if (controlCharacters)
+    if (hasASA)
       text.append (trimmedLine.isEmpty () ? "" : trimmedLine.substring (1));
     else
     {
@@ -71,6 +71,19 @@ public class LinePrinter
   {
     for (int ptr = 0; ptr < buffer.length; ptr += reclen)
       printLine (getString (buffer, ptr, reclen));
+  }
+
+  public void printBuffer (byte[] buffer)
+  {
+    int lineStart = 0;
+    for (int ptr = 1; ptr < buffer.length; ptr++)
+    {
+      if (buffer[ptr] == 0x0D && buffer[ptr - 1] == 0x0A)
+      {
+        printLine (getString (buffer, lineStart, ptr - lineStart - 1));
+        lineStart = ptr + 1;
+      }
+    }
   }
 
   public String getOutput ()
