@@ -1,10 +1,12 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class FileTransferSF extends StructuredField
@@ -16,9 +18,15 @@ public class FileTransferSF extends StructuredField
 
   protected DataHeader dataHeader;
   protected boolean ebcdic;
-  protected String transferType;        // outbound only
+  //  protected String transferType;        // outbound only
+  protected TransferType transferType;      // outbound only
 
   protected final boolean debug = false;
+
+  //  enum TransferType
+  //  {
+  //    DATA, MESSAGE
+  //  }
 
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)
@@ -35,6 +43,16 @@ public class FileTransferSF extends StructuredField
   protected boolean checkEbcdic (byte[] data)
   {
     return checkEbcdic (data, 0, data.length);
+  }
+
+  protected void setTransferType (String text)
+  {
+    if ("FT:DATA".equals (text))
+      transferType = TransferType.DATA;
+    else if ("FT:MSG ".equals (text))
+      transferType = TransferType.MSG;
+    else
+      throw new InvalidParameterException ();
   }
 
   protected boolean checkEbcdic (byte[] data, int offset, int length)

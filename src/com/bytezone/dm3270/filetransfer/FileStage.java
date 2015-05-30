@@ -104,7 +104,7 @@ public class FileStage extends Stage
     }
     else
     {
-      String message = new String (transfer.messageBuffers.get (0).getBuffer ());
+      String message = new String (transfer.dataBuffers.get (0).getBuffer ());
       textArea.setText (message);
     }
 

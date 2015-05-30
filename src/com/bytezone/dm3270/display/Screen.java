@@ -172,20 +172,29 @@ public class Screen extends Canvas
     return currentTransfer;
   }
 
-  public void closeTransfer (FileTransferOutbound transferRecord)
+  public Transfer closeTransfer (FileTransferOutbound transferRecord)
   {
     if (currentTransfer == null)
     {
       System.out.println ("Null");
-      return;
+      return null;
     }
+
+    Transfer transfer = currentTransfer;
     currentTransfer.add (transferRecord);
 
     if (fileStage != null)
     {
       fileStage.addTransfer (currentTransfer);
-      currentTransfer = null;
     }
+    currentTransfer = null;
+
+    return transfer;
+  }
+
+  public void closeTransfer ()
+  {
+    currentTransfer = null;
   }
 
   public Function getFunction ()

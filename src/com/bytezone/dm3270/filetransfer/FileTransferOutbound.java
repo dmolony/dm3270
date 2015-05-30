@@ -7,6 +7,7 @@ import com.bytezone.dm3270.display.Screen;
 public class FileTransferOutbound extends FileTransferSF
 {
   private int bufferNumber;
+  private Transfer transfer;
 
   public FileTransferOutbound (byte[] buffer, int offset, int length, Screen screen)
   {
@@ -22,27 +23,23 @@ public class FileTransferOutbound extends FileTransferSF
         dataRecords.add (new DataRecord (data, 19));
 
         if (data.length == 33)          // OPEN for SEND
-        {
-          transferType = new String (data, 26, 7);            // FT:MSG. or FT:DATA
-        }
+          setTransferType (new String (data, 26, 7));            // FT:MSG. or FT:DATA
         else if (data.length == 39)     // OPEN for RECEIVE
         {
-          RecordSize recordSize = new RecordSize (data, 24);
-          dataRecords.add (recordSize);
-          transferType = new String (data, 32, 7);            // FT:DATA
+          dataRecords.add (new RecordSize (data, 24));
+          setTransferType (new String (data, 32, 7));            // FT:DATA
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
 
-        Transfer transfer = screen.openTransfer (this);
-        transfer.setCurrentTransfer (transferType);
+        transfer = screen.openTransfer (this);
 
         break;
 
       // CLOSE
 
       case 0x41:
-        screen.closeTransfer (this);
+        transfer = screen.closeTransfer (this);
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -56,20 +53,24 @@ public class FileTransferOutbound extends FileTransferSF
           System.out.println ("null 47");
           return;
         }
-        transfer.add (this);
 
         ebcdic = transfer.isData ();
 
         if (subtype == 0x11)                              // always before 0x04
+        {
           dataRecords.add (new DataRecord (data, 3));
+          transfer.add (this);
+        }
         else if (subtype == 0x04)                  // message or transfer buffer
         {
           dataHeader = new DataHeader (data, 3);
           transfer.add (dataHeader);
           bufferNumber = transfer.size ();
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
-          if (transfer.isMessage ())
-            screen.closeTransfer (this);
+          transfer.add (this);
+
+          if (transfer.isMessage ())              // message transfers don't close
+            screen.closeTransfer ();
 
           if (false)
           {
