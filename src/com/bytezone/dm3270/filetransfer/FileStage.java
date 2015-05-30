@@ -63,10 +63,7 @@ public class FileStage extends Stage
     bottomBorderPane.setLeft (optionsBox);
     bottomBorderPane.setRight (buttonBox);
 
-    hideButton.setOnAction (e -> {
-      closeWindow ();
-      hide ();
-    });
+    hideButton.setOnAction (e -> hide ());
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (tabPane);
@@ -120,5 +117,6 @@ public class FileStage extends Stage
   private void closeWindow ()
   {
     windowSaver.saveWindow ();
+    hide ();
   }
 }
