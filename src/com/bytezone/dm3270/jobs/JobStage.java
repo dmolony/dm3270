@@ -2,8 +2,6 @@ package com.bytezone.dm3270.jobs;
 
 import java.util.prefs.Preferences;
 
-import com.bytezone.dm3270.application.WindowSaver;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,11 +10,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import com.bytezone.dm3270.application.WindowSaver;
+
 public class JobStage extends Stage
 {
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final Button hideButton = new Button ("Hide Window");
+  private final JobTable jobTable = new JobTable ();
 
   public JobStage ()
   {
@@ -40,16 +41,14 @@ public class JobStage extends Stage
     hideButton.setOnAction (e -> hide ());
 
     BorderPane borderPane = new BorderPane ();
-    //    borderPane.setCenter ();
+    borderPane.setCenter (jobTable);
     borderPane.setBottom (bottomBorderPane);
 
     Scene scene = new Scene (borderPane, 500, 500);
     setScene (scene);
 
     if (!windowSaver.restoreWindow ())
-    {
       centerOnScreen ();
-    }
 
     setOnCloseRequest (e -> closeWindow ());
   }

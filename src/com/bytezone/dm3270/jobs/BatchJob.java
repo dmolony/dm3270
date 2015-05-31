@@ -19,6 +19,16 @@ public class BatchJob
     this.conditionCode = conditionCode;
   }
 
+  public String outputCommand ()
+  {
+    return String.format ("OUTPUT % PRINT(%s.JOB%d)", jobName, jobName, jobNumber);
+  }
+
+  public String datasetName ()
+  {
+    return String.format ("%s.JOB%s.OUTLIST", jobName, jobName, jobNumber);
+  }
+
   @Override
   public String toString ()
   {
