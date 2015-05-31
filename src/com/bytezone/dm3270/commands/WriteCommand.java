@@ -14,7 +14,7 @@ import com.bytezone.dm3270.orders.TextOrder;
 public class WriteCommand extends Command
 {
   private static final Pattern jobSubmittedPattern = Pattern
-      .compile ("^JOB ([A-Z0-9]{1,9})\\(JOB([0-9]{5})\\) SUBMITTED");
+      .compile ("^JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
   private static final Pattern jobCompletedPattern = Pattern
       .compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* MAXCC=(\\d+).*");
@@ -165,19 +165,17 @@ public class WriteCommand extends Command
     Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
     if (matcher.matches ())
     {
-      System.out.println ("Job submitted:");
-      System.out.println ("  name : " + matcher.group (1));
-      System.out.println ("  job# : " + matcher.group (2));
+      int jobNumber = Integer.parseInt (matcher.group (2));
+      screen.batchJobSubmitted (jobNumber, matcher.group (1));
     }
 
     matcher = jobCompletedPattern.matcher (systemMessageText);
     if (matcher.matches ())
     {
-      System.out.println ("Job completed:");
-      System.out.println ("  time : " + matcher.group (1));
-      System.out.println ("  job# : " + matcher.group (2));
-      System.out.println ("  name : " + matcher.group (3));
-      System.out.println ("  cond : " + matcher.group (4));
+      int jobNumber = Integer.parseInt (matcher.group (2));
+      int conditionCode = Integer.parseInt (matcher.group (4));
+      screen.batchJobEnded (jobNumber, matcher.group (3), matcher.group (1),
+                            conditionCode);
     }
 
     return true;

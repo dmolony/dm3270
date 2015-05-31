@@ -1,6 +1,8 @@
-package com.bytezone.dm3270.application;
+package com.bytezone.dm3270.jobs;
 
 import java.util.prefs.Preferences;
+
+import com.bytezone.dm3270.application.WindowSaver;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
