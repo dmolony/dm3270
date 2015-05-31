@@ -1,7 +1,5 @@
 package com.bytezone.dm3270.application;
 
-import java.util.prefs.Preferences;
-
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -62,6 +60,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private Thread terminalServerThread;
   private TransferStage transferStage;
   private FileStage fileStage;
+  private JobStage jobStage;
 
   private int commandHeaderCount;
   private final BorderPane topPane = new BorderPane ();
@@ -82,8 +81,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private final ToolBar toolbar = new ToolBar ();
   private boolean toolbarVisible;
 
-  public ConsolePane (Screen screen, Site server, Preferences prefs,
-      PluginsStage pluginsStage)
+  public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
     this.screen.setConsolePane (this);
@@ -153,8 +151,14 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     menuItemReportDisplay.setAccelerator (new KeyCodeCombination (KeyCode.R,
         KeyCombination.SHORTCUT_DOWN));
 
+    MenuItem menuItemJobDisplay = new MenuItem ("Batch jobs");
+    menuItemJobDisplay.setOnAction (e -> jobDisplay ());
+    menuItemJobDisplay.setAccelerator (new KeyCodeCombination (KeyCode.J,
+        KeyCombination.SHORTCUT_DOWN));
+
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-                                     menuItemFileTransfer, menuItemReportDisplay);
+                                     menuItemFileTransfer, menuItemReportDisplay,
+                                     menuItemJobDisplay);
 
     if (!SYSTEM_MENUBAR)
     {
@@ -255,6 +259,14 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
       transferStage = new TransferStage (screen, this);
 
     transferStage.show ();
+  }
+
+  private void jobDisplay ()
+  {
+    if (jobStage == null)
+      jobStage = new JobStage ();
+
+    jobStage.show ();
   }
 
   private void fileDisplay ()

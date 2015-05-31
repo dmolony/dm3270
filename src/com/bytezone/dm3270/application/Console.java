@@ -163,7 +163,7 @@ public class Console extends Application
 
   private void setConsolePane (Screen screen, Site server)
   {
-    consolePane = new ConsolePane (screen, server, prefs, pluginsStage);
+    consolePane = new ConsolePane (screen, server, pluginsStage);
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);
