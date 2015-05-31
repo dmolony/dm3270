@@ -14,10 +14,10 @@ import com.bytezone.dm3270.orders.TextOrder;
 public class WriteCommand extends Command
 {
   private static final Pattern jobSubmittedPattern = Pattern
-      .compile ("JOB ([A-Z0-9]{1,9})\\(JOB([0-9]{5})\\) SUBMITTED");
+      .compile ("^JOB ([A-Z0-9]{1,9})\\(JOB([0-9]{5})\\) SUBMITTED");
   private static final Pattern jobCompletedPattern = Pattern
-      .compile ("(\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
-          + " \\$HASP(?:\\d)+ ([A-Z0-9]+) .* MAXCC=(\\d+).*");
+      .compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
+          + " \\$HASP\\d+ ([A-Z0-9]+) .* MAXCC=(\\d+).*");
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
@@ -67,9 +67,6 @@ public class WriteCommand extends Command
 
       ptr += order.size ();
     }
-
-    // check screen for jobs submitted or finished
-    checkSystemMessage ();
   }
 
   // Used by MainframeStage.createCommand() when building a screen
@@ -132,28 +129,16 @@ public class WriteCommand extends Command
 
     if (drawScreen)
       screen.drawScreen ();
+
+    // check screen for jobs submitted or finished
+    checkSystemMessage ();
   }
 
   private boolean checkSystemMessage ()
   {
     int ptr = 0;
 
-    if (!eraseWrite)
-    {
-      if (orders.size () == 6)
-      {
-        for (Order order : orders)
-        {
-          byte reqType = systemMessage1[ptr++];
-          if (reqType != 0 && reqType != order.getType ())
-            return false;
-        }
-        systemMessageText = Utility.getString (orders.get (2).getBuffer ());
-      }
-      else
-        return false;
-    }
-    else if (orders.size () == 8)
+    if (eraseWrite && orders.size () == 8)
     {
       for (Order order : orders)
       {
@@ -162,6 +147,16 @@ public class WriteCommand extends Command
           return false;
       }
       systemMessageText = Utility.getString (orders.get (4).getBuffer ());
+    }
+    else if (!eraseWrite && orders.size () == 6)
+    {
+      for (Order order : orders)
+      {
+        byte reqType = systemMessage1[ptr++];
+        if (reqType != 0 && reqType != order.getType ())
+          return false;
+      }
+      systemMessageText = Utility.getString (orders.get (2).getBuffer ());
     }
     else
       return false;
