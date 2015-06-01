@@ -15,10 +15,7 @@ public class FileStructure
   public FileStructure (byte[] buffer)
   {
     encoding = getEncoding (buffer);
-
-    // if the file was transferred via IND$FILE using CRLF, then it will end in 0x1A
-    if (buffer[buffer.length - 1] == 0x1A)
-      hasCRLF = hasCRLF (buffer);
+    hasCRLF = hasCRLF (buffer);
 
     // if that was inconclusive, try the common buffer lengths
     if (!hasCRLF)
@@ -31,11 +28,6 @@ public class FileStructure
           break;
         }
     }
-
-    // if lineSize is still zero and we haven't already checked for CRLF, then
-    // do it now
-    if (lineSize == 0 && buffer[buffer.length - 1] != 0x1A)
-      hasCRLF = hasCRLF (buffer);
 
     // split the buffer up into lines using the chosen encoding and line method
     try
@@ -78,19 +70,18 @@ public class FileStructure
     int max = Math.min (200, buffer.length);
     int ascii = 0;
     int ebcdic = 0;
+
     for (int i = 0; i < max; i++)
       if (buffer[i] == 0x20)
         ascii++;
       else if (buffer[i] == 0x40)
         ebcdic++;
+
     return ascii > ebcdic ? "UTF8" : "CP1047";
   }
 
   private boolean hasCRLF (byte[] buffer)
   {
-    if (buffer[buffer.length - 1] != 0x1A)
-      return false;
-
     int lastCRLF = 0;
     int totalCRLF = 0;
     int maxLineLength = 150;
@@ -107,6 +98,7 @@ public class FileStructure
         ++totalCRLF;
       }
     }
+
     return totalCRLF > 0;
   }
 
