@@ -90,35 +90,13 @@ public class FileStage extends Stage
 
   public void addTransfer (Transfer transfer)
   {
-    if (transfer.isMessage ())
+    if (!transfer.isData ())
       return;
 
     transfers.add (transfer);
 
-    Tab tab = new Tab ();
+    FileTab tab = new FileTab (new FileStructure (transfer.combineDataBuffers ()));
     tab.setText ("#" + transfers.size ());
-
-    TextArea textArea = new TextArea ();
-    textArea.setEditable (false);
-    textArea.setFont (Font.font ("Monospaced", 12));
-
-    if (transfer.isData ())
-    {
-      byte[] fullBuffer = transfer.combineDataBuffers ();
-      FileStructure fileStructure = new FileStructure (fullBuffer);
-
-      LinePrinter linePrinter = new LinePrinter (66, fileStructure);
-      linePrinter.printBuffer ();
-      textArea.setText (linePrinter.getOutput ());
-    }
-    else
-    {
-      String message = new String (transfer.dataBuffers.get (0).getBuffer ());
-      textArea.setText (message);
-    }
-
-    tab.setContent (textArea);
-    textArea.positionCaret (0);
 
     Platform.runLater ( () -> tabPane.getTabs ().add (tab));
   }
@@ -127,5 +105,26 @@ public class FileStage extends Stage
   {
     windowSaver.saveWindow ();
     hide ();
+  }
+
+  class FileTab extends Tab
+  {
+    private final FileStructure fileStructure;
+    private final LinePrinter linePrinter;
+    TextArea textArea = new TextArea ();
+
+    public FileTab (FileStructure fileStructure)
+    {
+      this.fileStructure = fileStructure;
+      linePrinter = new LinePrinter (66, fileStructure);
+      linePrinter.printBuffer ();
+
+      textArea.setEditable (false);
+      textArea.setFont (Font.font ("Monospaced", 12));
+      textArea.setText (linePrinter.getOutput ());
+
+      setContent (textArea);
+      textArea.positionCaret (0);
+    }
   }
 }

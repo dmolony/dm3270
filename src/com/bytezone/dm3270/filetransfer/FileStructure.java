@@ -16,34 +16,31 @@ public class FileStructure
   {
     encoding = getEncoding (buffer);
 
-    int[] lineSizes = { 80, 132, 133 };
-    int lineSize = 80;
-
+    // if the file was transferred via IND$FILE using CRLF, then it will end in 0x1A
     if (buffer[buffer.length - 1] == 0x1A)
-    {
       hasCRLF = hasCRLF (buffer);
-      if (hasCRLF)
-        lineSize = 0;
-    }
 
+    // if that was inconclusive, try the common buffer lengths
     if (!hasCRLF)
+    {
+      int[] lineSizes = { 133, 132, 80 };
       for (int ls : lineSizes)
         if (buffer.length % ls == 0)
         {
           lineSize = ls;
           break;
         }
+    }
 
+    // if lineSize is still zero and we haven't already checked for CRLF, then
+    // do it now
+    if (lineSize == 0 && buffer[buffer.length - 1] != 0x1A)
+      hasCRLF = hasCRLF (buffer);
+
+    // split the buffer up into lines using the chosen encoding and line method
     try
     {
-      if (lineSize > 0)
-        for (int ptr = 0; ptr < buffer.length; ptr += lineSize)
-        {
-          String line = new String (buffer, ptr, lineSize, encoding);
-          String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
-          lines.add (trimmedLine);
-        }
-      else
+      if (hasCRLF)
       {
         int lineStart = 0;
         for (int ptr = 1; ptr < buffer.length; ptr++)
@@ -55,14 +52,25 @@ public class FileStructure
           }
         }
       }
+      else
+      {
+        if (lineSize == 0)      // couldn't determine a line size, just go with 80
+          lineSize = 80;
+        for (int ptr = 0; ptr < buffer.length; ptr += lineSize)
+        {
+          String line = new String (buffer, ptr, lineSize, encoding);
+          String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
+          lines.add (trimmedLine);
+        }
+      }
     }
     catch (UnsupportedEncodingException e)
     {
       e.printStackTrace ();
     }
 
+    // check for printer control characters
     hasASA = hasASA (lines);
-
   }
 
   private String getEncoding (byte[] buffer)
@@ -76,19 +84,6 @@ public class FileStructure
       else if (buffer[i] == 0x40)
         ebcdic++;
     return ascii > ebcdic ? "UTF8" : "CP1047";
-  }
-
-  private boolean hasASA (List<String> lines)
-  {
-    for (String line : lines)
-      if (!line.isEmpty ())
-      {
-        char asa = line.charAt (0);
-        if (asa != ' ' && asa != '-' && asa != '0' && asa != '1')
-          return false;
-      }
-
-    return true;
   }
 
   private boolean hasCRLF (byte[] buffer)
@@ -113,5 +108,18 @@ public class FileStructure
       }
     }
     return totalCRLF > 0;
+  }
+
+  private boolean hasASA (List<String> lines)
+  {
+    for (String line : lines)
+      if (!line.isEmpty ())
+      {
+        char asa = line.charAt (0);
+        if (asa != ' ' && asa != '-' && asa != '0' && asa != '1')
+          return false;
+      }
+
+    return true;
   }
 }
