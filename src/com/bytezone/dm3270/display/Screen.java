@@ -10,7 +10,6 @@ import static com.bytezone.dm3270.structuredfields.SetReplyMode.RM_CHARACTER;
 
 import java.awt.Toolkit;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +32,7 @@ import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.filetransfer.FileTransferOutbound;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.jobs.BatchJob;
+import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.plugins.Plugin;
@@ -62,7 +62,8 @@ public class Screen extends Canvas
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final List<BatchJob> batchJobs = new ArrayList<> ();
+  //  private final List<BatchJob> batchJobs = new ArrayList<> ();
+  private final JobStage jobStage = new JobStage ();
 
   private FileStage fileStage;
   private Transfer currentTransfer;
@@ -721,8 +722,9 @@ public class Screen extends Canvas
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
     System.out.println ("Job submitted:");
+
     BatchJob batchJob = new BatchJob (jobNumber, jobName);
-    batchJobs.add (batchJob);
+    jobStage.addBatchJob (batchJob);
     System.out.println (batchJob);
   }
 
@@ -731,13 +733,18 @@ public class Screen extends Canvas
   {
     System.out.println ("Job completed:");
 
-    for (BatchJob batchJob : batchJobs)
-      if (batchJob.jobNumber == jobNumber)
-      {
-        batchJob.completed (time, conditionCode);
-        System.out.println (batchJob);
-        break;
-      }
+    BatchJob batchJob = jobStage.getBatchJob (jobNumber);
+    if (batchJob != null)
+    {
+      batchJob.completed (time, conditionCode);
+      System.out.println (batchJob);
+      jobStage.refreshJobTable ();            // temp fix before jdk 8u60
+    }
+  }
+
+  public void showJobStage ()
+  {
+    jobStage.show ();
   }
 
   // ---------------------------------------------------------------------------------//

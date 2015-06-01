@@ -34,7 +34,6 @@ import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.filetransfer.TransferStage;
-import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
@@ -61,7 +60,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private Thread terminalServerThread;
   private TransferStage transferStage;
   private FileStage fileStage;
-  private JobStage jobStage;
+  //  private JobStage jobStage;
 
   private int commandHeaderCount;
   private final BorderPane topPane = new BorderPane ();
@@ -264,10 +263,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
 
   private void jobDisplay ()
   {
-    if (jobStage == null)
-      jobStage = new JobStage ();
-
-    jobStage.show ();
+    screen.showJobStage ();
   }
 
   private void fileDisplay ()

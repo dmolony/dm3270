@@ -53,6 +53,21 @@ public class JobStage extends Stage
     setOnCloseRequest (e -> closeWindow ());
   }
 
+  public void addBatchJob (BatchJob batchJob)
+  {
+    jobTable.addJob (batchJob);
+  }
+
+  public BatchJob getBatchJob (int jobNumber)
+  {
+    return jobTable.getBatchJob (jobNumber);
+  }
+
+  public void refreshJobTable ()
+  {
+    jobTable.refresh ();
+  }
+
   private void closeWindow ()
   {
     windowSaver.saveWindow ();
