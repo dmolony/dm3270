@@ -32,7 +32,7 @@ public class Transfer
     dataLength += dataHeader.size ();
   }
 
-  public byte[] getAllDataBuffers ()
+  public byte[] combineDataBuffers ()
   {
     byte[] fullBuffer = new byte[dataLength];
 

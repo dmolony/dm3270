@@ -101,28 +101,14 @@ public class FileStage extends Stage
     TextArea textArea = new TextArea ();
     textArea.setEditable (false);
     textArea.setFont (Font.font ("Monospaced", 12));
-    int[] lineSizes = { 80, 132, 133 };
 
     if (transfer.isData ())
     {
-      byte[] fullBuffer = transfer.getAllDataBuffers ();
+      byte[] fullBuffer = transfer.combineDataBuffers ();
+      FileStructure fileStructure = new FileStructure (fullBuffer);
 
-      int lineSize = 80;
-      for (int ls : lineSizes)
-        if (fullBuffer.length % ls == 0)
-        {
-          lineSize = ls;
-          break;
-        }
-
-      boolean hasASA = hasASA (fullBuffer, lineSize);
-      boolean hasCRLF = hasCRLF (fullBuffer);
-
-      LinePrinter linePrinter = new LinePrinter (66, hasASA);
-      if (hasCRLF)
-        linePrinter.printBuffer (fullBuffer);
-      else
-        linePrinter.printBuffer (fullBuffer, lineSize);
+      LinePrinter linePrinter = new LinePrinter (66, fileStructure);
+      linePrinter.printBuffer ();
       textArea.setText (linePrinter.getOutput ());
     }
     else
@@ -135,41 +121,6 @@ public class FileStage extends Stage
     textArea.positionCaret (0);
 
     Platform.runLater ( () -> tabPane.getTabs ().add (tab));
-  }
-
-  private boolean hasASA (byte[] buffer, int reclen)
-  {
-    for (int i = reclen; i < buffer.length; i += reclen)
-    {
-      byte asa = buffer[i];
-      if (asa != ' ' && asa != '-' && asa != '0' && asa != '1')
-        return false;
-    }
-    return true;
-  }
-
-  private boolean hasCRLF (byte[] buffer)
-  {
-    if (buffer[buffer.length - 1] != 0x1A)
-      return false;
-
-    int lastCRLF = 0;
-    int totalCRLF = 0;
-    int maxLineLength = 150;
-    int max = Math.min (5 * maxLineLength, buffer.length);
-
-    for (int i = 1; i < max; i++)
-    {
-      if (buffer[i] == 0x0A && buffer[i - 1] == 0x0D)
-      {
-        int recordLength = i - lastCRLF;
-        if (recordLength > maxLineLength)
-          return false;
-        lastCRLF = i;
-        ++totalCRLF;
-      }
-    }
-    return totalCRLF > 0;
   }
 
   private void closeWindow ()

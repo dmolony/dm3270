@@ -10,48 +10,52 @@ import java.nio.file.Path;
 public class LinePrinter
 {
   private static final String EBCDIC = "CP1047";
-  private static final String ASCII = "UTF8";
+  //  private static final String ASCII = "UTF8";
 
   private int currentLine;
   private final int pageSize;
-  private final boolean hasASA;
+  private final FileStructure fileStructure;
+
   private final StringBuilder text = new StringBuilder ();
 
-  public LinePrinter (int pageSize, boolean hasASA)
+  public LinePrinter (int pageSize, FileStructure fileStructure)
   {
     this.pageSize = pageSize;
-    this.hasASA = hasASA;
+    this.fileStructure = fileStructure;
   }
 
   public void printLine (String line)
   {
-    if (hasASA)
-      switch (line.charAt (0))
+    if (fileStructure.hasASA)
+    {
+      if (line.isEmpty ())
+        lineFeed ();
+      else
       {
-        case '-':
-          lineFeed ();
-        case '0':
-          lineFeed ();
-        case ' ':
-          lineFeed ();
-          break;
+        switch (line.charAt (0))
+        {
+          case '-':
+            lineFeed ();
+          case '0':
+            lineFeed ();
+          case ' ':
+            lineFeed ();
+            break;
 
-        case '1':
-          formFeed ();
-          break;
+          case '1':
+            formFeed ();
+            break;
 
-        default:
-          System.err.println ("Unknown control character : " + line.charAt (0));
-          lineFeed ();
+          default:
+            System.err.println ("Unknown control character : " + line.charAt (0));
+            lineFeed ();
+        }
+        text.append (line.substring (1));
       }
-
-    String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
-
-    if (hasASA)
-      text.append (trimmedLine.isEmpty () ? "" : trimmedLine.substring (1));
+    }
     else
     {
-      text.append (trimmedLine);
+      text.append (line);
       lineFeed ();
     }
   }
@@ -74,17 +78,10 @@ public class LinePrinter
       printLine (getString (buffer, ptr, reclen, EBCDIC));
   }
 
-  public void printBuffer (byte[] buffer)
+  public void printBuffer ()
   {
-    int lineStart = 0;
-    for (int ptr = 1; ptr < buffer.length; ptr++)
-    {
-      if (buffer[ptr] == 0x0A && buffer[ptr - 1] == 0x0D)
-      {
-        printLine (getString (buffer, lineStart, ptr - lineStart - 1, ASCII));
-        lineStart = ptr + 1;
-      }
-    }
+    for (String line : fileStructure.lines)
+      printLine (line);
   }
 
   public String getOutput ()
