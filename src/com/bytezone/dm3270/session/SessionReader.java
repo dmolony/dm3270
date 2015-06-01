@@ -27,7 +27,7 @@ public class SessionReader
   private String label;
   private String returnLabel;
 
-  public byte[] buffer = new byte[16384];
+  public byte[] buffer = new byte[16500];       // see also TelnetProcessor
 
   public SessionReader (Source source, List<String> lines)
   {

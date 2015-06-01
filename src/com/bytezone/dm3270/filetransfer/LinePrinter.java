@@ -10,6 +10,7 @@ import java.nio.file.Path;
 public class LinePrinter
 {
   private static final String EBCDIC = "CP1047";
+  private static final String ASCII = "UTF8";
 
   private int currentLine;
   private final int pageSize;
@@ -70,7 +71,7 @@ public class LinePrinter
   public void printBuffer (byte[] buffer, int reclen)
   {
     for (int ptr = 0; ptr < buffer.length; ptr += reclen)
-      printLine (getString (buffer, ptr, reclen));
+      printLine (getString (buffer, ptr, reclen, EBCDIC));
   }
 
   public void printBuffer (byte[] buffer)
@@ -78,9 +79,9 @@ public class LinePrinter
     int lineStart = 0;
     for (int ptr = 1; ptr < buffer.length; ptr++)
     {
-      if (buffer[ptr] == 0x0D && buffer[ptr - 1] == 0x0A)
+      if (buffer[ptr] == 0x0A && buffer[ptr - 1] == 0x0D)
       {
-        printLine (getString (buffer, lineStart, ptr - lineStart - 1));
+        printLine (getString (buffer, lineStart, ptr - lineStart - 1, ASCII));
         lineStart = ptr + 1;
       }
     }
@@ -110,14 +111,14 @@ public class LinePrinter
     } while (currentLine > 0);
   }
 
-  private String getString (byte[] buffer, int offset, int length)
+  private String getString (byte[] buffer, int offset, int length, String encoding)
   {
     try
     {
       int last = offset + length;
       if (last > buffer.length)
         length = buffer.length - offset - 1;
-      return new String (buffer, offset, length, EBCDIC);
+      return new String (buffer, offset, length, encoding);
     }
     catch (UnsupportedEncodingException e)
     {

@@ -20,8 +20,8 @@ public class DistributedDataManagement extends QueryReplyField
     int ptr = createReply (8);
 
     ptr = Utility.packUnsignedShort (0, reply, ptr);
-    ptr = Utility.packUnsignedShort (16000, reply, ptr);
-    ptr = Utility.packUnsignedShort (16000, reply, ptr);
+    ptr = Utility.packUnsignedShort (16384, reply, ptr);
+    ptr = Utility.packUnsignedShort (16384, reply, ptr);
     reply[ptr++] = 1;
     reply[ptr++] = 1;
 

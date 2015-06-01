@@ -36,10 +36,13 @@ public class FileStage extends Stage
   private final Label lblPageSize = new Label ("Page size");
   private final Label lblHasASA = new Label ("ASA");
   private final Label lblHasCRLF = new Label ("CR/LF");
+  private final Label lblHasASCII = new Label ("CR/LF");
+
   private final TextField txtLineSize = new TextField ();
   private final TextField txtPageSize = new TextField ();
   private final CheckBox chkHasASACodes = new CheckBox ();
   private final CheckBox chkCRLF = new CheckBox ();
+  private final CheckBox chkASCII = new CheckBox ();
 
   public FileStage (Preferences prefs)
   {
@@ -63,7 +66,8 @@ public class FileStage extends Stage
     txtPageSize.setPrefWidth (60);
     txtLineSize.setPrefWidth (60);
     optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize, txtLineSize,
-                                      lblHasCRLF, chkCRLF, lblHasASA, chkHasASACodes);
+                                      lblHasCRLF, chkCRLF, lblHasASA, chkHasASACodes,
+                                      lblHasASCII, chkASCII);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
@@ -146,6 +150,9 @@ public class FileStage extends Stage
 
   private boolean hasCRLF (byte[] buffer)
   {
+    if (buffer[buffer.length - 1] != 0x1A)
+      return false;
+
     int lastCRLF = 0;
     int totalCRLF = 0;
     int maxLineLength = 150;
@@ -153,11 +160,12 @@ public class FileStage extends Stage
 
     for (int i = 1; i < max; i++)
     {
-      if (buffer[i] == 0x0D && buffer[i - 1] == 0x0A)
+      if (buffer[i] == 0x0A && buffer[i - 1] == 0x0D)
       {
         int recordLength = i - lastCRLF;
         if (recordLength > maxLineLength)
           return false;
+        lastCRLF = i;
         ++totalCRLF;
       }
     }

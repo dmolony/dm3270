@@ -21,13 +21,17 @@ public class WriteCommand extends Command
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
-  private final byte[] systemMessage1 = { Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
-                                         0x00, Order.START_FIELD,
-                                         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
-  private final byte[] systemMessage2 = { Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
-                                         Order.SET_BUFFER_ADDRESS, Order.START_FIELD,
-                                         0x00, Order.START_FIELD,
-                                         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+  private final byte[] systemMessage1 = { //
+      Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+          Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+  private final byte[] systemMessage2 = { //
+      Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+          Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+          Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+  private final byte[] systemMessage3 = { //
+      Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+          Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+          Order.INSERT_CURSOR };
   private String systemMessageText;
 
   public WriteCommand (byte[] buffer, int offset, int length, Screen screen, boolean erase)
@@ -142,6 +146,16 @@ public class WriteCommand extends Command
     {
       for (Order order : orders)
       {
+        byte reqType = systemMessage3[ptr++];
+        if (reqType != 0 && reqType != order.getType ())
+          return false;
+      }
+      systemMessageText = Utility.getString (orders.get (4).getBuffer ());
+    }
+    else if (eraseWrite && orders.size () == 11)
+    {
+      for (Order order : orders)
+      {
         byte reqType = systemMessage2[ptr++];
         if (reqType != 0 && reqType != order.getType ())
           return false;
@@ -161,7 +175,7 @@ public class WriteCommand extends Command
     else
       return false;
 
-    //    System.out.println (systemMessageText);
+    System.out.println (systemMessageText);
     Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
     if (matcher.matches ())
     {
