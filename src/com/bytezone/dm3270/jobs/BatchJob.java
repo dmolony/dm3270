@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.jobs;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -14,7 +15,7 @@ public class BatchJob
   private StringProperty propertyJobNumber;
   private StringProperty propertyJobName;
   private StringProperty propertyJobCompleted;
-  private SimpleIntegerProperty propertyConditionCode;
+  private IntegerProperty propertyConditionCode;
 
   public BatchJob (int jobNumber, String jobName)
   {
@@ -31,7 +32,7 @@ public class BatchJob
     this.conditionCode = conditionCode;
 
     setJobCompleted (timeCompleted);
-    setConditionCode (conditionCode);
+    setJobConditionCode (conditionCode);
   }
 
   public String outputCommand ()
@@ -103,17 +104,17 @@ public class BatchJob
 
   // ConditionCode
 
-  public void setConditionCode (int value)
+  public void setJobConditionCode (int value)
   {
     propertyConditionCode ().set (value);
   }
 
-  public int getConditionCode ()
+  public int getJobConditionCode ()
   {
     return propertyConditionCode ().get ();
   }
 
-  public SimpleIntegerProperty propertyConditionCode ()
+  public IntegerProperty propertyConditionCode ()
   {
     if (propertyConditionCode == null)
       propertyConditionCode = new SimpleIntegerProperty (this, "JobConditionCode");
