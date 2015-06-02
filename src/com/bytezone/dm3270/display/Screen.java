@@ -62,7 +62,6 @@ public class Screen extends Canvas
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  //  private final List<BatchJob> batchJobs = new ArrayList<> ();
   private final JobStage jobStage = new JobStage ();
 
   private FileStage fileStage;
