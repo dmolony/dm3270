@@ -9,14 +9,15 @@ import com.bytezone.dm3270.plugins.ScreenField;
 public class FieldManager
 {
   private final Screen screen;
-  private int dataPositions;
-  private int inputPositions;
-  private int hiddenProtectedFields;
-  private int hiddenUnprotectedFields;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
   private final List<Field> emptyFields = new ArrayList<> ();
+
+  private int dataPositions;
+  private int inputPositions;
+  private int hiddenProtectedFields;
+  private int hiddenUnprotectedFields;
 
   public FieldManager (Screen screen)
   {
@@ -28,6 +29,7 @@ public class FieldManager
     fields.clear ();
     unprotectedFields.clear ();
     emptyFields.clear ();
+
     dataPositions = 0;
     inputPositions = 0;
     hiddenProtectedFields = 0;
@@ -105,6 +107,11 @@ public class FieldManager
           prev = field;
         }
     }
+
+    //    getMenus ();
+    getTSOCommandField ();
+    if (isTSOCommandScreen ())
+      System.out.println ("*** TSO Command screen");
   }
 
   private void addField (int start, int end, List<ScreenPosition> positions)
@@ -142,6 +149,69 @@ public class FieldManager
       }
     }
     return menus;
+  }
+
+  public Field getTSOCommandField ()
+  {
+    int maxLocation = screen.columns * 4 + 20;
+    int minLocation = screen.columns;
+    boolean promptFound = false;
+    Field commandField = null;
+
+    for (Field field : fields)
+    {
+      if (field.getFirstLocation () > maxLocation)
+        break;
+
+      if (field.getFirstLocation () < minLocation)
+        continue;
+
+      int length = field.getDisplayLength ();
+
+      if (promptFound)
+      {
+        if (field.isProtected () || field.isHidden () || length < 48 || length > 70)
+          break;
+
+        commandField = field;
+        break;
+      }
+
+      int column = field.getFirstLocation () % screen.columns;
+      if (column > 2)
+        continue;
+
+      if (field.isUnprotected () || field.isHidden () || length < 8 || length > 15)
+        continue;
+
+      String text = field.getText ();
+
+      if (text.endsWith ("===>"))
+      {
+        promptFound = true;
+        System.out.println (text);
+      }
+    }
+
+    if (commandField != null)
+      System.out.println (commandField);
+    return commandField;
+  }
+
+  public boolean isTSOCommandScreen ()
+  {
+    if (fields.size () < 14)
+      return false;
+
+    Field field = fields.get (10);
+    if (!"ISPF Command Shell".equals (field.getText ()))
+      return false;
+
+    field = fields.get (13);
+    if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
+      return false;
+
+    return true;
   }
 
   public Field getField (int position)      // this needs to be improved
