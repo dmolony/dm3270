@@ -60,7 +60,6 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private Thread terminalServerThread;
   private TransferStage transferStage;
   private FileStage fileStage;
-  //  private JobStage jobStage;
 
   private int commandHeaderCount;
   private final BorderPane topPane = new BorderPane ();

@@ -6,18 +6,24 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.WindowSaver;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
-public class JobStage extends Stage
+public class JobStage extends Stage implements TSOCommandStatusListener
 {
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final Button hideButton = new Button ("Hide Window");
   private final JobTable jobTable = new JobTable ();
+  private final Label lblStatus = new Label ("TSO Status");
+  private final TextField txtStatus = new TextField ();
 
   public JobStage ()
   {
@@ -33,6 +39,8 @@ public class JobStage extends Stage
     HBox optionsBox = new HBox (10);
     optionsBox.setAlignment (Pos.CENTER_LEFT);
     optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
+    txtStatus.setEditable (false);
+    optionsBox.getChildren ().addAll (lblStatus, txtStatus);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
@@ -72,5 +80,12 @@ public class JobStage extends Stage
   {
     windowSaver.saveWindow ();
     hide ();
+  }
+
+  @Override
+  public void screenChanged (boolean isTSOCommandScreen, Field tsoCommandField)
+  {
+    txtStatus.setText (isTSOCommandScreen ? "TSO Command Screen"
+        : tsoCommandField == null ? "TSO Unavailable" : "TSO Command Field");
   }
 }

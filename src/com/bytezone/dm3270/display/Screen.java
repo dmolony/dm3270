@@ -81,7 +81,7 @@ public class Screen extends Canvas
   public final int columns;
   public final int screenSize;
 
-  private boolean hasCommandField;
+  //  private boolean hasCommandField;
 
   public enum BuildInstruction
   {
@@ -106,6 +106,8 @@ public class Screen extends Canvas
     ScreenContext baseContext = contextHandler.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
       screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
+
+    addTSOCommandStatusChangeListener (jobStage);
   }
 
   public void setFontManager (FontManager fontManager)
@@ -310,6 +312,10 @@ public class Screen extends Canvas
   public void buildFields ()
   {
     fieldManager.buildFields ();      // what about resetModified?
+
+    boolean isTSOCommandScreen = fieldManager.isTSOCommandScreen ();
+    Field tsoCommandField = fieldManager.getTSOCommandField ();
+    notifyTSOCommandStatusChange (isTSOCommandScreen, tsoCommandField);
   }
 
   public void drawScreen ()
@@ -768,11 +774,30 @@ public class Screen extends Canvas
     keyboardStatusListeners.remove (listener);
   }
 
+  private final Set<TSOCommandStatusListener> tsoCommandStatusListeners =
+      new HashSet<> ();
+
+  void notifyTSOCommandStatusChange (boolean isTSOCommandScreen, Field tsoCommandField)
+  {
+    for (TSOCommandStatusListener listener : tsoCommandStatusListeners)
+      listener.screenChanged (isTSOCommandScreen, tsoCommandField);
+  }
+
+  public void addTSOCommandStatusChangeListener (TSOCommandStatusListener listener)
+  {
+    tsoCommandStatusListeners.add (listener);
+  }
+
+  public void removeTSOCommandStatusChangeListener (TSOCommandStatusListener listener)
+  {
+    tsoCommandStatusListeners.remove (listener);
+  }
+
   // ---------------------------------------------------------------------------------//
   // Screen image
   // ---------------------------------------------------------------------------------//
 
-  // Create a copy of the current canvas
+  // Create a copy of the current canvas - this will change to a Buffer reply
   private ImageView copy ()
   {
     WritableImage wim = new WritableImage ((int) getWidth (), (int) getHeight ());
