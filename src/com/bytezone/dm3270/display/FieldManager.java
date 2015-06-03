@@ -8,6 +8,8 @@ import com.bytezone.dm3270.plugins.ScreenField;
 
 public class FieldManager
 {
+  private static final String[] tsoMenus = { "Menu", "List", "Mode", "Functions",
+                                            "Utilities", "Help" };
   private final Screen screen;
 
   private final List<Field> fields = new ArrayList<> ();
@@ -110,8 +112,6 @@ public class FieldManager
 
     //    getMenus ();
     getTSOCommandField ();
-    if (isTSOCommandScreen ())
-      System.out.println ("*** TSO Command screen");
   }
 
   private void addField (int start, int end, List<ScreenPosition> positions)
@@ -195,6 +195,7 @@ public class FieldManager
 
     if (commandField != null)
       System.out.println (commandField);
+
     return commandField;
   }
 
@@ -203,6 +204,9 @@ public class FieldManager
     if (fields.size () < 14)
       return false;
 
+    System.out.println (fields.get (10));
+    System.out.println (fields.get (13));
+
     Field field = fields.get (10);
     if (!"ISPF Command Shell".equals (field.getText ()))
       return false;
@@ -210,6 +214,19 @@ public class FieldManager
     field = fields.get (13);
     if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
       return false;
+    System.out.println ("here");
+
+    List<String> menus = getMenus ();
+    System.out.println (menus);
+    if (menus.size () != tsoMenus.length)
+      return false;
+
+    int i = 0;
+    for (String menu : menus)
+      if (!tsoMenus[i++].equals (menu))
+        return false;
+
+    System.out.println ("*** TSO Screen ***");
 
     return true;
   }
