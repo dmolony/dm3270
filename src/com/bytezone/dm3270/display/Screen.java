@@ -115,6 +115,7 @@ public class Screen extends Canvas
     this.fontManager = fontManager;
   }
 
+  // called from ConsoleKeyEvent in order to fix a java bug on OSX
   public void doFontSmaller ()
   {
     fontManager.smaller ();

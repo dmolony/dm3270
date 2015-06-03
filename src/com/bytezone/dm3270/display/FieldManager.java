@@ -136,11 +136,12 @@ public class FieldManager
   public List<String> getMenus ()
   {
     List<String> menus = new ArrayList<> ();
+
     for (Field field : fields)
     {
-      int location = field.getFirstLocation ();
-      if (location >= screen.columns)
+      if (field.getFirstLocation () >= screen.columns)
         break;
+
       if (field.isProtected () && field.isVisible () && field.getDisplayLength () > 1)
       {
         String text = field.getText ().trim ();
@@ -148,6 +149,7 @@ public class FieldManager
           menus.add (text);
       }
     }
+
     return menus;
   }
 
@@ -187,14 +189,8 @@ public class FieldManager
       String text = field.getText ();
 
       if (text.endsWith ("===>"))
-      {
-        promptFound = true;
-        System.out.println (text);
-      }
+        promptFound = true;             // next loop iteration will return the field
     }
-
-    if (commandField != null)
-      System.out.println (commandField);
 
     return commandField;
   }
@@ -203,9 +199,6 @@ public class FieldManager
   {
     if (fields.size () < 14)
       return false;
-
-    System.out.println (fields.get (10));
-    System.out.println (fields.get (13));
 
     Field field = fields.get (10);
     if (!"ISPF Command Shell".equals (field.getText ()))
@@ -225,8 +218,6 @@ public class FieldManager
     for (String menu : menus)
       if (!tsoMenus[i++].equals (menu))
         return false;
-
-    System.out.println ("*** TSO Screen ***");
 
     return true;
   }
@@ -281,8 +272,10 @@ public class FieldManager
   {
     List<ScreenField> screenFields = new ArrayList<> ();
     int count = 0;
+
     for (Field field : fields)
       screenFields.add (field.getScreenField (sequence, count++));
+
     return new PluginData (sequence, row, column, screenFields);
   }
 
@@ -321,6 +314,7 @@ public class FieldManager
       text.append (field.toStringWithLinks ());
       text.append ("\n\n");
     }
+
     if (text.length () > 0)
     {
       text.deleteCharAt (text.length () - 1);
