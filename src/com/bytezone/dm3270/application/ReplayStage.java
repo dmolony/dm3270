@@ -83,16 +83,7 @@ class ReplayStage extends Stage
     sortedData.comparatorProperty ().bind (table.comparatorProperty ());
     table.setItems (sortedData);
 
-    // look for the first ISPF screen
-    SessionRecord dataRecord = session.getBySize (2306);
-    if (dataRecord == null)
-      dataRecord = session.getNext (SessionRecordType.TN3270);
-    if (dataRecord != null)
-    {
-      table.getSelectionModel ().select (dataRecord);
-      int index = table.getSelectionModel ().getSelectedIndex ();
-      table.scrollTo (index);
-    }
+    displayFirstScreen (session, table);
 
     setOnCloseRequest (e -> Platform.exit ());
 
@@ -107,6 +98,32 @@ class ReplayStage extends Stage
 
     Scene scene = new Scene (borderPane);
     setScene (scene);
+  }
+
+  private void displayFirstScreen (Session session, SessionTable table)
+  {
+    // look for the first useful screen
+    int[] screenSizes = { 2306, 2301, 2206 };
+    SessionRecord dataRecord = null;
+
+    for (int screenSize : screenSizes)
+    {
+      dataRecord = session.getBySize (screenSize);
+      if (dataRecord != null)
+        break;
+    }
+
+    if (dataRecord == null)
+      dataRecord = session.getNext (SessionRecordType.TN3270);
+
+    if (dataRecord != null)
+    {
+      table.getSelectionModel ().select (dataRecord);
+      int index = table.getSelectionModel ().getSelectedIndex ();
+      table.scrollTo (index);
+    }
+    else
+      System.out.println ("No suitable first screen found");
   }
 
   private void change (SessionTable table, FilteredList<SessionRecord> filteredData)

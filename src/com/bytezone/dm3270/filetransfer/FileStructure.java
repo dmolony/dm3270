@@ -50,6 +50,8 @@ public class FileStructure
           lineSize = 80;
         for (int ptr = 0; ptr < buffer.length; ptr += lineSize)
         {
+          if (ptr + lineSize >= buffer.length)
+            lineSize = buffer.length - ptr;
           String line = new String (buffer, ptr, lineSize, encoding);
           String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
           lines.add (trimmedLine);

@@ -207,10 +207,8 @@ public class FieldManager
     field = fields.get (13);
     if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
       return false;
-    System.out.println ("here");
 
     List<String> menus = getMenus ();
-    System.out.println (menus);
     if (menus.size () != tsoMenus.length)
       return false;
 
