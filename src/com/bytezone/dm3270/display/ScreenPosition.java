@@ -234,6 +234,12 @@ public class ScreenPosition
     else
       gc.fillRect (x + 0.5, y + 0.5, charWidth, charHeight);
 
+    if (screenContext.highIntensity)
+    {
+      if (foregroundColor == Color.SNOW)
+        foregroundColor = Color.WHITE;
+    }
+
     // Draw foreground
     if (isVisible)
       if (isGraphics)

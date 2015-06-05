@@ -83,9 +83,4 @@ public class ContextManager
     contextPool.add (newContext);
     return newContext;
   }
-
-  //  public ScreenContext resetAttribute (ScreenContext oldContext)
-  //  {
-  //    return getBase ();
-  //  }
 }

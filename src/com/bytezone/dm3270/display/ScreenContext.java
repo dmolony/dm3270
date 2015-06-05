@@ -18,12 +18,13 @@ public class ScreenContext
   {
     this.foregroundColor = foregroundColor;
     this.backgroundColor = backgroundColor;
+    this.highIntensity = highIntensity;
+
     this.underscore = highlight == (byte) 0xF4;
     this.reverseVideo = highlight == (byte) 0xF2;
     this.blink = highlight == (byte) 0xF1;
     this.normalHighlight = highlight == (byte) 0xF0;
     this.highlight = highlight;
-    this.highIntensity = highIntensity;
   }
 
   public boolean matches (ScreenContext other)

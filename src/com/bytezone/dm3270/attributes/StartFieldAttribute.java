@@ -121,12 +121,16 @@ public class StartFieldAttribute extends Attribute
 
   @Override
   public ScreenContext
-      process (ContextManager contextHandler, ScreenContext screenContext)
+      process (ContextManager contextManager, ScreenContext screenContext)
   {
     Color color = isHighIntensity ?       //
         isProtected ? WHITE : RED :       //
         isProtected ? BLUE : GREEN;
-    return contextHandler.setForeground (screenContext, color);
+
+    screenContext = contextManager.setForeground (screenContext, color);
+    screenContext = contextManager.setHighIntensity (screenContext, isHighIntensity);
+
+    return screenContext;
   }
 
   public String getAcronym ()

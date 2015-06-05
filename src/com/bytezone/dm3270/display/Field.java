@@ -39,7 +39,7 @@ public class Field implements Iterable<ScreenPosition>
 
   void setScreenContexts ()
   {
-    ContextManager contextManager = screen.getContextHandler ();
+    ContextManager contextManager = screen.getContextManager ();
     ScreenPosition startFieldScreenPosition = screenPositions.get (0);
     StartFieldAttribute sfa = startFieldScreenPosition.getStartFieldAttribute ();
     ScreenContext screenContext = contextManager.getBase ();

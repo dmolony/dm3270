@@ -48,7 +48,7 @@ public class Screen extends Canvas
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
-  private final ContextManager contextHandler = new ContextManager ();
+  private final ContextManager contextManager = new ContextManager ();
   private FontManager fontManager;
   private final Cursor cursor = new Cursor (this);
   private final Function function;
@@ -103,7 +103,7 @@ public class Screen extends Canvas
     setFont (fontSelected, Integer.parseInt (sizeSelected));
 
     screenPositions = new ScreenPosition[rows * columns];
-    ScreenContext baseContext = contextHandler.getBase ();
+    ScreenContext baseContext = contextManager.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
       screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
 
@@ -262,9 +262,9 @@ public class Screen extends Canvas
     return screenPositions;
   }
 
-  public ContextManager getContextHandler ()
+  public ContextManager getContextManager ()
   {
-    return contextHandler;
+    return contextManager;
   }
 
   public void resetInsertMode ()
