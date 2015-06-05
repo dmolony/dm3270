@@ -19,7 +19,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
@@ -220,12 +219,13 @@ public class Screen extends Canvas
     pluginsStage.setScreen (this);
   }
 
+  // display a message on the screen - only used when logging off
   public void displayText (String text)
   {
     GraphicsContext gc = getGraphicsContext2D ();
-    gc.setFill (Color.BLACK);
+    gc.setFill (ColorAttribute.colors[8]);                // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
-    gc.setFill (ColorAttribute.colors[5]);
+    gc.setFill (ColorAttribute.colors[5]);                // turquoise
     int x = 120;
     int y = 100;
     int height = 20;
@@ -358,7 +358,7 @@ public class Screen extends Canvas
   private void eraseScreen ()
   {
     GraphicsContext gc = getGraphicsContext2D ();
-    gc.setFill (Color.BLACK);
+    gc.setFill (ColorAttribute.colors[8]);                // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
   }
 

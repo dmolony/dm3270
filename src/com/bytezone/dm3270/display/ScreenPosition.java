@@ -236,7 +236,8 @@ public class ScreenPosition
 
     if (screenContext.highIntensity)
     {
-      if (foregroundColor == Color.SNOW)
+      System.out.println ("intensified : " + getChar ());
+      if (foregroundColor == Color.WHITESMOKE)
         foregroundColor = Color.WHITE;
     }
 

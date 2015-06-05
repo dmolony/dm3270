@@ -27,14 +27,14 @@ public abstract class ColorAttribute extends Attribute
           "Grey", "White" };
 
   public static final Color[] colors = { //
-      Color.SNOW,              //
+      Color.WHITESMOKE,              //
           Color.DODGERBLUE,     // or DEEPSKYBLUE, SKYBLUE, LIGHTSKYBLUE
           Color.RED,            //
           Color.PINK,           //
           Color.LIME,           //
           Color.TURQUOISE,      //
           Color.YELLOW,         //
-          Color.SNOW,           //
+          Color.WHITESMOKE,           //
           Color.BLACK,          //
           Color.DARKBLUE,       //
           Color.ORANGE,         //
@@ -42,7 +42,7 @@ public abstract class ColorAttribute extends Attribute
           Color.PALEGREEN,      //
           Color.PALETURQUOISE,  //
           Color.GREY,           //
-          Color.SNOW            //
+          Color.WHITESMOKE            //
       };
 
   public ColorAttribute (AttributeType type, byte byteType, byte value)
