@@ -546,10 +546,16 @@ public class Screen extends Canvas
     BufferAddress ba = new BufferAddress (getScreenCursor ().getLocation ());
     ptr = ba.packAddress (buffer, ptr);
 
+    Field tsoCommandField = fieldManager.getTSOCommandField ();
+
     // pack all modified fields
     for (Field field : getUnprotectedFields ())
       if (field.isModified ())
+      {
         ptr = packField (field, buffer, ptr);
+        if (field == tsoCommandField)
+          System.out.println ("User command : " + field.getText ().trim ());
+      }
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
