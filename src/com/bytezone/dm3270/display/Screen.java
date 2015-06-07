@@ -525,6 +525,34 @@ public class Screen extends Canvas
   }
 
   // ---------------------------------------------------------------------------------//
+  // Send AID command
+  // ---------------------------------------------------------------------------------//
+
+  public void sendAID ()
+  {
+    AIDCommand command = readModifiedFields ();
+    if (command != null)
+    {
+      lockKeyboard (command.getKeyName ());
+      consolePane.sendAID (command);
+    }
+  }
+
+  public void setFieldText (Field field, String text)
+  {
+    try
+    {
+      field.setText (text.getBytes ("CP1047"));
+      field.setModified (true);
+      field.draw ();                  // draws the field without a cursor   
+    }
+    catch (UnsupportedEncodingException e)
+    {
+      e.printStackTrace ();
+    }
+  }
+
+  // ---------------------------------------------------------------------------------//
   // Convert screen contents to an AID command
   // ---------------------------------------------------------------------------------//
 
