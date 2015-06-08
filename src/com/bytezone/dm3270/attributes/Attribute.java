@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.attributes;
 
 import com.bytezone.dm3270.display.ContextManager;
+import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.ScreenContext;
 
 public abstract class Attribute
@@ -117,6 +118,8 @@ public abstract class Attribute
 
   public abstract ScreenContext process (ContextManager contextHandler,
       ScreenContext screenContext);
+
+  public abstract void process (Pen pen);
 
   public byte getAttributeValue ()
   {

@@ -34,7 +34,7 @@ public abstract class ColorAttribute extends Attribute
           Color.LIME,           //
           Color.TURQUOISE,      //
           Color.YELLOW,         //
-          Color.WHITESMOKE,           //
+          Color.WHITESMOKE,     //
           Color.BLACK,          //
           Color.DARKBLUE,       //
           Color.ORANGE,         //
@@ -42,15 +42,21 @@ public abstract class ColorAttribute extends Attribute
           Color.PALEGREEN,      //
           Color.PALETURQUOISE,  //
           Color.GREY,           //
-          Color.WHITESMOKE            //
+          Color.WHITESMOKE      //
       };
+
+  protected final Color color;
 
   public ColorAttribute (AttributeType type, byte byteType, byte value)
   {
     super (type, byteType, value);
+    color = colors[value & 0x0F];
   }
 
-  public abstract Color getColor ();
+  public Color getColor ()
+  {
+    return color;
+  }
 
   public static String colorName (byte value)
   {

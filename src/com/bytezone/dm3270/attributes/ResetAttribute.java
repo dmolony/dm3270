@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.attributes;
 
 import com.bytezone.dm3270.display.ContextManager;
+import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.ScreenContext;
 
 public class ResetAttribute extends Attribute
@@ -15,5 +16,11 @@ public class ResetAttribute extends Attribute
       process (ContextManager contextHandler, ScreenContext screenContext)
   {
     return screenContext;
+  }
+
+  @Override
+  public void process (Pen pen)
+  {
+    pen.reset (attributeValue);
   }
 }
