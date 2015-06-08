@@ -112,6 +112,10 @@ public class WriteCommand extends Command
     if (eraseWrite)
       screen.clearScreen ();
 
+    // Must change this - ScreenPosition fields have to be updated by the 
+    // order.process() method, and only collected into fields by screen.buildFields().
+    // The current processing does not work correctly when overwriting an existing
+    // screen. Use Cursor to keep the current state.
     if (orders.size () > 0)
     {
       for (Order order : orders)
