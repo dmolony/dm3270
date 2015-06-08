@@ -48,6 +48,7 @@ public class Screen extends Canvas
   private final CharacterSize characterSize;        // contains font-specific values
   private final FieldManager fieldManager = new FieldManager (this);
   private final ContextManager contextManager = new ContextManager ();
+  private final Pen pen = new Pen (this);
   private FontManager fontManager;
   private final Cursor cursor = new Cursor (this);
   private final Function function;
@@ -245,6 +246,11 @@ public class Screen extends Canvas
     while (position >= screenSize)
       position -= screenSize;
     return position;
+  }
+
+  public Pen getPen ()
+  {
+    return pen;
   }
 
   public Cursor getScreenCursor ()

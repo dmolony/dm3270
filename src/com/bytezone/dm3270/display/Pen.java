@@ -4,10 +4,23 @@ import javafx.scene.paint.Color;
 
 public class Pen
 {
-  private Screen screen;
-  private ContextManager contextManager;
+  private final Screen screen;
+  private final ContextManager contextManager;
+
   private ScreenContext currentContext;
   private int currentPosition;
+
+  public Pen (Screen screen)
+  {
+    this.screen = screen;
+    contextManager = new ContextManager ();
+    currentContext = contextManager.getBase ();
+  }
+
+  public int getPosition ()
+  {
+    return currentPosition;
+  }
 
   public void setForeground (Color color)
   {
@@ -34,20 +47,35 @@ public class Pen
     System.out.println ("reset Not finished!");
   }
 
-  public void write (String text)
+  public void writeGraphics (byte b)
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.setScreenContext (currentContext);
+    screenPosition.setGraphicsChar (b);
+    moveRight ();
+  }
 
-    for (char c : text.toCharArray ())
-    {
-      screenPosition.setChar ((byte) c);
-      moveTo (currentPosition + 1);
-    }
+  public void write (byte b)
+  {
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.setScreenContext (currentContext);
+    screenPosition.setChar (b);
+    moveRight ();
+  }
+
+  public void write (String text)
+  {
+    for (byte b : text.getBytes ())
+      write (b);
   }
 
   public void moveTo (int position)
   {
     currentPosition = screen.validate (position);
+  }
+
+  public void moveRight ()
+  {
+    moveTo (currentPosition + 1);
   }
 }

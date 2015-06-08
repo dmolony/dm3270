@@ -8,6 +8,7 @@ import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Cursor.Direction;
+import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenPosition;
 
@@ -71,14 +72,25 @@ public class StartFieldExtendedOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    Cursor cursor = screen.getScreenCursor ();
-    location = cursor.getLocation ();
-    ScreenPosition sp = cursor.getScreenPosition ();
-    sp.reset ();
-    sp.addAttribute (startFieldAttribute);
-    for (Attribute attribute : attributes)
-      sp.addAttribute (attribute);
-    cursor.move (Direction.RIGHT);
+    if (true)
+    {
+      Cursor cursor = screen.getScreenCursor ();
+      location = cursor.getLocation ();
+      ScreenPosition sp = cursor.getScreenPosition ();
+      sp.reset ();
+      sp.addAttribute (startFieldAttribute);
+      for (Attribute attribute : attributes)
+        sp.addAttribute (attribute);
+      cursor.move (Direction.RIGHT);
+    }
+    else
+    {
+      Pen pen = screen.getPen ();
+      startFieldAttribute.process (pen);
+      for (Attribute attribute : attributes)
+        attribute.process (pen);
+      pen.moveRight ();
+    }
   }
 
   @Override

@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.orders;
 
+import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
 
 public class SetBufferAddressOrder extends Order implements BufferAddressSource
@@ -33,7 +34,15 @@ public class SetBufferAddressOrder extends Order implements BufferAddressSource
   @Override
   public void process (Screen screen)
   {
-    screen.getScreenCursor ().moveTo (bufferAddress.getLocation ());
+    if (true)
+    {
+      screen.getScreenCursor ().moveTo (bufferAddress.getLocation ());
+    }
+    else
+    {
+      Pen pen = screen.getPen ();
+      pen.moveTo (bufferAddress.getLocation ());
+    }
   }
 
   @Override

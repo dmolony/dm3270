@@ -3,6 +3,7 @@ package com.bytezone.dm3270.orders;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Cursor.Direction;
+import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenPosition;
 
@@ -33,12 +34,20 @@ public class StartFieldOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    Cursor cursor = screen.getScreenCursor ();
-    ScreenPosition sp = cursor.getScreenPosition ();
-    location = cursor.getLocation ();
-    sp.reset ();
-    sp.addAttribute (startFieldAttribute);
-    cursor.move (Direction.RIGHT);
+    if (true)
+    {
+      Cursor cursor = screen.getScreenCursor ();
+      ScreenPosition sp = cursor.getScreenPosition ();
+      location = cursor.getLocation ();
+      sp.reset ();
+      sp.addAttribute (startFieldAttribute);
+      cursor.move (Direction.RIGHT);
+    }
+    else
+    {
+      Pen pen = screen.getPen ();
+      startFieldAttribute.process (pen);
+    }
   }
 
   @Override
