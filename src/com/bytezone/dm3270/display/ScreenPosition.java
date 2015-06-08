@@ -11,7 +11,7 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.orders.Order;
 
-public class ScreenPosition
+public final class ScreenPosition
 {
   // GraphicsEscape characters
   private static final byte TOP_LEFT = (byte) 0xC5;
@@ -131,19 +131,14 @@ public class ScreenPosition
     return value == 0;
   }
 
-  public void reset (ScreenContext screenContext)
+  public void reset ()
   {
     isVisible = true;
     value = 0;
     isGraphics = false;
-    this.screenContext = screenContext;       // set to screen default
+    this.screenContext = baseContext;       // set to screen default
     startFieldAttribute = null;
     attributes.clear ();
-  }
-
-  public void reset ()
-  {
-    reset (baseContext);
   }
 
   public int pack (byte[] buffer, int ptr, byte order)
