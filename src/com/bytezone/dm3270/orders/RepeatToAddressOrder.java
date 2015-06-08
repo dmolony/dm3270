@@ -45,7 +45,7 @@ public class RepeatToAddressOrder extends Order
   {
     int stopLocation = stopAddress.getLocation ();
 
-    if (true)
+    if (oldWay)
     {
       Cursor cursor = screen.getScreenCursor ();
       if (cursor.getLocation () == stopLocation && (rptChar == 0x40 || rptChar == 0x00))

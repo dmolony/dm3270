@@ -64,7 +64,7 @@ public class TextOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (true)
+    if (oldWay)
     {
       Cursor cursor = screen.getScreenCursor ();
       for (byte b : buffer)

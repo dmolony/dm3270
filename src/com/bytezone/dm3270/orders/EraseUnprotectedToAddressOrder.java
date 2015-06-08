@@ -20,27 +20,34 @@ public class EraseUnprotectedToAddressOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    Cursor cursor = screen.getScreenCursor ();
-    int cursorPostion = cursor.getLocation ();
-    Field resetField = null;
-
-    for (Field field : screen.getUnprotectedFields ())
-      if (field.contains (cursorPostion))
-      {
-        resetField = field;
-        break;
-      }
-
-    // this relies on stopAddress being in an unprotected field
-    while (resetField != null)
+    if (oldWay)
     {
-      resetField.clear (false);       // don't set modified (is this correct?)
-      if (resetField.contains (stopAddress.getLocation ()))
+      Cursor cursor = screen.getScreenCursor ();
+      int cursorPostion = cursor.getLocation ();
+      Field resetField = null;
+
+      for (Field field : screen.getUnprotectedFields ())
+        if (field.contains (cursorPostion))
+        {
+          resetField = field;
+          break;
+        }
+
+      // this relies on stopAddress being in an unprotected field
+      while (resetField != null)
       {
-        cursor.moveTo (resetField.getFirstLocation ());
-        break;
+        resetField.clear (false);       // don't set modified (is this correct?)
+        if (resetField.contains (stopAddress.getLocation ()))
+        {
+          cursor.moveTo (resetField.getFirstLocation ());
+          break;
+        }
+        resetField = resetField.getNextUnprotectedField ();
       }
-      resetField = resetField.getNextUnprotectedField ();
+    }
+    else
+    {
+      System.out.println ("EraseUnprotected not finished");
     }
   }
 

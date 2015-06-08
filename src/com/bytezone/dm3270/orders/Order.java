@@ -20,6 +20,8 @@ public abstract class Order
   protected byte[] buffer;
   protected int duplicates;
 
+  protected boolean oldWay = true;
+
   public static Order getOrder (byte[] buffer, int ptr, int max)
   {
     switch (buffer[ptr])

@@ -34,7 +34,7 @@ public class StartFieldOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (true)
+    if (oldWay)
     {
       Cursor cursor = screen.getScreenCursor ();
       ScreenPosition sp = cursor.getScreenPosition ();

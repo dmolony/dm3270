@@ -72,7 +72,7 @@ public class StartFieldExtendedOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (true)
+    if (oldWay)
     {
       Cursor cursor = screen.getScreenCursor ();
       location = cursor.getLocation ();

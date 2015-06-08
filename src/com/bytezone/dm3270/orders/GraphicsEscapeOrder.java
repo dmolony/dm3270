@@ -22,7 +22,7 @@ public class GraphicsEscapeOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (true)
+    if (oldWay)
     {
       Cursor cursor = screen.getScreenCursor ();
       int max = duplicates;

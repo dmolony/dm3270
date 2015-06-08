@@ -34,7 +34,7 @@ public class SetBufferAddressOrder extends Order implements BufferAddressSource
   @Override
   public void process (Screen screen)
   {
-    if (true)
+    if (oldWay)
     {
       screen.getScreenCursor ().moveTo (bufferAddress.getLocation ());
     }
