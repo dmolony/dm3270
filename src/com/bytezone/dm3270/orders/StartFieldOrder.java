@@ -1,16 +1,13 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
-import com.bytezone.dm3270.display.Cursor;
-import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenPosition;
 
 public class StartFieldOrder extends Order
 {
   private final StartFieldAttribute startFieldAttribute;
-  private int location = -1;
+  private final int location = -1;
 
   public StartFieldOrder (byte[] buffer, int offset)
   {
@@ -36,12 +33,12 @@ public class StartFieldOrder extends Order
   {
     if (oldWay)
     {
-      Cursor cursor = screen.getScreenCursor ();
-      ScreenPosition sp = cursor.getScreenPosition ();
-      location = cursor.getLocation ();
-      sp.reset ();
-      sp.addAttribute (startFieldAttribute);
-      cursor.move (Direction.RIGHT);
+      //      Cursor cursor = screen.getScreenCursor ();
+      //      ScreenPosition sp = cursor.getScreenPosition ();
+      //      location = cursor.getLocation ();
+      //      sp.reset ();
+      //      sp.addAttribute (startFieldAttribute);
+      //      cursor.move (Direction.RIGHT);
     }
     else
     {

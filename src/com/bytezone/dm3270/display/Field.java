@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.bytezone.dm3270.attributes.Attribute;
-import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.ScreenField;
 
@@ -37,44 +35,44 @@ public class Field implements Iterable<ScreenPosition>
         screenPosition.setVisible (false);
   }
 
-  void setScreenContexts ()
-  {
-    ContextManager contextManager = screen.getContextManager ();
-    ScreenPosition startFieldScreenPosition = screenPositions.get (0);
-    StartFieldAttribute sfa = startFieldScreenPosition.getStartFieldAttribute ();
-    ScreenContext screenContext = contextManager.getBase ();
-
-    screenContext = sfa.process (contextManager, screenContext);
-    for (Attribute attribute : startFieldScreenPosition.getAttributes ())
-      screenContext = attribute.process (contextManager, screenContext);
-    ScreenContext baseContext = screenContext;
-
-    if (debug)
-      System.out.printf ("%n%nNew field : %s", baseContext);
-
-    int position = 0;
-    for (ScreenPosition screenPosition : screenPositions)
-    {
-      if (debug)
-      {
-        String spText = screenPosition.toString ();
-        if (!spText.isEmpty ())
-          System.out.printf ("%n  %4d %s : ", position, screenPosition);
-      }
-
-      if (position++ > 0)
-        for (Attribute attribute : screenPosition.getAttributes ())
-          if (attribute.getAttributeType () == AttributeType.RESET)
-            screenContext = baseContext;
-          else
-            screenContext = attribute.process (contextManager, screenContext);
-
-      if (debug)
-        System.out.print (screenPosition.getChar ());
-
-      screenPosition.setScreenContext (screenContext);
-    }
-  }
+  //  void setScreenContexts ()
+  //  {
+  //    ContextManager contextManager = screen.getContextManager ();
+  //    ScreenPosition startFieldScreenPosition = screenPositions.get (0);
+  //    StartFieldAttribute sfa = startFieldScreenPosition.getStartFieldAttribute ();
+  //    ScreenContext screenContext = contextManager.getBase ();
+  //
+  //    screenContext = sfa.process (contextManager, screenContext);
+  //    for (Attribute attribute : startFieldScreenPosition.getAttributes ())
+  //      screenContext = attribute.process (contextManager, screenContext);
+  //    ScreenContext baseContext = screenContext;
+  //
+  //    if (debug)
+  //      System.out.printf ("%n%nNew field : %s", baseContext);
+  //
+  //    int position = 0;
+  //    for (ScreenPosition screenPosition : screenPositions)
+  //    {
+  //      if (debug)
+  //      {
+  //        String spText = screenPosition.toString ();
+  //        if (!spText.isEmpty ())
+  //          System.out.printf ("%n  %4d %s : ", position, screenPosition);
+  //      }
+  //
+  //      if (position++ > 0)
+  //        for (Attribute attribute : screenPosition.getAttributes ())
+  //          if (attribute.getAttributeType () == AttributeType.RESET)
+  //            screenContext = baseContext;
+  //          else
+  //            screenContext = attribute.process (contextManager, screenContext);
+  //
+  //      if (debug)
+  //        System.out.print (screenPosition.getChar ());
+  //
+  //      screenPosition.setScreenContext (screenContext);
+  //    }
+  //  }
 
   // link two unprotected fields to each other
   void linkToNext (Field nextField)

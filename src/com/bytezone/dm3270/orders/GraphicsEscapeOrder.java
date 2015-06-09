@@ -1,7 +1,5 @@
 package com.bytezone.dm3270.orders;
 
-import com.bytezone.dm3270.display.Cursor;
-import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
 
@@ -24,13 +22,13 @@ public class GraphicsEscapeOrder extends Order
   {
     if (oldWay)
     {
-      Cursor cursor = screen.getScreenCursor ();
-      int max = duplicates;
-      while (max-- >= 0)                    // always do at least one
-      {
-        cursor.setGraphicsChar (code);
-        cursor.move (Direction.RIGHT);
-      }
+      //      Cursor cursor = screen.getScreenCursor ();
+      //      int max = duplicates;
+      //      while (max-- >= 0)                    // always do at least one
+      //      {
+      //        cursor.setGraphicsChar (code);
+      //        cursor.move (Direction.RIGHT);
+      //      }
     }
     else
     {

@@ -1,15 +1,10 @@
 package com.bytezone.dm3270.display;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.application.Utility;
-import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
-import com.bytezone.dm3270.orders.Order;
 
 public final class ScreenPosition
 {
@@ -22,13 +17,13 @@ public final class ScreenPosition
   private static final byte VERTICAL_LINE = (byte) 0x85;
 
   private StartFieldAttribute startFieldAttribute;
-  private final List<Attribute> attributes = new ArrayList<> ();
+  //  private final List<Attribute> attributes = new ArrayList<> ();
 
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
   private ScreenContext screenContext;
-  private final ScreenContext baseContext;
+  //  private final ScreenContext baseContext;
 
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
@@ -38,20 +33,20 @@ public final class ScreenPosition
   {
     this.gc = gc;
     this.characterSize = characterSize;
-    this.baseContext = baseContext;
+    //    this.baseContext = baseContext;
     screenContext = baseContext;
   }
 
-  public void addAttribute (Attribute attribute)
-  {
-    if (attribute instanceof StartFieldAttribute)
-    {
-      startFieldAttribute = (StartFieldAttribute) attribute;
-      setVisible (false);
-    }
-    else
-      attributes.add (attribute);
-  }
+  //  public void addAttribute (Attribute attribute)
+  //  {
+  //    if (attribute instanceof StartFieldAttribute)
+  //    {
+  //      startFieldAttribute = (StartFieldAttribute) attribute;
+  //      setVisible (false);
+  //    }
+  //    else
+  //      attributes.add (attribute);
+  //  }
 
   // Password fields etc
   public void setVisible (boolean visible)
@@ -85,14 +80,19 @@ public final class ScreenPosition
     return startFieldAttribute;
   }
 
-  public boolean hasAttributes ()
-  {
-    return attributes.size () > 0;
-  }
+  //  public boolean hasAttributes ()
+  //  {
+  //    return attributes.size () > 0;
+  //  }
 
-  public List<Attribute> getAttributes ()
+  //  public List<Attribute> getAttributes ()
+  //  {
+  //    return attributes;
+  //  }
+
+  public void setStartField (StartFieldAttribute startFieldAttribute)
   {
-    return attributes;
+    this.startFieldAttribute = startFieldAttribute;
   }
 
   public void setChar (byte value)
@@ -141,47 +141,45 @@ public final class ScreenPosition
     isVisible = true;
     value = 0;
     isGraphics = false;
-    this.screenContext = baseContext;       // set to screen default
     startFieldAttribute = null;
-    attributes.clear ();
   }
 
-  public int pack (byte[] buffer, int ptr, byte order)
-  {
-    assert isStartField ();
+  //  public int pack (byte[] buffer, int ptr, byte order)
+  //  {
+  //    assert isStartField ();
+  //
+  //    buffer[ptr++] = order;
+  //
+  //    if (order == Order.START_FIELD)
+  //      buffer[ptr++] = startFieldAttribute.getAttributeValue ();
+  //    else if (order == Order.START_FIELD_EXTENDED)
+  //    {
+  //      buffer[ptr++] = (byte) (attributes.size () + 1);    // includes the SFA
+  //      ptr = startFieldAttribute.pack (buffer, ptr);
+  //      for (Attribute attribute : attributes)
+  //        ptr = attribute.pack (buffer, ptr);
+  //    }
+  //    else
+  //      System.out.println ("I should throw an exception here");
+  //
+  //    return ptr;
+  //  }
 
-    buffer[ptr++] = order;
-
-    if (order == Order.START_FIELD)
-      buffer[ptr++] = startFieldAttribute.getAttributeValue ();
-    else if (order == Order.START_FIELD_EXTENDED)
-    {
-      buffer[ptr++] = (byte) (attributes.size () + 1);    // includes the SFA
-      ptr = startFieldAttribute.pack (buffer, ptr);
-      for (Attribute attribute : attributes)
-        ptr = attribute.pack (buffer, ptr);
-    }
-    else
-      System.out.println ("I should throw an exception here");
-
-    return ptr;
-  }
-
-  public int pack (byte[] buffer, int ptr, byte[] replyTypes)
-  {
-    assert !isStartField ();
-
-    for (Attribute attribute : attributes)
-      if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
-      {
-        buffer[ptr++] = Order.SET_ATTRIBUTE;
-        ptr = attribute.pack (buffer, ptr);       // packs type/value pair
-      }
-
-    buffer[ptr++] = value;
-
-    return ptr;
-  }
+  //  public int pack (byte[] buffer, int ptr, byte[] replyTypes)
+  //  {
+  //    assert !isStartField ();
+  //
+  //    for (Attribute attribute : attributes)
+  //      if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
+  //      {
+  //        buffer[ptr++] = Order.SET_ATTRIBUTE;
+  //        ptr = attribute.pack (buffer, ptr);       // packs type/value pair
+  //      }
+  //
+  //    buffer[ptr++] = value;
+  //
+  //    return ptr;
+  //  }
 
   public void draw (int x, int y, boolean hasCursor)
   {
@@ -320,12 +318,12 @@ public final class ScreenPosition
     if (isStartField ())
       text.append (startFieldAttribute);
 
-    for (Attribute attribute : attributes)
-    {
-      if (text.length () > 0)
-        text.append ("\n       ");
-      text.append (String.format ("%-30s", attribute));
-    }
+    //    for (Attribute attribute : attributes)
+    //    {
+    //      if (text.length () > 0)
+    //        text.append ("\n       ");
+    //      text.append (String.format ("%-30s", attribute));
+    //    }
     return text.toString ();
   }
 }

@@ -41,7 +41,7 @@ public class SetBufferAddressOrder extends Order implements BufferAddressSource
     else
     {
       Pen pen = screen.getPen ();
-      pen.moveTo (bufferAddress.getLocation ());
+      pen.jumpTo (bufferAddress.getLocation ());
     }
   }
 

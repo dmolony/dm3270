@@ -76,7 +76,7 @@ public class FieldManager
     Field previousUnprotectedField = null;
     for (Field field : fields)
     {
-      field.setScreenContexts ();
+      //      field.setScreenContexts ();
       if (field.isUnprotected ())
       {
         unprotectedFields.add (field);

@@ -21,6 +21,7 @@ public class WriteCommand extends Command
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
+
   private final byte[] systemMessage1 = { //
       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
           Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };

@@ -2,6 +2,8 @@ package com.bytezone.dm3270.display;
 
 import javafx.scene.paint.Color;
 
+import com.bytezone.dm3270.attributes.StartFieldAttribute;
+
 public class Pen
 {
   private final Screen screen;
@@ -17,13 +19,17 @@ public class Pen
     contextManager = new ContextManager ();
   }
 
-  public void startField ()
+  public void startField (StartFieldAttribute startFieldAttribute)
   {
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     currentContext = contextManager.getBase ();
-    startFieldPosition = currentPosition;
+
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.reset ();
+    screenPosition.setStartField (startFieldAttribute);
     screenPosition.setVisible (false);
+    screenPosition.setScreenContext (currentContext);
+
+    startFieldPosition = currentPosition;
   }
 
   public int getPosition ()
@@ -53,12 +59,21 @@ public class Pen
 
   public void reset (byte value)
   {
+    assert value == 0;
+    System.out.println ();
+    System.out.println ("reset at:        " + currentPosition);
+    System.out.println ("current setting: " + startFieldPosition);
+    findStartPosition (currentPosition);
     currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
+
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.setScreenContext (currentContext);
   }
 
   public void writeGraphics (byte b)
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.reset ();
     screenPosition.setScreenContext (currentContext);
     screenPosition.setGraphicsChar (b);
     moveRight ();
@@ -67,6 +82,7 @@ public class Pen
   public void write (byte b)
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.reset ();
     screenPosition.setScreenContext (currentContext);
     screenPosition.setChar (b);
     moveRight ();
@@ -78,7 +94,41 @@ public class Pen
       write (b);
   }
 
-  public void moveTo (int position)
+  public void jumpTo (int position)
+  {
+    System.out.printf ("Moved to %d%n", position);
+    moveTo (position);
+    //    findStartPosition (position);
+    int prev = screen.validate (position - 1);
+    currentContext = screen.getScreenPosition (prev).getScreenContext ();
+
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.setScreenContext (currentContext);
+  }
+
+  private void findStartPosition (int position)
+  {
+    // find previous start field attribute
+    int pos = position;
+    while (true)
+    {
+      pos = screen.validate (pos - 1);
+      ScreenPosition sp = screen.getScreenPosition (pos);
+      if (sp.isStartField ())
+      {
+        startFieldPosition = pos;
+        System.out.println ("start pos " + pos);
+        return;
+      }
+      if (pos == position)
+      {
+        System.out.println ("wrapped around");
+        break;
+      }
+    }
+  }
+
+  private void moveTo (int position)
   {
     currentPosition = screen.validate (position);
   }

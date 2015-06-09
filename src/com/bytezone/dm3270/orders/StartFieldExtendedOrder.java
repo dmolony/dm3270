@@ -6,17 +6,14 @@ import java.util.List;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
-import com.bytezone.dm3270.display.Cursor;
-import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenPosition;
 
 public class StartFieldExtendedOrder extends Order
 {
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<Attribute> ();
-  private int location = -1;
+  private final int location = -1;
 
   public StartFieldExtendedOrder (byte[] buffer, int offset)
   {
@@ -74,14 +71,14 @@ public class StartFieldExtendedOrder extends Order
   {
     if (oldWay)
     {
-      Cursor cursor = screen.getScreenCursor ();
-      location = cursor.getLocation ();
-      ScreenPosition sp = cursor.getScreenPosition ();
-      sp.reset ();
-      sp.addAttribute (startFieldAttribute);
-      for (Attribute attribute : attributes)
-        sp.addAttribute (attribute);
-      cursor.move (Direction.RIGHT);
+      //      Cursor cursor = screen.getScreenCursor ();
+      //      location = cursor.getLocation ();
+      //      ScreenPosition sp = cursor.getScreenPosition ();
+      //      sp.reset ();
+      //      sp.addAttribute (startFieldAttribute);
+      //      for (Attribute attribute : attributes)
+      //        sp.addAttribute (attribute);
+      //      cursor.move (Direction.RIGHT);
     }
     else
     {

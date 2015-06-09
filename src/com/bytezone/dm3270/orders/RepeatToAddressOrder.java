@@ -1,8 +1,6 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.application.Utility;
-import com.bytezone.dm3270.display.Cursor;
-import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
 
@@ -47,15 +45,15 @@ public class RepeatToAddressOrder extends Order
 
     if (oldWay)
     {
-      Cursor cursor = screen.getScreenCursor ();
-      if (cursor.getLocation () == stopLocation && (rptChar == 0x40 || rptChar == 0x00))
-        screen.clearScreen ();
-      else
-        while (cursor.getLocation () != stopLocation)
-        {
-          cursor.setChar (rptChar);
-          cursor.move (Direction.RIGHT);
-        }
+      //      Cursor cursor = screen.getScreenCursor ();
+      //      if (cursor.getLocation () == stopLocation && (rptChar == 0x40 || rptChar == 0x00))
+      //        screen.clearScreen ();
+      //      else
+      //        while (cursor.getLocation () != stopLocation)
+      //        {
+      //          cursor.setChar (rptChar);
+      //          cursor.move (Direction.RIGHT);
+      //        }
     }
     else
     {
