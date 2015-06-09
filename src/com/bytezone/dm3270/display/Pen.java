@@ -19,6 +19,11 @@ public class Pen
     contextManager = new ContextManager ();
   }
 
+  //  public void dump ()
+  //  {
+  //    contextManager.dump ();
+  //  }
+
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();

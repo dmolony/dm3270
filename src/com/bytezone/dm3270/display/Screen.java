@@ -339,6 +339,10 @@ public class Screen extends Canvas
     }
 
     drawPosition (cursor.getLocation (), true);
+
+    int count = 0;
+    for (ScreenPosition sp : screenPositions)
+      System.out.printf ("%4d  %s  %s%n", count++, sp.getScreenContext (), sp);
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,

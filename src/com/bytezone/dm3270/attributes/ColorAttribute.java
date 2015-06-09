@@ -47,6 +47,18 @@ public abstract class ColorAttribute extends Attribute
 
   protected final Color color;
 
+  public static String getName (Color searchColor)
+  {
+    int count = 0;
+    for (Color color : colors)
+    {
+      if (color == searchColor)
+        return colorNames[count];
+      ++count;
+    }
+    return "???";
+  }
+
   public ColorAttribute (AttributeType type, byte byteType, byte value)
   {
     super (type, byteType, value);

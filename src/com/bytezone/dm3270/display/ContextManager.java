@@ -15,13 +15,20 @@ public class ContextManager
   {
     ScreenContext base =
         new ScreenContext (ColorAttribute.colors[0], ColorAttribute.colors[8], (byte) 0,
-            false);
+            true);
     contextPool.add (base);
   }
 
   public ScreenContext getBase ()
   {
     return contextPool.get (0);
+  }
+
+  public void dump ()
+  {
+    System.out.println ();
+    for (ScreenContext screenContext : contextPool)
+      System.out.println (screenContext);
   }
 
   public ScreenContext setForeground (ScreenContext oldContext, Color color)
