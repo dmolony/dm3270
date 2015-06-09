@@ -141,6 +141,7 @@ public class StartFieldAttribute extends Attribute
         isProtected ? WHITE : RED :       //
         isProtected ? BLUE : GREEN;
 
+    pen.startField ();
     pen.setForeground (color);
     pen.setBackground (Color.BLACK);
     pen.setHighIntensity (isHighIntensity);

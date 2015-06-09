@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.orders;
 
+import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.display.Screen;
 
 public class InsertCursorOrder extends Order
@@ -21,7 +22,13 @@ public class InsertCursorOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    screen.insertCursor ();
+    if (oldWay)
+      screen.insertCursor ();
+    else
+    {
+      Pen pen = screen.getPen ();
+      screen.insertCursor (pen.getPosition ());
+    }
   }
 
   @Override

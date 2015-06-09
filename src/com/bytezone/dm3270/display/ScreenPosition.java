@@ -65,6 +65,11 @@ public final class ScreenPosition
     this.screenContext = screenContext;
   }
 
+  public ScreenContext getScreenContext ()
+  {
+    return screenContext;
+  }
+
   public boolean isStartField ()
   {
     return startFieldAttribute != null;

@@ -9,12 +9,21 @@ public class Pen
 
   private ScreenContext currentContext;
   private int currentPosition;
+  private int startFieldPosition;
 
   public Pen (Screen screen)
   {
     this.screen = screen;
     contextManager = new ContextManager ();
+  }
+
+  public void startField ()
+  {
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     currentContext = contextManager.getBase ();
+    startFieldPosition = currentPosition;
+    screenPosition.reset ();
+    screenPosition.setVisible (false);
   }
 
   public int getPosition ()
@@ -44,7 +53,7 @@ public class Pen
 
   public void reset (byte value)
   {
-    System.out.println ("reset Not finished!");
+    currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
   }
 
   public void writeGraphics (byte b)

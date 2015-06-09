@@ -63,9 +63,8 @@ public class RepeatToAddressOrder extends Order
       if (pen.getPosition () == stopLocation)
         screen.clearScreen ();
       else
-      {
-        pen.write (rptChar);
-      }
+        while (pen.getPosition () != stopLocation)
+          pen.write (rptChar);
     }
   }
 

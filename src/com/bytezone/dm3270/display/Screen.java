@@ -295,6 +295,11 @@ public class Screen extends Canvas
     insertedCursorPosition = cursor.getLocation ();    // move it here later
   }
 
+  public void insertCursor (int position)
+  {
+    insertedCursorPosition = position;    // move it here later
+  }
+
   // called from EraseAllUnprotectedCommand.process()
   public void eraseAllUnprotected ()
   {
