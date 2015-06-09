@@ -35,6 +35,14 @@ public class Field implements Iterable<ScreenPosition>
         screenPosition.setVisible (false);
   }
 
+  void setScreenContexts (ScreenContext base)
+  {
+    ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
+    for (ScreenPosition sp : screenPositions)
+      if (sp.getScreenContext () == base)
+        sp.setScreenContext (defaultContext);
+  }
+
   //  void setScreenContexts ()
   //  {
   //    ContextManager contextManager = screen.getContextManager ();

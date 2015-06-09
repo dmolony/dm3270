@@ -26,7 +26,7 @@ public class FieldManager
     this.screen = screen;
   }
 
-  public void buildFields ()
+  public void buildFields (Pen pen)
   {
     fields.clear ();
     unprotectedFields.clear ();
@@ -76,7 +76,7 @@ public class FieldManager
     Field previousUnprotectedField = null;
     for (Field field : fields)
     {
-      //      field.setScreenContexts ();
+      field.setScreenContexts (pen.getBase ());
       if (field.isUnprotected ())
       {
         unprotectedFields.add (field);

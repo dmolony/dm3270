@@ -98,8 +98,9 @@ public class Screen extends Canvas
     setFont (fontSelected, Integer.parseInt (sizeSelected));
 
     screenPositions = new ScreenPosition[rows * columns];
+    ScreenContext baseContext = pen.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (gc, characterSize);
+      screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
 
     addTSOCommandStatusChangeListener (jobStage);
   }
@@ -317,7 +318,7 @@ public class Screen extends Canvas
 
   public void buildFields ()
   {
-    fieldManager.buildFields ();      // what about resetModified?
+    fieldManager.buildFields (pen);      // what about resetModified?
 
     boolean isTSOCommandScreen = fieldManager.isTSOCommandScreen ();
     Field tsoCommandField = fieldManager.getTSOCommandField ();

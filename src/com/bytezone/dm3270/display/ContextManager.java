@@ -14,7 +14,7 @@ public class ContextManager
   public ContextManager ()
   {
     ScreenContext base =
-        new ScreenContext (ColorAttribute.colors[0], ColorAttribute.colors[8], (byte) 0,
+        new ScreenContext (ColorAttribute.colors[8], ColorAttribute.colors[8], (byte) 0,
             true);
     contextPool.add (base);
   }

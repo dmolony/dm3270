@@ -19,6 +19,11 @@ public class Pen
     contextManager = new ContextManager ();
   }
 
+  public ScreenContext getBase ()
+  {
+    return contextManager.getBase ();
+  }
+
   //  public void dump ()
   //  {
   //    contextManager.dump ();

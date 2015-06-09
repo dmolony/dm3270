@@ -22,14 +22,18 @@ public final class ScreenPosition
   private boolean isGraphics;
   private boolean isVisible = true;
   private ScreenContext screenContext;
+  private final ScreenContext baseContext;
 
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
 
-  public ScreenPosition (GraphicsContext gc, CharacterSize characterSize)
+  public ScreenPosition (GraphicsContext gc, CharacterSize characterSize,
+      ScreenContext base)
   {
     this.gc = gc;
     this.characterSize = characterSize;
+    screenContext = base;
+    baseContext = base;
   }
 
   // Password fields etc
@@ -116,6 +120,7 @@ public final class ScreenPosition
     value = 0;
     isGraphics = false;
     startFieldAttribute = null;
+    screenContext = baseContext;
   }
 
   //  public int pack (byte[] buffer, int ptr, byte order)

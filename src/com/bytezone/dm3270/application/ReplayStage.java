@@ -106,12 +106,13 @@ class ReplayStage extends Stage
     int[] screenSizes = { 2306, 2301, 2206 };
     SessionRecord dataRecord = null;
 
-    for (int screenSize : screenSizes)
-    {
-      dataRecord = session.getBySize (screenSize);
-      if (dataRecord != null)
-        break;
-    }
+    if (false)
+      for (int screenSize : screenSizes)
+      {
+        dataRecord = session.getBySize (screenSize);
+        if (dataRecord != null)
+          break;
+      }
 
     if (dataRecord == null)
       dataRecord = session.getNext (SessionRecordType.TN3270);
