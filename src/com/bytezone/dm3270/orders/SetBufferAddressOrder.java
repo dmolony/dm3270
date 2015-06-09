@@ -34,15 +34,8 @@ public class SetBufferAddressOrder extends Order implements BufferAddressSource
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
-    {
-      screen.getScreenCursor ().moveTo (bufferAddress.getLocation ());
-    }
-    else
-    {
-      Pen pen = screen.getPen ();
-      pen.jumpTo (bufferAddress.getLocation ());
-    }
+    Pen pen = screen.getPen ();
+    pen.jumpTo (bufferAddress.getLocation ());
   }
 
   @Override

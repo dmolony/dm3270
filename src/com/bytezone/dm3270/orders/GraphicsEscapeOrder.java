@@ -20,24 +20,11 @@ public class GraphicsEscapeOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
-    {
-      //      Cursor cursor = screen.getScreenCursor ();
-      //      int max = duplicates;
-      //      while (max-- >= 0)                    // always do at least one
-      //      {
-      //        cursor.setGraphicsChar (code);
-      //        cursor.move (Direction.RIGHT);
-      //      }
-    }
-    else
-    {
-      Pen pen = screen.getPen ();
-      int max = duplicates;
-      while (max-- >= 0)
-        // always do at least one
-        pen.writeGraphics (code);
-    }
+    Pen pen = screen.getPen ();
+    int max = duplicates;
+    while (max-- >= 0)
+      // always do at least one
+      pen.writeGraphics (code);
   }
 
   @Override

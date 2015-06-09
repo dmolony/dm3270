@@ -40,21 +40,29 @@ public class Pen
   public void setForeground (Color color)
   {
     currentContext = contextManager.setForeground (currentContext, color);
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.setScreenContext (currentContext);
   }
 
   public void setBackground (Color color)
   {
     currentContext = contextManager.setBackground (currentContext, color);
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.setScreenContext (currentContext);
   }
 
   public void setHighlight (byte value)
   {
     currentContext = contextManager.setHighlight (currentContext, value);
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.setScreenContext (currentContext);
   }
 
   public void setHighIntensity (boolean value)
   {
     currentContext = contextManager.setHighIntensity (currentContext, value);
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.setScreenContext (currentContext);
   }
 
   public void reset (byte value)
@@ -64,8 +72,8 @@ public class Pen
     System.out.println ("reset at:        " + currentPosition);
     System.out.println ("current setting: " + startFieldPosition);
     findStartPosition (currentPosition);
-    currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
 
+    currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.setScreenContext (currentContext);
   }
@@ -99,11 +107,11 @@ public class Pen
     System.out.printf ("Moved to %d%n", position);
     moveTo (position);
     //    findStartPosition (position);
-    int prev = screen.validate (position - 1);
-    currentContext = screen.getScreenPosition (prev).getScreenContext ();
+    //    int prev = screen.validate (position - 1);
+    currentContext = screen.getScreenPosition (position).getScreenContext ();
 
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    screenPosition.setScreenContext (currentContext);
+    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    //    screenPosition.setScreenContext (currentContext);
   }
 
   private void findStartPosition (int position)

@@ -26,15 +26,8 @@ public class SetAttributeOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
-      // attributes will be placed in the appropriate ScreenPosition by the Cursor
-      // after it places a byte value to display 
-      screen.getScreenCursor ().add (attribute);
-    else
-    {
-      Pen pen = screen.getPen ();
-      attribute.process (pen);
-    }
+    Pen pen = screen.getPen ();
+    attribute.process (pen);
   }
 
   @Override

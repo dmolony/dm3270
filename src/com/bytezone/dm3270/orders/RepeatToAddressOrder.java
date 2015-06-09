@@ -43,27 +43,12 @@ public class RepeatToAddressOrder extends Order
   {
     int stopLocation = stopAddress.getLocation ();
 
-    if (oldWay)
-    {
-      //      Cursor cursor = screen.getScreenCursor ();
-      //      if (cursor.getLocation () == stopLocation && (rptChar == 0x40 || rptChar == 0x00))
-      //        screen.clearScreen ();
-      //      else
-      //        while (cursor.getLocation () != stopLocation)
-      //        {
-      //          cursor.setChar (rptChar);
-      //          cursor.move (Direction.RIGHT);
-      //        }
-    }
+    Pen pen = screen.getPen ();
+    if (pen.getPosition () == stopLocation)
+      screen.clearScreen ();
     else
-    {
-      Pen pen = screen.getPen ();
-      if (pen.getPosition () == stopLocation)
-        screen.clearScreen ();
-      else
-        while (pen.getPosition () != stopLocation)
-          pen.write (rptChar);
-    }
+      while (pen.getPosition () != stopLocation)
+        pen.write (rptChar);
   }
 
   @Override

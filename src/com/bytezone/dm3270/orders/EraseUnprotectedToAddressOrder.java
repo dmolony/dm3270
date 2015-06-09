@@ -20,7 +20,7 @@ public class EraseUnprotectedToAddressOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
+    if (false)
     {
       Cursor cursor = screen.getScreenCursor ();
       int cursorPostion = cursor.getLocation ();

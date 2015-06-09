@@ -69,25 +69,11 @@ public class StartFieldExtendedOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
-    {
-      //      Cursor cursor = screen.getScreenCursor ();
-      //      location = cursor.getLocation ();
-      //      ScreenPosition sp = cursor.getScreenPosition ();
-      //      sp.reset ();
-      //      sp.addAttribute (startFieldAttribute);
-      //      for (Attribute attribute : attributes)
-      //        sp.addAttribute (attribute);
-      //      cursor.move (Direction.RIGHT);
-    }
-    else
-    {
-      Pen pen = screen.getPen ();
-      startFieldAttribute.process (pen);
-      for (Attribute attribute : attributes)
-        attribute.process (pen);
-      pen.moveRight ();
-    }
+    Pen pen = screen.getPen ();
+    startFieldAttribute.process (pen);
+    for (Attribute attribute : attributes)
+      attribute.process (pen);
+    pen.moveRight ();
   }
 
   @Override

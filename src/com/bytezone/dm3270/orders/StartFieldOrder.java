@@ -31,20 +31,8 @@ public class StartFieldOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
-    {
-      //      Cursor cursor = screen.getScreenCursor ();
-      //      ScreenPosition sp = cursor.getScreenPosition ();
-      //      location = cursor.getLocation ();
-      //      sp.reset ();
-      //      sp.addAttribute (startFieldAttribute);
-      //      cursor.move (Direction.RIGHT);
-    }
-    else
-    {
-      Pen pen = screen.getPen ();
-      startFieldAttribute.process (pen);
-    }
+    Pen pen = screen.getPen ();
+    startFieldAttribute.process (pen);
   }
 
   @Override

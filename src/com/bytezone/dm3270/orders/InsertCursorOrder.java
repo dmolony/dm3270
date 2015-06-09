@@ -22,13 +22,8 @@ public class InsertCursorOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
-      screen.insertCursor ();
-    else
-    {
-      Pen pen = screen.getPen ();
-      screen.insertCursor (pen.getPosition ());
-    }
+    Pen pen = screen.getPen ();
+    screen.insertCursor (pen.getPosition ());
   }
 
   @Override

@@ -62,21 +62,9 @@ public class TextOrder extends Order
   @Override
   public void process (Screen screen)
   {
-    if (oldWay)
-    {
-      //      Cursor cursor = screen.getScreenCursor ();
-      //      for (byte b : buffer)
-      //      {
-      //        cursor.setChar (b);
-      //        cursor.move (Direction.RIGHT);
-      //      }
-    }
-    else
-    {
-      Pen pen = screen.getPen ();
-      for (byte b : buffer)
-        pen.write (b);
-    }
+    Pen pen = screen.getPen ();
+    for (byte b : buffer)
+      pen.write (b);
   }
 
   @Override
