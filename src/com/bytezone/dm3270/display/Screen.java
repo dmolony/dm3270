@@ -42,9 +42,10 @@ public class Screen extends Canvas
 
   private final ScreenPosition[] screenPositions;
   private final CharacterSize characterSize;        // contains font-specific values
+
   private final FieldManager fieldManager = new FieldManager (this);
-  private final ContextManager contextManager = new ContextManager ();
   private final Pen pen = new Pen (this);
+
   private FontManager fontManager;
   private final Cursor cursor = new Cursor (this);
   private final Function function;
@@ -77,8 +78,6 @@ public class Screen extends Canvas
   public final int columns;
   public final int screenSize;
 
-  //  private boolean hasCommandField;
-
   public enum BuildInstruction
   {
     BUILD_FIELDS, DONT_BUILD_FIELDS
@@ -99,9 +98,8 @@ public class Screen extends Canvas
     setFont (fontSelected, Integer.parseInt (sizeSelected));
 
     screenPositions = new ScreenPosition[rows * columns];
-    ScreenContext baseContext = contextManager.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
+      screenPositions[i] = new ScreenPosition (gc, characterSize);
 
     addTSOCommandStatusChangeListener (jobStage);
   }
@@ -264,10 +262,10 @@ public class Screen extends Canvas
     return screenPositions;
   }
 
-  public ContextManager getContextManager ()
-  {
-    return contextManager;
-  }
+  //  public ContextManager getContextManager ()
+  //  {
+  //    return contextManager;
+  //  }
 
   public void resetInsertMode ()
   {

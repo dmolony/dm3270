@@ -17,36 +17,20 @@ public final class ScreenPosition
   private static final byte VERTICAL_LINE = (byte) 0x85;
 
   private StartFieldAttribute startFieldAttribute;
-  //  private final List<Attribute> attributes = new ArrayList<> ();
 
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
   private ScreenContext screenContext;
-  //  private final ScreenContext baseContext;
 
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
 
-  public ScreenPosition (GraphicsContext gc, CharacterSize characterSize,
-      ScreenContext baseContext)
+  public ScreenPosition (GraphicsContext gc, CharacterSize characterSize)
   {
     this.gc = gc;
     this.characterSize = characterSize;
-    //    this.baseContext = baseContext;
-    screenContext = baseContext;
   }
-
-  //  public void addAttribute (Attribute attribute)
-  //  {
-  //    if (attribute instanceof StartFieldAttribute)
-  //    {
-  //      startFieldAttribute = (StartFieldAttribute) attribute;
-  //      setVisible (false);
-  //    }
-  //    else
-  //      attributes.add (attribute);
-  //  }
 
   // Password fields etc
   public void setVisible (boolean visible)
@@ -79,16 +63,6 @@ public final class ScreenPosition
   {
     return startFieldAttribute;
   }
-
-  //  public boolean hasAttributes ()
-  //  {
-  //    return attributes.size () > 0;
-  //  }
-
-  //  public List<Attribute> getAttributes ()
-  //  {
-  //    return attributes;
-  //  }
 
   public void setStartField (StartFieldAttribute startFieldAttribute)
   {
@@ -318,12 +292,6 @@ public final class ScreenPosition
     if (isStartField ())
       text.append (startFieldAttribute);
 
-    //    for (Attribute attribute : attributes)
-    //    {
-    //      if (text.length () > 0)
-    //        text.append ("\n       ");
-    //      text.append (String.format ("%-30s", attribute));
-    //    }
     return text.toString ();
   }
 }
