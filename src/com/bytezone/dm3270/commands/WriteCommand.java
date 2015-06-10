@@ -109,6 +109,7 @@ public class WriteCommand extends Command
     int cursorLocation = cursor.getLocation ();
     screen.lockKeyboard ("Inhibit");
     boolean drawScreen = false;
+    screen.getPen ().setErase (eraseWrite);
 
     if (eraseWrite)
       screen.clearScreen ();
@@ -138,6 +139,7 @@ public class WriteCommand extends Command
 
     if (drawScreen)
       screen.drawScreen ();
+    System.out.println (screen.getScreenText ());
 
     // check screen for jobs submitted or finished
     checkSystemMessage ();

@@ -32,8 +32,17 @@ public final class ScreenPosition
   {
     this.gc = gc;
     this.characterSize = characterSize;
-    screenContext = base;
     baseContext = base;
+    reset ();
+  }
+
+  public void reset ()
+  {
+    isVisible = true;
+    value = 0;
+    isGraphics = false;
+    startFieldAttribute = null;
+    screenContext = baseContext;
   }
 
   // Password fields etc
@@ -112,15 +121,6 @@ public final class ScreenPosition
   public boolean isNull ()
   {
     return value == 0;
-  }
-
-  public void reset ()
-  {
-    isVisible = true;
-    value = 0;
-    isGraphics = false;
-    startFieldAttribute = null;
-    screenContext = baseContext;
   }
 
   //  public int pack (byte[] buffer, int ptr, byte order)

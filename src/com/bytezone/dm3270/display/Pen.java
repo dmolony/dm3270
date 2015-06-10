@@ -13,6 +13,8 @@ public class Pen
   private int currentPosition;
   private int startFieldPosition;
 
+  private boolean erase;
+
   public Pen (Screen screen)
   {
     this.screen = screen;
@@ -22,6 +24,11 @@ public class Pen
   public ScreenContext getBase ()
   {
     return contextManager.getBase ();
+  }
+
+  public void setErase (boolean erase)
+  {
+    this.erase = erase;
   }
 
   //  public void dump ()
@@ -37,7 +44,7 @@ public class Pen
     screenPosition.reset ();
     screenPosition.setStartField (startFieldAttribute);
     screenPosition.setVisible (false);
-    screenPosition.setScreenContext (currentContext);
+    //    screenPosition.setScreenContext (currentContext);
 
     startFieldPosition = currentPosition;
   }
@@ -50,29 +57,33 @@ public class Pen
   public void setForeground (Color color)
   {
     currentContext = contextManager.setForeground (currentContext, color);
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    screenPosition.setScreenContext (currentContext);
+    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    //    screenPosition.setScreenContext (currentContext);
+    storeCurrentContext ();
   }
 
   public void setBackground (Color color)
   {
     currentContext = contextManager.setBackground (currentContext, color);
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    screenPosition.setScreenContext (currentContext);
+    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    //    screenPosition.setScreenContext (currentContext);
+    storeCurrentContext ();
   }
 
   public void setHighlight (byte value)
   {
     currentContext = contextManager.setHighlight (currentContext, value);
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    screenPosition.setScreenContext (currentContext);
+    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    //    screenPosition.setScreenContext (currentContext);
+    storeCurrentContext ();
   }
 
   public void setHighIntensity (boolean value)
   {
     currentContext = contextManager.setHighIntensity (currentContext, value);
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    screenPosition.setScreenContext (currentContext);
+    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    //    screenPosition.setScreenContext (currentContext);
+    storeCurrentContext ();
   }
 
   public void reset (byte value)
@@ -81,9 +92,18 @@ public class Pen
     System.out.println ();
     System.out.println ("reset at:        " + currentPosition);
     System.out.println ("current setting: " + startFieldPosition);
-    findStartPosition (currentPosition);
+
+    if (!erase)
+      startFieldPosition = findStartPosition (currentPosition);
 
     currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
+    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    //    screenPosition.setScreenContext (currentContext);
+    storeCurrentContext ();
+  }
+
+  private void storeCurrentContext ()
+  {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.setScreenContext (currentContext);
   }
@@ -116,15 +136,18 @@ public class Pen
   {
     System.out.printf ("Moved to %d%n", position);
     moveTo (position);
-    //    findStartPosition (position);
-    //    int prev = screen.validate (position - 1);
-    currentContext = screen.getScreenPosition (position).getScreenContext ();
 
-    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    //    screenPosition.setScreenContext (currentContext);
+    if (!erase)
+    {
+      startFieldPosition = findStartPosition (position);
+      currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
+
+      ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+      screenPosition.setScreenContext (currentContext);
+    }
   }
 
-  private void findStartPosition (int position)
+  private int findStartPosition (int position)
   {
     // find previous start field attribute
     int pos = position;
@@ -134,9 +157,8 @@ public class Pen
       ScreenPosition sp = screen.getScreenPosition (pos);
       if (sp.isStartField ())
       {
-        startFieldPosition = pos;
-        System.out.println ("start pos " + pos);
-        return;
+        System.out.println ("new start pos " + pos);
+        return pos;
       }
       if (pos == position)
       {
@@ -144,6 +166,8 @@ public class Pen
         break;
       }
     }
+    assert false;
+    return -1;
   }
 
   private void moveTo (int position)
