@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
+// should the pen be a stack? each context change is pushed, each reset is popped.
 public class Pen
 {
   private final Screen screen;
@@ -31,11 +32,6 @@ public class Pen
     this.erase = erase;
   }
 
-  //  public void dump ()
-  //  {
-  //    contextManager.dump ();
-  //  }
-
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();
@@ -44,7 +40,6 @@ public class Pen
     screenPosition.reset ();
     screenPosition.setStartField (startFieldAttribute);
     screenPosition.setVisible (false);
-    //    screenPosition.setScreenContext (currentContext);
 
     startFieldPosition = currentPosition;
   }
@@ -96,10 +91,11 @@ public class Pen
     if (!erase)
       startFieldPosition = findStartPosition (currentPosition);
 
-    currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
-    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    //    screenPosition.setScreenContext (currentContext);
-    storeCurrentContext ();
+    if (startFieldPosition >= 0)
+    {
+      currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
+      storeCurrentContext ();
+    }
   }
 
   private void storeCurrentContext ()
@@ -140,10 +136,14 @@ public class Pen
     if (!erase)
     {
       startFieldPosition = findStartPosition (position);
-      currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
+      if (startFieldPosition >= 0)
+      {
+        currentContext =
+            screen.getScreenPosition (startFieldPosition).getScreenContext ();
 
-      ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-      screenPosition.setScreenContext (currentContext);
+        ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+        screenPosition.setScreenContext (currentContext);
+      }
     }
   }
 
@@ -166,7 +166,7 @@ public class Pen
         break;
       }
     }
-    assert false;
+    System.out.println ("No start field found");
     return -1;
   }
 

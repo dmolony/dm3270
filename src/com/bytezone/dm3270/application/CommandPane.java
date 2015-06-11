@@ -10,11 +10,13 @@ import javafx.scene.text.Font;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.extended.AbstractExtendedCommand;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
+import com.bytezone.dm3270.streams.TelnetSocket.Source;
 
 class CommandPane extends TabPane
 {
@@ -28,6 +30,7 @@ class CommandPane extends TabPane
   private final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
 
   private final ProcessInstruction process;
+  private Screen screen;
 
   enum ProcessInstruction
   {
@@ -96,14 +99,19 @@ class CommandPane extends TabPane
     bufferTextArea.setText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
     bufferTextArea.positionCaret (0);
 
-    //    if (sessionRecord.getSource () == Source.SERVER)
-    //    {
-    //      fieldsTextArea.setText (screen.getFieldText ());
-    //      fieldsTextArea.positionCaret (0);
-    //    }
-    //
-    //    screenTextArea.setText (screen.getScreenText ());
-    //    screenTextArea.positionCaret (0);
+    // this needs to deal with a FieldManager - it needs the commands to be
+    // processed, but without the overhead of the graphics display
+    if (screen != null)
+    {
+      if (sessionRecord.getSource () == Source.SERVER)
+      {
+        fieldsTextArea.setText (screen.getFieldText ());
+        fieldsTextArea.positionCaret (0);
+      }
+
+      screenTextArea.setText (screen.getScreenText ());
+      screenTextArea.positionCaret (0);
+    }
 
     replyTextArea.setText ("");
     if (reply != null && reply.size () > 0)

@@ -133,6 +133,13 @@ public class StartFieldAttribute extends Attribute
     pen.setHighlight ((byte) 0);
   }
 
+  private String getColorName ()
+  {
+    return isHighIntensity ?       //
+        isProtected ? "WH" : "RE" :       //
+        isProtected ? "BL" : "GR";
+  }
+
   public String getAcronym ()
   {
     StringBuilder text = new StringBuilder ();
@@ -150,6 +157,7 @@ public class StartFieldAttribute extends Attribute
   @Override
   public String toString ()
   {
-    return String.format ("Attribute    : %02X %s", attributeValue, getAcronym ());
+    return String.format ("Attribute %s : %02X %s", getColorName (), attributeValue,
+                          getAcronym ());
   }
 }
