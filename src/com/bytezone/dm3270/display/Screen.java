@@ -2,8 +2,6 @@ package com.bytezone.dm3270.display;
 
 import static com.bytezone.dm3270.application.Console.Function.TERMINAL;
 import static com.bytezone.dm3270.commands.AIDCommand.NO_AID_SPECIFIED;
-import static com.bytezone.dm3270.orders.Order.START_FIELD;
-import static com.bytezone.dm3270.orders.Order.START_FIELD_EXTENDED;
 
 import java.awt.Toolkit;
 import java.io.UnsupportedEncodingException;
@@ -20,6 +18,8 @@ import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.attributes.Attribute;
+import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -262,11 +262,6 @@ public class Screen extends Canvas
   {
     return screenPositions;
   }
-
-  //  public ContextManager getContextManager ()
-  //  {
-  //    return contextManager;
-  //  }
 
   public void resetInsertMode ()
   {
@@ -610,11 +605,10 @@ public class Screen extends Canvas
 
     // pack every screen location
     for (ScreenPosition sp : screenPositions)
-      System.out.println ("bollocks");
-    //      if (sp.isStartField ())
-    //        ptr = packStartPosition (sp, buffer, ptr);
-    //      else
-    //        ptr = packDataPosition (sp, buffer, ptr);       // don't suppress nulls
+      if (sp.isStartField ())
+        ptr = packStartPosition (sp, buffer, ptr);
+      else
+        ptr = packDataPosition (sp, buffer, ptr);       // don't suppress nulls
 
     return new AIDCommand (this, buffer, 0, ptr);
   }
@@ -655,49 +649,48 @@ public class Screen extends Canvas
 
     if (replyMode == SetReplyMode.RM_FIELD)
     {
-      buffer[ptr++] = START_FIELD;
+      buffer[ptr++] = Order.START_FIELD;
       buffer[ptr++] = sfa.getAttributeValue ();
     }
     else
     {
-      buffer[ptr++] = START_FIELD_EXTENDED;
-      System.out.println ("bollocks");
+      buffer[ptr++] = Order.START_FIELD_EXTENDED;
 
-      //      List<Attribute> attributes = sp.getAttributes ();
-      //      buffer[ptr++] = (byte) (attributes.size () + 1);    // +1 for StartFieldAttribute
-      //
-      //      ptr = sfa.pack (buffer, ptr);                       // pack the SFA first
-      //      for (Attribute attribute : attributes)
-      //        ptr = attribute.pack (buffer, ptr);               // then pack the rest
+      List<Attribute> attributes = sp.getAttributes ();
+      buffer[ptr++] = (byte) (attributes.size () + 1);    // +1 for StartFieldAttribute
+
+      ptr = sfa.pack (buffer, ptr);                       // pack the SFA first
+      for (Attribute attribute : attributes)
+        ptr = attribute.pack (buffer, ptr);               // then pack the rest
     }
     return ptr;
   }
 
-  //  private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
-  //  {
-  //    if (replyMode == RM_CHARACTER)
-  //      for (Attribute attribute : sp.getAttributes ())
-  //        if (attribute.getAttributeType () == RESET)
-  //        {
-  //          buffer[ptr++] = SET_ATTRIBUTE;
-  //          ptr = attribute.pack (buffer, ptr);
-  //        }
-  //        else
-  //          for (byte b : replyTypes)
-  //            if (attribute.matches (b))
-  //            {
-  //              buffer[ptr++] = Order.SET_ATTRIBUTE;
-  //              ptr = attribute.pack (buffer, ptr);
-  //              break;
-  //            }
-  //
-  //    if (sp.isGraphicsChar ())
-  //      buffer[ptr++] = Order.GRAPHICS_ESCAPE;
-  //
-  //    buffer[ptr++] = sp.getByte ();
-  //
-  //    return ptr;
-  //  }
+  private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
+  {
+    if (replyMode == SetReplyMode.RM_CHARACTER)
+      for (Attribute attribute : sp.getAttributes ())
+        if (attribute.getAttributeType () == AttributeType.RESET)
+        {
+          buffer[ptr++] = Order.SET_ATTRIBUTE;
+          ptr = attribute.pack (buffer, ptr);
+        }
+        else
+          for (byte b : replyTypes)
+            if (attribute.matches (b))
+            {
+              buffer[ptr++] = Order.SET_ATTRIBUTE;
+              ptr = attribute.pack (buffer, ptr);
+              break;
+            }
+
+    if (sp.isGraphicsChar ())
+      buffer[ptr++] = Order.GRAPHICS_ESCAPE;
+
+    buffer[ptr++] = sp.getByte ();
+
+    return ptr;
+  }
 
   private int packField (Field field, byte[] buffer, int ptr)
   {
@@ -711,8 +704,7 @@ public class Screen extends Canvas
         ptr = ba.packAddress (buffer, ptr);
       }
       else if (!sp.isNull ())
-        System.out.println ("bollocks");
-    //        ptr = packDataPosition (sp, buffer, ptr);       // suppress nulls
+        ptr = packDataPosition (sp, buffer, ptr);       // suppress nulls
 
     return ptr;
   }

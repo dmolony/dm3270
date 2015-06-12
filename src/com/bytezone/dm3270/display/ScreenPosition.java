@@ -57,6 +57,11 @@ public final class ScreenPosition
     attributes.add (attribute);
   }
 
+  public List<Attribute> getAttributes ()
+  {
+    return attributes;
+  }
+
   public void reset ()
   {
     isVisible = true;
