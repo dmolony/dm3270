@@ -109,15 +109,10 @@ public class WriteCommand extends Command
     int cursorLocation = cursor.getLocation ();
     screen.lockKeyboard ("Inhibit");
     boolean drawScreen = false;
-    screen.getPen ().setErase (eraseWrite);
 
     if (eraseWrite)
       screen.clearScreen ();
 
-    // Must change this - ScreenPosition fields have to be updated by the 
-    // order.process() method, and only collected into fields by screen.buildFields().
-    // The current processing does not work correctly when overwriting an existing
-    // screen. Use Cursor to keep the current state.
     if (orders.size () > 0)
     {
       for (Order order : orders)
@@ -139,7 +134,7 @@ public class WriteCommand extends Command
 
     if (drawScreen)
       screen.drawScreen ();
-    System.out.println (screen.getScreenText ());
+    //    System.out.println (screen.getScreenText ());
 
     // check screen for jobs submitted or finished
     checkSystemMessage ();

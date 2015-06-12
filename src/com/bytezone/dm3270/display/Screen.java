@@ -341,7 +341,7 @@ public class Screen extends Canvas
 
     drawPosition (cursor.getLocation (), true);
 
-    dumpScreenPositions (0, 80);
+    //    dumpScreenPositions (0, 80);
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
@@ -875,19 +875,19 @@ public class Screen extends Canvas
     return fieldManager.getFieldsText ();
   }
 
-  private void dumpScreenPositions ()
-  {
-    dumpScreenPositions (0, 1920);
-  }
-
-  private void dumpScreenPositions (int from, int to)
-  {
-    for (int i = from; i < to; i++)
-    {
-      ScreenPosition sp = screenPositions[i];
-      System.out.printf ("%4d  %s  %s%n", i, sp.getScreenContext (), sp);
-    }
-  }
+  //  private void dumpScreenPositions ()
+  //  {
+  //    dumpScreenPositions (0, 1920);
+  //  }
+  //
+  //  private void dumpScreenPositions (int from, int to)
+  //  {
+  //    for (int i = from; i < to; i++)
+  //    {
+  //      ScreenPosition sp = screenPositions[i];
+  //      System.out.printf ("%4d  %s  %s%n", i, sp.getScreenContext (), sp);
+  //    }
+  //  }
 
   public String getScreenText ()
   {

@@ -11,10 +11,9 @@ public class Pen
   private final ContextManager contextManager;
 
   private ScreenContext currentContext;
+  private ScreenContext overrideContext;
   private int currentPosition;
   private int startFieldPosition;
-
-  private boolean erase;
 
   public Pen (Screen screen)
   {
@@ -27,11 +26,6 @@ public class Pen
     return contextManager.getBase ();
   }
 
-  public void setErase (boolean erase)
-  {
-    this.erase = erase;
-  }
-
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();
@@ -42,6 +36,8 @@ public class Pen
     screenPosition.setVisible (false);
 
     startFieldPosition = currentPosition;
+    reset ((byte) 0);
+    storeCurrentContext ();
   }
 
   public int getPosition ()
@@ -51,64 +47,71 @@ public class Pen
 
   public void setForeground (Color color)
   {
-    currentContext = contextManager.setForeground (currentContext, color);
-    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    //    screenPosition.setScreenContext (currentContext);
+    if (currentPosition == startFieldPosition)
+      currentContext = contextManager.setForeground (currentContext, color);
+    else
+      overrideContext = contextManager.setForeground (currentContext, color);
     storeCurrentContext ();
   }
 
   public void setBackground (Color color)
   {
     currentContext = contextManager.setBackground (currentContext, color);
-    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    //    screenPosition.setScreenContext (currentContext);
     storeCurrentContext ();
   }
 
   public void setHighlight (byte value)
   {
-    currentContext = contextManager.setHighlight (currentContext, value);
-    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    //    screenPosition.setScreenContext (currentContext);
+    //    System.out.printf ("%d %d%n", startFieldPosition, currentPosition);
+    if (currentPosition == startFieldPosition)
+    {
+      currentContext = contextManager.setHighlight (currentContext, value);
+      //      System.out.println (currentContext);
+    }
+    else
+    {
+      overrideContext = contextManager.setHighlight (currentContext, value);
+      //      System.out.println (overrideContext);
+    }
     storeCurrentContext ();
   }
 
   public void setHighIntensity (boolean value)
   {
     currentContext = contextManager.setHighIntensity (currentContext, value);
-    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    //    screenPosition.setScreenContext (currentContext);
     storeCurrentContext ();
   }
 
   public void reset (byte value)
   {
-    assert value == 0;
-    System.out.println ();
-    System.out.println ("reset at:        " + currentPosition);
-    System.out.println ("current setting: " + startFieldPosition);
-
-    if (!erase)
-      startFieldPosition = findStartPosition (currentPosition);
-
-    if (startFieldPosition >= 0)
-    {
-      currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
-      storeCurrentContext ();
-    }
+    overrideContext = null;
   }
 
   private void storeCurrentContext ()
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    screenPosition.setScreenContext (currentContext);
+    storeContext (screenPosition);
+  }
+
+  private void storeContext (ScreenPosition screenPosition)
+  {
+    if (overrideContext != null)
+    {
+      screenPosition.setScreenContext (overrideContext);
+      //      System.out.printf ("Storing: %s%n", overrideContext);
+    }
+    else
+    {
+      screenPosition.setScreenContext (currentContext);
+      //      System.out.printf ("Storing: %s%n", currentContext);
+    }
   }
 
   public void writeGraphics (byte b)
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.reset ();
-    screenPosition.setScreenContext (currentContext);
+    storeContext (screenPosition);
     screenPosition.setGraphicsChar (b);
     moveRight ();
   }
@@ -117,7 +120,7 @@ public class Pen
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.reset ();
-    screenPosition.setScreenContext (currentContext);
+    storeContext (screenPosition);
     screenPosition.setChar (b);
     moveRight ();
   }
@@ -126,25 +129,6 @@ public class Pen
   {
     for (byte b : text.getBytes ())
       write (b);
-  }
-
-  public void jumpTo (int position)
-  {
-    System.out.printf ("Moved to %d%n", position);
-    moveTo (position);
-
-    if (!erase)
-    {
-      startFieldPosition = findStartPosition (position);
-      if (startFieldPosition >= 0)
-      {
-        currentContext =
-            screen.getScreenPosition (startFieldPosition).getScreenContext ();
-
-        ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-        screenPosition.setScreenContext (currentContext);
-      }
-    }
   }
 
   private int findStartPosition (int position)
@@ -157,12 +141,12 @@ public class Pen
       ScreenPosition sp = screen.getScreenPosition (pos);
       if (sp.isStartField ())
       {
-        System.out.println ("new start pos " + pos);
+        //        System.out.println ("new start pos " + pos);
         return pos;
       }
       if (pos == position)
       {
-        System.out.println ("wrapped around");
+        //        System.out.println ("wrapped around");
         break;
       }
     }
@@ -170,13 +154,21 @@ public class Pen
     return -1;
   }
 
-  private void moveTo (int position)
+  public void moveTo (int position)
   {
     currentPosition = screen.validate (position);
+
+    int pos = findStartPosition (currentPosition);
+    if (pos >= 0)
+    {
+      startFieldPosition = pos;
+      currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
+      storeCurrentContext ();
+    }
   }
 
   public void moveRight ()
   {
-    moveTo (currentPosition + 1);
+    currentPosition = screen.validate (currentPosition + 1);
   }
 }
