@@ -26,11 +26,16 @@ public class FileTransferInboundSF extends FileTransferSF
         if (subtype == 0x05)            // transfer buffer
         {
           Transfer transfer = screen.getTransfer ();
-          dataRecords.add (new RecordNumber (data, 3));
+          if (transfer == null)
+            System.out.println ("Inbound transfer not finished");
+          else
+          {
+            dataRecords.add (new RecordNumber (data, 3));
 
-          dataHeader = new DataHeader (data, 9);
-          transfer.add (dataHeader);
-          ebcdic = checkEbcdic (dataHeader.getBuffer ());
+            dataHeader = new DataHeader (data, 9);
+            transfer.add (dataHeader);
+            ebcdic = checkEbcdic (dataHeader.getBuffer ());
+          }
         }
         else if (subtype == 0x08)       // no data
         {
