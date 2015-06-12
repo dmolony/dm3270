@@ -205,16 +205,28 @@ public class Field implements Iterable<ScreenPosition>
 
   public void move (int first, int last)
   {
+    ScreenPosition spFirst = screenPositions.get (first);
     while (first < last)
-      screenPositions.get (first).setChar (screenPositions.get (++first).getByte ());
+    {
+      ScreenPosition sp = screenPositions.get (++first);
+      spFirst.setChar (sp.getByte ());
+      spFirst.setScreenContext (sp.getScreenContext ());
+      spFirst = sp;
+    }
 
     screenPositions.get (last).setChar ((byte) 0);
   }
 
   public void push (int first, int last)
   {
+    ScreenPosition spLast = screenPositions.get (last);
     while (first < last)
-      screenPositions.get (last).setChar (screenPositions.get (--last).getByte ());
+    {
+      ScreenPosition sp = screenPositions.get (--last);
+      spLast.setChar (sp.getByte ());
+      spLast.setScreenContext (sp.getScreenContext ());
+      spLast = sp;
+    }
   }
 
   public byte getByteAt (int position)
