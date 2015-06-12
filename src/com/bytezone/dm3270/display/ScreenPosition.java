@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.orders.Order;
 
 public final class ScreenPosition
 {
@@ -133,42 +134,42 @@ public final class ScreenPosition
     return value == 0;
   }
 
-  //  public int pack (byte[] buffer, int ptr, byte order)
-  //  {
-  //    assert isStartField ();
-  //
-  //    buffer[ptr++] = order;
-  //
-  //    if (order == Order.START_FIELD)
-  //      buffer[ptr++] = startFieldAttribute.getAttributeValue ();
-  //    else if (order == Order.START_FIELD_EXTENDED)
-  //    {
-  //      buffer[ptr++] = (byte) (attributes.size () + 1);    // includes the SFA
-  //      ptr = startFieldAttribute.pack (buffer, ptr);
-  //      for (Attribute attribute : attributes)
-  //        ptr = attribute.pack (buffer, ptr);
-  //    }
-  //    else
-  //      System.out.println ("I should throw an exception here");
-  //
-  //    return ptr;
-  //  }
+  public int pack (byte[] buffer, int ptr, byte order)
+  {
+    assert isStartField ();
 
-  //  public int pack (byte[] buffer, int ptr, byte[] replyTypes)
-  //  {
-  //    assert !isStartField ();
-  //
-  //    for (Attribute attribute : attributes)
-  //      if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
-  //      {
-  //        buffer[ptr++] = Order.SET_ATTRIBUTE;
-  //        ptr = attribute.pack (buffer, ptr);       // packs type/value pair
-  //      }
-  //
-  //    buffer[ptr++] = value;
-  //
-  //    return ptr;
-  //  }
+    buffer[ptr++] = order;
+
+    if (order == Order.START_FIELD)
+      buffer[ptr++] = startFieldAttribute.getAttributeValue ();
+    else if (order == Order.START_FIELD_EXTENDED)
+    {
+      buffer[ptr++] = (byte) (attributes.size () + 1);    // includes the SFA
+      ptr = startFieldAttribute.pack (buffer, ptr);
+      for (Attribute attribute : attributes)
+        ptr = attribute.pack (buffer, ptr);
+    }
+    else
+      System.out.println ("I should throw an exception here");
+
+    return ptr;
+  }
+
+  public int pack (byte[] buffer, int ptr, byte[] replyTypes)
+  {
+    assert !isStartField ();
+
+    for (Attribute attribute : attributes)
+      if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
+      {
+        buffer[ptr++] = Order.SET_ATTRIBUTE;
+        ptr = attribute.pack (buffer, ptr);       // packs type/value pair
+      }
+
+    buffer[ptr++] = value;
+
+    return ptr;
+  }
 
   public void draw (int x, int y, boolean hasCursor)
   {

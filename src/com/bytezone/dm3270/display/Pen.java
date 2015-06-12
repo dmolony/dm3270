@@ -5,7 +5,6 @@ import javafx.scene.paint.Color;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
-// should the pen be a stack? each context change is pushed, each reset is popped.
 public class Pen
 {
   private final Screen screen;
@@ -63,29 +62,28 @@ public class Pen
 
   public void setBackground (Color color)
   {
-    currentContext = contextManager.setBackground (currentContext, color);
+    if (currentPosition == startFieldPosition)
+      currentContext = contextManager.setBackground (currentContext, color);
+    else
+      overrideContext = contextManager.setBackground (currentContext, color);
     storeCurrentContext ();
   }
 
   public void setHighlight (byte value)
   {
-    //    System.out.printf ("%d %d%n", startFieldPosition, currentPosition);
     if (currentPosition == startFieldPosition)
-    {
       currentContext = contextManager.setHighlight (currentContext, value);
-      //      System.out.println (currentContext);
-    }
     else
-    {
       overrideContext = contextManager.setHighlight (currentContext, value);
-      //      System.out.println (overrideContext);
-    }
     storeCurrentContext ();
   }
 
   public void setHighIntensity (boolean value)
   {
-    currentContext = contextManager.setHighIntensity (currentContext, value);
+    if (currentPosition == startFieldPosition)
+      currentContext = contextManager.setHighIntensity (currentContext, value);
+    else
+      overrideContext = contextManager.setHighIntensity (currentContext, value);
     storeCurrentContext ();
   }
 
@@ -103,15 +101,9 @@ public class Pen
   private void storeContext (ScreenPosition screenPosition)
   {
     if (overrideContext != null)
-    {
       screenPosition.setScreenContext (overrideContext);
-      //      System.out.printf ("Storing: %s%n", overrideContext);
-    }
     else
-    {
       screenPosition.setScreenContext (currentContext);
-      //      System.out.printf ("Storing: %s%n", currentContext);
-    }
   }
 
   public void writeGraphics (byte b)
@@ -140,23 +132,19 @@ public class Pen
 
   private int findStartPosition (int position)
   {
-    // find previous start field attribute
     int pos = position;
     while (true)
     {
       pos = screen.validate (pos - 1);
       ScreenPosition sp = screen.getScreenPosition (pos);
+
       if (sp.isStartField ())
-      {
-        //        System.out.println ("new start pos " + pos);
         return pos;
-      }
+
       if (pos == position)
-      {
-        //        System.out.println ("wrapped around");
         break;
-      }
     }
+
     System.out.println ("No start field found");
     return -1;
   }
