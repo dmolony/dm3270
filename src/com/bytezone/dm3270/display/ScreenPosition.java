@@ -62,6 +62,11 @@ public final class ScreenPosition
     return attributes;
   }
 
+  public void clearAttributes ()
+  {
+    attributes.clear ();
+  }
+
   public void reset ()
   {
     isVisible = true;

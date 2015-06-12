@@ -203,7 +203,8 @@ public class Field implements Iterable<ScreenPosition>
       screenPositions.get (i).setChar ((byte) 0);
   }
 
-  public void move (int first, int last)
+  // overwrites each position with the position to its right (delete)
+  public void pull (int first, int last)
   {
     ScreenPosition spFirst = screenPositions.get (first);
     while (first < last)
@@ -215,8 +216,10 @@ public class Field implements Iterable<ScreenPosition>
     }
 
     screenPositions.get (last).setChar ((byte) 0);
+    screenPositions.get (last).clearAttributes ();
   }
 
+  //overwrites each position with the position to its left (insert)
   public void push (int first, int last)
   {
     ScreenPosition spLast = screenPositions.get (last);

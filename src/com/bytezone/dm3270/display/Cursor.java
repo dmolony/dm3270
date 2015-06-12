@@ -121,7 +121,7 @@ public class Cursor
       {
         moveTo (screen.validate (currentPosition - 1));
         int end = currentField.getDisplayLength ();
-        currentField.move (start - 1, end);
+        currentField.pull (start - 1, end);
         currentField.setModified (true);
         notifyFieldChange (currentField, currentField);
       }
@@ -138,7 +138,7 @@ public class Cursor
       if (start > 0)
       {
         int end = currentField.getDisplayLength ();
-        currentField.move (start, end);
+        currentField.pull (start, end);
         currentField.setModified (true);
         notifyFieldChange (currentField, currentField);
       }
