@@ -28,6 +28,7 @@ public class SetAttributeOrder extends Order
   {
     Pen pen = screen.getPen ();
     attribute.process (pen);
+    pen.addAttribute (attribute);
   }
 
   @Override

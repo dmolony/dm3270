@@ -2,6 +2,7 @@ package com.bytezone.dm3270.display;
 
 import javafx.scene.paint.Color;
 
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 // should the pen be a stack? each context change is pushed, each reset is popped.
@@ -38,6 +39,12 @@ public class Pen
     startFieldPosition = currentPosition;
     reset ((byte) 0);
     storeCurrentContext ();
+  }
+
+  public void addAttribute (Attribute attribute)
+  {
+    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    screenPosition.addAttribute (attribute);
   }
 
   public int getPosition ()

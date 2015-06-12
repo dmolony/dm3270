@@ -1,9 +1,13 @@
 package com.bytezone.dm3270.display;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 public final class ScreenPosition
@@ -17,6 +21,7 @@ public final class ScreenPosition
   private static final byte VERTICAL_LINE = (byte) 0x85;
 
   private StartFieldAttribute startFieldAttribute;
+  private final List<Attribute> attributes = new ArrayList<> ();
 
   private byte value;
   private boolean isGraphics;
@@ -34,6 +39,21 @@ public final class ScreenPosition
     this.characterSize = characterSize;
     baseContext = base;
     reset ();
+  }
+
+  public StartFieldAttribute getStartFieldAttribute ()
+  {
+    return startFieldAttribute;
+  }
+
+  public void setStartField (StartFieldAttribute startFieldAttribute)
+  {
+    this.startFieldAttribute = startFieldAttribute;
+  }
+
+  public void addAttribute (Attribute attribute)
+  {
+    attributes.add (attribute);
   }
 
   public void reset ()
@@ -70,16 +90,6 @@ public final class ScreenPosition
   public boolean isGraphicsChar ()
   {
     return isGraphics;
-  }
-
-  public StartFieldAttribute getStartFieldAttribute ()
-  {
-    return startFieldAttribute;
-  }
-
-  public void setStartField (StartFieldAttribute startFieldAttribute)
-  {
-    this.startFieldAttribute = startFieldAttribute;
   }
 
   public void setChar (byte value)

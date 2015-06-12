@@ -72,7 +72,10 @@ public class StartFieldExtendedOrder extends Order
     Pen pen = screen.getPen ();
     startFieldAttribute.process (pen);
     for (Attribute attribute : attributes)
+    {
       attribute.process (pen);
+      pen.addAttribute (attribute);
+    }
     pen.moveRight ();
   }
 
