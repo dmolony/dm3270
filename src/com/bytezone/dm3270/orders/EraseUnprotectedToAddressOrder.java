@@ -26,7 +26,7 @@ public class EraseUnprotectedToAddressOrder extends Order
       int cursorPostion = cursor.getLocation ();
       Field resetField = null;
 
-      for (Field field : screen.getUnprotectedFields ())
+      for (Field field : screen.getFieldManager ().getUnprotectedFields ())
         if (field.contains (cursorPostion))
         {
           resetField = field;

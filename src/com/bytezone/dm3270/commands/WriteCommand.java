@@ -126,7 +126,7 @@ public class WriteCommand extends Command
     if (writeControlCharacter != null)
       writeControlCharacter.process (screen);     // may unlock the keyboard
 
-    if (!screen.isKeyboardLocked () && screen.countFields () > 0)
+    if (!screen.isKeyboardLocked () && screen.getFieldManager ().size () > 0)
     {
       reply = screen.processPluginAuto ();
       // check for suppressDisplay

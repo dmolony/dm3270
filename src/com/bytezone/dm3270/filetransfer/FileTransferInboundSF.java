@@ -25,7 +25,7 @@ public class FileTransferInboundSF extends FileTransferSF
       case 0x46:
         if (subtype == 0x05)            // transfer buffer
         {
-          Transfer transfer = screen.getTransfer ();
+          Transfer transfer = screen.getFileStage ().getTransfer ();
           if (transfer == null)
             System.out.println ("Inbound transfer not finished");
           else

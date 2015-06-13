@@ -28,6 +28,7 @@ public class FileStage extends Stage
 {
   private final TabPane tabPane = new TabPane ();
   private final List<Transfer> transfers = new ArrayList<> ();
+  private Transfer currentTransfer;
   private final Preferences prefs;
   private final WindowSaver windowSaver;
   private final Button hideButton = new Button ("Hide Window");
@@ -105,6 +106,44 @@ public class FileStage extends Stage
   {
     windowSaver.saveWindow ();
     hide ();
+  }
+
+  public Transfer openTransfer (FileTransferOutbound transferRecord)
+  {
+    if (currentTransfer != null)
+      addTransfer (currentTransfer);
+
+    currentTransfer = new Transfer ();
+    currentTransfer.add (transferRecord);
+    return currentTransfer;
+  }
+
+  public Transfer getTransfer ()
+  {
+    return currentTransfer;
+  }
+
+  public Transfer closeTransfer (FileTransferOutbound transferRecord)
+  {
+    if (currentTransfer == null)
+    {
+      System.out.println ("Null");
+      return null;
+    }
+
+    Transfer transfer = currentTransfer;
+    currentTransfer.add (transferRecord);
+
+    addTransfer (currentTransfer);
+
+    currentTransfer = null;
+
+    return transfer;
+  }
+
+  public void closeTransfer ()
+  {
+    currentTransfer = null;
   }
 
   class FileTab extends Tab

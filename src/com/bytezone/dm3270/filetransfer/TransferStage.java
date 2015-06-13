@@ -109,7 +109,7 @@ public class TransferStage extends Stage
 
   public void doStuff ()
   {
-    List<Field> fields = screen.getFields ();
+    List<Field> fields = screen.getFieldManager ().getFields ();
 
     Field field10 = fields.get (10);
     Field field17 = fields.get (17);

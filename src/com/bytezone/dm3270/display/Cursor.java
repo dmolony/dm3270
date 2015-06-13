@@ -319,7 +319,7 @@ public class Cursor
   private void setCurrentField ()
   {
     Field lastField = currentField;
-    currentField = screen.getField (currentPosition);
+    currentField = screen.getFieldManager ().getField (currentPosition);
     if (currentField != lastField)
       notifyFieldChange (lastField, currentField);
   }

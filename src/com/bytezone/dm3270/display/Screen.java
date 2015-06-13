@@ -24,8 +24,6 @@ import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.filetransfer.FileStage;
-import com.bytezone.dm3270.filetransfer.FileTransferOutbound;
-import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.jobs.BatchJob;
 import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.orders.BufferAddress;
@@ -62,7 +60,7 @@ public class Screen extends Canvas
   private final JobStage jobStage = new JobStage ();
 
   private FileStage fileStage;
-  private Transfer currentTransfer;
+  //  private Transfer currentTransfer;
 
   private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
@@ -103,6 +101,11 @@ public class Screen extends Canvas
       screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
 
     addTSOCommandStatusChangeListener (jobStage);
+  }
+
+  public FieldManager getFieldManager ()
+  {
+    return fieldManager;
   }
 
   public void setFontManager (FontManager fontManager)
@@ -158,46 +161,46 @@ public class Screen extends Canvas
     return fileStage;
   }
 
-  public Transfer openTransfer (FileTransferOutbound transferRecord)
-  {
-    if (currentTransfer != null)
-      if (fileStage != null)
-        fileStage.addTransfer (currentTransfer);
-
-    currentTransfer = new Transfer ();
-    currentTransfer.add (transferRecord);
-    return currentTransfer;
-  }
-
-  public Transfer getTransfer ()
-  {
-    return currentTransfer;
-  }
-
-  public Transfer closeTransfer (FileTransferOutbound transferRecord)
-  {
-    if (currentTransfer == null)
-    {
-      System.out.println ("Null");
-      return null;
-    }
-
-    Transfer transfer = currentTransfer;
-    currentTransfer.add (transferRecord);
-
-    if (fileStage != null)
-    {
-      fileStage.addTransfer (currentTransfer);
-    }
-    currentTransfer = null;
-
-    return transfer;
-  }
-
-  public void closeTransfer ()
-  {
-    currentTransfer = null;
-  }
+  //  public Transfer openTransfer (FileTransferOutbound transferRecord)
+  //  {
+  //    if (currentTransfer != null)
+  //      if (fileStage != null)
+  //        fileStage.addTransfer (currentTransfer);
+  //
+  //    currentTransfer = new Transfer ();
+  //    currentTransfer.add (transferRecord);
+  //    return currentTransfer;
+  //  }
+  //
+  //  public Transfer getTransfer ()
+  //  {
+  //    return currentTransfer;
+  //  }
+  //
+  //  public Transfer closeTransfer (FileTransferOutbound transferRecord)
+  //  {
+  //    if (currentTransfer == null)
+  //    {
+  //      System.out.println ("Null");
+  //      return null;
+  //    }
+  //
+  //    Transfer transfer = currentTransfer;
+  //    currentTransfer.add (transferRecord);
+  //
+  //    if (fileStage != null)
+  //    {
+  //      fileStage.addTransfer (currentTransfer);
+  //    }
+  //    currentTransfer = null;
+  //
+  //    return transfer;
+  //  }
+  //
+  //  public void closeTransfer ()
+  //  {
+  //    currentTransfer = null;
+  //  }
 
   public Function getFunction ()
   {
@@ -371,29 +374,29 @@ public class Screen extends Canvas
     return false;
   }
 
-  public int countFields ()
-  {
-    return fieldManager.size ();
-  }
-
-  public Field getField (int position)
-  {
-    return fieldManager.getField (position);
-  }
-
-  public List<Field> getFields ()
-  {
-    return fieldManager.getFields ();
-  }
-
-  public List<Field> getUnprotectedFields ()
-  {
-    return fieldManager.getUnprotectedFields ();
-  }
+  //  public int countFields ()
+  //  {
+  //    return fieldManager.size ();
+  //  }
+  //
+  //  public Field getField (int position)
+  //  {
+  //    return fieldManager.getField (position);
+  //  }
+  //
+  //  public List<Field> getFields ()
+  //  {
+  //    return fieldManager.getFields ();
+  //  }
+  //
+  //  public List<Field> getUnprotectedFields ()
+  //  {
+  //    return fieldManager.getUnprotectedFields ();
+  //  }
 
   public Field getHomeField ()
   {
-    List<Field> fields = getUnprotectedFields ();
+    List<Field> fields = fieldManager.getUnprotectedFields ();
     if (fields != null && fields.size () > 0)
       return fields.get (0);
     return null;
@@ -485,7 +488,7 @@ public class Screen extends Canvas
 
     for (ScreenField screenField : data.changedFields)
     {
-      Field field = getField (screenField.location.location);   // first display location
+      Field field = fieldManager.getField (screenField.location.location);   // first display location
       assert field != null;
       if (field != null)    // should be impossible
       {
@@ -580,7 +583,7 @@ public class Screen extends Canvas
     Field tsoCommandField = fieldManager.getTSOCommandField ();
 
     // pack all modified fields
-    for (Field field : getUnprotectedFields ())
+    for (Field field : fieldManager.getUnprotectedFields ())
       if (field.isModified ())
       {
         ptr = packField (field, buffer, ptr);
@@ -748,7 +751,7 @@ public class Screen extends Canvas
 
   public void resetModified ()
   {
-    for (Field field : getUnprotectedFields ())
+    for (Field field : fieldManager.getUnprotectedFields ())
       if (field.isModified ())
         field.setModified (false);
   }

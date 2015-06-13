@@ -8,10 +8,12 @@ public class FileTransferOutbound extends FileTransferSF
 {
   private int bufferNumber;
   private Transfer transfer;
+  private FileStage fileStage;
 
   public FileTransferOutbound (byte[] buffer, int offset, int length, Screen screen)
   {
     super (buffer, offset, length, screen, "Outbound");
+    fileStage = screen.getFileStage ();
 
     switch (rectype)
     {
@@ -32,14 +34,14 @@ public class FileTransferOutbound extends FileTransferSF
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
 
-        transfer = screen.openTransfer (this);
+        transfer = fileStage.openTransfer (this);
 
         break;
 
       // CLOSE
 
       case 0x41:
-        transfer = screen.closeTransfer (this);
+        transfer = fileStage.closeTransfer (this);
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -47,7 +49,7 @@ public class FileTransferOutbound extends FileTransferSF
       // Receiving data
 
       case 0x47:
-        transfer = screen.getTransfer ();
+        transfer = fileStage.getTransfer ();
         if (transfer == null)
         {
           System.out.println ("null 47");
@@ -70,7 +72,7 @@ public class FileTransferOutbound extends FileTransferSF
           transfer.add (this);
 
           if (transfer.isMessage ())              // message transfers don't close
-            screen.closeTransfer ();
+            fileStage.closeTransfer ();
         }
         else
         {
@@ -83,7 +85,7 @@ public class FileTransferOutbound extends FileTransferSF
       // Sending data
 
       case 0x45:
-        transfer = screen.getTransfer ();
+        transfer = fileStage.getTransfer ();
         transfer.add (this);
 
         dataRecords.add (new DataRecord (data, 3));
@@ -93,7 +95,7 @@ public class FileTransferOutbound extends FileTransferSF
         break;
 
       case 0x46:
-        transfer = screen.getTransfer ();
+        transfer = fileStage.getTransfer ();
         transfer.add (this);
 
         dataRecords.add (new DataRecord (data, 3));

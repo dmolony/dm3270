@@ -138,7 +138,7 @@ public class AIDCommand extends Command implements BufferAddressSource
       for (AIDField aidField : aidFields)
         if (aidField.hasData ())
         {
-          Field field = screen.getField (aidField.getLocation ());
+          Field field = screen.getFieldManager ().getField (aidField.getLocation ());
           if (field != null)    // in replay mode we cannot rely on the fields list
           {
             field.setText (aidField.getBuffer ());
