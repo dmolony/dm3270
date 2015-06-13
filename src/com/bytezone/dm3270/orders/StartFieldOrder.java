@@ -7,7 +7,7 @@ import com.bytezone.dm3270.display.Screen;
 public class StartFieldOrder extends Order
 {
   private final StartFieldAttribute startFieldAttribute;
-  private final int location = -1;
+  private int location = -1;
 
   public StartFieldOrder (byte[] buffer, int offset)
   {
@@ -32,7 +32,9 @@ public class StartFieldOrder extends Order
   public void process (Screen screen)
   {
     Pen pen = screen.getPen ();
+    location = pen.getPosition ();
     startFieldAttribute.process (pen);
+    pen.moveRight ();
   }
 
   @Override

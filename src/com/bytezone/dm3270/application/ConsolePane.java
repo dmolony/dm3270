@@ -83,7 +83,8 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
-    this.screen.setConsolePane (this);
+    //    this.screen.setConsolePane (this);
+    pluginsStage.setConsolePane (this);
 
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);

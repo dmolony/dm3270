@@ -23,6 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.PreferencesStage;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -46,6 +47,7 @@ public class PluginsStage extends PreferencesStage
   private int baseMenuSize;
   private Screen screen;
   private int sequence;
+  private ConsolePane consolePane;
 
   public PluginsStage (Preferences prefs)
   {
@@ -109,6 +111,11 @@ public class PluginsStage extends PreferencesStage
   public void setScreen (Screen screen)
   {
     this.screen = screen;
+  }
+
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    this.consolePane = consolePane;
   }
 
   public void processAll (PluginData data)
@@ -282,7 +289,7 @@ public class PluginsStage extends PreferencesStage
   // which sets menuItem.setOnAction (e -> screen.processPluginRequest (plugin))
   public void processPluginRequest (Plugin plugin)
   {
-    assert screen.getConsolePane () != null;
+    assert consolePane != null;
 
     FieldManager fieldManager = screen.getFieldManager ();
     Cursor cursor = screen.getScreenCursor ();
@@ -296,7 +303,7 @@ public class PluginsStage extends PreferencesStage
     if (command != null)
     {
       screen.lockKeyboard (command.getKeyName ());
-      screen.getConsolePane ().sendAID (command);
+      consolePane.sendAID (command);
     }
   }
 

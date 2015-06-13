@@ -17,7 +17,6 @@ import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
-import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.ColorAttribute;
@@ -44,7 +43,7 @@ public class Screen extends Canvas
   private FontManager fontManager;
   private final Cursor cursor = new Cursor (this);
   private final Function function;
-  private ConsolePane consolePane;
+  //  private ConsolePane consolePane;
 
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
@@ -67,7 +66,7 @@ public class Screen extends Canvas
   private byte[] replyTypes = new byte[0];
 
   private PluginsStage pluginsStage;
-  private int sequence;
+  //  private int sequence;
 
   public final int rows;
   public final int columns;
@@ -105,10 +104,15 @@ public class Screen extends Canvas
     return fieldManager;
   }
 
-  public ConsolePane getConsolePane ()
-  {
-    return consolePane;
-  }
+  //  public void setConsolePane (ConsolePane consolePane)
+  //  {
+  //    this.consolePane = consolePane;
+  //  }
+  //
+  //  public ConsolePane getConsolePane ()
+  //  {
+  //    return consolePane;
+  //  }
 
   public PluginsStage getPluginsStage ()
   {
@@ -212,11 +216,6 @@ public class Screen extends Canvas
   public Function getFunction ()
   {
     return function;
-  }
-
-  public void setConsolePane (ConsolePane consolePane)
-  {
-    this.consolePane = consolePane;
   }
 
   public void setPlugins (PluginsStage pluginsStage)
@@ -541,15 +540,15 @@ public class Screen extends Canvas
   // Send AID command
   // ---------------------------------------------------------------------------------//
 
-  public void sendAID ()
-  {
-    AIDCommand command = readModifiedFields ();
-    if (command != null)
-    {
-      lockKeyboard (command.getKeyName ());
-      consolePane.sendAID (command);
-    }
-  }
+  //  public void sendAID ()
+  //  {
+  //    AIDCommand command = readModifiedFields ();
+  //    if (command != null)
+  //    {
+  //      lockKeyboard (command.getKeyName ());
+  //      consolePane.sendAID (command);
+  //    }
+  //  }
 
   public void setFieldText (Field field, String text)
   {

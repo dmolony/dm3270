@@ -29,6 +29,7 @@ public class Pen
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();
+    //    System.out.printf ("Starting field : %d%n", currentPosition);
 
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.reset ();

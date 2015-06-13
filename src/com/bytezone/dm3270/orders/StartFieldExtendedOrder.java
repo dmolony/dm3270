@@ -13,7 +13,7 @@ public class StartFieldExtendedOrder extends Order
 {
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<Attribute> ();
-  private final int location = -1;
+  private int location = -1;
 
   public StartFieldExtendedOrder (byte[] buffer, int offset)
   {
@@ -70,12 +70,15 @@ public class StartFieldExtendedOrder extends Order
   public void process (Screen screen)
   {
     Pen pen = screen.getPen ();
+    location = pen.getPosition ();
     startFieldAttribute.process (pen);
+
     for (Attribute attribute : attributes)
     {
       attribute.process (pen);
       pen.addAttribute (attribute);
     }
+
     pen.moveRight ();
   }
 

@@ -134,6 +134,7 @@ public class WriteCommand extends Command
 
     if (drawScreen)
       screen.drawScreen ();
+
     //    System.out.println (screen.getScreenText ());
 
     // check screen for jobs submitted or finished
