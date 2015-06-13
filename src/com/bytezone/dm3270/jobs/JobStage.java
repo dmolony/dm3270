@@ -88,4 +88,31 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     txtStatus.setText (isTSOCommandScreen ? "TSO Command Screen"
         : tsoCommandField == null ? "TSO Unavailable" : "TSO Command Field");
   }
+
+  // ---------------------------------------------------------------------------------//
+  // Batch jobs
+  // ---------------------------------------------------------------------------------//
+
+  public void batchJobSubmitted (int jobNumber, String jobName)
+  {
+    System.out.println ("Job submitted:");
+
+    BatchJob batchJob = new BatchJob (jobNumber, jobName);
+    addBatchJob (batchJob);
+    System.out.println (batchJob);
+  }
+
+  public void
+      batchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
+  {
+    System.out.println ("Job completed:");
+
+    BatchJob batchJob = getBatchJob (jobNumber);
+    if (batchJob != null)
+    {
+      batchJob.completed (time, conditionCode);
+      System.out.println (batchJob);
+      refreshJobTable ();            // temp fix before jdk 8u60
+    }
+  }
 }

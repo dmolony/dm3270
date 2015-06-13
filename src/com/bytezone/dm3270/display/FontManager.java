@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 public class FontManager
 {
@@ -29,16 +30,28 @@ public class FontManager
   private final Screen screen;
   private final RadioMenuItem[] fontSizeItems = new RadioMenuItem[fontSizes.length];
 
+  private final CharacterSize characterSize;
+
+  // these are duplicated in Screen
+  private final int xOffset = 4;      // padding left and right
+  private final int yOffset = 4;      // padding top and bottom
+
   public FontManager (Screen screen)
   {
     this.screen = screen;
-    screen.setFontManager (this);
+    //    screen.setFontManager (this);
+    characterSize = new CharacterSize ();
+  }
+
+  public CharacterSize getCharacterSize ()
+  {
+    return characterSize;
   }
 
   public Menu getFontMenu ()
   {
-    String fontSelected = screen.getFontName ();
-    String sizeSelected = "" + screen.getFontSize ();
+    String fontSelected = getFontName ();
+    String sizeSelected = "" + getFontSize ();
 
     Menu menuFont = new Menu ("Fonts");
 
@@ -142,6 +155,38 @@ public class FontManager
 
   private void selectFont ()
   {
-    screen.adjustFont (getSelectedFont (), getSelectedSize ());
+    adjustFont (getSelectedFont (), getSelectedSize ());
+  }
+
+  void setFont (String name, int size)
+  {
+    characterSize.changeFont (name, size);
+
+    screen.setWidth (characterSize.getWidth () * screen.columns + xOffset * 2);
+    screen.setHeight (characterSize.getHeight () * screen.rows + yOffset * 2);
+
+    screen.getGraphicsContext2D ().setFont (characterSize.getFont ());
+  }
+
+  public void adjustFont (String name, int size)
+  {
+    if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
+      return;
+
+    setFont (name, size);
+    ((Stage) screen.getScene ().getWindow ()).sizeToScene ();
+
+    screen.eraseScreen ();
+    screen.drawScreen ();
+  }
+
+  public String getFontName ()
+  {
+    return characterSize.getName ();
+  }
+
+  public int getFontSize ()
+  {
+    return characterSize.getSize ();
   }
 }

@@ -14,7 +14,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.attributes.Attribute;
@@ -23,7 +22,6 @@ import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.filetransfer.FileStage;
-import com.bytezone.dm3270.jobs.BatchJob;
 import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
@@ -32,19 +30,20 @@ import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class Screen extends Canvas
 {
-  private static final byte[] buffer = new byte[4096];
+  private final byte[] buffer = new byte[4096];
 
   private final ScreenPosition[] screenPositions;
-  private final CharacterSize characterSize;        // contains font-specific values
+  //  private final CharacterSize characterSize;        // contains font-specific values
 
   private final FieldManager fieldManager = new FieldManager (this);
   private final Pen pen = new Pen (this);
 
-  private FontManager fontManager;
+  private final FontManager fontManager = new FontManager (this);
   private final Cursor cursor = new Cursor (this);
   private final Function function;
   //  private ConsolePane consolePane;
 
+  // these are duplicated in FontManager
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
 
@@ -88,8 +87,9 @@ public class Screen extends Canvas
     String sizeSelected = prefs.get ("FontSize", "16");
 
     GraphicsContext gc = getGraphicsContext2D ();
-    characterSize = new CharacterSize ();
-    setFont (fontSelected, Integer.parseInt (sizeSelected));
+    //    characterSize = new CharacterSize ();
+    CharacterSize characterSize = fontManager.getCharacterSize ();
+    fontManager.setFont (fontSelected, Integer.parseInt (sizeSelected));
 
     screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = pen.getBase ();
@@ -102,6 +102,11 @@ public class Screen extends Canvas
   public FieldManager getFieldManager ()
   {
     return fieldManager;
+  }
+
+  public FontManager getFontManager ()
+  {
+    return fontManager;
   }
 
   //  public void setConsolePane (ConsolePane consolePane)
@@ -119,10 +124,15 @@ public class Screen extends Canvas
     return pluginsStage;
   }
 
-  public void setFontManager (FontManager fontManager)
+  public JobStage getJobStage ()
   {
-    this.fontManager = fontManager;
+    return jobStage;
   }
+
+  //  public void setFontManager (FontManager fontManager)
+  //  {
+  //    this.fontManager = fontManager;
+  //  }
 
   // called from ConsoleKeyEvent in order to fix a java bug on OSX
   public void doFontSmaller ()
@@ -130,37 +140,37 @@ public class Screen extends Canvas
     fontManager.smaller ();
   }
 
-  private void setFont (String name, int size)
-  {
-    characterSize.changeFont (name, size);
-
-    setWidth (characterSize.getWidth () * columns + xOffset * 2);
-    setHeight (characterSize.getHeight () * rows + yOffset * 2);
-
-    getGraphicsContext2D ().setFont (characterSize.getFont ());
-  }
-
-  public void adjustFont (String name, int size)
-  {
-    if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
-      return;
-
-    setFont (name, size);
-    ((Stage) getScene ().getWindow ()).sizeToScene ();
-
-    eraseScreen ();
-    drawScreen ();
-  }
-
-  public String getFontName ()
-  {
-    return characterSize.getName ();
-  }
-
-  public int getFontSize ()
-  {
-    return characterSize.getSize ();
-  }
+  //  private void setFont (String name, int size)
+  //  {
+  //    characterSize.changeFont (name, size);
+  //
+  //    setWidth (characterSize.getWidth () * columns + xOffset * 2);
+  //    setHeight (characterSize.getHeight () * rows + yOffset * 2);
+  //
+  //    getGraphicsContext2D ().setFont (characterSize.getFont ());
+  //  }
+  //
+  //  public void adjustFont (String name, int size)
+  //  {
+  //    if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
+  //      return;
+  //
+  //    setFont (name, size);
+  //    ((Stage) getScene ().getWindow ()).sizeToScene ();
+  //
+  //    eraseScreen ();
+  //    drawScreen ();
+  //  }
+  //
+  //  public String getFontName ()
+  //  {
+  //    return characterSize.getName ();
+  //  }
+  //
+  //  public int getFontSize ()
+  //  {
+  //    return characterSize.getSize ();
+  //  }
 
   public void setFileStage (FileStage fileStage)
   {
@@ -351,6 +361,7 @@ public class Screen extends Canvas
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
+    CharacterSize characterSize = fontManager.getCharacterSize ();
     int x = xOffset + col * characterSize.getWidth ();
     int y = yOffset + row * characterSize.getHeight ();
 
@@ -367,7 +378,7 @@ public class Screen extends Canvas
     cursor.moveTo (0);
   }
 
-  private void eraseScreen ()
+  void eraseScreen ()
   {
     GraphicsContext gc = getGraphicsContext2D ();
     gc.setFill (ColorAttribute.colors[8]);                // black
@@ -771,28 +782,28 @@ public class Screen extends Canvas
   // Batch jobs
   // ---------------------------------------------------------------------------------//
 
-  public void batchJobSubmitted (int jobNumber, String jobName)
-  {
-    System.out.println ("Job submitted:");
-
-    BatchJob batchJob = new BatchJob (jobNumber, jobName);
-    jobStage.addBatchJob (batchJob);
-    System.out.println (batchJob);
-  }
-
-  public void
-      batchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
-  {
-    System.out.println ("Job completed:");
-
-    BatchJob batchJob = jobStage.getBatchJob (jobNumber);
-    if (batchJob != null)
-    {
-      batchJob.completed (time, conditionCode);
-      System.out.println (batchJob);
-      jobStage.refreshJobTable ();            // temp fix before jdk 8u60
-    }
-  }
+  //  public void batchJobSubmitted (int jobNumber, String jobName)
+  //  {
+  //    System.out.println ("Job submitted:");
+  //
+  //    BatchJob batchJob = new BatchJob (jobNumber, jobName);
+  //    jobStage.addBatchJob (batchJob);
+  //    System.out.println (batchJob);
+  //  }
+  //
+  //  public void
+  //      batchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
+  //  {
+  //    System.out.println ("Job completed:");
+  //
+  //    BatchJob batchJob = jobStage.getBatchJob (jobNumber);
+  //    if (batchJob != null)
+  //    {
+  //      batchJob.completed (time, conditionCode);
+  //      System.out.println (batchJob);
+  //      jobStage.refreshJobTable ();            // temp fix before jdk 8u60
+  //    }
+  //  }
 
   public void showJobStage ()
   {

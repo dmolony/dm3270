@@ -83,6 +83,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
+    this.fontManager = screen.getFontManager ();
     //    this.screen.setConsolePane (this);
     pluginsStage.setConsolePane (this);
 
@@ -108,7 +109,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
     //    btnReset.setOnAction (e -> resetCommand.process ());
 
-    fontManager = new FontManager (screen);
+    //    fontManager = new FontManager (screen);
 
     menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
     if (server == null || server.getPlugins ())     // allow null for replay testing

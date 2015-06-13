@@ -43,6 +43,8 @@ public class Console extends Application
   private PluginsStage pluginsStage;
   private FileStage fileStage;
 
+  //  private FontManager fontManager;
+
   public enum Function
   {
     SPY, REPLAY, TERMINAL, TEST
@@ -249,8 +251,10 @@ public class Console extends Application
 
     if (screen != null)
     {
-      prefs.put ("FontName", screen.getFontName ());
-      prefs.put ("FontSize", "" + screen.getFontSize ());
+      //      prefs.put ("FontName", screen.getFontName ());
+      prefs.put ("FontName", screen.getFontManager ().getFontName ());
+      //      prefs.put ("FontSize", "" + screen.getFontSize ());
+      prefs.put ("FontSize", "" + screen.getFontManager ().getFontSize ());
     }
 
     prefs
