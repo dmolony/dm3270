@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.plugins;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -24,6 +25,10 @@ import javafx.scene.layout.VBox;
 
 import com.bytezone.dm3270.application.PreferencesStage;
 import com.bytezone.dm3270.application.Site;
+import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
 
 public class PluginsStage extends PreferencesStage
@@ -40,6 +45,7 @@ public class PluginsStage extends PreferencesStage
   private int requestMenus;
   private int baseMenuSize;
   private Screen screen;
+  private int sequence;
 
   public PluginsStage (Preferences prefs)
   {
@@ -237,6 +243,118 @@ public class PluginsStage extends PreferencesStage
     }
   }
 
+  // ---------------------------------------------------------------------------------//
+  // Process plugins
+  // ---------------------------------------------------------------------------------//
+
+  // called from WriteCommand.process() after unlocking keyboard
+  // will eventually be called before unlocking the keyboard
+  public AIDCommand processPluginAuto ()
+  {
+    assert !screen.isKeyboardLocked ();
+
+    FieldManager fieldManager = screen.getFieldManager ();
+    Cursor cursor = screen.getScreenCursor ();
+
+    if (activePlugins () > 0)
+    {
+      int cursorPosition = cursor.getLocation ();
+      PluginData pluginData =
+          fieldManager.getPluginScreen (sequence++, cursorPosition / screen.columns,
+                                        cursorPosition % screen.columns);
+
+      if (false)
+      {
+        System.out.println ("--------------------------------------------");
+        System.out.println (pluginData);
+      }
+
+      processAll (pluginData);
+      AIDCommand command = processReply (pluginData);
+      if (command != null)
+        screen.lockKeyboard (command.getKeyName ());
+      return command;
+    }
+    return null;
+  }
+
+  // created by PluginsStage.itemSelected() -> PluginEntry.select()
+  // which sets menuItem.setOnAction (e -> screen.processPluginRequest (plugin))
+  public void processPluginRequest (Plugin plugin)
+  {
+    assert screen.getConsolePane () != null;
+
+    FieldManager fieldManager = screen.getFieldManager ();
+    Cursor cursor = screen.getScreenCursor ();
+
+    int cursorPosition = cursor.getLocation ();
+    PluginData pluginData =
+        fieldManager.getPluginScreen (sequence++, cursorPosition / screen.columns,
+                                      cursorPosition % screen.columns);
+    plugin.processRequest (pluginData);
+    AIDCommand command = processReply (pluginData);
+    if (command != null)
+    {
+      screen.lockKeyboard (command.getKeyName ());
+      screen.getConsolePane ().sendAID (command);
+    }
+  }
+
+  private AIDCommand processReply (PluginData data)
+  {
+    FieldManager fieldManager = screen.getFieldManager ();
+    Cursor cursor = screen.getScreenCursor ();
+
+    int currentLocation = cursor.getLocation ();
+
+    boolean isVisible = cursor.isVisible ();
+    if (isVisible)
+      cursor.setVisible (false);
+
+    for (ScreenField screenField : data.changedFields)
+    {
+      Field field = fieldManager.getField (screenField.location.location);   // first display location
+      assert field != null;
+      if (field != null)    // should be impossible
+      {
+        if (screenField.newData == null)
+        {
+          // erase field?
+        }
+        else
+        {
+          try
+          {
+            // should this type the characters instead?
+            field.setText (screenField.newData.getBytes ("CP1047"));
+            field.setModified (true);
+          }
+          catch (UnsupportedEncodingException e)
+          {
+            e.printStackTrace ();
+          }
+        }
+        field.draw ();      // draws the field without a cursor
+      }
+    }
+
+    if (data.cursorMoved ())
+      cursor.moveTo (data.getNewCursorLocation ());
+    else
+      cursor.moveTo (currentLocation);
+
+    if (isVisible)
+      cursor.setVisible (true);
+
+    if (data.getKey () != 0)
+    {
+      screen.setAID (data.getKey ());
+      AIDCommand command = screen.readModifiedFields ();
+      return command;
+    }
+    return null;
+  }
+
   private class PluginEntry
   {
     private final TextField name = new TextField ();
@@ -282,7 +400,7 @@ public class PluginsStage extends PreferencesStage
       if (requestMenuItem == null && plugin.doesRequest ())
       {
         requestMenuItem = new MenuItem (name.getText ());
-        requestMenuItem.setOnAction (e -> screen.processPluginRequest (plugin));
+        requestMenuItem.setOnAction (e -> processPluginRequest (plugin));
         requestMenuItem.setAccelerator (new KeyCodeCombination (keyCodes[requestMenus++],
             KeyCombination.SHORTCUT_DOWN));
       }

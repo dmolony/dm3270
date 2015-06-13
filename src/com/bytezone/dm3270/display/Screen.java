@@ -28,10 +28,7 @@ import com.bytezone.dm3270.jobs.BatchJob;
 import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
-import com.bytezone.dm3270.plugins.Plugin;
-import com.bytezone.dm3270.plugins.PluginData;
 import com.bytezone.dm3270.plugins.PluginsStage;
-import com.bytezone.dm3270.plugins.ScreenField;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class Screen extends Canvas
@@ -106,6 +103,16 @@ public class Screen extends Canvas
   public FieldManager getFieldManager ()
   {
     return fieldManager;
+  }
+
+  public ConsolePane getConsolePane ()
+  {
+    return consolePane;
+  }
+
+  public PluginsStage getPluginsStage ()
+  {
+    return pluginsStage;
   }
 
   public void setFontManager (FontManager fontManager)
@@ -434,101 +441,101 @@ public class Screen extends Canvas
 
   // called from WriteCommand.process() after unlocking keyboard
   // will eventually be called before unlocking the keyboard
-  public AIDCommand processPluginAuto ()
-  {
-    assert !keyboardLocked;
-
-    if (pluginsStage != null && pluginsStage.activePlugins () > 0)
-    {
-      int cursorPosition = cursor.getLocation ();
-      PluginData pluginData =
-          fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
-                                        cursorPosition % columns);
-
-      if (false)
-      {
-        System.out.println ("--------------------------------------------");
-        System.out.println (pluginData);
-      }
-
-      pluginsStage.processAll (pluginData);
-      AIDCommand command = processReply (pluginData);
-      if (command != null)
-        lockKeyboard (command.getKeyName ());
-      return command;
-    }
-    return null;
-  }
+  //  public AIDCommand processPluginAuto ()
+  //  {
+  //    assert !keyboardLocked;
+  //
+  //    if (pluginsStage != null && pluginsStage.activePlugins () > 0)
+  //    {
+  //      int cursorPosition = cursor.getLocation ();
+  //      PluginData pluginData =
+  //          fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
+  //                                        cursorPosition % columns);
+  //
+  //      if (false)
+  //      {
+  //        System.out.println ("--------------------------------------------");
+  //        System.out.println (pluginData);
+  //      }
+  //
+  //      pluginsStage.processAll (pluginData);
+  //      AIDCommand command = processReply (pluginData);
+  //      if (command != null)
+  //        lockKeyboard (command.getKeyName ());
+  //      return command;
+  //    }
+  //    return null;
+  //  }
 
   // created by PluginsStage.itemSelected() -> PluginEntry.select()
   // which sets menuItem.setOnAction (e -> screen.processPluginRequest (plugin))
-  public void processPluginRequest (Plugin plugin)
-  {
-    assert consolePane != null;
-    int cursorPosition = cursor.getLocation ();
-    PluginData pluginData =
-        fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
-                                      cursorPosition % columns);
-    plugin.processRequest (pluginData);
-    AIDCommand command = processReply (pluginData);
-    if (command != null)
-    {
-      lockKeyboard (command.getKeyName ());
-      consolePane.sendAID (command);
-    }
-  }
+  //  public void processPluginRequest (Plugin plugin)
+  //  {
+  //    assert consolePane != null;
+  //    int cursorPosition = cursor.getLocation ();
+  //    PluginData pluginData =
+  //        fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
+  //                                      cursorPosition % columns);
+  //    plugin.processRequest (pluginData);
+  //    AIDCommand command = processReply (pluginData);
+  //    if (command != null)
+  //    {
+  //      lockKeyboard (command.getKeyName ());
+  //      consolePane.sendAID (command);
+  //    }
+  //  }
 
-  private AIDCommand processReply (PluginData data)
-  {
-    int currentLocation = cursor.getLocation ();
-
-    boolean isVisible = cursor.isVisible ();
-    if (isVisible)
-      cursor.setVisible (false);
-
-    for (ScreenField screenField : data.changedFields)
-    {
-      Field field = fieldManager.getField (screenField.location.location);   // first display location
-      assert field != null;
-      if (field != null)    // should be impossible
-      {
-        if (screenField.newData == null)
-        {
-          // erase field?
-        }
-        else
-        {
-          try
-          {
-            // should this type the characters instead?
-            field.setText (screenField.newData.getBytes ("CP1047"));
-            field.setModified (true);
-          }
-          catch (UnsupportedEncodingException e)
-          {
-            e.printStackTrace ();
-          }
-        }
-        field.draw ();      // draws the field without a cursor
-      }
-    }
-
-    if (data.cursorMoved ())
-      cursor.moveTo (data.getNewCursorLocation ());
-    else
-      cursor.moveTo (currentLocation);
-
-    if (isVisible)
-      cursor.setVisible (true);
-
-    if (data.getKey () != 0)
-    {
-      setAID (data.getKey ());
-      AIDCommand command = readModifiedFields ();
-      return command;
-    }
-    return null;
-  }
+  //  private AIDCommand processReply (PluginData data)
+  //  {
+  //    int currentLocation = cursor.getLocation ();
+  //
+  //    boolean isVisible = cursor.isVisible ();
+  //    if (isVisible)
+  //      cursor.setVisible (false);
+  //
+  //    for (ScreenField screenField : data.changedFields)
+  //    {
+  //      Field field = fieldManager.getField (screenField.location.location);   // first display location
+  //      assert field != null;
+  //      if (field != null)    // should be impossible
+  //      {
+  //        if (screenField.newData == null)
+  //        {
+  //          // erase field?
+  //        }
+  //        else
+  //        {
+  //          try
+  //          {
+  //            // should this type the characters instead?
+  //            field.setText (screenField.newData.getBytes ("CP1047"));
+  //            field.setModified (true);
+  //          }
+  //          catch (UnsupportedEncodingException e)
+  //          {
+  //            e.printStackTrace ();
+  //          }
+  //        }
+  //        field.draw ();      // draws the field without a cursor
+  //      }
+  //    }
+  //
+  //    if (data.cursorMoved ())
+  //      cursor.moveTo (data.getNewCursorLocation ());
+  //    else
+  //      cursor.moveTo (currentLocation);
+  //
+  //    if (isVisible)
+  //      cursor.setVisible (true);
+  //
+  //    if (data.getKey () != 0)
+  //    {
+  //      setAID (data.getKey ());
+  //      AIDCommand command = readModifiedFields ();
+  //      return command;
+  //    }
+  //    return null;
+  //  }
 
   // ---------------------------------------------------------------------------------//
   // Send AID command
