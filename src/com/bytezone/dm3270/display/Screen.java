@@ -376,6 +376,7 @@ public class Screen extends Canvas
       sp.reset ();
 
     cursor.moveTo (0);
+    pen.reset ();
   }
 
   void eraseScreen ()

@@ -14,6 +14,7 @@ public class Pen
   private ScreenContext overrideContext;
   private int currentPosition;
   private int startFieldPosition;
+  private int totalFields;
 
   public Pen (Screen screen)
   {
@@ -26,10 +27,14 @@ public class Pen
     return contextManager.getBase ();
   }
 
+  public void reset ()
+  {
+    totalFields = 0;
+  }
+
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();
-    //    System.out.printf ("Starting field : %d%n", currentPosition);
 
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     screenPosition.reset ();
@@ -39,6 +44,8 @@ public class Pen
     startFieldPosition = currentPosition;
     reset ((byte) 0);
     storeCurrentContext ();
+
+    totalFields++;
   }
 
   public void addAttribute (Attribute attribute)
@@ -146,7 +153,7 @@ public class Pen
         break;
     }
 
-    System.out.println ("No start field found");
+    System.out.printf ("No start field found: %d%n", totalFields);
     return -1;
   }
 
@@ -154,12 +161,16 @@ public class Pen
   {
     currentPosition = screen.validate (position);
 
-    int pos = findStartPosition (currentPosition);
-    if (pos >= 0)
+    if (totalFields > 0)
     {
-      startFieldPosition = pos;
-      currentContext = screen.getScreenPosition (startFieldPosition).getScreenContext ();
-      storeCurrentContext ();
+      int pos = findStartPosition (currentPosition);
+      if (pos >= 0)
+      {
+        startFieldPosition = pos;
+        currentContext =
+            screen.getScreenPosition (startFieldPosition).getScreenContext ();
+        //        storeCurrentContext ();
+      }
     }
   }
 
