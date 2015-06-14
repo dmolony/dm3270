@@ -24,6 +24,7 @@ public final class ScreenPosition
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();
 
+  private int position;
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
@@ -33,7 +34,7 @@ public final class ScreenPosition
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
 
-  public ScreenPosition (GraphicsContext gc, CharacterSize characterSize,
+  public ScreenPosition (int position, GraphicsContext gc, CharacterSize characterSize,
       ScreenContext base)
   {
     this.gc = gc;
@@ -315,8 +316,12 @@ public final class ScreenPosition
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
+    text.append (String.format ("%4d %-20s", position, screenContext));
     if (isStartField ())
+    {
+      text.append ("  ");
       text.append (startFieldAttribute);
+    }
 
     return text.toString ();
   }

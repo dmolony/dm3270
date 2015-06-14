@@ -94,7 +94,7 @@ public class Screen extends Canvas
     screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = pen.getBase ();
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (gc, characterSize, baseContext);
+      screenPositions[i] = new ScreenPosition (i, gc, characterSize, baseContext);
 
     addTSOCommandStatusChangeListener (jobStage);
   }
@@ -893,11 +893,8 @@ public class Screen extends Canvas
 
   private void dumpScreenPositions (int from, int to)
   {
-    while (from++ < to)
-    {
-      ScreenPosition sp = screenPositions[from];
-      System.out.printf ("%4d  %s  %s%n", from, sp.getScreenContext (), sp);
-    }
+    while (from < to)
+      System.out.println (screenPositions[from++]);
   }
 
   public String getScreenText ()
