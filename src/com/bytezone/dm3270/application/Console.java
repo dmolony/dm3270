@@ -17,7 +17,6 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.session.Session;
 
@@ -41,7 +40,8 @@ public class Console extends Application
   private ReplayStage replayStage;
   private MainframeStage mainframeStage;
   private PluginsStage pluginsStage;
-  private FileStage fileStage;
+
+  //  private FileStage fileStage;
 
   //  private FontManager fontManager;
 
@@ -279,12 +279,8 @@ public class Console extends Application
 
   private Screen createScreen (Function function)
   {
-    screen = new Screen (24, 80, prefs, function);
-    screen.setPlugins (pluginsStage);
-
-    fileStage = new FileStage (prefs);
-    screen.setFileStage (fileStage);
-
+    screen = new Screen (24, 80, prefs, function, pluginsStage);
+    //    screen.setPlugins (pluginsStage);
     return screen;
   }
 }

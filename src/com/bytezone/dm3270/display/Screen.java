@@ -33,15 +33,16 @@ public class Screen extends Canvas
   private final byte[] buffer = new byte[4096];
 
   private final ScreenPosition[] screenPositions;
-  //  private final CharacterSize characterSize;        // contains font-specific values
 
   private final FieldManager fieldManager = new FieldManager (this);
-  private final Pen pen = new Pen (this);
-
   private final FontManager fontManager = new FontManager (this);
+  private final JobStage jobStage = new JobStage ();
+  private final FileStage fileStage;
+  private final PluginsStage pluginsStage;
+
+  private final Pen pen = new Pen (this);
   private final Cursor cursor = new Cursor (this);
   private final Function function;
-  //  private ConsolePane consolePane;
 
   // these are duplicated in FontManager
   private final int xOffset = 4;      // padding left and right
@@ -52,20 +53,12 @@ public class Screen extends Canvas
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final JobStage jobStage = new JobStage ();
-
-  private FileStage fileStage;
-  //  private Transfer currentTransfer;
-
   private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
 
   private byte currentAID;
   private byte replyMode;
   private byte[] replyTypes = new byte[0];
-
-  private PluginsStage pluginsStage;
-  //  private int sequence;
 
   public final int rows;
   public final int columns;
@@ -76,18 +69,21 @@ public class Screen extends Canvas
     BUILD_FIELDS, DONT_BUILD_FIELDS
   }
 
-  public Screen (int rows, int columns, Preferences prefs, Function function)
+  public Screen (int rows, int columns, Preferences prefs, Function function,
+      PluginsStage pluginsStage)
   {
     this.rows = rows;
     this.columns = columns;
     screenSize = rows * columns;
     this.function = function;
+    fileStage = new FileStage (prefs);
+    this.pluginsStage = pluginsStage;
+    pluginsStage.setScreen (this);
 
     String fontSelected = prefs.get ("FontName", "Monospaced");
     String sizeSelected = prefs.get ("FontSize", "16");
 
     GraphicsContext gc = getGraphicsContext2D ();
-    //    characterSize = new CharacterSize ();
     CharacterSize characterSize = fontManager.getCharacterSize ();
     fontManager.setFont (fontSelected, Integer.parseInt (sizeSelected));
 
@@ -109,16 +105,7 @@ public class Screen extends Canvas
     return fontManager;
   }
 
-  //  public void setConsolePane (ConsolePane consolePane)
-  //  {
-  //    this.consolePane = consolePane;
-  //  }
-  //
-  //  public ConsolePane getConsolePane ()
-  //  {
-  //    return consolePane;
-  //  }
-
+  // called by WriteCommand.process()
   public PluginsStage getPluginsStage ()
   {
     return pluginsStage;
@@ -129,10 +116,10 @@ public class Screen extends Canvas
     return jobStage;
   }
 
-  //  public void setFontManager (FontManager fontManager)
-  //  {
-  //    this.fontManager = fontManager;
-  //  }
+  public FileStage getFileStage ()
+  {
+    return fileStage;
+  }
 
   // called from ConsoleKeyEvent in order to fix a java bug on OSX
   public void doFontSmaller ()
@@ -140,98 +127,9 @@ public class Screen extends Canvas
     fontManager.smaller ();
   }
 
-  //  private void setFont (String name, int size)
-  //  {
-  //    characterSize.changeFont (name, size);
-  //
-  //    setWidth (characterSize.getWidth () * columns + xOffset * 2);
-  //    setHeight (characterSize.getHeight () * rows + yOffset * 2);
-  //
-  //    getGraphicsContext2D ().setFont (characterSize.getFont ());
-  //  }
-  //
-  //  public void adjustFont (String name, int size)
-  //  {
-  //    if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
-  //      return;
-  //
-  //    setFont (name, size);
-  //    ((Stage) getScene ().getWindow ()).sizeToScene ();
-  //
-  //    eraseScreen ();
-  //    drawScreen ();
-  //  }
-  //
-  //  public String getFontName ()
-  //  {
-  //    return characterSize.getName ();
-  //  }
-  //
-  //  public int getFontSize ()
-  //  {
-  //    return characterSize.getSize ();
-  //  }
-
-  public void setFileStage (FileStage fileStage)
-  {
-    this.fileStage = fileStage;
-  }
-
-  public FileStage getFileStage ()
-  {
-    return fileStage;
-  }
-
-  //  public Transfer openTransfer (FileTransferOutbound transferRecord)
-  //  {
-  //    if (currentTransfer != null)
-  //      if (fileStage != null)
-  //        fileStage.addTransfer (currentTransfer);
-  //
-  //    currentTransfer = new Transfer ();
-  //    currentTransfer.add (transferRecord);
-  //    return currentTransfer;
-  //  }
-  //
-  //  public Transfer getTransfer ()
-  //  {
-  //    return currentTransfer;
-  //  }
-  //
-  //  public Transfer closeTransfer (FileTransferOutbound transferRecord)
-  //  {
-  //    if (currentTransfer == null)
-  //    {
-  //      System.out.println ("Null");
-  //      return null;
-  //    }
-  //
-  //    Transfer transfer = currentTransfer;
-  //    currentTransfer.add (transferRecord);
-  //
-  //    if (fileStage != null)
-  //    {
-  //      fileStage.addTransfer (currentTransfer);
-  //    }
-  //    currentTransfer = null;
-  //
-  //    return transfer;
-  //  }
-  //
-  //  public void closeTransfer ()
-  //  {
-  //    currentTransfer = null;
-  //  }
-
   public Function getFunction ()
   {
     return function;
-  }
-
-  public void setPlugins (PluginsStage pluginsStage)
-  {
-    this.pluginsStage = pluginsStage;
-    pluginsStage.setScreen (this);
   }
 
   // display a message on the screen - only used when logging off
@@ -390,26 +288,6 @@ public class Screen extends Canvas
     return false;
   }
 
-  //  public int countFields ()
-  //  {
-  //    return fieldManager.size ();
-  //  }
-  //
-  //  public Field getField (int position)
-  //  {
-  //    return fieldManager.getField (position);
-  //  }
-  //
-  //  public List<Field> getFields ()
-  //  {
-  //    return fieldManager.getFields ();
-  //  }
-  //
-  //  public List<Field> getUnprotectedFields ()
-  //  {
-  //    return fieldManager.getUnprotectedFields ();
-  //  }
-
   public Field getHomeField ()
   {
     List<Field> fields = fieldManager.getUnprotectedFields ();
@@ -443,122 +321,6 @@ public class Screen extends Canvas
   {
     return replyTypes;
   }
-
-  // ---------------------------------------------------------------------------------//
-  // Process plugins
-  // ---------------------------------------------------------------------------------//
-
-  // called from WriteCommand.process() after unlocking keyboard
-  // will eventually be called before unlocking the keyboard
-  //  public AIDCommand processPluginAuto ()
-  //  {
-  //    assert !keyboardLocked;
-  //
-  //    if (pluginsStage != null && pluginsStage.activePlugins () > 0)
-  //    {
-  //      int cursorPosition = cursor.getLocation ();
-  //      PluginData pluginData =
-  //          fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
-  //                                        cursorPosition % columns);
-  //
-  //      if (false)
-  //      {
-  //        System.out.println ("--------------------------------------------");
-  //        System.out.println (pluginData);
-  //      }
-  //
-  //      pluginsStage.processAll (pluginData);
-  //      AIDCommand command = processReply (pluginData);
-  //      if (command != null)
-  //        lockKeyboard (command.getKeyName ());
-  //      return command;
-  //    }
-  //    return null;
-  //  }
-
-  // created by PluginsStage.itemSelected() -> PluginEntry.select()
-  // which sets menuItem.setOnAction (e -> screen.processPluginRequest (plugin))
-  //  public void processPluginRequest (Plugin plugin)
-  //  {
-  //    assert consolePane != null;
-  //    int cursorPosition = cursor.getLocation ();
-  //    PluginData pluginData =
-  //        fieldManager.getPluginScreen (sequence++, cursorPosition / columns,
-  //                                      cursorPosition % columns);
-  //    plugin.processRequest (pluginData);
-  //    AIDCommand command = processReply (pluginData);
-  //    if (command != null)
-  //    {
-  //      lockKeyboard (command.getKeyName ());
-  //      consolePane.sendAID (command);
-  //    }
-  //  }
-
-  //  private AIDCommand processReply (PluginData data)
-  //  {
-  //    int currentLocation = cursor.getLocation ();
-  //
-  //    boolean isVisible = cursor.isVisible ();
-  //    if (isVisible)
-  //      cursor.setVisible (false);
-  //
-  //    for (ScreenField screenField : data.changedFields)
-  //    {
-  //      Field field = fieldManager.getField (screenField.location.location);   // first display location
-  //      assert field != null;
-  //      if (field != null)    // should be impossible
-  //      {
-  //        if (screenField.newData == null)
-  //        {
-  //          // erase field?
-  //        }
-  //        else
-  //        {
-  //          try
-  //          {
-  //            // should this type the characters instead?
-  //            field.setText (screenField.newData.getBytes ("CP1047"));
-  //            field.setModified (true);
-  //          }
-  //          catch (UnsupportedEncodingException e)
-  //          {
-  //            e.printStackTrace ();
-  //          }
-  //        }
-  //        field.draw ();      // draws the field without a cursor
-  //      }
-  //    }
-  //
-  //    if (data.cursorMoved ())
-  //      cursor.moveTo (data.getNewCursorLocation ());
-  //    else
-  //      cursor.moveTo (currentLocation);
-  //
-  //    if (isVisible)
-  //      cursor.setVisible (true);
-  //
-  //    if (data.getKey () != 0)
-  //    {
-  //      setAID (data.getKey ());
-  //      AIDCommand command = readModifiedFields ();
-  //      return command;
-  //    }
-  //    return null;
-  //  }
-
-  // ---------------------------------------------------------------------------------//
-  // Send AID command
-  // ---------------------------------------------------------------------------------//
-
-  //  public void sendAID ()
-  //  {
-  //    AIDCommand command = readModifiedFields ();
-  //    if (command != null)
-  //    {
-  //      lockKeyboard (command.getKeyName ());
-  //      consolePane.sendAID (command);
-  //    }
-  //  }
 
   public void setFieldText (Field field, String text)
   {
@@ -775,38 +537,6 @@ public class Screen extends Canvas
   public boolean isKeyboardLocked ()
   {
     return keyboardLocked;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // Batch jobs
-  // ---------------------------------------------------------------------------------//
-
-  //  public void batchJobSubmitted (int jobNumber, String jobName)
-  //  {
-  //    System.out.println ("Job submitted:");
-  //
-  //    BatchJob batchJob = new BatchJob (jobNumber, jobName);
-  //    jobStage.addBatchJob (batchJob);
-  //    System.out.println (batchJob);
-  //  }
-  //
-  //  public void
-  //      batchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
-  //  {
-  //    System.out.println ("Job completed:");
-  //
-  //    BatchJob batchJob = jobStage.getBatchJob (jobNumber);
-  //    if (batchJob != null)
-  //    {
-  //      batchJob.completed (time, conditionCode);
-  //      System.out.println (batchJob);
-  //      jobStage.refreshJobTable ();            // temp fix before jdk 8u60
-  //    }
-  //  }
-
-  public void showJobStage ()
-  {
-    jobStage.show ();
   }
 
   // ---------------------------------------------------------------------------------//

@@ -264,7 +264,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
 
   private void jobDisplay ()
   {
-    screen.showJobStage ();
+    screen.getJobStage ().show ();
   }
 
   private void fileDisplay ()
