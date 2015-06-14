@@ -353,9 +353,7 @@ public class Screen extends Canvas
       cursor.setVisible (true);
     }
 
-    drawPosition (cursor.getLocation (), true);
-
-    //    dumpScreenPositions (0, 80);
+    drawPosition (cursor.getLocation (), true);       // draw the cursor
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
@@ -895,10 +893,10 @@ public class Screen extends Canvas
 
   private void dumpScreenPositions (int from, int to)
   {
-    for (int i = from; i < to; i++)
+    while (from++ < to)
     {
-      ScreenPosition sp = screenPositions[i];
-      System.out.printf ("%4d  %s  %s%n", i, sp.getScreenContext (), sp);
+      ScreenPosition sp = screenPositions[from];
+      System.out.printf ("%4d  %s  %s%n", from, sp.getScreenContext (), sp);
     }
   }
 
