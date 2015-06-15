@@ -62,6 +62,11 @@ class CommandPane extends TabPane
                       -> replay (newValue));
   }
 
+  public void setScreen (Screen screen)
+  {
+    this.screen = screen;
+  }
+
   protected void replay (SessionRecord sessionRecord)
   {
     if (sessionRecord == null)     // nothing selected
@@ -81,7 +86,9 @@ class CommandPane extends TabPane
     ReplyBuffer message = sessionRecord.getMessage ();
 
     if (process == ProcessInstruction.DoProcess)
+    {
       message.process ();       // only process the message when in Replay mode
+    }
 
     Buffer reply = message.getReply ();
 

@@ -33,11 +33,6 @@ public class Pen
     totalFields = 0;
   }
 
-  //  public int getTotalFields ()
-  //  {
-  //    return totalFields;
-  //  }
-
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();
@@ -159,9 +154,7 @@ public class Pen
       if (pos >= 0)
       {
         startFieldPosition = pos;
-        currentContext =
-            screen.getScreenPosition (startFieldPosition).getScreenContext ();
-        //        storeCurrentContext ();
+        currentContext = screen.getScreenPosition (pos).getScreenContext ();
       }
     }
   }

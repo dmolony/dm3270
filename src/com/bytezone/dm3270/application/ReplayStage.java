@@ -53,6 +53,8 @@ class ReplayStage extends Stage
     CommandPane commandPane =
         new CommandPane (table, CommandPane.ProcessInstruction.DoProcess);
 
+    commandPane.setScreen (session.getScreen ());
+
     BorderPane borderPane = new BorderPane ();
     borderPane.setLeft (table);
     borderPane.setCenter (commandPane);
