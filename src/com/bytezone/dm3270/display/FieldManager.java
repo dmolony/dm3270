@@ -132,20 +132,83 @@ public class FieldManager
 
   private void addField (Field field)
   {
-    //    Field field = new Field (screen, positions);
     fields.add (field);
 
     dataPositions += field.getDisplayLength ();
+
     if (field.getDisplayLength () == 0)
       emptyFields.add (field);
+
     if (field.isUnprotected ())
       inputPositions += field.getDisplayLength ();
+
     if (field.isHidden ())
       if (field.isProtected ())
         ++hiddenProtectedFields;
       else
         ++hiddenUnprotectedFields;
   }
+
+  public Field getField (int position)      // this needs to be improved
+  {
+    for (Field field : fields)
+      if (field.contains (position))
+        return field;
+    return null;
+  }
+
+  public List<Field> getUnprotectedFields ()
+  {
+    return unprotectedFields;
+  }
+
+  public List<Field> getFields ()
+  {
+    return fields;
+  }
+
+  public int size ()
+  {
+    return fields.size ();
+  }
+
+  public void drawFields ()
+  {
+    for (Field field : fields)
+      field.draw ();
+  }
+
+  public void drawUnprotectedFields ()
+  {
+    for (Field field : unprotectedFields)
+      field.draw ();
+  }
+
+  Field eraseAllUnprotected ()
+  {
+    if (unprotectedFields.size () == 0)
+      return null;
+
+    for (Field field : unprotectedFields)
+      field.clear (true);
+
+    return unprotectedFields.get (0);
+  }
+
+  public PluginData getPluginScreen (int sequence, int row, int column)
+  {
+    List<ScreenField> screenFields = new ArrayList<> ();
+    int count = 0;
+
+    for (Field field : fields)
+      screenFields.add (field.getScreenField (sequence, count++));
+
+    return new PluginData (sequence, row, column, screenFields);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Interpret screen
+  // ---------------------------------------------------------------------------------//
 
   public List<String> getMenus ()
   {
@@ -232,63 +295,6 @@ public class FieldManager
         return false;
 
     return true;
-  }
-
-  public Field getField (int position)      // this needs to be improved
-  {
-    for (Field field : fields)
-      if (field.contains (position))
-        return field;
-    return null;
-  }
-
-  public List<Field> getUnprotectedFields ()
-  {
-    return unprotectedFields;
-  }
-
-  public List<Field> getFields ()
-  {
-    return fields;
-  }
-
-  public int size ()
-  {
-    return fields.size ();
-  }
-
-  public void drawFields ()
-  {
-    for (Field field : fields)
-      field.draw ();
-  }
-
-  public void drawUnprotectedFields ()
-  {
-    for (Field field : unprotectedFields)
-      field.draw ();
-  }
-
-  Field eraseAllUnprotected ()
-  {
-    if (unprotectedFields.size () == 0)
-      return null;
-
-    for (Field field : unprotectedFields)
-      field.clear (true);
-
-    return unprotectedFields.get (0);
-  }
-
-  public PluginData getPluginScreen (int sequence, int row, int column)
-  {
-    List<ScreenField> screenFields = new ArrayList<> ();
-    int count = 0;
-
-    for (Field field : fields)
-      screenFields.add (field.getScreenField (sequence, count++));
-
-    return new PluginData (sequence, row, column, screenFields);
   }
 
   // ---------------------------------------------------------------------------------//
