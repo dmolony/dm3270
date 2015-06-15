@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.display;
 
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Menu;
@@ -36,11 +37,14 @@ public class FontManager
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
 
-  public FontManager (Screen screen)
+  public FontManager (Screen screen, Preferences prefs)
   {
     this.screen = screen;
-    //    screen.setFontManager (this);
     characterSize = new CharacterSize ();
+
+    String fontSelected = prefs.get ("FontName", "Monospaced");
+    String sizeSelected = prefs.get ("FontSize", "16");
+    setFont (fontSelected, Integer.parseInt (sizeSelected));
   }
 
   public CharacterSize getCharacterSize ()

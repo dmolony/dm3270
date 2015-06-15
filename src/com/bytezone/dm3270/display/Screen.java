@@ -35,13 +35,14 @@ public class Screen extends Canvas
   private final ScreenPosition[] screenPositions;
 
   private final FieldManager fieldManager = new FieldManager (this);
-  private final FontManager fontManager = new FontManager (this);
+  private final FontManager fontManager;
   private final JobStage jobStage = new JobStage ();
   private final FileStage fileStage;
   private final PluginsStage pluginsStage;
 
   private final Cursor cursor = new Cursor (this);
   private final Function function;
+  private final GraphicsContext graphicsContext;
 
   // these are duplicated in FontManager
   private final int xOffset = 4;      // padding left and right
@@ -75,21 +76,21 @@ public class Screen extends Canvas
     this.columns = columns;
     screenSize = rows * columns;
     this.function = function;
+
     fileStage = new FileStage (prefs);
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
 
-    String fontSelected = prefs.get ("FontName", "Monospaced");
-    String sizeSelected = prefs.get ("FontSize", "16");
+    fontManager = new FontManager (this, prefs);
 
-    GraphicsContext gc = getGraphicsContext2D ();
-    CharacterSize characterSize = fontManager.getCharacterSize ();
-    fontManager.setFont (fontSelected, Integer.parseInt (sizeSelected));
-
-    screenPositions = new ScreenPosition[rows * columns];
     ScreenContext baseContext = fieldManager.getPen ().getBase ();
-    for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (i, gc, characterSize, baseContext);
+    graphicsContext = getGraphicsContext2D ();
+    CharacterSize characterSize = fontManager.getCharacterSize ();
+
+    screenPositions = new ScreenPosition[screenSize];
+    for (int i = 0; i < screenSize; i++)
+      screenPositions[i] =
+          new ScreenPosition (i, graphicsContext, characterSize, baseContext);
 
     addTSOCommandStatusChangeListener (jobStage);
   }
@@ -134,10 +135,10 @@ public class Screen extends Canvas
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {
-    GraphicsContext gc = getGraphicsContext2D ();
-    gc.setFill (ColorAttribute.colors[8]);                // black
-    gc.fillRect (0, 0, getWidth (), getHeight ());
-    gc.setFill (ColorAttribute.colors[5]);                // turquoise
+    graphicsContext.setFill (ColorAttribute.colors[8]);                // black
+    graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
+    graphicsContext.setFill (ColorAttribute.colors[5]);                // turquoise
+
     int x = 120;
     int y = 100;
     int height = 20;
@@ -145,7 +146,7 @@ public class Screen extends Canvas
     String[] lines = text.split ("\n");
     for (String line : lines)
     {
-      gc.fillText (line, x, y);
+      graphicsContext.fillText (line, x, y);
       y += height;
     }
   }
@@ -271,20 +272,13 @@ public class Screen extends Canvas
       sp.reset ();
 
     cursor.moveTo (0);
-    fieldManager.reset ();
+    fieldManager.reset ();        // resets pen
   }
 
   void eraseScreen ()
   {
-    GraphicsContext gc = getGraphicsContext2D ();
-    gc.setFill (ColorAttribute.colors[8]);                // black
-    gc.fillRect (0, 0, getWidth (), getHeight ());
-  }
-
-  @Override
-  public boolean isResizable ()     // should apply to the Stage, not the Canvas
-  {
-    return false;
+    graphicsContext.setFill (ColorAttribute.colors[8]);                // black
+    graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
   }
 
   public Field getHomeField ()

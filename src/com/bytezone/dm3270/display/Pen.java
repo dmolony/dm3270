@@ -27,16 +27,24 @@ public class Pen
     return contextManager.getBase ();
   }
 
+  // this is just a flag so we know that there is a start field somewhere
   public void reset ()
   {
     totalFields = 0;
   }
 
+  //  public int getTotalFields ()
+  //  {
+  //    return totalFields;
+  //  }
+
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();
+    totalFields++;
 
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+
     screenPosition.reset ();
     screenPosition.setStartField (startFieldAttribute);
     screenPosition.setVisible (false);
@@ -44,8 +52,6 @@ public class Pen
     startFieldPosition = currentPosition;
     reset ((byte) 0);
     storeCurrentContext ();
-
-    totalFields++;
   }
 
   public void addAttribute (Attribute attribute)
@@ -132,29 +138,15 @@ public class Pen
     moveRight ();
   }
 
+  public void moveRight ()
+  {
+    currentPosition = screen.validate (currentPosition + 1);
+  }
+
   public void write (String text)
   {
     for (byte b : text.getBytes ())
       write (b);
-  }
-
-  private int findStartPosition (int position)
-  {
-    int pos = position;
-    while (true)
-    {
-      pos = screen.validate (pos - 1);
-      ScreenPosition sp = screen.getScreenPosition (pos);
-
-      if (sp.isStartField ())
-        return pos;
-
-      if (pos == position)
-        break;
-    }
-
-    System.out.printf ("No start field found: %d%n", totalFields);
-    return -1;
   }
 
   public void moveTo (int position)
@@ -174,8 +166,22 @@ public class Pen
     }
   }
 
-  public void moveRight ()
+  private int findStartPosition (int position)
   {
-    currentPosition = screen.validate (currentPosition + 1);
+    int pos = position;
+    while (true)
+    {
+      pos = screen.validate (pos - 1);
+      ScreenPosition sp = screen.getScreenPosition (pos);
+
+      if (sp.isStartField ())
+        return pos;
+
+      if (pos == position)
+        break;
+    }
+
+    System.out.printf ("No start field found: %d%n", totalFields);
+    return -1;
   }
 }

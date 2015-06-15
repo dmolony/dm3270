@@ -36,7 +36,6 @@ public class FieldManager
   public void reset ()
   {
     pen.reset ();
-    System.out.println ("resetting pen fields");
   }
 
   // this is called after the pen and screen positions have been modified
@@ -126,6 +125,10 @@ public class FieldManager
 
     //    getMenus ();
     getTSOCommandField ();
+
+    //    System.out.printf ("Fields: %d, pen fields: %d%n", fields.size (),
+    //                       pen.getTotalFields ());
+    //    assert fields.size () == pen.getTotalFields ();
   }
 
   private void addField (int start, int end, List<ScreenPosition> positions)
