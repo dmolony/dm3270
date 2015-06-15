@@ -40,7 +40,6 @@ public class Screen extends Canvas
   private final FileStage fileStage;
   private final PluginsStage pluginsStage;
 
-  private final Pen pen = new Pen (this);
   private final Cursor cursor = new Cursor (this);
   private final Function function;
 
@@ -88,7 +87,7 @@ public class Screen extends Canvas
     fontManager.setFont (fontSelected, Integer.parseInt (sizeSelected));
 
     screenPositions = new ScreenPosition[rows * columns];
-    ScreenContext baseContext = pen.getBase ();
+    ScreenContext baseContext = fieldManager.getPen ().getBase ();
     for (int i = 0; i < screenPositions.length; i++)
       screenPositions[i] = new ScreenPosition (i, gc, characterSize, baseContext);
 
@@ -162,7 +161,7 @@ public class Screen extends Canvas
 
   public Pen getPen ()
   {
-    return pen;
+    return fieldManager.getPen ();
   }
 
   public Cursor getScreenCursor ()
@@ -230,7 +229,7 @@ public class Screen extends Canvas
 
   public void buildFields ()
   {
-    fieldManager.buildFields (pen);      // what about resetModified?
+    fieldManager.buildFields ();      // what about resetModified?
 
     boolean isTSOCommandScreen = fieldManager.isTSOCommandScreen ();
     Field tsoCommandField = fieldManager.getTSOCommandField ();
@@ -272,7 +271,7 @@ public class Screen extends Canvas
       sp.reset ();
 
     cursor.moveTo (0);
-    pen.reset ();
+    fieldManager.reset ();
   }
 
   void eraseScreen ()

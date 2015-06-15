@@ -11,6 +11,7 @@ public class FieldManager
   private static final String[] tsoMenus = { "Menu", "List", "Mode", "Functions",
                                             "Utilities", "Help" };
   private final Screen screen;
+  private final Pen pen;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
@@ -24,9 +25,22 @@ public class FieldManager
   public FieldManager (Screen screen)
   {
     this.screen = screen;
+    pen = new Pen (screen);
   }
 
-  public void buildFields (Pen pen)
+  public Pen getPen ()
+  {
+    return pen;
+  }
+
+  public void reset ()
+  {
+    pen.reset ();
+    System.out.println ("resetting pen fields");
+  }
+
+  // this is called after the pen and screen positions have been modified
+  public void buildFields ()
   {
     fields.clear ();
     unprotectedFields.clear ();

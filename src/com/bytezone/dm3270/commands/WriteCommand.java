@@ -111,12 +111,12 @@ public class WriteCommand extends Command
     boolean drawScreen = false;
 
     if (eraseWrite)
-      screen.clearScreen ();
+      screen.clearScreen ();                // resets pen
 
     if (orders.size () > 0)
     {
       for (Order order : orders)
-        order.process (screen);
+        order.process (screen);             // modifies pen
 
       cursor.moveTo (cursorLocation);
       screen.buildFields ();
