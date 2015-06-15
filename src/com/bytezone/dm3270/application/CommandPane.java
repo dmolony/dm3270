@@ -112,7 +112,7 @@ class CommandPane extends TabPane
     {
       if (sessionRecord.getSource () == Source.SERVER)
       {
-        fieldsTextArea.setText (screen.getFieldText ());
+        fieldsTextArea.setText (screen.getFieldManager ().getFieldsText ());
         fieldsTextArea.positionCaret (0);
       }
 

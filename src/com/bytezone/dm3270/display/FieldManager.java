@@ -324,17 +324,13 @@ public class FieldManager
   {
     StringBuilder text = new StringBuilder ();
 
+    int count = 0;
     for (Field field : fields)
-    {
-      text.append (field.toStringWithLinks ());
-      text.append ("\n\n");
-    }
+      text.append (String.format ("%4d %s%n", count++, field));
 
     if (text.length () > 0)
-    {
       text.deleteCharAt (text.length () - 1);
-      text.deleteCharAt (text.length () - 1);
-    }
+
     return text.toString ();
   }
 }

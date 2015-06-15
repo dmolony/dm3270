@@ -604,11 +604,6 @@ public class Screen extends Canvas
   // Debugging
   // ---------------------------------------------------------------------------------//
 
-  public String getFieldText ()
-  {
-    return fieldManager.getFieldsText ();
-  }
-
   private void dumpScreenPositions ()
   {
     dumpScreenPositions (0, 1920);
