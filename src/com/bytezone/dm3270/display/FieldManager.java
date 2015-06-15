@@ -56,26 +56,30 @@ public class FieldManager
     int first = -1;
     int ptr = 0;
 
-    while (ptr != first)                    // not wrapped around to the first field
+    while (ptr != first)                   // not wrapped around to the first field yet
     {
       ScreenPosition screenPosition = screen.getScreenPosition (ptr);
+
+      // check for the start of a new field
       if (screenPosition.isStartField ())
       {
-        if (start >= 0)                     // if there is a field to add
+        if (start >= 0)                    // if there is a field to add
         {
           addField (new Field (screen, positions));
           positions.clear ();
         }
         else
-          first = ptr;
+          first = ptr;                     // this is the first field on the screen
 
-        start = ptr;
+        start = ptr;                       // beginning of the current field
       }
 
-      if (start >= 0)
+      // add ScreenPosition to the current field
+      if (start >= 0)                      // if we are in a field...
         positions.add (screenPosition);    // collect next field's positions
 
-      if (++ptr >= screen.screenSize)      // faster than validate()
+      // increment ptr and wrap around
+      if (++ptr == screen.screenSize)      // faster than validate()
       {
         ptr = 0;
         if (first == -1)                   // wrapped around and still no fields
@@ -172,17 +176,17 @@ public class FieldManager
     return fields.size ();
   }
 
-  public void drawFields ()
-  {
-    for (Field field : fields)
-      field.draw ();
-  }
+  //  public void drawFields ()
+  //  {
+  //    for (Field field : fields)
+  //      field.draw ();
+  //  }
 
-  public void drawUnprotectedFields ()
-  {
-    for (Field field : unprotectedFields)
-      field.draw ();
-  }
+  //  public void drawUnprotectedFields ()
+  //  {
+  //    for (Field field : unprotectedFields)
+  //      field.draw ();
+  //  }
 
   Field eraseAllUnprotected ()
   {
@@ -194,6 +198,10 @@ public class FieldManager
 
     return unprotectedFields.get (0);
   }
+
+  // ---------------------------------------------------------------------------------//
+  // Convert internal Fields to ScreenFields for use by plugins
+  // ---------------------------------------------------------------------------------//
 
   public PluginData getPluginScreen (int sequence, int row, int column)
   {
