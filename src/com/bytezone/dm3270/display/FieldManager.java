@@ -63,7 +63,7 @@ public class FieldManager
       {
         if (start >= 0)                     // if there is a field to add
         {
-          addField (start, screen.validate (ptr - 1), positions);
+          addField (new Field (screen, positions));
           positions.clear ();
         }
         else
@@ -84,7 +84,7 @@ public class FieldManager
     }
 
     if (start >= 0 && positions.size () > 0)
-      addField (start, screen.validate (ptr - 1), positions);
+      addField (new Field (screen, positions));
 
     assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
 
@@ -128,16 +128,11 @@ public class FieldManager
 
     //    getMenus ();
     getTSOCommandField ();
-
-    //    System.out.printf ("Fields: %d, pen fields: %d%n", fields.size (),
-    //                       pen.getTotalFields ());
-    //    assert fields.size () == pen.getTotalFields ();
   }
 
-  // no need to pass start and end now that ScreenPosition contains the position
-  private void addField (int start, int end, List<ScreenPosition> positions)
+  private void addField (Field field)
   {
-    Field field = new Field (screen, start, end, positions);
+    //    Field field = new Field (screen, positions);
     fields.add (field);
 
     dataPositions += field.getDisplayLength ();

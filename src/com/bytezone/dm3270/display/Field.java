@@ -19,16 +19,16 @@ public class Field implements Iterable<ScreenPosition>
 
   private final boolean debug = false;
 
-  public Field (Screen screen, int start, int end, List<ScreenPosition> positions)
+  public Field (Screen screen, List<ScreenPosition> positions)
   {
-    assert positions.size () == (start > end ? screen.screenSize - start + end + 1 : end
-        - start + 1);
-
     // later we can drop start and end
     ScreenPosition firstScreenPosition = positions.get (0);
     ScreenPosition lastScreenPosition = positions.get (positions.size () - 1);
-    assert firstScreenPosition.position == start;
-    assert lastScreenPosition.position == end;
+    int start = firstScreenPosition.position;
+    int end = lastScreenPosition.position;
+
+    assert positions.size () == (start > end ? screen.screenSize - start + end + 1 : end
+        - start + 1);
 
     this.screen = screen;
     startPosition = start;
