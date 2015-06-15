@@ -24,6 +24,12 @@ public class Field implements Iterable<ScreenPosition>
     assert positions.size () == (start > end ? screen.screenSize - start + end + 1 : end
         - start + 1);
 
+    // later we can drop start and end
+    ScreenPosition firstScreenPosition = positions.get (0);
+    ScreenPosition lastScreenPosition = positions.get (positions.size () - 1);
+    assert firstScreenPosition.position == start;
+    assert lastScreenPosition.position == end;
+
     this.screen = screen;
     startPosition = start;
     endPosition = end;

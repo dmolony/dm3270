@@ -54,15 +54,18 @@ public class FieldManager
 
     int start = -1;
     int first = -1;
-
     int ptr = 0;
-    while (ptr != first)                    // wrapped around to the first field
+
+    while (ptr != first)                    // not wrapped around to the first field
     {
       ScreenPosition screenPosition = screen.getScreenPosition (ptr);
       if (screenPosition.isStartField ())
       {
         if (start >= 0)                     // if there is a field to add
+        {
           addField (start, screen.validate (ptr - 1), positions);
+          positions.clear ();
+        }
         else
           first = ptr;
 
@@ -131,12 +134,11 @@ public class FieldManager
     //    assert fields.size () == pen.getTotalFields ();
   }
 
+  // no need to pass start and end now that ScreenPosition contains the position
   private void addField (int start, int end, List<ScreenPosition> positions)
   {
     Field field = new Field (screen, start, end, positions);
-
     fields.add (field);
-    positions.clear ();
 
     dataPositions += field.getDisplayLength ();
     if (field.getDisplayLength () == 0)

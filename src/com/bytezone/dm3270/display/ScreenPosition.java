@@ -24,7 +24,7 @@ public final class ScreenPosition
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();
 
-  private int position;
+  public final int position;
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
@@ -37,6 +37,7 @@ public final class ScreenPosition
   public ScreenPosition (int position, GraphicsContext gc, CharacterSize characterSize,
       ScreenContext base)
   {
+    this.position = position;
     this.gc = gc;
     this.characterSize = characterSize;
     baseContext = base;
