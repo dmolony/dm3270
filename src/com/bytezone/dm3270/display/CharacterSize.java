@@ -52,10 +52,8 @@ public class CharacterSize
 
       if (leading < 1)
       {
-        //        System.out.println (this);
         leading = 1;
         height = ascent + descent + leading;
-        //        System.out.println (this);
       }
     }
   }

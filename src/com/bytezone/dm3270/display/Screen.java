@@ -44,7 +44,6 @@ public class Screen extends Canvas
   private final Function function;
   private final GraphicsContext graphicsContext;
 
-  // these are duplicated in FontManager
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
 
@@ -262,6 +261,14 @@ public class Screen extends Canvas
     int y = yOffset + row * characterSize.getHeight ();
 
     screenPosition.draw (x, y, hasCursor);
+  }
+
+  void changeCharacterSize (CharacterSize characterSize)
+  {
+    setWidth (characterSize.getWidth () * columns + xOffset * 2);
+    setHeight (characterSize.getHeight () * rows + yOffset * 2);
+
+    getGraphicsContext2D ().setFont (characterSize.getFont ());
   }
 
   public void clearScreen ()

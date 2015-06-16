@@ -30,12 +30,7 @@ public class FontManager
   private Font defaultFont;
   private final Screen screen;
   private final RadioMenuItem[] fontSizeItems = new RadioMenuItem[fontSizes.length];
-
   private final CharacterSize characterSize;
-
-  // these are duplicated in Screen
-  private final int xOffset = 4;      // padding left and right
-  private final int yOffset = 4;      // padding top and bottom
 
   public FontManager (Screen screen, Preferences prefs)
   {
@@ -165,11 +160,7 @@ public class FontManager
   void setFont (String name, int size)
   {
     characterSize.changeFont (name, size);
-
-    screen.setWidth (characterSize.getWidth () * screen.columns + xOffset * 2);
-    screen.setHeight (characterSize.getHeight () * screen.rows + yOffset * 2);
-
-    screen.getGraphicsContext2D ().setFont (characterSize.getFont ());
+    screen.changeCharacterSize (characterSize);
   }
 
   public void adjustFont (String name, int size)
