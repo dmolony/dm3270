@@ -14,8 +14,6 @@ public class Cursor
   private Field currentField;
   private boolean visible = false;    // this should match the keyboard locked status
 
-  //  private final List<Attribute> unappliedAttributes = new ArrayList<> ();
-
   public enum Direction
   {
     LEFT, RIGHT, UP, DOWN
