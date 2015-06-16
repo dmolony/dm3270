@@ -244,9 +244,7 @@ public class Console extends Application
 
     if (screen != null)
     {
-      //      prefs.put ("FontName", screen.getFontName ());
       prefs.put ("FontName", screen.getFontManager ().getFontName ());
-      //      prefs.put ("FontSize", "" + screen.getFontSize ());
       prefs.put ("FontSize", "" + screen.getFontManager ().getFontSize ());
     }
 
@@ -273,7 +271,6 @@ public class Console extends Application
   private Screen createScreen (Function function)
   {
     screen = new Screen (24, 80, prefs, function, pluginsStage);
-    //    screen.setPlugins (pluginsStage);
     return screen;
   }
 }

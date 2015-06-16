@@ -84,33 +84,9 @@ public abstract class Attribute
 
   public int pack (byte[] buffer, int offset)
   {
-    switch (attributeType)
-    {
-      case RESET:
-        buffer[offset++] = XA_RESET;
-        break;
-
-      case START_FIELD:
-        buffer[offset++] = XA_START_FIELD;
-        break;
-
-      case HIGHLIGHT:
-        buffer[offset++] = XA_HIGHLIGHTING;
-        break;
-
-      case FOREGROUND_COLOR:
-        buffer[offset++] = XA_FGCOLOR;
-        break;
-
-      case BACKGROUND_COLOR:
-        buffer[offset++] = XA_BGCOLOR;
-        break;
-
-      default:
-        buffer[offset++] = 0x00;
-        System.out.println ("***** pack not written *****");
-    }
+    buffer[offset++] = attributeCode;
     buffer[offset++] = attributeValue;
+
     return offset;
   }
 

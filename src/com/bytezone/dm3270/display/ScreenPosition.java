@@ -57,7 +57,6 @@ public final class ScreenPosition
   public void addAttribute (Attribute attribute)
   {
     attributes.add (attribute);
-    //    System.out.printf ("SP %4d added: %s%n", position, attribute);
   }
 
   public List<Attribute> getAttributes ()

@@ -448,23 +448,17 @@ public class Screen extends Canvas
 
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
-    //    System.out.println (sp);
-
     if (replyMode == SetReplyMode.RM_CHARACTER)
     {
-      //      System.out.printf ("Packing %d attributes%n", sp.getAttributes ().size ());
       for (Attribute attribute : sp.getAttributes ())
       {
-        System.out.println (attribute);
         if (attribute.getAttributeType () == AttributeType.RESET)
         {
-          //          System.out.println ("packing reset");
           buffer[ptr++] = Order.SET_ATTRIBUTE;
           ptr = attribute.pack (buffer, ptr);
         }
         else
         {
-          //          System.out.println ("packing non-reset");
           for (byte b : replyTypes)
             if (attribute.matches (b))
             {
