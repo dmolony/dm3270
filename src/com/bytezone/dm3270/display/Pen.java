@@ -130,11 +130,7 @@ public class Pen
     screenPosition.setGraphicsChar (b);
 
     if (pendingAttributes.size () > 0)
-    {
-      for (Attribute attribute : pendingAttributes)
-        screenPosition.addAttribute (attribute);
-      pendingAttributes.clear ();
-    }
+      applyAttributes (screenPosition);
 
     moveRight ();
   }
@@ -147,13 +143,16 @@ public class Pen
     screenPosition.setChar (b);
 
     if (pendingAttributes.size () > 0)
-    {
-      for (Attribute attribute : pendingAttributes)
-        screenPosition.addAttribute (attribute);
-      pendingAttributes.clear ();
-    }
+      applyAttributes (screenPosition);
 
     moveRight ();
+  }
+
+  private void applyAttributes (ScreenPosition screenPosition)
+  {
+    for (Attribute attribute : pendingAttributes)
+      screenPosition.addAttribute (attribute);
+    pendingAttributes.clear ();
   }
 
   public void moveRight ()

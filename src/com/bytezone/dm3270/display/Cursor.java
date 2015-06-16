@@ -160,42 +160,6 @@ public class Cursor
     }
   }
 
-  // called from Orders when building the screen
-  //  public void setChar (byte value)
-  //  {
-  //    ScreenPosition sp = screen.getScreenPosition (currentPosition);
-  //
-  //    sp.reset ();
-  //    if (unappliedAttributes.size () > 0)
-  //      applyAttributes (sp);
-  //
-  //    sp.setChar (value);
-  //  }
-
-  // called from Orders when building the screen
-  //  public void setGraphicsChar (byte value)
-  //  {
-  //    ScreenPosition sp = screen.getScreenPosition (currentPosition);
-  //
-  //    sp.reset ();
-  //    if (unappliedAttributes.size () > 0)
-  //      applyAttributes (sp);
-  //
-  //    sp.setGraphicsChar (value);
-  //  }
-
-  //  public void add (Attribute attribute)
-  //  {
-  //    unappliedAttributes.add (attribute);
-  //  }
-
-  //  private void applyAttributes (ScreenPosition sp)
-  //  {
-  //    for (Attribute attribute : unappliedAttributes)
-  //      sp.addAttribute (attribute);
-  //    unappliedAttributes.clear ();
-  //  }
-
   // ---------------------------------------------------------------------------------//
   // Cursor movement
   // ---------------------------------------------------------------------------------//
