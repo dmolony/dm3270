@@ -57,6 +57,7 @@ public final class ScreenPosition
   public void addAttribute (Attribute attribute)
   {
     attributes.add (attribute);
+    //    System.out.printf ("SP %4d added: %s%n", position, attribute);
   }
 
   public List<Attribute> getAttributes ()
@@ -64,6 +65,7 @@ public final class ScreenPosition
     return attributes;
   }
 
+  // called by Field when deleting a character
   public void clearAttributes ()
   {
     attributes.clear ();
@@ -75,7 +77,9 @@ public final class ScreenPosition
     value = 0;
     isGraphics = false;
     startFieldAttribute = null;
+    attributes.clear ();
     screenContext = baseContext;
+    //    System.out.println ("reset");
   }
 
   // Password fields etc
@@ -323,6 +327,12 @@ public final class ScreenPosition
       text.append ("  ");
       text.append (startFieldAttribute);
     }
+    else
+    {
+      for (Attribute attribute : attributes)
+        text.append ("  " + attribute);
+    }
+    text.append (", byte: " + getChar ());
 
     return text.toString ();
   }

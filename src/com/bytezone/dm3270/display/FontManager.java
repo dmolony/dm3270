@@ -23,7 +23,7 @@ public class FontManager
           "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
           "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 1m", "PT Mono",
           "Source Code Pro", "Ubuntu Mono", "Monospaced" };
-  private static final int[] fontSizes = { 12, 14, 15, 16, 17, 18, 20, 22 };
+  private static final int[] fontSizes = { 10, 12, 14, 15, 16, 17, 18, 20, 22 };
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
@@ -61,7 +61,7 @@ public class FontManager
       boolean fontExists = families.contains (fontName);
       if (fontExists && fontSelected.isEmpty ())
         fontSelected = fontName;
-      setMenuItem (fontName, fontGroup, menuFont, fontSelected, !fontExists);
+      setMenuItem (menuFont, fontGroup, fontName, fontSelected, !fontExists);
     }
 
     if (!fontSelected.isEmpty ())
@@ -87,14 +87,13 @@ public class FontManager
         KeyCombination.SHORTCUT_DOWN));
     bigger.setOnAction (e -> bigger ());
 
-    menuFont.getItems ().addAll (smaller, bigger);
+    menuFont.getItems ().addAll (smaller, bigger, new SeparatorMenuItem ());
 
     // add font sizes
-    menuFont.getItems ().add (new SeparatorMenuItem ());
     int count = 0;
     for (int fontSize : fontSizes)
       fontSizeItems[count++] =
-          setMenuItem (fontSize + "", sizeGroup, menuFont, sizeSelected, false);
+          setMenuItem (menuFont, sizeGroup, fontSize + "", sizeSelected, false);
 
     return menuFont;
   }
@@ -104,7 +103,7 @@ public class FontManager
     return defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
   }
 
-  private RadioMenuItem setMenuItem (String itemName, ToggleGroup toggleGroup, Menu menu,
+  private RadioMenuItem setMenuItem (Menu menu, ToggleGroup toggleGroup, String itemName,
       String selectedItemName, boolean disable)
   {
     RadioMenuItem item = new RadioMenuItem (itemName);
@@ -154,17 +153,8 @@ public class FontManager
 
   private void selectFont ()
   {
-    adjustFont (getSelectedFont (), getSelectedSize ());
-  }
-
-  void setFont (String name, int size)
-  {
-    characterSize.changeFont (name, size);
-    screen.changeCharacterSize (characterSize);
-  }
-
-  public void adjustFont (String name, int size)
-  {
+    String name = getSelectedFont ();
+    int size = getSelectedSize ();
     if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
       return;
 
@@ -173,6 +163,12 @@ public class FontManager
 
     screen.eraseScreen ();
     screen.drawScreen ();
+  }
+
+  private void setFont (String name, int size)
+  {
+    characterSize.changeFont (name, size);
+    screen.characterSizeChanged (characterSize);
   }
 
   public String getFontName ()

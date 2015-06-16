@@ -1,5 +1,8 @@
 package com.bytezone.dm3270.display;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.paint.Color;
 
 import com.bytezone.dm3270.attributes.Attribute;
@@ -15,6 +18,8 @@ public class Pen
   private int currentPosition;
   private int startFieldPosition;
   private int totalFields;
+
+  private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
   public Pen (Screen screen)
   {
@@ -47,12 +52,14 @@ public class Pen
     startFieldPosition = currentPosition;
     reset ((byte) 0);
     storeCurrentContext ();
+
+    pendingAttributes.clear ();
   }
 
   public void addAttribute (Attribute attribute)
   {
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
-    screenPosition.addAttribute (attribute);
+    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    pendingAttributes.add (attribute);
   }
 
   public int getPosition ()
@@ -121,6 +128,14 @@ public class Pen
     screenPosition.reset ();
     storeContext (screenPosition);
     screenPosition.setGraphicsChar (b);
+
+    if (pendingAttributes.size () > 0)
+    {
+      for (Attribute attribute : pendingAttributes)
+        screenPosition.addAttribute (attribute);
+      pendingAttributes.clear ();
+    }
+
     moveRight ();
   }
 
@@ -130,6 +145,14 @@ public class Pen
     screenPosition.reset ();
     storeContext (screenPosition);
     screenPosition.setChar (b);
+
+    if (pendingAttributes.size () > 0)
+    {
+      for (Attribute attribute : pendingAttributes)
+        screenPosition.addAttribute (attribute);
+      pendingAttributes.clear ();
+    }
+
     moveRight ();
   }
 

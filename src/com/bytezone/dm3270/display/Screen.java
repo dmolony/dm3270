@@ -31,6 +31,9 @@ import com.bytezone.dm3270.structuredfields.SetReplyMode;
 public class Screen extends Canvas
 {
   private final byte[] buffer = new byte[4096];
+  private byte currentAID;
+  private byte replyMode;
+  private byte[] replyTypes = new byte[0];
 
   private final ScreenPosition[] screenPositions;
 
@@ -47,6 +50,10 @@ public class Screen extends Canvas
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
 
+  public final int rows;
+  public final int columns;
+  public final int screenSize;
+
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;
   private boolean insertMode;
@@ -54,14 +61,6 @@ public class Screen extends Canvas
 
   private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
-
-  private byte currentAID;
-  private byte replyMode;
-  private byte[] replyTypes = new byte[0];
-
-  public final int rows;
-  public final int columns;
-  public final int screenSize;
 
   public enum BuildInstruction
   {
@@ -80,10 +79,10 @@ public class Screen extends Canvas
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
 
+    graphicsContext = getGraphicsContext2D ();
     fontManager = new FontManager (this, prefs);
 
     ScreenContext baseContext = fieldManager.getPen ().getBase ();
-    graphicsContext = getGraphicsContext2D ();
     CharacterSize characterSize = fontManager.getCharacterSize ();
 
     screenPositions = new ScreenPosition[screenSize];
@@ -263,12 +262,12 @@ public class Screen extends Canvas
     screenPosition.draw (x, y, hasCursor);
   }
 
-  void changeCharacterSize (CharacterSize characterSize)
+  void characterSizeChanged (CharacterSize characterSize)
   {
     setWidth (characterSize.getWidth () * columns + xOffset * 2);
     setHeight (characterSize.getHeight () * rows + yOffset * 2);
 
-    getGraphicsContext2D ().setFont (characterSize.getFont ());
+    graphicsContext.setFont (characterSize.getFont ());
   }
 
   public void clearScreen ()
@@ -449,14 +448,23 @@ public class Screen extends Canvas
 
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
+    //    System.out.println (sp);
+
     if (replyMode == SetReplyMode.RM_CHARACTER)
+    {
+      //      System.out.printf ("Packing %d attributes%n", sp.getAttributes ().size ());
       for (Attribute attribute : sp.getAttributes ())
+      {
+        System.out.println (attribute);
         if (attribute.getAttributeType () == AttributeType.RESET)
         {
+          //          System.out.println ("packing reset");
           buffer[ptr++] = Order.SET_ATTRIBUTE;
           ptr = attribute.pack (buffer, ptr);
         }
         else
+        {
+          //          System.out.println ("packing non-reset");
           for (byte b : replyTypes)
             if (attribute.matches (b))
             {
@@ -464,6 +472,9 @@ public class Screen extends Canvas
               ptr = attribute.pack (buffer, ptr);
               break;
             }
+        }
+      }
+    }
 
     if (sp.isGraphicsChar ())
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;

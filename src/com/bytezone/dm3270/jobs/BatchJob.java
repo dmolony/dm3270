@@ -37,12 +37,12 @@ public class BatchJob
 
   public String outputCommand ()
   {
-    return String.format ("OUTPUT % PRINT(%s.JOB%d)", jobName, jobName, jobNumber);
+    return String.format ("OUTPUT %s PRINT(%s.JOB%d)", jobName, jobName, jobNumber);
   }
 
   public String datasetName ()
   {
-    return String.format ("%s.JOB%s.OUTLIST", jobName, jobName, jobNumber);
+    return String.format ("%s.JOB%s.OUTLIST", jobName, jobNumber);
   }
 
   // JobNumber

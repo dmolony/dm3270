@@ -41,10 +41,6 @@ public class Console extends Application
   private MainframeStage mainframeStage;
   private PluginsStage pluginsStage;
 
-  //  private FileStage fileStage;
-
-  //  private FontManager fontManager;
-
   public enum Function
   {
     SPY, REPLAY, TERMINAL, TEST
@@ -175,17 +171,13 @@ public class Console extends Application
     {
       consoleWindowSaver = new WindowSaver (prefs, primaryStage, "Terminal");
       if (!consoleWindowSaver.restoreWindow ())
-      {
-        primaryStage.sizeToScene ();
         primaryStage.centerOnScreen ();
-      }
     }
     else
     {
       consoleWindowSaver = new WindowSaver (prefs, primaryStage, "Console");
       if (!consoleWindowSaver.restoreWindow ())
       {
-        primaryStage.sizeToScene ();
         primaryStage.setX (0);
         primaryStage.setY (primaryScreenBounds.getMinY () + 100);
       }
@@ -194,6 +186,7 @@ public class Console extends Application
     scene.setOnKeyPressed (new ConsoleKeyPress (consolePane, screen));
     scene.setOnKeyTyped (new ConsoleKeyEvent (screen));
 
+    primaryStage.sizeToScene ();
     primaryStage.show ();
   }
 
