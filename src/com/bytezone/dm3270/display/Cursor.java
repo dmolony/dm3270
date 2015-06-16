@@ -1,11 +1,7 @@
 package com.bytezone.dm3270.display;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import com.bytezone.dm3270.attributes.Attribute;
 
 public class Cursor
 {
@@ -18,7 +14,7 @@ public class Cursor
   private Field currentField;
   private boolean visible = false;    // this should match the keyboard locked status
 
-  private final List<Attribute> unappliedAttributes = new ArrayList<> ();
+  //  private final List<Attribute> unappliedAttributes = new ArrayList<> ();
 
   public enum Direction
   {
@@ -188,10 +184,10 @@ public class Cursor
   //    sp.setGraphicsChar (value);
   //  }
 
-  public void add (Attribute attribute)
-  {
-    unappliedAttributes.add (attribute);
-  }
+  //  public void add (Attribute attribute)
+  //  {
+  //    unappliedAttributes.add (attribute);
+  //  }
 
   //  private void applyAttributes (ScreenPosition sp)
   //  {

@@ -79,7 +79,6 @@ public final class ScreenPosition
     startFieldAttribute = null;
     attributes.clear ();
     screenContext = baseContext;
-    //    System.out.println ("reset");
   }
 
   // Password fields etc
