@@ -140,7 +140,7 @@ public class TransferStage extends Stage
         input.setText (command.getBytes ("CP1047"));
         input.setModified (true);
         input.draw ();
-        consolePane.sendAID (AIDCommand.AID_ENTER_KEY, "ENTR");
+        consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
       }
       else
         System.out.println ("filename not specified");

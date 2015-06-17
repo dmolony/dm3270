@@ -32,21 +32,22 @@ public abstract class Attribute
 
   public String name ()
   {
-    switch (attributeType)
-    {
-      case START_FIELD:
-        return "Start field";
-      case HIGHLIGHT:
-        return "Highlight";
-      case FOREGROUND_COLOR:
-        return "Foreground";
-      case BACKGROUND_COLOR:
-        return "Background";
-      case RESET:
-        return "Reset";
-      default:
-        return "Unknown";
-    }
+    //    switch (attributeType)
+    //    {
+    //      case START_FIELD:
+    //        return "Start field";
+    //      case HIGHLIGHT:
+    //        return "Highlight";
+    //      case FOREGROUND_COLOR:
+    //        return "Foreground";
+    //      case BACKGROUND_COLOR:
+    //        return "Background";
+    //      case RESET:
+    //        return "Reset";
+    //      default:
+    //        return "Unknown";
+    //    }
+    return getTypeName (attributeCode);
   }
 
   public boolean matches (byte... types)
@@ -61,14 +62,14 @@ public abstract class Attribute
   {
     switch (type)
     {
+      case XA_RESET:
+        return "Reset";
       case XA_HIGHLIGHTING:
-        return "Highlighting";
+        return "Highlight";
       case XA_FGCOLOR:
-        return "Foreground Color";
-      case XA_CHARSET:
-        return "Charset";
+        return "Foreground";
       case XA_BGCOLOR:
-        return "Background Color";
+        return "Background";
       case XA_TRANSPARENCY:
         return "Transparency";
       case XA_START_FIELD:
@@ -77,6 +78,8 @@ public abstract class Attribute
         return "Validation";
       case XA_OUTLINING:
         return "Outlining";
+      case XA_CHARSET:
+        return "Charset";
       default:
         return "Unknown";
     }

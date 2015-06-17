@@ -121,7 +121,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       switch (keyCodePressed)
       {
         case ENTER:
-          consolePane.sendAID (AIDCommand.AID_ENTER_KEY, "ENTR");
+          consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
           e.consume ();
           break;
 

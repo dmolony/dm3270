@@ -449,16 +449,13 @@ public class Screen extends Canvas
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
     if (replyMode == SetReplyMode.RM_CHARACTER)
-    {
       for (Attribute attribute : sp.getAttributes ())
-      {
         if (attribute.getAttributeType () == AttributeType.RESET)
         {
           buffer[ptr++] = Order.SET_ATTRIBUTE;
           ptr = attribute.pack (buffer, ptr);
         }
         else
-        {
           for (byte b : replyTypes)
             if (attribute.matches (b))
             {
@@ -466,9 +463,6 @@ public class Screen extends Canvas
               ptr = attribute.pack (buffer, ptr);
               break;
             }
-        }
-      }
-    }
 
     if (sp.isGraphicsChar () && replyMode != SetReplyMode.RM_FIELD)
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;

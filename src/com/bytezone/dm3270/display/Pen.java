@@ -53,8 +53,14 @@ public class Pen
     reset ((byte) 0);
     storeCurrentContext ();
 
-    assert pendingAttributes.size () == 0;
-    //    pendingAttributes.clear ();
+    //    assert pendingAttributes.size () == 0;
+    if (pendingAttributes.size () > 0)
+    {
+      System.out.printf ("Unapplied attributes at %d%n", currentPosition);
+      for (Attribute attribute : pendingAttributes)
+        System.out.println (attribute);
+      pendingAttributes.clear ();
+    }
   }
 
   public void addAttribute (Attribute attribute)

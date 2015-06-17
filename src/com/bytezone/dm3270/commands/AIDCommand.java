@@ -16,20 +16,20 @@ public class AIDCommand extends Command implements BufferAddressSource
 {
   public static final byte NO_AID_SPECIFIED = 0x60;
   public static final byte AID_READ_PARTITION = 0x61;
-  public static final byte AID_ENTER_KEY = 0x7D;
-  public static final byte AID_PA1 = 0x6C;
-  public static final byte AID_PA2 = 0x6E;
   public static final byte AID_PA3 = 0x6B;
+  public static final byte AID_PA1 = 0x6C;
+  public static final byte AID_CLEAR = 0x6D;
+  public static final byte AID_PA2 = 0x6E;
+  public static final byte AID_ENTER = 0x7D;
   public static final byte AID_PF7 = (byte) 0xF7;
   public static final byte AID_PF8 = (byte) 0xF8;
   public static final byte AID_PF10 = (byte) 0x7A;
   public static final byte AID_PF11 = (byte) 0x7B;
-  public static final byte AID_CLEAR = 0x6D;
 
   private static byte[] keys = { //
           0,
           NO_AID_SPECIFIED,
-          AID_ENTER_KEY, //
+          AID_ENTER, //
           (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
           (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
           (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
