@@ -53,7 +53,8 @@ public class Pen
     reset ((byte) 0);
     storeCurrentContext ();
 
-    pendingAttributes.clear ();
+    assert pendingAttributes.size () == 0;
+    //    pendingAttributes.clear ();
   }
 
   public void addAttribute (Attribute attribute)
@@ -128,10 +129,6 @@ public class Pen
     screenPosition.reset ();
     storeContext (screenPosition);
     screenPosition.setGraphicsChar (b);
-
-    if (pendingAttributes.size () > 0)
-      applyAttributes (screenPosition);
-
     moveRight ();
   }
 
@@ -141,10 +138,6 @@ public class Pen
     screenPosition.reset ();
     storeContext (screenPosition);
     screenPosition.setChar (b);
-
-    if (pendingAttributes.size () > 0)
-      applyAttributes (screenPosition);
-
     moveRight ();
   }
 
@@ -157,6 +150,9 @@ public class Pen
 
   public void moveRight ()
   {
+    if (pendingAttributes.size () > 0)
+      applyAttributes (screen.getScreenPosition (currentPosition));
+
     currentPosition = screen.validate (currentPosition + 1);
   }
 

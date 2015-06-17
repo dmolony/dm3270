@@ -86,7 +86,6 @@ public abstract class Attribute
   {
     buffer[offset++] = attributeCode;
     buffer[offset++] = attributeValue;
-
     return offset;
   }
 

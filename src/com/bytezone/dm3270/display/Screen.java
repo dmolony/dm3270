@@ -470,7 +470,7 @@ public class Screen extends Canvas
       }
     }
 
-    if (sp.isGraphicsChar ())
+    if (sp.isGraphicsChar () && replyMode != SetReplyMode.RM_FIELD)
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;
 
     buffer[ptr++] = sp.getByte ();
