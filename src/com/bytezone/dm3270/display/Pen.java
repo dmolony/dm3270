@@ -15,6 +15,7 @@ public class Pen
 
   private ScreenContext currentContext;
   private ScreenContext overrideContext;
+
   private int currentPosition;
   private int startFieldPosition;
   private int totalFields;
@@ -53,19 +54,21 @@ public class Pen
     reset ((byte) 0);
     storeCurrentContext ();
 
-    //    assert pendingAttributes.size () == 0;
+    // sometimes a reset attribute is overwritten by a new SFA
     if (pendingAttributes.size () > 0)
     {
-      System.out.printf ("Unapplied attributes at %d%n", currentPosition);
-      for (Attribute attribute : pendingAttributes)
-        System.out.println (attribute);
+      if (false)
+      {
+        System.out.printf ("Unapplied attributes at %d%n", currentPosition);
+        for (Attribute attribute : pendingAttributes)
+          System.out.println (attribute);
+      }
       pendingAttributes.clear ();
     }
   }
 
   public void addAttribute (Attribute attribute)
   {
-    //    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
     pendingAttributes.add (attribute);
   }
 
@@ -170,6 +173,7 @@ public class Pen
 
   public void moveTo (int position)
   {
+    assert pendingAttributes.size () == 0;
     currentPosition = screen.validate (position);
 
     if (totalFields > 0)
