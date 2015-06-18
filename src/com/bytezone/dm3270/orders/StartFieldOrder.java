@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-import com.bytezone.dm3270.display.Screen;
 
 public class StartFieldOrder extends Order
 {
@@ -29,7 +29,7 @@ public class StartFieldOrder extends Order
   }
 
   @Override
-  public void process (Screen screen)
+  public void process (DisplayScreen screen)
   {
     Pen pen = screen.getPen ();
     location = pen.getPosition ();

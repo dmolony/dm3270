@@ -53,6 +53,7 @@ public class AIDCommand extends Command implements BufferAddressSource
   private final List<Order> orders = new ArrayList<> ();
   private int textOrders;
 
+  // Called by Screen.readBuffer()
   public AIDCommand (Screen screen, byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length, screen);    // copies buffer[offset:length] to data[]

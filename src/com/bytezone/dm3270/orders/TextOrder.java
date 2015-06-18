@@ -3,8 +3,8 @@ package com.bytezone.dm3270.orders;
 import java.io.UnsupportedEncodingException;
 
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-import com.bytezone.dm3270.display.Screen;
 
 public class TextOrder extends Order
 {
@@ -60,7 +60,7 @@ public class TextOrder extends Order
   }
 
   @Override
-  public void process (Screen screen)
+  public void process (DisplayScreen screen)
   {
     Pen pen = screen.getPen ();
     for (byte b : buffer)

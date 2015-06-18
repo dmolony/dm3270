@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-import com.bytezone.dm3270.display.Screen;
 
 public class RepeatToAddressOrder extends Order
 {
@@ -39,7 +39,7 @@ public class RepeatToAddressOrder extends Order
   }
 
   @Override
-  public void process (Screen screen)
+  public void process (DisplayScreen screen)
   {
     int stopLocation = stopAddress.getLocation ();
 

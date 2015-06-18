@@ -1,8 +1,6 @@
 package com.bytezone.dm3270.orders;
 
-import com.bytezone.dm3270.display.Cursor;
-import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.DisplayScreen;
 
 public class EraseUnprotectedToAddressOrder extends Order
 {
@@ -18,32 +16,32 @@ public class EraseUnprotectedToAddressOrder extends Order
   }
 
   @Override
-  public void process (Screen screen)
+  public void process (DisplayScreen screen)
   {
     if (false)
     {
-      Cursor cursor = screen.getScreenCursor ();
-      int cursorPostion = cursor.getLocation ();
-      Field resetField = null;
-
-      for (Field field : screen.getFieldManager ().getUnprotectedFields ())
-        if (field.contains (cursorPostion))
-        {
-          resetField = field;
-          break;
-        }
-
-      // this relies on stopAddress being in an unprotected field
-      while (resetField != null)
-      {
-        resetField.clear (false);       // don't set modified (is this correct?)
-        if (resetField.contains (stopAddress.getLocation ()))
-        {
-          cursor.moveTo (resetField.getFirstLocation ());
-          break;
-        }
-        resetField = resetField.getNextUnprotectedField ();
-      }
+      //      Cursor cursor = screen.getScreenCursor ();
+      //      int cursorPostion = cursor.getLocation ();
+      //      Field resetField = null;
+      //
+      //      for (Field field : screen.getFieldManager ().getUnprotectedFields ())
+      //        if (field.contains (cursorPostion))
+      //        {
+      //          resetField = field;
+      //          break;
+      //        }
+      //
+      //      // this relies on stopAddress being in an unprotected field
+      //      while (resetField != null)
+      //      {
+      //        resetField.clear (false);       // don't set modified (is this correct?)
+      //        if (resetField.contains (stopAddress.getLocation ()))
+      //        {
+      //          cursor.moveTo (resetField.getFirstLocation ());
+      //          break;
+      //        }
+      //        resetField = resetField.getNextUnprotectedField ();
+      //      }
     }
     else
     {

@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.orders;
 
-import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.DisplayScreen;
 
 public abstract class Order
 {
@@ -99,5 +99,5 @@ public abstract class Order
     return ptr;
   }
 
-  public abstract void process (Screen screen);
+  public abstract void process (DisplayScreen screen);
 }

@@ -10,7 +10,7 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 public class Pen
 {
-  private final Screen screen;
+  private final DisplayScreen screen;
   private final ContextManager contextManager;
 
   private ScreenContext currentContext;
@@ -22,7 +22,7 @@ public class Pen
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
-  public Pen (Screen screen)
+  public Pen (DisplayScreen screen)
   {
     this.screen = screen;
     contextManager = new ContextManager ();

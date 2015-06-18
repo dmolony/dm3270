@@ -26,7 +26,7 @@ import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
-public class Screen extends Canvas
+public class Screen extends Canvas implements DisplayScreen
 {
   private final byte[] buffer = new byte[4096];
   private byte currentAID;
@@ -35,11 +35,12 @@ public class Screen extends Canvas
 
   private final ScreenPosition[] screenPositions;
 
-  private final FieldManager fieldManager = new FieldManager (this);
+  private final FieldManager fieldManager;
   private final FontManager fontManager;
   private final JobStage jobStage = new JobStage ();
   private final FileStage fileStage;
   private final PluginsStage pluginsStage;
+  private final Pen pen;
 
   private final Cursor cursor = new Cursor (this);
   private final Function function;
@@ -73,6 +74,9 @@ public class Screen extends Canvas
     screenSize = rows * columns;
     this.function = function;
 
+    pen = new Pen (this);
+    fieldManager = new FieldManager (this, pen.getBase ());
+
     fileStage = new FileStage (prefs);
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
@@ -80,7 +84,8 @@ public class Screen extends Canvas
     graphicsContext = getGraphicsContext2D ();
     fontManager = new FontManager (this, prefs);
 
-    ScreenContext baseContext = fieldManager.getPen ().getBase ();
+    //    ScreenContext baseContext = fieldManager.getPen ().getBase ();
+    ScreenContext baseContext = pen.getBase ();
     CharacterSize characterSize = fontManager.getCharacterSize ();
 
     screenPositions = new ScreenPosition[screenSize];
@@ -147,6 +152,7 @@ public class Screen extends Canvas
     }
   }
 
+  @Override
   public int validate (int position)
   {
     while (position < 0)
@@ -156,9 +162,11 @@ public class Screen extends Canvas
     return position;
   }
 
+  @Override
   public Pen getPen ()
   {
-    return fieldManager.getPen ();
+    //    return fieldManager.getPen ();
+    return pen;
   }
 
   public Cursor getScreenCursor ()
@@ -166,6 +174,7 @@ public class Screen extends Canvas
     return cursor;
   }
 
+  @Override
   public ScreenPosition getScreenPosition (int position)
   {
     return screenPositions[position];
@@ -276,7 +285,8 @@ public class Screen extends Canvas
       sp.reset ();
 
     cursor.moveTo (0);
-    fieldManager.reset ();        // resets pen
+    //    fieldManager.reset ();        // resets pen
+    pen.reset ();
   }
 
   void eraseScreen ()
@@ -526,7 +536,7 @@ public class Screen extends Canvas
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = getReplyTypes ();
 
-      screenHistory.requestScreen (this);
+      screenHistory.requestScreen (this);       // will call readBuffer()
 
       replyMode = savedReplyMode;
       replyTypes = savedReplyTypes;

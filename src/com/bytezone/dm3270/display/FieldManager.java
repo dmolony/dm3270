@@ -11,7 +11,8 @@ public class FieldManager
   private static final String[] tsoMenus = { "Menu", "List", "Mode", "Functions",
                                             "Utilities", "Help" };
   private final Screen screen;
-  private final Pen pen;
+  //  private final Pen pen;
+  private final ScreenContext baseContext;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
@@ -22,21 +23,23 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  public FieldManager (Screen screen)
+  public FieldManager (Screen screen, ScreenContext baseContext)
   {
     this.screen = screen;
-    pen = new Pen (screen);
+    //    pen = new Pen (screen);
+    //    pen = screen.getPen ();
+    this.baseContext = baseContext;
   }
 
-  public Pen getPen ()
-  {
-    return pen;
-  }
+  //  public Pen getPen ()
+  //  {
+  //    return pen;
+  //  }
 
-  public void reset ()
-  {
-    pen.reset ();
-  }
+  //  public void reset ()
+  //  {
+  //    pen.reset ();
+  //  }
 
   // this is called after the pen and screen positions have been modified
   public void buildFields ()
@@ -96,7 +99,8 @@ public class FieldManager
     Field previousUnprotectedField = null;
     for (Field field : fields)
     {
-      field.setScreenContexts (pen.getBase ());
+      //      field.setScreenContexts (pen.getBase ());
+      field.setScreenContexts (baseContext);
       if (field.isUnprotected ())
       {
         unprotectedFields.add (field);

@@ -6,8 +6,8 @@ import java.util.List;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-import com.bytezone.dm3270.display.Screen;
 
 public class StartFieldExtendedOrder extends Order
 {
@@ -67,7 +67,7 @@ public class StartFieldExtendedOrder extends Order
   }
 
   @Override
-  public void process (Screen screen)
+  public void process (DisplayScreen screen)
   {
     Pen pen = screen.getPen ();
     location = pen.getPosition ();

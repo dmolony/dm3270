@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.attributes.Attribute;
-import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.DisplayScreen;
 
 public class ModifyFieldOrder extends Order
 {
@@ -33,7 +33,7 @@ public class ModifyFieldOrder extends Order
   }
 
   @Override
-  public void process (Screen screen)
+  public void process (DisplayScreen screen)
   {
     System.out.println ("What happens now?");
   }
