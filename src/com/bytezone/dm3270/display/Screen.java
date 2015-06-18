@@ -253,7 +253,7 @@ public class Screen extends Canvas
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    CharacterSize characterSize = fontManager.getCharacterSize ();
+    CharacterSize characterSize = fontManager.getCharacterSize ();    // too slow!!
     int x = xOffset + col * characterSize.getWidth ();
     int y = yOffset + row * characterSize.getHeight ();
 
