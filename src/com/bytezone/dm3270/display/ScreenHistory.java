@@ -3,13 +3,15 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.image.ImageView;
+import com.bytezone.dm3270.commands.AIDCommand;
 
 public class ScreenHistory
 {
   private static final int MAX_SCREENS = 20;
 
-  private final List<ImageView> screens = new ArrayList<> ();
+  //  private final List<ImageView> screens = new ArrayList<> ();
+  private final List<UserScreen> screens = new ArrayList<> ();
+
   private boolean keyboardLocked;
   private boolean paused;
   private int currentScreen = -1;       // never been set
@@ -40,9 +42,9 @@ public class ScreenHistory
     return keyboardLocked;
   }
 
-  public void add (ImageView imageView)
+  void add (AIDCommand command)
   {
-    screens.add (imageView);
+    screens.add (new UserScreen (command));
 
     if (screens.size () > MAX_SCREENS)
     {
@@ -50,6 +52,11 @@ public class ScreenHistory
       if (currentScreen > 0)
         --currentScreen;
     }
+  }
+
+  public int getCurrentIndex ()
+  {
+    return currentScreen;
   }
 
   public boolean hasNext ()
@@ -64,25 +71,20 @@ public class ScreenHistory
     return currentScreen > 0;
   }
 
-  public ImageView next ()
+  public UserScreen next ()
   {
     if (hasNext ())
       return screens.get (++currentScreen);
     return null;
   }
 
-  public int getCurrentIndex ()
-  {
-    return currentScreen;
-  }
-
-  public ImageView current ()
+  public UserScreen current ()
   {
     assert paused;
     return screens.get (currentScreen);
   }
 
-  public ImageView previous ()
+  public UserScreen previous ()
   {
     if (hasPrevious ())
       return screens.get (--currentScreen);

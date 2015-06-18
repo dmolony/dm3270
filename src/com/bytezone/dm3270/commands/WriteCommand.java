@@ -135,10 +135,7 @@ public class WriteCommand extends Command
     if (drawScreen)
       screen.drawScreen ();
 
-    //    System.out.println (screen.getScreenText ());
-
-    // check screen for jobs submitted or finished
-    checkSystemMessage ();
+    checkSystemMessage ();       // check screen for jobs submitted or finished
   }
 
   private boolean checkSystemMessage ()
@@ -178,7 +175,7 @@ public class WriteCommand extends Command
     else
       return false;
 
-    System.out.println (systemMessageText);
+    //    System.out.println (systemMessageText);
     Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
     if (matcher.matches ())
     {

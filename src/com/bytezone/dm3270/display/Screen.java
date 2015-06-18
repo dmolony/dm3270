@@ -12,8 +12,6 @@ import java.util.prefs.Preferences;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.attributes.Attribute;
@@ -523,7 +521,7 @@ public class Screen extends Canvas
       cursor.setVisible (false);
 
     if (recording)
-      screenHistory.add (copy ());
+      screenHistory.add (readBuffer ());
   }
 
   public void resetModified ()
@@ -584,12 +582,12 @@ public class Screen extends Canvas
   // ---------------------------------------------------------------------------------//
 
   // Create a copy of the current canvas - this will change to a Buffer reply
-  private ImageView copy ()
-  {
-    WritableImage wim = new WritableImage ((int) getWidth (), (int) getHeight ());
-    snapshot (null, wim);
-    return new ImageView (wim);
-  }
+  //  private ImageView copy ()
+  //  {
+  //    WritableImage wim = new WritableImage ((int) getWidth (), (int) getHeight ());
+  //    snapshot (null, wim);
+  //    return new ImageView (wim);
+  //  }
 
   public ScreenHistory pause ()           // triggered by cmd-s
   {

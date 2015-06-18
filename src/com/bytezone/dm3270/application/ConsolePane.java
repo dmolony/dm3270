@@ -12,7 +12,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.ToolBar;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -30,6 +29,7 @@ import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenHistory;
+import com.bytezone.dm3270.display.UserScreen;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.filetransfer.FileStage;
@@ -294,9 +294,9 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     }
   }
 
-  private void setView (ImageView imageView)
+  private void setView (UserScreen userScreen)
   {
-    if (imageView == null)
+    if (userScreen == null)
     {
       screenHistory = null;
       setCenter (screen);
@@ -305,8 +305,8 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     }
     else
     {
-      setCenter (imageView);
-      setMargin (imageView, new Insets (MARGIN, MARGIN, 0, MARGIN));
+      setCenter (userScreen);
+      setMargin (userScreen, new Insets (MARGIN, MARGIN, 0, MARGIN));
       setStyle ("-fx-background-color: navajowhite;");
     }
   }
