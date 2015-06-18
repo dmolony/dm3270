@@ -371,6 +371,7 @@ public class Screen extends Canvas
 
   // Called from ReadCommand.process() in response to a ReadBuffer (F2) command
   // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
+  // Called from Screen.lockKeyboard()
   public AIDCommand readBuffer ()
   {
     // pack the AID
@@ -521,7 +522,15 @@ public class Screen extends Canvas
       cursor.setVisible (false);
 
     if (recording)
-      screenHistory.add (readBuffer ());
+    {
+      byte savedReplyMode = replyMode;
+      byte[] savedReplyTypes = getReplyTypes ();
+
+      screenHistory.requestScreen (this);
+
+      replyMode = savedReplyMode;
+      replyTypes = savedReplyTypes;
+    }
   }
 
   public void resetModified ()

@@ -3,18 +3,28 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class ScreenHistory
 {
   private static final int MAX_SCREENS = 20;
 
-  //  private final List<ImageView> screens = new ArrayList<> ();
   private final List<UserScreen> screens = new ArrayList<> ();
 
   private boolean keyboardLocked;
   private boolean paused;
   private int currentScreen = -1;       // never been set
+
+  void requestScreen (Screen screen)
+  {
+    byte[] replyTypes =
+        { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
+         Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
+    screen.setReplyMode (SetReplyMode.RM_CHARACTER, replyTypes);
+    add (screen.readBuffer ());
+  }
 
   public int size ()
   {
