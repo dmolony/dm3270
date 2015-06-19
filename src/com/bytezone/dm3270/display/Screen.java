@@ -484,16 +484,8 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   // ---------------------------------------------------------------------------------//
-  // Screen image
+  // Screen history
   // ---------------------------------------------------------------------------------//
-
-  // Create a copy of the current canvas - this will change to a Buffer reply
-  //  private ImageView copy ()
-  //  {
-  //    WritableImage wim = new WritableImage ((int) getWidth (), (int) getHeight ());
-  //    snapshot (null, wim);
-  //    return new ImageView (wim);
-  //  }
 
   public ScreenHistory pause ()           // triggered by cmd-s
   {

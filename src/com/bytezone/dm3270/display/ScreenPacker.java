@@ -54,6 +54,23 @@ public class ScreenPacker
     return new AIDCommand (screen, buffer, 0, ptr);
   }
 
+  private int packField (Field field, byte[] buffer, int ptr)
+  {
+    assert field.isModified ();
+
+    for (ScreenPosition sp : field)
+      if (sp.isStartField ())
+      {
+        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
+        BufferAddress ba = new BufferAddress (field.getFirstLocation ());
+        ptr = ba.packAddress (buffer, ptr);
+      }
+      else if (!sp.isNull ())
+        buffer[ptr++] = sp.getByte ();          // suppress nulls
+
+    return ptr;
+  }
+
   public AIDCommand readBuffer (ScreenPosition[] screenPositions, int cursorLocation,
       byte currentAID, byte replyMode, byte[] replyTypes)
   {
@@ -125,23 +142,6 @@ public class ScreenPacker
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;
 
     buffer[ptr++] = sp.getByte ();
-
-    return ptr;
-  }
-
-  private int packField (Field field, byte[] buffer, int ptr)
-  {
-    assert field.isModified ();
-
-    for (ScreenPosition sp : field)
-      if (sp.isStartField ())
-      {
-        buffer[ptr++] = Order.SET_BUFFER_ADDRESS;
-        BufferAddress ba = new BufferAddress (field.getFirstLocation ());
-        ptr = ba.packAddress (buffer, ptr);
-      }
-      else if (!sp.isNull ())
-        ptr = packDataPosition (sp, buffer, ptr);       // suppress nulls
 
     return ptr;
   }

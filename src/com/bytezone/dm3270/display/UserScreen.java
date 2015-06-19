@@ -3,6 +3,7 @@ package com.bytezone.dm3270.display;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
+import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.Order;
 
@@ -18,6 +19,7 @@ public class UserScreen extends Canvas implements DisplayScreen
 
   private final AIDCommand command;
   private final Pen pen;
+  GraphicsContext gc = getGraphicsContext2D ();
 
   public UserScreen (AIDCommand command)
   {
@@ -28,7 +30,6 @@ public class UserScreen extends Canvas implements DisplayScreen
   private void createScreen (CharacterSize characterSize)
   {
     screenPositions = new ScreenPosition[screenSize];
-    GraphicsContext gc = getGraphicsContext2D ();
     ScreenContext base = pen.getBase ();
 
     for (int i = 0; i < screenSize; i++)
@@ -83,6 +84,12 @@ public class UserScreen extends Canvas implements DisplayScreen
   @Override
   public void clearScreen ()
   {
+  }
+
+  private void eraseScreen ()
+  {
+    gc.setFill (ColorAttribute.colors[8]);                // black
+    gc.fillRect (0, 0, getWidth (), getHeight ());
   }
 
   @Override

@@ -13,7 +13,7 @@ public class ScreenHistory
 
   private final List<UserScreen> screens = new ArrayList<> ();
 
-  private boolean keyboardLocked;
+  private boolean keyboardLocked;       // save previous setting
   private boolean paused;
   private int currentScreen = -1;       // never been set
 

@@ -234,6 +234,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
       screenHistory = screen.pause ();
       if (screenHistory == null)          // no history to show
         return;
+
       setView (screenHistory.current ());
       btnBack.setDisable (false);
       btnForward.setDisable (false);
