@@ -16,6 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -281,7 +282,6 @@ public class Screen extends Canvas implements DisplayScreen
       sp.reset ();
 
     cursor.moveTo (0);
-    //    fieldManager.reset ();        // resets pen
     pen.reset ();
   }
 
@@ -369,10 +369,10 @@ public class Screen extends Canvas implements DisplayScreen
   {
     switch (type)
     {
-      case (byte) 0xF6:
+      case Command.READ_MODIFIED_F6:
         return readModifiedFields ();
 
-      case 0x6E:
+      case Command.READ_MODIFIED_ALL_6E:
         readModifiedAll = true;
         AIDCommand command = readModifiedFields ();
         readModifiedAll = false;
@@ -502,6 +502,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     screenHistory.pause (keyboardLocked);
     keyboardLocked = true;
+
     return screenHistory;
   }
 
