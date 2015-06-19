@@ -68,7 +68,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   @Override
   public ScreenPosition getScreenPosition (int position)
   {
-    return null;
+    return screenPositions[position];
   }
 
   @Override
