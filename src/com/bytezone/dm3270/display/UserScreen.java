@@ -3,6 +3,7 @@ package com.bytezone.dm3270.display;
 import javafx.scene.canvas.Canvas;
 
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.orders.Order;
 
 public class UserScreen extends Canvas implements DisplayScreen
 {
@@ -14,7 +15,6 @@ public class UserScreen extends Canvas implements DisplayScreen
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
 
-  private CharacterSize characterSize;
   private final AIDCommand command;
   private final Pen pen;
 
@@ -27,6 +27,8 @@ public class UserScreen extends Canvas implements DisplayScreen
   private void createScreen ()
   {
     screenPositions = new ScreenPosition[screenSize];
+    for (Order order : command)
+      order.process (this);
   }
 
   public void drawScreen (CharacterSize characterSize)
@@ -34,19 +36,19 @@ public class UserScreen extends Canvas implements DisplayScreen
     if (screenPositions == null)
       createScreen ();
 
+    int width = characterSize.getWidth ();
+    int height = characterSize.getHeight ();
+
     int pos = 0;
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
-        drawPosition (screenPositions[pos++], row, col, false);
-  }
+      {
+        int x = xOffset + col * width;
+        int y = yOffset + row * height;
 
-  private void drawPosition (ScreenPosition screenPosition, int row, int col,
-      boolean hasCursor)
-  {
-    int x = xOffset + col * characterSize.getWidth ();
-    int y = yOffset + row * characterSize.getHeight ();
-
-    screenPosition.draw (x, y, hasCursor);
+        ScreenPosition screenPosition = screenPositions[pos++];
+        screenPosition.draw (x, y, false);
+      }
   }
 
   @Override

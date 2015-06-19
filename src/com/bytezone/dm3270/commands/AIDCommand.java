@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.commands;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.bytezone.dm3270.display.Cursor;
@@ -12,7 +13,7 @@ import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.SetBufferAddressOrder;
 import com.bytezone.dm3270.orders.TextOrder;
 
-public class AIDCommand extends Command implements BufferAddressSource
+public class AIDCommand extends Command implements BufferAddressSource, Iterable<Order>
 {
   public static final byte NO_AID_SPECIFIED = 0x60;
   public static final byte AID_READ_PARTITION = 0x61;
@@ -307,5 +308,11 @@ public class AIDCommand extends Command implements BufferAddressSource
       }
       return text.toString ();
     }
+  }
+
+  @Override
+  public Iterator<Order> iterator ()
+  {
+    return orders.iterator ();
   }
 }

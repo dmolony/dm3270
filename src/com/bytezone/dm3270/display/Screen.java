@@ -207,9 +207,10 @@ public class Screen extends Canvas implements DisplayScreen
     insertedCursorPosition = cursor.getLocation ();    // move it here later
   }
 
+  @Override
   public void insertCursor (int position)
   {
-    insertedCursorPosition = position;    // move it here later
+    insertedCursorPosition = position;                // move it here later
   }
 
   // called from EraseAllUnprotectedCommand.process()
@@ -277,6 +278,7 @@ public class Screen extends Canvas implements DisplayScreen
     graphicsContext.setFont (characterSize.getFont ());
   }
 
+  @Override
   public void clearScreen ()
   {
     eraseScreen ();
