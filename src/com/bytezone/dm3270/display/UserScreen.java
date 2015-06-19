@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.display;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.Order;
@@ -24,9 +25,15 @@ public class UserScreen extends Canvas implements DisplayScreen
     this.pen = new Pen (this);
   }
 
-  private void createScreen ()
+  private void createScreen (CharacterSize characterSize)
   {
     screenPositions = new ScreenPosition[screenSize];
+    GraphicsContext gc = getGraphicsContext2D ();
+    ScreenContext base = pen.getBase ();
+
+    for (int i = 0; i < screenSize; i++)
+      screenPositions[i] = new ScreenPosition (i, gc, characterSize, base);
+
     for (Order order : command)
       order.process (this);
   }
@@ -34,7 +41,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   public void drawScreen (CharacterSize characterSize)
   {
     if (screenPositions == null)
-      createScreen ();
+      createScreen (characterSize);
 
     int width = characterSize.getWidth ();
     int height = characterSize.getHeight ();
