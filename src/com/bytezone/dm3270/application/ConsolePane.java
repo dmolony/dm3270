@@ -238,6 +238,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
       UserScreen userScreen = screenHistory.current ();
       userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
       setView (userScreen);
+
       btnBack.setDisable (false);
       btnForward.setDisable (false);
       setBottom (historyBox);
@@ -279,7 +280,10 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   {
     if (screenHistory != null && screenHistory.hasPrevious ())
     {
-      setView (screenHistory.previous ());
+      UserScreen userScreen = screenHistory.previous ();
+      userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
+      setView (userScreen);
+
       historyLabel.setText (String.format ("Screen %02d of %02d",
                                            screenHistory.getCurrentIndex () + 1,
                                            screenHistory.size ()));
@@ -290,7 +294,10 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   {
     if (screenHistory != null && screenHistory.hasNext ())
     {
-      setView (screenHistory.next ());
+      UserScreen userScreen = screenHistory.next ();
+      userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
+      setView (userScreen);
+
       historyLabel.setText (String.format ("Screen %02d of %02d",
                                            screenHistory.getCurrentIndex () + 1,
                                            screenHistory.size ()));

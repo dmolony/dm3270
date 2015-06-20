@@ -319,7 +319,7 @@ public final class ScreenPosition
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-    text.append (String.format ("%4d %-20s", position, screenContext));
+    //    text.append (String.format ("%4d %-20s", position, screenContext));
     if (isStartField ())
     {
       text.append ("  ");

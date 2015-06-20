@@ -418,7 +418,7 @@ public class Screen extends Canvas implements DisplayScreen
     if (function == TERMINAL)
       cursor.setVisible (false);
 
-    if (recording)
+    if (recording && fieldManager.size () > 0)
     {
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = getReplyTypes ();

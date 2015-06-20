@@ -27,14 +27,25 @@ public class UserScreen extends Canvas implements DisplayScreen
     this.pen = new Pen (this);
   }
 
+  void characterSizeChanged (CharacterSize characterSize)
+  {
+    setWidth (characterSize.getWidth () * columns + xOffset * 2);
+    setHeight (characterSize.getHeight () * rows + yOffset * 2);
+    //    System.out.printf ("W:%f, H:%f%n", getWidth (), getHeight ());
+
+    gc.setFont (characterSize.getFont ());
+  }
+
   private void createScreen (CharacterSize characterSize)
   {
+    characterSizeChanged (characterSize);
     screenPositions = new ScreenPosition[screenSize];
     ScreenContext base = pen.getBase ();
 
     for (int i = 0; i < screenSize; i++)
       screenPositions[i] = new ScreenPosition (i, gc, characterSize, base);
 
+    clearScreen ();
     for (Order order : command)
       order.process (this);
   }
@@ -84,6 +95,13 @@ public class UserScreen extends Canvas implements DisplayScreen
   @Override
   public void clearScreen ()
   {
+    eraseScreen ();
+
+    for (ScreenPosition sp : screenPositions)
+      sp.reset ();
+
+    //    cursor.moveTo (0);
+    pen.reset ();
   }
 
   private void eraseScreen ()
@@ -95,5 +113,18 @@ public class UserScreen extends Canvas implements DisplayScreen
   @Override
   public void insertCursor (int position)
   {
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+    text.append (String.format ("Rows %d, Columns %d%n", rows, columns));
+    for (ScreenPosition sp : screenPositions)
+    {
+      text.append (sp);
+      text.append ("\n");
+    }
+    return text.toString ();
   }
 }
