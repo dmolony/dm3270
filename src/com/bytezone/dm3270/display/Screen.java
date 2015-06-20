@@ -236,6 +236,17 @@ public class Screen extends Canvas implements DisplayScreen
     boolean isTSOCommandScreen = fieldManager.isTSOCommandScreen ();
     Field tsoCommandField = fieldManager.getTSOCommandField ();
     notifyTSOCommandStatusChange (isTSOCommandScreen, tsoCommandField);
+
+    if (recording && fieldManager.size () > 0)
+    {
+      byte savedReplyMode = replyMode;
+      byte[] savedReplyTypes = getReplyTypes ();
+
+      screenHistory.requestScreen (this);       // will call readBuffer()
+
+      replyMode = savedReplyMode;
+      replyTypes = savedReplyTypes;
+    }
   }
 
   public void drawScreen ()
@@ -417,17 +428,6 @@ public class Screen extends Canvas implements DisplayScreen
 
     if (function == TERMINAL)
       cursor.setVisible (false);
-
-    if (recording && fieldManager.size () > 0)
-    {
-      byte savedReplyMode = replyMode;
-      byte[] savedReplyTypes = getReplyTypes ();
-
-      screenHistory.requestScreen (this);       // will call readBuffer()
-
-      replyMode = savedReplyMode;
-      replyTypes = savedReplyTypes;
-    }
   }
 
   public void resetModified ()
