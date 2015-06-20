@@ -26,6 +26,11 @@ public class WriteControlCharacter
     return value;
   }
 
+  public boolean resetKeyboard ()
+  {
+    return restoreKeyboard;
+  }
+
   public void process (Screen screen)
   {
     screen.resetInsertMode ();

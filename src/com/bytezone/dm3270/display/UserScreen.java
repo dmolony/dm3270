@@ -66,7 +66,8 @@ public class UserScreen extends Canvas implements DisplayScreen
         int y = yOffset + row * height;
 
         ScreenPosition screenPosition = screenPositions[pos++];
-        screenPosition.draw (x, y, false);
+        if (screenPosition.getScreenContext () != null)
+          screenPosition.draw (x, y, false);
       }
   }
 

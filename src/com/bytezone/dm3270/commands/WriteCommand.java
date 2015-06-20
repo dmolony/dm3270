@@ -119,7 +119,7 @@ public class WriteCommand extends Command
         order.process (screen);             // modifies pen
 
       cursor.moveTo (cursorLocation);
-      screen.buildFields ();
+      screen.buildFields (writeControlCharacter);
       drawScreen = true;
     }
 

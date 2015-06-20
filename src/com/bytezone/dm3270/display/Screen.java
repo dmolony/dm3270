@@ -17,6 +17,7 @@ import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
+import com.bytezone.dm3270.commands.WriteControlCharacter;
 import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -229,7 +230,7 @@ public class Screen extends Canvas implements DisplayScreen
     drawPosition (screenPositions[position], row, col, hasCursor);
   }
 
-  public void buildFields ()
+  public void buildFields (WriteControlCharacter wcc)
   {
     fieldManager.buildFields ();      // what about resetModified?
 
@@ -237,7 +238,7 @@ public class Screen extends Canvas implements DisplayScreen
     Field tsoCommandField = fieldManager.getTSOCommandField ();
     notifyTSOCommandStatusChange (isTSOCommandScreen, tsoCommandField);
 
-    if (recording && fieldManager.size () > 0)
+    if (recording && fieldManager.size () > 0 && wcc.resetKeyboard ())
     {
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = getReplyTypes ();
