@@ -237,8 +237,11 @@ public class Screen extends Canvas implements DisplayScreen
     boolean isTSOCommandScreen = fieldManager.isTSOCommandScreen ();
     Field tsoCommandField = fieldManager.getTSOCommandField ();
     notifyTSOCommandStatusChange (isTSOCommandScreen, tsoCommandField);
+  }
 
-    if (recording && fieldManager.size () > 0 && wcc.resetKeyboard ())
+  public void checkRecording ()
+  {
+    if (recording && fieldManager.size () > 0 && !keyboardLocked)
     {
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = getReplyTypes ();

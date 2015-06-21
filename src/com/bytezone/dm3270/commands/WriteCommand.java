@@ -124,7 +124,10 @@ public class WriteCommand extends Command
     }
 
     if (writeControlCharacter != null)
+    {
       writeControlCharacter.process (screen);     // may unlock the keyboard
+      screen.checkRecording ();
+    }
 
     if (!screen.isKeyboardLocked () && screen.getFieldManager ().size () > 0)
     {

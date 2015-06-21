@@ -9,7 +9,7 @@ import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class ScreenHistory
 {
-  private static final int MAX_SCREENS = 20;
+  private static final int MAX_SCREENS = 10;
 
   private final List<UserScreen> screens = new ArrayList<> ();
 
@@ -26,18 +26,37 @@ public class ScreenHistory
 
     AIDCommand command = screen.readBuffer ();
 
-    if (command.countOrders () == 2 && command.countTextOrders () == 1)
+    // check that the screen contains displayable data
+    if (command.countTextOrders () <= 3)
     {
-      byte[] buffer = command.getText (0);
-      int display = 0;
-      for (byte b : buffer)
-        if (b != 0)
-          ++display;
-      if (display > 0)
+      boolean display = false;
+      for (int i = 0; i < command.countTextOrders (); i++)
+      {
+        byte[] buffer = command.getText (i);
+        for (byte b : buffer)
+          if (b != 0)
+          {
+            display = true;
+            break;
+          }
+      }
+      if (display)
         add (command);
     }
     else
       add (command);
+  }
+
+  void add (AIDCommand command)
+  {
+    screens.add (new UserScreen (command));
+
+    if (screens.size () > MAX_SCREENS)
+    {
+      screens.remove (0);
+      if (currentScreen > 0)
+        --currentScreen;
+    }
   }
 
   public int size ()
@@ -64,18 +83,6 @@ public class ScreenHistory
     assert paused;
     paused = false;
     return keyboardLocked;
-  }
-
-  void add (AIDCommand command)
-  {
-    screens.add (new UserScreen (command));
-
-    if (screens.size () > MAX_SCREENS)
-    {
-      screens.remove (0);
-      if (currentScreen > 0)
-        --currentScreen;
-    }
   }
 
   public int getCurrentIndex ()
