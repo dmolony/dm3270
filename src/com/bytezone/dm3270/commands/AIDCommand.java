@@ -52,7 +52,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
   private final List<AIDField> aidFields = new ArrayList<> ();
   private final List<Order> orders = new ArrayList<> ();
-  private int textOrders;
+  private final List<Order> textOrders = new ArrayList<> ();
 
   // Called by Screen.readBuffer()
   public AIDCommand (Screen screen, byte[] buffer, int offset, int length)
@@ -97,7 +97,10 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
           currentAIDField.addOrder (order);
 
         if (order instanceof TextOrder)
-          textOrders++;
+        {
+          textOrders.add (order);
+          //          displayBytes += ((TextOrder) order).getTextString ().trim ().length ();
+        }
       }
       ptr += order.size ();
     }
@@ -214,6 +217,21 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     return keyNames[key];
   }
 
+  public int countTextOrders ()
+  {
+    return textOrders.size ();
+  }
+
+  public int countOrders ()
+  {
+    return orders.size ();
+  }
+
+  public byte[] getText (int index)
+  {
+    return textOrders.get (index).getBuffer ();
+  }
+
   @Override
   public String toString ()
   {
@@ -236,8 +254,8 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     // response to a read buffer request
     else if (orders.size () > 0)
     {
-      text.append (String.format ("%nOrders  : %d%n", orders.size () - textOrders));
-      text.append (String.format ("Text    : %d%n", textOrders));
+      text.append (String.format ("%nOrders  : %d%n", orders.size () - textOrders.size ()));
+      text.append (String.format ("Text    : %d%n", textOrders.size ()));
 
       // if the list begins with a TextOrder then tab out the missing columns
       if (orders.size () > 0 && orders.get (0) instanceof TextOrder)

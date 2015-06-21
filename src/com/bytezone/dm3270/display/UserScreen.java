@@ -31,7 +31,6 @@ public class UserScreen extends Canvas implements DisplayScreen
   {
     setWidth (characterSize.getWidth () * columns + xOffset * 2);
     setHeight (characterSize.getHeight () * rows + yOffset * 2);
-    //    System.out.printf ("W:%f, H:%f%n", getWidth (), getHeight ());
 
     gc.setFont (characterSize.getFont ());
   }

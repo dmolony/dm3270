@@ -23,7 +23,21 @@ public class ScreenHistory
         { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
          Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
     screen.setReplyMode (SetReplyMode.RM_CHARACTER, replyTypes);
-    add (screen.readBuffer ());
+
+    AIDCommand command = screen.readBuffer ();
+
+    if (command.countOrders () == 2 && command.countTextOrders () == 1)
+    {
+      byte[] buffer = command.getText (0);
+      int display = 0;
+      for (byte b : buffer)
+        if (b != 0)
+          ++display;
+      if (display > 0)
+        add (command);
+    }
+    else
+      add (command);
   }
 
   public int size ()
