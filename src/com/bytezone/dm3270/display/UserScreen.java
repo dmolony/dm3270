@@ -27,6 +27,11 @@ public class UserScreen extends Canvas implements DisplayScreen
     this.pen = new Pen (this);
   }
 
+  public boolean matches (AIDCommand command)
+  {
+    return this.command.matches (command);
+  }
+
   void characterSizeChanged (CharacterSize characterSize)
   {
     setWidth (characterSize.getWidth () * columns + xOffset * 2);

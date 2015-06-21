@@ -26,6 +26,14 @@ public class ScreenHistory
 
     AIDCommand command = screen.readBuffer ();
 
+    // check for duplicates
+    if (screens.size () > 0)
+    {
+      UserScreen previousScreen = screens.get (screens.size () - 1);
+      if (previousScreen.matches (command))
+        return;
+    }
+
     // check that the screen contains displayable data
     if (command.countTextOrders () <= 3)
     {

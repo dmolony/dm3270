@@ -115,6 +115,19 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     return false;
   }
 
+  public boolean matches (AIDCommand otherCommand)
+  {
+    if (data.length != otherCommand.data.length)
+      return false;
+
+    // skip cursor position
+    for (int i = 3; i < data.length; i++)
+      if (data[i] != otherCommand.data[i])
+        return false;
+
+    return true;
+  }
+
   private int findKey (byte keyCommand)
   {
     for (int i = 1; i < keys.length; i++)
