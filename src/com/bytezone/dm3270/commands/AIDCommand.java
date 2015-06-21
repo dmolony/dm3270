@@ -97,10 +97,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
           currentAIDField.addOrder (order);
 
         if (order instanceof TextOrder)
-        {
           textOrders.add (order);
-          //          displayBytes += ((TextOrder) order).getTextString ().trim ().length ();
-        }
       }
       ptr += order.size ();
     }
