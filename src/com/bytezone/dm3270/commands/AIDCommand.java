@@ -50,7 +50,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   private byte keyCommand;
   private BufferAddress cursorAddress;
 
-  private final List<AIDField> aidFields = new ArrayList<> ();
+  private final List<ModifiedField> modifiedFields = new ArrayList<> ();
   private final List<Order> orders = new ArrayList<> ();
   private final List<Order> textOrders = new ArrayList<> ();
 
@@ -73,7 +73,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     int ptr = 3;
     int max = length;
     Order previousOrder = null;
-    AIDField currentAIDField = null;
+    ModifiedField currentAIDField = null;
 
     while (ptr < max)
     {
@@ -90,8 +90,8 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
         if (order instanceof SetBufferAddressOrder)
         {
-          currentAIDField = new AIDField ((SetBufferAddressOrder) order);
-          aidFields.add (currentAIDField);
+          currentAIDField = new ModifiedField ((SetBufferAddressOrder) order);
+          modifiedFields.add (currentAIDField);
         }
         else if (currentAIDField != null)
           currentAIDField.addOrder (order);
@@ -138,7 +138,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
   public void scramble ()
   {
-    for (AIDField aidField : aidFields)
+    for (ModifiedField aidField : modifiedFields)
       aidField.scramble ();
   }
 
@@ -150,10 +150,10 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   {
     // test to see whether this is data entry that was null suppressed into moving
     // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
-    boolean done = aidFields.size () == 1 && checkForPrettyMove ();
+    boolean done = modifiedFields.size () == 1 && checkForPrettyMove ();
 
     if (!done)
-      for (AIDField aidField : aidFields)
+      for (ModifiedField aidField : modifiedFields)
         if (aidField.hasData ())
         {
           Field field = screen.getFieldManager ().getField (aidField.getLocation ());
@@ -183,7 +183,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
           && currentField.contains (cursorOldLocation))
       {
         int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
-        byte[] buffer = aidFields.get (0).getBuffer ();
+        byte[] buffer = modifiedFields.get (0).getBuffer ();
         if (buffer.length == cursorDistance)
         {
           // cannot call field.setText() as the data starts mid-field
@@ -255,10 +255,10 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     if (cursorAddress != null)
       text.append (String.format ("Cursor  : %s%n", cursorAddress));
 
-    if (aidFields.size () > 0)
+    if (modifiedFields.size () > 0)
     {
-      text.append (String.format ("%nModified fields  : %d", aidFields.size ()));
-      for (AIDField aidField : aidFields)
+      text.append (String.format ("%nModified fields  : %d", modifiedFields.size ()));
+      for (ModifiedField aidField : modifiedFields)
       {
         text.append ("\nField   : ");
         text.append (aidField);
@@ -285,12 +285,12 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
   // This class is used to collect information about each modified field specified
   // in the AIDCommand.
-  private class AIDField
+  private class ModifiedField
   {
     SetBufferAddressOrder sbaOrder;
     List<Order> orders = new ArrayList<> ();
 
-    public AIDField (SetBufferAddressOrder sbaOrder)
+    public ModifiedField (SetBufferAddressOrder sbaOrder)
     {
       this.sbaOrder = sbaOrder;
     }

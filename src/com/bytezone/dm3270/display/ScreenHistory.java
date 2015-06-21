@@ -9,7 +9,10 @@ import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class ScreenHistory
 {
-  private static final int MAX_SCREENS = 10;
+  private static final int MAX_SCREENS = 20;
+  private static final byte[] replyTypes = { //
+      Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
+          Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
 
   private final List<UserScreen> screens = new ArrayList<> ();
 
@@ -19,9 +22,6 @@ public class ScreenHistory
 
   void requestScreen (Screen screen)
   {
-    byte[] replyTypes =
-        { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
-         Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
     screen.setReplyMode (SetReplyMode.RM_CHARACTER, replyTypes);
 
     AIDCommand command = screen.readBuffer ();
