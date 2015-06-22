@@ -59,7 +59,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           e.consume ();
           break;
 
-        case H:
+        case H:                   // OSX ctrl-h conflicts with Hide Windows command
           cursor.home ();
           e.consume ();
           break;

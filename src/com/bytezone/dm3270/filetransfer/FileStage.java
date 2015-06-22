@@ -37,7 +37,7 @@ public class FileStage extends Stage
   private final Label lblPageSize = new Label ("Page size");
   private final Label lblHasASA = new Label ("ASA");
   private final Label lblHasCRLF = new Label ("CR/LF");
-  private final Label lblHasASCII = new Label ("CR/LF");
+  private final Label lblHasASCII = new Label ("ASCII");
 
   private final TextField txtLineSize = new TextField ();
   private final TextField txtPageSize = new TextField ();
@@ -108,7 +108,7 @@ public class FileStage extends Stage
     hide ();
   }
 
-  public Transfer openTransfer (FileTransferOutbound transferRecord)
+  public Transfer openTransfer (FileTransferOutboundSF transferRecord)
   {
     if (currentTransfer != null)
       addTransfer (currentTransfer);
@@ -123,7 +123,7 @@ public class FileStage extends Stage
     return currentTransfer;
   }
 
-  public Transfer closeTransfer (FileTransferOutbound transferRecord)
+  public Transfer closeTransfer (FileTransferOutboundSF transferRecord)
   {
     if (currentTransfer == null)
     {

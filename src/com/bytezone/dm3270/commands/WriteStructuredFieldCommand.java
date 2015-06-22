@@ -7,7 +7,7 @@ import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.filetransfer.FileTransferOutbound;
+import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
 import com.bytezone.dm3270.structuredfields.EraseResetSF;
 import com.bytezone.dm3270.structuredfields.Outbound3270DS;
@@ -67,7 +67,7 @@ public class WriteStructuredFieldCommand extends Command
           break;
 
         case StructuredField.IND$FILE:
-          fields.add (new FileTransferOutbound (buffer, ptr, size, screen));
+          fields.add (new FileTransferOutboundSF (buffer, ptr, size, screen));
           break;
 
         default:

@@ -30,14 +30,6 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
         return;
       }
 
-      //      if (e.isMetaDown ())
-      //      {
-      //        if (e.getCode () == KeyCode.LEFT)
-      //          System.out.println ("LEFT");
-      //        if (e.getCode () == KeyCode.RIGHT)
-      //          System.out.println ("RIGHT");
-      //      }
-
       return;
     }
 

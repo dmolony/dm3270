@@ -4,13 +4,13 @@ import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
 
-public class FileTransferOutbound extends FileTransferSF
+public class FileTransferOutboundSF extends FileTransferSF
 {
   private int bufferNumber;
   private Transfer transfer;
   private FileStage fileStage;
 
-  public FileTransferOutbound (byte[] buffer, int offset, int length, Screen screen)
+  public FileTransferOutboundSF (byte[] buffer, int offset, int length, Screen screen)
   {
     super (buffer, offset, length, screen, "Outbound");
     fileStage = screen.getFileStage ();

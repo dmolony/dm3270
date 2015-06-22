@@ -173,7 +173,17 @@ public class Pen
 
   public void moveTo (int position)
   {
-    assert pendingAttributes.size () == 0;
+    //    assert pendingAttributes.size () == 0;
+    if (pendingAttributes.size () > 0)
+    {
+      if (false)
+      {
+        System.out.printf ("Unapplied attributes at %d%n", currentPosition);
+        for (Attribute attribute : pendingAttributes)
+          System.out.println (attribute);
+      }
+      pendingAttributes.clear ();
+    }
     currentPosition = screen.validate (position);
 
     if (totalFields > 0)

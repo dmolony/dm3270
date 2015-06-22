@@ -18,15 +18,9 @@ public class FileTransferSF extends StructuredField
 
   protected DataHeader dataHeader;
   protected boolean ebcdic;
-  //  protected String transferType;        // outbound only
   protected TransferType transferType;      // outbound only
 
-  protected final boolean debug = false;
-
-  //  enum TransferType
-  //  {
-  //    DATA, MESSAGE
-  //  }
+  protected final boolean debug = true;
 
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)

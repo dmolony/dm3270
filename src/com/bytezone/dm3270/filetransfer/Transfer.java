@@ -10,7 +10,7 @@ public class Transfer
 {
   TransferType type;
 
-  List<FileTransferOutbound> outboundRecords = new ArrayList<> ();
+  List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
   List<DataHeader> dataBuffers = new ArrayList<> ();
   int dataLength;
 
@@ -19,7 +19,7 @@ public class Transfer
     MSG, DATA
   }
 
-  public void add (FileTransferOutbound outboundRecord)
+  public void add (FileTransferOutboundSF outboundRecord)
   {
     outboundRecords.add (outboundRecord);
     if (type == null)
