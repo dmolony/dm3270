@@ -108,8 +108,6 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     // ignore any PA key reply caused by RMA
     return (data.length == 1 && //
     (keyCommand == AID_PA1 || keyCommand == AID_PA2 || keyCommand == AID_PA3));
-    //      return true;
-    //    return false;
   }
 
   public boolean matches (AIDCommand otherCommand)

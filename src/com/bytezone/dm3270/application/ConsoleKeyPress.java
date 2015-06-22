@@ -35,7 +35,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     {
       e.consume ();       // always consume it when the keyboard is locked
 
-      if (e.isControlDown ())       // should allow user to choose modifier key
+      if (e.isMetaDown ())
         if (keyCodePressed == KeyCode.LEFT)
           consolePane.back ();
         else if (keyCodePressed == KeyCode.RIGHT)
@@ -44,7 +44,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       return;
     }
 
-    if (e.isControlDown ())       // should allow user to choose modifier key
+    if (e.isMetaDown ())
     {
       switch (keyCodePressed)
       {
@@ -81,6 +81,21 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
         case F3:
           consolePane.sendAID (AIDCommand.AID_PA3, "PA3");
+          e.consume ();
+          break;
+
+        default:
+          break;
+      }
+      return;
+    }
+
+    if (e.isControlDown ())         // OSX has to share ctrl-h
+    {
+      switch (keyCodePressed)
+      {
+        case H:
+          cursor.home ();
           e.consume ();
           break;
 
