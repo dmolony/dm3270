@@ -111,12 +111,12 @@ public class FileTransferOutboundSF extends FileTransferSF
         break;
 
       case 0x45:                          // something to do with SEND
-        processSendWhat ();
+        processSend0x45 ();
         break;
 
       case 0x46:                          // send data transfer buffer
         if (subtype == 0x11)
-          processSend ();
+          processSend0x46 ();
         break;
 
       case 0x47:                          // receive data transfer buffer
@@ -141,13 +141,13 @@ public class FileTransferOutboundSF extends FileTransferSF
     reply = new ReadStructuredFieldCommand (buffer, screen);
   }
 
-  private void processSendWhat ()
+  private void processSend0x45 ()
   {
     transfer = fileStage.getTransfer ();
     transfer.add (this);
   }
 
-  private void processSend ()
+  private void processSend0x46 ()
   {
     transfer = fileStage.getTransfer ();
     transfer.add (this);

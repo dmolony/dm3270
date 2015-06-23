@@ -21,7 +21,7 @@ public class FileTransferSF extends StructuredField
   protected TransferType transferType;      // outbound only
   protected Transfer transfer;
 
-  protected final boolean debug = true;
+  protected final boolean debug = false;
 
   public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
       String direction)
