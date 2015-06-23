@@ -21,7 +21,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 {
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
-  private final Button hideButton = new Button ("Hide Window");
+  private final Button btnHide = new Button ("Hide Window");
+  private final Button btnExecute = new Button ("Execute");
   private final JobTable jobTable = new JobTable ();
   private final Label lblCommand = new Label ("Command");
   private final TextField txtCommand = new TextField ();
@@ -29,6 +30,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
   private BatchJob selectedBatchJob;
+  private String reportName;
 
   public JobStage ()
   {
@@ -36,10 +38,10 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     windowSaver = new WindowSaver (prefs, this, "JobStage");
 
     HBox buttonBox = new HBox ();
-    hideButton.setPrefWidth (150);
+    btnHide.setPrefWidth (120);
     buttonBox.setAlignment (Pos.CENTER_RIGHT);
     buttonBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
-    buttonBox.getChildren ().add (hideButton);
+    buttonBox.getChildren ().add (btnHide);
 
     HBox optionsBox = new HBox (10);
     optionsBox.setAlignment (Pos.CENTER_LEFT);
@@ -49,13 +51,14 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     txtCommand.setPrefWidth (300);
     txtCommand.setFont (Font.font ("Monospaced", 12));
     txtCommand.setFocusTraversable (false);
-    optionsBox.getChildren ().addAll (lblCommand, txtCommand);
+    optionsBox.getChildren ().addAll (lblCommand, txtCommand, btnExecute);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
     bottomBorderPane.setRight (buttonBox);
 
-    hideButton.setOnAction (e -> hide ());
+    btnHide.setOnAction (e -> hide ());
+    btnExecute.setOnAction (e -> execute ());
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (jobTable);
@@ -76,6 +79,14 @@ public class JobStage extends Stage implements TSOCommandStatusListener
         });
   }
 
+  private void execute ()
+  {
+    String command = txtCommand.getText ();
+    System.out.println (reportName);
+    selectedBatchJob.setOutputFile (reportName);
+    jobTable.refresh ();
+  }
+
   private void select (BatchJob batchJob)
   {
     selectedBatchJob = batchJob;
@@ -84,15 +95,20 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void setText ()
   {
-    if (selectedBatchJob == null || (tsoCommandField == null && !isTSOCommandScreen))
-    {
-      txtCommand.setText ("");
-      return;
-    }
+    String command = "";
+    reportName = String.format ("REPORT.%d", selectedBatchJob.jobNumber);
 
-    String command =
-        String.format ("OUTPUT %s PRINT(XYZ.%d)", selectedBatchJob.jobName,
-                       selectedBatchJob.jobNumber);
+    String report = selectedBatchJob.getOutputFile ();
+    if (report == null)
+    {
+      command =
+          String.format ("OUTPUT %s PRINT(%s)", selectedBatchJob.jobName, reportName);
+    }
+    else
+    {
+      System.out.println (report);
+      command = String.format ("IND$FILE GET %s.OUTLIST", reportName);
+    }
 
     if (tsoCommandField != null)
       command = "TSO " + command;
@@ -118,11 +134,12 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   @Override
   public void screenChanged (boolean isTSOCommandScreen, Field tsoCommandField)
   {
-    //    txtCommand.setText (isTSOCommandScreen ? "TSO Command Screen"
-    //        : tsoCommandField == null ? "TSO Unavailable" : "TSO Command Field");
     this.isTSOCommandScreen = isTSOCommandScreen;
     this.tsoCommandField = tsoCommandField;
-    setText ();
+    String command = txtCommand.getText ();
+    btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
+        || command.isEmpty ());
+
   }
 
   // ---------------------------------------------------------------------------------//
