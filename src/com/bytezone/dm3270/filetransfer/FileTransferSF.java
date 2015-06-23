@@ -19,6 +19,7 @@ public class FileTransferSF extends StructuredField
   protected DataHeader dataHeader;
   protected boolean ebcdic;
   protected TransferType transferType;      // outbound only
+  protected Transfer transfer;
 
   protected final boolean debug = true;
 

@@ -26,10 +26,14 @@ public class Transfer
       type = outboundRecord.transferType;
   }
 
-  public void add (DataHeader dataHeader)
+  public int add (DataHeader dataHeader)
   {
+    if (dataBuffers.contains (dataHeader))
+      return dataBuffers.indexOf (dataHeader) + 1;
+
     dataBuffers.add (dataHeader);
     dataLength += dataHeader.size ();
+    return dataBuffers.size ();
   }
 
   public byte[] combineDataBuffers ()

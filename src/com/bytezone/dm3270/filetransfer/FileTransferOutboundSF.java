@@ -7,8 +7,7 @@ import com.bytezone.dm3270.display.Screen;
 public class FileTransferOutboundSF extends FileTransferSF
 {
   private int bufferNumber;
-  private Transfer transfer;
-  private FileStage fileStage;
+  private final FileStage fileStage;
 
   public FileTransferOutboundSF (byte[] buffer, int offset, int length, Screen screen)
   {
@@ -34,14 +33,11 @@ public class FileTransferOutboundSF extends FileTransferSF
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
 
-        transfer = fileStage.openTransfer (this);
-
         break;
 
       // CLOSE
 
       case 0x41:
-        transfer = fileStage.closeTransfer (this);
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -49,30 +45,14 @@ public class FileTransferOutboundSF extends FileTransferSF
       // Receiving data
 
       case 0x47:
-        transfer = fileStage.getTransfer ();
-        if (transfer == null)
-        {
-          System.out.println ("null 47");
-          return;
-        }
-
-        ebcdic = transfer.isData ();
-
         if (subtype == 0x11)                              // always before 0x04
         {
           dataRecords.add (new DataRecord (data, 3));
-          transfer.add (this);
         }
         else if (subtype == 0x04)                  // message or transfer buffer
         {
           dataHeader = new DataHeader (data, 3);
-          transfer.add (dataHeader);
-          bufferNumber = transfer.size ();
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
-          transfer.add (this);
-
-          if (transfer.isMessage ())              // message transfers don't close
-            fileStage.closeTransfer ();
         }
         else
         {
@@ -85,20 +65,16 @@ public class FileTransferOutboundSF extends FileTransferSF
       // Sending data
 
       case 0x45:
-        transfer = fileStage.getTransfer ();
-        transfer.add (this);
-
         dataRecords.add (new DataRecord (data, 3));
         dataRecords.add (new DataRecord (data, 8));
+
         if (data.length != 13)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x46:
-        transfer = fileStage.getTransfer ();
-        transfer.add (this);
-
         dataRecords.add (new DataRecord (data, 3));
+
         if (data.length != 7)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
@@ -119,6 +95,9 @@ public class FileTransferOutboundSF extends FileTransferSF
   @Override
   public void process ()
   {
+    if (transfer != null)
+      return;
+
     switch (rectype)
     {
       case 0x00:                          // OPEN request
@@ -131,36 +110,52 @@ public class FileTransferOutboundSF extends FileTransferSF
           processClose ();
         break;
 
+      case 0x45:                          // something to do with SEND
+        processSendWhat ();
+        break;
+
       case 0x46:                          // send data transfer buffer
         if (subtype == 0x11)
           processSend ();
         break;
 
       case 0x47:                          // receive data transfer buffer
-        if (subtype == 0x04)
-          processReceive ();
+        processReceive ();
         break;
     }
   }
 
   private void processOpen ()
   {
+    transfer = fileStage.openTransfer (this);
+
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
   }
 
   private void processClose ()
   {
+    transfer = fileStage.closeTransfer (this);
+
     byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
   }
 
+  private void processSendWhat ()
+  {
+    transfer = fileStage.getTransfer ();
+    transfer.add (this);
+  }
+
   private void processSend ()
   {
+    transfer = fileStage.getTransfer ();
+    transfer.add (this);
+
     byte[] buffer;
     int ptr = 0;
 
-    if (true)                       // have data to send
+    if (false)                       // have data to send
     {
       int buflen = 50;
       int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
@@ -178,6 +173,7 @@ public class FileTransferOutboundSF extends FileTransferSF
       // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
     }
     else
+    //   finished sending buffers, now send an EOF
     {
       int length = 6 + ErrorRecord.RECORD_LENGTH;
       buffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x08);
@@ -192,14 +188,24 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processReceive ()
   {
-    int length = 6 + RecordNumber.RECORD_LENGTH;
-    byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
+    transfer = fileStage.getTransfer ();
+    transfer.add (this);                  // both 0x11 and 0x04 subtypes
 
-    int ptr = 6;
-    RecordNumber recordNumber = new RecordNumber (bufferNumber);
-    ptr = recordNumber.pack (buffer, ptr);
+    if (subtype == 0x04)                  // message or transfer buffer
+    {
+      int ptr = 6;
+      int length = ptr + RecordNumber.RECORD_LENGTH;
+      byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
 
-    reply = new ReadStructuredFieldCommand (buffer, screen);
+      bufferNumber = transfer.add (dataHeader);
+      RecordNumber recordNumber = new RecordNumber (bufferNumber);
+      ptr = recordNumber.pack (buffer, ptr);
+
+      reply = new ReadStructuredFieldCommand (buffer, screen);
+
+      if (transfer.isMessage ())       // message transfers don't close
+        fileStage.closeTransfer ();
+    }
   }
 
   private byte[] getReplyBuffer (int length, byte command, byte subcommand)
