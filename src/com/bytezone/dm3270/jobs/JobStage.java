@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import com.bytezone.dm3270.application.WindowSaver;
@@ -22,8 +23,12 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   private final WindowSaver windowSaver;
   private final Button hideButton = new Button ("Hide Window");
   private final JobTable jobTable = new JobTable ();
-  private final Label lblStatus = new Label ("TSO Status");
-  private final TextField txtStatus = new TextField ();
+  private final Label lblCommand = new Label ("Command");
+  private final TextField txtCommand = new TextField ();
+
+  private boolean isTSOCommandScreen;
+  private Field tsoCommandField;
+  private BatchJob selectedBatchJob;
 
   public JobStage ()
   {
@@ -39,8 +44,12 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     HBox optionsBox = new HBox (10);
     optionsBox.setAlignment (Pos.CENTER_LEFT);
     optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
-    txtStatus.setEditable (false);
-    optionsBox.getChildren ().addAll (lblStatus, txtStatus);
+    txtCommand.setEditable (false);
+    //    txtStatus.setDisable (true);
+    txtCommand.setPrefWidth (300);
+    txtCommand.setFont (Font.font ("Monospaced", 12));
+    txtCommand.setFocusTraversable (false);
+    optionsBox.getChildren ().addAll (lblCommand, txtCommand);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
@@ -59,6 +68,35 @@ public class JobStage extends Stage implements TSOCommandStatusListener
       centerOnScreen ();
 
     setOnCloseRequest (e -> closeWindow ());
+
+    jobTable.getSelectionModel ().selectedItemProperty ()
+        .addListener ( (obs, oldSelection, newSelection) -> {
+          if (newSelection != null)
+            select (newSelection);
+        });
+  }
+
+  private void select (BatchJob batchJob)
+  {
+    selectedBatchJob = batchJob;
+    setText ();
+  }
+
+  private void setText ()
+  {
+    if (selectedBatchJob == null || (tsoCommandField == null && !isTSOCommandScreen))
+    {
+      txtCommand.setText ("");
+      return;
+    }
+
+    String command =
+        String.format ("OUTPUT %s PRINT(XYZ.%d)", selectedBatchJob.jobName,
+                       selectedBatchJob.jobNumber);
+
+    if (tsoCommandField != null)
+      command = "TSO " + command;
+    txtCommand.setText (command);
   }
 
   public void addBatchJob (BatchJob batchJob)
@@ -71,11 +109,6 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     return jobTable.getBatchJob (jobNumber);
   }
 
-  public void refreshJobTable ()
-  {
-    jobTable.refresh ();
-  }
-
   private void closeWindow ()
   {
     windowSaver.saveWindow ();
@@ -85,8 +118,11 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   @Override
   public void screenChanged (boolean isTSOCommandScreen, Field tsoCommandField)
   {
-    txtStatus.setText (isTSOCommandScreen ? "TSO Command Screen"
-        : tsoCommandField == null ? "TSO Unavailable" : "TSO Command Field");
+    //    txtCommand.setText (isTSOCommandScreen ? "TSO Command Screen"
+    //        : tsoCommandField == null ? "TSO Unavailable" : "TSO Command Field");
+    this.isTSOCommandScreen = isTSOCommandScreen;
+    this.tsoCommandField = tsoCommandField;
+    setText ();
   }
 
   // ---------------------------------------------------------------------------------//
@@ -95,24 +131,18 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
-    System.out.println ("Job submitted:");
-
     BatchJob batchJob = new BatchJob (jobNumber, jobName);
     addBatchJob (batchJob);
-    System.out.println (batchJob);
   }
 
   public void
       batchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
   {
-    System.out.println ("Job completed:");
-
     BatchJob batchJob = getBatchJob (jobNumber);
     if (batchJob != null)
     {
       batchJob.completed (time, conditionCode);
-      System.out.println (batchJob);
-      refreshJobTable ();            // temp fix before jdk 8u60
+      jobTable.refresh ();            // temp fix before jdk 8u60
     }
   }
 }

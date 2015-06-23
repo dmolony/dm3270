@@ -1,7 +1,5 @@
 package com.bytezone.dm3270.jobs;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -15,7 +13,8 @@ public class BatchJob
   private StringProperty propertyJobNumber;
   private StringProperty propertyJobName;
   private StringProperty propertyJobCompleted;
-  private IntegerProperty propertyConditionCode;
+  private StringProperty propertyConditionCode;
+  private StringProperty propertyOutputFile;
 
   public BatchJob (int jobNumber, String jobName)
   {
@@ -32,7 +31,7 @@ public class BatchJob
     this.conditionCode = conditionCode;
 
     setJobCompleted (timeCompleted);
-    setJobConditionCode (conditionCode);
+    setJobConditionCode (conditionCode + "");
   }
 
   public String outputCommand ()
@@ -104,21 +103,40 @@ public class BatchJob
 
   // ConditionCode
 
-  public void setJobConditionCode (int value)
+  public void setJobConditionCode (String value)
   {
     propertyConditionCode ().set (value);
   }
 
-  public int getJobConditionCode ()
+  public String getJobConditionCode ()
   {
     return propertyConditionCode ().get ();
   }
 
-  public IntegerProperty propertyConditionCode ()
+  public StringProperty propertyConditionCode ()
   {
     if (propertyConditionCode == null)
-      propertyConditionCode = new SimpleIntegerProperty (this, "JobConditionCode");
+      propertyConditionCode = new SimpleStringProperty (this, "JobConditionCode");
     return propertyConditionCode;
+  }
+
+  // OutputFile
+
+  public void setOutputFile (String value)
+  {
+    propertyOutputFile ().set (value);
+  }
+
+  public String getOutputFile ()
+  {
+    return propertyOutputFile ().get ();
+  }
+
+  public StringProperty propertyOutputFile ()
+  {
+    if (propertyOutputFile == null)
+      propertyOutputFile = new SimpleStringProperty (this, "OutputFile");
+    return propertyOutputFile;
   }
 
   @Override

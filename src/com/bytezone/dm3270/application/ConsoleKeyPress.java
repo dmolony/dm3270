@@ -27,61 +27,67 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   }
 
   @Override
-  public void handle (KeyEvent e)
+  public void handle (KeyEvent keyEvent)
   {
-    KeyCode keyCodePressed = e.getCode ();
+    KeyCode keyCodePressed = keyEvent.getCode ();
 
     if (screen.isKeyboardLocked ())
     {
-      e.consume ();       // always consume it when the keyboard is locked
+      //      e.consume ();       // always consume it when the keyboard is locked
 
-      if (e.isMetaDown ())
+      if (keyEvent.isMetaDown ())
         if (keyCodePressed == KeyCode.LEFT)
+        {
           consolePane.back ();
+          keyEvent.consume ();             // see whether this fixes the windows problem
+        }
         else if (keyCodePressed == KeyCode.RIGHT)
+        {
           consolePane.forward ();
+          keyEvent.consume ();
+        }
 
       return;
     }
 
-    if (e.isMetaDown ())
+    if (keyEvent.isMetaDown ())
     {
       switch (keyCodePressed)
       {
         case ENTER:
           cursor.newLine ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case BACK_SPACE:
         case DELETE:
           cursor.eraseEOL ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case H:                   // OSX ctrl-h conflicts with Hide Windows command
           cursor.home ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case I:
           screen.toggleInsertMode ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case F1:
           consolePane.sendAID (AIDCommand.AID_PA1, "PA1");
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case F2:
           consolePane.sendAID (AIDCommand.AID_PA2, "PA2");
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case F3:
           consolePane.sendAID (AIDCommand.AID_PA3, "PA3");
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         default:
@@ -90,13 +96,13 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       return;
     }
 
-    if (e.isControlDown ())         // OSX has to share ctrl-h
+    if (keyEvent.isControlDown ())         // OSX has to share ctrl-h
     {
       switch (keyCodePressed)
       {
         case H:
           cursor.home ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         default:
@@ -110,22 +116,22 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       {
         case LEFT:
           cursor.move (Direction.LEFT);
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case RIGHT:
           cursor.move (Direction.RIGHT);
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case UP:
           cursor.move (Direction.UP);
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case DOWN:
           cursor.move (Direction.DOWN);
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         default:
@@ -137,42 +143,42 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       {
         case ENTER:
           consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case TAB:
-          cursor.tab (e.isShiftDown ());
-          e.consume ();
+          cursor.tab (keyEvent.isShiftDown ());
+          keyEvent.consume ();
           break;
 
         case BACK_SPACE:
           cursor.backspace ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case DELETE:
           cursor.delete ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case END:
           cursor.eraseEOL ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case INSERT:
           screen.toggleInsertMode ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case HOME:
           cursor.home ();
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         case ESCAPE:
           System.out.println ("escape");    // CLR key?
-          e.consume ();
+          keyEvent.consume ();
           break;
 
         default:
@@ -189,11 +195,11 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           }
           if (found)
           {
-            if (e.isShiftDown ())
+            if (keyEvent.isShiftDown ())
               pfKey += 12;
             String keyName = "PF" + pfKey;
             consolePane.sendAID (AIDCommand.getKey (keyName), keyName);
-            e.consume ();
+            keyEvent.consume ();
           }
           break;
       }

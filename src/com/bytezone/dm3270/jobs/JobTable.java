@@ -5,9 +5,12 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 public class JobTable extends TableView<BatchJob>
 {
@@ -19,9 +22,10 @@ public class JobTable extends TableView<BatchJob>
     setFixedCellSize (20.0);
 
     TableColumn<BatchJob, String> colJobNumber = new TableColumn<> ("Job #");
-    TableColumn<BatchJob, String> colJobName = new TableColumn<> ("Job name");
+    TableColumn<BatchJob, String> colJobName = new TableColumn<> ("Job Name");
     TableColumn<BatchJob, String> colJobCompleted = new TableColumn<> ("Completed");
-    TableColumn<BatchJob, Integer> colJobCC = new TableColumn<> ("Cond");
+    TableColumn<BatchJob, String> colJobCC = new TableColumn<> ("Cond");
+    TableColumn<BatchJob, String> colOutputFile = new TableColumn<> ("Output File");
 
     colJobNumber.setPrefWidth (100);
     colJobNumber.setCellValueFactory (new PropertyValueFactory<> ("JobNumber"));
@@ -35,12 +39,46 @@ public class JobTable extends TableView<BatchJob>
     colJobCC.setPrefWidth (50);
     colJobCC.setCellValueFactory (new PropertyValueFactory<> ("JobConditionCode"));
 
+    colOutputFile.setPrefWidth (200);
+    colOutputFile.setCellValueFactory (new PropertyValueFactory<> ("OutputFile"));
+
     getColumns ().add (colJobNumber);
     getColumns ().add (colJobName);
     getColumns ().add (colJobCompleted);
     getColumns ().add (colJobCC);
+    getColumns ().add (colOutputFile);
 
     setItems (batchJobs);
+
+    Callback<TableColumn<BatchJob, String>, //
+    TableCell<BatchJob, String>> centreJustified =
+        new Callback<TableColumn<BatchJob, String>, //
+        TableCell<BatchJob, String>> ()
+        {
+          @Override
+          public TableCell<BatchJob, String> call (TableColumn<BatchJob, String> p)
+          {
+            TableCell<BatchJob, String> cell = new TableCell<BatchJob, String> ()
+            {
+              @Override
+              public void updateItem (String item, boolean empty)
+              {
+                super.updateItem (item, empty);
+                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+                setGraphic (null);
+              }
+            };
+
+            cell.setStyle ("-fx-alignment: center;");
+            return cell;
+          }
+        };
+
+    colJobNumber.setCellFactory (centreJustified);
+    colJobCompleted.setCellFactory (centreJustified);
+    colJobCC.setCellFactory (centreJustified);
+
+    setPlaceholder (new Label ("No jobs have been submitted in this session"));
   }
 
   public void addJob (BatchJob batchJob)

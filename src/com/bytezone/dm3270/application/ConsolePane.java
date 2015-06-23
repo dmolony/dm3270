@@ -235,16 +235,11 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
       if (screenHistory == null)          // no history to show
         return;
 
-      UserScreen userScreen = screenHistory.current ();
-      userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
-      setView (userScreen);
+      changeScreen (screenHistory.current ());
 
       btnBack.setDisable (false);
       btnForward.setDisable (false);
       setBottom (historyBox);
-      historyLabel.setText (String.format ("Screen %02d of %02d",
-                                           screenHistory.getCurrentIndex () + 1,
-                                           screenHistory.size ()));
     }
     else
     {
@@ -279,29 +274,22 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   void back ()
   {
     if (screenHistory != null && screenHistory.hasPrevious ())
-    {
-      UserScreen userScreen = screenHistory.previous ();
-      userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
-      setView (userScreen);
-
-      historyLabel.setText (String.format ("Screen %02d of %02d",
-                                           screenHistory.getCurrentIndex () + 1,
-                                           screenHistory.size ()));
-    }
+      changeScreen (screenHistory.previous ());
   }
 
   void forward ()
   {
     if (screenHistory != null && screenHistory.hasNext ())
-    {
-      UserScreen userScreen = screenHistory.next ();
-      userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
-      setView (userScreen);
+      changeScreen (screenHistory.next ());
+  }
 
-      historyLabel.setText (String.format ("Screen %02d of %02d",
-                                           screenHistory.getCurrentIndex () + 1,
-                                           screenHistory.size ()));
-    }
+  private void changeScreen (UserScreen userScreen)
+  {
+    userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
+    setView (userScreen);
+    historyLabel.setText (String.format ("Screen %02d of %02d",
+                                         screenHistory.getCurrentIndex () + 1,
+                                         screenHistory.size ()));
   }
 
   private void setView (UserScreen userScreen)
