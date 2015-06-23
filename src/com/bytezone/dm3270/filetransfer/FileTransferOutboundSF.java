@@ -155,7 +155,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     byte[] buffer;
     int ptr = 0;
 
-    if (false)                       // have data to send
+    if (transfer.hasMoreData ())                       // have data to send
     {
       int buflen = 50;
       int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;

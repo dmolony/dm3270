@@ -66,6 +66,11 @@ public class Transfer
     return type == TransferType.MSG;
   }
 
+  boolean hasMoreData ()
+  {
+    return false;
+  }
+
   @Override
   public String toString ()
   {

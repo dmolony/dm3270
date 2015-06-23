@@ -10,32 +10,24 @@ public class FileTransferInboundSF extends FileTransferSF
 
     switch (rectype)
     {
-      case 0x00:                      // acknowledge OPEN
+      case 0x00:                        // acknowledge OPEN
         // subtype 0x09
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
-      case 0x41:                      // acknowledge CLOSE
+      case 0x41:                        // acknowledge CLOSE
         // subtype 0x09
         if (data.length != 3)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x46:
-        if (subtype == 0x05)            // transfer buffer
+        if (subtype == 0x05)            // transfer buffer to host
         {
-          Transfer transfer = screen.getFileStage ().getTransfer ();
-          if (transfer == null)
-            System.out.println ("Inbound transfer not finished");
-          else
-          {
-            dataRecords.add (new RecordNumber (data, 3));
-
-            dataHeader = new DataHeader (data, 9);
-            transfer.add (dataHeader);
-            ebcdic = checkEbcdic (dataHeader.getBuffer ());
-          }
+          dataRecords.add (new RecordNumber (data, 3));
+          dataHeader = new DataHeader (data, 9);
+          ebcdic = checkEbcdic (dataHeader.getBuffer ());
         }
         else if (subtype == 0x08)       // no data
         {
@@ -43,11 +35,14 @@ public class FileTransferInboundSF extends FileTransferSF
           if (data.length != 7)
             System.out.printf ("Unrecognised data length: %d%n", data.length);
         }
+        else if (data.length != 3)
+          System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
-      case 0x47:                        // acknowledge DATA
+      case 0x47:                        // acknowledge DATA received
         // subtype 0x05
         dataRecords.add (new RecordNumber (data, 3));
+
         if (data.length != 9)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
