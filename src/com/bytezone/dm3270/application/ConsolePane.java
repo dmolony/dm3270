@@ -320,22 +320,23 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     screen.setAID (aid);
 
     AIDCommand command = screen.readModifiedFields ();
+    sendAID (command);
 
-    assert telnetState != null;
-
-    if (telnetState.does3270Extended ())
-    {
-      byte[] buffer = new byte[5];
-      Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
-      CommandHeader header = new CommandHeader (buffer);
-      TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header, command);
-      telnetState.write (extendedCommand.getTelnetData ());
-    }
-    else
-      telnetState.write (command.getTelnetData ());
+    //    assert telnetState != null;
+    //
+    //    if (telnetState.does3270Extended ())
+    //    {
+    //      byte[] buffer = new byte[5];
+    //      Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
+    //      CommandHeader header = new CommandHeader (buffer);
+    //      TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header, command);
+    //      telnetState.write (extendedCommand.getTelnetData ());
+    //    }
+    //    else
+    //      telnetState.write (command.getTelnetData ());
   }
 
-  // called from Screen.processPluginRequest (Plugin plugin)
+  // called from PluginsStage.processPluginRequest (Plugin plugin)
   public void sendAID (AIDCommand command)
   {
     assert telnetState != null;

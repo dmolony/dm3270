@@ -117,8 +117,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     }
 
     String command = txtCommand.getText ();
-    btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
-        || command.isEmpty ());
+    //    btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
+    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 
   private void execute ()
