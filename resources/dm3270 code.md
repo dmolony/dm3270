@@ -1,3 +1,4 @@
+```
 http://cloc.sourceforge.net v 1.62  T=0.40 s (355.6 files/s, 41008.7 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
@@ -168,3 +169,4 @@ SUM:                           142           2761            550          13066
         └── TerminalTypeSubcommand.java
 
 16 directories, 143 files
+```
