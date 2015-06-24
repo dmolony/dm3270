@@ -48,7 +48,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
     txtCommand.setEditable (false);
     //    txtStatus.setDisable (true);
-    txtCommand.setPrefWidth (300);
+    txtCommand.setPrefWidth (400);
     txtCommand.setFont (Font.font ("Monospaced", 12));
     txtCommand.setFocusTraversable (false);
     optionsBox.getChildren ().addAll (lblCommand, txtCommand, btnExecute);
@@ -79,14 +79,6 @@ public class JobStage extends Stage implements TSOCommandStatusListener
         });
   }
 
-  private void execute ()
-  {
-    String command = txtCommand.getText ();
-    System.out.println (reportName);
-    selectedBatchJob.setOutputFile (reportName);
-    jobTable.refresh ();
-  }
-
   private void select (BatchJob batchJob)
   {
     selectedBatchJob = batchJob;
@@ -96,23 +88,28 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   private void setText ()
   {
     String command = "";
-    reportName = String.format ("REPORT.%d", selectedBatchJob.jobNumber);
+    reportName = selectedBatchJob.getJobNumber () + ".OUTLIST";
 
     String report = selectedBatchJob.getOutputFile ();
     if (report == null)
     {
-      command =
-          String.format ("OUTPUT %s PRINT(%s)", selectedBatchJob.jobName, reportName);
+      String jobName =
+          String.format ("%s(%s)", selectedBatchJob.getJobName (),
+                         selectedBatchJob.getJobNumber ());
+      command = String.format ("OUTPUT %s PRINT(%s)", jobName, reportName);
     }
     else
-    {
-      System.out.println (report);
-      command = String.format ("IND$FILE GET %s.OUTLIST", reportName);
-    }
+      command = String.format ("IND$FILE GET %s", report);
 
     if (tsoCommandField != null)
       command = "TSO " + command;
     txtCommand.setText (command);
+  }
+
+  private void execute ()
+  {
+    selectedBatchJob.setOutputFile (reportName);
+    jobTable.refresh ();
   }
 
   public void addBatchJob (BatchJob batchJob)
