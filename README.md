@@ -5,6 +5,8 @@
 * [Debug functions](resources/functions.md)
 * [Screen history](resources/history.md)
 * [Plugins](resources/plugins.md)
+* [Job submission window](resources/jobs.md)
+* [File transfers](resources/transfers.md)
 * [Project layout](resources/structure.md)
 
 ### Installation
