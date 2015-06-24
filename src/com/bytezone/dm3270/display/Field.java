@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.display;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -203,6 +204,13 @@ public class Field implements Iterable<ScreenPosition>
       screenPositions.get (i).reset ();
   }
 
+  private void erase ()
+  {
+    for (int i = 1; i < screenPositions.size (); i++)
+      screenPositions.get (i).setChar ((byte) 0);
+    setModified (true);
+  }
+
   public void clear (int first, int last)
   {
     for (int i = first; i <= last; i++)
@@ -260,6 +268,19 @@ public class Field implements Iterable<ScreenPosition>
       position = screen.validate (position + 1);
     }
     return new String (buffer);
+  }
+
+  public void setText (String text)
+  {
+    try
+    {
+      erase ();
+      setText (text.getBytes ("CP1047"));
+    }
+    catch (UnsupportedEncodingException e)
+    {
+      e.printStackTrace ();
+    }
   }
 
   public void setText (byte[] buffer)

@@ -123,8 +123,13 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void execute ()
   {
-    selectedBatchJob.setOutputFile (reportName);
-    jobTable.refresh ();
+    if (tsoCommandField != null)
+    {
+      tsoCommandField.setText (txtCommand.getText ());
+      tsoCommandField.draw ();
+      selectedBatchJob.setOutputFile (reportName);
+      jobTable.refresh ();
+    }
   }
 
   public void addBatchJob (BatchJob batchJob)
