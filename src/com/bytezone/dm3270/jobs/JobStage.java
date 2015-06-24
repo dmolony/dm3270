@@ -125,7 +125,6 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     {
       tsoCommandField.setText (txtCommand.getText ());
       // consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-      // testing mars
       selectedBatchJob.setOutputFile (reportName);
       jobTable.refresh ();
     }
