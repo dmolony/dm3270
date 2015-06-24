@@ -274,8 +274,9 @@ public class Field implements Iterable<ScreenPosition>
   {
     try
     {
-      erase ();
+      erase ();                                 // sets the field to modified
       setText (text.getBytes ("CP1047"));
+      draw ();
     }
     catch (UnsupportedEncodingException e)
     {

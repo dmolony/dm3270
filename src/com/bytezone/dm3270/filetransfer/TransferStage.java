@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.filetransfer;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javafx.geometry.Insets;
@@ -131,23 +130,13 @@ public class TransferStage extends Stage
     if (input == null || input.getDisplayLength () != 234)
       return;
 
-    try
+    String filename = txtMainframeFile.getText ();
+    if (filename != null && !filename.isEmpty ())
     {
-      String filename = txtMainframeFile.getText ();
-      if (filename != null && !filename.isEmpty ())
-      {
-        String command = "IND$FILE GET " + filename;
-        input.setText (command.getBytes ("CP1047"));
-        input.setModified (true);
-        input.draw ();
-        consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-      }
-      else
-        System.out.println ("filename not specified");
+      input.setText ("IND$FILE GET " + filename);
+      consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
     }
-    catch (UnsupportedEncodingException e)
-    {
-      e.printStackTrace ();
-    }
+    else
+      System.out.println ("filename not specified");
   }
 }
