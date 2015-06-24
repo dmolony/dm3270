@@ -33,13 +33,11 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     if (screen.isKeyboardLocked ())
     {
-      //      e.consume ();       // always consume it when the keyboard is locked
-
       if (keyEvent.isMetaDown () || keyEvent.isControlDown ())
         if (keyCodePressed == KeyCode.LEFT)
         {
           consolePane.back ();
-          keyEvent.consume ();             // see whether this fixes the windows problem
+          keyEvent.consume ();
         }
         else if (keyCodePressed == KeyCode.RIGHT)
         {

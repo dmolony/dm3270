@@ -97,9 +97,14 @@ public class JobTable extends TableView<BatchJob>
   // this is a workaround until jdk 8u60 is released
   public void refresh ()
   {
+    BatchJob selectedBatchJob = getSelectionModel ().getSelectedItem ();
     List<BatchJob> jobs = new ArrayList<> ();
     jobs.addAll (batchJobs);
     batchJobs.clear ();
     batchJobs.addAll (jobs);
+    if (selectedBatchJob != null)
+      getSelectionModel ().select (selectedBatchJob);
+    else if (batchJobs.size () == 1)
+      getSelectionModel ().select (batchJobs.get (0));
   }
 }

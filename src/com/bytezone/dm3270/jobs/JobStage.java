@@ -47,8 +47,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     optionsBox.setAlignment (Pos.CENTER_LEFT);
     optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
     txtCommand.setEditable (false);
-    //    txtStatus.setDisable (true);
-    txtCommand.setPrefWidth (400);
+    txtCommand.setPrefWidth (340);
     txtCommand.setFont (Font.font ("Monospaced", 12));
     txtCommand.setFocusTraversable (false);
     optionsBox.getChildren ().addAll (lblCommand, txtCommand, btnExecute);
@@ -96,14 +95,30 @@ public class JobStage extends Stage implements TSOCommandStatusListener
       String jobName =
           String.format ("%s(%s)", selectedBatchJob.getJobName (),
                          selectedBatchJob.getJobNumber ());
-      command = String.format ("OUTPUT %s PRINT(%s)", jobName, reportName);
+      command =
+          String
+              .format ("OUTPUT %s PRINT(%s)", jobName, selectedBatchJob.getJobNumber ());
     }
     else
       command = String.format ("IND$FILE GET %s", report);
 
-    if (tsoCommandField != null)
+    if (!isTSOCommandScreen)
       command = "TSO " + command;
     txtCommand.setText (command);
+    setButton ();
+  }
+
+  private void setButton ()
+  {
+    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
+    {
+      btnExecute.setDisable (true);
+      return;
+    }
+
+    String command = txtCommand.getText ();
+    btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
+        || command.isEmpty ());
   }
 
   private void execute ()
@@ -133,10 +148,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   {
     this.isTSOCommandScreen = isTSOCommandScreen;
     this.tsoCommandField = tsoCommandField;
-    String command = txtCommand.getText ();
-    btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
-        || command.isEmpty ());
-
+    setButton ();
   }
 
   // ---------------------------------------------------------------------------------//
