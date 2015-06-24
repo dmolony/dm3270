@@ -25,7 +25,7 @@ public class JobTable extends TableView<BatchJob>
     TableColumn<BatchJob, String> colJobName = new TableColumn<> ("Job Name");
     TableColumn<BatchJob, String> colJobCompleted = new TableColumn<> ("Completed");
     TableColumn<BatchJob, String> colJobCC = new TableColumn<> ("Cond");
-    TableColumn<BatchJob, String> colOutputFile = new TableColumn<> ("Output File");
+    TableColumn<BatchJob, String> colOutputFile = new TableColumn<> ("Output Dataset");
 
     colJobNumber.setPrefWidth (100);
     colJobNumber.setCellValueFactory (new PropertyValueFactory<> ("JobNumber"));
