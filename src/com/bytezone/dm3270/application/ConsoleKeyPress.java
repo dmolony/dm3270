@@ -33,17 +33,17 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     if (screen.isKeyboardLocked ())
     {
-      if (keyEvent.isMetaDown () || keyEvent.isControlDown ())
-        if (keyCodePressed == KeyCode.LEFT)
-        {
-          consolePane.back ();
-          keyEvent.consume ();
-        }
-        else if (keyCodePressed == KeyCode.RIGHT)
-        {
-          consolePane.forward ();
-          keyEvent.consume ();
-        }
+      //      if (keyEvent.isMetaDown () || keyEvent.isControlDown ())
+      if (keyCodePressed == KeyCode.LEFT)
+      {
+        consolePane.back ();
+        keyEvent.consume ();
+      }
+      else if (keyCodePressed == KeyCode.RIGHT)
+      {
+        consolePane.forward ();
+        keyEvent.consume ();
+      }
 
       return;
     }
