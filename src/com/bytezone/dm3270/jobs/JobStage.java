@@ -2,6 +2,10 @@ package com.bytezone.dm3270.jobs;
 
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.application.WindowSaver;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.TSOCommandStatusListener;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,10 +16,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import com.bytezone.dm3270.application.WindowSaver;
-import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
 public class JobStage extends Stage implements TSOCommandStatusListener
 {
@@ -40,12 +40,12 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     HBox buttonBox = new HBox ();
     btnHide.setPrefWidth (120);
     buttonBox.setAlignment (Pos.CENTER_RIGHT);
-    buttonBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
+    buttonBox.setPadding (new Insets (10, 10, 10, 10));// trbl
     buttonBox.getChildren ().add (btnHide);
 
     HBox optionsBox = new HBox (10);
     optionsBox.setAlignment (Pos.CENTER_LEFT);
-    optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
+    optionsBox.setPadding (new Insets (10, 10, 10, 10));// trbl
     txtCommand.setEditable (false);
     txtCommand.setPrefWidth (340);
     txtCommand.setFont (Font.font ("Monospaced", 12));
@@ -92,12 +92,10 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     String report = selectedBatchJob.getOutputFile ();
     if (report == null)
     {
-      String jobName =
-          String.format ("%s(%s)", selectedBatchJob.getJobName (),
-                         selectedBatchJob.getJobNumber ());
-      command =
-          String
-              .format ("OUTPUT %s PRINT(%s)", jobName, selectedBatchJob.getJobNumber ());
+      String jobName = String.format ("%s(%s)", selectedBatchJob.getJobName (),
+                                      selectedBatchJob.getJobNumber ());
+      command = String.format ("OUTPUT %s PRINT(%s)", jobName,
+                               selectedBatchJob.getJobNumber ());
     }
     else
       command = String.format ("IND$FILE GET %s", report);
@@ -117,7 +115,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     }
 
     String command = txtCommand.getText ();
-    //    btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
+    // btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
     btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 
@@ -126,7 +124,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     if (tsoCommandField != null)
     {
       tsoCommandField.setText (txtCommand.getText ());
-      //      tsoCommandField.draw ();
+      // consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
+      // testing mars
       selectedBatchJob.setOutputFile (reportName);
       jobTable.refresh ();
     }
@@ -166,14 +165,14 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     addBatchJob (batchJob);
   }
 
-  public void
-      batchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
+  public void batchJobEnded (int jobNumber, String jobName, String time,
+      int conditionCode)
   {
     BatchJob batchJob = getBatchJob (jobNumber);
     if (batchJob != null)
     {
       batchJob.completed (time, conditionCode);
-      jobTable.refresh ();            // temp fix before jdk 8u60
+      jobTable.refresh (); // temp fix before jdk 8u60
     }
   }
 }
