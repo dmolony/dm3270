@@ -2,7 +2,9 @@ package com.bytezone.dm3270.jobs;
 
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.WindowSaver;
+import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
@@ -21,6 +23,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 {
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
+  private ConsolePane consolePane;
   private final Button btnHide = new Button ("Hide Window");
   private final Button btnExecute = new Button ("Execute");
   private final JobTable jobTable = new JobTable ();
@@ -78,6 +81,11 @@ public class JobStage extends Stage implements TSOCommandStatusListener
         });
   }
 
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    this.consolePane = consolePane;
+  }
+
   private void select (BatchJob batchJob)
   {
     selectedBatchJob = batchJob;
@@ -124,7 +132,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     if (tsoCommandField != null)
     {
       tsoCommandField.setText (txtCommand.getText ());
-      // consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
+      if (consolePane != null)
+        consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
       selectedBatchJob.setOutputFile (reportName);
       jobTable.refresh ();
     }

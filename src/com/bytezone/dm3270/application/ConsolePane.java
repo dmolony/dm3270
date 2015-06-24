@@ -1,5 +1,24 @@
 package com.bytezone.dm3270.application;
 
+import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.display.CursorMoveListener;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.FieldChangeListener;
+import com.bytezone.dm3270.display.FontManager;
+import com.bytezone.dm3270.display.KeyboardStatusListener;
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenHistory;
+import com.bytezone.dm3270.display.UserScreen;
+import com.bytezone.dm3270.extended.CommandHeader;
+import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
+import com.bytezone.dm3270.filetransfer.FileStage;
+import com.bytezone.dm3270.filetransfer.TransferStage;
+import com.bytezone.dm3270.plugins.PluginsStage;
+import com.bytezone.dm3270.streams.TelnetListener;
+import com.bytezone.dm3270.streams.TelnetState;
+import com.bytezone.dm3270.streams.TerminalServer;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -20,27 +39,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import com.bytezone.dm3270.attributes.StartFieldAttribute;
-import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.display.CursorMoveListener;
-import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.FieldChangeListener;
-import com.bytezone.dm3270.display.FontManager;
-import com.bytezone.dm3270.display.KeyboardStatusListener;
-import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenHistory;
-import com.bytezone.dm3270.display.UserScreen;
-import com.bytezone.dm3270.extended.CommandHeader;
-import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
-import com.bytezone.dm3270.filetransfer.FileStage;
-import com.bytezone.dm3270.filetransfer.TransferStage;
-import com.bytezone.dm3270.plugins.PluginsStage;
-import com.bytezone.dm3270.streams.TelnetListener;
-import com.bytezone.dm3270.streams.TelnetState;
-import com.bytezone.dm3270.streams.TerminalServer;
-
-public class ConsolePane extends BorderPane implements FieldChangeListener,
-    CursorMoveListener, KeyboardStatusListener
+public class ConsolePane extends BorderPane
+    implements FieldChangeListener, CursorMoveListener, KeyboardStatusListener
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;
@@ -86,6 +86,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     this.fontManager = screen.getFontManager ();
     pluginsStage.setConsolePane (this);
 
+    screen.setConsolePane (this);
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
     screen.addStatusChangeListener (this);
@@ -100,16 +101,16 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
 
-    //    byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
-    //    Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
-    //    btnClear.setOnAction (e -> clearCommand.process ());
+    // byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
+    // Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
+    // btnClear.setOnAction (e -> clearCommand.process ());
     //
-    //    byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
-    //    Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
-    //    btnReset.setOnAction (e -> resetCommand.process ());
+    // byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
+    // Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
+    // btnReset.setOnAction (e -> resetCommand.process ());
 
     menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
-    if (server == null || server.getPlugins ())     // allow null for replay testing
+    if (server == null || server.getPlugins ()) // allow null for replay testing
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
     topPane.setTop (menuBar);
@@ -232,7 +233,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     if (screenHistory == null)
     {
       screenHistory = screen.pause ();
-      if (screenHistory == null)          // no history to show
+      if (screenHistory == null) // no history to show
         return;
 
       changeScreen (screenHistory.current ());
@@ -322,18 +323,19 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     AIDCommand command = screen.readModifiedFields ();
     sendAID (command);
 
-    //    assert telnetState != null;
+    // assert telnetState != null;
     //
-    //    if (telnetState.does3270Extended ())
-    //    {
-    //      byte[] buffer = new byte[5];
-    //      Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
-    //      CommandHeader header = new CommandHeader (buffer);
-    //      TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header, command);
-    //      telnetState.write (extendedCommand.getTelnetData ());
-    //    }
-    //    else
-    //      telnetState.write (command.getTelnetData ());
+    // if (telnetState.does3270Extended ())
+    // {
+    // byte[] buffer = new byte[5];
+    // Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
+    // CommandHeader header = new CommandHeader (buffer);
+    // TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header,
+    // command);
+    // telnetState.write (extendedCommand.getTelnetData ());
+    // }
+    // else
+    // telnetState.write (command.getTelnetData ());
   }
 
   // called from PluginsStage.processPluginRequest (Plugin plugin)
@@ -415,7 +417,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     int row = newLocation / screen.columns;
     int col = newLocation % screen.columns;
     cursorLocation.setText (String.format ("%03d/%03d", row, col));
-    fieldChanged (currentField, currentField);    // update the acronym
+    fieldChanged (currentField, currentField); // update the acronym
   }
 
   @Override
