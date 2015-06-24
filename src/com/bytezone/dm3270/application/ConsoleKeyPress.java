@@ -35,7 +35,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
     {
       //      e.consume ();       // always consume it when the keyboard is locked
 
-      if (keyEvent.isMetaDown ())
+      if (keyEvent.isMetaDown () || keyEvent.isControlDown ())
         if (keyCodePressed == KeyCode.LEFT)
         {
           consolePane.back ();
