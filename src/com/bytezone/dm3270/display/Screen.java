@@ -94,6 +94,7 @@ public class Screen extends Canvas implements DisplayScreen
     addTSOCommandStatusChangeListener (jobStage);
   }
 
+  // this is called from the ConsolePane constructor
   public void setConsolePane (ConsolePane consolePane)
   {
     jobStage.setConsolePane (consolePane);
@@ -123,12 +124,6 @@ public class Screen extends Canvas implements DisplayScreen
   public FileStage getFileStage ()
   {
     return fileStage;
-  }
-
-  // called from ConsoleKeyEvent in order to fix a java bug on OSX
-  public void doFontSmaller ()
-  {
-    fontManager.smaller ();
   }
 
   public Function getFunction ()
@@ -207,13 +202,13 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void insertCursor ()
   {
-    insertedCursorPosition = cursor.getLocation (); // move it here later
+    insertedCursorPosition = cursor.getLocation ();     // move it here later
   }
 
   @Override
   public void insertCursor (int position)
   {
-    insertedCursorPosition = position; // move it here later
+    insertedCursorPosition = position;                  // move it here later
   }
 
   // called from EraseAllUnprotectedCommand.process()
@@ -239,7 +234,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void buildFields (WriteControlCharacter wcc)
   {
-    fieldManager.buildFields (); // what about resetModified?
+    fieldManager.buildFields ();              // what about resetModified?
 
     boolean isTSOCommandScreen = fieldManager.isTSOCommandScreen ();
     Field tsoCommandField = fieldManager.getTSOCommandField ();
@@ -253,7 +248,7 @@ public class Screen extends Canvas implements DisplayScreen
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = getReplyTypes ();
 
-      screenHistory.requestScreen (this); // will call readBuffer()
+      screenHistory.requestScreen (this);       // will call readBuffer()
 
       replyMode = savedReplyMode;
       replyTypes = savedReplyTypes;
@@ -274,13 +269,13 @@ public class Screen extends Canvas implements DisplayScreen
       cursor.setVisible (true);
     }
 
-    drawPosition (cursor.getLocation (), true); // draw the cursor
+    drawPosition (cursor.getLocation (), true);             // draw the cursor
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    CharacterSize characterSize = fontManager.getCharacterSize (); // too slow!!
+    CharacterSize characterSize = fontManager.getCharacterSize ();    // too slow!!
     int x = xOffset + col * characterSize.getWidth ();
     int y = yOffset + row * characterSize.getHeight ();
 

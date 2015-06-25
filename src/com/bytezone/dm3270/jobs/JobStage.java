@@ -123,7 +123,6 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     }
 
     String command = txtCommand.getText ();
-    // btnExecute.setDisable ((!isTSOCommandScreen && tsoCommandField == null)
     btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 
@@ -180,7 +179,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     if (batchJob != null)
     {
       batchJob.completed (time, conditionCode);
-      jobTable.refresh (); // temp fix before jdk 8u60
+      jobTable.refresh ();                          // temp fix before jdk 8u60
     }
   }
 }

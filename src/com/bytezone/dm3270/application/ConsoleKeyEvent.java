@@ -1,10 +1,10 @@
 package com.bytezone.dm3270.application;
 
+import com.bytezone.dm3270.display.Screen;
+
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-
-import com.bytezone.dm3270.display.Screen;
 
 public class ConsoleKeyEvent implements EventHandler<KeyEvent>
 {
@@ -23,9 +23,10 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
     {
       // seems to be a bug in java
       String key = e.getCharacter ();
-      if (e.isMetaDown () && !key.isEmpty () && key.charAt (0) == '-')   // osx fix
+      if (e.isMetaDown () && !key.isEmpty () && key.charAt (0) == '-')    // osx fix
       {
-        screen.doFontSmaller ();
+        // screen.doFontSmaller ();
+        screen.getFontManager ().smaller ();
         e.consume ();
         return;
       }
