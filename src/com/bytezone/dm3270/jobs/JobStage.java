@@ -33,7 +33,6 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
   private BatchJob selectedBatchJob;
-  private String reportName;
 
   public JobStage ()
   {
@@ -50,7 +49,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     optionsBox.setAlignment (Pos.CENTER_LEFT);
     optionsBox.setPadding (new Insets (10, 10, 10, 10));// trbl
     txtCommand.setEditable (false);
-    txtCommand.setPrefWidth (340);
+    txtCommand.setPrefWidth (320);
     txtCommand.setFont (Font.font ("Monospaced", 12));
     txtCommand.setFocusTraversable (false);
     optionsBox.getChildren ().addAll (lblCommand, txtCommand, btnExecute);
@@ -94,28 +93,13 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void setText ()
   {
-    String command = "";
-    // reportName = selectedBatchJob.getJobNumber () + ".OUTLIST";
-    // System.out.println (reportName);
-    // System.out.println (selectedBatchJob.datasetName ());
-    reportName = selectedBatchJob.datasetName ();
-
     String report = selectedBatchJob.getOutputFile ();
-    if (report == null)
-    {
-      // String jobName = String.format ("%s(%s)", selectedBatchJob.getJobName (),
-      // selectedBatchJob.getJobNumber ());
-      // command = String.format ("OUTPUT %s PRINT(%s)", jobName,
-      // selectedBatchJob.getJobNumber ());
-      // System.out.println (selectedBatchJob.outputCommand ());
-      // System.out.println (command);
-      command = selectedBatchJob.outputCommand ();
-    }
-    else
-      command = String.format ("IND$FILE GET %s", report);
+    String command = report == null ? selectedBatchJob.outputCommand ()
+        : String.format ("IND$FILE GET %s", report);
 
     if (!isTSOCommandScreen)
       command = "TSO " + command;
+
     txtCommand.setText (command);
     setButton ();
   }
@@ -134,13 +118,17 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void execute ()
   {
-    if (tsoCommandField != null)
+    if (tsoCommandField != null)                      // are we on a suitable screen?
     {
       tsoCommandField.setText (txtCommand.getText ());
       if (consolePane != null)
         consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-      selectedBatchJob.setOutputFile (reportName);
-      jobTable.refresh ();
+
+      if (selectedBatchJob.getOutputFile () == null)
+      {
+        selectedBatchJob.setOutputFile (selectedBatchJob.datasetName ());
+        jobTable.refresh ();
+      }
     }
   }
 
@@ -177,7 +165,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     BatchJob batchJob = new BatchJob (jobNumber, jobName);
     addBatchJob (batchJob);
 
-    if (!isShowing ())                        // this should be a preference setting
+    if (!isShowing ())                       // this should be a preference setting
       show ();
   }
 
