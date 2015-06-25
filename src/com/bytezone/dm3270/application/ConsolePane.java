@@ -56,12 +56,13 @@ public class ConsolePane extends BorderPane
 
   private TelnetListener telnetListener;
   private final TelnetState telnetState = new TelnetState ();
+  private int commandHeaderCount;
+
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
   private TransferStage transferStage;
   private FileStage fileStage;
 
-  private int commandHeaderCount;
   private final BorderPane topPane = new BorderPane ();
 
   private ScreenHistory screenHistory;
@@ -110,7 +111,7 @@ public class ConsolePane extends BorderPane
     // btnReset.setOnAction (e -> resetCommand.process ());
 
     menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
-    if (server == null || server.getPlugins ()) // allow null for replay testing
+    if (server == null || server.getPlugins ())        // allow null for replay testing
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
     topPane.setTop (menuBar);
@@ -233,7 +234,7 @@ public class ConsolePane extends BorderPane
     if (screenHistory == null)
     {
       screenHistory = screen.pause ();
-      if (screenHistory == null) // no history to show
+      if (screenHistory == null)                        // no history to show
         return;
 
       changeScreen (screenHistory.current ());
