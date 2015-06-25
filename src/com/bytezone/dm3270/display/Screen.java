@@ -82,7 +82,6 @@ public class Screen extends Canvas implements DisplayScreen
     graphicsContext = getGraphicsContext2D ();
     fontManager = new FontManager (this, prefs);
 
-    // ScreenContext baseContext = fieldManager.getPen ().getBase ();
     ScreenContext baseContext = pen.getBase ();
     CharacterSize characterSize = fontManager.getCharacterSize ();
 

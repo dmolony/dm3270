@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.application.WindowSaver;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,8 +23,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import com.bytezone.dm3270.application.WindowSaver;
 
 public class FileStage extends Stage
 {
@@ -135,7 +135,6 @@ public class FileStage extends Stage
     currentTransfer.add (transferRecord);
 
     addTransfer (currentTransfer);
-
     currentTransfer = null;
 
     return transfer;

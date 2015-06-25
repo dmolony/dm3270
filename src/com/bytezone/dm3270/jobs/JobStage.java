@@ -95,15 +95,20 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   private void setText ()
   {
     String command = "";
-    reportName = selectedBatchJob.getJobNumber () + ".OUTLIST";
+    // reportName = selectedBatchJob.getJobNumber () + ".OUTLIST";
+    // System.out.println (reportName);
+    // System.out.println (selectedBatchJob.datasetName ());
 
     String report = selectedBatchJob.getOutputFile ();
     if (report == null)
     {
-      String jobName = String.format ("%s(%s)", selectedBatchJob.getJobName (),
-                                      selectedBatchJob.getJobNumber ());
-      command = String.format ("OUTPUT %s PRINT(%s)", jobName,
-                               selectedBatchJob.getJobNumber ());
+      // String jobName = String.format ("%s(%s)", selectedBatchJob.getJobName (),
+      // selectedBatchJob.getJobNumber ());
+      // command = String.format ("OUTPUT %s PRINT(%s)", jobName,
+      // selectedBatchJob.getJobNumber ());
+      // System.out.println (selectedBatchJob.outputCommand ());
+      // System.out.println (command);
+      command = selectedBatchJob.outputCommand ();
     }
     else
       command = String.format ("IND$FILE GET %s", report);
@@ -170,6 +175,9 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   {
     BatchJob batchJob = new BatchJob (jobNumber, jobName);
     addBatchJob (batchJob);
+
+    if (!isShowing ())                       // this should be a preference setting
+      show ();
   }
 
   public void batchJobEnded (int jobNumber, String jobName, String time,

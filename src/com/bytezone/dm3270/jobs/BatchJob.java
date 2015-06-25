@@ -21,7 +21,7 @@ public class BatchJob
     this.jobName = jobName;
     this.jobNumber = jobNumber;
 
-    setJobNumber ("JOB" + jobNumber);
+    setJobNumber (String.format ("JOB%05d", jobNumber));
     setJobName (jobName);
   }
 
@@ -36,12 +36,13 @@ public class BatchJob
 
   public String outputCommand ()
   {
-    return String.format ("OUTPUT %s PRINT(%s.JOB%d)", jobName, jobName, jobNumber);
+    return String.format ("OUTPUT %s(%s) PRINT(%s)", jobName, getJobNumber (),
+                          getJobNumber ());
   }
 
   public String datasetName ()
   {
-    return String.format ("%s.JOB%s.OUTLIST", jobName, jobNumber);
+    return String.format ("%s.OUTLIST", getJobNumber ());
   }
 
   // JobNumber
