@@ -36,7 +36,7 @@ public class BatchJob
 
   public String outputCommand ()
   {
-    return String.format ("OUTPUT %s(%s) PRINT(%s)", jobName, getJobNumber (),
+    return String.format ("OUT %s(%s) PRINT(%s)", jobName, getJobNumber (),
                           getJobNumber ());
   }
 

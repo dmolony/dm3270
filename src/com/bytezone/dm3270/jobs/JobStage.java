@@ -98,6 +98,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     // reportName = selectedBatchJob.getJobNumber () + ".OUTLIST";
     // System.out.println (reportName);
     // System.out.println (selectedBatchJob.datasetName ());
+    reportName = selectedBatchJob.datasetName ();
 
     String report = selectedBatchJob.getOutputFile ();
     if (report == null)
@@ -176,7 +177,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     BatchJob batchJob = new BatchJob (jobNumber, jobName);
     addBatchJob (batchJob);
 
-    if (!isShowing ())                       // this should be a preference setting
+    if (!isShowing ())                        // this should be a preference setting
       show ();
   }
 
