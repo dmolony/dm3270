@@ -47,7 +47,7 @@ public class FileStructure
       }
       else
       {
-        if (lineSize == 0)          // couldn't determine a line size, just go with 80
+        if (lineSize == 0)        // couldn't determine a line size, just go with 80
           lineSize = 80;
 
         for (int ptr = 0; ptr < buffer.length; ptr += lineSize)
@@ -65,8 +65,7 @@ public class FileStructure
       e.printStackTrace ();
     }
 
-    // check for printer control characters
-    hasASA = hasASA (lines);
+    hasASA = hasASA (lines);         // check for printer control characters
   }
 
   private String getEncoding (byte[] buffer)
@@ -117,5 +116,19 @@ public class FileStructure
       }
 
     return true;
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("Lines ..... %d%n", lines.size ()));
+    text.append (String.format ("CR/LF ..... %s%n", hasCRLF));
+    text.append (String.format ("ASA ....... %s%n", hasASA));
+    text.append (String.format ("Line size . %d%n", lineSize));
+    text.append (String.format ("Encoding .. %s%n", encoding));
+
+    return text.toString ();
   }
 }

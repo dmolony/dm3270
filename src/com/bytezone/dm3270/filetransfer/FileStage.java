@@ -26,10 +26,11 @@ import javafx.stage.Stage;
 
 public class FileStage extends Stage
 {
+  private static final int PAGE_SIZE = 66;
+
   private final TabPane tabPane = new TabPane ();
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
-  private final Preferences prefs;
   private final WindowSaver windowSaver;
   private final Button hideButton = new Button ("Hide Window");
 
@@ -38,22 +39,23 @@ public class FileStage extends Stage
   private final Label lblHasASA = new Label ("ASA");
   private final Label lblHasCRLF = new Label ("CR/LF");
   private final Label lblHasASCII = new Label ("ASCII");
+  private final Label lblTotalLines = new Label ("Lines");
 
   private final TextField txtLineSize = new TextField ();
   private final TextField txtPageSize = new TextField ();
   private final CheckBox chkHasASACodes = new CheckBox ();
   private final CheckBox chkCRLF = new CheckBox ();
   private final CheckBox chkASCII = new CheckBox ();
+  private final TextField txtTotalLines = new TextField ();
 
   public FileStage (Preferences prefs)
   {
-    this.prefs = prefs;
     setTitle ("Report display");
     windowSaver = new WindowSaver (prefs, this, "FileTransferStage");
 
     tabPane.setSide (Side.TOP);
     tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
-    tabPane.setPrefSize (500, 500);           // width, height
+    tabPane.setPrefSize (500, 500);                             // width, height
 
     HBox buttonBox = new HBox ();
     hideButton.setPrefWidth (150);
@@ -64,11 +66,13 @@ public class FileStage extends Stage
     HBox optionsBox = new HBox (10);
     optionsBox.setAlignment (Pos.CENTER_LEFT);
     optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
-    txtPageSize.setPrefWidth (60);
-    txtLineSize.setPrefWidth (60);
+    txtPageSize.setPrefWidth (43);
+    txtLineSize.setPrefWidth (43);
+    txtTotalLines.setPrefWidth (60);
     optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize, txtLineSize,
                                       lblHasCRLF, chkCRLF, lblHasASA, chkHasASACodes,
-                                      lblHasASCII, chkASCII);
+                                      lblHasASCII, chkASCII, lblTotalLines,
+                                      txtTotalLines);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
@@ -87,6 +91,19 @@ public class FileStage extends Stage
       centerOnScreen ();
 
     setOnCloseRequest (e -> closeWindow ());
+
+    tabPane.getSelectionModel ().selectedItemProperty ()
+        .addListener ( (obs, oldTab, newTab) -> select ((FileTab) newTab));
+  }
+
+  private void select (FileTab tab)
+  {
+    FileStructure fileStructure = tab.fileStructure;
+    txtLineSize.setText (fileStructure.lineSize + "");
+    txtPageSize.setText (PAGE_SIZE + "");
+    chkHasASACodes.selectedProperty ().setValue (fileStructure.hasASA);
+    chkCRLF.selectedProperty ().setValue (fileStructure.hasCRLF);
+    txtTotalLines.setText (fileStructure.lines.size () + "");
   }
 
   public void addTransfer (Transfer transfer)
@@ -147,14 +164,14 @@ public class FileStage extends Stage
 
   class FileTab extends Tab
   {
-    private final FileStructure fileStructure;
+    final FileStructure fileStructure;
     private final LinePrinter linePrinter;
     TextArea textArea = new TextArea ();
 
     public FileTab (FileStructure fileStructure)
     {
       this.fileStructure = fileStructure;
-      linePrinter = new LinePrinter (66, fileStructure);
+      linePrinter = new LinePrinter (PAGE_SIZE, fileStructure);
       linePrinter.printBuffer ();
 
       textArea.setEditable (false);
