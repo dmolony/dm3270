@@ -1,11 +1,13 @@
 package com.bytezone.dm3270.commands;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
@@ -27,24 +29,22 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   public static final byte AID_PF10 = (byte) 0x7A;
   public static final byte AID_PF11 = (byte) 0x7B;
 
-  private static byte[] keys = { //
-          0,
-          NO_AID_SPECIFIED,
-          AID_ENTER, //
-          (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
-          (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
-          (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
-          (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C,
-          AID_PA1, AID_PA2, AID_PA3, AID_CLEAR, (byte) 0x6A, AID_READ_PARTITION };
+  private static byte[] keys =
+      {       //
+        0, NO_AID_SPECIFIED, AID_ENTER,       //
+        (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+        (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
+        (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
+        (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C,
+        AID_PA1, AID_PA2, AID_PA3, AID_CLEAR, (byte) 0x6A, AID_READ_PARTITION };
 
-  private static String[] keyNames = { //
-      "Not found",
-          "No AID",
-          "ENTR", //
-          "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7", "PF8", "PF9", "PF10", "PF11",
-          "PF12", "PF13", "PF14", "PF15", "PF16", "PF17", "PF18", "PF19", "PF20", "PF21",
-          "PF22", "PF23", "PF24", //
-          "PA1", "PA2", "PA3", "CLR", "CLR Partition", "Read Partition" };
+  private static String[] keyNames =
+      {       //
+        "Not found", "No AID", "ENTR",       //
+        "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7", "PF8", "PF9", "PF10", "PF11",
+        "PF12", "PF13", "PF14", "PF15", "PF16", "PF17", "PF18", "PF19", "PF20", "PF21",
+        "PF22", "PF23", "PF24",       //
+        "PA1", "PA2", "PA3", "CLR", "CLR Partition", "Read Partition" };
 
   private int key;
   private byte keyCommand;
@@ -106,8 +106,8 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   public boolean isPAKey ()
   {
     // ignore any PA key reply caused by RMA
-    return (data.length == 1 && //
-    (keyCommand == AID_PA1 || keyCommand == AID_PA2 || keyCommand == AID_PA3));
+    return (data.length == 1 &&       //
+        (keyCommand == AID_PA1 || keyCommand == AID_PA2 || keyCommand == AID_PA3));
   }
 
   public boolean matches (AIDCommand otherCommand)
@@ -148,22 +148,39 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     boolean done = modifiedFields.size () == 1 && checkForPrettyMove ();
 
     if (!done)
+    {
+      FieldManager fieldManager = screen.getFieldManager ();
+      Field tsoCommandField = fieldManager.getTSOCommandField ();
+
       for (ModifiedField aidField : modifiedFields)
         if (aidField.hasData ())
         {
-          Field field = screen.getFieldManager ().getField (aidField.getLocation ());
-          if (field != null)    // in replay mode we cannot rely on the fields list
+          Field field = fieldManager.getField (aidField.getLocation ());
+          if (field != null)          // in replay mode we cannot rely on the fields list
           {
-            field.setText (aidField.getBuffer ());
+            byte[] buffer = aidField.getBuffer ();
+            field.setText (buffer);
             field.draw ();
+
+            if (field == tsoCommandField)
+              try
+              {
+                // System.out.println ("Command: " + new String (buffer, "CP1047"));
+                screen.addTSOCommand (new String (buffer, "CP1047"));
+              }
+              catch (UnsupportedEncodingException e)
+              {
+                e.printStackTrace ();
+              }
           }
         }
+    }
 
     // place cursor in new location
     if (cursorAddress != null)
       screen.getScreenCursor ().moveTo (cursorAddress.getLocation ());
 
-    //    System.out.println ("locking: " + keyNames[key]);
+    // System.out.println ("locking: " + keyNames[key]);
     screen.lockKeyboard (keyNames[key]);
   }
 
@@ -262,7 +279,8 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     // response to a read buffer request
     else if (orders.size () > 0)
     {
-      text.append (String.format ("%nOrders  : %d%n", orders.size () - textOrders.size ()));
+      text.append (String.format ("%nOrders  : %d%n",
+                                  orders.size () - textOrders.size ()));
       text.append (String.format ("Text    : %d%n", textOrders.size ()));
 
       // if the list begins with a TextOrder then tab out the missing columns

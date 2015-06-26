@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.display;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.attributes.Attribute;
@@ -14,6 +15,7 @@ public class ScreenPacker
 {
   private final Screen screen;
   private final byte[] buffer = new byte[4096];
+  private final List<String> tsoCommands = new ArrayList<> ();
 
   private byte replyMode;
   private byte[] replyTypes;
@@ -48,7 +50,8 @@ public class ScreenPacker
       {
         ptr = packField (field, buffer, ptr);
         if (field == tsoCommandField)
-          System.out.println ("User command : " + field.getText ().trim ());
+          tsoCommands.add (field.getText ().trim ());
+        // System.out.println ("User command : " + field.getText ().trim ());
       }
 
     return new AIDCommand (screen, buffer, 0, ptr);
@@ -144,5 +147,24 @@ public class ScreenPacker
     buffer[ptr++] = sp.getByte ();
 
     return ptr;
+  }
+
+  public void addTSOCommand (String command)
+  {
+    tsoCommands.add (command);
+  }
+
+  public String getPreviousTSOCommand ()
+  {
+    if (tsoCommands.size () > 0)
+      return tsoCommands.get (tsoCommands.size () - 1);
+    return "bollocks";
+  }
+
+  public void listTSOCommands ()
+  {
+    System.out.println ("User commands:");
+    for (String command : tsoCommands)
+      System.out.println (command);
   }
 }

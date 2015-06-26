@@ -114,7 +114,7 @@ public class FileStage extends Stage
     transfers.add (transfer);
 
     FileTab tab = new FileTab (new FileStructure (transfer.combineDataBuffers ()));
-    tab.setText ("#" + transfers.size ());
+    tab.setText (transfer.getFileName ());
 
     Platform.runLater ( () -> tabPane.getTabs ().add (tab));
   }

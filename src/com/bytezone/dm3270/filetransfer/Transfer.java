@@ -8,7 +8,8 @@ import java.util.List;
 
 public class Transfer
 {
-  TransferType type;
+  private TransferType type;
+  private String fileName;
 
   List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
   List<DataHeader> dataBuffers = new ArrayList<> ();
@@ -69,6 +70,22 @@ public class Transfer
   boolean hasMoreData ()
   {
     return false;
+  }
+
+  public void setFileName (String fileName)
+  {
+    fileName = fileName.toLowerCase ();
+    if (fileName.startsWith ("tso ind$file"))
+      this.fileName = fileName.substring (17).trim ();
+    else if (fileName.startsWith ("ind$file"))
+      this.fileName = fileName.substring (13).trim ();
+    else
+      this.fileName = fileName;
+  }
+
+  public String getFileName ()
+  {
+    return fileName;
   }
 
   @Override

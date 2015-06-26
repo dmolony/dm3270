@@ -130,6 +130,16 @@ public class Screen extends Canvas implements DisplayScreen
     return function;
   }
 
+  public String getPreviousTSOCommand ()
+  {
+    return screenPacker.getPreviousTSOCommand ();
+  }
+
+  public void addTSOCommand (String command)
+  {
+    screenPacker.addTSOCommand (command);
+  }
+
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {

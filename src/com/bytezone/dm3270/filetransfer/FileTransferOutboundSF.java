@@ -16,16 +16,16 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     switch (rectype)
     {
-    // OPEN for SEND or RECEIVE
+      // OPEN for SEND or RECEIVE
 
       case 0x00:
         dataRecords.add (new DataRecord (data, 3));
         dataRecords.add (new DataRecord (data, 9));
         dataRecords.add (new DataRecord (data, 19));
 
-        if (data.length == 33)          // OPEN for SEND
+        if (data.length == 33)                // OPEN for SEND
           setTransferType (new String (data, 26, 7));            // FT:MSG. or FT:DATA
-        else if (data.length == 39)     // OPEN for RECEIVE
+        else if (data.length == 39)           // OPEN for RECEIVE
         {
           dataRecords.add (new RecordSize (data, 24));
           setTransferType (new String (data, 32, 7));            // FT:DATA
@@ -45,11 +45,11 @@ public class FileTransferOutboundSF extends FileTransferSF
       // Receiving data
 
       case 0x47:
-        if (subtype == 0x11)                              // always before 0x04
+        if (subtype == 0x11)                                    // always before 0x04
         {
           dataRecords.add (new DataRecord (data, 3));
         }
-        else if (subtype == 0x04)                  // message or transfer buffer
+        else if (subtype == 0x04)                        // message or transfer buffer
         {
           dataHeader = new DataHeader (data, 3);
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
@@ -131,6 +131,9 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
+
+    if (transfer.isData ())
+      transfer.setFileName (screen.getPreviousTSOCommand ());
   }
 
   private void processClose ()
@@ -155,7 +158,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     byte[] buffer;
     int ptr = 0;
 
-    if (transfer.hasMoreData ())                       // have data to send
+    if (transfer.hasMoreData ())                             // have data to send
     {
       int buflen = 50;
       int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
@@ -173,7 +176,7 @@ public class FileTransferOutboundSF extends FileTransferSF
       // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
     }
     else
-    //   finished sending buffers, now send an EOF
+    // finished sending buffers, now send an EOF
     {
       int length = 6 + ErrorRecord.RECORD_LENGTH;
       buffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x08);
@@ -191,7 +194,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     transfer = fileStage.getTransfer ();
     transfer.add (this);                  // both 0x11 and 0x04 subtypes
 
-    if (subtype == 0x04)                  // message or transfer buffer
+    if (subtype == 0x04)                        // message or transfer buffer
     {
       int ptr = 6;
       int length = ptr + RecordNumber.RECORD_LENGTH;
@@ -203,7 +206,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       reply = new ReadStructuredFieldCommand (buffer, screen);
 
-      if (transfer.isMessage ())       // message transfers don't close
+      if (transfer.isMessage ())             // message transfers don't close
         fileStage.closeTransfer ();
     }
   }
