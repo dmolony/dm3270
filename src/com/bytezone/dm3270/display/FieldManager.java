@@ -8,10 +8,9 @@ import com.bytezone.dm3270.plugins.ScreenField;
 
 public class FieldManager
 {
-  private static final String[] tsoMenus = { "Menu", "List", "Mode", "Functions",
-                                            "Utilities", "Help" };
+  private static final String[] tsoMenus =
+      { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
   private final Screen screen;
-  //  private final Pen pen;
   private final ScreenContext baseContext;
 
   private final List<Field> fields = new ArrayList<> ();
@@ -26,20 +25,8 @@ public class FieldManager
   public FieldManager (Screen screen, ScreenContext baseContext)
   {
     this.screen = screen;
-    //    pen = new Pen (screen);
-    //    pen = screen.getPen ();
     this.baseContext = baseContext;
   }
-
-  //  public Pen getPen ()
-  //  {
-  //    return pen;
-  //  }
-
-  //  public void reset ()
-  //  {
-  //    pen.reset ();
-  //  }
 
   // this is called after the pen and screen positions have been modified
   public void buildFields ()
@@ -66,7 +53,7 @@ public class FieldManager
       // check for the start of a new field
       if (screenPosition.isStartField ())
       {
-        if (start >= 0)                    // if there is a field to add
+        if (start >= 0)   // if there is a field to add
         {
           addField (new Field (screen, positions));
           positions.clear ();
@@ -78,14 +65,14 @@ public class FieldManager
       }
 
       // add ScreenPosition to the current field
-      if (start >= 0)                      // if we are in a field...
-        positions.add (screenPosition);    // collect next field's positions
+      if (start >= 0)                                // if we are in a field...
+        positions.add (screenPosition);// collect next field's positions
 
       // increment ptr and wrap around
-      if (++ptr == screen.screenSize)      // faster than validate()
+      if (++ptr == screen.screenSize)    // faster than validate()
       {
         ptr = 0;
-        if (first == -1)                   // wrapped around and still no fields
+        if (first == -1)      // wrapped around and still no fields
           break;
       }
     }
@@ -93,13 +80,13 @@ public class FieldManager
     if (start >= 0 && positions.size () > 0)
       addField (new Field (screen, positions));
 
-    assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
+    assert(dataPositions + fields.size () == 1920) || fields.size () == 0;
 
     // build screen contexts for every position and link uprotected fields
     Field previousUnprotectedField = null;
     for (Field field : fields)
     {
-      //      field.setScreenContexts (pen.getBase ());
+      // field.setScreenContexts (pen.getBase ());
       field.setScreenContexts (baseContext);
       if (field.isUnprotected ())
       {
@@ -134,8 +121,8 @@ public class FieldManager
         }
     }
 
-    //    getMenus ();
-    getTSOCommandField ();
+    // getMenus ();
+    // getTSOCommandField ();
   }
 
   private void addField (Field field)
@@ -179,18 +166,6 @@ public class FieldManager
   {
     return fields.size ();
   }
-
-  //  public void drawFields ()
-  //  {
-  //    for (Field field : fields)
-  //      field.draw ();
-  //  }
-
-  //  public void drawUnprotectedFields ()
-  //  {
-  //    for (Field field : unprotectedFields)
-  //      field.draw ();
-  //  }
 
   Field eraseAllUnprotected ()
   {
@@ -328,8 +303,8 @@ public class FieldManager
     text.append (String.format ("Screen positions : %4d%n",
                                 dataPositions + fields.size ()));
     text.append (String.format ("  Attributes     : %4d%n", fields.size ()));
-    text.append (String.format ("  Output         : %4d%n", dataPositions
-        - inputPositions));
+    text.append (String.format ("  Output         : %4d%n",
+                                dataPositions - inputPositions));
     text.append (String.format ("  Input          : %4d", inputPositions));
 
     return text.toString ();
