@@ -118,7 +118,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void execute ()
   {
-    if (tsoCommandField != null)                      // are we on a suitable screen?
+    if (tsoCommandField != null)                       // are we on a suitable screen?
     {
       tsoCommandField.setText (txtCommand.getText ());
       if (consolePane != null)
@@ -165,8 +165,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     BatchJob batchJob = new BatchJob (jobNumber, jobName);
     addBatchJob (batchJob);
 
-    if (!isShowing ())                       // this should be a preference setting
-      show ();
+    // if (!isShowing ()) // this should be a preference setting
+    // show ();
   }
 
   public void batchJobEnded (int jobNumber, String jobName, String time,

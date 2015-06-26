@@ -39,21 +39,24 @@ public class FileStructure
         {
           if (buffer[ptr] == 0x0A && buffer[ptr - 1] == 0x0D)
           {
-            lines.add (new String (buffer, lineStart, ptr - lineStart - 1, encoding));
+            String line = new String (buffer, lineStart, ptr - lineStart - 1, encoding);
+            lines.add (line);
             lineStart = ptr + 1;
           }
         }
       }
       else
       {
-        if (lineSize == 0)      // couldn't determine a line size, just go with 80
+        if (lineSize == 0)            // couldn't determine a line size, just go with 80
           lineSize = 80;
+
         for (int ptr = 0; ptr < buffer.length; ptr += lineSize)
         {
           if (ptr + lineSize >= buffer.length)
             lineSize = buffer.length - ptr;
           String line = new String (buffer, ptr, lineSize, encoding);
           String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
+          // if (trimmedLine.length () > 0 && trimmedLine.charAt (0) != (byte) 0)
           lines.add (trimmedLine);
         }
       }
