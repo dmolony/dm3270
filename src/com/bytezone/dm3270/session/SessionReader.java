@@ -120,6 +120,9 @@ public class SessionReader
     {
       String line = lines.get (nextLine);
 
+      if (line.length () == 0)
+        break;
+
       char firstChar = line.charAt (0);
       if (firstChar < '0' || firstChar > '9')
         break;
@@ -128,8 +131,8 @@ public class SessionReader
         firstHexDigit = line.charAt (7) == ' ' ? 8 : 6;
 
       line = line.substring (firstHexDigit);
-      if (line.length () > 48)                       // 16 hex values plus spaces
-        line = line.substring (0, 48);              // leave a space on the end
+      if (line.length () > 48)                        // 16 hex values plus spaces
+        line = line.substring (0, 48);            // leave a space on the end
       list.add (line);
 
       nextLine++;
@@ -158,7 +161,9 @@ public class SessionReader
 
         while (nextLine < lines.size ())          // skip all comments and blank lines
         {
-          if (lines.get (nextLine).startsWith ("0"))               // first buffer line
+          if (lines.get (nextLine).startsWith ("0"))                                            // first
+            // buffer
+            // line
             return;
           nextLine++;
         }
