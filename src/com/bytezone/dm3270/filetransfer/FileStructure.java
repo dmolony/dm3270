@@ -47,7 +47,7 @@ public class FileStructure
       }
       else
       {
-        if (lineSize == 0)            // couldn't determine a line size, just go with 80
+        if (lineSize == 0)          // couldn't determine a line size, just go with 80
           lineSize = 80;
 
         for (int ptr = 0; ptr < buffer.length; ptr += lineSize)
@@ -56,7 +56,6 @@ public class FileStructure
             lineSize = buffer.length - ptr;
           String line = new String (buffer, ptr, lineSize, encoding);
           String trimmedLine = line.replaceAll ("\\s*$", "");     // trim right
-          // if (trimmedLine.length () > 0 && trimmedLine.charAt (0) != (byte) 0)
           lines.add (trimmedLine);
         }
       }
