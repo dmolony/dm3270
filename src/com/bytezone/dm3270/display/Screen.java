@@ -172,7 +172,6 @@ public class Screen extends Canvas implements DisplayScreen
   @Override
   public Pen getPen ()
   {
-    // return fieldManager.getPen ();
     return pen;
   }
 

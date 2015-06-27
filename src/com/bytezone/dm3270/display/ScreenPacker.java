@@ -163,7 +163,7 @@ public class ScreenPacker
   public void addTSOCommand (String command)
   {
     tsoCommands.add (command);
-    listTSOCommands ();
+    // listTSOCommands ();
   }
 
   public String getPreviousTSOCommand ()
