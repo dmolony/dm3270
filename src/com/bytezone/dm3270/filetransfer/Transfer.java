@@ -3,8 +3,8 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.ArrayList;
 import java.util.List;
 
-// Control Unit Terminal (CUT)
-// Distributed Function Terminal (DFT)
+// Control Unit Terminal (CUT) - Buffered
+// Distributed Function Terminal (DFT) - WSF
 
 public class Transfer
 {
@@ -16,6 +16,7 @@ public class Transfer
   private String recfm;
   private String lrecl;
   private String blksize;
+  private String space;
   private String direction;
 
   List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
@@ -115,6 +116,8 @@ public class Transfer
         lrecl = chunks[i + 1];
       if (chunks[i].equals ("blksize") && i < lengthMinusOne)
         blksize = chunks[i + 1];
+      if (chunks[i].equals ("space") && i < lengthMinusOne)
+        space = chunks[i + 1];
 
       if (chunks[i].startsWith ("recfm("))
         recfm = chunks[i].substring (5);
@@ -122,6 +125,8 @@ public class Transfer
         lrecl = chunks[i].substring (5);
       if (chunks[i].startsWith ("blksize("))
         recfm = chunks[i].substring (7);
+      if (chunks[i].startsWith ("space("))
+        space = chunks[i].substring (7);
     }
 
     System.out.println (this);
@@ -150,6 +155,7 @@ public class Transfer
     text.append (String.format ("%nRECFM ......... %s", recfm == null ? "" : recfm));
     text.append (String.format ("%nLRECL ......... %s", lrecl == null ? "" : lrecl));
     text.append (String.format ("%nBLKSIZE ....... %s", blksize == null ? "" : blksize));
+    text.append (String.format ("%nSPACE ......... %s", space == null ? "" : space));
 
     return text.toString ();
   }
