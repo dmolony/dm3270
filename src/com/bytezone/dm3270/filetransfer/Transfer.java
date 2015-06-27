@@ -80,13 +80,13 @@ public class Transfer
     return false;
   }
 
-  public void setFileName (String fileName)
+  public void setTransferCommand (String command)
   {
-    fileName = fileName.toLowerCase ().trim ();
-    if (fileName.startsWith ("tso "))
-      fileName = fileName.substring (4);
+    command = command.toLowerCase ().trim ();
+    if (command.startsWith ("tso "))
+      command = command.substring (4);
 
-    String[] chunks = fileName.split ("\\s");
+    String[] chunks = command.split ("\\s");
     if (false)
     {
       int count = 0;
