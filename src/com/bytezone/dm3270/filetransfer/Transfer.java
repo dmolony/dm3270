@@ -80,7 +80,7 @@ public class Transfer
     else if (fileName.startsWith ("ind$file"))
       this.fileName = fileName.substring (13).trim ();
     else
-      this.fileName = fileName;
+      this.fileName = fileName.trim ();
   }
 
   public String getFileName ()

@@ -103,6 +103,7 @@ public class FileStage extends Stage
     txtPageSize.setText (PAGE_SIZE + "");
     chkHasASACodes.selectedProperty ().setValue (fileStructure.hasASA);
     chkCRLF.selectedProperty ().setValue (fileStructure.hasCRLF);
+    chkASCII.selectedProperty ().setValue (fileStructure.encoding.equals ("UTF8"));
     txtTotalLines.setText (fileStructure.lines.size () + "");
   }
 

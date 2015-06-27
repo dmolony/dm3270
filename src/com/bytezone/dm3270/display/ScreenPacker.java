@@ -43,6 +43,8 @@ public class ScreenPacker
     ptr = ba.packAddress (buffer, ptr);
 
     Field tsoCommandField = fieldManager.getTSOCommandField ();
+    boolean isTSOScreen = fieldManager.isTSOCommandScreen ();
+    boolean tsoFieldSent = false;
 
     // pack all modified fields
     for (Field field : fieldManager.getUnprotectedFields ())
@@ -50,9 +52,18 @@ public class ScreenPacker
       {
         ptr = packField (field, buffer, ptr);
         if (field == tsoCommandField)
+        {
           tsoCommands.add (field.getText ().trim ());
-        // System.out.println ("User command : " + field.getText ().trim ());
+          tsoFieldSent = true;
+        }
       }
+
+    if (isTSOScreen && !tsoFieldSent)
+    {
+      String tsoCommand = tsoCommandField.getText ().trim ();
+      if (!tsoCommand.isEmpty ())
+        tsoCommands.add (tsoCommand);
+    }
 
     return new AIDCommand (screen, buffer, 0, ptr);
   }
@@ -152,6 +163,7 @@ public class ScreenPacker
   public void addTSOCommand (String command)
   {
     tsoCommands.add (command);
+    listTSOCommands ();
   }
 
   public String getPreviousTSOCommand ()

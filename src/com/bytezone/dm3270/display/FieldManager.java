@@ -53,7 +53,7 @@ public class FieldManager
       // check for the start of a new field
       if (screenPosition.isStartField ())
       {
-        if (start >= 0)           // if there is a field to add
+        if (start >= 0)                   // if there is a field to add
         {
           addField (new Field (screen, positions));
           positions.clear ();
@@ -65,14 +65,14 @@ public class FieldManager
       }
 
       // add ScreenPosition to the current field
-      if (start >= 0)                                        // if we are in a field...
-        positions.add (screenPosition);// collect next field's positions
+      if (start >= 0)                        // if we are in a field...
+        positions.add (screenPosition);     // collect next field's positions
 
       // increment ptr and wrap around
-      if (++ptr == screen.screenSize)            // faster than validate()
+      if (++ptr == screen.screenSize)        // faster than validate()
       {
         ptr = 0;
-        if (first == -1)              // wrapped around and still no fields
+        if (first == -1)                     // wrapped around and still no fields
           break;
       }
     }
