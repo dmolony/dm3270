@@ -29,6 +29,7 @@ public class FieldManager
   private boolean isTSOCommandScreen;
   private boolean isDatasetList;
   private String highLevelQualifier;
+  private String currentDataset;
 
   public FieldManager (Screen screen, ScreenContext baseContext)
   {
@@ -79,8 +80,8 @@ public class FieldManager
         positions.add (screenPosition);     // collect next field's positions
 
       // increment ptr and wrap around
-      if (++ptr == screen.screenSize)         // faster than validate()
-      {
+      if (++ptr == screen.screenSize)
+      {           // faster than validate()
         ptr = 0;
         if (first == -1)
           break;                          // wrapped around and still no fields
@@ -133,6 +134,7 @@ public class FieldManager
     // getMenus ();
     checkTSOCommandField ();
     checkDatasets ();
+    checkCurrentDataset ();
   }
 
   private void addField (Field field)
@@ -235,6 +237,11 @@ public class FieldManager
   public boolean isTSOCommandScreen ()
   {
     return isTSOCommandScreen;
+  }
+
+  public String getCurrentDataset ()
+  {
+    return currentDataset;
   }
 
   private void checkTSOCommandField ()
@@ -353,6 +360,38 @@ public class FieldManager
       System.out.println ("Unknown category: " + category);
 
     isDatasetList = true;
+  }
+
+  private void checkCurrentDataset ()
+  {
+    currentDataset = "";
+
+    if (fields.size () < 13)
+      return;
+
+    Field field = fields.get (11);
+    int location = field.getFirstLocation ();
+    if (location != 161)
+      return;
+
+    String text = field.getText ().trim ();
+    if (!text.equals ("EDIT"))
+      return;
+
+    field = fields.get (12);
+    location = field.getFirstLocation ();
+    if (location != 172)
+      return;
+
+    text = field.getText ().trim ();
+    System.out.println (text);
+    int pos = text.indexOf (' ');
+    if (pos > 0)
+    {
+      String dataset = text.substring (0, pos);
+      System.out.println (dataset);
+      currentDataset = dataset;
+    }
   }
 
   // ---------------------------------------------------------------------------------//

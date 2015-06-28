@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.application.ConsolePane;
@@ -43,8 +44,9 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
 
   private final RadioButton rbtnMFtoPC = new RadioButton ("Mainframe to PC  ");
   private final RadioButton rbtnPCtoMF = new RadioButton ("PC to Mainframe");
-
   private final ToggleGroup grpDirection = new ToggleGroup ();
+
+  private final List<String> datasetNames = new ArrayList<> ();
 
   public TransferStage (Screen screen)
   {
@@ -151,5 +153,12 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
   @Override
   public void screenChanged (FieldManager fieldManager)
   {
+    String datasetName = fieldManager.getCurrentDataset ();
+    if (!datasetName.isEmpty ())
+    {
+      txtMainframeFile.setText (datasetName);
+      if (!datasetNames.contains (datasetName))
+        datasetNames.add (datasetName);
+    }
   }
 }

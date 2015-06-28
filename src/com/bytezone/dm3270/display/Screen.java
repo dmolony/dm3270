@@ -94,6 +94,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     addTSOCommandStatusChangeListener (jobStage);
     addTSOCommandStatusChangeListener (fileStage);
+    addTSOCommandStatusChangeListener (transferStage);
   }
 
   // this is called from the ConsolePane constructor
