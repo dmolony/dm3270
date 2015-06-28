@@ -17,6 +17,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
 import com.bytezone.dm3270.filetransfer.FileStage;
+import com.bytezone.dm3270.filetransfer.TransferStage;
 import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
 
@@ -37,6 +38,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final JobStage jobStage;
   private final FileStage fileStage;
   private final PluginsStage pluginsStage;
+  private final TransferStage transferStage;
   private final Pen pen;
 
   private final Cursor cursor = new Cursor (this);
@@ -76,6 +78,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     jobStage = new JobStage ();
     fileStage = new FileStage (prefs);
+    transferStage = new TransferStage (this);
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
 
@@ -95,9 +98,11 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   // this is called from the ConsolePane constructor
+  // ConsolePane is needed to send an AID command
   public void setConsolePane (ConsolePane consolePane)
   {
     jobStage.setConsolePane (consolePane);
+    transferStage.setConsolePane (consolePane);
   }
 
   public FieldManager getFieldManager ()
@@ -124,6 +129,11 @@ public class Screen extends Canvas implements DisplayScreen
   public FileStage getFileStage ()
   {
     return fileStage;
+  }
+
+  public TransferStage getTransferStage ()
+  {
+    return transferStage;
   }
 
   public Function getFunction ()

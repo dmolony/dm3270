@@ -143,17 +143,17 @@ public class ConsolePane extends BorderPane
         KeyCombination.SHORTCUT_DOWN));
 
     MenuItem menuItemFileTransfer = new MenuItem ("File transfer");
-    menuItemFileTransfer.setOnAction (e -> fileTransfer ());
+    menuItemFileTransfer.setOnAction (e -> screen.getTransferStage ().show ());
     menuItemFileTransfer.setAccelerator (new KeyCodeCombination (KeyCode.F,
         KeyCombination.SHORTCUT_DOWN));
 
     MenuItem menuItemReportDisplay = new MenuItem ("Reports");
-    menuItemReportDisplay.setOnAction (e -> fileDisplay ());
+    menuItemReportDisplay.setOnAction (e -> screen.getFileStage ().show ());
     menuItemReportDisplay.setAccelerator (new KeyCodeCombination (KeyCode.R,
         KeyCombination.SHORTCUT_DOWN));
 
     MenuItem menuItemJobDisplay = new MenuItem ("Batch jobs");
-    menuItemJobDisplay.setOnAction (e -> jobDisplay ());
+    menuItemJobDisplay.setOnAction (e -> screen.getJobStage ().show ());
     menuItemJobDisplay.setAccelerator (new KeyCodeCombination (KeyCode.J,
         KeyCombination.SHORTCUT_DOWN));
 
@@ -235,7 +235,7 @@ public class ConsolePane extends BorderPane
     if (screenHistory == null)
     {
       screenHistory = screen.pause ();
-      if (screenHistory == null)                                    // no history to show
+      if (screenHistory == null)  // no history to show
         return;
 
       changeScreen (screenHistory.current ());
@@ -251,31 +251,6 @@ public class ConsolePane extends BorderPane
       btnForward.setDisable (true);
       setBottom (statusPane);
     }
-  }
-
-  // triggered by the menu option
-  private void fileTransfer ()
-  {
-    if (transferStage == null)
-      transferStage = new TransferStage (screen, this);
-
-    transferStage.show ();
-  }
-
-  // triggered by the menu option
-  private void jobDisplay ()
-  {
-    screen.getJobStage ().show ();
-  }
-
-  // triggered by the menu option
-  private void fileDisplay ()
-  {
-    // if (fileStage == null)
-    // fileStage = screen.getFileStage ();
-    // if (fileStage != null)
-    // fileStage.show ();
-    screen.getFileStage ().show ();
   }
 
   void back ()

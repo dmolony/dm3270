@@ -29,7 +29,7 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
   private static final int TEXT_FIELD_WIDTH = 300;
 
   private final Screen screen;
-  private final ConsolePane consolePane;
+  private ConsolePane consolePane;
 
   private final Button btnTransfer = new Button ("Transfer");
   private final Button btnCancel = new Button ("Cancel");
@@ -46,10 +46,10 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
 
   private final ToggleGroup grpDirection = new ToggleGroup ();
 
-  public TransferStage (Screen screen, ConsolePane consolePane)
+  public TransferStage (Screen screen)
   {
     this.screen = screen;
-    this.consolePane = consolePane;
+    // this.consolePane = consolePane;
 
     BorderPane root = new BorderPane ();
 
@@ -103,6 +103,11 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
     btnCancel.setOnAction (e -> close ());
   }
 
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    this.consolePane = consolePane;
+  }
+
   private void changeLayout ()
   {
 
@@ -136,6 +141,7 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
     if (filename != null && !filename.isEmpty ())
     {
       input.setText ("IND$FILE GET " + filename);
+      assert consolePane != null;
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
     }
     else
