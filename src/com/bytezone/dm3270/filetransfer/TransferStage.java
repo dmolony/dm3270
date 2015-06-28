@@ -117,33 +117,17 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
 
   public void doStuff ()
   {
-    List<Field> fields = screen.getFieldManager ().getFields ();
+    FieldManager fieldManager = screen.getFieldManager ();
 
-    Field field10 = fields.get (10);
-    Field field17 = fields.get (17);
-    Field field18 = fields.get (18);
-    Field field19 = fields.get (19);
-
-    if (field10 == null || field18 == null || field19 == null)
-      return;
-
-    if (!"ISPF Command Shell".equals (field10.getText ()))
-      return;
-
-    Field input = null;
-    if ("===>".equals (field17.getText ()))
-      input = field18;
-    else if ("===>".equals (field18.getText ()))
-      input = field19;
-
-    if (input == null || input.getDisplayLength () != 234)
-      return;
-
+    // this needs to remove the HLQ or wrap it in apostrophes
     String filename = txtMainframeFile.getText ();
     if (filename != null && !filename.isEmpty ())
     {
-      input.setText ("IND$FILE GET " + filename);
-      assert consolePane != null;
+      Field input = fieldManager.getTSOCommandField ();
+      String tso = fieldManager.isTSOCommandScreen () ? "" : "TSO ";
+      String command = String.format ("%sIND$FILE GET %s", tso, filename);
+      input.setText (command);
+
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
     }
     else
