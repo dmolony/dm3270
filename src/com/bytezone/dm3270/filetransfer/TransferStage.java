@@ -101,7 +101,7 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
         changeLayout ();
     });
 
-    btnTransfer.setOnAction (e -> doStuff ());
+    btnTransfer.setOnAction (e -> transferFile ());
     btnCancel.setOnAction (e -> close ());
   }
 
@@ -115,7 +115,7 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
 
   }
 
-  public void doStuff ()
+  public void transferFile ()
   {
     FieldManager fieldManager = screen.getFieldManager ();
 
