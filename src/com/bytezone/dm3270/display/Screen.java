@@ -27,12 +27,9 @@ import javafx.scene.canvas.GraphicsContext;
 public class Screen extends Canvas implements DisplayScreen
 {
   private final ScreenPacker screenPacker = new ScreenPacker (this);
-  private byte currentAID;
-  private byte replyMode;
-  private byte[] replyTypes = new byte[0];
+  private final Function function;
 
   private final ScreenPosition[] screenPositions;
-
   private final FieldManager fieldManager;
   private final FontManager fontManager;
   private final JobStage jobStage;
@@ -40,9 +37,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final PluginsStage pluginsStage;
   private final TransferStage transferStage;
   private final Pen pen;
-
   private final Cursor cursor = new Cursor (this);
-  private final Function function;
   private final GraphicsContext graphicsContext;
 
   private final int xOffset = 4; // padding left and right
@@ -51,6 +46,10 @@ public class Screen extends Canvas implements DisplayScreen
   public final int rows;
   public final int columns;
   public final int screenSize;
+
+  private byte currentAID;
+  private byte replyMode;
+  private byte[] replyTypes = new byte[0];
 
   private int insertedCursorPosition = -1;
   private boolean keyboardLocked;

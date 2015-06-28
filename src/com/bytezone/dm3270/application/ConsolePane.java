@@ -12,7 +12,6 @@ import com.bytezone.dm3270.display.ScreenHistory;
 import com.bytezone.dm3270.display.UserScreen;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
-import com.bytezone.dm3270.filetransfer.TransferStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
@@ -61,8 +60,6 @@ public class ConsolePane extends BorderPane
 
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
-  private TransferStage transferStage;    // move this to Screen
-  // private FileStage fileStage;
 
   private final BorderPane topPane = new BorderPane ();
 
@@ -305,20 +302,6 @@ public class ConsolePane extends BorderPane
 
     AIDCommand command = screen.readModifiedFields ();
     sendAID (command);
-
-    // assert telnetState != null;
-    //
-    // if (telnetState.does3270Extended ())
-    // {
-    // byte[] buffer = new byte[5];
-    // Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
-    // CommandHeader header = new CommandHeader (buffer);
-    // TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header,
-    // command);
-    // telnetState.write (extendedCommand.getTelnetData ());
-    // }
-    // else
-    // telnetState.write (command.getTelnetData ());
   }
 
   // called from PluginsStage.processPluginRequest (Plugin plugin)
