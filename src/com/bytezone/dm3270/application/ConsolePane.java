@@ -19,6 +19,8 @@ import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -132,30 +134,20 @@ public class ConsolePane extends BorderPane
   {
     Menu menuCommands = new Menu ("Commands");
 
-    MenuItem menuItemToggleToolbar = new MenuItem ("Toolbar");
-    menuItemToggleToolbar.setOnAction (e -> toggleToolbar ());
-    menuItemToggleToolbar.setAccelerator (new KeyCodeCombination (KeyCode.T,
-        KeyCombination.SHORTCUT_DOWN));
+    MenuItem menuItemToggleToolbar =
+        getMenuItem ("Toolbar", e -> toggleToolbar (), KeyCode.T);
 
-    MenuItem menuItemToggleScreens = new MenuItem ("Screen history");
-    menuItemToggleScreens.setOnAction (e -> toggleHistory ());
-    menuItemToggleScreens.setAccelerator (new KeyCodeCombination (KeyCode.S,
-        KeyCombination.SHORTCUT_DOWN));
+    MenuItem menuItemToggleScreens =
+        getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
-    MenuItem menuItemFileTransfer = new MenuItem ("File transfer");
-    menuItemFileTransfer.setOnAction (e -> screen.getTransferStage ().show ());
-    menuItemFileTransfer.setAccelerator (new KeyCodeCombination (KeyCode.F,
-        KeyCombination.SHORTCUT_DOWN));
+    MenuItem menuItemFileTransfer =
+        getMenuItem ("File transfer", e -> screen.getTransferStage ().show (), KeyCode.F);
 
-    MenuItem menuItemReportDisplay = new MenuItem ("Reports");
-    menuItemReportDisplay.setOnAction (e -> screen.getFileStage ().show ());
-    menuItemReportDisplay.setAccelerator (new KeyCodeCombination (KeyCode.R,
-        KeyCombination.SHORTCUT_DOWN));
+    MenuItem menuItemReportDisplay =
+        getMenuItem ("Reports", e -> screen.getFileStage ().show (), KeyCode.R);
 
-    MenuItem menuItemJobDisplay = new MenuItem ("Batch jobs");
-    menuItemJobDisplay.setOnAction (e -> screen.getJobStage ().show ());
-    menuItemJobDisplay.setAccelerator (new KeyCodeCombination (KeyCode.J,
-        KeyCombination.SHORTCUT_DOWN));
+    MenuItem menuItemJobDisplay =
+        getMenuItem ("Batch jobs", e -> screen.getJobStage ().show (), KeyCode.J);
 
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
                                      menuItemFileTransfer, menuItemReportDisplay,
@@ -171,6 +163,16 @@ public class ConsolePane extends BorderPane
     }
 
     return menuCommands;
+  }
+
+  private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
+      KeyCode keyCode)
+  {
+    MenuItem menuItem = new MenuItem (text);
+    menuItem.setOnAction (eventHandler);
+    menuItem
+        .setAccelerator (new KeyCodeCombination (keyCode, KeyCombination.SHORTCUT_DOWN));
+    return menuItem;
   }
 
   private BorderPane getStatusBar ()
@@ -235,8 +237,8 @@ public class ConsolePane extends BorderPane
     if (screenHistory == null)
     {
       screenHistory = screen.pause ();
-      if (screenHistory == null)  // no history to show
-        return;
+      if (screenHistory == null)
+        return;                     // no history to show
 
       changeScreen (screenHistory.current ());
 
