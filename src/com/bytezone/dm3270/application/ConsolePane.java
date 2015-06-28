@@ -12,7 +12,6 @@ import com.bytezone.dm3270.display.ScreenHistory;
 import com.bytezone.dm3270.display.UserScreen;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
-import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.filetransfer.TransferStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.streams.TelnetListener;
@@ -60,8 +59,8 @@ public class ConsolePane extends BorderPane
 
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
-  private TransferStage transferStage;
-  private FileStage fileStage;
+  private TransferStage transferStage;    // move this to Screen
+  // private FileStage fileStage;
 
   private final BorderPane topPane = new BorderPane ();
 
@@ -111,7 +110,9 @@ public class ConsolePane extends BorderPane
     // btnReset.setOnAction (e -> resetCommand.process ());
 
     menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
-    if (server == null || server.getPlugins ())        // allow null for replay testing
+
+    // allow null for replay testing
+    if (server == null || server.getPlugins ())
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
     topPane.setTop (menuBar);
@@ -234,7 +235,7 @@ public class ConsolePane extends BorderPane
     if (screenHistory == null)
     {
       screenHistory = screen.pause ();
-      if (screenHistory == null)                        // no history to show
+      if (screenHistory == null)                                    // no history to show
         return;
 
       changeScreen (screenHistory.current ());
@@ -252,6 +253,7 @@ public class ConsolePane extends BorderPane
     }
   }
 
+  // triggered by the menu option
   private void fileTransfer ()
   {
     if (transferStage == null)
@@ -260,17 +262,20 @@ public class ConsolePane extends BorderPane
     transferStage.show ();
   }
 
+  // triggered by the menu option
   private void jobDisplay ()
   {
     screen.getJobStage ().show ();
   }
 
+  // triggered by the menu option
   private void fileDisplay ()
   {
-    if (fileStage == null)
-      fileStage = screen.getFileStage ();
-    if (fileStage != null)
-      fileStage.show ();
+    // if (fileStage == null)
+    // fileStage = screen.getFileStage ();
+    // if (fileStage != null)
+    // fileStage.show ();
+    screen.getFileStage ().show ();
   }
 
   void back ()

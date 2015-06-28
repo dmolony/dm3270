@@ -2,6 +2,13 @@ package com.bytezone.dm3270.filetransfer;
 
 import java.util.List;
 
+import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.FieldManager;
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.TSOCommandStatusListener;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,12 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import com.bytezone.dm3270.application.ConsolePane;
-import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.Screen;
-
-public class TransferStage extends Stage
+public class TransferStage extends Stage implements TSOCommandStatusListener
 {
   private static final int BUTTON_WIDTH = 100;
   private static final int LABEL_WIDTH = 100;
@@ -138,5 +140,10 @@ public class TransferStage extends Stage
     }
     else
       System.out.println ("filename not specified");
+  }
+
+  @Override
+  public void screenChanged (FieldManager fieldManager)
+  {
   }
 }

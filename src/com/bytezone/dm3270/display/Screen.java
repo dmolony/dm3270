@@ -91,6 +91,7 @@ public class Screen extends Canvas implements DisplayScreen
           new ScreenPosition (i, graphicsContext, characterSize, baseContext);
 
     addTSOCommandStatusChangeListener (jobStage);
+    addTSOCommandStatusChangeListener (fileStage);
   }
 
   // this is called from the ConsolePane constructor
@@ -243,10 +244,7 @@ public class Screen extends Canvas implements DisplayScreen
   public void buildFields (WriteControlCharacter wcc)
   {
     fieldManager.buildFields ();              // what about resetModified?
-
-    boolean isTSOCommandScreen = fieldManager.isTSOCommandScreen ();
-    Field tsoCommandField = fieldManager.getTSOCommandField ();
-    notifyTSOCommandStatusChange (isTSOCommandScreen, tsoCommandField);
+    notifyTSOCommandStatusChange ();
   }
 
   public void checkRecording ()
@@ -480,10 +478,10 @@ public class Screen extends Canvas implements DisplayScreen
   private final Set<TSOCommandStatusListener> tsoCommandStatusListeners =
       new HashSet<> ();
 
-  void notifyTSOCommandStatusChange (boolean isTSOCommandScreen, Field tsoCommandField)
+  void notifyTSOCommandStatusChange ()
   {
     for (TSOCommandStatusListener listener : tsoCommandStatusListeners)
-      listener.screenChanged (isTSOCommandScreen, tsoCommandField);
+      listener.screenChanged (fieldManager);
   }
 
   public void addTSOCommandStatusChangeListener (TSOCommandStatusListener listener)

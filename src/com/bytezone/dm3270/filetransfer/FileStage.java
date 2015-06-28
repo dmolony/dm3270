@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.WindowSaver;
+import com.bytezone.dm3270.display.FieldManager;
+import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -24,7 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class FileStage extends Stage
+public class FileStage extends Stage implements TSOCommandStatusListener
 {
   private static final int PAGE_SIZE = 66;
 
@@ -182,5 +184,10 @@ public class FileStage extends Stage
       setContent (textArea);
       textArea.positionCaret (0);
     }
+  }
+
+  @Override
+  public void screenChanged (FieldManager fieldManager)
+  {
   }
 }
