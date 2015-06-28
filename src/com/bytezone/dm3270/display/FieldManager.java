@@ -10,6 +10,7 @@ public class FieldManager
 {
   private static final String[] tsoMenus =
       { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
+
   private final Screen screen;
   private final ScreenContext baseContext;
 
@@ -21,6 +22,12 @@ public class FieldManager
   private int inputPositions;
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
+
+  private String currentDataset;
+  private Field tsoCommandField;
+  private boolean isTSOCommandScreen;
+  private boolean isDatasetList;
+  private String highLevelQualifier;
 
   public FieldManager (Screen screen, ScreenContext baseContext)
   {
@@ -53,7 +60,7 @@ public class FieldManager
       // check for the start of a new field
       if (screenPosition.isStartField ())
       {
-        if (start >= 0)                   // if there is a field to add
+        if (start >= 0)                                // if there is a field to add
         {
           addField (new Field (screen, positions));
           positions.clear ();
@@ -65,14 +72,15 @@ public class FieldManager
       }
 
       // add ScreenPosition to the current field
-      if (start >= 0)                        // if we are in a field...
+      if (start >= 0)                                   // if we are in a field...
         positions.add (screenPosition);     // collect next field's positions
 
       // increment ptr and wrap around
-      if (++ptr == screen.screenSize)        // faster than validate()
+      if (++ptr == screen.screenSize)                   // faster than validate()
       {
         ptr = 0;
-        if (first == -1)                     // wrapped around and still no fields
+        if (first == -1)                                // wrapped around and still no
+          // fields
           break;
       }
     }
@@ -86,7 +94,6 @@ public class FieldManager
     Field previousUnprotectedField = null;
     for (Field field : fields)
     {
-      // field.setScreenContexts (pen.getBase ());
       field.setScreenContexts (baseContext);
       if (field.isUnprotected ())
       {
@@ -122,7 +129,8 @@ public class FieldManager
     }
 
     // getMenus ();
-    // getTSOCommandField ();
+    checkTSOCommandField ();
+    checkDatasets ();
   }
 
   private void addField (Field field)
@@ -219,10 +227,20 @@ public class FieldManager
 
   public Field getTSOCommandField ()
   {
+    return tsoCommandField;
+  }
+
+  public boolean isTSOCommandScreen ()
+  {
+    return isTSOCommandScreen;
+  }
+
+  private void checkTSOCommandField ()
+  {
     int maxLocation = screen.columns * 5 + 20;
     int minLocation = screen.columns;
     boolean promptFound = false;
-    Field commandField = null;
+    tsoCommandField = null;
 
     for (Field field : fields)
     {
@@ -242,7 +260,7 @@ public class FieldManager
         if (length < 48 || (length > 70 && length != 234))
           break;
 
-        commandField = field;
+        tsoCommandField = field;
         break;
       }
 
@@ -259,10 +277,10 @@ public class FieldManager
         promptFound = true;             // next loop iteration will return the field
     }
 
-    return commandField;
+    isTSOCommandScreen = checkTSOCommandScreen ();
   }
 
-  public boolean isTSOCommandScreen ()
+  private boolean checkTSOCommandScreen ()
   {
     if (fields.size () < 14)
       return false;
@@ -285,6 +303,24 @@ public class FieldManager
         return false;
 
     return true;
+  }
+
+  private void checkDatasets ()
+  {
+    isDatasetList = false;
+
+    if (fields.size () < 10)
+      return;
+
+    Field field = fields.get (9);
+    String text = field.getText ();
+    if (!text.startsWith ("DSLIST - Data Sets Matching "))
+      return;
+
+    // String name = text.substring (28, 36);
+    // System.out.println (text);
+    // System.out.printf ("[%s]%n", name);
+    isDatasetList = true;
   }
 
   // ---------------------------------------------------------------------------------//

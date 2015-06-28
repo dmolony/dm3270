@@ -149,6 +149,7 @@ public class Transfer
       text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.size ()));
     text.append (String.format ("%nTotal length .. %,d", dataLength));
     text.append (String.format ("%nDirection ..... %s", direction));
+    text.append (String.format ("%nFile name ..... %s", fileName));
     text.append (String.format ("%nCRLF .......... %s", crlf));
     text.append (String.format ("%nASCII ......... %s", ascii));
     text.append (String.format ("%nAPPEND ........ %s", append));
