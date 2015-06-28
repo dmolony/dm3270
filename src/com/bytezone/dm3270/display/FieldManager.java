@@ -23,7 +23,8 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  private String currentDataset;
+  private String datasetsMatching;
+  private String datasetsOnVolume;
   private Field tsoCommandField;
   private boolean isTSOCommandScreen;
   private boolean isDatasetList;
@@ -60,7 +61,8 @@ public class FieldManager
       // check for the start of a new field
       if (screenPosition.isStartField ())
       {
-        if (start >= 0)                                // if there is a field to add
+        if (start >= 0)
+        // if there is a field to add
         {
           addField (new Field (screen, positions));
           positions.clear ();
@@ -72,16 +74,16 @@ public class FieldManager
       }
 
       // add ScreenPosition to the current field
-      if (start >= 0)                                   // if we are in a field...
+      if (start >= 0)
+        // if we are in a field...
         positions.add (screenPosition);     // collect next field's positions
 
       // increment ptr and wrap around
-      if (++ptr == screen.screenSize)                   // faster than validate()
+      if (++ptr == screen.screenSize)         // faster than validate()
       {
         ptr = 0;
-        if (first == -1)                                // wrapped around and still no
-          // fields
-          break;
+        if (first == -1)
+          break;                          // wrapped around and still no fields
       }
     }
 
@@ -308,18 +310,48 @@ public class FieldManager
   private void checkDatasets ()
   {
     isDatasetList = false;
+    datasetsOnVolume = "";
+    datasetsMatching = "";
 
-    if (fields.size () < 10)
+    if (fields.size () < 19)
       return;
 
     Field field = fields.get (9);
-    String text = field.getText ();
-    if (!text.startsWith ("DSLIST - Data Sets Matching "))
+    int location = field.getFirstLocation ();
+    if (location != 161)
       return;
 
-    // String name = text.substring (28, 36);
-    // System.out.println (text);
-    // System.out.printf ("[%s]%n", name);
+    String text = field.getText ();
+    if (!text.startsWith ("DSLIST - Data Sets "))
+      return;
+
+    field = fields.get (11);
+    location = field.getFirstLocation ();
+    if (location != 241)
+      return;
+    if (!field.getText ().equals ("Command ===>"))
+      return;
+
+    field = fields.get (18);
+    System.out.println (field.getText ().trim ());
+
+    int pos = text.indexOf ("Row ");
+
+    String category = text.substring (19, (pos > 0 ? pos : 64)).trim ();
+
+    if (category.startsWith ("Matching"))
+    {
+      datasetsMatching = category.substring (9);
+      System.out.printf ("Datasets matching [%s]%n", datasetsMatching);
+    }
+    else if (category.startsWith ("on volume "))
+    {
+      datasetsOnVolume = category.substring (10).trim ();
+      System.out.printf ("Datasets on volume [%s]%n", datasetsOnVolume);
+    }
+    else
+      System.out.println ("Unknown category: " + category);
+
     isDatasetList = true;
   }
 

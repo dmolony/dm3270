@@ -29,8 +29,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   public static final byte AID_PF11 = (byte) 0x7B;
 
   private static byte[] keys =
-      {                           //
-        0, NO_AID_SPECIFIED, AID_ENTER,                           //
+      { 0, NO_AID_SPECIFIED, AID_ENTER,   //
         (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
         (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
         (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
@@ -38,11 +37,10 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
         AID_PA1, AID_PA2, AID_PA3, AID_CLEAR, (byte) 0x6A, AID_READ_PARTITION };
 
   private static String[] keyNames =
-      {    //
-        "Not found", "No AID", "ENTR",      //
+      { "Not found", "No AID", "ENTR",   //
         "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7", "PF8", "PF9", "PF10", "PF11",
         "PF12", "PF13", "PF14", "PF15", "PF16", "PF17", "PF18", "PF19", "PF20", "PF21",
-        "PF22", "PF23", "PF24",    //
+        "PF22", "PF23", "PF24",   //
         "PA1", "PA2", "PA3", "CLR", "CLR Partition", "Read Partition" };
 
   private int key;
@@ -104,7 +102,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
   public boolean isPAKey ()
   {
-    // ignore any PA key reply caused by RMA
+    // ignore any PA key reply caused by ReadModifiedAll
     return (data.length == 1
         && (keyCommand == AID_PA1 || keyCommand == AID_PA2 || keyCommand == AID_PA3));
   }
@@ -263,7 +261,6 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-
     text.append (String.format ("AID     : %-12s : %02X%n", keyNames[key], keyCommand));
 
     if (cursorAddress != null)
