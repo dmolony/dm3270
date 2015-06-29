@@ -133,8 +133,6 @@ public class FieldManager
 
     // getMenus ();
     checkTSOCommandField ();
-    checkDatasets ();
-    checkCurrentDataset ();
   }
 
   private void addField (Field field)
@@ -287,6 +285,16 @@ public class FieldManager
     }
 
     isTSOCommandScreen = checkTSOCommandScreen ();
+    checkDatasets ();
+
+    currentDataset = "";
+    checkEditDataset ();
+
+    if (currentDataset.isEmpty ())
+      checkBrowseDataset ();
+
+    if (currentDataset.isEmpty ())
+      checkViewDataset ();
   }
 
   private boolean checkTSOCommandScreen ()
@@ -298,9 +306,15 @@ public class FieldManager
     if (!"ISPF Command Shell".equals (field.getText ()))
       return false;
 
-    field = fields.get (13);
+    int workstationFieldNo = 13;
+    field = fields.get (workstationFieldNo);
     if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
-      return false;
+    {
+      ++workstationFieldNo;
+      field = fields.get (workstationFieldNo);
+      if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
+        return false;
+    }
 
     List<String> menus = getMenus ();
     if (menus.size () != tsoMenus.length)
@@ -310,6 +324,10 @@ public class FieldManager
     for (String menu : menus)
       if (!tsoMenus[i++].equals (menu))
         return false;
+
+    field = fields.get (workstationFieldNo + 5);
+    if (field.getDisplayLength () != 234)
+      return false;
 
     return true;
   }
@@ -340,21 +358,18 @@ public class FieldManager
       return;
 
     field = fields.get (18);
-    System.out.println (field.getText ().trim ());
-
     int pos = text.indexOf ("Row ");
-
     String category = text.substring (19, (pos > 0 ? pos : 64)).trim ();
 
     if (category.startsWith ("Matching"))
     {
       datasetsMatching = category.substring (9);
-      System.out.printf ("Datasets matching [%s]%n", datasetsMatching);
+      // System.out.printf ("Datasets matching [%s]%n", datasetsMatching);
     }
     else if (category.startsWith ("on volume "))
     {
       datasetsOnVolume = category.substring (10).trim ();
-      System.out.printf ("Datasets on volume [%s]%n", datasetsOnVolume);
+      // System.out.printf ("Datasets on volume [%s]%n", datasetsOnVolume);
     }
     else
       System.out.println ("Unknown category: " + category);
@@ -362,10 +377,8 @@ public class FieldManager
     isDatasetList = true;
   }
 
-  private void checkCurrentDataset ()
+  private void checkEditDataset ()
   {
-    currentDataset = "";
-
     if (fields.size () < 13)
       return;
 
@@ -384,12 +397,66 @@ public class FieldManager
       return;
 
     text = field.getText ().trim ();
-    System.out.println (text);
     int pos = text.indexOf (' ');
     if (pos > 0)
     {
       String dataset = text.substring (0, pos);
-      System.out.println (dataset);
+      currentDataset = dataset;
+    }
+  }
+
+  private void checkBrowseDataset ()
+  {
+    if (fields.size () < 8)
+      return;
+
+    Field field = fields.get (7);
+    int location = field.getFirstLocation ();
+    if (location != 161)
+      return;
+
+    String text = field.getText ();
+    if (!text.equals ("BROWSE   "))
+      return;
+
+    field = fields.get (8);
+    location = field.getFirstLocation ();
+    if (location != 171)
+      return;
+
+    text = field.getText ().trim ();
+    int pos = text.indexOf (' ');
+    if (pos > 0)
+    {
+      String dataset = text.substring (0, pos);
+      currentDataset = dataset;
+    }
+  }
+
+  private void checkViewDataset ()
+  {
+    if (fields.size () < 13)
+      return;
+
+    Field field = fields.get (11);
+    int location = field.getFirstLocation ();
+    if (location != 161)
+      return;
+
+    String text = field.getText ().trim ();
+    if (!text.equals ("VIEW"))
+      return;
+
+    field = fields.get (12);
+    location = field.getFirstLocation ();
+    if (location != 172)
+      return;
+
+    text = field.getText ().trim ();
+    int pos = text.indexOf (' ');
+    if (pos > 0)
+    {
+      String dataset = text.substring (0, pos);
       currentDataset = dataset;
     }
   }
