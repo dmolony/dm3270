@@ -6,7 +6,6 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
@@ -123,8 +122,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void execute ()
   {
-    if (tsoCommandField != null)                             // are we on a suitable
-                            // screen?
+    if (tsoCommandField != null)                               // are we on a suitable
+    // screen?
     {
       tsoCommandField.setText (txtCommand.getText ());
       if (consolePane != null)
@@ -155,9 +154,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   }
 
   @Override
-  public void screenChanged (FieldManager fieldManager)
+  public void screenChanged (ScreenDetails screenDetails)
   {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
     this.isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     this.tsoCommandField = screenDetails.getTSOCommandField ();
     setButton ();

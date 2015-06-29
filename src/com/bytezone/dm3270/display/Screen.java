@@ -499,7 +499,7 @@ public class Screen extends Canvas implements DisplayScreen
   void notifyTSOCommandStatusChange ()
   {
     for (TSOCommandStatusListener listener : tsoCommandStatusListeners)
-      listener.screenChanged (fieldManager);
+      listener.screenChanged (screenDetails);
   }
 
   public void addTSOCommandStatusChangeListener (TSOCommandStatusListener listener)

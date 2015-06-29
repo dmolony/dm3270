@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.WindowSaver;
-import com.bytezone.dm3270.display.FieldManager;
+import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
 import javafx.application.Platform;
@@ -187,7 +187,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   }
 
   @Override
-  public void screenChanged (FieldManager fieldManager)
+  public void screenChanged (ScreenDetails screenDetails)
   {
   }
 }
