@@ -129,8 +129,6 @@ public class Transfer
       if (chunks[i].startsWith ("space("))
         space = chunks[i].substring (7);
     }
-
-    // System.out.println (this);
   }
 
   public String getFileName ()

@@ -52,7 +52,6 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
   public TransferStage (Screen screen)
   {
     this.screen = screen;
-    // this.consolePane = consolePane;
 
     BorderPane root = new BorderPane ();
 

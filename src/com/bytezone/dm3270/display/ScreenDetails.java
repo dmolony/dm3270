@@ -15,10 +15,10 @@ public class ScreenDetails
 
   private String datasetsMatching;
   private String datasetsOnVolume;
+
   private Field tsoCommandField;
   private boolean isTSOCommandScreen;
   private boolean isDatasetList;
-  // private String highLevelQualifier;
   private String currentDataset;
   private String userid = "";
   private String prefix = "";
@@ -107,16 +107,15 @@ public class ScreenDetails
     if (prefix.isEmpty ())
       checkPrefixScreen ();
 
-    checkDatasets ();
-
     currentDataset = "";
-    checkEditDataset ();
+    checkDatasetList ();
 
-    if (currentDataset.isEmpty ())
-      checkBrowseDataset ();
-
-    if (currentDataset.isEmpty ())
-      checkViewDataset ();
+    if (!isDatasetList)
+    {
+      checkEditOrViewDataset ();
+      if (currentDataset.isEmpty ())
+        checkBrowseDataset ();
+    }
   }
 
   private void checkPrefixScreen ()
@@ -190,7 +189,7 @@ public class ScreenDetails
     return true;
   }
 
-  private void checkDatasets ()
+  private void checkDatasetList ()
   {
     isDatasetList = false;
     datasetsOnVolume = "";
@@ -229,7 +228,7 @@ public class ScreenDetails
     isDatasetList = true;
   }
 
-  private void checkEditDataset ()
+  private void checkEditOrViewDataset ()
   {
     if (fields.size () < 13)
       return;
@@ -240,7 +239,7 @@ public class ScreenDetails
       return;
 
     String text = field.getText ().trim ();
-    if (!text.equals ("EDIT"))
+    if (!text.equals ("EDIT") && !text.equals ("VIEW"))
       return;
 
     field = fields.get (12);
@@ -274,34 +273,6 @@ public class ScreenDetails
     field = fields.get (8);
     location = field.getFirstLocation ();
     if (location != 171)
-      return;
-
-    text = field.getText ().trim ();
-    int pos = text.indexOf (' ');
-    if (pos > 0)
-    {
-      String dataset = text.substring (0, pos);
-      currentDataset = dataset;
-    }
-  }
-
-  private void checkViewDataset ()
-  {
-    if (fields.size () < 13)
-      return;
-
-    Field field = fields.get (11);
-    int location = field.getFirstLocation ();
-    if (location != 161)
-      return;
-
-    String text = field.getText ().trim ();
-    if (!text.equals ("VIEW"))
-      return;
-
-    field = fields.get (12);
-    location = field.getFirstLocation ();
-    if (location != 172)
       return;
 
     text = field.getText ().trim ();
