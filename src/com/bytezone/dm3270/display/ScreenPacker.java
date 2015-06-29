@@ -42,8 +42,9 @@ public class ScreenPacker
     BufferAddress ba = new BufferAddress (cursorLocation);
     ptr = ba.packAddress (buffer, ptr);
 
-    Field tsoCommandField = fieldManager.getTSOCommandField ();
-    boolean isTSOScreen = fieldManager.isTSOCommandScreen ();
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+    Field tsoCommandField = screenDetails.getTSOCommandField ();
+    boolean isTSOScreen = screenDetails.isTSOCommandScreen ();
     boolean tsoFieldSent = false;
 
     // pack all modified fields

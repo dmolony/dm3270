@@ -8,6 +8,7 @@ import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
 import com.bytezone.dm3270.orders.Order;
@@ -29,7 +30,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   public static final byte AID_PF11 = (byte) 0x7B;
 
   private static byte[] keys =
-      { 0, NO_AID_SPECIFIED, AID_ENTER,   //
+      { 0, NO_AID_SPECIFIED, AID_ENTER,    //
         (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
         (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
         (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
@@ -37,10 +38,10 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
         AID_PA1, AID_PA2, AID_PA3, AID_CLEAR, (byte) 0x6A, AID_READ_PARTITION };
 
   private static String[] keyNames =
-      { "Not found", "No AID", "ENTR",   //
+      { "Not found", "No AID", "ENTR",    //
         "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7", "PF8", "PF9", "PF10", "PF11",
         "PF12", "PF13", "PF14", "PF15", "PF16", "PF17", "PF18", "PF19", "PF20", "PF21",
-        "PF22", "PF23", "PF24",   //
+        "PF22", "PF23", "PF24",    //
         "PA1", "PA2", "PA3", "CLR", "CLR Partition", "Read Partition" };
 
   private int key;
@@ -146,10 +147,11 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
     if (!done)
     {
+      ScreenDetails screenDetails = screen.getScreenDetails ();
       FieldManager fieldManager = screen.getFieldManager ();
-      Field tsoCommandField = fieldManager.getTSOCommandField ();
+      Field tsoCommandField = screenDetails.getTSOCommandField ();
 
-      if (modifiedFields.size () == 0 && fieldManager.isTSOCommandScreen ())
+      if (modifiedFields.size () == 0 && screenDetails.isTSOCommandScreen ())
       {
         String tsoCommand = tsoCommandField.getText ();
         if (!tsoCommand.isEmpty ())

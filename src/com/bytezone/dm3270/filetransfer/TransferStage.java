@@ -8,6 +8,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
 import javafx.geometry.Insets;
@@ -117,15 +118,25 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
 
   public void transferFile ()
   {
-    FieldManager fieldManager = screen.getFieldManager ();
+    ScreenDetails screenDetails = screen.getScreenDetails ();
 
     // this needs to remove the HLQ or wrap it in apostrophes
-    String filename = txtMainframeFile.getText ();
-    if (filename != null && !filename.isEmpty ())
+    String fileName = txtMainframeFile.getText ();
+    if (fileName != null && !fileName.isEmpty ())
     {
-      Field input = fieldManager.getTSOCommandField ();
-      String tso = fieldManager.isTSOCommandScreen () ? "" : "TSO ";
-      String command = String.format ("%sIND$FILE GET %s", tso, filename);
+      Field input = screenDetails.getTSOCommandField ();
+      String tso = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
+
+      String prefix = screenDetails.getPrefix () + ".";
+      if (fileName.startsWith (prefix))
+        fileName = fileName.substring (prefix.length ());
+      else
+        fileName = "'" + fileName + "'";
+
+      System.out.println (fileName);
+      System.out.println (prefix);
+
+      String command = String.format ("%sIND$FILE GET %s", tso, fileName);
       input.setText (command);
 
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
@@ -137,7 +148,9 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
   @Override
   public void screenChanged (FieldManager fieldManager)
   {
-    String datasetName = fieldManager.getCurrentDataset ();
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+    String datasetName = screenDetails.getCurrentDataset ();
+
     if (!datasetName.isEmpty ())
     {
       txtMainframeFile.setText (datasetName);

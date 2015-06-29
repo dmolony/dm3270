@@ -36,6 +36,8 @@ public class Screen extends Canvas implements DisplayScreen
   private final FileStage fileStage;
   private final PluginsStage pluginsStage;
   private final TransferStage transferStage;
+  private final ScreenDetails screenDetails;
+
   private final Pen pen;
   private final Cursor cursor = new Cursor (this);
   private final GraphicsContext graphicsContext;
@@ -75,11 +77,12 @@ public class Screen extends Canvas implements DisplayScreen
     pen = new Pen (this);
     fieldManager = new FieldManager (this, pen.getBase ());
 
-    jobStage = new JobStage ();
+    jobStage = new JobStage (this);
     fileStage = new FileStage (prefs);
     transferStage = new TransferStage (this);
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
+    screenDetails = new ScreenDetails (this);
 
     graphicsContext = getGraphicsContext2D ();
     fontManager = new FontManager (this, prefs);
@@ -108,6 +111,11 @@ public class Screen extends Canvas implements DisplayScreen
   public FieldManager getFieldManager ()
   {
     return fieldManager;
+  }
+
+  public ScreenDetails getScreenDetails ()
+  {
+    return screenDetails;
   }
 
   public FontManager getFontManager ()
