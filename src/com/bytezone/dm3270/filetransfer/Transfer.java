@@ -130,7 +130,7 @@ public class Transfer
         space = chunks[i].substring (7);
     }
 
-    System.out.println (this);
+    // System.out.println (this);
   }
 
   public String getFileName ()

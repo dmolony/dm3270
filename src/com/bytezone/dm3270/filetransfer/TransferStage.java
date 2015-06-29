@@ -56,6 +56,7 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
 
     BorderPane root = new BorderPane ();
 
+    btnTransfer.setDefaultButton (true);
     btnTransfer.setPrefWidth (BUTTON_WIDTH);
     btnCancel.setPrefWidth (BUTTON_WIDTH);
 
