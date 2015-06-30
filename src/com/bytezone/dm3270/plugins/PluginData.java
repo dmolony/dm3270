@@ -6,22 +6,22 @@ import java.util.List;
 public class PluginData
 {
   public final int sequence;
-  public final List<ScreenField> screenFields;
+  public final List<PluginField> screenFields;
   public final ScreenLocation initialCursorLocation;
 
   public ScreenLocation newCursorLocation;
   public byte key;
-  public final List<ScreenField> changedFields = new ArrayList<> ();
+  public final List<PluginField> changedFields = new ArrayList<> ();
   public boolean suppressDisplay;
 
-  public PluginData (int sequence, int row, int column, List<ScreenField> fields)
+  public PluginData (int sequence, int row, int column, List<PluginField> fields)
   {
     this.sequence = sequence;
     initialCursorLocation = new ScreenLocation (row, column);
     screenFields = fields;
   }
 
-  public void addChangedField (ScreenField field)
+  public void addChangedField (PluginField field)
   {
     if (!changedFields.contains (field))
       changedFields.add (field);
@@ -53,20 +53,20 @@ public class PluginData
     return screenFields.size ();
   }
 
-  public ScreenField getField (int index)
+  public PluginField getField (int index)
   {
     if (index >= 0 && index < screenFields.size ())
     {
-      ScreenField field = screenFields.get (index);
+      PluginField field = screenFields.get (index);
       field.setData (this);
       return field;
     }
     return null;
   }
 
-  public ScreenField getField (ScreenLocation location)
+  public PluginField getField (ScreenLocation location)
   {
-    for (ScreenField field : screenFields)
+    for (PluginField field : screenFields)
       if (field.contains (location))
       {
         field.setData (this);
@@ -76,9 +76,9 @@ public class PluginData
     return null;
   }
 
-  public ScreenField getField (String value)
+  public PluginField getField (String value)
   {
-    for (ScreenField field : screenFields)
+    for (PluginField field : screenFields)
       if (field.getFieldValue ().equals (value))
       {
         field.setData (this);
@@ -88,7 +88,7 @@ public class PluginData
     return null;
   }
 
-  public ScreenField getCursorField ()
+  public PluginField getCursorField ()
   {
     return getField (initialCursorLocation);
   }
@@ -97,7 +97,7 @@ public class PluginData
   {
     StringBuilder text = new StringBuilder ();
     int count = 0;
-    for (ScreenField field : screenFields)
+    for (PluginField field : screenFields)
       text.append (String.format ("%3d  %s%n", count++, field));
     if (text.length () > 0)
       text.deleteCharAt (text.length () - 1);
@@ -114,10 +114,10 @@ public class PluginData
     return newCursorLocation.location;
   }
 
-  public List<ScreenField> getModifiableFields ()
+  public List<PluginField> getModifiableFields ()
   {
-    List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : screenFields)
+    List<PluginField> fields = new ArrayList<> ();
+    for (PluginField field : screenFields)
       if (!field.isProtected)
         fields.add (field);
     return fields;
@@ -139,7 +139,7 @@ public class PluginData
     text.append (String.format ("Cursor field  : %s%n", getCursorField ()));
 
     int count = 0;
-    for (ScreenField sf : screenFields)
+    for (PluginField sf : screenFields)
     {
       String fieldText =
           String.format ("%s%s", sf.isProtected ? "P" : "p", sf.isAlpha ? "A" : "a");

@@ -5,19 +5,17 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ScreenField
+public class PluginField
 {
   private PluginData pluginData;
 
   public final ScreenLocation location;
   public final int sequence;
-  //  public final int length;
   public final boolean isProtected;
   public final boolean isModifiable;
   public final boolean isAlpha;
   public final boolean isVisible;
   public final boolean isAltered;
-  //  public final String data;
 
   private StringProperty fieldValue;
   private IntegerProperty sequenceValue;
@@ -31,19 +29,17 @@ public class ScreenField
 
   public String newData;
 
-  public ScreenField (int sequence, int location, int row, int column, int length,
+  public PluginField (int sequence, int location, int row, int column, int length,
       boolean isProtected, boolean isAlpha, boolean isVisible, boolean isAltered,
       String data)
   {
     this.location = new ScreenLocation (location);
     this.sequence = sequence;
-    //    this.length = length;
     this.isProtected = isProtected;
     this.isModifiable = !isProtected;
     this.isAlpha = isAlpha;
     this.isVisible = isVisible;
     this.isAltered = isAltered;
-    //    this.data = data.trim ();
 
     setFieldValue (data);
     setSequence (sequence);
@@ -108,9 +104,9 @@ public class ScreenField
     return data.substring (0, ptr + 1);
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // fieldValue property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setFieldValue (String value)
   {
@@ -129,9 +125,9 @@ public class ScreenField
     return fieldValue;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // modifiable property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setModifiable (String value)
   {
@@ -150,9 +146,9 @@ public class ScreenField
     return modifiable;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // visible property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setVisible (String value)
   {
@@ -171,9 +167,9 @@ public class ScreenField
     return visible;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // altered property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setAltered (String value)
   {
@@ -192,9 +188,9 @@ public class ScreenField
     return altered;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // alpha property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setFormat (String value)
   {
@@ -213,9 +209,9 @@ public class ScreenField
     return format;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // sequence property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setSequence (Integer value)
   {
@@ -234,9 +230,9 @@ public class ScreenField
     return sequenceValue;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // row property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setRow (Integer value)
   {
@@ -255,9 +251,9 @@ public class ScreenField
     return row;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // column property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setColumn (Integer value)
   {
@@ -276,9 +272,9 @@ public class ScreenField
     return column;
   }
 
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
   // length property
-  //----------------------------------------------------------------------------------//
+  // ----------------------------------------------------------------------------------//
 
   public void setLength (Integer value)
   {

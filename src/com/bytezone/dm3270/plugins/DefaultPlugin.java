@@ -36,43 +36,43 @@ public abstract class DefaultPlugin implements Plugin
   protected static int countModifiableFields (PluginData data)
   {
     int count = 0;
-    for (ScreenField field : data.screenFields)
+    for (PluginField field : data.screenFields)
       if (!field.isProtected)
         ++count;
     return count;
   }
 
-  protected static List<ScreenField> getModifiableFields (PluginData data)
+  protected static List<PluginField> getModifiableFields (PluginData data)
   {
-    List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : data.screenFields)
+    List<PluginField> fields = new ArrayList<> ();
+    for (PluginField field : data.screenFields)
       if (!field.isProtected)
         fields.add (field);
     return fields;
   }
 
-  protected static List<ScreenField> getProtectedFields (PluginData data)
+  protected static List<PluginField> getProtectedFields (PluginData data)
   {
-    List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : data.screenFields)
+    List<PluginField> fields = new ArrayList<> ();
+    for (PluginField field : data.screenFields)
       if (field.isProtected)
         fields.add (field);
     return fields;
   }
 
-  protected static List<ScreenField> getAlphanumericFields (PluginData data)
+  protected static List<PluginField> getAlphanumericFields (PluginData data)
   {
-    List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : data.screenFields)
+    List<PluginField> fields = new ArrayList<> ();
+    for (PluginField field : data.screenFields)
       if (field.isAlpha)
         fields.add (field);
     return fields;
   }
 
-  protected static List<ScreenField> getNumericFields (PluginData data)
+  protected static List<PluginField> getNumericFields (PluginData data)
   {
-    List<ScreenField> fields = new ArrayList<> ();
-    for (ScreenField field : data.screenFields)
+    List<PluginField> fields = new ArrayList<> ();
+    for (PluginField field : data.screenFields)
       if (!field.isAlpha)
         fields.add (field);
     return fields;

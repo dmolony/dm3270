@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.plugins.PluginData;
-import com.bytezone.dm3270.plugins.ScreenField;
+import com.bytezone.dm3270.plugins.PluginField;
 
 public class FieldManager
 {
   private final Screen screen;
   private final ScreenContext baseContext;
+  private final ScreenDetails screenDetails;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
@@ -24,6 +25,7 @@ public class FieldManager
   {
     this.screen = screen;
     this.baseContext = baseContext;
+    this.screenDetails = screen.getScreenDetails ();
   }
 
   // this is called after the pen and screen positions have been modified
@@ -120,7 +122,7 @@ public class FieldManager
         }
     }
 
-    screen.getScreenDetails ().check (this);
+    screenDetails.check (this);
   }
 
   private void addField (Field field)
@@ -182,7 +184,7 @@ public class FieldManager
 
   public PluginData getPluginScreen (int sequence, int row, int column)
   {
-    List<ScreenField> screenFields = new ArrayList<> ();
+    List<PluginField> screenFields = new ArrayList<> ();
     int count = 0;
 
     for (Field field : fields)
@@ -190,10 +192,6 @@ public class FieldManager
 
     return new PluginData (sequence, row, column, screenFields);
   }
-
-  // ---------------------------------------------------------------------------------//
-  // Interpret screen
-  // ---------------------------------------------------------------------------------//
 
   // ---------------------------------------------------------------------------------//
   // Debugging

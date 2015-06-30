@@ -318,7 +318,7 @@ public class PluginsStage extends PreferencesStage
     if (isVisible)
       cursor.setVisible (false);
 
-    for (ScreenField screenField : data.changedFields)
+    for (PluginField screenField : data.changedFields)
     {
       Field field = fieldManager.getField (screenField.location.location);   // first display location
       assert field != null;

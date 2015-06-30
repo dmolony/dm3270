@@ -75,6 +75,7 @@ public class Screen extends Canvas implements DisplayScreen
     this.function = function;
 
     pen = new Pen (this);
+    screenDetails = new ScreenDetails (this);
     fieldManager = new FieldManager (this, pen.getBase ());
 
     jobStage = new JobStage (this);
@@ -82,7 +83,6 @@ public class Screen extends Canvas implements DisplayScreen
     transferStage = new TransferStage (this);
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
-    screenDetails = new ScreenDetails (this);
 
     graphicsContext = getGraphicsContext2D ();
     fontManager = new FontManager (this, prefs);
