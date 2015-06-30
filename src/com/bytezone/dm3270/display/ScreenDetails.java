@@ -108,7 +108,7 @@ public class ScreenDetails
       checkPrefixScreen ();
 
     currentDataset = "";
-    checkDatasetList ();
+    isDatasetList = checkDatasetList ();
 
     if (!isDatasetList)
     {
@@ -189,30 +189,29 @@ public class ScreenDetails
     return true;
   }
 
-  private void checkDatasetList ()
+  private boolean checkDatasetList ()
   {
-    isDatasetList = false;
     datasetsOnVolume = "";
     datasetsMatching = "";
 
     if (fields.size () < 19)
-      return;
+      return false;
 
     Field field = fields.get (9);
     int location = field.getFirstLocation ();
     if (location != 161)
-      return;
+      return false;
 
     String text = field.getText ();
     if (!text.startsWith ("DSLIST - Data Sets "))
-      return;
+      return false;
 
     field = fields.get (11);
     location = field.getFirstLocation ();
     if (location != 241)
-      return;
+      return false;
     if (!field.getText ().equals ("Command ===>"))
-      return;
+      return false;
 
     field = fields.get (18);
     int pos = text.indexOf ("Row ");
@@ -225,7 +224,7 @@ public class ScreenDetails
     else
       System.out.println ("Unknown category: " + category);
 
-    isDatasetList = true;
+    return true;
   }
 
   private void checkEditOrViewDataset ()
@@ -284,7 +283,7 @@ public class ScreenDetails
     }
   }
 
-  public List<String> getMenus ()
+  private List<String> getMenus ()
   {
     List<String> menus = new ArrayList<> ();
 
