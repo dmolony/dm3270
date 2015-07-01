@@ -118,12 +118,14 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
   public void transferFile ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
+    Field input = screenDetails.getTSOCommandField ();
+    if (input == null)
+      return;
 
     // this needs to remove the HLQ or wrap it in apostrophes
     String fileName = txtMainframeFile.getText ();
     if (fileName != null && !fileName.isEmpty ())
     {
-      Field input = screenDetails.getTSOCommandField ();
       String tso = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
 
       String prefix = screenDetails.getPrefix () + ".";
@@ -132,8 +134,8 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
       else
         fileName = "'" + fileName + "'";
 
-      System.out.println (fileName);
-      System.out.println (prefix);
+      // System.out.println (fileName);
+      // System.out.println (prefix);
 
       String command = String.format ("%sIND$FILE GET %s", tso, fileName);
       input.setText (command);
