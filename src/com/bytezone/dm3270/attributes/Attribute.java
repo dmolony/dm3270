@@ -32,21 +32,6 @@ public abstract class Attribute
 
   public String name ()
   {
-    //    switch (attributeType)
-    //    {
-    //      case START_FIELD:
-    //        return "Start field";
-    //      case HIGHLIGHT:
-    //        return "Highlight";
-    //      case FOREGROUND_COLOR:
-    //        return "Foreground";
-    //      case BACKGROUND_COLOR:
-    //        return "Background";
-    //      case RESET:
-    //        return "Reset";
-    //      default:
-    //        return "Unknown";
-    //    }
     return getTypeName (attributeCode);
   }
 

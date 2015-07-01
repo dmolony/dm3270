@@ -122,7 +122,6 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
     if (input == null)
       return;
 
-    // this needs to remove the HLQ or wrap it in apostrophes
     String fileName = txtMainframeFile.getText ();
     if (fileName != null && !fileName.isEmpty ())
     {
@@ -133,9 +132,6 @@ public class TransferStage extends Stage implements TSOCommandStatusListener
         fileName = fileName.substring (prefix.length ());
       else
         fileName = "'" + fileName + "'";
-
-      // System.out.println (fileName);
-      // System.out.println (prefix);
 
       String command = String.format ("%sIND$FILE GET %s", tso, fileName);
       input.setText (command);

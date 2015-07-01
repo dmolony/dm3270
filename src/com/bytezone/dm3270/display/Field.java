@@ -50,45 +50,6 @@ public class Field implements Iterable<ScreenPosition>
         sp.setScreenContext (defaultContext);
   }
 
-  // void setScreenContexts ()
-  // {
-  // ContextManager contextManager = screen.getContextManager ();
-  // ScreenPosition startFieldScreenPosition = screenPositions.get (0);
-  // StartFieldAttribute sfa = startFieldScreenPosition.getStartFieldAttribute ();
-  // ScreenContext screenContext = contextManager.getBase ();
-  //
-  // screenContext = sfa.process (contextManager, screenContext);
-  // for (Attribute attribute : startFieldScreenPosition.getAttributes ())
-  // screenContext = attribute.process (contextManager, screenContext);
-  // ScreenContext baseContext = screenContext;
-  //
-  // if (debug)
-  // System.out.printf ("%n%nNew field : %s", baseContext);
-  //
-  // int position = 0;
-  // for (ScreenPosition screenPosition : screenPositions)
-  // {
-  // if (debug)
-  // {
-  // String spText = screenPosition.toString ();
-  // if (!spText.isEmpty ())
-  // System.out.printf ("%n %4d %s : ", position, screenPosition);
-  // }
-  //
-  // if (position++ > 0)
-  // for (Attribute attribute : screenPosition.getAttributes ())
-  // if (attribute.getAttributeType () == AttributeType.RESET)
-  // screenContext = baseContext;
-  // else
-  // screenContext = attribute.process (contextManager, screenContext);
-  //
-  // if (debug)
-  // System.out.print (screenPosition.getChar ());
-  //
-  // screenPosition.setScreenContext (screenContext);
-  // }
-  // }
-
   // link two unprotected fields to each other
       void linkToNext (Field nextField)
   {
@@ -197,7 +158,7 @@ public class Field implements Iterable<ScreenPosition>
 
   public void clear (boolean setModified)
   {
-    if (setModified)                   // don't reset any already set flags
+    if (setModified)                    // don't reset any already set flags
       setModified (true);
 
     for (int i = 1; i < screenPositions.size (); i++)

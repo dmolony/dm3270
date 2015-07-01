@@ -3,10 +3,10 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.paint.Color;
-
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+
+import javafx.scene.paint.Color;
 
 public class Pen
 {
@@ -173,7 +173,7 @@ public class Pen
 
   public void moveTo (int position)
   {
-    //    assert pendingAttributes.size () == 0;
+    // assert pendingAttributes.size () == 0;
     if (pendingAttributes.size () > 0)
     {
       if (false)
