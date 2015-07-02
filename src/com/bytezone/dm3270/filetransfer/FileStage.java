@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,11 +134,12 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
     MenuItem menuItemOpen = getMenuItem ("Open...", e -> openFile (), KeyCode.O);
     MenuItem menuItemSave = getMenuItem ("Save...", e -> saveFile (), KeyCode.S);
-    MenuItem menuItemPrint = getMenuItem ("Print", e -> printFile (), KeyCode.P);
+    MenuItem menuItemPrint = getMenuItem ("Page setup", e -> pageSetup (), null);
+    MenuItem menuItemPageSetup = getMenuItem ("Print", e -> printFile (), KeyCode.P);
     MenuItem menuItemClose = getMenuItem ("Close window", e -> closeWindow (), KeyCode.W);
 
-    menuFile.getItems ().addAll (menuItemOpen, menuItemSave, menuItemPrint,
-                                 menuItemClose);
+    menuFile.getItems ().addAll (menuItemOpen, menuItemSave, menuItemPageSetup,
+                                 menuItemPrint, menuItemClose);
 
     return menuFile;
   }
@@ -147,14 +149,30 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   {
     MenuItem menuItem = new MenuItem (text);
     menuItem.setOnAction (eventHandler);
-    menuItem
-        .setAccelerator (new KeyCodeCombination (keyCode, KeyCombination.SHORTCUT_DOWN));
+    if (keyCode != null)
+      menuItem.setAccelerator (new KeyCodeCombination (keyCode,
+          KeyCombination.SHORTCUT_DOWN));
     return menuItem;
   }
 
   private void openFile ()
   {
 
+  }
+
+  private void pageSetup ()
+  {
+    SwingUtilities.invokeLater (new Runnable ()
+    {
+      @Override
+      public void run ()
+      {
+        java.awt.print.PrinterJob printerJob = java.awt.print.PrinterJob.getPrinterJob ();
+
+        PageFormat pageFormat = printerJob.defaultPage ();
+        printerJob.pageDialog (pageFormat);
+      }
+    });
   }
 
   private void printFile ()
@@ -170,7 +188,6 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       {
         java.awt.print.PrinterJob printerJob = java.awt.print.PrinterJob.getPrinterJob ();
 
-        // printerJob.pageDialog ();
         if (printerJob.printDialog ())
         {
           printerJob.setPrintable (fileTab.report);
