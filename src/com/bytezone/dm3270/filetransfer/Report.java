@@ -31,7 +31,7 @@ public class Report implements Printable
     for (String textLine : text.split ("\\n"))
       lines.add (textLine);
 
-    plainFont = new Font ("Menlo", Font.PLAIN, 7);
+    plainFont = new Font ("Menlo", Font.PLAIN, fileStructure.lineSize > 100 ? 7 : 8);
     boldFont = new Font (plainFont.getFontName (), Font.BOLD, plainFont.getSize ());
     headerFont = new Font ("Dialog", Font.PLAIN, 14);
   }
@@ -46,18 +46,22 @@ public class Report implements Printable
       setMetrics (g2, pageFormat);        // sets totalPages and other fields
 
     if (pageIndex > lastPage)
+    {
+      lineMetrics = null;
       return Printable.NO_SUCH_PAGE;
+    }
 
     int x = 50;
     int y = 10;
 
     g2.translate (pageFormat.getImageableX (), pageFormat.getImageableY ());
 
-    if (false)
+    if (pageFormat.getOrientation () == PageFormat.PORTRAIT)
     {
       g2.setFont (headerFont);
       g2.drawString (name, x, y);
-      g2.drawLine (x, y + 3, x + g2.getClipBounds ().width - 100, y + 3);
+      g2.drawLine (x, y + 3, g2.getClipBounds ().width - x, y + 3);
+      y += 30;
     }
 
     int firstLine = pageIndex * linesPerPage;
@@ -65,7 +69,10 @@ public class Report implements Printable
 
     g2.setFont (plainFont);
     for (int lineNo = firstLine; lineNo < lastLine; lineNo++)
-      g2.drawString (lines.get (lineNo), x, y + (lineNo % linesPerPage) * lineHeight);
+    {
+      g2.drawString (lines.get (lineNo), x, y);
+      y += lineHeight;
+    }
 
     return (Printable.PAGE_EXISTS);
   }

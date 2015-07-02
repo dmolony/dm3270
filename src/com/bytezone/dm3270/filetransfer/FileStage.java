@@ -98,6 +98,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
                                       lblHasCRLF, chkCRLF, lblHasASA, chkHasASACodes,
                                       lblHasASCII, chkASCII, lblTotalLines,
                                       txtTotalLines);
+    buttonBox.getChildren ().add (btnHide);
 
     BorderPane bottomBorderPane = new BorderPane ();
     bottomBorderPane.setLeft (optionsBox);
