@@ -122,6 +122,8 @@ public class FileStage extends Stage implements TSOCommandStatusListener
           {
             java.awt.print.PrinterJob printerJob =
                 java.awt.print.PrinterJob.getPrinterJob ();
+
+            // printerJob.pageDialog ();
             if (printerJob.printDialog ())
             {
               printerJob.setPrintable (fileTab.report);
@@ -260,7 +262,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
       setContent (textArea);
       textArea.positionCaret (0);
-      report = new Report (fileStructure.transfer.getFileName (), textArea.getText ());
+      report = new Report (fileStructure, textArea.getText ());
     }
 
     public String getTitle ()
