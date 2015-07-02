@@ -9,11 +9,15 @@ public class FileStructure
   boolean hasCRLF;
   boolean hasASA;
   int lineSize;
-  String encoding;
-  List<String> lines = new ArrayList<> ();
+  final String encoding;
+  final List<String> lines = new ArrayList<> ();
+  final Transfer transfer;
 
-  public FileStructure (byte[] buffer)
+  public FileStructure (Transfer transfer)
   {
+    this.transfer = transfer;
+    byte[] buffer = transfer.combineDataBuffers ();
+
     encoding = getEncoding (buffer);
     hasCRLF = hasCRLF (buffer);
 
@@ -47,8 +51,8 @@ public class FileStructure
       }
       else
       {
-        if (lineSize == 0)        // couldn't determine a line size, just go with 80
-          lineSize = 80;
+        if (lineSize == 0)
+          lineSize = 80;          // couldn't determine a line size, just go with 80
 
         for (int ptr = 0; ptr < buffer.length; ptr += lineSize)
         {

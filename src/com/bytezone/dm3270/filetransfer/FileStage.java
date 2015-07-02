@@ -34,7 +34,10 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
   private final WindowSaver windowSaver;
-  private final Button hideButton = new Button ("Hide Window");
+
+  private final Button btnHide = new Button ("Hide Window");
+  private final Button btnSave = new Button ("Save");
+  private final Button btnPrint = new Button ("Print");
 
   private final Label lblLineSize = new Label ("Line size");
   private final Label lblPageSize = new Label ("Page size");
@@ -59,11 +62,14 @@ public class FileStage extends Stage implements TSOCommandStatusListener
     tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
     tabPane.setPrefSize (500, 500);                             // width, height
 
-    HBox buttonBox = new HBox ();
-    hideButton.setPrefWidth (150);
+    HBox buttonBox = new HBox (10);
+    btnHide.setPrefWidth (100);
+    btnSave.setPrefWidth (100);
+    btnPrint.setPrefWidth (100);
+
     buttonBox.setAlignment (Pos.CENTER_RIGHT);
-    buttonBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
-    buttonBox.getChildren ().add (hideButton);
+    buttonBox.setPadding (new Insets (10, 10, 10, 10));           // trbl
+    buttonBox.getChildren ().addAll (btnPrint, btnSave, btnHide);
 
     HBox optionsBox = new HBox (10);
     optionsBox.setAlignment (Pos.CENTER_LEFT);
@@ -71,6 +77,12 @@ public class FileStage extends Stage implements TSOCommandStatusListener
     txtPageSize.setPrefWidth (43);
     txtLineSize.setPrefWidth (43);
     txtTotalLines.setPrefWidth (60);
+
+    txtPageSize.setEditable (false);
+    txtTotalLines.setEditable (false);
+    txtPageSize.setFocusTraversable (false);
+    txtTotalLines.setFocusTraversable (false);
+
     optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize, txtLineSize,
                                       lblHasCRLF, chkCRLF, lblHasASA, chkHasASACodes,
                                       lblHasASCII, chkASCII, lblTotalLines,
@@ -80,7 +92,9 @@ public class FileStage extends Stage implements TSOCommandStatusListener
     bottomBorderPane.setLeft (optionsBox);
     bottomBorderPane.setRight (buttonBox);
 
-    hideButton.setOnAction (e -> hide ());
+    btnHide.setOnAction (e -> hide ());
+    btnSave.setOnAction (e -> save ());
+    btnPrint.setOnAction (e -> print ());
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (tabPane);
@@ -116,7 +130,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
     transfers.add (transfer);
 
-    FileTab tab = new FileTab (new FileStructure (transfer.combineDataBuffers ()));
+    FileTab tab = new FileTab (new FileStructure (transfer));
     tab.setText (transfer.getFileName ());
 
     Platform.runLater ( () -> tabPane.getTabs ().add (tab));
@@ -126,6 +140,20 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   {
     windowSaver.saveWindow ();
     hide ();
+  }
+
+  private void save ()
+  {
+    FileTab fileTab = (FileTab) tabPane.getSelectionModel ().getSelectedItem ();
+    if (fileTab != null)
+      System.out.println ("Save:  " + fileTab.getTitle ());
+  }
+
+  private void print ()
+  {
+    FileTab fileTab = (FileTab) tabPane.getSelectionModel ().getSelectedItem ();
+    if (fileTab != null)
+      System.out.println ("Print: " + fileTab.getTitle ());
   }
 
   public Transfer openTransfer (FileTransferOutboundSF transferRecord)
@@ -183,6 +211,11 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
       setContent (textArea);
       textArea.positionCaret (0);
+    }
+
+    public String getTitle ()
+    {
+      return fileStructure.transfer.getFileName ();
     }
   }
 
