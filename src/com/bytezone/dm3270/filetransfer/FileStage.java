@@ -1,14 +1,19 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+
+import javax.swing.SwingUtilities;
 
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -53,6 +58,8 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   private final CheckBox chkASCII = new CheckBox ();
   private final TextField txtTotalLines = new TextField ();
 
+  private final boolean javaPrintingSucks = false;
+
   public FileStage (Preferences prefs)
   {
     setTitle ("Report display");
@@ -69,7 +76,10 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
     buttonBox.setAlignment (Pos.CENTER_RIGHT);
     buttonBox.setPadding (new Insets (10, 10, 10, 10));           // trbl
-    buttonBox.getChildren ().addAll (btnPrint, btnSave, btnHide);
+
+    if (!javaPrintingSucks)
+      buttonBox.getChildren ().add (btnPrint);
+    buttonBox.getChildren ().addAll (btnSave, btnHide);
 
     HBox optionsBox = new HBox (10);
     optionsBox.setAlignment (Pos.CENTER_LEFT);
@@ -94,7 +104,40 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
     btnHide.setOnAction (e -> hide ());
     btnSave.setOnAction (e -> save ());
-    btnPrint.setOnAction (e -> print ());
+    // btnPrint.setOnAction (e -> print ());
+
+    btnPrint.setOnAction (new EventHandler<ActionEvent> ()
+    {
+      @Override
+      public void handle (ActionEvent e)
+      {
+        FileTab fileTab = getSelectedTab ();
+        if (fileTab == null)
+          return;
+
+        SwingUtilities.invokeLater (new Runnable ()
+        {
+          @Override
+          public void run ()
+          {
+            java.awt.print.PrinterJob printerJob =
+                java.awt.print.PrinterJob.getPrinterJob ();
+            if (printerJob.printDialog ())
+            {
+              printerJob.setPrintable (fileTab.report);
+              try
+              {
+                printerJob.print ();
+              }
+              catch (PrinterException e)
+              {
+                e.printStackTrace ();
+              }
+            }
+          }
+        });
+      }
+    });
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (tabPane);
@@ -144,16 +187,16 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
   private void save ()
   {
-    FileTab fileTab = (FileTab) tabPane.getSelectionModel ().getSelectedItem ();
-    if (fileTab != null)
-      System.out.println ("Save:  " + fileTab.getTitle ());
+    FileTab fileTab = getSelectedTab ();
+    if (fileTab == null)
+      return;
+
+    System.out.println ("Save:  " + fileTab.getTitle ());
   }
 
-  private void print ()
+  private FileTab getSelectedTab ()
   {
-    FileTab fileTab = (FileTab) tabPane.getSelectionModel ().getSelectedItem ();
-    if (fileTab != null)
-      System.out.println ("Print: " + fileTab.getTitle ());
+    return (FileTab) tabPane.getSelectionModel ().getSelectedItem ();
   }
 
   public Transfer openTransfer (FileTransferOutboundSF transferRecord)
@@ -193,11 +236,17 @@ public class FileStage extends Stage implements TSOCommandStatusListener
     currentTransfer = null;
   }
 
+  @Override
+  public void screenChanged (ScreenDetails screenDetails)
+  {
+  }
+
   class FileTab extends Tab
   {
     final FileStructure fileStructure;
     private final LinePrinter linePrinter;
     TextArea textArea = new TextArea ();
+    final Report report;
 
     public FileTab (FileStructure fileStructure)
     {
@@ -211,16 +260,12 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
       setContent (textArea);
       textArea.positionCaret (0);
+      report = new Report (fileStructure.transfer.getFileName (), textArea.getText ());
     }
 
     public String getTitle ()
     {
       return fileStructure.transfer.getFileName ();
     }
-  }
-
-  @Override
-  public void screenChanged (ScreenDetails screenDetails)
-  {
   }
 }
