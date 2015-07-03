@@ -2,6 +2,7 @@ package com.bytezone.dm3270.filetransfer;
 
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -158,7 +159,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
   private void openFile ()
   {
-
+    System.out.println ("Open");
   }
 
   private void pageSetup ()
@@ -168,7 +169,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       @Override
       public void run ()
       {
-        java.awt.print.PrinterJob printerJob = java.awt.print.PrinterJob.getPrinterJob ();
+        PrinterJob printerJob = PrinterJob.getPrinterJob ();      // AWT
 
         PageFormat pageFormat = printerJob.defaultPage ();
         printerJob.pageDialog (pageFormat);
@@ -187,7 +188,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       @Override
       public void run ()
       {
-        java.awt.print.PrinterJob printerJob = java.awt.print.PrinterJob.getPrinterJob ();
+        PrinterJob printerJob = PrinterJob.getPrinterJob ();        // AWT
 
         if (printerJob.printDialog ())
         {
