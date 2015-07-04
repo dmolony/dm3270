@@ -17,13 +17,14 @@ import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class WriteStructuredFieldCommand extends Command
 {
-  private static final String line = "\n----------------------------------------"
-      + "---------------------------------";
+  private static final String line =
+      "\n----------------------------------------" + "---------------------------------";
 
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private final List<Buffer> replies = new ArrayList<> ();
 
-  public WriteStructuredFieldCommand (byte[] buffer, int offset, int length, Screen screen)
+  public WriteStructuredFieldCommand (byte[] buffer, int offset, int length,
+      Screen screen)
   {
     super (buffer, offset, length, screen);
 
@@ -113,8 +114,10 @@ public class WriteStructuredFieldCommand extends Command
   public String brief ()
   {
     StringBuilder text = new StringBuilder (String.format ("WSF (%d):", fields.size ()));
+
     for (StructuredField sf : fields)
       text.append ("\n       : " + sf.brief ());
+
     return text.toString ();
   }
 
@@ -128,12 +131,14 @@ public class WriteStructuredFieldCommand extends Command
   public String toString ()
   {
     StringBuilder text = new StringBuilder (String.format ("WSF (%d):", fields.size ()));
+
     for (StructuredField sf : fields)
     {
       text.append (line);
       text.append ("\n");
       text.append (sf);
     }
+
     if (fields.size () > 0)
       text.append (line);
 
