@@ -41,7 +41,6 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   {
     this.screen = screen;
     setTitle ("Batch Jobs");
-    windowSaver = new WindowSaver (prefs, this, "JobStage");
 
     HBox buttonBox = new HBox ();
     btnHide.setPrefWidth (120);
@@ -72,8 +71,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     Scene scene = new Scene (borderPane, 500, 500);
     setScene (scene);
 
-    if (!windowSaver.restoreWindow ())
-      centerOnScreen ();
+    windowSaver = new WindowSaver (prefs, this, "JobStage");
+    windowSaver.restoreWindow ();
 
     setOnCloseRequest (e -> closeWindow ());
 
@@ -122,7 +121,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void execute ()
   {
-    if (tsoCommandField != null)                               // are we on a suitable
+    if (tsoCommandField != null) // are we on a suitable
     // screen?
     {
       tsoCommandField.setText (txtCommand.getText ());
@@ -181,7 +180,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
     if (batchJob != null)
     {
       batchJob.completed (time, conditionCode);
-      jobTable.refresh ();                          // temp fix before jdk 8u60
+      jobTable.refresh ();// temp fix before jdk 8u60
     }
   }
 }

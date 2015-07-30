@@ -3,6 +3,11 @@ package com.bytezone.dm3270.application;
 import java.nio.file.Path;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.session.Session;
+import com.bytezone.dm3270.session.SessionRecord;
+import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
+import com.bytezone.dm3270.session.SessionTable;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -19,11 +24,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import com.bytezone.dm3270.session.Session;
-import com.bytezone.dm3270.session.SessionRecord;
-import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
-import com.bytezone.dm3270.session.SessionTable;
-
 class ReplayStage extends Stage
 {
   private final Preferences prefs;
@@ -35,18 +35,17 @@ class ReplayStage extends Stage
   public ReplayStage (Session session, Path path, Preferences prefs)
   {
     this.prefs = prefs;
-    windowSaver = new WindowSaver (prefs, this, "Replay");
 
     final Label label = session.getHeaderLabel ();
     label.setFont (new Font ("Arial", 20));
-    label.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    label.setPadding (new Insets (10, 10, 10, 10));// trbl
 
     boolean showTelnet = prefs.getBoolean ("ShowTelnet", false);
     boolean showExtended = prefs.getBoolean ("ShowExtended", false);
 
     final HBox checkBoxes = new HBox ();
     checkBoxes.setSpacing (15);
-    checkBoxes.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    checkBoxes.setPadding (new Insets (10, 10, 10, 10));// trbl
     checkBoxes.getChildren ().addAll (showTelnetCB, show3270ECB);
 
     SessionTable table = new SessionTable ();
@@ -72,9 +71,9 @@ class ReplayStage extends Stage
     showTelnetCB.selectedProperty ().addListener (changeListener);
     show3270ECB.selectedProperty ().addListener (changeListener);
 
-    if (true)       // this sucks - remove it when java works properly
+    if (true) // this sucks - remove it when java works properly
     {
-      showTelnetCB.setSelected (true);      // must be a bug
+      showTelnetCB.setSelected (true);// must be a bug
       show3270ECB.setSelected (true);
     }
 
@@ -89,6 +88,7 @@ class ReplayStage extends Stage
 
     setOnCloseRequest (e -> Platform.exit ());
 
+    windowSaver = new WindowSaver (prefs, this, "Replay");
     if (!windowSaver.restoreWindow ())
     {
       primaryScreenBounds = javafx.stage.Screen.getPrimary ().getVisualBounds ();
@@ -151,7 +151,7 @@ class ReplayStage extends Stage
   {
     VBox vbox = new VBox ();
     vbox.setSpacing (15);
-    vbox.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    vbox.setPadding (new Insets (10, 10, 10, 10));// trbl
     return vbox;
   }
 

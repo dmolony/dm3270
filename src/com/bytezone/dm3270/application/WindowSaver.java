@@ -32,14 +32,18 @@ public class WindowSaver
     Double height = prefs.getDouble (key + "Height", -1.0);
     Double width = prefs.getDouble (key + "Width", -1.0);
 
-    if (width < 0)        // nothing to restore
+    if (width < 0) // nothing to restore
+    {
+      stage.centerOnScreen ();
       return false;
-
-    stage.setX (x);
-    stage.setY (y);
-    stage.setHeight (height);
-    stage.setWidth (width);
-
-    return true;
+    }
+    else
+    {
+      stage.setX (x);
+      stage.setY (y);
+      stage.setHeight (height);
+      stage.setWidth (width);
+      return true;
+    }
   }
 }
