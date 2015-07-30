@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.reporter.application.ReporterScene;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -73,55 +74,66 @@ public class FileStage extends Stage implements TSOCommandStatusListener
     setTitle ("Report display");
     windowSaver = new WindowSaver (prefs, this, "FileTransferStage");
 
-    tabPane.setSide (Side.TOP);
-    tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
-    tabPane.setPrefSize (500, 500);                             // width, height
+    if (false)
+    {
+      tabPane.setSide (Side.TOP);
+      tabPane.setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
+      tabPane.setPrefSize (500, 500);// width, height
 
-    HBox buttonBox = new HBox (10);
-    btnHide.setPrefWidth (100);
+      HBox buttonBox = new HBox (10);
+      btnHide.setPrefWidth (100);
 
-    buttonBox.setAlignment (Pos.CENTER_RIGHT);
-    buttonBox.setPadding (new Insets (10, 10, 10, 10));           // trbl
+      buttonBox.setAlignment (Pos.CENTER_RIGHT);
+      buttonBox.setPadding (new Insets (10, 10, 10, 10));// trbl
 
-    HBox optionsBox = new HBox (10);
-    optionsBox.setAlignment (Pos.CENTER_LEFT);
-    optionsBox.setPadding (new Insets (10, 10, 10, 10));         // trbl
-    txtPageSize.setPrefWidth (43);
-    txtLineSize.setPrefWidth (43);
-    txtTotalLines.setPrefWidth (60);
+      HBox optionsBox = new HBox (10);
+      optionsBox.setAlignment (Pos.CENTER_LEFT);
+      optionsBox.setPadding (new Insets (10, 10, 10, 10));// trbl
+      txtPageSize.setPrefWidth (43);
+      txtLineSize.setPrefWidth (43);
+      txtTotalLines.setPrefWidth (60);
 
-    txtPageSize.setEditable (false);
-    txtTotalLines.setEditable (false);
-    txtPageSize.setFocusTraversable (false);
-    txtTotalLines.setFocusTraversable (false);
+      txtPageSize.setEditable (false);
+      txtTotalLines.setEditable (false);
+      txtPageSize.setFocusTraversable (false);
+      txtTotalLines.setFocusTraversable (false);
 
-    optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize, txtLineSize,
-                                      lblHasCRLF, chkCRLF, lblHasASA, chkHasASACodes,
-                                      lblHasASCII, chkASCII, lblTotalLines,
-                                      txtTotalLines);
-    buttonBox.getChildren ().add (btnHide);
+      optionsBox.getChildren ().addAll (lblPageSize, txtPageSize, lblLineSize,
+                                        txtLineSize, lblHasCRLF, chkCRLF, lblHasASA,
+                                        chkHasASACodes, lblHasASCII, chkASCII,
+                                        lblTotalLines, txtTotalLines);
+      buttonBox.getChildren ().add (btnHide);
 
-    BorderPane bottomBorderPane = new BorderPane ();
-    bottomBorderPane.setLeft (optionsBox);
-    bottomBorderPane.setRight (buttonBox);
+      BorderPane bottomBorderPane = new BorderPane ();
+      bottomBorderPane.setLeft (optionsBox);
+      bottomBorderPane.setRight (buttonBox);
 
-    menuBar.getMenus ().addAll (getFileMenu ());
+      menuBar.getMenus ().addAll (getFileMenu ());
 
-    BorderPane topBorderPane = new BorderPane ();
-    topBorderPane.setTop (menuBar);
-    if (SYSTEM_MENUBAR)
-      menuBar.useSystemMenuBarProperty ().set (true);
+      BorderPane topBorderPane = new BorderPane ();
+      topBorderPane.setTop (menuBar);
+      if (SYSTEM_MENUBAR)
+        menuBar.useSystemMenuBarProperty ().set (true);
 
-    btnHide.setOnAction (e -> closeWindow ());
-    setOnCloseRequest (e -> closeWindow ());
+      btnHide.setOnAction (e -> closeWindow ());
+      setOnCloseRequest (e -> closeWindow ());
 
-    BorderPane borderPane = new BorderPane ();
-    borderPane.setTop (topBorderPane);
-    borderPane.setCenter (tabPane);
-    borderPane.setBottom (bottomBorderPane);
+      BorderPane borderPane = new BorderPane ();
+      borderPane.setTop (topBorderPane);
+      borderPane.setCenter (tabPane);
+      borderPane.setBottom (bottomBorderPane);
 
-    Scene scene = new Scene (borderPane);
-    setScene (scene);
+      Scene scene = new Scene (borderPane);
+      setScene (scene);
+    }
+    else
+    {
+      BorderPane borderPane = new BorderPane ();
+      ReporterScene reporterScene = new ReporterScene (borderPane);
+      String home = System.getProperty ("user.home") + "/Dropbox/testfiles";
+      //      Scene scene = reporter.getScene (home);
+      setScene (reporterScene);
+    }
 
     if (!windowSaver.restoreWindow ())
       centerOnScreen ();
@@ -169,7 +181,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       @Override
       public void run ()
       {
-        PrinterJob printerJob = PrinterJob.getPrinterJob ();      // AWT
+        PrinterJob printerJob = PrinterJob.getPrinterJob ();// AWT
 
         PageFormat pageFormat = printerJob.defaultPage ();
         printerJob.pageDialog (pageFormat);
@@ -188,7 +200,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       @Override
       public void run ()
       {
-        PrinterJob printerJob = PrinterJob.getPrinterJob ();        // AWT
+        PrinterJob printerJob = PrinterJob.getPrinterJob ();// AWT
 
         if (printerJob.printDialog ())
         {
