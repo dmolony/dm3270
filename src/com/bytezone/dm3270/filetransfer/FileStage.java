@@ -1,7 +1,5 @@
 package com.bytezone.dm3270.filetransfer;
 
-import java.awt.print.PageFormat;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +12,6 @@ import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 import com.bytezone.reporter.application.ReporterScene;
 
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -24,20 +19,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class FileStage extends Stage implements TSOCommandStatusListener
@@ -108,7 +95,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       bottomBorderPane.setLeft (optionsBox);
       bottomBorderPane.setRight (buttonBox);
 
-      menuBar.getMenus ().addAll (getFileMenu ());
+      //      menuBar.getMenus ().addAll (getFileMenu ());
 
       BorderPane topBorderPane = new BorderPane ();
       topBorderPane.setTop (menuBar);
@@ -133,67 +120,68 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       String home = System.getProperty ("user.home") + "/Dropbox/testfiles";
       //      Scene scene = reporter.getScene (home);
       setScene (reporterScene);
+      setOnCloseRequest (e -> closeWindow ());
     }
 
     if (!windowSaver.restoreWindow ())
       centerOnScreen ();
 
-    tabPane.getSelectionModel ().selectedItemProperty ()
-        .addListener ( (obs, oldTab, newTab) -> select ((FileTab) newTab));
+    //    tabPane.getSelectionModel ().selectedItemProperty ()
+    //        .addListener ( (obs, oldTab, newTab) -> select ((FileTab) newTab));
   }
 
-  private Menu getFileMenu ()
-  {
-    Menu menuFile = new Menu ("File");
+  //  private Menu getFileMenu ()
+  //  {
+  //    Menu menuFile = new Menu ("File");
+  //
+  //    MenuItem menuItemOpen = getMenuItem ("Open...", e -> openFile (), KeyCode.O);
+  //    MenuItem menuItemSave = getMenuItem ("Save...", e -> saveFile (), KeyCode.S);
+  //    MenuItem menuItemPrint = getMenuItem ("Page setup", e -> pageSetup (), null);
+  //    MenuItem menuItemPageSetup = getMenuItem ("Print", e -> printFile (), KeyCode.P);
+  //    MenuItem menuItemClose = getMenuItem ("Close window", e -> closeWindow (), KeyCode.W);
+  //
+  //    menuFile.getItems ().addAll (menuItemOpen, menuItemSave, menuItemPageSetup,
+  //                                 menuItemPrint, menuItemClose);
+  //
+  //    return menuFile;
+  //  }
 
-    MenuItem menuItemOpen = getMenuItem ("Open...", e -> openFile (), KeyCode.O);
-    MenuItem menuItemSave = getMenuItem ("Save...", e -> saveFile (), KeyCode.S);
-    MenuItem menuItemPrint = getMenuItem ("Page setup", e -> pageSetup (), null);
-    MenuItem menuItemPageSetup = getMenuItem ("Print", e -> printFile (), KeyCode.P);
-    MenuItem menuItemClose = getMenuItem ("Close window", e -> closeWindow (), KeyCode.W);
+  //  private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
+  //      KeyCode keyCode)
+  //  {
+  //    MenuItem menuItem = new MenuItem (text);
+  //    menuItem.setOnAction (eventHandler);
+  //    if (keyCode != null)
+  //      menuItem.setAccelerator (new KeyCodeCombination (keyCode,
+  //          KeyCombination.SHORTCUT_DOWN));
+  //    return menuItem;
+  //  }
 
-    menuFile.getItems ().addAll (menuItemOpen, menuItemSave, menuItemPageSetup,
-                                 menuItemPrint, menuItemClose);
+  //  private void openFile ()
+  //  {
+  //    System.out.println ("Open");
+  //  }
 
-    return menuFile;
-  }
-
-  private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
-      KeyCode keyCode)
-  {
-    MenuItem menuItem = new MenuItem (text);
-    menuItem.setOnAction (eventHandler);
-    if (keyCode != null)
-      menuItem.setAccelerator (new KeyCodeCombination (keyCode,
-          KeyCombination.SHORTCUT_DOWN));
-    return menuItem;
-  }
-
-  private void openFile ()
-  {
-    System.out.println ("Open");
-  }
-
-  private void pageSetup ()
-  {
-    SwingUtilities.invokeLater (new Runnable ()
-    {
-      @Override
-      public void run ()
-      {
-        PrinterJob printerJob = PrinterJob.getPrinterJob ();// AWT
-
-        PageFormat pageFormat = printerJob.defaultPage ();
-        printerJob.pageDialog (pageFormat);
-      }
-    });
-  }
+  //  private void pageSetup ()
+  //  {
+  //    SwingUtilities.invokeLater (new Runnable ()
+  //    {
+  //      @Override
+  //      public void run ()
+  //      {
+  //        PrinterJob printerJob = PrinterJob.getPrinterJob ();// AWT
+  //
+  //        PageFormat pageFormat = printerJob.defaultPage ();
+  //        printerJob.pageDialog (pageFormat);
+  //      }
+  //    });
+  //  }
 
   private void printFile ()
   {
-    FileTab fileTab = getSelectedTab ();
-    if (fileTab == null)
-      return;
+    //    FileTab fileTab = getSelectedTab ();
+    //    if (fileTab == null)
+    //      return;
 
     SwingUtilities.invokeLater (new Runnable ()
     {
@@ -204,44 +192,44 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
         if (printerJob.printDialog ())
         {
-          printerJob.setPrintable (fileTab.report);
-          try
-          {
-            printerJob.print ();
-          }
-          catch (PrinterException e)
-          {
-            e.printStackTrace ();
-          }
+          //          printerJob.setPrintable (fileTab.report);
+          //          try
+          //          {
+          //            printerJob.print ();
+          //          }
+          //          catch (PrinterException e)
+          //          {
+          //            e.printStackTrace ();
+          //          }
         }
       }
     });
   }
 
-  private void saveFile ()
-  {
-    FileTab fileTab = getSelectedTab ();
-    if (fileTab == null)
-      return;
+  //  private void saveFile ()
+  //  {
+  //    FileTab fileTab = getSelectedTab ();
+  //    if (fileTab == null)
+  //      return;
+  //
+  //    System.out.println ("Save:  " + fileTab.getTitle ());
+  //  }
 
-    System.out.println ("Save:  " + fileTab.getTitle ());
-  }
+  //  private FileTab getSelectedTab ()
+  //  {
+  //    return (FileTab) tabPane.getSelectionModel ().getSelectedItem ();
+  //  }
 
-  private FileTab getSelectedTab ()
-  {
-    return (FileTab) tabPane.getSelectionModel ().getSelectedItem ();
-  }
-
-  private void select (FileTab tab)
-  {
-    FileStructure fileStructure = tab.fileStructure;
-    txtLineSize.setText (fileStructure.lineSize + "");
-    txtPageSize.setText (PAGE_SIZE + "");
-    chkHasASACodes.selectedProperty ().setValue (fileStructure.hasASA);
-    chkCRLF.selectedProperty ().setValue (fileStructure.hasCRLF);
-    chkASCII.selectedProperty ().setValue (fileStructure.encoding.equals ("UTF8"));
-    txtTotalLines.setText (fileStructure.lines.size () + "");
-  }
+  //  private void select (FileTab tab)
+  //  {
+  //    FileStructure fileStructure = tab.fileStructure;
+  //    txtLineSize.setText (fileStructure.lineSize + "");
+  //    txtPageSize.setText (PAGE_SIZE + "");
+  //    chkHasASACodes.selectedProperty ().setValue (fileStructure.hasASA);
+  //    chkCRLF.selectedProperty ().setValue (fileStructure.hasCRLF);
+  //    chkASCII.selectedProperty ().setValue (fileStructure.encoding.equals ("UTF8"));
+  //    txtTotalLines.setText (fileStructure.lines.size () + "");
+  //  }
 
   public void addTransfer (Transfer transfer)
   {
@@ -250,10 +238,10 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
     transfers.add (transfer);
 
-    FileTab tab = new FileTab (new FileStructure (transfer));
-    tab.setText (transfer.getFileName ());
+    //    FileTab tab = new FileTab (new FileStructure (transfer));
+    //    tab.setText (transfer.getFileName ());
 
-    Platform.runLater ( () -> tabPane.getTabs ().add (tab));
+    //    Platform.runLater ( () -> tabPane.getTabs ().add (tab));
   }
 
   private void closeWindow ()
@@ -304,31 +292,31 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   {
   }
 
-  class FileTab extends Tab
-  {
-    final FileStructure fileStructure;
-    private final LinePrinter linePrinter;
-    TextArea textArea = new TextArea ();
-    final Report report;
-
-    public FileTab (FileStructure fileStructure)
-    {
-      this.fileStructure = fileStructure;
-      linePrinter = new LinePrinter (PAGE_SIZE, fileStructure);
-      linePrinter.printBuffer ();
-
-      textArea.setEditable (false);
-      textArea.setFont (Font.font ("Monospaced", 12));
-      textArea.setText (linePrinter.getOutput ());
-
-      setContent (textArea);
-      textArea.positionCaret (0);
-      report = new Report (fileStructure, textArea.getText ());
-    }
-
-    public String getTitle ()
-    {
-      return fileStructure.transfer.getFileName ();
-    }
-  }
+  //  class FileTab extends Tab
+  //  {
+  //    final FileStructure fileStructure;
+  //    private final LinePrinter linePrinter;
+  //    TextArea textArea = new TextArea ();
+  //    final Report report;
+  //
+  //    public FileTab (FileStructure fileStructure)
+  //    {
+  //      this.fileStructure = fileStructure;
+  //      linePrinter = new LinePrinter (PAGE_SIZE, fileStructure);
+  //      linePrinter.printBuffer ();
+  //
+  //      textArea.setEditable (false);
+  //      textArea.setFont (Font.font ("Monospaced", 12));
+  //      textArea.setText (linePrinter.getOutput ());
+  //
+  //      setContent (textArea);
+  //      textArea.positionCaret (0);
+  //      report = new Report (fileStructure, textArea.getText ());
+  //    }
+  //
+  //    public String getTitle ()
+  //    {
+  //      return fileStructure.transfer.getFileName ();
+  //    }
+  //  }
 }
