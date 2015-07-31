@@ -41,10 +41,16 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       return;
 
     transfers.add (transfer);
-    TreePanel treePanel = reporterScene.getTreePanel ();
 
-    Platform.runLater ( () -> treePanel.addBuffer (transfer.getFileName (),
-                                                   transfer.combineDataBuffers ()));
+    Platform.runLater ( () -> addBuffer (transfer));
+  }
+
+  private void addBuffer (Transfer transfer)
+  {
+    TreePanel treePanel = reporterScene.getTreePanel ();
+    treePanel.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
+    if (!this.isShowing ())
+      show ();
   }
 
   private void closeWindow ()
