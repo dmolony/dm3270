@@ -7,11 +7,11 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
-import com.bytezone.reporter.application.ReporterScene;
+import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
 
 import javafx.application.Platform;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class FileStage extends Stage implements TSOCommandStatusListener
@@ -19,16 +19,16 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
   private final WindowSaver windowSaver;
-  private final ReporterScene reporterScene;
+  private final ReporterNode reporterNode;
+  //  private TreePanel treePanel;
 
   public FileStage (Preferences prefs)
   {
     setTitle ("Report display");
 
-    BorderPane borderPane = new BorderPane ();
-    reporterScene = new ReporterScene (prefs, borderPane);
+    reporterNode = new ReporterNode (prefs);
 
-    setScene (reporterScene);
+    setScene (new Scene (reporterNode.getRootNode (), 800, 592));
     setOnCloseRequest (e -> closeWindow ());
 
     windowSaver = new WindowSaver (prefs, this, "FileTransferStage");
@@ -37,17 +37,16 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
   public void addTransfer (Transfer transfer)
   {
-    if (!transfer.isData ())
-      return;
-
-    transfers.add (transfer);
-
-    Platform.runLater ( () -> addBuffer (transfer));
+    if (transfer.isData ())
+    {
+      transfers.add (transfer);
+      Platform.runLater ( () -> addBuffer (transfer));
+    }
   }
 
   private void addBuffer (Transfer transfer)
   {
-    TreePanel treePanel = reporterScene.getTreePanel ();
+    TreePanel treePanel = reporterNode.getTreePanel ();
     treePanel.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
     if (!this.isShowing ())
       show ();
