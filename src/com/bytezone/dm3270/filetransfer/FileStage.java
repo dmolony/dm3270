@@ -19,16 +19,23 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
   private final WindowSaver windowSaver;
-  private final ReporterNode reporterNode;
-  //  private TreePanel treePanel;
+  private ReporterNode reporterNode;
 
   public FileStage (Preferences prefs)
   {
     setTitle ("Report display");
 
-    reporterNode = new ReporterNode (prefs);
+    try
+    {
+      reporterNode = new ReporterNode (prefs);
+      setScene (new Scene (reporterNode.getRootNode (), 800, 592));
+      reporterNode.getTreePanel ().getTree ().requestFocus ();
+    }
+    catch (NoClassDefFoundError e)
+    {
+      System.out.println ("ReporterNode class not available");
+    }
 
-    setScene (new Scene (reporterNode.getRootNode (), 800, 592));
     setOnCloseRequest (e -> closeWindow ());
 
     windowSaver = new WindowSaver (prefs, this, "FileTransferStage");

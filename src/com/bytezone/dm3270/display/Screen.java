@@ -33,7 +33,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final FieldManager fieldManager;
   private final FontManager fontManager;
   private final JobStage jobStage;
-  private FileStage fileStage;
+  private final FileStage fileStage;
   private final PluginsStage pluginsStage;
   private final TransferStage transferStage;
   private final ScreenDetails screenDetails;
@@ -79,15 +79,7 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager = new FieldManager (this, pen.getBase ());
 
     jobStage = new JobStage (this);
-    try
-    {
-      fileStage = new FileStage (prefs);
-    }
-    catch (NoClassDefFoundError e)
-    {
-      fileStage = null;
-      System.out.println ("FileStage class not available");
-    }
+    fileStage = new FileStage (prefs);
     transferStage = new TransferStage (this);
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
@@ -105,8 +97,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     addTSOCommandStatusChangeListener (jobStage);
     addTSOCommandStatusChangeListener (transferStage);
-    if (fileStage != null)
-      addTSOCommandStatusChangeListener (fileStage);
+    addTSOCommandStatusChangeListener (fileStage);
   }
 
   // this is called from the ConsolePane constructor
