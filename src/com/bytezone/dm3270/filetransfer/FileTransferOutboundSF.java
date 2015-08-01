@@ -23,12 +23,12 @@ public class FileTransferOutboundSF extends FileTransferSF
         dataRecords.add (new DataRecord (data, 9));
         dataRecords.add (new DataRecord (data, 19));
 
-        if (data.length == 33)                 // OPEN for SEND
-          setTransferType (new String (data, 26, 7));            // FT:MSG. or FT:DATA
-        else if (data.length == 39)            // OPEN for RECEIVE
+        if (data.length == 33) // OPEN for SEND
+          setTransferType (new String (data, 26, 7));// FT:MSG. or FT:DATA
+        else if (data.length == 39) // OPEN for RECEIVE
         {
           dataRecords.add (new RecordSize (data, 24));
-          setTransferType (new String (data, 32, 7));            // FT:DATA
+          setTransferType (new String (data, 32, 7));// FT:DATA
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
@@ -45,11 +45,11 @@ public class FileTransferOutboundSF extends FileTransferSF
       // Receiving data
 
       case 0x47:
-        if (subtype == 0x11)                                     // always before 0x04
+        if (subtype == 0x11) // always before 0x04
         {
           dataRecords.add (new DataRecord (data, 3));
         }
-        else if (subtype == 0x04)                         // message or transfer buffer
+        else if (subtype == 0x04) // message or transfer buffer
         {
           dataHeader = new DataHeader (data, 3);
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
@@ -95,31 +95,31 @@ public class FileTransferOutboundSF extends FileTransferSF
   @Override
   public void process ()
   {
-    if (transfer != null)
+    if (transfer != null || fileStage == null)
       return;
 
     switch (rectype)
     {
-      case 0x00:                          // OPEN request
+      case 0x00:// OPEN request
         if (subtype == 0x12)
           processOpen ();
         break;
 
-      case 0x41:                          // CLOSE request
+      case 0x41:// CLOSE request
         if (subtype == 0x12)
           processClose ();
         break;
 
-      case 0x45:                          // something to do with SEND
+      case 0x45:// something to do with SEND
         processSend0x45 ();
         break;
 
-      case 0x46:                          // send data transfer buffer
+      case 0x46:// send data transfer buffer
         if (subtype == 0x11)
           processSend0x46 ();
         break;
 
-      case 0x47:                          // receive data transfer buffer
+      case 0x47:// receive data transfer buffer
         processReceive ();
         break;
     }
@@ -158,7 +158,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     byte[] buffer;
     int ptr = 0;
 
-    if (transfer.hasMoreData ())            // have data to send
+    if (transfer.hasMoreData ()) // have data to send
     {
       int buflen = 50;
       int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
@@ -192,9 +192,9 @@ public class FileTransferOutboundSF extends FileTransferSF
   private void processReceive ()
   {
     transfer = fileStage.getTransfer ();
-    transfer.add (this);                  // both 0x11 and 0x04 subtypes
+    transfer.add (this);// both 0x11 and 0x04 subtypes
 
-    if (subtype == 0x04)                         // message or transfer buffer
+    if (subtype == 0x04) // message or transfer buffer
     {
       int ptr = 6;
       int length = ptr + RecordNumber.RECORD_LENGTH;
@@ -206,7 +206,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       reply = new ReadStructuredFieldCommand (buffer, screen);
 
-      if (transfer.isMessage ())              // message transfers don't close
+      if (transfer.isMessage ()) // message transfers don't close
         fileStage.closeTransfer ();
     }
   }

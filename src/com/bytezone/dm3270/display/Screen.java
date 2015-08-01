@@ -33,7 +33,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final FieldManager fieldManager;
   private final FontManager fontManager;
   private final JobStage jobStage;
-  private final FileStage fileStage;
+  private FileStage fileStage;
   private final PluginsStage pluginsStage;
   private final TransferStage transferStage;
   private final ScreenDetails screenDetails;
@@ -42,8 +42,8 @@ public class Screen extends Canvas implements DisplayScreen
   private final Cursor cursor = new Cursor (this);
   private final GraphicsContext graphicsContext;
 
-  private final int xOffset = 4; // padding left and right
-  private final int yOffset = 4; // padding top and bottom
+  private final int xOffset = 4;// padding left and right
+  private final int yOffset = 4;// padding top and bottom
 
   public final int rows;
   public final int columns;
@@ -79,7 +79,15 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager = new FieldManager (this, pen.getBase ());
 
     jobStage = new JobStage (this);
-    fileStage = new FileStage (prefs);
+    try
+    {
+      fileStage = new FileStage (prefs);
+    }
+    catch (NoClassDefFoundError e)
+    {
+      fileStage = null;
+      System.out.println ("FileStage class not available");
+    }
     transferStage = new TransferStage (this);
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
@@ -96,8 +104,9 @@ public class Screen extends Canvas implements DisplayScreen
           new ScreenPosition (i, graphicsContext, characterSize, baseContext);
 
     addTSOCommandStatusChangeListener (jobStage);
-    addTSOCommandStatusChangeListener (fileStage);
     addTSOCommandStatusChangeListener (transferStage);
+    if (fileStage != null)
+      addTSOCommandStatusChangeListener (fileStage);
   }
 
   // this is called from the ConsolePane constructor
@@ -162,9 +171,9 @@ public class Screen extends Canvas implements DisplayScreen
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {
-    graphicsContext.setFill (ColorAttribute.colors[8]); // black
+    graphicsContext.setFill (ColorAttribute.colors[8]);// black
     graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
-    graphicsContext.setFill (ColorAttribute.colors[5]); // turquoise
+    graphicsContext.setFill (ColorAttribute.colors[5]);// turquoise
 
     int x = 120;
     int y = 100;
@@ -229,13 +238,13 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void insertCursor ()
   {
-    insertedCursorPosition = cursor.getLocation ();     // move it here later
+    insertedCursorPosition = cursor.getLocation ();// move it here later
   }
 
   @Override
   public void insertCursor (int position)
   {
-    insertedCursorPosition = position;                  // move it here later
+    insertedCursorPosition = position;// move it here later
   }
 
   // called from EraseAllUnprotectedCommand.process()
@@ -261,7 +270,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void buildFields (WriteControlCharacter wcc)
   {
-    fieldManager.buildFields ();              // what about resetModified?
+    fieldManager.buildFields ();// what about resetModified?
     notifyTSOCommandStatusChange ();
   }
 
@@ -272,7 +281,7 @@ public class Screen extends Canvas implements DisplayScreen
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = getReplyTypes ();
 
-      screenHistory.requestScreen (this);       // will call readBuffer()
+      screenHistory.requestScreen (this);// will call readBuffer()
 
       replyMode = savedReplyMode;
       replyTypes = savedReplyTypes;
@@ -293,13 +302,13 @@ public class Screen extends Canvas implements DisplayScreen
       cursor.setVisible (true);
     }
 
-    drawPosition (cursor.getLocation (), true);             // draw the cursor
+    drawPosition (cursor.getLocation (), true);// draw the cursor
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    CharacterSize characterSize = fontManager.getCharacterSize ();    // too slow!!
+    CharacterSize characterSize = fontManager.getCharacterSize ();// too slow!!
     int x = xOffset + col * characterSize.getWidth ();
     int y = yOffset + row * characterSize.getHeight ();
 
@@ -328,7 +337,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   void eraseScreen ()
   {
-    graphicsContext.setFill (ColorAttribute.colors[8]); // black
+    graphicsContext.setFill (ColorAttribute.colors[8]);// black
     graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
   }
 
@@ -372,7 +381,7 @@ public class Screen extends Canvas implements DisplayScreen
     {
       field.setText (text.getBytes ("CP1047"));
       field.setModified (true);
-      field.draw (); // draws the field without a cursor
+      field.draw ();// draws the field without a cursor
     }
     catch (UnsupportedEncodingException e)
     {
@@ -516,7 +525,7 @@ public class Screen extends Canvas implements DisplayScreen
   // Screen history
   // ---------------------------------------------------------------------------------//
 
-  public ScreenHistory pause () // triggered by cmd-s
+  public ScreenHistory pause ()// triggered by cmd-s
   {
     if (screenHistory.size () == 0)
       return null;
@@ -527,7 +536,7 @@ public class Screen extends Canvas implements DisplayScreen
     return screenHistory;
   }
 
-  public void resume () // also triggered by cmd-s
+  public void resume ()// also triggered by cmd-s
   {
     keyboardLocked = screenHistory.resume ();
   }

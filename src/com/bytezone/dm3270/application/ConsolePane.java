@@ -137,18 +137,26 @@ public class ConsolePane extends BorderPane
     MenuItem menuItemToggleScreens =
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
-    MenuItem menuItemFileTransfer =
-        getMenuItem ("File transfer", e -> screen.getTransferStage ().show (), KeyCode.F);
-
-    MenuItem menuItemReportDisplay =
-        getMenuItem ("Reports", e -> screen.getFileStage ().show (), KeyCode.R);
-
     MenuItem menuItemJobDisplay =
         getMenuItem ("Batch jobs", e -> screen.getJobStage ().show (), KeyCode.J);
 
-    menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-                                     menuItemFileTransfer, menuItemReportDisplay,
-                                     menuItemJobDisplay);
+    if (screen.getFileStage () == null)
+    {
+      menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
+                                       menuItemJobDisplay);
+    }
+    else
+    {
+      MenuItem menuItemFileTransfer =
+          getMenuItem ("File transfer", e -> screen.getTransferStage ().show (),
+                       KeyCode.F);
+
+      MenuItem menuItemReportDisplay =
+          getMenuItem ("Reports", e -> screen.getFileStage ().show (), KeyCode.R);
+      menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
+                                       menuItemFileTransfer, menuItemReportDisplay,
+                                       menuItemJobDisplay);
+    }
 
     if (!SYSTEM_MENUBAR)
     {
@@ -235,7 +243,7 @@ public class ConsolePane extends BorderPane
     {
       screenHistory = screen.pause ();
       if (screenHistory == null)
-        return;                     // no history to show
+        return;// no history to show
 
       changeScreen (screenHistory.current ());
 
@@ -383,7 +391,7 @@ public class ConsolePane extends BorderPane
     int row = newLocation / screen.columns;
     int col = newLocation % screen.columns;
     cursorLocation.setText (String.format ("%03d/%03d", row, col));
-    fieldChanged (currentField, currentField); // update the acronym
+    fieldChanged (currentField, currentField);// update the acronym
   }
 
   @Override
