@@ -36,6 +36,11 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       System.out.println ("ReporterNode class not available");
     }
 
+    if (reporterNode == null)
+    {
+
+    }
+
     setOnCloseRequest (e -> closeWindow ());
 
     windowSaver = new WindowSaver (prefs, this, "FileTransferStage");
@@ -53,6 +58,9 @@ public class FileStage extends Stage implements TSOCommandStatusListener
 
   private void addBuffer (Transfer transfer)
   {
+    if (reporterNode == null)
+      return;
+
     TreePanel treePanel = reporterNode.getTreePanel ();
     treePanel.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
     if (!this.isShowing ())
