@@ -18,6 +18,7 @@ public class Transfer
   private String blksize;
   private String space;
   private String direction;
+  private String units;
 
   List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
   List<DataHeader> dataBuffers = new ArrayList<> ();
@@ -125,9 +126,13 @@ public class Transfer
       if (chunks[i].startsWith ("lrecl("))
         lrecl = chunks[i].substring (5);
       if (chunks[i].startsWith ("blksize("))
-        recfm = chunks[i].substring (7);
+        blksize = chunks[i].substring (7);
       if (chunks[i].startsWith ("space("))
-        space = chunks[i].substring (7);
+      {
+        space = chunks[i].substring (5);
+        if (chunks[i - 1].startsWith ("cyl") || chunks[i - 1].startsWith ("track"))
+          units = chunks[i - 1];
+      }
     }
   }
 
@@ -155,6 +160,7 @@ public class Transfer
     text.append (String.format ("%nRECFM ......... %s", recfm == null ? "" : recfm));
     text.append (String.format ("%nLRECL ......... %s", lrecl == null ? "" : lrecl));
     text.append (String.format ("%nBLKSIZE ....... %s", blksize == null ? "" : blksize));
+    text.append (String.format ("%nUNITS ......... %s", units == null ? "" : units));
     text.append (String.format ("%nSPACE ......... %s", space == null ? "" : space));
 
     return text.toString ();

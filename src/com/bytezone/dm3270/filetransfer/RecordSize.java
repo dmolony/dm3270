@@ -9,7 +9,7 @@ public class RecordSize extends DataRecord
   public RecordSize (byte[] data, int offset)
   {
     super (data, offset);
-    recordSize = Utility.unsignedShort (data, 2);
+    recordSize = Utility.unsignedShort (data, offset + 2);
   }
 
   @Override
