@@ -18,7 +18,7 @@ public class FileTransferSF extends StructuredField
 
   protected DataHeader dataHeader;
   protected boolean ebcdic;
-  protected TransferType transferType;      // outbound only
+  protected TransferType transferType;// outbound only
   protected Transfer transfer;
 
   protected final boolean debug = false;
@@ -35,11 +35,6 @@ public class FileTransferSF extends StructuredField
     this.direction = direction;
   }
 
-  protected boolean checkEbcdic (byte[] data)
-  {
-    return checkEbcdic (data, 0, data.length);
-  }
-
   protected void setTransferType (String text)
   {
     if ("FT:DATA".equals (text))
@@ -48,6 +43,11 @@ public class FileTransferSF extends StructuredField
       transferType = TransferType.MSG;
     else
       throw new InvalidParameterException ();
+  }
+
+  protected boolean checkEbcdic (byte[] data)
+  {
+    return checkEbcdic (data, 0, data.length);
   }
 
   protected boolean checkEbcdic (byte[] data, int offset, int length)

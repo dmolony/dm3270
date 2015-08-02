@@ -133,7 +133,10 @@ public class FileTransferOutboundSF extends FileTransferSF
     reply = new ReadStructuredFieldCommand (buffer, screen);
 
     if (transfer.isData ())
+    {
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
+      System.out.println (transfer);
+    }
   }
 
   private void processClose ()

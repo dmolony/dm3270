@@ -1,9 +1,5 @@
 package com.bytezone.dm3270.filetransfer;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,19 +56,6 @@ public class Transfer
       byte[] buffer = dataHeader.getBuffer ();
       System.arraycopy (buffer, 0, fullBuffer, ptr, buffer.length);
       ptr += buffer.length;
-    }
-
-    if (true)
-    {
-      Path path = Paths.get ("/Users/denismolony/test/test.txt");
-      try
-      {
-        Files.write (path, fullBuffer);
-      }
-      catch (IOException e)
-      {
-        e.printStackTrace ();
-      }
     }
 
     return fullBuffer;
