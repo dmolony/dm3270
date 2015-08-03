@@ -3,6 +3,7 @@ package com.bytezone.dm3270.filetransfer;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
@@ -24,12 +25,16 @@ public class FileTransferOutboundSF extends FileTransferSF
         dataRecords.add (new DataRecord (data, 9));
         dataRecords.add (new DataRecord (data, 19));
 
-        if (data.length == 33) // OPEN for SEND
-          setTransferType (new String (data, 26, 7));// FT:MSG. or FT:DATA
-        else if (data.length == 39) // OPEN for RECEIVE
+        if (data.length == 33)
+        {
+          setTransferContents (new String (data, 26, 7));// FT:MSG. or FT:DATA
+          setTransferType (TransferType.SEND);
+        }
+        else if (data.length == 39)
         {
           dataRecords.add (new RecordSize (data, 24));
-          setTransferType (new String (data, 32, 7));// FT:DATA
+          setTransferContents (new String (data, 32, 7));// FT:DATA
+          setTransferType (TransferType.RECEIVE);
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
@@ -96,7 +101,8 @@ public class FileTransferOutboundSF extends FileTransferSF
   @Override
   public void process ()
   {
-    if (transfer != null || fileStage == null)
+    // check for an already processed replay command
+    if (transfer != null)
       return;
 
     switch (rectype)

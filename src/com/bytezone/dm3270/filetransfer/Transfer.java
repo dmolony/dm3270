@@ -8,7 +8,9 @@ import java.util.List;
 
 public class Transfer
 {
-  private TransferType type;
+  private TransferContents transferContents;
+  private TransferType transferType;
+
   private String fileName;
   private boolean crlf;
   private boolean ascii;
@@ -27,16 +29,24 @@ public class Transfer
   byte[] inboundBuffer;
   int inboundBufferPtr;
 
-  enum TransferType
+  enum TransferContents
   {
     MSG, DATA
+  }
+
+  enum TransferType
+  {
+    SEND, RECEIVE
   }
 
   void add (FileTransferOutboundSF outboundRecord)
   {
     outboundRecords.add (outboundRecord);
-    if (type == null)
-      type = outboundRecord.transferType;
+
+    if (transferContents == null)
+      transferContents = outboundRecord.transferContents;
+    if (transferType == null)
+      transferType = outboundRecord.transferType;
   }
 
   public int add (DataHeader dataHeader)
@@ -80,12 +90,12 @@ public class Transfer
 
   public boolean isData ()
   {
-    return type == TransferType.DATA;
+    return transferContents == TransferContents.DATA;
   }
 
   public boolean isMessage ()
   {
-    return type == TransferType.MSG;
+    return transferContents == TransferContents.MSG;
   }
 
   public boolean isInbound ()
@@ -175,11 +185,13 @@ public class Transfer
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String.format ("Transfer ...... %s", type));
+    text.append (String.format ("Contents ...... %s", transferContents));
+    text.append (String.format ("Type .......... %s", transferType));
 
     int bufno = 0;
     for (DataHeader buffer : dataBuffers)
       text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.size ()));
+
     text.append (String.format ("%nTotal length .. %,d", dataLength));
     text.append (String.format ("%nDirection ..... %s", direction));
     text.append (String.format ("%nFile name ..... %s", fileName));

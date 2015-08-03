@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 
@@ -18,7 +19,8 @@ public class FileTransferSF extends StructuredField
 
   protected DataHeader dataHeader;
   protected boolean ebcdic;
-  protected TransferType transferType;// outbound only
+  protected TransferContents transferContents;// outbound only
+  protected TransferType transferType;
   protected Transfer transfer;
 
   protected final boolean debug = false;
@@ -35,14 +37,19 @@ public class FileTransferSF extends StructuredField
     this.direction = direction;
   }
 
-  protected void setTransferType (String text)
+  protected void setTransferContents (String text)
   {
     if ("FT:DATA".equals (text))
-      transferType = TransferType.DATA;
+      transferContents = TransferContents.DATA;
     else if ("FT:MSG ".equals (text))
-      transferType = TransferType.MSG;
+      transferContents = TransferContents.MSG;
     else
       throw new InvalidParameterException ();
+  }
+
+  protected void setTransferType (TransferType transferType)
+  {
+    this.transferType = transferType;
   }
 
   protected boolean checkEbcdic (byte[] data)
@@ -78,8 +85,8 @@ public class FileTransferSF extends StructuredField
     for (DataRecord dataRecord : dataRecords)
       text.append (String.format ("%n   %s", dataRecord));
 
-    if (transferType != null)
-      text.append (String.format ("%n   transfer  : %s", transferType));
+    if (transferContents != null)
+      text.append (String.format ("%n   transfer  : %s", transferContents));
 
     if (dataHeader != null)
     {

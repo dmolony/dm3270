@@ -100,6 +100,15 @@ public class FileStage extends Stage
     return currentTransfer;
   }
 
+  // called from FileTransferOutboundSF.processOpen()
+  public void setBuffer (Transfer transfer)
+  {
+    if (fileNode == null)
+      System.out.println ("No file selected to transfer");
+    else
+      transfer.setTransferBuffer (fileNode.getBuffer ());
+  }
+
   public Transfer getTransfer (FileTransferOutboundSF transferRecord)
   {
     currentTransfer.add (transferRecord);
@@ -126,15 +135,6 @@ public class FileStage extends Stage
   public void closeTransfer ()
   {
     currentTransfer = null;
-  }
-
-  // called from FileTransferOutboundSF.processOpen()
-  public void setBuffer (Transfer transfer)
-  {
-    if (fileNode == null)
-      System.out.println ("No file selected to transfer");
-    else
-      transfer.setTransferBuffer (fileNode.getBuffer ());
   }
 
   @Override
