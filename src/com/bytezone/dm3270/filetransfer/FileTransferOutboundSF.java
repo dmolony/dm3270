@@ -7,7 +7,6 @@ import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
-  private static int INBOUND_MAX_BUFFER_SIZE = 2048;
   private int bufferNumber;
   private final FileStage fileStage;
 
@@ -157,35 +156,30 @@ public class FileTransferOutboundSF extends FileTransferSF
   private void processSend0x45 ()
   {
     transfer = fileStage.getTransfer (this);
-    //    transfer.add (this);
   }
 
   private void processSend0x46 ()
   {
     transfer = fileStage.getTransfer (this);
-    //    transfer.add (this);
 
     byte[] replyBuffer;
     int ptr = 0;
 
     if (transfer.hasMoreData ()) // have data to send
     {
-      int buflen = Math.min (INBOUND_MAX_BUFFER_SIZE, transfer.getBytesLeft ());
+      DataHeader dataHeader = transfer.getDataHeader ();
+
       ptr = 6;
-      int length = ptr + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
+      int replyBufferLength = ptr + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH
+          + dataHeader.size ();
+
       // if CRLF option add 1 to length for the ctrl-z
 
-      replyBuffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x05);
+      replyBuffer = getReplyBuffer (replyBufferLength, (byte) 0x46, (byte) 0x05);
 
       RecordNumber recordNumber = new RecordNumber (transfer.dataBuffers.size () + 1);
       ptr = recordNumber.pack (replyBuffer, ptr);
-
-      DataHeader dataHeader = new DataHeader (buflen, false);
-      System.arraycopy (transfer.inboundBuffer, transfer.inboundBufferPtr,
-                        dataHeader.getBuffer (), 0, buflen);
-      transfer.inboundBufferPtr += buflen;
       ptr = dataHeader.pack (replyBuffer, ptr);
-      transfer.add (dataHeader);
 
       // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
     }
@@ -206,7 +200,6 @@ public class FileTransferOutboundSF extends FileTransferSF
   private void processReceive ()
   {
     transfer = fileStage.getTransfer (this);
-    //    transfer.add (this);// both 0x11 and 0x04 subtypes
 
     if (subtype == 0x04) // message or transfer buffer
     {

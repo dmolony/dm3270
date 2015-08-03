@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Transfer
 {
+  private static int INBOUND_MAX_BUFFER_SIZE = 2048;
+
   private TransferContents transferContents;
   private TransferType transferType;
 
@@ -81,6 +83,20 @@ public class Transfer
     inboundBuffer = buffer;
     inboundBufferPtr = 0;
     //    System.out.println ("got buffer " + buffer.length);
+  }
+
+  DataHeader getDataHeader ()
+  {
+    assert hasMoreData ();
+
+    int buflen = Math.min (INBOUND_MAX_BUFFER_SIZE, getBytesLeft ());
+    DataHeader dataHeader = new DataHeader (buflen, false);
+    System.arraycopy (inboundBuffer, inboundBufferPtr, dataHeader.getBuffer (), 0,
+                      buflen);
+    inboundBufferPtr += buflen;
+    add (dataHeader);
+
+    return dataHeader;
   }
 
   public int size ()
