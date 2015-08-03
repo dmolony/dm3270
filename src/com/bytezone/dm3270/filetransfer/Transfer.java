@@ -24,12 +24,15 @@ public class Transfer
   List<DataHeader> dataBuffers = new ArrayList<> ();
   int dataLength;
 
+  byte[] inboundBuffer;
+  int inboundBufferPtr;
+
   enum TransferType
   {
     MSG, DATA
   }
 
-  public void add (FileTransferOutboundSF outboundRecord)
+  void add (FileTransferOutboundSF outboundRecord)
   {
     outboundRecords.add (outboundRecord);
     if (type == null)
@@ -62,6 +65,14 @@ public class Transfer
     return fullBuffer;
   }
 
+  // called from FileStage.setBuffer()
+  public void setTransferBuffer (byte[] buffer)
+  {
+    inboundBuffer = buffer;
+    inboundBufferPtr = 0;
+    //    System.out.println ("got buffer " + buffer.length);
+  }
+
   public int size ()
   {
     return dataBuffers.size ();
@@ -77,9 +88,27 @@ public class Transfer
     return type == TransferType.MSG;
   }
 
+  public boolean isInbound ()
+  {
+    System.out.printf ("[%s]%n", direction);
+    return "put".equals (direction);
+  }
+
+  public boolean isOutbound ()
+  {
+    return "get".equals (direction);
+  }
+
   boolean hasMoreData ()
   {
-    return false;
+    return getBytesLeft () > 0;
+  }
+
+  public int getBytesLeft ()
+  {
+    if (inboundBuffer == null)
+      return 0;
+    return inboundBuffer.length - inboundBufferPtr;
   }
 
   public void setTransferCommand (String command)
@@ -162,6 +191,10 @@ public class Transfer
     text.append (String.format ("%nBLKSIZE ....... %s", blksize == null ? "" : blksize));
     text.append (String.format ("%nUNITS ......... %s", units == null ? "" : units));
     text.append (String.format ("%nSPACE ......... %s", space == null ? "" : space));
+
+    text.append (String.format ("%ninbuf length .. %d",
+                                inboundBuffer == null ? -1 : inboundBuffer.length));
+    text.append (String.format ("%nin ptr ........ %d", inboundBufferPtr));
 
     return text.toString ();
   }

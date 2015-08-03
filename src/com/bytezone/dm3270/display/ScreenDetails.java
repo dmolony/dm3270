@@ -99,7 +99,7 @@ public class ScreenDetails
       String text = field.getText ();
 
       if (text.endsWith ("===>"))
-        promptFound = true;             // next loop iteration will return the field
+        promptFound = true;// next loop iteration will return the field
     }
 
     isTSOCommandScreen = checkTSOCommandScreen ();
@@ -301,5 +301,20 @@ public class ScreenDetails
     }
 
     return menus;
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append ("Screen details:\n");
+    text.append (String.format ("TSO screen ..... %s%n", isTSOCommandScreen));
+    text.append (String.format ("Dataset list ... %s%n", isDatasetList));
+    text.append (String.format ("Userid/prefix .. %s / %s%n", userid, prefix));
+    text.append (String.format ("Datasets for ... %s%n", datasetsMatching));
+    text.append (String.format ("Volume ......... %s%n", datasetsOnVolume));
+
+    return text.toString ();
   }
 }

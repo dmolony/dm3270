@@ -7,19 +7,24 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
+import com.bytezone.reporter.application.TreePanel.FileNode;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class FileStage extends Stage implements TSOCommandStatusListener
+public class FileStage extends Stage
+    implements TSOCommandStatusListener, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
   private final WindowSaver windowSaver;
+
   private ReporterNode reporterNode;
+  private FileNode fileNode;
 
   public FileStage (Preferences prefs)
   {
@@ -30,6 +35,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
       reporterNode = new ReporterNode (prefs);
       setScene (new Scene (reporterNode.getRootNode (), 800, 592));
       reporterNode.getTreePanel ().getTree ().requestFocus ();
+      reporterNode.getTreePanel ().addNodeSelectionListener (this);
     }
     catch (NoClassDefFoundError e)
     {
@@ -73,18 +79,30 @@ public class FileStage extends Stage implements TSOCommandStatusListener
     hide ();
   }
 
+  // called from FileTransferOutboundSF.processOpen()
   public Transfer openTransfer (FileTransferOutboundSF transferRecord)
   {
-    if (currentTransfer != null)
-      addTransfer (currentTransfer);
+    //    if (currentTransfer != null)
+    //      addTransfer (currentTransfer);
+    assert currentTransfer == null;
 
     currentTransfer = new Transfer ();
     currentTransfer.add (transferRecord);
+
+    //    System.out.printf ("Node %s inbound %s%n", reporterNode,
+    //                       currentTransfer.isInbound ());
+    //    if (reporterNode != null && currentTransfer.isInbound ())
+    //    {
+    //      System.out.println ("setting buffer");
+    //      currentTransfer.setTransferBuffer (fileNode.getBuffer ());
+    //    }
+
     return currentTransfer;
   }
 
-  public Transfer getTransfer ()
+  public Transfer getTransfer (FileTransferOutboundSF transferRecord)
   {
+    currentTransfer.add (transferRecord);
     return currentTransfer;
   }
 
@@ -92,7 +110,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener
   {
     if (currentTransfer == null)
     {
-      System.out.println ("Null");
+      System.out.println ("Null current transfer");
       return null;
     }
 
@@ -110,8 +128,25 @@ public class FileStage extends Stage implements TSOCommandStatusListener
     currentTransfer = null;
   }
 
+  // called from FileTransferOutboundSF.processOpen()
+  public void setBuffer (Transfer transfer)
+  {
+    if (fileNode == null)
+      System.out.println ("No file selected to transfer");
+    else
+      transfer.setTransferBuffer (fileNode.getBuffer ());
+  }
+
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
+    //    System.out.println (screenDetails);
+  }
+
+  @Override
+  public void nodeSelected (FileNode fileNode)
+  {
+    //    System.out.println (fileNode);
+    this.fileNode = fileNode;
   }
 }

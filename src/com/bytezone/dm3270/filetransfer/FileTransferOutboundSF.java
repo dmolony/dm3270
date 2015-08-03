@@ -6,6 +6,7 @@ import com.bytezone.dm3270.display.Screen;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
+  private static int INBOUND_MAX_BUFFER_SIZE = 2048;
   private int bufferNumber;
   private final FileStage fileStage;
 
@@ -135,7 +136,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     if (transfer.isData ())
     {
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
-      System.out.println (transfer);
+      fileStage.setBuffer (transfer);
     }
   }
 
@@ -149,32 +150,36 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processSend0x45 ()
   {
-    transfer = fileStage.getTransfer ();
-    transfer.add (this);
+    transfer = fileStage.getTransfer (this);
+    //    transfer.add (this);
   }
 
   private void processSend0x46 ()
   {
-    transfer = fileStage.getTransfer ();
-    transfer.add (this);
+    transfer = fileStage.getTransfer (this);
+    //    transfer.add (this);
 
-    byte[] buffer;
+    byte[] replyBuffer;
     int ptr = 0;
 
     if (transfer.hasMoreData ()) // have data to send
     {
-      int buflen = 50;
-      int length = 3 + 3 + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
+      int buflen = Math.min (INBOUND_MAX_BUFFER_SIZE, transfer.getBytesLeft ());
+      ptr = 6;
+      int length = ptr + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH + buflen;
       // if CRLF option add 1 to length for the ctrl-z
 
-      buffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x05);
-      ptr = 6;
+      replyBuffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x05);
 
-      RecordNumber recordNumber = new RecordNumber (1);
-      ptr = recordNumber.pack (buffer, ptr);
+      RecordNumber recordNumber = new RecordNumber (transfer.dataBuffers.size () + 1);
+      ptr = recordNumber.pack (replyBuffer, ptr);
 
       DataHeader dataHeader = new DataHeader (buflen, false);
-      ptr = dataHeader.pack (buffer, ptr);
+      System.arraycopy (transfer.inboundBuffer, transfer.inboundBufferPtr,
+                        dataHeader.getBuffer (), 0, buflen);
+      transfer.inboundBufferPtr += buflen;
+      ptr = dataHeader.pack (replyBuffer, ptr);
+      transfer.add (dataHeader);
 
       // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
     }
@@ -182,20 +187,20 @@ public class FileTransferOutboundSF extends FileTransferSF
     // finished sending buffers, now send an EOF
     {
       int length = 6 + ErrorRecord.RECORD_LENGTH;
-      buffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x08);
+      replyBuffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x08);
 
       ptr = 6;
       ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.EOF);
-      ptr = errorRecord.pack (buffer, ptr);
+      ptr = errorRecord.pack (replyBuffer, ptr);
     }
 
-    reply = new ReadStructuredFieldCommand (buffer, screen);
+    reply = new ReadStructuredFieldCommand (replyBuffer, screen);
   }
 
   private void processReceive ()
   {
-    transfer = fileStage.getTransfer ();
-    transfer.add (this);// both 0x11 and 0x04 subtypes
+    transfer = fileStage.getTransfer (this);
+    //    transfer.add (this);// both 0x11 and 0x04 subtypes
 
     if (subtype == 0x04) // message or transfer buffer
     {
