@@ -30,7 +30,7 @@ public class ScreenPacker
   {
     // pack the AID
     int ptr = 0;
-    buffer[ptr++] = currentAID;               // whatever key was pressed
+    buffer[ptr++] = currentAID;// whatever key was pressed
 
     // PA keys and the CLR key only return the AID byte
     if (!readModifiedAll)
@@ -81,7 +81,7 @@ public class ScreenPacker
         ptr = ba.packAddress (buffer, ptr);
       }
       else if (!sp.isNull ())
-        buffer[ptr++] = sp.getByte ();          // suppress nulls
+        buffer[ptr++] = sp.getByte ();// suppress nulls
 
     return ptr;
   }
@@ -105,7 +105,7 @@ public class ScreenPacker
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr);
       else
-        ptr = packDataPosition (sp, buffer, ptr);       // don't suppress nulls
+        ptr = packDataPosition (sp, buffer, ptr);// don't suppress nulls
 
     return new AIDCommand (screen, buffer, 0, ptr);
   }
@@ -126,11 +126,11 @@ public class ScreenPacker
       buffer[ptr++] = Order.START_FIELD_EXTENDED;
 
       List<Attribute> attributes = sp.getAttributes ();
-      buffer[ptr++] = (byte) (attributes.size () + 1);    // +1 for StartFieldAttribute
+      buffer[ptr++] = (byte) (attributes.size () + 1);// +1 for StartFieldAttribute
 
-      ptr = sfa.pack (buffer, ptr);                       // pack the SFA first
+      ptr = sfa.pack (buffer, ptr);// pack the SFA first
       for (Attribute attribute : attributes)
-        ptr = attribute.pack (buffer, ptr);               // then pack the rest
+        ptr = attribute.pack (buffer, ptr);// then pack the rest
     }
     return ptr;
   }
