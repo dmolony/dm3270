@@ -13,6 +13,8 @@ import javafx.scene.paint.Color;
 
 public final class ScreenPosition
 {
+  private static String[] charString = new String[256];
+
   // GraphicsEscape characters
   private static final byte TOP_LEFT = (byte) 0xC5;
   private static final byte TOP_RIGHT = (byte) 0xD5;
@@ -23,8 +25,6 @@ public final class ScreenPosition
 
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();
-
-  private static String[] charString = new String[256];
 
   public final int position;
   private byte value;
@@ -38,11 +38,11 @@ public final class ScreenPosition
 
   static
   {
-    for (int i = 0; i < 256; i++)
-    {
+    // build strings to use in the screen-drawing routine
+    for (int i = 0; i < 33; i++)
+      charString[i] = " ";
+    for (int i = 33; i < 256; i++)
       charString[i] = (char) i + "";
-      //      System.out.printf ("%3d  %s%n", i, charString[i]);
-    }
   }
 
   public ScreenPosition (int position, GraphicsContext gc, CharacterSize characterSize,
@@ -152,7 +152,7 @@ public final class ScreenPosition
 
   public String getCharString ()
   {
-    if (isStartField () || (value <= 32 && value >= 0))
+    if (isStartField ())
       return " ";
 
     if (isGraphics)
@@ -269,7 +269,6 @@ public final class ScreenPosition
 
     if (screenContext.highIntensity)
     {
-      //      System.out.println ("intensified : " + getChar ());
       if (foregroundColor == Color.WHITESMOKE)
         foregroundColor = Color.WHITE;
     }
@@ -281,8 +280,7 @@ public final class ScreenPosition
       else
       {
         gc.setFill (foregroundColor);
-        //        gc.fillText (getChar () + "", x, y + ascent);// can we speed this up?
-        gc.fillText (getCharString (), x, y + ascent);// can we speed this up?
+        gc.fillText (getCharString (), x, y + ascent);
 
         if (screenContext.underscore)
         {
