@@ -82,7 +82,6 @@ public class Transfer
   {
     inboundBuffer = buffer;
     inboundBufferPtr = 0;
-    //    System.out.println ("got buffer " + buffer.length);
   }
 
   DataHeader getDataHeader ()
@@ -116,13 +115,12 @@ public class Transfer
 
   public boolean isInbound ()
   {
-    System.out.printf ("[%s]%n", direction);
-    return "put".equals (direction);
+    return transferType == TransferType.RECEIVE;
   }
 
   public boolean isOutbound ()
   {
-    return "get".equals (direction);
+    return transferType == TransferType.SEND;
   }
 
   boolean hasMoreData ()
@@ -137,6 +135,7 @@ public class Transfer
     return inboundBuffer.length - inboundBufferPtr;
   }
 
+  // optional step to use the TSO command that started the transfer
   public void setTransferCommand (String command)
   {
     command = command.toLowerCase ().trim ();

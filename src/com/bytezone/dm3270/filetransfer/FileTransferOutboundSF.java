@@ -177,7 +177,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       replyBuffer = getReplyBuffer (replyBufferLength, (byte) 0x46, (byte) 0x05);
 
-      RecordNumber recordNumber = new RecordNumber (transfer.dataBuffers.size () + 1);
+      RecordNumber recordNumber = new RecordNumber (transfer.size ());
       ptr = recordNumber.pack (replyBuffer, ptr);
       ptr = dataHeader.pack (replyBuffer, ptr);
 

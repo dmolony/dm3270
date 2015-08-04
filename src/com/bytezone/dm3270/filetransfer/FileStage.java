@@ -55,7 +55,7 @@ public class FileStage extends Stage
 
   public void addTransfer (Transfer transfer)
   {
-    if (transfer.isData ())
+    if (transfer.isData () && transfer.isOutbound ())
     {
       transfers.add (transfer);
       Platform.runLater ( () -> addBuffer (transfer));
@@ -82,9 +82,15 @@ public class FileStage extends Stage
   // called from FileTransferOutboundSF.processOpen()
   public Transfer openTransfer (FileTransferOutboundSF transferRecord)
   {
-    //    if (currentTransfer != null)
-    //      addTransfer (currentTransfer);
-    assert currentTransfer == null;
+    if (currentTransfer != null)
+    {
+      //      addTransfer (currentTransfer);
+      System.out.println ("Current transfer:");
+      System.out.println (currentTransfer);
+      System.out.println ("New open:");
+      System.out.println (transferRecord);
+    }
+    //    assert currentTransfer == null;
 
     currentTransfer = new Transfer ();
     currentTransfer.add (transferRecord);
@@ -101,6 +107,7 @@ public class FileStage extends Stage
   }
 
   // called from FileTransferOutboundSF.processOpen()
+  // should be getCurrentBuffer() return byte[]
   public void setBuffer (Transfer transfer)
   {
     if (fileNode == null)
@@ -126,7 +133,7 @@ public class FileStage extends Stage
     Transfer transfer = currentTransfer;
     currentTransfer.add (transferRecord);
 
-    addTransfer (currentTransfer);
+    addTransfer (currentTransfer);// add to the file tree
     currentTransfer = null;
 
     return transfer;
