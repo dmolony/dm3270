@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 
 public final class ScreenPosition
 {
+  // screen display characters
   private static String[] charString = new String[256];
 
   // GraphicsEscape characters
@@ -39,8 +40,9 @@ public final class ScreenPosition
   static
   {
     // build strings to use in the screen-drawing routine
+    String space = " ";
     for (int i = 0; i < 33; i++)
-      charString[i] = " ";
+      charString[i] = space;
     for (int i = 33; i < 256; i++)
       charString[i] = (char) i + "";
   }
