@@ -11,9 +11,9 @@ import com.bytezone.dm3270.plugins.PluginField;
 public class Field implements Iterable<ScreenPosition>
 {
   private final Screen screen;
-  private final int startPosition;      // position of StartFieldAttribute
-  private final int endPosition;        // last data position of this field
-  private Field next, previous;         // unprotected fields
+  private final int startPosition;// position of StartFieldAttribute
+  private final int endPosition;// last data position of this field
+  private Field next, previous;// unprotected fields
 
   private final StartFieldAttribute startFieldAttribute;
   private final List<ScreenPosition> screenPositions = new ArrayList<> ();
@@ -158,7 +158,7 @@ public class Field implements Iterable<ScreenPosition>
 
   public void clear (boolean setModified)
   {
-    if (setModified)                    // don't reset any already set flags
+    if (setModified) // don't reset any already set flags
       setModified (true);
 
     for (int i = 1; i < screenPositions.size (); i++)
@@ -235,7 +235,7 @@ public class Field implements Iterable<ScreenPosition>
   {
     try
     {
-      erase ();                                 // sets the field to modified
+      erase ();// sets the field to modified
       setText (text.getBytes ("CP1047"));
       draw ();
     }

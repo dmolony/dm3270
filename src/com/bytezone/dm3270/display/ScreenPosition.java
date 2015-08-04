@@ -3,13 +3,13 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.orders.Order;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public final class ScreenPosition
 {
@@ -24,6 +24,8 @@ public final class ScreenPosition
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();
 
+  private static String[] charString = new String[256];
+
   public final int position;
   private byte value;
   private boolean isGraphics;
@@ -33,6 +35,15 @@ public final class ScreenPosition
 
   private final CharacterSize characterSize;
   private final GraphicsContext gc;
+
+  static
+  {
+    for (int i = 0; i < 256; i++)
+    {
+      charString[i] = (char) i + "";
+      //      System.out.printf ("%3d  %s%n", i, charString[i]);
+    }
+  }
 
   public ScreenPosition (int position, GraphicsContext gc, CharacterSize characterSize,
       ScreenContext base)
@@ -119,9 +130,10 @@ public final class ScreenPosition
     isGraphics = true;
   }
 
+  // only used by other classes
   public char getChar ()
   {
-    if (value == 0 || isStartField ())
+    if (isStartField () || (value <= 32 && value >= 0))
       return ' ';
 
     if (isGraphics)
@@ -136,6 +148,25 @@ public final class ScreenPosition
       }
 
     return (char) Utility.ebc2asc[value & 0xFF];
+  }
+
+  public String getCharString ()
+  {
+    if (isStartField () || (value <= 32 && value >= 0))
+      return " ";
+
+    if (isGraphics)
+      switch (value)
+      {
+        case HORIZONTAL_LINE:
+          return "-";
+        case VERTICAL_LINE:
+          return "|";
+        default:
+          return "*";
+      }
+
+    return charString[Utility.ebc2asc[value & 0xFF]];
   }
 
   public byte getByte ()
@@ -158,7 +189,7 @@ public final class ScreenPosition
       buffer[ptr++] = startFieldAttribute.getAttributeValue ();
     else if (order == Order.START_FIELD_EXTENDED)
     {
-      buffer[ptr++] = (byte) (attributes.size () + 1);    // includes the SFA
+      buffer[ptr++] = (byte) (attributes.size () + 1);// includes the SFA
       ptr = startFieldAttribute.pack (buffer, ptr);
       for (Attribute attribute : attributes)
         ptr = attribute.pack (buffer, ptr);
@@ -171,13 +202,13 @@ public final class ScreenPosition
 
   public int pack (byte[] buffer, int ptr, byte[] replyTypes)
   {
-    assert !isStartField ();
+    assert!isStartField ();
 
     for (Attribute attribute : attributes)
       if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
       {
         buffer[ptr++] = Order.SET_ATTRIBUTE;
-        ptr = attribute.pack (buffer, ptr);       // packs type/value pair
+        ptr = attribute.pack (buffer, ptr);// packs type/value pair
       }
 
     buffer[ptr++] = value;
@@ -195,7 +226,7 @@ public final class ScreenPosition
     Color foregroundColor = null;
     Color backgroundColor = null;
 
-    gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
+    gc.translate (0.5, 0.5);// move coordinate grid to use the center of pixels
 
     // Draw background
     if (isVisible)
@@ -250,7 +281,8 @@ public final class ScreenPosition
       else
       {
         gc.setFill (foregroundColor);
-        gc.fillText (getChar () + "", x, y + ascent);       // can we speed this up?
+        //        gc.fillText (getChar () + "", x, y + ascent);// can we speed this up?
+        gc.fillText (getCharString (), x, y + ascent);// can we speed this up?
 
         if (screenContext.underscore)
         {
@@ -259,7 +291,7 @@ public final class ScreenPosition
           gc.strokeLine (x + 1, y2, x + charWidth, y2);
         }
       }
-    gc.translate (-0.5, -0.5);        // restore coordinate grid
+    gc.translate (-0.5, -0.5);// restore coordinate grid
   }
 
   private void doGraphics (Color foregroundColor, Color backgroundColor,
@@ -283,27 +315,27 @@ public final class ScreenPosition
         break;
 
       case TOP_LEFT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + height);         // vertical
-        gc.strokeLine (x + dx, y + dy, x + width, y + dy);          // horizontal
+        gc.strokeLine (x + dx, y + dy, x + dx, y + height);// vertical
+        gc.strokeLine (x + dx, y + dy, x + width, y + dy);// horizontal
         break;
 
       case TOP_RIGHT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + height);         // vertical
-        gc.strokeLine (x, y + dy, x + dx, y + dy);                  // horizontal
+        gc.strokeLine (x + dx, y + dy, x + dx, y + height);// vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);// horizontal
         break;
 
       case BOTTOM_LEFT:
-        gc.strokeLine (x + dx, y, x + dx, y + dy);                  // vertical
-        gc.strokeLine (x + dx, y + dy, x + width, y + dy);          // horizontal
+        gc.strokeLine (x + dx, y, x + dx, y + dy);// vertical
+        gc.strokeLine (x + dx, y + dy, x + width, y + dy);// horizontal
         break;
 
       case BOTTOM_RIGHT:
-        gc.strokeLine (x + dx, y, x + dx, y + dy);                  // vertical
-        gc.strokeLine (x, y + dy, x + dx, y + dy);                  // horizontal
+        gc.strokeLine (x + dx, y, x + dx, y + dy);// vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);// horizontal
         break;
 
       default:
-        gc.fillText (getChar () + "", x, y + characterSize.getAscent ());
+        gc.fillText (getCharString (), x, y + characterSize.getAscent ());
         System.out.printf ("Unknown graphics character: %02X%n", value);
     }
 
@@ -330,7 +362,7 @@ public final class ScreenPosition
       for (Attribute attribute : attributes)
         text.append ("  " + attribute);
     }
-    text.append (", byte: " + getChar ());
+    text.append (", byte: " + getCharString ());
 
     return text.toString ();
   }

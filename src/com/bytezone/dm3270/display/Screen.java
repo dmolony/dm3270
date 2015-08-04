@@ -556,7 +556,7 @@ public class Screen extends Canvas implements DisplayScreen
       if (sp.isStartField ())
         text.append ("%");
       else
-        text.append (sp.getChar ());
+        text.append (sp.getCharString ());
       if (++pos % columns == 0)
         text.append ("\n");
     }
