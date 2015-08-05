@@ -27,13 +27,13 @@ public class FileTransferOutboundSF extends FileTransferSF
         if (data.length == 33)
         {
           setTransferContents (new String (data, 26, 7));// FT:MSG. or FT:DATA
-          setTransferType (TransferType.SEND);
+          setTransferType (TransferType.SEND);// outbound
         }
         else if (data.length == 39)
         {
           dataRecords.add (new RecordSize (data, 24));
           setTransferContents (new String (data, 32, 7));// FT:DATA
-          setTransferType (TransferType.RECEIVE);
+          setTransferType (TransferType.RECEIVE);// inbound
         }
         else
           System.out.printf ("Unrecognised data length: %d%n", data.length);
@@ -133,7 +133,9 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processOpen ()
   {
-    transfer = fileStage.openTransfer (this);
+    transfer = new Transfer ();
+    transfer.add (this);
+    fileStage.openTransfer (transfer);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
@@ -141,7 +143,9 @@ public class FileTransferOutboundSF extends FileTransferSF
     if (transfer.isData ())
     {
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
-      fileStage.setBuffer (transfer);
+
+      if (transfer.isInbound ())
+        transfer.setTransferBuffer (fileStage.getCurrentFileBuffer ());
     }
   }
 

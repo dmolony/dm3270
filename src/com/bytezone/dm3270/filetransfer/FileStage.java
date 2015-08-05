@@ -7,7 +7,6 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
-import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
 import com.bytezone.reporter.application.TreePanel.FileNode;
@@ -16,15 +15,14 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class FileStage extends Stage
-    implements TSOCommandStatusListener, NodeSelectionListener
+public class FileStage extends Stage implements TSOCommandStatusListener//, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
   private final WindowSaver windowSaver;
 
   private ReporterNode reporterNode;
-  private FileNode fileNode;
+  //  private FileNode fileNode;
 
   public FileStage (Preferences prefs)
   {
@@ -35,8 +33,8 @@ public class FileStage extends Stage
       reporterNode = new ReporterNode (prefs);
       setScene (new Scene (reporterNode.getRootNode (), 800, 592));
       reporterNode.getTreePanel ().getTree ().requestFocus ();
-      reporterNode.getTreePanel ().addNodeSelectionListener (this);
-      System.out.println ("connected");
+      //      reporterNode.getTreePanel ().addNodeSelectionListener (this);
+      //      System.out.println ("connected");
     }
     catch (NoClassDefFoundError e)
     {
@@ -80,47 +78,40 @@ public class FileStage extends Stage
     hide ();
   }
 
-  // called from FileTransferOutboundSF.processOpen()
-  public Transfer openTransfer (FileTransferOutboundSF transferRecord)
+  public byte[] getCurrentFileBuffer ()
   {
-    if (currentTransfer != null)
-    {
-      //      addTransfer (currentTransfer);
-      System.out.println ("Current transfer:");
-      System.out.println (currentTransfer);
-      System.out.println ("New open:");
-      System.out.println (transferRecord);
-    }
-    //    assert currentTransfer == null;
-
-    currentTransfer = new Transfer ();
-    currentTransfer.add (transferRecord);
-
-    //    System.out.printf ("Node %s inbound %s%n", reporterNode,
-    //                       currentTransfer.isInbound ());
-    //    if (reporterNode != null && currentTransfer.isInbound ())
-    //    {
-    //      System.out.println ("setting buffer");
-    //      currentTransfer.setTransferBuffer (fileNode.getBuffer ());
-    //    }
-
-    return currentTransfer;
-  }
-
-  // called from FileTransferOutboundSF.processOpen()
-  // should be getCurrentBuffer() return byte[]
-  public void setBuffer (Transfer transfer)
-  {
-    System.out.println (fileNode);
     FileNode fileNode = reporterNode.getSelectedNode ();
-
     if (fileNode == null)
+    {
       System.out.println ("No file selected to transfer");
+      return null;
+    }
     else
     {
       System.out.println ("File to transfer: " + fileNode);
-      transfer.setTransferBuffer (fileNode.getBuffer ());
+      return fileNode.getBuffer ();
     }
+
+  }
+
+  // called from FileTransferOutboundSF.processOpen()
+  // Set the current transfer so it is available to subsequent FileTransferOutboundSF
+  // commands.
+  public void openTransfer (Transfer transfer)
+  {
+    currentTransfer = transfer;
+
+    //    if (transfer.isData ())
+    //    {
+    //      FileNode fileNode = reporterNode.getSelectedNode ();
+    //      if (fileNode == null)
+    //        System.out.println ("No file selected to transfer");
+    //      else
+    //      {
+    //        System.out.println ("File to transfer: " + fileNode);
+    //        transfer.setTransferBuffer (fileNode.getBuffer ());
+    //      }
+    //    }
   }
 
   public Transfer getTransfer (FileTransferOutboundSF transferRecord)
@@ -155,11 +146,5 @@ public class FileStage extends Stage
   public void screenChanged (ScreenDetails screenDetails)
   {
     //    System.out.println (screenDetails);
-  }
-
-  @Override
-  public void nodeSelected (FileNode fileNode)
-  {
-    this.fileNode = fileNode;
   }
 }
