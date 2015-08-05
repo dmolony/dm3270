@@ -36,6 +36,7 @@ public class FileStage extends Stage
       setScene (new Scene (reporterNode.getRootNode (), 800, 592));
       reporterNode.getTreePanel ().getTree ().requestFocus ();
       reporterNode.getTreePanel ().addNodeSelectionListener (this);
+      System.out.println ("connected");
     }
     catch (NoClassDefFoundError e)
     {
@@ -110,10 +111,16 @@ public class FileStage extends Stage
   // should be getCurrentBuffer() return byte[]
   public void setBuffer (Transfer transfer)
   {
+    System.out.println (fileNode);
+    FileNode fileNode = reporterNode.getSelectedNode ();
+
     if (fileNode == null)
       System.out.println ("No file selected to transfer");
     else
+    {
+      System.out.println ("File to transfer: " + fileNode);
       transfer.setTransferBuffer (fileNode.getBuffer ());
+    }
   }
 
   public Transfer getTransfer (FileTransferOutboundSF transferRecord)
@@ -153,7 +160,6 @@ public class FileStage extends Stage
   @Override
   public void nodeSelected (FileNode fileNode)
   {
-    //    System.out.println (fileNode);
     this.fileNode = fileNode;
   }
 }
