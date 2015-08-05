@@ -22,26 +22,37 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       case 0x00:
         int ptr = 3;
-        for (int i = 0; i < 3; i++)
-        {
-          DataRecord dr = new DataRecord (data, ptr);
-          dataRecords.add (dr);
-          ptr += dr.length ();
-        }
+        setTransferType (TransferType.SEND);// default to send
+        DataRecord dataRecord = null;
 
-        if (data.length == 39)
+        while (ptr < data.length)
         {
-          DataRecord dr = new RecordSize (data, ptr);
-          dataRecords.add (dr);
-          ptr += dr.length ();
-          setTransferType (TransferType.RECEIVE);
-        }
-        else
-          setTransferType (TransferType.SEND);
+          switch (data[ptr])
+          {
+            case 0x01:
+            case 0x0A:
+            case 0x50:
+              dataRecord = new DataRecord (data, ptr);
+              break;
 
-        ContentsRecord cr = new ContentsRecord (data, ptr);
-        dataRecords.add (cr);
-        setTransferContents (cr);
+            case 0x03:
+              dataRecord = new ContentsRecord (data, ptr);
+              setTransferContents ((ContentsRecord) dataRecord);
+              break;
+
+            case 0x08:
+              dataRecord = new RecordSize (data, ptr);
+              setTransferType (TransferType.RECEIVE);
+              break;
+
+            default:
+              System.out.printf ("Unknown DataRecord: %02X%n", data[ptr]);
+              dataRecord = new DataRecord (data, ptr);
+              break;
+          }
+          dataRecords.add (dataRecord);
+          ptr += dataRecord.length ();
+        }
 
         break;
 

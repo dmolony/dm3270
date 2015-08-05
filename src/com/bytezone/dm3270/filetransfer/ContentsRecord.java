@@ -2,6 +2,7 @@ package com.bytezone.dm3270.filetransfer;
 
 import java.security.InvalidParameterException;
 
+import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 
 public class ContentsRecord extends DataRecord
@@ -14,9 +15,9 @@ public class ContentsRecord extends DataRecord
     super (data, offset);
 
     contents = new String (data, offset + 2, 7);
-    if (contents.equals ("FT:MSG "))
+    if ("FT:MSG ".equals (contents))
       transferContents = TransferContents.MSG;
-    else if (contents.equals ("FT:DATA"))
+    else if ("FT:DATA".equals (contents))
       transferContents = TransferContents.DATA;
     else
       throw new InvalidParameterException ();
@@ -25,6 +26,6 @@ public class ContentsRecord extends DataRecord
   @Override
   public String toString ()
   {
-    return String.format ("contents  : %s", contents);
+    return String.format ("contents  : %s (%s)", Utility.toHexString (data), contents);
   }
 }

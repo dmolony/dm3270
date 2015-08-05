@@ -38,12 +38,6 @@ public class FileTransferSF extends StructuredField
 
   protected void setTransferContents (ContentsRecord contentsRecord)
   {
-    //    if ("FT:DATA".equals (contentsRecord))
-    //      transferContents = TransferContents.DATA;
-    //    else if ("FT:MSG ".equals (contentsRecord))
-    //      transferContents = TransferContents.MSG;
-    //    else
-    //      throw new InvalidParameterException ();
     transferContents = contentsRecord.transferContents;
   }
 

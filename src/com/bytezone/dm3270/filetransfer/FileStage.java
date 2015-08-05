@@ -24,7 +24,6 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
   private final WindowSaver windowSaver;
 
   private ReporterNode reporterNode;
-  //  private FileNode fileNode;
 
   public FileStage (Preferences prefs)
   {
@@ -35,8 +34,6 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
       reporterNode = new ReporterNode (prefs);
       setScene (new Scene (reporterNode.getRootNode (), 800, 592));
       reporterNode.getTreePanel ().getTree ().requestFocus ();
-      //      reporterNode.getTreePanel ().addNodeSelectionListener (this);
-      //      System.out.println ("connected");
     }
     catch (NoClassDefFoundError e)
     {
@@ -56,7 +53,6 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
 
   public void addTransfer (Transfer transfer)
   {
-    //    if (transfer.isData () && transfer.isOutbound ())
     if (transfer.getTransferContents () == TransferContents.DATA
         && transfer.getTransferType () == TransferType.SEND)
     {
@@ -95,27 +91,14 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
       System.out.println ("File to transfer: " + fileNode);
       return fileNode.getBuffer ();
     }
-
   }
 
   // called from FileTransferOutboundSF.processOpen()
-  // Set the current transfer so it is available to subsequent FileTransferOutboundSF
+  // Save the current transfer so it is available to subsequent FileTransferOutboundSF
   // commands.
   public void openTransfer (Transfer transfer)
   {
     currentTransfer = transfer;
-
-    //    if (transfer.isData ())
-    //    {
-    //      FileNode fileNode = reporterNode.getSelectedNode ();
-    //      if (fileNode == null)
-    //        System.out.println ("No file selected to transfer");
-    //      else
-    //      {
-    //        System.out.println ("File to transfer: " + fileNode);
-    //        transfer.setTransferBuffer (fileNode.getBuffer ());
-    //      }
-    //    }
   }
 
   public Transfer getTransfer (FileTransferOutboundSF transferRecord)
