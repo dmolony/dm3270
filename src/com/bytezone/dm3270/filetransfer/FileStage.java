@@ -7,6 +7,8 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
 import com.bytezone.reporter.application.TreePanel.FileNode;
@@ -54,7 +56,9 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
 
   public void addTransfer (Transfer transfer)
   {
-    if (transfer.isData () && transfer.isOutbound ())
+    //    if (transfer.isData () && transfer.isOutbound ())
+    if (transfer.getTransferContents () == TransferContents.DATA
+        && transfer.getTransferType () == TransferType.SEND)
     {
       transfers.add (transfer);
       Platform.runLater ( () -> addBuffer (transfer));

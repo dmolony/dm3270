@@ -103,24 +103,34 @@ public class Transfer
     return dataBuffers.size ();
   }
 
-  public boolean isData ()
+  //  public boolean isData ()
+      //  {
+      //    return transferContents == TransferContents.DATA;
+      //  }
+      //
+      //  public boolean isMessage ()
+      //  {
+      //    return transferContents == TransferContents.MSG;
+      //  }
+      //
+      //  public boolean isInbound ()
+      //  {
+      //    return transferType == TransferType.RECEIVE;
+      //  }
+      //
+      //  public boolean isOutbound ()
+      //  {
+      //    return transferType == TransferType.SEND;
+      //  }
+
+  TransferContents getTransferContents ()
   {
-    return transferContents == TransferContents.DATA;
+    return transferContents;
   }
 
-  public boolean isMessage ()
+  TransferType getTransferType ()
   {
-    return transferContents == TransferContents.MSG;
-  }
-
-  public boolean isInbound ()
-  {
-    return transferType == TransferType.RECEIVE;
-  }
-
-  public boolean isOutbound ()
-  {
-    return transferType == TransferType.SEND;
+    return transferType;
   }
 
   boolean hasMoreData ()

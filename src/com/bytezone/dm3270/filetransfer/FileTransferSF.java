@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.filetransfer;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,14 +36,15 @@ public class FileTransferSF extends StructuredField
     this.direction = direction;
   }
 
-  protected void setTransferContents (String text)
+  protected void setTransferContents (ContentsRecord contentsRecord)
   {
-    if ("FT:DATA".equals (text))
-      transferContents = TransferContents.DATA;
-    else if ("FT:MSG ".equals (text))
-      transferContents = TransferContents.MSG;
-    else
-      throw new InvalidParameterException ();
+    //    if ("FT:DATA".equals (contentsRecord))
+    //      transferContents = TransferContents.DATA;
+    //    else if ("FT:MSG ".equals (contentsRecord))
+    //      transferContents = TransferContents.MSG;
+    //    else
+    //      throw new InvalidParameterException ();
+    transferContents = contentsRecord.transferContents;
   }
 
   protected void setTransferType (TransferType transferType)
@@ -84,9 +84,6 @@ public class FileTransferSF extends StructuredField
 
     for (DataRecord dataRecord : dataRecords)
       text.append (String.format ("%n   %s", dataRecord));
-
-    if (transferContents != null)
-      text.append (String.format ("%n   transfer  : %s", transferContents));
 
     if (dataHeader != null)
     {

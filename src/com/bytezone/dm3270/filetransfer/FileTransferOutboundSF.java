@@ -3,6 +3,7 @@ package com.bytezone.dm3270.filetransfer;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 
 public class FileTransferOutboundSF extends FileTransferSF
@@ -20,23 +21,27 @@ public class FileTransferOutboundSF extends FileTransferSF
       // OPEN for SEND or RECEIVE
 
       case 0x00:
-        dataRecords.add (new DataRecord (data, 3));
-        dataRecords.add (new DataRecord (data, 9));
-        dataRecords.add (new DataRecord (data, 19));
-
-        if (data.length == 33)
+        int ptr = 3;
+        for (int i = 0; i < 3; i++)
         {
-          setTransferContents (new String (data, 26, 7));// FT:MSG. or FT:DATA
-          setTransferType (TransferType.SEND);// outbound
+          DataRecord dr = new DataRecord (data, ptr);
+          dataRecords.add (dr);
+          ptr += dr.length ();
         }
-        else if (data.length == 39)
+
+        if (data.length == 39)
         {
-          dataRecords.add (new RecordSize (data, 24));
-          setTransferContents (new String (data, 32, 7));// FT:DATA
-          setTransferType (TransferType.RECEIVE);// inbound
+          DataRecord dr = new RecordSize (data, ptr);
+          dataRecords.add (dr);
+          ptr += dr.length ();
+          setTransferType (TransferType.RECEIVE);
         }
         else
-          System.out.printf ("Unrecognised data length: %d%n", data.length);
+          setTransferType (TransferType.SEND);
+
+        ContentsRecord cr = new ContentsRecord (data, ptr);
+        dataRecords.add (cr);
+        setTransferContents (cr);
 
         break;
 
@@ -140,11 +145,13 @@ public class FileTransferOutboundSF extends FileTransferSF
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
 
-    if (transfer.isData ())
+    //    if (transfer.isData ())
+    if (transfer.getTransferContents () == TransferContents.DATA)
     {
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
 
-      if (transfer.isInbound ())
+      //      if (transfer.isInbound ())
+      if (transfer.getTransferType () == TransferType.RECEIVE)
         transfer.setTransferBuffer (fileStage.getCurrentFileBuffer ());
     }
   }
@@ -217,7 +224,8 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       reply = new ReadStructuredFieldCommand (buffer, screen);
 
-      if (transfer.isMessage ()) // message transfers don't close
+      //      if (transfer.isMessage ()) // message transfers don't close
+      if (transfer.getTransferContents () == TransferContents.MSG)
         fileStage.closeTransfer ();
     }
   }
