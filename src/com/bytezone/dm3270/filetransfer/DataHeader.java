@@ -10,27 +10,6 @@ public class DataHeader
   private final byte[] header;
   private final byte[] buffer;
 
-  public DataHeader (int bufferLength, boolean compressed)
-  {
-    this.compressed = compressed;
-    header = new byte[HEADER_LENGTH];
-    buffer = new byte[bufferLength];
-
-    if (compressed)
-    {
-      header[0] = (byte) 0x00;    // no idea
-      header[1] = (byte) 0x00;    // no idea
-    }
-    else
-    {
-      header[0] = (byte) 0xC0;
-      header[1] = (byte) 0x80;
-    }
-
-    header[2] = 0x61;
-    Utility.packUnsignedShort (header.length + buffer.length, header, 3);
-  }
-
   public DataHeader (byte[] data, int offset)
   {
     compressed = data[offset] != (byte) 0xC0 || data[offset + 1] != (byte) 0x80;
@@ -42,6 +21,27 @@ public class DataHeader
 
     buffer = new byte[bufferLength];
     System.arraycopy (data, offset + HEADER_LENGTH, buffer, 0, buffer.length);
+  }
+
+  public DataHeader (int bufferLength, boolean compressed)
+  {
+    this.compressed = compressed;
+    header = new byte[HEADER_LENGTH];
+    buffer = new byte[bufferLength];
+
+    if (compressed)
+    {
+      header[0] = (byte) 0x00;// no idea
+      header[1] = (byte) 0x00;// no idea
+    }
+    else
+    {
+      header[0] = (byte) 0xC0;
+      header[1] = (byte) 0x80;
+    }
+
+    header[2] = 0x61;
+    Utility.packUnsignedShort (header.length + buffer.length, header, 3);
   }
 
   public int getBufferLength ()
