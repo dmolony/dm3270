@@ -8,7 +8,6 @@ import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
-  //  private int bufferNumber;
   private final FileStage fileStage;
 
   public FileTransferOutboundSF (byte[] buffer, int offset, int length, Screen screen)
