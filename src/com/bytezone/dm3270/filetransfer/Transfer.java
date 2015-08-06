@@ -51,7 +51,7 @@ public class Transfer
       transferType = outboundRecord.transferType;
   }
 
-  public int add (DataRecord dataRecord)
+  int add (DataRecord dataRecord)
   {
     if (dataRecords.contains (dataRecord))
       return dataRecords.indexOf (dataRecord) + 1;
@@ -62,7 +62,7 @@ public class Transfer
     return dataRecords.size ();
   }
 
-  public byte[] combineDataBuffers ()
+  byte[] combineDataBuffers ()
   {
     byte[] fullBuffer = new byte[dataLength];
 
@@ -74,7 +74,7 @@ public class Transfer
   }
 
   // called from FileStage.setBuffer()
-  public void setTransferBuffer (byte[] buffer)
+      void setTransferBuffer (byte[] buffer)
   {
     inboundBuffer = buffer;
     inboundBufferPtr = 0;
@@ -93,7 +93,7 @@ public class Transfer
     return dataHeader;
   }
 
-  public int size ()
+  int size ()
   {
     return dataRecords.size ();
   }
@@ -113,7 +113,7 @@ public class Transfer
     return getBytesLeft () > 0;
   }
 
-  public int getBytesLeft ()
+  int getBytesLeft ()
   {
     if (inboundBuffer == null)
       return 0;
@@ -121,7 +121,7 @@ public class Transfer
   }
 
   // optional step to use the TSO command that started the transfer
-  public void setTransferCommand (String command)
+      void setTransferCommand (String command)
   {
     command = command.toLowerCase ().trim ();
     if (command.startsWith ("tso "))
@@ -175,7 +175,7 @@ public class Transfer
     }
   }
 
-  public String getFileName ()
+  String getFileName ()
   {
     return fileName;
   }
