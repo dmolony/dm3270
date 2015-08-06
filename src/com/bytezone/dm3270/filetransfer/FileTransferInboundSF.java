@@ -26,7 +26,7 @@ public class FileTransferInboundSF extends FileTransferSF
         if (subtype == 0x05) // transfer buffer to host
         {
           transferRecords.add (new RecordNumber (data, 3));
-          transferRecords.add (new DataHeader (data, 9));
+          transferRecords.add (new DataRecord (data, 9));
         }
         else if (subtype == 0x08) // no data
         {

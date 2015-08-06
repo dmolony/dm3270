@@ -66,15 +66,48 @@ public class FileTransferOutboundSF extends FileTransferSF
       // Receiving data
 
       case 0x47:
-        if (subtype == 0x11) // always before 0x04
-          transferRecords.add (new TransferRecord (data, 3));
-        else if (subtype == 0x04) // message or transfer buffer
-          transferRecords.add (new DataHeader (data, 3));
-        else
+        //        if (subtype == 0x11) // always before 0x04
+        //          transferRecords.add (new TransferRecord (data, 3));
+        //        else if (subtype == 0x04) // message or transfer buffer
+        //          transferRecords.add (new DataHeader (data, 3));
+        //        else
+        //        {
+        //          if (data.length > 3)
+        //            transferRecords.add (new TransferRecord (data, 3));
+        //          System.out.println ("Unknown subtype");
+        //        }
+        ptr = 3;
+        while (ptr < data.length)
         {
-          if (data.length > 3)
-            transferRecords.add (new TransferRecord (data, 3));
-          System.out.println ("Unknown subtype");
+          switch (data[ptr])
+          {
+            case 0x01:
+              //             case 0x0A:
+              //             case 0x50:
+              transferRecord = new TransferRecord (data, ptr);
+              break;
+
+            case (byte) 0xC0:
+              transferRecord = new DataRecord (data, ptr);
+              break;
+
+            //             case 0x03:
+            //               transferRecord = new ContentsRecord (data, ptr);
+            //               setTransferContents ((ContentsRecord) transferRecord);
+            //               break;
+
+            //             case 0x08:
+            //               transferRecord = new RecordSize (data, ptr);
+            //               setTransferType (TransferType.RECEIVE);
+            //               break;
+
+            default:
+              System.out.printf ("Unknown DataRecord: %02X%n", data[ptr]);
+              transferRecord = new TransferRecord (data, ptr);
+              break;
+          }
+          transferRecords.add (transferRecord);
+          ptr += transferRecord.length ();
         }
         break;
 
@@ -181,10 +214,10 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     if (transfer.hasMoreData ()) // have data to send
     {
-      DataHeader dataHeader = transfer.getDataHeader ();
+      DataRecord dataHeader = transfer.getDataHeader ();
 
       ptr = 6;
-      int replyBufferLength = ptr + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH
+      int replyBufferLength = ptr + RecordNumber.RECORD_LENGTH + DataRecord.HEADER_LENGTH
           + dataHeader.getBufferLength ();
 
       // if CRLF option add 1 to length for the ctrl-z
@@ -221,8 +254,8 @@ public class FileTransferOutboundSF extends FileTransferSF
       int length = ptr + RecordNumber.RECORD_LENGTH;
       byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
 
-      DataHeader dataHeader =
-          (DataHeader) transferRecords.get (transferRecords.size () - 1);
+      DataRecord dataHeader =
+          (DataRecord) transferRecords.get (transferRecords.size () - 1);
       bufferNumber = transfer.add (dataHeader);
       RecordNumber recordNumber = new RecordNumber (bufferNumber);
       ptr = recordNumber.pack (buffer, ptr);

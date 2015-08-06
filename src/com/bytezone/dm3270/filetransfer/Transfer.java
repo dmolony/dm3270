@@ -25,7 +25,7 @@ public class Transfer
   private String units;
 
   List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
-  List<DataHeader> dataHeaders = new ArrayList<> ();
+  List<DataRecord> dataRecords = new ArrayList<> ();
   int dataLength;
 
   byte[] inboundBuffer;
@@ -51,15 +51,15 @@ public class Transfer
       transferType = outboundRecord.transferType;
   }
 
-  public int add (DataHeader dataHeader)
+  public int add (DataRecord dataRecord)
   {
-    if (dataHeaders.contains (dataHeader))
-      return dataHeaders.indexOf (dataHeader) + 1;
+    if (dataRecords.contains (dataRecord))
+      return dataRecords.indexOf (dataRecord) + 1;
 
-    dataHeaders.add (dataHeader);
-    dataLength += dataHeader.getBufferLength ();
+    dataRecords.add (dataRecord);
+    dataLength += dataRecord.getBufferLength ();
 
-    return dataHeaders.size ();
+    return dataRecords.size ();
   }
 
   public byte[] combineDataBuffers ()
@@ -67,8 +67,8 @@ public class Transfer
     byte[] fullBuffer = new byte[dataLength];
 
     int ptr = 0;
-    for (DataHeader dataHeader : dataHeaders)
-      ptr = dataHeader.packBuffer (fullBuffer, ptr);
+    for (DataRecord dataRecord : dataRecords)
+      ptr = dataRecord.packBuffer (fullBuffer, ptr);
 
     return fullBuffer;
   }
@@ -80,13 +80,13 @@ public class Transfer
     inboundBufferPtr = 0;
   }
 
-  DataHeader getDataHeader ()
+  DataRecord getDataHeader ()
   {
     assert hasMoreData ();
 
     int buflen = Math.min (INBOUND_MAX_BUFFER_SIZE, getBytesLeft ());
-    DataHeader dataHeader =
-        new DataHeader (inboundBuffer, inboundBufferPtr, buflen, false);
+    DataRecord dataHeader =
+        new DataRecord (inboundBuffer, inboundBufferPtr, buflen, false);
     inboundBufferPtr += buflen;
     add (dataHeader);
 
@@ -95,7 +95,7 @@ public class Transfer
 
   public int size ()
   {
-    return dataHeaders.size ();
+    return dataRecords.size ();
   }
 
   TransferContents getTransferContents ()
@@ -189,9 +189,9 @@ public class Transfer
     text.append (String.format ("Type .......... %s", transferType));
 
     int bufno = 0;
-    for (DataHeader dataHeader : dataHeaders)
+    for (DataRecord dataRecord : dataRecords)
       text.append (String.format ("%n  Buffer %3d : %,d", bufno++,
-                                  dataHeader.getBufferLength ()));
+                                  dataRecord.getBufferLength ()));
 
     text.append (String.format ("%nTotal length .. %,d", dataLength));
     text.append (String.format ("%nDirection ..... %s", direction));

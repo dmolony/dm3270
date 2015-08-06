@@ -2,14 +2,14 @@ package com.bytezone.dm3270.filetransfer;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class DataHeader extends TransferRecord
+public class DataRecord extends TransferRecord
 {
   public static final byte HEADER_LENGTH = 5;
 
   private final boolean compressed;
   private final byte[] buffer;
 
-  public DataHeader (byte[] data, int offset)
+  public DataRecord (byte[] data, int offset)
   {
     super (HEADER_LENGTH);
 
@@ -22,7 +22,7 @@ public class DataHeader extends TransferRecord
     System.arraycopy (data, offset + HEADER_LENGTH, buffer, 0, buffer.length);
   }
 
-  public DataHeader (byte[] buffer, int offset, int length, boolean compressed)
+  public DataRecord (byte[] buffer, int offset, int length, boolean compressed)
   {
     super (HEADER_LENGTH);
 
