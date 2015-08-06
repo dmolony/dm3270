@@ -68,11 +68,7 @@ public class Transfer
 
     int ptr = 0;
     for (DataHeader dataHeader : dataHeaders)
-    {
-      byte[] buffer = dataHeader.getBuffer ();
-      System.arraycopy (buffer, 0, fullBuffer, ptr, buffer.length);
-      ptr += buffer.length;
-    }
+      ptr = dataHeader.packBuffer (fullBuffer, ptr);
 
     return fullBuffer;
   }
@@ -89,9 +85,8 @@ public class Transfer
     assert hasMoreData ();
 
     int buflen = Math.min (INBOUND_MAX_BUFFER_SIZE, getBytesLeft ());
-    DataHeader dataHeader = new DataHeader (buflen, false);
-    System.arraycopy (inboundBuffer, inboundBufferPtr, dataHeader.getBuffer (), 0,
-                      buflen);
+    DataHeader dataHeader =
+        new DataHeader (inboundBuffer, inboundBufferPtr, buflen, false);
     inboundBufferPtr += buflen;
     add (dataHeader);
 
@@ -102,26 +97,6 @@ public class Transfer
   {
     return dataHeaders.size ();
   }
-
-  //  public boolean isData ()
-      //  {
-      //    return transferContents == TransferContents.DATA;
-      //  }
-      //
-      //  public boolean isMessage ()
-      //  {
-      //    return transferContents == TransferContents.MSG;
-      //  }
-      //
-      //  public boolean isInbound ()
-      //  {
-      //    return transferType == TransferType.RECEIVE;
-      //  }
-      //
-      //  public boolean isOutbound ()
-      //  {
-      //    return transferType == TransferType.SEND;
-      //  }
 
   TransferContents getTransferContents ()
   {

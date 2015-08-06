@@ -3,7 +3,6 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
@@ -83,7 +82,7 @@ public class FileTransferSF extends StructuredField
     {
       text.append (String.format ("%n   %s", dataHeader));
       text.append ("\n\n");
-      text.append (Utility.toHex (dataHeader.getBuffer (), ebcdic));
+      text.append (dataHeader.getHexBuffer (ebcdic));
     }
 
     return text.toString ();

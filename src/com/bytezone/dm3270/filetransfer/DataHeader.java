@@ -23,11 +23,13 @@ public class DataHeader
     System.arraycopy (data, offset + HEADER_LENGTH, buffer, 0, buffer.length);
   }
 
-  public DataHeader (int bufferLength, boolean compressed)
+  public DataHeader (byte[] buffer, int offset, int length, boolean compressed)
   {
     this.compressed = compressed;
     header = new byte[HEADER_LENGTH];
-    buffer = new byte[bufferLength];
+
+    this.buffer = new byte[length];
+    System.arraycopy (buffer, offset, this.buffer, 0, length);
 
     if (compressed)
     {
@@ -41,7 +43,7 @@ public class DataHeader
     }
 
     header[2] = 0x61;
-    Utility.packUnsignedShort (header.length + buffer.length, header, 3);
+    Utility.packUnsignedShort (header.length + this.buffer.length, header, 3);
   }
 
   public int getBufferLength ()
@@ -49,25 +51,51 @@ public class DataHeader
     return buffer.length;
   }
 
-  public byte[] getHeader ()
-  {
-    return header;
-  }
-
-  public byte[] getBuffer ()
-  {
-    return buffer;
-  }
-
   public int pack (byte[] buffer, int ptr)
   {
     System.arraycopy (header, 0, buffer, ptr, header.length);
     ptr += header.length;
 
+    return packBuffer (buffer, ptr);
+  }
+
+  public int packBuffer (byte[] buffer, int ptr)
+  {
     System.arraycopy (this.buffer, 0, buffer, ptr, this.buffer.length);
     ptr += this.buffer.length;
-
     return ptr;
+  }
+
+  public String getHexBuffer (boolean ebcdic)
+  {
+    return Utility.toHex (buffer, ebcdic);
+  }
+
+  public boolean checkEbcdic ()
+  {
+    return checkEbcdic (buffer);
+  }
+
+  protected boolean checkEbcdic (byte[] data)
+  {
+    return checkEbcdic (data, 0, data.length);
+  }
+
+  protected boolean checkEbcdic (byte[] data, int offset, int length)
+  {
+    int ascii = 0;
+    int ebcdic = 0;
+
+    while (length > 0)
+    {
+      if (data[offset] == 0x20)
+        ascii++;
+      else if (data[offset] == 0x40)
+        ebcdic++;
+      length--;
+      offset++;
+    }
+    return ebcdic > ascii;
   }
 
   @Override

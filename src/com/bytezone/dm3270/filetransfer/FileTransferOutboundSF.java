@@ -71,7 +71,7 @@ public class FileTransferOutboundSF extends FileTransferSF
         else if (subtype == 0x04) // message or transfer buffer
         {
           dataHeader = new DataHeader (data, 3);
-          ebcdic = checkEbcdic (dataHeader.getBuffer ());
+          ebcdic = dataHeader.checkEbcdic ();
         }
         else
         {
@@ -154,12 +154,9 @@ public class FileTransferOutboundSF extends FileTransferSF
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
 
-    //    if (transfer.isData ())
     if (transfer.getTransferContents () == TransferContents.DATA)
     {
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
-
-      //      if (transfer.isInbound ())
       if (transfer.getTransferType () == TransferType.RECEIVE)
         transfer.setTransferBuffer (fileStage.getCurrentFileBuffer ());
     }
