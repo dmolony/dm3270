@@ -8,7 +8,7 @@ import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
-  private int bufferNumber;
+  //  private int bufferNumber;
   private final FileStage fileStage;
 
   public FileTransferOutboundSF (byte[] buffer, int offset, int length, Screen screen)
@@ -16,121 +16,42 @@ public class FileTransferOutboundSF extends FileTransferSF
     super (buffer, offset, length, screen, "Outbound");
     fileStage = screen.getFileStage ();
 
-    switch (rectype)
+    int ptr = 3;
+    transferType = TransferType.SEND;
+    TransferRecord transferRecord = null;
+
+    while (ptr < data.length)
     {
-      // OPEN for SEND or RECEIVE
+      switch (data[ptr])
+      {
+        case 0x01:
+        case 0x0A:
+        case 0x50:
+          transferRecord = new TransferRecord (data, ptr);
+          break;
 
-      case 0x00:
-        int ptr = 3;
-        setTransferType (TransferType.SEND);// default to send
-        TransferRecord transferRecord = null;
+        case 0x03:
+          transferRecord = new ContentsRecord (data, ptr);
+          transferContents = ((ContentsRecord) transferRecord).transferContents;
+          break;
 
-        while (ptr < data.length)
-        {
-          switch (data[ptr])
-          {
-            case 0x01:
-            case 0x0A:
-            case 0x50:
-              transferRecord = new TransferRecord (data, ptr);
-              break;
+        case 0x08:
+          transferRecord = new RecordSize (data, ptr);
+          transferType = TransferType.RECEIVE;
+          break;
 
-            case 0x03:
-              transferRecord = new ContentsRecord (data, ptr);
-              setTransferContents ((ContentsRecord) transferRecord);
-              break;
+        case (byte) 0xC0:
+          transferRecord = new DataRecord (data, ptr);
+          break;
 
-            case 0x08:
-              transferRecord = new RecordSize (data, ptr);
-              setTransferType (TransferType.RECEIVE);
-              break;
+        default:
+          System.out.printf ("Unknown DataRecord: %02X%n", data[ptr]);
+          transferRecord = new TransferRecord (data, ptr);
+          break;
+      }
 
-            default:
-              System.out.printf ("Unknown DataRecord: %02X%n", data[ptr]);
-              transferRecord = new TransferRecord (data, ptr);
-              break;
-          }
-          transferRecords.add (transferRecord);
-          ptr += transferRecord.length ();
-        }
-
-        break;
-
-      // CLOSE
-
-      case 0x41:
-        if (data.length != 3)
-          System.out.printf ("Unrecognised data length: %d%n", data.length);
-        break;
-
-      // Receiving data
-
-      case 0x47:
-        //        if (subtype == 0x11) // always before 0x04
-        //          transferRecords.add (new TransferRecord (data, 3));
-        //        else if (subtype == 0x04) // message or transfer buffer
-        //          transferRecords.add (new DataHeader (data, 3));
-        //        else
-        //        {
-        //          if (data.length > 3)
-        //            transferRecords.add (new TransferRecord (data, 3));
-        //          System.out.println ("Unknown subtype");
-        //        }
-        ptr = 3;
-        while (ptr < data.length)
-        {
-          switch (data[ptr])
-          {
-            case 0x01:
-              //             case 0x0A:
-              //             case 0x50:
-              transferRecord = new TransferRecord (data, ptr);
-              break;
-
-            case (byte) 0xC0:
-              transferRecord = new DataRecord (data, ptr);
-              break;
-
-            //             case 0x03:
-            //               transferRecord = new ContentsRecord (data, ptr);
-            //               setTransferContents ((ContentsRecord) transferRecord);
-            //               break;
-
-            //             case 0x08:
-            //               transferRecord = new RecordSize (data, ptr);
-            //               setTransferType (TransferType.RECEIVE);
-            //               break;
-
-            default:
-              System.out.printf ("Unknown DataRecord: %02X%n", data[ptr]);
-              transferRecord = new TransferRecord (data, ptr);
-              break;
-          }
-          transferRecords.add (transferRecord);
-          ptr += transferRecord.length ();
-        }
-        break;
-
-      // Sending data
-
-      case 0x45:
-        transferRecords.add (new TransferRecord (data, 3));
-        transferRecords.add (new TransferRecord (data, 8));
-
-        if (data.length != 13)
-          System.out.printf ("Unrecognised data length: %d%n", data.length);
-        break;
-
-      case 0x46:
-        transferRecords.add (new TransferRecord (data, 3));
-
-        if (data.length != 7)
-          System.out.printf ("Unrecognised data length: %d%n", data.length);
-        break;
-
-      default:
-        transferRecords.add (new TransferRecord (data, 3));
-        System.out.printf ("Unknown type: %02X%n", rectype);
+      transferRecords.add (transferRecord);
+      ptr += transferRecord.length ();
     }
 
     if (debug)
@@ -254,9 +175,9 @@ public class FileTransferOutboundSF extends FileTransferSF
       int length = ptr + RecordNumber.RECORD_LENGTH;
       byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
 
-      DataRecord dataHeader =
+      DataRecord dataRecord =
           (DataRecord) transferRecords.get (transferRecords.size () - 1);
-      bufferNumber = transfer.add (dataHeader);
+      int bufferNumber = transfer.add (dataRecord);
       RecordNumber recordNumber = new RecordNumber (bufferNumber);
       ptr = recordNumber.pack (buffer, ptr);
 

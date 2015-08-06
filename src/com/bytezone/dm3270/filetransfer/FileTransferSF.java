@@ -33,15 +33,10 @@ public class FileTransferSF extends StructuredField
     this.direction = direction;
   }
 
-  protected void setTransferContents (ContentsRecord contentsRecord)
-  {
-    transferContents = contentsRecord.transferContents;
-  }
-
-  protected void setTransferType (TransferType transferType)
-  {
-    this.transferType = transferType;
-  }
+  //  protected void setTransferContents (ContentsRecord contentsRecord)
+  //  {
+  //    transferContents = contentsRecord.transferContents;
+  //  }
 
   @Override
   public String toString ()
