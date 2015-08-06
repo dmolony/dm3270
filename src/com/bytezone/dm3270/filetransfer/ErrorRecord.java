@@ -2,7 +2,7 @@ package com.bytezone.dm3270.filetransfer;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class ErrorRecord extends DataRecord
+public class ErrorRecord extends TransferRecord
 {
   public static final int EOF = 0x2200;
   public static final int RECORD_LENGTH = 4;

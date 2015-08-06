@@ -14,7 +14,7 @@ public class FileTransferSF extends StructuredField
   protected final String direction;
   protected final byte rectype;
   protected final byte subtype;
-  protected final List<DataRecord> dataRecords = new ArrayList<> ();
+  protected final List<TransferRecord> transferRecords = new ArrayList<> ();
 
   protected DataHeader dataHeader;
   protected boolean ebcdic;
@@ -76,8 +76,8 @@ public class FileTransferSF extends StructuredField
     text.append (String.format ("   type      : %02X%n", rectype));
     text.append (String.format ("   subtype   : %02X", subtype));
 
-    for (DataRecord dataRecord : dataRecords)
-      text.append (String.format ("%n   %s", dataRecord));
+    for (TransferRecord transferRecord : transferRecords)
+      text.append (String.format ("%n   %s", transferRecord));
 
     if (dataHeader != null)
     {

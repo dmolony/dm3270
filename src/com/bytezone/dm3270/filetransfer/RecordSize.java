@@ -2,7 +2,7 @@ package com.bytezone.dm3270.filetransfer;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class RecordSize extends DataRecord
+public class RecordSize extends TransferRecord
 {
   int recordSize1;
   int recordSize2;

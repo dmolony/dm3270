@@ -5,7 +5,7 @@ import java.security.InvalidParameterException;
 import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 
-public class ContentsRecord extends DataRecord
+public class ContentsRecord extends TransferRecord
 {
   final String contents;
   final TransferContents transferContents;

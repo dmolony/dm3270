@@ -23,7 +23,7 @@ public class FileTransferOutboundSF extends FileTransferSF
       case 0x00:
         int ptr = 3;
         setTransferType (TransferType.SEND);// default to send
-        DataRecord dataRecord = null;
+        TransferRecord transferRecord = null;
 
         while (ptr < data.length)
         {
@@ -32,26 +32,26 @@ public class FileTransferOutboundSF extends FileTransferSF
             case 0x01:
             case 0x0A:
             case 0x50:
-              dataRecord = new DataRecord (data, ptr);
+              transferRecord = new TransferRecord (data, ptr);
               break;
 
             case 0x03:
-              dataRecord = new ContentsRecord (data, ptr);
-              setTransferContents ((ContentsRecord) dataRecord);
+              transferRecord = new ContentsRecord (data, ptr);
+              setTransferContents ((ContentsRecord) transferRecord);
               break;
 
             case 0x08:
-              dataRecord = new RecordSize (data, ptr);
+              transferRecord = new RecordSize (data, ptr);
               setTransferType (TransferType.RECEIVE);
               break;
 
             default:
               System.out.printf ("Unknown DataRecord: %02X%n", data[ptr]);
-              dataRecord = new DataRecord (data, ptr);
+              transferRecord = new TransferRecord (data, ptr);
               break;
           }
-          dataRecords.add (dataRecord);
-          ptr += dataRecord.length ();
+          transferRecords.add (transferRecord);
+          ptr += transferRecord.length ();
         }
 
         break;
@@ -67,7 +67,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       case 0x47:
         if (subtype == 0x11) // always before 0x04
-          dataRecords.add (new DataRecord (data, 3));
+          transferRecords.add (new TransferRecord (data, 3));
         else if (subtype == 0x04) // message or transfer buffer
         {
           dataHeader = new DataHeader (data, 3);
@@ -76,7 +76,7 @@ public class FileTransferOutboundSF extends FileTransferSF
         else
         {
           if (data.length > 3)
-            dataRecords.add (new DataRecord (data, 3));
+            transferRecords.add (new TransferRecord (data, 3));
           System.out.println ("Unknown subtype");
         }
         break;
@@ -84,22 +84,22 @@ public class FileTransferOutboundSF extends FileTransferSF
       // Sending data
 
       case 0x45:
-        dataRecords.add (new DataRecord (data, 3));
-        dataRecords.add (new DataRecord (data, 8));
+        transferRecords.add (new TransferRecord (data, 3));
+        transferRecords.add (new TransferRecord (data, 8));
 
         if (data.length != 13)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       case 0x46:
-        dataRecords.add (new DataRecord (data, 3));
+        transferRecords.add (new TransferRecord (data, 3));
 
         if (data.length != 7)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
         break;
 
       default:
-        dataRecords.add (new DataRecord (data, 3));
+        transferRecords.add (new TransferRecord (data, 3));
         System.out.printf ("Unknown type: %02X%n", rectype);
     }
 

@@ -2,7 +2,7 @@ package com.bytezone.dm3270.filetransfer;
 
 import com.bytezone.dm3270.application.Utility;
 
-public class RecordNumber extends DataRecord
+public class RecordNumber extends TransferRecord
 {
   public static final byte RECORD_LENGTH = 6;
   static final byte type = 0x63;

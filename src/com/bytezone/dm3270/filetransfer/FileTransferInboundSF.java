@@ -25,13 +25,13 @@ public class FileTransferInboundSF extends FileTransferSF
       case 0x46:
         if (subtype == 0x05)            // transfer buffer to host
         {
-          dataRecords.add (new RecordNumber (data, 3));
+          transferRecords.add (new RecordNumber (data, 3));
           dataHeader = new DataHeader (data, 9);
           ebcdic = checkEbcdic (dataHeader.getBuffer ());
         }
         else if (subtype == 0x08)       // no data
         {
-          dataRecords.add (new ErrorRecord (data, 3));
+          transferRecords.add (new ErrorRecord (data, 3));
           if (data.length != 7)
             System.out.printf ("Unrecognised data length: %d%n", data.length);
         }
@@ -41,7 +41,7 @@ public class FileTransferInboundSF extends FileTransferSF
 
       case 0x47:                        // acknowledge DATA received
         // subtype 0x05
-        dataRecords.add (new RecordNumber (data, 3));
+        transferRecords.add (new RecordNumber (data, 3));
 
         if (data.length != 9)
           System.out.printf ("Unrecognised data length: %d%n", data.length);
@@ -49,7 +49,7 @@ public class FileTransferInboundSF extends FileTransferSF
 
       default:
         if (data.length > 3)
-          dataRecords.add (new DataRecord (data, 3));
+          transferRecords.add (new TransferRecord (data, 3));
         System.out.printf ("Unknown type: %02X%n", rectype);
     }
 
