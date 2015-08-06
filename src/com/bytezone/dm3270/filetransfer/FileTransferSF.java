@@ -10,12 +10,12 @@ import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class FileTransferSF extends StructuredField
 {
-  protected final String direction;
+  protected final String direction;// inbound/outbound
   protected final byte rectype;
   protected final byte subtype;
   protected final List<TransferRecord> transferRecords = new ArrayList<> ();
 
-  protected TransferContents transferContents;// outbound only
+  protected TransferContents transferContents;
   protected TransferType transferType;
   protected Transfer transfer;
 
@@ -32,11 +32,6 @@ public class FileTransferSF extends StructuredField
     subtype = data[2];
     this.direction = direction;
   }
-
-  //  protected void setTransferContents (ContentsRecord contentsRecord)
-  //  {
-  //    transferContents = contentsRecord.transferContents;
-  //  }
 
   @Override
   public String toString ()
