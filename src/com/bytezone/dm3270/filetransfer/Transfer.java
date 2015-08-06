@@ -25,7 +25,7 @@ public class Transfer
   private String units;
 
   List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
-  List<DataHeader> dataBuffers = new ArrayList<> ();
+  List<DataHeader> dataHeaders = new ArrayList<> ();
   int dataLength;
 
   byte[] inboundBuffer;
@@ -53,13 +53,13 @@ public class Transfer
 
   public int add (DataHeader dataHeader)
   {
-    if (dataBuffers.contains (dataHeader))
-      return dataBuffers.indexOf (dataHeader) + 1;
+    if (dataHeaders.contains (dataHeader))
+      return dataHeaders.indexOf (dataHeader) + 1;
 
-    dataBuffers.add (dataHeader);
-    dataLength += dataHeader.size ();
+    dataHeaders.add (dataHeader);
+    dataLength += dataHeader.getBufferLength ();
 
-    return dataBuffers.size ();
+    return dataHeaders.size ();
   }
 
   public byte[] combineDataBuffers ()
@@ -67,7 +67,7 @@ public class Transfer
     byte[] fullBuffer = new byte[dataLength];
 
     int ptr = 0;
-    for (DataHeader dataHeader : dataBuffers)
+    for (DataHeader dataHeader : dataHeaders)
     {
       byte[] buffer = dataHeader.getBuffer ();
       System.arraycopy (buffer, 0, fullBuffer, ptr, buffer.length);
@@ -100,7 +100,7 @@ public class Transfer
 
   public int size ()
   {
-    return dataBuffers.size ();
+    return dataHeaders.size ();
   }
 
   //  public boolean isData ()
@@ -214,8 +214,9 @@ public class Transfer
     text.append (String.format ("Type .......... %s", transferType));
 
     int bufno = 0;
-    for (DataHeader buffer : dataBuffers)
-      text.append (String.format ("%n  Buffer %3d : %,d", bufno++, buffer.size ()));
+    for (DataHeader dataHeader : dataHeaders)
+      text.append (String.format ("%n  Buffer %3d : %,d", bufno++,
+                                  dataHeader.getBufferLength ()));
 
     text.append (String.format ("%nTotal length .. %,d", dataLength));
     text.append (String.format ("%nDirection ..... %s", direction));

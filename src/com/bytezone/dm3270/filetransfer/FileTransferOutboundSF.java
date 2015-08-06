@@ -67,9 +67,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       case 0x47:
         if (subtype == 0x11) // always before 0x04
-        {
           dataRecords.add (new DataRecord (data, 3));
-        }
         else if (subtype == 0x04) // message or transfer buffer
         {
           dataHeader = new DataHeader (data, 3);
@@ -193,7 +191,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       ptr = 6;
       int replyBufferLength = ptr + RecordNumber.RECORD_LENGTH + DataHeader.HEADER_LENGTH
-          + dataHeader.size ();
+          + dataHeader.getBufferLength ();
 
       // if CRLF option add 1 to length for the ctrl-z
 

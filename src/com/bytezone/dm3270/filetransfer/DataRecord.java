@@ -6,18 +6,18 @@ public class DataRecord
 {
   final byte[] data;
 
-  protected DataRecord (byte type, int length)
-  {
-    this.data = new byte[length];
-    data[0] = type;
-    data[1] = (byte) data.length;
-  }
-
   public DataRecord (byte[] data, int offset)
   {
     int length = data[offset + 1] & 0xFF;
     this.data = new byte[length];
     System.arraycopy (data, offset, this.data, 0, length);
+  }
+
+  protected DataRecord (byte type, int length)
+  {
+    this.data = new byte[length];
+    data[0] = type;
+    data[1] = (byte) data.length;
   }
 
   public int length ()

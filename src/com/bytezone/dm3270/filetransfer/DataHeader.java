@@ -44,7 +44,7 @@ public class DataHeader
     System.arraycopy (data, offset + HEADER_LENGTH, buffer, 0, buffer.length);
   }
 
-  public int size ()
+  public int getBufferLength ()
   {
     return buffer.length;
   }
