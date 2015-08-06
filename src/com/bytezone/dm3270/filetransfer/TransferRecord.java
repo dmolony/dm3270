@@ -6,6 +6,11 @@ public class TransferRecord
 {
   final byte[] data;
 
+  public TransferRecord (int size)
+  {
+    data = new byte[size];
+  }
+
   public TransferRecord (byte[] data, int offset)
   {
     int length = data[offset + 1] & 0xFF;

@@ -69,10 +69,7 @@ public class FileTransferOutboundSF extends FileTransferSF
         if (subtype == 0x11) // always before 0x04
           transferRecords.add (new TransferRecord (data, 3));
         else if (subtype == 0x04) // message or transfer buffer
-        {
-          dataHeader = new DataHeader (data, 3);
-          ebcdic = dataHeader.checkEbcdic ();
-        }
+          transferRecords.add (new DataHeader (data, 3));
         else
         {
           if (data.length > 3)
@@ -224,13 +221,15 @@ public class FileTransferOutboundSF extends FileTransferSF
       int length = ptr + RecordNumber.RECORD_LENGTH;
       byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
 
+      DataHeader dataHeader =
+          (DataHeader) transferRecords.get (transferRecords.size () - 1);
       bufferNumber = transfer.add (dataHeader);
       RecordNumber recordNumber = new RecordNumber (bufferNumber);
       ptr = recordNumber.pack (buffer, ptr);
 
       reply = new ReadStructuredFieldCommand (buffer, screen);
 
-      //      if (transfer.isMessage ()) // message transfers don't close
+      // message transfers don't close
       if (transfer.getTransferContents () == TransferContents.MSG)
         fileStage.closeTransfer ();
     }

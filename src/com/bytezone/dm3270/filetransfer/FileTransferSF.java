@@ -15,8 +15,6 @@ public class FileTransferSF extends StructuredField
   protected final byte subtype;
   protected final List<TransferRecord> transferRecords = new ArrayList<> ();
 
-  protected DataHeader dataHeader;
-  protected boolean ebcdic;
   protected TransferContents transferContents;// outbound only
   protected TransferType transferType;
   protected Transfer transfer;
@@ -55,13 +53,6 @@ public class FileTransferSF extends StructuredField
 
     for (TransferRecord transferRecord : transferRecords)
       text.append (String.format ("%n   %s", transferRecord));
-
-    if (dataHeader != null)
-    {
-      text.append (String.format ("%n   %s", dataHeader));
-      text.append ("\n\n");
-      text.append (dataHeader.getHexBuffer (ebcdic));
-    }
 
     return text.toString ();
   }
