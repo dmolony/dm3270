@@ -15,15 +15,17 @@ public class FileTransferOutboundSF extends FileTransferSF
     super (buffer, offset, length, screen, "Outbound");
     fileStage = screen.getFileStage ();
 
-    int ptr = 3;
-    transferType = TransferType.SEND;
-    TransferRecord transferRecord = null;
+    if (rectype == 0 && subtype == 0x12)
+      transferType = TransferType.SEND;
+    TransferRecord transferRecord;
 
+    int ptr = 3;
     while (ptr < data.length)
     {
       switch (data[ptr])
       {
         case 0x01:
+        case 0x09:
         case 0x0A:
         case 0x50:
           transferRecord = new TransferRecord (data, ptr);
@@ -44,7 +46,7 @@ public class FileTransferOutboundSF extends FileTransferSF
           break;
 
         default:
-          System.out.printf ("Unknown DataRecord: %02X%n", data[ptr]);
+          System.out.printf ("Unknown outbound TransferRecord: %02X%n", data[ptr]);
           transferRecord = new TransferRecord (data, ptr);
           break;
       }
