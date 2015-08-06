@@ -71,15 +71,15 @@ public class DataHeader
     return Utility.toHex (buffer, ebcdic);
   }
 
-  public boolean checkEbcdic ()
+  protected boolean checkEbcdic ()
   {
-    return checkEbcdic (buffer);
+    return checkEbcdic (buffer, 0, buffer.length);
   }
 
-  protected boolean checkEbcdic (byte[] data)
-  {
-    return checkEbcdic (data, 0, data.length);
-  }
+  //  protected boolean checkEbcdic (byte[] data)
+  //  {
+  //    return checkEbcdic (data, 0, data.length);
+  //  }
 
   protected boolean checkEbcdic (byte[] data, int offset, int length)
   {
