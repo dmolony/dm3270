@@ -25,6 +25,6 @@ Runs anywhere. See the [commands](resources/commands.md) page for differences be
 #### Mac OS X
 ![Terminal screen](resources/osxterminal.png?raw=true "OSX")
 #### Windows
-![Terminal screen](resources/winterminal.png?raw=true "Windows")
+![Terminal screen](resources/win10terminal.png?raw=true "Windows")
 #### Linux
 ![Terminal screen](resources/linuxterminal.png?raw=true "Ubuntu")
