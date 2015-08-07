@@ -14,7 +14,21 @@ import com.bytezone.reporter.application.TreePanel;
 import com.bytezone.reporter.application.TreePanel.FileNode;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class FileStage extends Stage implements TSOCommandStatusListener//, NodeSelectionListener
@@ -24,6 +38,12 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
   private final WindowSaver windowSaver;
 
   private ReporterNode reporterNode;
+  private final BorderPane borderPane = new BorderPane ();
+  private MenuBar menuBar;
+
+  private HBox transferPanel;
+  private TextField txtDatasetName;
+  private boolean isTransferPanelVisible;
 
   public FileStage (Preferences prefs)
   {
@@ -32,8 +52,12 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
     try
     {
       reporterNode = new ReporterNode (prefs);
-      setScene (new Scene (reporterNode.getRootNode (), 800, 592));
+      borderPane.setCenter (reporterNode.getRootNode ());
+      setScene (new Scene (borderPane, 800, 592));
       reporterNode.getTreePanel ().getTree ().requestFocus ();
+
+      menuBar = reporterNode.getMenuBar ();
+      menuBar.getMenus ().add (getTransferMenu ());
     }
     catch (NoClassDefFoundError e)
     {
@@ -49,6 +73,29 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
 
     windowSaver = new WindowSaver (prefs, this, "FileTransferStage");
     windowSaver.restoreWindow ();
+  }
+
+  private Menu getTransferMenu ()
+  {
+    Menu menuTransfer = new Menu ("Transfer");
+
+    MenuItem menuItemUpload = getMenuItem ("Upload file", e -> uploadFile (), KeyCode.U);
+    MenuItem menuItemDownload =
+        getMenuItem ("Download file", e -> downloadFile (), KeyCode.D);
+    menuTransfer.getItems ().addAll (menuItemUpload, menuItemDownload);
+
+    return menuTransfer;
+  }
+
+  private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
+      KeyCode keyCode)
+  {
+    MenuItem menuItem = new MenuItem (text);
+    menuItem.setOnAction (eventHandler);
+    if (keyCode != null)
+      menuItem.setAccelerator (new KeyCodeCombination (keyCode,
+          KeyCombination.SHORTCUT_DOWN));
+    return menuItem;
   }
 
   public void addTransfer (Transfer transfer)
@@ -129,9 +176,40 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
     currentTransfer = null;
   }
 
+  private void uploadFile ()
+  {
+    if (transferPanel == null)
+    {
+      Label lblTransfer = new Label ("Transfer file");
+      txtDatasetName = new TextField ();
+
+      transferPanel = new HBox (10);
+      transferPanel.setPadding (new Insets (10, 10, 10, 10));// trbl
+      transferPanel.setAlignment (Pos.CENTER_LEFT);
+      transferPanel.getChildren ().addAll (lblTransfer, txtDatasetName);
+
+    }
+
+    if (isTransferPanelVisible)
+    {
+      borderPane.setBottom (null);
+      isTransferPanelVisible = false;
+    }
+    else
+    {
+      borderPane.setBottom (transferPanel);
+      isTransferPanelVisible = true;
+    }
+  }
+
+  private void downloadFile ()
+  {
+
+  }
+
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
-    //    System.out.println (screenDetails);
+    System.out.println (screenDetails);
   }
 }

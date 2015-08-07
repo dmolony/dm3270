@@ -310,6 +310,7 @@ public class ScreenDetails
 
     text.append ("Screen details:\n");
     text.append (String.format ("TSO screen ..... %s%n", isTSOCommandScreen));
+    text.append (String.format ("TSO field ...... %s%n", tsoCommandField));
     text.append (String.format ("Dataset list ... %s%n", isDatasetList));
     text.append (String.format ("Userid/prefix .. %s / %s%n", userid, prefix));
     text.append (String.format ("Datasets for ... %s%n", datasetsMatching));
