@@ -42,7 +42,8 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
   private MenuBar menuBar;
 
   private HBox transferPanel;
-  private TextField txtDatasetName;
+  private final TextField txtDatasetName = new TextField ();
+  private final Label lblTransfer = new Label ("Transfer file");
   private boolean isTransferPanelVisible;
 
   public FileStage (Preferences prefs)
@@ -100,6 +101,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
 
   public void addTransfer (Transfer transfer)
   {
+    System.out.println (transfer);
     if (transfer.getTransferContents () == TransferContents.DATA
         && transfer.getTransferType () == TransferType.SEND)
     {
@@ -180,14 +182,10 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
   {
     if (transferPanel == null)
     {
-      Label lblTransfer = new Label ("Transfer file");
-      txtDatasetName = new TextField ();
-
       transferPanel = new HBox (10);
       transferPanel.setPadding (new Insets (10, 10, 10, 10));// trbl
       transferPanel.setAlignment (Pos.CENTER_LEFT);
       transferPanel.getChildren ().addAll (lblTransfer, txtDatasetName);
-
     }
 
     if (isTransferPanelVisible)

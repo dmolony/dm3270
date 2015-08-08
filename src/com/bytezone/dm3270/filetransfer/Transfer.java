@@ -185,29 +185,29 @@ public class Transfer
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String.format ("Contents ...... %s", transferContents));
-    text.append (String.format ("Type .......... %s", transferType));
+    text.append (String.format ("Contents ....... %s%n", transferContents));
+    text.append (String.format ("Type ........... %s", transferType));
 
     int bufno = 0;
     for (DataRecord dataRecord : dataRecords)
-      text.append (String.format ("%n  Buffer %3d : %,d", bufno++,
+      text.append (String.format ("%n  Buffer %3d ...  %,8d", bufno++,
                                   dataRecord.getBufferLength ()));
 
-    text.append (String.format ("%nTotal length .. %,d", dataLength));
-    text.append (String.format ("%nDirection ..... %s", direction));
-    text.append (String.format ("%nFile name ..... %s", fileName));
-    text.append (String.format ("%nCRLF .......... %s", crlf));
-    text.append (String.format ("%nASCII ......... %s", ascii));
-    text.append (String.format ("%nAPPEND ........ %s", append));
-    text.append (String.format ("%nRECFM ......... %s", recfm == null ? "" : recfm));
-    text.append (String.format ("%nLRECL ......... %s", lrecl == null ? "" : lrecl));
-    text.append (String.format ("%nBLKSIZE ....... %s", blksize == null ? "" : blksize));
-    text.append (String.format ("%nUNITS ......... %s", units == null ? "" : units));
-    text.append (String.format ("%nSPACE ......... %s", space == null ? "" : space));
+    text.append (String.format ("%nLength ......... %,9d", dataLength));
+    text.append (String.format ("%nCommand ........ %s", direction));
+    text.append (String.format ("%nFile name ...... %s", fileName));
+    text.append (String.format ("%nCRLF ........... %s", crlf));
+    text.append (String.format ("%nASCII .......... %s", ascii));
+    text.append (String.format ("%nAPPEND ......... %s", append));
+    text.append (String.format ("%nRECFM .......... %s", recfm == null ? "" : recfm));
+    text.append (String.format ("%nLRECL .......... %s", lrecl == null ? "" : lrecl));
+    text.append (String.format ("%nBLKSIZE ........ %s", blksize == null ? "" : blksize));
+    text.append (String.format ("%nUNITS .......... %s", units == null ? "" : units));
+    text.append (String.format ("%nSPACE .......... %s", space == null ? "" : space));
 
-    text.append (String.format ("%ninbuf length .. %d",
+    text.append (String.format ("%ninbuf length ... %d",
                                 inboundBuffer == null ? -1 : inboundBuffer.length));
-    text.append (String.format ("%nin ptr ........ %d", inboundBufferPtr));
+    text.append (String.format ("%nin ptr ......... %d", inboundBufferPtr));
 
     return text.toString ();
   }
