@@ -181,29 +181,29 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     if (subtype == 0x04) // message or transfer buffer
     {
+      int ptr = 6;
+      byte[] buffer;
+
       if (transfer.cancelled ())
       {
-        int ptr = 6;
         int length = ptr + ErrorRecord.RECORD_LENGTH;
-        byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x08);
+        buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x08);
+
         ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.CANCEL);
         ptr = errorRecord.pack (buffer, ptr);
-        reply = new ReadStructuredFieldCommand (buffer, screen);
       }
       else
       {
-        int ptr = 6;
         int length = ptr + RecordNumber.RECORD_LENGTH;
-        byte[] buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
+        buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
 
         DataRecord dataRecord =
             (DataRecord) transferRecords.get (transferRecords.size () - 1);
         int bufferNumber = transfer.add (dataRecord);
         RecordNumber recordNumber = new RecordNumber (bufferNumber);
         ptr = recordNumber.pack (buffer, ptr);
-
-        reply = new ReadStructuredFieldCommand (buffer, screen);
       }
+      reply = new ReadStructuredFieldCommand (buffer, screen);
 
       // message transfers don't close
       if (transfer.getTransferContents () == TransferContents.MSG)
