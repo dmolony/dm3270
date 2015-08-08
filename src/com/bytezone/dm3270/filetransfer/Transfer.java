@@ -108,6 +108,11 @@ public class Transfer
     return transferType;
   }
 
+  boolean cancelled ()
+  {
+    return false;
+  }
+
   boolean hasMoreData ()
   {
     return getBytesLeft () > 0;
