@@ -3,6 +3,8 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.datasets.Dataset;
+
 public class ScreenDetails
 {
   private static final String[] tsoMenus =
@@ -12,6 +14,7 @@ public class ScreenDetails
 
   private FieldManager fieldManager;
   private List<Field> fields;
+  private List<Dataset> datasets;
 
   private String datasetsMatching;
   private String datasetsOnVolume;
@@ -58,6 +61,11 @@ public class ScreenDetails
   public String getPrefix ()
   {
     return prefix;
+  }
+
+  public List<Dataset> getDatasets ()
+  {
+    return datasets;
   }
 
   private void checkTSOCommandField ()
@@ -213,7 +221,7 @@ public class ScreenDetails
     if (!field.getText ().equals ("Command ===>"))
       return false;
 
-    field = fields.get (18);
+    //    field = fields.get (18);
     int pos = text.indexOf ("Row ");
     String category = text.substring (19, (pos > 0 ? pos : 64)).trim ();
 
@@ -224,7 +232,49 @@ public class ScreenDetails
     else
       System.out.println ("Unknown category: " + category);
 
+    for (int i = 17; i < 21; i++)
+    {
+      field = fields.get (i);
+      text = field.getText ().trim ();
+      location = field.getFirstLocation ();
+      System.out.println (field.getText ());
+      System.out.println (location);
+      if (text.startsWith ("Command - Enter"))
+      {
+        getDatasetList (i);
+        break;
+      }
+    }
+
     return true;
+  }
+
+  private void getDatasetList (int startField)
+  {
+    if (fields.size () < 20)
+      return;
+
+    datasets = new ArrayList<> ();
+
+    int fieldNo = startField + 3;
+    if (fields.get (fieldNo).getText ().startsWith ("-----"))
+      fieldNo++;
+    while (fieldNo < fields.size ())
+    {
+      Field field = fields.get (fieldNo);
+      int column = field.getFirstLocation () % 80;
+      //      String volume = fields.get (fieldNo).getText ().trim ();
+      String name = field.getText ().trim ();
+      //      System.out.printf ("%3d  %3d  %-32s%n", fieldNo, column, name);
+
+      if (column == 1)
+      {
+        Dataset dataset = new Dataset (name);
+        //        dataset.setVolume (volume);
+        datasets.add (dataset);
+      }
+      fieldNo++;
+    }
   }
 
   private void checkEditOrViewDataset ()

@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 
 public class JobStage extends Stage implements TSOCommandStatusListener
 {
-  //  private final Screen screen;
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private ConsolePane consolePane;
@@ -38,7 +37,6 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   public JobStage ()
   {
-    //    this.screen = screen;
     setTitle ("Batch Jobs");
 
     HBox buttonBox = new HBox ();
@@ -120,8 +118,7 @@ public class JobStage extends Stage implements TSOCommandStatusListener
 
   private void execute ()
   {
-    if (tsoCommandField != null) // are we on a suitable
-    // screen?
+    if (tsoCommandField != null) // are we on a suitable screen?
     {
       tsoCommandField.setText (txtCommand.getText ());
       if (consolePane != null)

@@ -99,6 +99,7 @@ public class Screen extends Canvas implements DisplayScreen
           new ScreenPosition (i, graphicsContext, characterSize, baseContext);
 
     addTSOCommandStatusChangeListener (jobStage);
+    addTSOCommandStatusChangeListener (datasetStage);
     addTSOCommandStatusChangeListener (transferStage);
     addTSOCommandStatusChangeListener (fileStage);
   }
@@ -108,6 +109,7 @@ public class Screen extends Canvas implements DisplayScreen
   public void setConsolePane (ConsolePane consolePane)
   {
     jobStage.setConsolePane (consolePane);
+    datasetStage.setConsolePane (consolePane);
     transferStage.setConsolePane (consolePane);
   }
 
@@ -135,6 +137,11 @@ public class Screen extends Canvas implements DisplayScreen
   public JobStage getJobStage ()
   {
     return jobStage;
+  }
+
+  public DatasetStage getDatasetStage ()
+  {
+    return datasetStage;
   }
 
   public FileStage getFileStage ()

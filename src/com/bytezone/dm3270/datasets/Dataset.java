@@ -16,7 +16,7 @@ public class Dataset
 
   public Dataset (String name)
   {
-    propertyDatasetName.set (name);
+    propertyDatasetName ().set (name);
   }
 
   // DatasetName
@@ -26,7 +26,7 @@ public class Dataset
     propertyDatasetName ().set (value);
   }
 
-  public String getJobName ()
+  public String getDatasetName ()
   {
     return propertyDatasetName ().get ();
   }

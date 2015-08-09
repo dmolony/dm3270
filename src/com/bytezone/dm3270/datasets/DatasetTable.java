@@ -16,7 +16,7 @@ public class DatasetTable extends TableView<Dataset>
     setFixedCellSize (20.0);
 
     TableColumn<Dataset, String> colDatasetName = new TableColumn<> ("Dataset name");
-    colDatasetName.setPrefWidth (100);
+    colDatasetName.setPrefWidth (300);
     colDatasetName.setCellValueFactory (new PropertyValueFactory<> ("DatasetName"));
     getColumns ().add (colDatasetName);
 
@@ -50,6 +50,15 @@ public class DatasetTable extends TableView<Dataset>
 
   public void addDataset (Dataset dataset)
   {
-    datasets.add (dataset);
+    Dataset foundDataset = null;
+    for (Dataset existingDataset : datasets)
+      if (existingDataset.getDatasetName ().equals (dataset.getDatasetName ()))
+      {
+        foundDataset = existingDataset;
+        break;
+      }
+
+    if (foundDataset == null)
+      datasets.add (dataset);
   }
 }
