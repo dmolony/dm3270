@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.WindowSaver;
+import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
+import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
 import com.bytezone.reporter.application.TreePanel.FileNode;
@@ -19,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -29,9 +32,11 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class FileStage extends Stage implements TSOCommandStatusListener//, NodeSelectionListener
+public class FileStage extends Stage
+    implements TSOCommandStatusListener, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
@@ -41,10 +46,14 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
   private final BorderPane borderPane = new BorderPane ();
   private MenuBar menuBar;
 
-  private HBox transferPanel;
-  private final TextField txtDatasetName = new TextField ();
-  private final Label lblTransfer = new Label ("Transfer file");
+  private HBox optionsBox;
+  private final Button btnExecute = new Button ("Execute");
+  private final TextField txtCommand = new TextField ();
+  private final Label lblCommand = new Label ("Command");
   private boolean isTransferPanelVisible;
+
+  private boolean isTSOCommandScreen;
+  private Field tsoCommandField;
 
   public FileStage (Preferences prefs)
   {
@@ -56,9 +65,19 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
       borderPane.setCenter (reporterNode.getRootNode ());
       setScene (new Scene (borderPane, 800, 592));
       reporterNode.getTreePanel ().getTree ().requestFocus ();
+      reporterNode.getTreePanel ().addNodeSelectionListener (this);
 
       menuBar = reporterNode.getMenuBar ();
       menuBar.getMenus ().add (getTransferMenu ());
+
+      optionsBox = new HBox (10);
+      optionsBox.setAlignment (Pos.CENTER_LEFT);
+      optionsBox.setPadding (new Insets (10, 10, 10, 10));// trbl
+      txtCommand.setEditable (false);
+      txtCommand.setPrefWidth (400);
+      txtCommand.setFont (Font.font ("Monospaced", 12));
+      txtCommand.setFocusTraversable (false);
+      optionsBox.getChildren ().addAll (lblCommand, txtCommand, btnExecute);
     }
     catch (NoClassDefFoundError e)
     {
@@ -180,14 +199,6 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
 
   private void uploadFile ()
   {
-    if (transferPanel == null)
-    {
-      transferPanel = new HBox (10);
-      transferPanel.setPadding (new Insets (10, 10, 10, 10));// trbl
-      transferPanel.setAlignment (Pos.CENTER_LEFT);
-      transferPanel.getChildren ().addAll (lblTransfer, txtDatasetName);
-    }
-
     if (isTransferPanelVisible)
     {
       borderPane.setBottom (null);
@@ -195,7 +206,7 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
     }
     else
     {
-      borderPane.setBottom (transferPanel);
+      borderPane.setBottom (optionsBox);
       isTransferPanelVisible = true;
     }
   }
@@ -205,9 +216,43 @@ public class FileStage extends Stage implements TSOCommandStatusListener//, Node
 
   }
 
+  private void setText ()
+  {
+    //    String report = selectedBatchJob.getOutputFile ();
+    //    String command = report == null ? selectedBatchJob.outputCommand ()
+    //        : String.format ("IND$FILE GET %s", report);
+    String command = "IND$FILE PUT " + reporterNode.getSelectedNode ();
+
+    if (!isTSOCommandScreen)
+      command = "TSO " + command;
+
+    txtCommand.setText (command);
+    setButton ();
+  }
+
+  private void setButton ()
+  {
+    //    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
+    //    {
+    //      btnExecute.setDisable (true);
+    //      return;
+    //    }
+
+    String command = txtCommand.getText ();
+    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
+  }
+
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
-    System.out.println (screenDetails);
+    isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
+    tsoCommandField = screenDetails.getTSOCommandField ();
+    setText ();
+  }
+
+  @Override
+  public void nodeSelected (FileNode fileNode)
+  {
+    setText ();
   }
 }

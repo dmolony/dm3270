@@ -6,7 +6,6 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
@@ -23,7 +22,7 @@ import javafx.stage.Stage;
 
 public class JobStage extends Stage implements TSOCommandStatusListener
 {
-  private final Screen screen;
+  //  private final Screen screen;
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private ConsolePane consolePane;
@@ -37,9 +36,9 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   private Field tsoCommandField;
   private BatchJob selectedBatchJob;
 
-  public JobStage (Screen screen)
+  public JobStage ()
   {
-    this.screen = screen;
+    //    this.screen = screen;
     setTitle ("Batch Jobs");
 
     HBox buttonBox = new HBox ();
@@ -155,8 +154,8 @@ public class JobStage extends Stage implements TSOCommandStatusListener
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
-    this.isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
-    this.tsoCommandField = screenDetails.getTSOCommandField ();
+    isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
+    tsoCommandField = screenDetails.getTSOCommandField ();
     setButton ();
   }
 

@@ -16,6 +16,7 @@ import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
+import com.bytezone.dm3270.datasets.DatasetStage;
 import com.bytezone.dm3270.filetransfer.FileStage;
 import com.bytezone.dm3270.filetransfer.TransferStage;
 import com.bytezone.dm3270.jobs.JobStage;
@@ -33,6 +34,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final FieldManager fieldManager;
   private final FontManager fontManager;
   private final JobStage jobStage;
+  private final DatasetStage datasetStage;
   private final FileStage fileStage;
   private final PluginsStage pluginsStage;
   private final TransferStage transferStage;
@@ -78,7 +80,8 @@ public class Screen extends Canvas implements DisplayScreen
     screenDetails = new ScreenDetails (this);
     fieldManager = new FieldManager (this, pen.getBase ());
 
-    jobStage = new JobStage (this);
+    jobStage = new JobStage ();
+    datasetStage = new DatasetStage ();
     fileStage = new FileStage (prefs);
     transferStage = new TransferStage (this);
     this.pluginsStage = pluginsStage;

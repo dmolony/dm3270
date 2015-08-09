@@ -134,15 +134,6 @@ public class FileTransferOutboundSF extends FileTransferSF
     byte[] replyBuffer;
     int ptr = 0;
 
-    //    if (transfer.cancelled ())
-    //    {
-    //      int length = 6 + ErrorRecord.RECORD_LENGTH;
-    //      replyBuffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x08);
-    //
-    //      ptr = 6;
-    //      ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.CANCEL);
-    //      ptr = errorRecord.pack (replyBuffer, ptr);
-    //    }
     if (transfer.hasMoreData () && !transfer.cancelled ()) // have data to send
     {
       DataRecord dataHeader = transfer.getDataHeader ();
