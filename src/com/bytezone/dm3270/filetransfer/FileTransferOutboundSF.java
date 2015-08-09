@@ -143,7 +143,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     //      ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.CANCEL);
     //      ptr = errorRecord.pack (replyBuffer, ptr);
     //    }
-    if (transfer.hasMoreData ()) // have data to send
+    if (transfer.hasMoreData () && !transfer.cancelled ()) // have data to send
     {
       DataRecord dataHeader = transfer.getDataHeader ();
 
