@@ -13,6 +13,7 @@ public class Dataset
   private IntegerProperty propertyExtents;
   private IntegerProperty propertyPercentUsed;
   private StringProperty propertyVolume;
+  private StringProperty propertyDevice;
 
   public Dataset (String name)
   {
@@ -131,5 +132,24 @@ public class Dataset
     if (propertyVolume == null)
       propertyVolume = new SimpleStringProperty (this, "Volume");
     return propertyVolume;
+  }
+
+  // Device
+
+  public void setDevice (String value)
+  {
+    propertyDevice ().set (value);
+  }
+
+  public String getDevice ()
+  {
+    return propertyDevice ().get ();
+  }
+
+  public StringProperty propertyDevice ()
+  {
+    if (propertyDevice == null)
+      propertyDevice = new SimpleStringProperty (this, "Device");
+    return propertyDevice;
   }
 }

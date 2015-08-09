@@ -21,29 +21,34 @@ public class DatasetTable extends TableView<Dataset>
     getColumns ().add (colDatasetName);
 
     TableColumn<Dataset, Integer> colTracks = new TableColumn<> ("Tracks");
-    colTracks.setPrefWidth (100);
+    colTracks.setPrefWidth (50);
     colTracks.setCellValueFactory (new PropertyValueFactory<> ("Tracks"));
     getColumns ().add (colTracks);
 
     TableColumn<Dataset, Integer> colCylinders = new TableColumn<> ("Cylinders");
-    colCylinders.setPrefWidth (100);
+    colCylinders.setPrefWidth (50);
     colCylinders.setCellValueFactory (new PropertyValueFactory<> ("Cylinders"));
     getColumns ().add (colCylinders);
 
     TableColumn<Dataset, Integer> colExtents = new TableColumn<> ("Extents");
-    colExtents.setPrefWidth (100);
+    colExtents.setPrefWidth (50);
     colExtents.setCellValueFactory (new PropertyValueFactory<> ("Extents"));
     getColumns ().add (colExtents);
 
     TableColumn<Dataset, Integer> colPercentUsed = new TableColumn<> ("Percent used");
-    colPercentUsed.setPrefWidth (100);
+    colPercentUsed.setPrefWidth (50);
     colPercentUsed.setCellValueFactory (new PropertyValueFactory<> ("PercentUsed"));
     getColumns ().add (colPercentUsed);
 
     TableColumn<Dataset, String> colVolume = new TableColumn<> ("Volume");
-    colVolume.setPrefWidth (100);
+    colVolume.setPrefWidth (70);
     colVolume.setCellValueFactory (new PropertyValueFactory<> ("Volume"));
     getColumns ().add (colVolume);
+
+    TableColumn<Dataset, String> colDevice = new TableColumn<> ("Device");
+    colDevice.setPrefWidth (50);
+    colDevice.setCellValueFactory (new PropertyValueFactory<> ("Device"));
+    getColumns ().add (colDevice);
 
     setItems (datasets);
   }

@@ -202,7 +202,7 @@ public class ScreenDetails
     datasetsOnVolume = "";
     datasetsMatching = "";
 
-    if (fields.size () < 19)
+    if (fields.size () < 21)
       return false;
 
     Field field = fields.get (9);
@@ -221,7 +221,6 @@ public class ScreenDetails
     if (!field.getText ().equals ("Command ===>"))
       return false;
 
-    //    field = fields.get (18);
     int pos = text.indexOf ("Row ");
     String category = text.substring (19, (pos > 0 ? pos : 64)).trim ();
 
@@ -237,8 +236,8 @@ public class ScreenDetails
       field = fields.get (i);
       text = field.getText ().trim ();
       location = field.getFirstLocation ();
-      System.out.println (field.getText ());
-      System.out.println (location);
+      //      System.out.println (field.getText ());
+      //      System.out.println (location);
       if (text.startsWith ("Command - Enter"))
       {
         getDatasetList (i);
@@ -251,27 +250,56 @@ public class ScreenDetails
 
   private void getDatasetList (int startField)
   {
-    if (fields.size () < 20)
+    if (fields.size () < startField + 3)
       return;
 
     datasets = new ArrayList<> ();
+    Dataset dataset = null;
 
-    int fieldNo = startField + 3;
+    int fieldNo = startField + 1;
+    String text = fields.get (fieldNo).getText ().trim ();
+    if ("Message".equals (text))
+      ++fieldNo;
+
+    String heading = fields.get (fieldNo).getText ();
+    //    String[] headings = heading.split ("\\s+");
+    boolean isVolume = " Volume ".equals (heading);
+    boolean isTracks = "     Tracks %Used XT  Device  ".equals (heading);
+    //    for (String head : headings)
+    //      System.out.println (head);
+
+    ++fieldNo;
     if (fields.get (fieldNo).getText ().startsWith ("-----"))
       fieldNo++;
+
+    System.out.println (heading);
     while (fieldNo < fields.size ())
     {
       Field field = fields.get (fieldNo);
       int column = field.getFirstLocation () % 80;
-      //      String volume = fields.get (fieldNo).getText ().trim ();
       String name = field.getText ().trim ();
-      //      System.out.printf ("%3d  %3d  %-32s%n", fieldNo, column, name);
 
       if (column == 1)
       {
-        Dataset dataset = new Dataset (name);
-        //        dataset.setVolume (volume);
+        dataset = new Dataset (name);
         datasets.add (dataset);
+      }
+      else
+      {
+        String details = field.getText ();
+        if (!details.trim ().isEmpty ())
+        {
+          System.out.println (details);
+          if (isVolume)
+            dataset.setVolume (details.trim ());
+          else if (isTracks)
+          {
+            dataset.setTracks (Integer.parseInt (details.substring (0, 6).trim ()));
+            dataset.setPercentUsed (Integer.parseInt (details.substring (7, 11).trim ()));
+            dataset.setExtents (Integer.parseInt (details.substring (12, 15).trim ()));
+            dataset.setDevice (details.substring (17).trim ());
+          }
+        }
       }
       fieldNo++;
     }
