@@ -236,8 +236,6 @@ public class ScreenDetails
       field = fields.get (i);
       text = field.getText ().trim ();
       location = field.getFirstLocation ();
-      //      System.out.println (field.getText ());
-      //      System.out.println (location);
       if (text.startsWith ("Command - Enter"))
       {
         getDatasetList (i);
@@ -253,38 +251,43 @@ public class ScreenDetails
     if (fields.size () < startField + 3)
       return;
 
-    datasets = new ArrayList<> ();
-    Dataset dataset = null;
-
     int fieldNo = startField + 1;
     String text = fields.get (fieldNo).getText ().trim ();
     if ("Message".equals (text))
       ++fieldNo;
 
     String heading = fields.get (fieldNo).getText ();
-    //    String[] headings = heading.split ("\\s+");
     boolean isVolume = " Volume ".equals (heading);
     boolean isTracks = "     Tracks %Used XT  Device  ".equals (heading);
-    //    for (String head : headings)
-    //      System.out.println (head);
+    boolean isDsorg = "    Dsorg  Recfm  Lrecl  Blksz".equals (heading);
 
-    ++fieldNo;
-    if (fields.get (fieldNo).getText ().startsWith ("-----"))
-      fieldNo++;
+    if (!isVolume && !isTracks && !isDsorg)
+    {
+      System.out.println ("Unknown heading");
+      System.out.println (heading);
+      return;
+    }
+
+    fieldNo += 2;
+    datasets = new ArrayList<> ();
+    Dataset dataset = null;
 
     System.out.println (heading);
     while (fieldNo < fields.size ())
     {
       Field field = fields.get (fieldNo);
       int column = field.getFirstLocation () % 80;
+
       String name = field.getText ().trim ();
 
       if (column == 1)
       {
+        if (field.isProtected () || field.getDisplayLength () != 53)
+          return;
         dataset = new Dataset (name);
         datasets.add (dataset);
       }
-      else
+      else if (dataset != null)
       {
         String details = field.getText ();
         if (!details.trim ().isEmpty ())
@@ -294,10 +297,17 @@ public class ScreenDetails
             dataset.setVolume (details.trim ());
           else if (isTracks)
           {
-            dataset.setTracks (Integer.parseInt (details.substring (0, 6).trim ()));
-            dataset.setPercentUsed (Integer.parseInt (details.substring (7, 11).trim ()));
-            dataset.setExtents (Integer.parseInt (details.substring (12, 15).trim ()));
+            dataset.setTracks (details.substring (0, 6).trim ());
+            dataset.setPercentUsed (details.substring (7, 11).trim ());
+            dataset.setExtents (details.substring (12, 15).trim ());
             dataset.setDevice (details.substring (17).trim ());
+          }
+          else if (isDsorg)
+          {
+            dataset.setDsorg (details.substring (0, 5).trim ());
+            dataset.setRecfm (details.substring (6, 11).trim ());
+            dataset.setLrecl (details.substring (12, 19).trim ());
+            dataset.setBlksize (details.substring (20, 25).trim ());
           }
         }
       }
