@@ -206,7 +206,6 @@ public class ScreenDetails
       return false;
 
     Field field = fields.get (9);
-    //    System.out.println (field);
     int location = field.getFirstLocation ();
     if (location != 161)
       return false;
@@ -218,7 +217,6 @@ public class ScreenDetails
     for (int i = 11; i < 13; i++)
     {
       field = fields.get (i);
-      //      System.out.printf ("%2d  %s%n", i, field);
       location = field.getFirstLocation ();
       if (location == 241)
         break;
@@ -227,7 +225,6 @@ public class ScreenDetails
       return false;
 
     int pos = text.indexOf ("Row ");
-    //    System.out.printf ("[%s]%n", text);
     String category =
         pos > 0 ? text.substring (19, pos).trim () : text.substring (19).trim ();
 
@@ -290,35 +287,26 @@ public class ScreenDetails
         fieldNo += 4;
     }
 
-    //    for (Field field : fields)
-    //      System.out.println (field);
-
     fieldNo += 2;
     datasets = new ArrayList<> ();
     Dataset dataset = null;
 
-    //    System.out.println (heading);
     while (fieldNo < fields.size ())
     {
       Field field = fields.get (fieldNo);
-      int column = field.getFirstLocation () % 80;
+      int column = field.getFirstLocation () % screen.columns;
 
       String name = field.getText ();
-      //      System.out.println (name);
-      //      System.out.println (field);
 
       if (column == 1 && field.getDisplayLength () == 53)
       {
         if (field.isProtected ())
           return;
         dataset = new Dataset (name.substring (9).trim ());
-        //        System.out.printf ("Dataset [%s]%n", name.substring (9));
         datasets.add (dataset);
-        //        System.out.printf ("Dataset=%s%n", name);
       }
       else if (column == 1 && field.getDisplayLength () == 79)
       {
-        //        System.out.println ("full:" + name);
         if (name.startsWith ("**"))
           break;
       }
@@ -332,7 +320,6 @@ public class ScreenDetails
           {
             if (column == 1)
             {
-              //              System.out.printf ("Trk    [%s]%n", details);
               dataset.setTracks (details.substring (0, 6).trim ());
               dataset.setPercentUsed (details.substring (7, 10).trim ());
               dataset.setExtents (details.substring (11, 14).trim ());
@@ -340,7 +327,6 @@ public class ScreenDetails
             }
             else if (column == 25)
             {
-              //              System.out.printf ("Dsp    %s%n", details);
               dataset.setDsorg (details.substring (0, 5).trim ());
               dataset.setRecfm (details.substring (5, 10).trim ());
               dataset.setLrecl (details.substring (10, 17).trim ());
@@ -350,14 +336,12 @@ public class ScreenDetails
             }
             else if (column == 48)
             {
-              //              System.out.printf ("Dates  %s%n", details);
               dataset.setCreated (details.substring (0, 10).trim ());
               dataset.setExpires (details.substring (11, 20).trim ());
               dataset.setReferred (details.substring (22).trim ());
             }
             else if (column == 72)
             {
-              //              System.out.printf ("Volume %s%n", details);
               dataset.setVolume (details.trim ());
             }
             else if (column == 11)
@@ -370,7 +354,6 @@ public class ScreenDetails
           }
           else if (isTracks)
           {
-            //            System.out.printf ("Trk    [%s]%n", details);
             dataset.setTracks (details.substring (0, 6).trim ());
             dataset.setPercentUsed (details.substring (7, 11).trim ());
             dataset.setExtents (details.substring (12, 15).trim ());
@@ -378,7 +361,6 @@ public class ScreenDetails
           }
           else if (isDsorg)
           {
-            //            System.out.printf ("Dsp    %s%n", details);
             dataset.setDsorg (details.substring (0, 5).trim ());
             dataset.setRecfm (details.substring (6, 11).trim ());
             dataset.setLrecl (details.substring (12, 19).trim ());
