@@ -16,6 +16,10 @@ public class Dataset
   private StringProperty propertyRecfm;
   private StringProperty propertyLrecl;
   private StringProperty propertyBlksize;
+  private StringProperty propertyCatalog;
+  private StringProperty propertyCreated;
+  private StringProperty propertyExpires;
+  private StringProperty propertyReferred;
 
   public Dataset (String name)
   {
@@ -44,6 +48,14 @@ public class Dataset
       setCylinders (other.getCylinders ());
     if (other.getVolume () != null)
       setVolume (other.getVolume ());
+    if (other.getCatalog () != null)
+      setCatalog (other.getCatalog ());
+    if (other.getCreated () != null)
+      setCreated (other.getCreated ());
+    if (other.getExpires () != null)
+      setExpires (other.getExpires ());
+    if (other.getReferred () != null)
+      setReferred (other.getReferred ());
   }
 
   // DatasetName
@@ -255,6 +267,82 @@ public class Dataset
     return propertyBlksize;
   }
 
+  // Catalog
+
+  public void setCatalog (String value)
+  {
+    propertyCatalog ().set (value);
+  }
+
+  public String getCatalog ()
+  {
+    return propertyCatalog ().get ();
+  }
+
+  public StringProperty propertyCatalog ()
+  {
+    if (propertyCatalog == null)
+      propertyCatalog = new SimpleStringProperty (this, "Catalog");
+    return propertyCatalog;
+  }
+
+  // Created
+
+  public void setCreated (String value)
+  {
+    propertyCreated ().set (value);
+  }
+
+  public String getCreated ()
+  {
+    return propertyCreated ().get ();
+  }
+
+  public StringProperty propertyCreated ()
+  {
+    if (propertyCreated == null)
+      propertyCreated = new SimpleStringProperty (this, "Created");
+    return propertyCreated;
+  }
+
+  // Expires
+
+  public void setExpires (String value)
+  {
+    propertyExpires ().set (value);
+  }
+
+  public String getExpires ()
+  {
+    return propertyExpires ().get ();
+  }
+
+  public StringProperty propertyExpires ()
+  {
+    if (propertyExpires == null)
+      propertyExpires = new SimpleStringProperty (this, "Expires");
+    return propertyExpires;
+  }
+
+  // Referred
+
+  public void setReferred (String value)
+  {
+    propertyReferred ().set (value);
+  }
+
+  public String getReferred ()
+  {
+    return propertyReferred ().get ();
+  }
+
+  public StringProperty propertyReferred ()
+  {
+    if (propertyReferred == null)
+      propertyReferred = new SimpleStringProperty (this, "Referred");
+    return propertyReferred;
+  }
+
   @Override
   public String toString ()
   {
@@ -269,7 +357,11 @@ public class Dataset
     text.append (String.format ("DSORG ........... %s%n", getDsorg ()));
     text.append (String.format ("RECFM ........... %s%n", getRecfm ()));
     text.append (String.format ("LRECL ........... %s%n", getLrecl ()));
-    text.append (String.format ("BLKSIZE ......... %s", getBlksize ()));
+    text.append (String.format ("BLKSIZE ......... %s%n", getBlksize ()));
+    text.append (String.format ("Created ......... %s%n", getCreated ()));
+    text.append (String.format ("Expires ......... %s%n", getExpires ()));
+    text.append (String.format ("Referred ........ %s%n", getReferred ()));
+    text.append (String.format ("Catalog ......... %s", getCatalog ()));
 
     return text.toString ();
   }

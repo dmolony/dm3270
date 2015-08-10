@@ -41,6 +41,10 @@ public class DatasetTable extends TableView<Dataset>
     addColumn ("Recfm", "Recfm", 50, Justification.LEFT);
     addColumn ("Lrecl", "Lrecl", 50, Justification.RIGHT);
     addColumn ("Blksize", "Blksize", 70, Justification.RIGHT);
+    addColumn ("Created", "Created", 100, Justification.CENTER);
+    addColumn ("Expires", "Expires", 100, Justification.CENTER);
+    addColumn ("Referred", "Referred", 100, Justification.CENTER);
+    addColumn ("Catalog", "Catalog", 150, Justification.LEFT);
 
     setItems (datasets);
   }
