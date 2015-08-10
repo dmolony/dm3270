@@ -206,6 +206,7 @@ public class ScreenDetails
       return false;
 
     Field field = fields.get (9);
+    //    System.out.println (field);
     int location = field.getFirstLocation ();
     if (location != 161)
       return false;
@@ -214,15 +215,21 @@ public class ScreenDetails
     if (!text.startsWith ("DSLIST - Data Sets "))
       return false;
 
-    field = fields.get (11);
-    location = field.getFirstLocation ();
-    if (location != 241)
-      return false;
+    for (int i = 11; i < 13; i++)
+    {
+      field = fields.get (i);
+      //      System.out.printf ("%2d  %s%n", i, field);
+      location = field.getFirstLocation ();
+      if (location == 241)
+        break;
+    }
     if (!field.getText ().equals ("Command ===>"))
       return false;
 
     int pos = text.indexOf ("Row ");
-    String category = text.substring (19, (pos > 0 ? pos : 64)).trim ();
+    //    System.out.printf ("[%s]%n", text);
+    String category =
+        pos > 0 ? text.substring (19, pos).trim () : text.substring (19).trim ();
 
     if (category.startsWith ("Matching"))
       datasetsMatching = category.substring (9).trim ();
@@ -296,7 +303,7 @@ public class ScreenDetails
       Field field = fields.get (fieldNo);
       int column = field.getFirstLocation () % 80;
 
-      String name = field.getText ().trim ();
+      String name = field.getText ();
       //      System.out.println (name);
       //      System.out.println (field);
 
@@ -304,7 +311,8 @@ public class ScreenDetails
       {
         if (field.isProtected ())
           return;
-        dataset = new Dataset (name);
+        dataset = new Dataset (name.substring (9).trim ());
+        //        System.out.printf ("Dataset [%s]%n", name.substring (9));
         datasets.add (dataset);
         //        System.out.printf ("Dataset=%s%n", name);
       }
@@ -356,7 +364,10 @@ public class ScreenDetails
               dataset.setCatalog (details.trim ());
           }
           else if (isVolume)
-            dataset.setVolume (details.trim ());
+          {
+            if (column == 72)
+              dataset.setVolume (details.trim ());
+          }
           else if (isTracks)
           {
             //            System.out.printf ("Trk    [%s]%n", details);
@@ -469,6 +480,8 @@ public class ScreenDetails
     text.append (String.format ("Userid/prefix .. %s / %s%n", userid, prefix));
     text.append (String.format ("Datasets for ... %s%n", datasetsMatching));
     text.append (String.format ("Volume ......... %s%n", datasetsOnVolume));
+    text.append (String.format ("Datasets ....... %s%n",
+                                datasets == null ? "" : datasets.size ()));
 
     return text.toString ();
   }
