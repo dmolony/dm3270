@@ -265,6 +265,7 @@ public class Dataset
     text.append (String.format ("Cylinders ....... %s%n", getCylinders ()));
     text.append (String.format ("Extents ......... %s%n", getExtents ()));
     text.append (String.format ("Percent used .... %s%n", getPercentUsed ()));
+    text.append (String.format ("Device .......... %s%n", getDevice ()));
     text.append (String.format ("DSORG ........... %s%n", getDsorg ()));
     text.append (String.format ("RECFM ........... %s%n", getRecfm ()));
     text.append (String.format ("LRECL ........... %s%n", getLrecl ()));

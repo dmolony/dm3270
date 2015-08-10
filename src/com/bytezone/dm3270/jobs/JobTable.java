@@ -98,10 +98,12 @@ public class JobTable extends TableView<BatchJob>
   public void refresh ()
   {
     BatchJob selectedBatchJob = getSelectionModel ().getSelectedItem ();
-    List<BatchJob> jobs = new ArrayList<> ();
-    jobs.addAll (batchJobs);
+    List<BatchJob> tempJobs = new ArrayList<> ();
+
+    tempJobs.addAll (batchJobs);
     batchJobs.clear ();
-    batchJobs.addAll (jobs);
+    batchJobs.addAll (tempJobs);
+
     if (selectedBatchJob != null)
       getSelectionModel ().select (selectedBatchJob);
     else if (batchJobs.size () == 1)

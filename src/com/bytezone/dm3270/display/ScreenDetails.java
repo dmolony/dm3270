@@ -307,7 +307,9 @@ public class ScreenDetails
             dataset.setDsorg (details.substring (0, 5).trim ());
             dataset.setRecfm (details.substring (6, 11).trim ());
             dataset.setLrecl (details.substring (12, 19).trim ());
-            dataset.setBlksize (details.substring (20, 25).trim ());
+            String blkSize = details.substring (20, 25).trim ();
+            int bls = Integer.parseInt (blkSize);
+            dataset.setBlksize (String.format ("%,7d", bls));
           }
         }
       }
