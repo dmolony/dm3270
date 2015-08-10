@@ -24,14 +24,15 @@ public class DatasetTable extends TableView<Dataset>
 
   public DatasetTable ()
   {
-    setStyle ("-fx-font-size: 11;");
+    //    setStyle ("-fx-font-size: 11;");
+    setStyle ("-fx-font-size: 11; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
     createJustifications ();
 
     addColumn ("DatasetName", "Dataset name", 300, Justification.LEFT);
     addColumn ("Tracks", "Tracks", 50, Justification.RIGHT);
-    addColumn ("Cylinders", "Cylinders", 50, Justification.RIGHT);
+    addColumn ("Cylinders", "Cyls", 50, Justification.RIGHT);
     addColumn ("PercentUsed", "% used", 50, Justification.RIGHT);
     addColumn ("Extents", "XT", 50, Justification.RIGHT);
     addColumn ("Device", "Device", 50, Justification.CENTER);
