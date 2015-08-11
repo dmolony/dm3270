@@ -35,6 +35,8 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
+  private Dataset selectedDataset;
+  private ScreenDetails screenDetails;
 
   public DatasetStage ()
   {
@@ -62,6 +64,12 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
     btnHide.setOnAction (e -> hide ());
     btnExecute.setOnAction (e -> execute ());
 
+    datasetTable.getSelectionModel ().selectedItemProperty ()
+        .addListener ( (obs, oldSelection, newSelection) -> {
+          if (newSelection != null)
+            select (newSelection);
+        });
+
     BorderPane borderPane = new BorderPane ();
     borderPane.setCenter (datasetTable);
     borderPane.setBottom (bottomBorderPane);
@@ -78,6 +86,55 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
   public void setConsolePane (ConsolePane consolePane)
   {
     this.consolePane = consolePane;
+  }
+
+  private void select (Dataset dataset)
+  {
+    selectedDataset = dataset;
+    setText ();
+  }
+
+  private void setText ()
+  {
+    String datasetName = selectedDataset == null ? "" : selectedDataset.getDatasetName ();
+    if (datasetName == null || datasetName.isEmpty ())
+    {
+      txtCommand.setText ("");
+      return;
+    }
+
+    String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
+    if (!prefix.isEmpty () && datasetName.startsWith (prefix))
+    {
+      if (datasetName.length () == prefix.length ())
+      {
+        txtCommand.setText ("");
+        return;
+      }
+      datasetName = datasetName.substring (prefix.length () + 1);
+    }
+    else
+      datasetName = "'" + datasetName + "'";
+
+    String command = String.format ("IND$FILE GET %s", datasetName);
+
+    if (!isTSOCommandScreen)
+      command = "TSO " + command;
+
+    txtCommand.setText (command);
+    setButton ();
+  }
+
+  private void setButton ()
+  {
+    if (selectedDataset == null)
+    {
+      btnExecute.setDisable (true);
+      return;
+    }
+
+    String command = txtCommand.getText ();
+    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 
   private void execute ()
@@ -109,5 +166,7 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
     if (datasets != null)
       for (Dataset dataset : datasets)
         datasetTable.addDataset (dataset);
+
+    this.screenDetails = screenDetails;
   }
 }
