@@ -162,6 +162,7 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
+    this.screenDetails = screenDetails;
     List<Dataset> datasets = screenDetails.getDatasets ();
     if (datasets != null)
       for (Dataset dataset : datasets)
@@ -170,8 +171,8 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
     List<Dataset> members = screenDetails.getMembers ();
     if (members != null)
       for (Dataset dataset : members)
-        datasetTable.addDataset (dataset);
+        datasetTable.addMember (dataset);
 
-    this.screenDetails = screenDetails;
+    datasetTable.refresh ();
   }
 }
