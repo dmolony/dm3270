@@ -17,6 +17,7 @@ public class ScreenDetails
   private FieldManager fieldManager;
   private List<Field> fields;
   private List<Dataset> datasets;
+  private List<Dataset> members;
 
   private String datasetsMatching;
   private String datasetsOnVolume;
@@ -70,6 +71,11 @@ public class ScreenDetails
   public List<Dataset> getDatasets ()
   {
     return datasets;
+  }
+
+  public List<Dataset> getMembers ()
+  {
+    return members;
   }
 
   private void checkTSOCommandField ()
@@ -132,7 +138,7 @@ public class ScreenDetails
       }
 
       if (!isDatasetList)
-        checkMemberList ();
+        isMemberList = checkMemberList ();
     }
   }
 
@@ -255,11 +261,16 @@ public class ScreenDetails
     System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
 
     List<Field> headings = getFieldsOnRow (4);
+    members = new ArrayList<> ();
 
     for (int row = 5; row < totalMembers + 5; row++)
     {
       List<Field> fields = getFieldsOnRow (row);
+
       String memberName = fields.get (1).getText ().trim ();
+      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
+      members.add (member);
+
       String details = fields.get (3).getText ();
 
       if (headings.size () == 7)
@@ -284,7 +295,7 @@ public class ScreenDetails
       }
     }
 
-    return false;
+    return true;
   }
 
   private boolean checkDatasetList ()

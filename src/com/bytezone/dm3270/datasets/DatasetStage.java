@@ -167,6 +167,11 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
       for (Dataset dataset : datasets)
         datasetTable.addDataset (dataset);
 
+    List<Dataset> members = screenDetails.getMembers ();
+    if (members != null)
+      for (Dataset dataset : members)
+        datasetTable.addDataset (dataset);
+
     this.screenDetails = screenDetails;
   }
 }
