@@ -228,27 +228,27 @@ public class ScreenDetails
     if (fields.size () < 21)
       return false;
 
-    Field dslistField = fields.get (9);
-    int location = dslistField.getFirstLocation ();
-    if (location != 161)
+    List<Field> fields = getRowFields (2, 2);
+    if (fields.size () == 0)
       return false;
 
-    String text = dslistField.getText ();
+    String text = fields.get (0).getText ();
     if (!text.startsWith ("DSLIST - Data Sets "))
       return false;
 
-    List<Field> fields = getRowFields (2, 2);
-
-    text = fields.get (0).getText ();
     String rowText = "";
+    String locationText = "";
+
     int firstRow = 0;
     int totalRows = 0;
     int maxRows = 0;
+
     int pos = text.indexOf ("Row ");
     if (pos > 0)
     {
       rowText = text.substring (pos + 4);
-      text = text.substring (0, pos).trim ();
+      locationText = text.substring (19, pos).trim ();
+
       pos = rowText.indexOf (" of ");
       if (pos > 0)
       {
@@ -257,6 +257,11 @@ public class ScreenDetails
         maxRows = totalRows - firstRow + 1;
       }
     }
+
+    if (locationText.startsWith ("on volume "))
+      datasetsOnVolume = locationText.substring (10);
+    else if (locationText.startsWith ("Matching "))
+      datasetsMatching = locationText.substring (9);
 
     if (false)
     {
@@ -267,7 +272,7 @@ public class ScreenDetails
     }
 
     fields = getRowFields (5, 2);
-    if (fields.size () < 2)
+    if (fields.size () == 0)
       return false;
 
     System.out.printf ("Header size: %d%n", fields.size ());
@@ -487,6 +492,7 @@ public class ScreenDetails
       datasetsToProcess--;
       nextLine += linesPerDataset;
     }
+
     return true;
   }
 
