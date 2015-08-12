@@ -6,15 +6,17 @@ public class ErrorRecord extends TransferRecord
 {
   public static final int EOF = 0x2200;
   public static final int CANCEL = 0x4700;
-  public static final int RECORD_LENGTH = 4;
-  private static final byte type = 0x69;
+  public static final int CMD_FAIL = 0x0100;// according to x3270
+
+  static final byte TYPE = 0x69;
+  static final byte RECORD_LENGTH = 4;
 
   private final int errorNumber;
   private String errorText;
 
   public ErrorRecord (int error)
   {
-    super (type, RECORD_LENGTH);
+    super (TYPE, RECORD_LENGTH);
     this.errorNumber = error;
     Utility.packUnsignedShort (error, data, 2);
   }

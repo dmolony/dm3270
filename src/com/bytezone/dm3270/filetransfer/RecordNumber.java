@@ -4,14 +4,14 @@ import com.bytezone.dm3270.application.Utility;
 
 public class RecordNumber extends TransferRecord
 {
-  public static final byte RECORD_LENGTH = 6;
-  static final byte type = 0x63;
+  static final byte RECORD_LENGTH = 6;
+  static final byte TYPE = 0x63;
 
   int recordNumber;
 
   public RecordNumber (int recordNumber)
   {
-    super (type, 6);
+    super (TYPE, RECORD_LENGTH);
     Utility.packUnsignedLong (recordNumber, data, 2);
   }
 

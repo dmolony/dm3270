@@ -4,7 +4,7 @@ import com.bytezone.dm3270.application.Utility;
 
 public class DataRecord extends TransferRecord
 {
-  public static final byte HEADER_LENGTH = 5;
+  static final byte HEADER_LENGTH = 5;
 
   private final boolean compressed;
   private final byte[] buffer;
