@@ -275,7 +275,6 @@ public class ScreenDetails
     if (fields.size () == 0)
       return false;
 
-    System.out.printf ("Header size: %d%n", fields.size ());
     text = fields.get (0).getText ();
     if (!text.startsWith ("Command - Enter"))
       return false;
@@ -302,8 +301,9 @@ public class ScreenDetails
     }
     else if (fields.size () == 6)
     {
-      fields = getRowFields (7, 1);
-      if (fields.get (0).getText ().startsWith ("---"))
+      //      fields = getRowFields (7, 1);
+      //      if (fields.get (0).getText ().startsWith ("---"))
+      if (!datasetsOnVolume.isEmpty ())
       {
         screenType = 5;
         linesPerDataset = 2;
@@ -328,7 +328,7 @@ public class ScreenDetails
       datasetsToProcess = Math.min (maxRows, 17);
     }
 
-    if (true)
+    if (false)
     {
       System.out.printf ("Screen type        : %d%n", screenType);
       System.out.printf ("Lines per dataset  : %d%n", linesPerDataset);
@@ -341,8 +341,6 @@ public class ScreenDetails
       System.out.println ("Screen not recognised");
       return false;
     }
-
-    //    System.out.printf ("Datasets to process: %d%n", datasetsToProcess);
 
     while (datasetsToProcess > 0)
     {
@@ -413,7 +411,6 @@ public class ScreenDetails
           details = fields.get (3).getText ();
           if (!details.trim ().isEmpty ())
           {
-            //            System.out.printf ("[%s]%n", details);
             int length = details.length ();
             if (length > 6)
               dataset.setTracks (details.substring (0, 6).trim ());
@@ -459,10 +456,6 @@ public class ScreenDetails
           break;
 
         case 5:
-          System.out.println ();
-          for (Field field : fields)
-            System.out.println (field);
-
           datasetName = fields.get (0).getText ().trim ();
           dataset = new Dataset (datasetName);
           datasets.add (dataset);
@@ -473,8 +466,26 @@ public class ScreenDetails
           if (fields.size () >= 6)
           {
             details = fields.get (3).getText ();
+            dataset.setTracks (details.substring (0, 6).trim ());
+            dataset.setPercentUsed (details.substring (7, 10).trim ());
+            dataset.setExtents (details.substring (11, 14).trim ());
+            dataset.setDevice (details.substring (15).trim ());
 
             details = fields.get (4).getText ();
+            dataset.setDsorg (details.substring (0, 5).trim ());
+            dataset.setRecfm (details.substring (5, 10).trim ());
+            dataset.setLrecl (details.substring (10, 17).trim ());
+            blkSize = details.substring (17).trim ();
+            try
+            {
+              bls = Integer.parseInt (blkSize);
+              dataset.setBlksize (String.format ("%,7d", bls));
+            }
+            catch (NumberFormatException e)
+            {
+              System.out.println ("bollocks");
+              System.out.printf ("[%s]%n", blkSize);
+            }
 
             details = fields.get (5).getText ();
             if (!details.trim ().isEmpty ())
