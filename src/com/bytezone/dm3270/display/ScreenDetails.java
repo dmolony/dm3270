@@ -306,173 +306,197 @@ public class ScreenDetails
     if (fields.size () < 21)
       return false;
 
-    Field field = fields.get (9);
-    int location = field.getFirstLocation ();
+    Field dslistField = fields.get (9);
+    int location = dslistField.getFirstLocation ();
     if (location != 161)
       return false;
 
-    String text = field.getText ();
+    String text = dslistField.getText ();
     if (!text.startsWith ("DSLIST - Data Sets "))
       return false;
 
-    for (int i = 11; i < 13; i++)
+    //    getDatasetList ();
+    //
+    //    return true;
+    //  }
+    //
+    //  private void getDatasetList ()
+    //  {
+    List<Field> fields = getFieldsOnRow (2, 2);
+
+    text = fields.get (0).getText ();
+    String rowText = "";
+    int firstRow = 0;
+    int totalRows = 0;
+    int maxRows = 0;
+    int pos = text.indexOf ("Row ");
+    if (pos > 0)
     {
-      field = fields.get (i);
-      location = field.getFirstLocation ();
-      if (location == 241)
-        break;
+      rowText = text.substring (pos + 4);
+      text = text.substring (0, pos).trim ();
+      pos = rowText.indexOf (" of ");
+      if (pos > 0)
+      {
+        firstRow = Integer.parseInt (rowText.substring (0, pos).trim ());
+        totalRows = Integer.parseInt (rowText.substring (pos + 4).trim ());
+        maxRows = totalRows - firstRow + 1;
+      }
     }
-    if (!field.getText ().equals ("Command ===>"))
+
+    if (false)
+    {
+      System.out.printf ("%n[%s]%n", text);
+      System.out.printf ("First row : %d%n", firstRow);
+      System.out.printf ("Total rows: %d%n", totalRows);
+      System.out.printf ("Max rows  : %d%n%n", maxRows);
+    }
+
+    fields = getFieldsOnRow (5, 2);
+    if (fields.size () < 2)
       return false;
 
-    int pos = text.indexOf ("Row ");
-    String category =
-        pos > 0 ? text.substring (19, pos).trim () : text.substring (19).trim ();
+    text = fields.get (0).getText ();
+    if (!text.startsWith ("Command - Enter"))
+      return false;
 
-    if (category.startsWith ("Matching"))
-      datasetsMatching = category.substring (9).trim ();
-    else if (category.startsWith ("on volume "))
-      datasetsOnVolume = category.substring (10).trim ();
-    else
-      System.out.println ("Unknown category: " + category);
+    String heading = "";
+    int screenType = 0;
+    int rowSize = 0;
+    int rowsToProcess = 0;
+    int startLine = 0;
 
-    for (int i = 17; i < 21; i++)
+    if (fields.size () == 3)
     {
-      field = fields.get (i);
-      text = field.getText ().trim ();
-      location = field.getFirstLocation ();
-      if (text.startsWith ("Command - Enter"))
+      heading = fields.get (1).getText ().trim ();
+      if (heading.startsWith ("Tracks"))
+        screenType = 1;
+      else if (heading.startsWith ("Dsorg"))
+        screenType = 2;
+      if (screenType > 0)
       {
-        getDatasetList (i);
-        break;
+        rowSize = 1;
+        startLine = 7;
+        rowsToProcess = Math.min (maxRows, 17);
       }
     }
-
-    return true;
-  }
-
-  private void getDatasetList (int startField)
-  {
-    if (fields.size () < startField + 3)
-      return;
-
-    int fieldNo = startField + 1;
-    String text = fields.get (fieldNo).getText ().trim ();
-    if ("Message".equals (text))
-      ++fieldNo;
-
-    String heading = fields.get (fieldNo).getText ();
-    boolean isVolume = " Volume ".equals (heading);
-    boolean isTracks = "     Tracks %Used XT  Device  ".equals (heading);
-    boolean isDsorg = "    Dsorg  Recfm  Lrecl  Blksz".equals (heading);
-    boolean isCombination = false;
-
-    if (!isVolume && !isTracks && !isDsorg)
+    else if (fields.size () == 6)
     {
-      System.out.printf ("Unknown heading [%s]%n", heading);
-      return;
+      screenType = 3;
+      rowSize = 3;
+      startLine = 9;
+      rowsToProcess = Math.min (maxRows, 4);
     }
 
-    if (isVolume && fields.size () > fieldNo + 4)
+    if (false)
     {
-      //      String heading2 = fields.get (fieldNo + 1).getText ();
-      //      String heading3 = fields.get (fieldNo + 2).getText ();
-      //      String heading4 = fields.get (fieldNo + 3).getText ();
-      String heading5 = fields.get (fieldNo + 4).getText ();
-      //      System.out.printf ("[%s]%n", heading2);
-      //      System.out.printf ("[%s]%n", heading3);
-      //      System.out.printf ("[%s]%n", heading4);
-      //      System.out.printf ("[%s]%n", heading5);
-      isCombination = "Catalog".equals (heading5.trim ());
-      if (isCombination)
-        fieldNo += 4;
+      System.out.printf ("Screen type        : %d%n", screenType);
+      System.out.printf ("Lines per dataset  : %d%n", rowSize);
+      System.out.printf ("First line         : %d%n", startLine);
+      System.out.printf ("Datasets to process: %d%n%n", rowsToProcess);
     }
 
-    fieldNo += 2;
+    if (screenType == 0)
+      return false;
+
     datasets = new ArrayList<> ();
-    Dataset dataset = null;
 
-    while (fieldNo < fields.size ())
+    while (rowsToProcess > 0)
     {
-      Field field = fields.get (fieldNo);
-      int column = field.getFirstLocation () % screen.columns;
-
-      String name = field.getText ();
-
-      if (column == 1 && field.getDisplayLength () == 53)
+      String datasetName = "";
+      Dataset dataset = null;
+      fields = getFieldsOnRow (startLine, rowSize);
+      switch (screenType)
       {
-        if (field.isProtected ())
-          return;
-        dataset = new Dataset (name.substring (9).trim ());
-        datasets.add (dataset);
-      }
-      else if (column == 1 && field.getDisplayLength () == 79)
-      {
-        if (name.startsWith ("**"))
+        case 1:
+          if (fields.size () != 2)
+            break;
+
+          datasetName = fields.get (0).getText ().trim ();
+          dataset = new Dataset (datasetName);
+          datasets.add (dataset);
+          String details = fields.get (1).getText ();
+
+          if (details.trim ().isEmpty ())
+            break;
+
+          dataset.setTracks (details.substring (0, 6).trim ());
+          dataset.setPercentUsed (details.substring (7, 11).trim ());
+          dataset.setExtents (details.substring (12, 15).trim ());
+          dataset.setDevice (details.substring (17).trim ());
+
           break;
-      }
-      else if (dataset != null)
-      {
-        String details = field.getText ();
 
-        if (!details.trim ().isEmpty ())
-        {
-          if (isCombination)
-          {
-            if (column == 1)
-            {
-              dataset.setTracks (details.substring (0, 6).trim ());
-              dataset.setPercentUsed (details.substring (7, 10).trim ());
-              dataset.setExtents (details.substring (11, 14).trim ());
-              dataset.setDevice (details.substring (15).trim ());
-            }
-            else if (column == 25)
-            {
-              dataset.setDsorg (details.substring (0, 5).trim ());
-              dataset.setRecfm (details.substring (5, 10).trim ());
-              dataset.setLrecl (details.substring (10, 17).trim ());
-              String blkSize = details.substring (17).trim ();
-              int bls = Integer.parseInt (blkSize);
-              dataset.setBlksize (String.format ("%,7d", bls));
-            }
-            else if (column == 48)
-            {
-              dataset.setCreated (details.substring (0, 10).trim ());
-              dataset.setExpires (details.substring (11, 20).trim ());
-              dataset.setReferred (details.substring (22).trim ());
-            }
-            else if (column == 72)
-            {
-              dataset.setVolume (details.trim ());
-            }
-            else if (column == 11)
-              dataset.setCatalog (details.trim ());
-          }
-          else if (isVolume)
-          {
-            if (column == 72)
-              dataset.setVolume (details.trim ());
-          }
-          else if (isTracks)
+        case 2:
+          if (fields.size () != 2)
+            break;
+
+          datasetName = fields.get (0).getText ().trim ();
+          dataset = new Dataset (datasetName);
+          datasets.add (dataset);
+          details = fields.get (1).getText ();
+
+          if (details.trim ().isEmpty ())
+            break;
+
+          dataset.setDsorg (details.substring (0, 5).trim ());
+          dataset.setRecfm (details.substring (6, 11).trim ());
+          dataset.setLrecl (details.substring (12, 19).trim ());
+          String blkSize = details.substring (20).trim ();
+          int bls = Integer.parseInt (blkSize);
+          dataset.setBlksize (String.format ("%,7d", bls));
+
+          break;
+
+        case 3:
+          if (fields.size () != 7)
+            break;
+
+          datasetName = fields.get (0).getText ().trim ();
+          dataset = new Dataset (datasetName);
+          datasets.add (dataset);
+
+          details = fields.get (2).getText ();
+          dataset.setVolume (details.trim ());
+
+          details = fields.get (3).getText ();
+          if (!details.trim ().isEmpty ())
           {
             dataset.setTracks (details.substring (0, 6).trim ());
-            dataset.setPercentUsed (details.substring (7, 11).trim ());
-            dataset.setExtents (details.substring (12, 15).trim ());
-            dataset.setDevice (details.substring (17).trim ());
+            dataset.setPercentUsed (details.substring (7, 10).trim ());
+            dataset.setExtents (details.substring (11, 14).trim ());
+            dataset.setDevice (details.substring (15).trim ());
           }
-          else if (isDsorg)
+
+          details = fields.get (4).getText ();
+          if (!details.trim ().isEmpty ())
           {
             dataset.setDsorg (details.substring (0, 5).trim ());
-            dataset.setRecfm (details.substring (6, 11).trim ());
-            dataset.setLrecl (details.substring (12, 19).trim ());
-            String blkSize = details.substring (20).trim ();
-            int bls = Integer.parseInt (blkSize);
+            dataset.setRecfm (details.substring (5, 10).trim ());
+            dataset.setLrecl (details.substring (10, 17).trim ());
+            blkSize = details.substring (17).trim ();
+            bls = Integer.parseInt (blkSize);
             dataset.setBlksize (String.format ("%,7d", bls));
           }
-        }
+
+          details = fields.get (5).getText ();
+          if (!details.trim ().isEmpty ())
+          {
+            dataset.setCreated (details.substring (0, 10).trim ());
+            dataset.setExpires (details.substring (11, 20).trim ());
+            dataset.setReferred (details.substring (22).trim ());
+          }
+
+          details = fields.get (6).getText ();
+          dataset.setCatalog (details.trim ());
+
+          startLine++;// skip the row of hyphens
+          break;
       }
-      fieldNo++;
+
+      rowsToProcess--;
+      startLine += rowSize;
     }
+    return true;
   }
 
   private void checkEditOrViewDataset ()
@@ -553,10 +577,21 @@ public class ScreenDetails
 
   private List<Field> getFieldsOnRow (int requestedRow)
   {
-    List<Field> rowFields = new ArrayList<> ();
     int firstLocation = requestedRow * screen.columns;
     int lastLocation = firstLocation + screen.columns - 1;
+    return getFields (firstLocation, lastLocation);
+  }
 
+  private List<Field> getFieldsOnRow (int requestedRowFrom, int rows)
+  {
+    int firstLocation = requestedRowFrom * screen.columns;
+    int lastLocation = (requestedRowFrom + rows) * screen.columns - 1;
+    return getFields (firstLocation, lastLocation);
+  }
+
+  private List<Field> getFields (int firstLocation, int lastLocation)
+  {
+    List<Field> rowFields = new ArrayList<> ();
     for (Field field : fields)
     {
       int location = field.getFirstLocation ();
