@@ -105,7 +105,7 @@ class ReplayStage extends Stage
   private void displayFirstScreen (Session session, SessionTable table)
   {
     // look for the first useful screen
-    int[] screenSizes = { 2306, 2301, 2206, 1957 };
+    int[] screenSizes = { 2306, 2301, 2206, 1957, 2309 };
     SessionRecord dataRecord = null;
 
     if (true)

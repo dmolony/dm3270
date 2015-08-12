@@ -77,10 +77,7 @@ public class DatasetTable extends TableView<Dataset>
     if (foundDataset == null)
       datasets.add (dataset);
     else
-    {
       foundDataset.merge (dataset);
-      //      refresh ();
-    }
   }
 
   public void addMember (Dataset member)
@@ -90,7 +87,9 @@ public class DatasetTable extends TableView<Dataset>
     int pos = memberName.indexOf ('(');
     String parentName = memberName.substring (0, pos);
     String childName = memberName.substring (pos + 1, memberName.length () - 1);
+
     System.out.println (parentName + "--" + childName);
+
     for (Dataset existingDataset : datasets)
       if (existingDataset.getDatasetName ().equals (parentName))
       {

@@ -26,7 +26,8 @@ public class ScreenDetails
   private boolean isTSOCommandScreen;
   private boolean isDatasetList;
   private boolean isMemberList;
-  private String currentDataset;
+
+  private String currentDataset = "";
   private String userid = "";
   private String prefix = "";
 
@@ -87,6 +88,7 @@ public class ScreenDetails
 
     for (Field field : fieldManager.getFields ())
     {
+      //      System.out.println (field);
       if (field.getFirstLocation () > maxLocation)
         break;
 
@@ -213,95 +215,11 @@ public class ScreenDetails
     return true;
   }
 
-  private boolean checkMemberList ()
-  {
-    if (fields.size () < 14)
-      return false;
-
-    List<String> menus = getMenus ();
-    if (menus.size () != pdsMenus.length)
-      return false;
-
-    int i = 0;
-    for (String menu : menus)
-      if (!pdsMenus[i++].equals (menu))
-        return false;
-
-    Field field = fields.get (8);
-    int location = field.getFirstLocation ();
-    if (location != 161)
-      return false;
-
-    String mode = field.getText ().trim ();
-
-    field = fields.get (9);
-    if (field.getFirstLocation () != 179)
-      return false;
-    String datasetName = field.getText ().trim ();
-
-    field = fields.get (10);
-    if (field.getFirstLocation () != 221)
-      return false;
-    String rowText = field.getText ().trim ();
-    if (!"Row".equals (rowText))
-      return false;
-
-    field = fields.get (12);
-    if (field.getFirstLocation () != 231)
-      return false;
-    String ofText = field.getText ().trim ();
-    if (!"of".equals (ofText))
-      return false;
-
-    int rowFrom = Integer.parseInt (fields.get (11).getText ().trim ());
-    int rowTo = Integer.parseInt (fields.get (13).getText ().trim ());
-    int totalMembers = rowTo - rowFrom + 1;
-
-    System.out.print ("\nMember list of " + datasetName + " in " + mode + " mode");
-    System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
-
-    List<Field> headings = getFieldsOnRow (4);
-    members = new ArrayList<> ();
-
-    for (int row = 5; row < totalMembers + 5; row++)
-    {
-      List<Field> fields = getFieldsOnRow (row);
-
-      String memberName = fields.get (1).getText ().trim ();
-      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
-      members.add (member);
-
-      String details = fields.get (3).getText ();
-
-      if (headings.size () == 7)
-      {
-        String size = details.substring (3, 9);
-        String created = details.substring (11, 21);
-        String modified = details.substring (23, 33);
-        String time = details.substring (34, 42);
-        String id = details.substring (44);
-        System.out.printf ("%2d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 4, memberName,
-                           size, created, modified, time, id);
-      }
-      else if (headings.size () == 13)
-      {
-        String size = details.substring (3, 9);
-        String init = details.substring (11, 17);
-        String mod = details.substring (19, 25);
-        String vvmm = details.substring (31, 36);
-        String id = details.substring (44);
-        System.out.printf ("%2d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 4, memberName,
-                           size, init, mod, vvmm, id);
-      }
-    }
-
-    return true;
-  }
-
   private boolean checkDatasetList ()
   {
     datasetsOnVolume = "";
     datasetsMatching = "";
+    datasets = new ArrayList<> ();
 
     if (fields.size () < 21)
       return false;
@@ -365,19 +283,26 @@ public class ScreenDetails
         screenType = 1;
       else if (heading.startsWith ("Dsorg"))
         screenType = 2;
-      if (screenType > 0)
-      {
-        linesPerDataset = 1;
-        nextLine = 7;
-        datasetsToProcess = Math.min (maxRows, 17);
-      }
+    }
+    else if (fields.size () == 4)
+    {
+      heading = fields.get (2).getText ().trim ();
+      if ("Volume".equals (heading))
+        screenType = 3;
     }
     else if (fields.size () == 6)
     {
-      screenType = 3;
+      screenType = 4;
       linesPerDataset = 3;
       nextLine = 9;
       datasetsToProcess = Math.min (maxRows, 4);
+    }
+
+    if (screenType >= 1 && screenType <= 3)
+    {
+      linesPerDataset = 1;
+      nextLine = 7;
+      datasetsToProcess = Math.min (maxRows, 17);
     }
 
     if (false)
@@ -389,9 +314,12 @@ public class ScreenDetails
     }
 
     if (screenType == 0)
+    {
+      System.out.println ("Screen not recognised");
       return false;
+    }
 
-    datasets = new ArrayList<> ();
+    //    System.out.printf ("Datasets to process: %d%n", datasetsToProcess);
 
     while (datasetsToProcess > 0)
     {
@@ -441,6 +369,14 @@ public class ScreenDetails
           break;
 
         case 3:
+          datasetName = fields.get (0).getText ().trim ();
+          dataset = new Dataset (datasetName);
+          datasets.add (dataset);
+          details = fields.get (2).getText ();
+          dataset.setVolume (details.trim ());
+          break;
+
+        case 4:
           if (fields.size () != 7)
             break;
 
@@ -489,6 +425,94 @@ public class ScreenDetails
       datasetsToProcess--;
       nextLine += linesPerDataset;
     }
+    return true;
+  }
+
+  private boolean checkMemberList ()
+  {
+    members = new ArrayList<> ();
+    if (fields.size () < 14)
+      return false;
+
+    List<String> menus = getMenus ();
+    if (menus.size () != pdsMenus.length)
+      return false;
+
+    int i = 0;
+    for (String menu : menus)
+      if (!pdsMenus[i++].equals (menu))
+        return false;
+
+    Field field = fields.get (8);
+    int location = field.getFirstLocation ();
+    if (location != 161)
+      return false;
+
+    String mode = field.getText ().trim ();
+
+    field = fields.get (9);
+    if (field.getFirstLocation () != 179)
+      return false;
+    String datasetName = field.getText ().trim ();
+
+    field = fields.get (10);
+    if (field.getFirstLocation () != 221)
+      return false;
+    String rowText = field.getText ().trim ();
+    if (!"Row".equals (rowText))
+      return false;
+
+    field = fields.get (12);
+    if (field.getFirstLocation () != 231)
+      return false;
+    String ofText = field.getText ().trim ();
+    if (!"of".equals (ofText))
+      return false;
+
+    int rowFrom = Integer.parseInt (fields.get (11).getText ().trim ());
+    int rowTo = Integer.parseInt (fields.get (13).getText ().trim ());
+    //    int totalMembers = rowTo - rowFrom + 1;
+
+    System.out.print ("\nMember list of " + datasetName + " in " + mode + " mode");
+    System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
+
+    List<Field> headings = getFieldsOnRow (4);
+    int maxRows = Math.min (19, rowTo - rowFrom + 1) + 5;
+
+    for (int row = 5; row < maxRows; row++)
+    {
+      List<Field> fields = getFieldsOnRow (row);
+
+      String memberName = fields.get (1).getText ().trim ();
+      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
+      members.add (member);
+
+      String details = fields.get (3).getText ();
+
+      if (headings.size () == 7)
+      {
+        String size = details.substring (3, 9);
+        String created = details.substring (11, 21);
+        String modified = details.substring (23, 33);
+        String time = details.substring (34, 42);
+        String id = details.substring (44);
+        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 5 + rowFrom,
+                           memberName, size, created, modified, time, id);
+      }
+      else if (headings.size () == 13)
+      {
+        String size = details.substring (3, 9);
+        String init = details.substring (11, 17);
+        String mod = details.substring (19, 25);
+        String vvmm = details.substring (31, 36);
+        String id = details.substring (44);
+        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 5 + rowFrom,
+                           memberName, size, init, mod, vvmm, id);
+      }
+      else
+        System.out.println ("Unexpected headings size: " + headings.size ());
+    }
+
     return true;
   }
 
