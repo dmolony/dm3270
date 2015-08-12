@@ -270,6 +270,7 @@ public class ScreenDetails
     if (fields.size () < 2)
       return false;
 
+    System.out.printf ("Header size: %d%n", fields.size ());
     text = fields.get (0).getText ();
     if (!text.startsWith ("Command - Enter"))
       return false;
@@ -296,11 +297,24 @@ public class ScreenDetails
     }
     else if (fields.size () == 6)
     {
-      screenType = 4;
-      linesPerDataset = 3;
-      nextLine = 9;
-      datasetsToProcess = Math.min (maxRows, 4);
+      fields = getRowFields (7, 1);
+      if (fields.get (0).getText ().startsWith ("---"))
+      {
+        screenType = 5;
+        linesPerDataset = 2;
+        nextLine = 8;
+        datasetsToProcess = Math.min (maxRows, 6);
+      }
+      else
+      {
+        screenType = 4;
+        linesPerDataset = 3;
+        nextLine = 9;
+        datasetsToProcess = Math.min (maxRows, 4);
+      }
     }
+    else
+      System.out.printf ("Unexpected fields: %d%n", fields.size ());
 
     if (screenType >= 1 && screenType <= 3)
     {
@@ -309,7 +323,7 @@ public class ScreenDetails
       datasetsToProcess = Math.min (maxRows, 17);
     }
 
-    if (false)
+    if (true)
     {
       System.out.printf ("Screen type        : %d%n", screenType);
       System.out.printf ("Lines per dataset  : %d%n", linesPerDataset);
@@ -394,10 +408,16 @@ public class ScreenDetails
           details = fields.get (3).getText ();
           if (!details.trim ().isEmpty ())
           {
-            dataset.setTracks (details.substring (0, 6).trim ());
-            dataset.setPercentUsed (details.substring (7, 10).trim ());
-            dataset.setExtents (details.substring (11, 14).trim ());
-            dataset.setDevice (details.substring (15).trim ());
+            //            System.out.printf ("[%s]%n", details);
+            int length = details.length ();
+            if (length > 6)
+              dataset.setTracks (details.substring (0, 6).trim ());
+            if (length > 10)
+              dataset.setPercentUsed (details.substring (7, 10).trim ());
+            if (length > 14)
+              dataset.setExtents (details.substring (11, 14).trim ());
+            if (length > 15)
+              dataset.setDevice (details.substring (15).trim ());
           }
 
           details = fields.get (4).getText ();
@@ -407,8 +427,16 @@ public class ScreenDetails
             dataset.setRecfm (details.substring (5, 10).trim ());
             dataset.setLrecl (details.substring (10, 17).trim ());
             blkSize = details.substring (17).trim ();
-            bls = Integer.parseInt (blkSize);
-            dataset.setBlksize (String.format ("%,7d", bls));
+            try
+            {
+              bls = Integer.parseInt (blkSize);
+              dataset.setBlksize (String.format ("%,7d", bls));
+            }
+            catch (NumberFormatException e)
+            {
+              System.out.println ("bollocks");
+              System.out.printf ("[%s]%n", blkSize);
+            }
           }
 
           details = fields.get (5).getText ();
@@ -421,6 +449,36 @@ public class ScreenDetails
 
           details = fields.get (6).getText ();
           dataset.setCatalog (details.trim ());
+
+          nextLine++;// skip the row of hyphens
+          break;
+
+        case 5:
+          System.out.println ();
+          for (Field field : fields)
+            System.out.println (field);
+
+          datasetName = fields.get (0).getText ().trim ();
+          dataset = new Dataset (datasetName);
+          datasets.add (dataset);
+
+          details = fields.get (2).getText ();
+          dataset.setVolume (details.trim ());
+
+          if (fields.size () >= 6)
+          {
+            details = fields.get (3).getText ();
+
+            details = fields.get (4).getText ();
+
+            details = fields.get (5).getText ();
+            if (!details.trim ().isEmpty ())
+            {
+              dataset.setCreated (details.substring (0, 10).trim ());
+              dataset.setExpires (details.substring (11, 20).trim ());
+              dataset.setReferred (details.substring (22).trim ());
+            }
+          }
 
           nextLine++;// skip the row of hyphens
           break;
