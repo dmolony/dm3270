@@ -315,14 +315,7 @@ public class ScreenDetails
     if (!text.startsWith ("DSLIST - Data Sets "))
       return false;
 
-    //    getDatasetList ();
-    //
-    //    return true;
-    //  }
-    //
-    //  private void getDatasetList ()
-    //  {
-    List<Field> fields = getFieldsOnRow (2, 2);
+    List<Field> fields = getRowFields (2, 2);
 
     text = fields.get (0).getText ();
     String rowText = "";
@@ -351,7 +344,7 @@ public class ScreenDetails
       System.out.printf ("Max rows  : %d%n%n", maxRows);
     }
 
-    fields = getFieldsOnRow (5, 2);
+    fields = getRowFields (5, 2);
     if (fields.size () < 2)
       return false;
 
@@ -361,9 +354,9 @@ public class ScreenDetails
 
     String heading = "";
     int screenType = 0;
-    int rowSize = 0;
-    int rowsToProcess = 0;
-    int startLine = 0;
+    int linesPerDataset = 0;
+    int datasetsToProcess = 0;
+    int nextLine = 0;
 
     if (fields.size () == 3)
     {
@@ -374,25 +367,25 @@ public class ScreenDetails
         screenType = 2;
       if (screenType > 0)
       {
-        rowSize = 1;
-        startLine = 7;
-        rowsToProcess = Math.min (maxRows, 17);
+        linesPerDataset = 1;
+        nextLine = 7;
+        datasetsToProcess = Math.min (maxRows, 17);
       }
     }
     else if (fields.size () == 6)
     {
       screenType = 3;
-      rowSize = 3;
-      startLine = 9;
-      rowsToProcess = Math.min (maxRows, 4);
+      linesPerDataset = 3;
+      nextLine = 9;
+      datasetsToProcess = Math.min (maxRows, 4);
     }
 
     if (false)
     {
       System.out.printf ("Screen type        : %d%n", screenType);
-      System.out.printf ("Lines per dataset  : %d%n", rowSize);
-      System.out.printf ("First line         : %d%n", startLine);
-      System.out.printf ("Datasets to process: %d%n%n", rowsToProcess);
+      System.out.printf ("Lines per dataset  : %d%n", linesPerDataset);
+      System.out.printf ("First line         : %d%n", nextLine);
+      System.out.printf ("Datasets to process: %d%n%n", datasetsToProcess);
     }
 
     if (screenType == 0)
@@ -400,11 +393,11 @@ public class ScreenDetails
 
     datasets = new ArrayList<> ();
 
-    while (rowsToProcess > 0)
+    while (datasetsToProcess > 0)
     {
       String datasetName = "";
       Dataset dataset = null;
-      fields = getFieldsOnRow (startLine, rowSize);
+      fields = getRowFields (nextLine, linesPerDataset);
       switch (screenType)
       {
         case 1:
@@ -489,12 +482,12 @@ public class ScreenDetails
           details = fields.get (6).getText ();
           dataset.setCatalog (details.trim ());
 
-          startLine++;// skip the row of hyphens
+          nextLine++;// skip the row of hyphens
           break;
       }
 
-      rowsToProcess--;
-      startLine += rowSize;
+      datasetsToProcess--;
+      nextLine += linesPerDataset;
     }
     return true;
   }
@@ -582,7 +575,7 @@ public class ScreenDetails
     return getFields (firstLocation, lastLocation);
   }
 
-  private List<Field> getFieldsOnRow (int requestedRowFrom, int rows)
+  private List<Field> getRowFields (int requestedRowFrom, int rows)
   {
     int firstLocation = requestedRowFrom * screen.columns;
     int lastLocation = (requestedRowFrom + rows) * screen.columns - 1;
