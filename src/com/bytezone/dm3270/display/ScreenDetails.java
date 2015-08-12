@@ -16,8 +16,8 @@ public class ScreenDetails
 
   private FieldManager fieldManager;
   private List<Field> fields;
-  private List<Dataset> datasets;
-  private List<Dataset> members;
+  private final List<Dataset> datasets = new ArrayList<> ();
+  private final List<Dataset> members = new ArrayList<> ();
 
   private String datasetsMatching;
   private String datasetsOnVolume;
@@ -39,6 +39,12 @@ public class ScreenDetails
   public void check (FieldManager fieldManager)
   {
     this.fieldManager = fieldManager;
+
+    tsoCommandField = null;
+    isTSOCommandScreen = false;
+    datasets.clear ();
+    members.clear ();
+
     fields = fieldManager.getFields ();
     if (fields.size () > 2)
       checkTSOCommandField ();
@@ -84,7 +90,6 @@ public class ScreenDetails
     int maxLocation = screen.columns * 5 + 20;
     int minLocation = screen.columns;
     boolean promptFound = false;
-    tsoCommandField = null;
 
     for (Field field : fieldManager.getFields ())
     {
@@ -219,7 +224,6 @@ public class ScreenDetails
   {
     datasetsOnVolume = "";
     datasetsMatching = "";
-    datasets = new ArrayList<> ();
 
     if (fields.size () < 21)
       return false;
@@ -430,7 +434,6 @@ public class ScreenDetails
 
   private boolean checkMemberList ()
   {
-    members = new ArrayList<> ();
     if (fields.size () < 14)
       return false;
 
