@@ -163,8 +163,9 @@ public class ScreenPacker
 
   public void addTSOCommand (String command)
   {
-    tsoCommands.add (command);
-    // listTSOCommands ();
+    String minCommand = command.trim ();
+    if (!minCommand.isEmpty ())
+      tsoCommands.add (minCommand);
   }
 
   public String getPreviousTSOCommand ()
@@ -178,6 +179,6 @@ public class ScreenPacker
   {
     System.out.println ("User commands:");
     for (String command : tsoCommands)
-      System.out.println (command);
+      System.out.printf ("[%s]%n", command);
   }
 }

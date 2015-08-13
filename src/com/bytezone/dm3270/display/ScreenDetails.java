@@ -51,7 +51,7 @@ public class ScreenDetails
       boolean promptFound = hasPromptField ();
       isTSOCommandScreen = checkTSOCommandScreen ();
 
-      if (promptFound)
+      if (promptFound && !isTSOCommandScreen)
       {
 
         if (prefix.isEmpty ())
@@ -70,8 +70,6 @@ public class ScreenDetails
         if (!isDatasetList)
           isMemberList = checkMemberList ();
       }
-      //      else
-      //        System.out.println ("No prompt");
 
       if (false)
       {
