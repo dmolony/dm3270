@@ -54,7 +54,7 @@ public class ScreenPacker
         ptr = packField (field, buffer, ptr);
         if (field == tsoCommandField)
         {
-          tsoCommands.add (field.getText ().trim ());
+          addTSOCommand (field.getText ().trim ());
           tsoFieldSent = true;
         }
       }
@@ -63,7 +63,7 @@ public class ScreenPacker
     {
       String tsoCommand = tsoCommandField.getText ().trim ();
       if (!tsoCommand.isEmpty ())
-        tsoCommands.add (tsoCommand);
+        addTSOCommand (tsoCommand);
     }
 
     return new AIDCommand (screen, buffer, 0, ptr);

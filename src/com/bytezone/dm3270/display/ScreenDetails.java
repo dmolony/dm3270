@@ -49,10 +49,10 @@ public class ScreenDetails
     if (fields.size () > 2)
     {
       boolean promptFound = hasPromptField ();
+      isTSOCommandScreen = checkTSOCommandScreen ();
 
       if (promptFound)
       {
-        isTSOCommandScreen = checkTSOCommandScreen ();
 
         if (prefix.isEmpty ())
           checkPrefixScreen ();
@@ -70,6 +70,8 @@ public class ScreenDetails
         if (!isDatasetList)
           isMemberList = checkMemberList ();
       }
+      else
+        System.out.println ("No prompt");
       System.out.println (this);
     }
   }
@@ -186,6 +188,7 @@ public class ScreenDetails
 
   private boolean checkTSOCommandScreen ()
   {
+    System.out.println ("checking TSO command screen");
     if (fields.size () < 14)
       return false;
 
@@ -215,6 +218,8 @@ public class ScreenDetails
     field = fields.get (workstationFieldNo + 5);
     if (field.getDisplayLength () != 234)
       return false;
+
+    tsoCommandField = field;
 
     return true;
   }
