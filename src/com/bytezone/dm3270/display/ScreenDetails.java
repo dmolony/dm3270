@@ -319,7 +319,7 @@ public class ScreenDetails
       }
     }
     else
-      System.out.printf ("Unexpected fields: %d%n", fields.size ());
+      System.out.printf ("Unexpected number of fields: %d%n", fields.size ());
 
     if (screenType >= 1 && screenType <= 3)
     {
