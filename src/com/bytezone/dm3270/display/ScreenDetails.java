@@ -70,9 +70,14 @@ public class ScreenDetails
         if (!isDatasetList)
           isMemberList = checkMemberList ();
       }
-      else
-        System.out.println ("No prompt");
-      System.out.println (this);
+      //      else
+      //        System.out.println ("No prompt");
+
+      if (false)
+      {
+        System.out.println (this);
+        screen.listTSOCommands ();
+      }
     }
   }
 
@@ -152,7 +157,6 @@ public class ScreenDetails
 
   private void checkPrefixScreen ()
   {
-    System.out.println ("checking prefix: " + fields.size ());
     if (fields.size () < 73)
       return;
 
@@ -188,7 +192,6 @@ public class ScreenDetails
 
   private boolean checkTSOCommandScreen ()
   {
-    System.out.println ("checking TSO command screen");
     if (fields.size () < 14)
       return false;
 

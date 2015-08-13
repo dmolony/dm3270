@@ -169,6 +169,11 @@ public class Screen extends Canvas implements DisplayScreen
     screenPacker.addTSOCommand (command);
   }
 
+  public void listTSOCommands ()
+  {
+    screenPacker.listTSOCommands ();
+  }
+
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {

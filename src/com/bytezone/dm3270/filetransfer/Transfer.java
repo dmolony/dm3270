@@ -140,7 +140,6 @@ public class Transfer
         System.out.printf ("Chunk %d: %s%n", count++, chunk);
     }
 
-    System.out.println (command);
     assert"ind$file".equals (chunks[0]);
     assert"put".equals (chunks[1]) || "get".equals (chunks[1]);
 
