@@ -13,10 +13,10 @@ public class ScreenDetails
       { "Menu", "Functions", "Confirm", "Utilities", "Help" };
   private static String ispfScreen = "ISPF Primary Option Menu";
   private static String zosScreen = "z/OS Primary Option Menu";
+  private static String ispfShell = "ISPF Command Shell";
 
   private final Screen screen;
 
-  //  private FieldManager fieldManager;
   private List<Field> fields;
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -40,8 +40,6 @@ public class ScreenDetails
 
   public void check (FieldManager fieldManager)
   {
-    //    this.fieldManager = fieldManager;
-
     tsoCommandField = null;
     isTSOCommandScreen = false;
     datasets.clear ();
@@ -49,7 +47,31 @@ public class ScreenDetails
 
     fields = fieldManager.getFields ();
     if (fields.size () > 2)
-      checkTSOCommandField ();
+    {
+      boolean promptFound = hasPromptField ();
+
+      if (promptFound)
+      {
+        isTSOCommandScreen = checkTSOCommandScreen ();
+
+        if (prefix.isEmpty ())
+          checkPrefixScreen ();
+
+        currentDataset = "";
+        isDatasetList = checkDatasetList ();
+
+        if (!isDatasetList)
+        {
+          checkEditOrViewDataset ();
+          if (currentDataset.isEmpty ())
+            checkBrowseDataset ();
+        }
+
+        if (!isDatasetList)
+          isMemberList = checkMemberList ();
+      }
+      System.out.println (this);
+    }
   }
 
   public Field getTSOCommandField ()
@@ -97,73 +119,33 @@ public class ScreenDetails
     return members;
   }
 
-  private void checkTSOCommandField2 ()
+  private boolean hasPromptField ()
   {
-    List<Field> fields = getRowFields (2, 3);
-  }
-
-  private void checkTSOCommandField ()
-  {
-    int maxLocation = screen.columns * 5 + 20;
-    int minLocation = screen.columns;
-    boolean promptFound = false;
-
-    for (Field field : fields)
+    List<Field> fields = getRowFields (2, 2);
+    for (int i = 0; i < fields.size (); i++)
     {
-      if (field.getFirstLocation () > maxLocation)
-        break;
-
-      if (field.getFirstLocation () < minLocation)
-        continue;
-
-      int length = field.getDisplayLength ();
-
-      if (promptFound)
-      {
-        if (field.isProtected () || field.isHidden ())
-          break;
-
-        if (length < 48 || (length > 70 && length != 234))
-          break;
-
-        tsoCommandField = field;
-        break;
-      }
-
-      int column = field.getFirstLocation () % screen.columns;
-      if (column > 2)
-        continue;
-
-      if (field.isUnprotected () || field.isHidden () || length < 4 || length > 15)
-        continue;
-
+      Field field = fields.get (i);
       String text = field.getText ();
-
-      if (text.endsWith ("===>"))
-        promptFound = true;// next loop iteration will return the field
-    }
-
-    if (promptFound)
-    {
-      isTSOCommandScreen = checkTSOCommandScreen ();
-
-      if (prefix.isEmpty ())
-        checkPrefixScreen ();
-
-      currentDataset = "";
-      isDatasetList = checkDatasetList ();
-
-      if (!isDatasetList)
+      int column = field.getFirstLocation () % screen.columns;
+      int nextFieldNo = i + 1;
+      if (nextFieldNo < fields.size () && column == 1
+          && ("Command ===>".equals (text) || "Option ===>".equals (text)))
       {
-        checkEditOrViewDataset ();
-        if (currentDataset.isEmpty ())
-          checkBrowseDataset ();
-      }
+        Field nextField = fields.get (nextFieldNo);
+        int length = nextField.getDisplayLength ();
+        boolean modifiable = nextField.isUnprotected ();
+        boolean hidden = nextField.isHidden ();
 
-      if (!isDatasetList)
-        isMemberList = checkMemberList ();
+        if (length == 66 || length == 48 && !hidden && modifiable)
+        {
+          tsoCommandField = nextField;
+          return true;
+        }
+      }
     }
-    System.out.println (this);
+
+    tsoCommandField = null;
+    return false;
   }
 
   private void checkPrefixScreen ()
@@ -177,20 +159,17 @@ public class ScreenDetails
     if (!ispfScreen.equals (heading) && !zosScreen.equals (heading))
       return;
 
-    System.out.println ("here0");
     field = fields.get (23);
     if (!" User ID . :".equals (field.getText ()))
       return;
     if (field.getFirstLocation () != 457)
       return;
 
-    System.out.println ("here1");
     field = fields.get (24);
     if (field.getFirstLocation () != 470)
       return;
 
     userid = field.getText ().trim ();
-    System.out.println ("here2");
 
     field = fields.get (72);
     if (!" TSO prefix:".equals (field.getText ()))
@@ -211,7 +190,7 @@ public class ScreenDetails
       return false;
 
     Field field = fields.get (10);
-    if (!"ISPF Command Shell".equals (field.getText ()))
+    if (!ispfShell.equals (field.getText ()))
       return false;
 
     int workstationFieldNo = 13;
@@ -453,10 +432,16 @@ public class ScreenDetails
   {
     if (!details.trim ().isEmpty ())
     {
-      dataset.setTracks (details.substring (0, 6).trim ());
-      dataset.setPercentUsed (details.substring (7, 10).trim ());
-      dataset.setExtents (details.substring (11, 14).trim ());
-      dataset.setDevice (details.substring (15).trim ());
+      String tracks = details.substring (0, 6);
+      String pct = details.substring (7, 10);
+      String extents = details.substring (10, 14);
+      String device = details.substring (15);
+
+      dataset.setTracks (tracks.trim ());
+      dataset.setPercentUsed (pct.trim ());
+      dataset.setExtents (extents.trim ());
+      dataset.setDevice (device.trim ());
+      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", tracks, pct, extents, device);
     }
   }
 
@@ -464,10 +449,16 @@ public class ScreenDetails
   {
     if (!details.trim ().isEmpty ())
     {
-      dataset.setTracks (details.substring (0, 6).trim ());
-      dataset.setPercentUsed (details.substring (8, 11).trim ());
-      dataset.setExtents (details.substring (12, 15).trim ());
-      dataset.setDevice (details.substring (17).trim ());
+      String tracks = details.substring (0, 6);
+      String pct = details.substring (8, 11);
+      String extents = details.substring (11, 15);
+      String device = details.substring (17);
+
+      dataset.setTracks (tracks.trim ());
+      dataset.setPercentUsed (pct.trim ());
+      dataset.setExtents (extents.trim ());
+      dataset.setDevice (device.trim ());
+      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", tracks, pct, extents, device);
     }
   }
 
@@ -475,20 +466,25 @@ public class ScreenDetails
   {
     if (!details.trim ().isEmpty ())
     {
-      dataset.setDsorg (details.substring (0, 5).trim ());
-      dataset.setRecfm (details.substring (5, 9).trim ());
-      dataset.setLrecl (details.substring (9, 17).trim ());
-      String blkSize = details.substring (17).trim ();
-      try
-      {
-        int bls = Integer.parseInt (blkSize);
-        dataset.setBlksize (String.format ("%,7d", bls));
-      }
-      catch (NumberFormatException e)
-      {
-        System.out.println ("bollocks");
-        System.out.printf ("[%s]%n", blkSize);
-      }
+      String dsorg = details.substring (0, 5);
+      String recfm = details.substring (5, 10);
+      String lrecl = details.substring (10, 16);
+      String blksize = details.substring (16);
+
+      dataset.setDsorg (dsorg.trim ());
+      dataset.setRecfm (recfm.trim ());
+      dataset.setLrecl (lrecl.trim ());
+      //      try
+      //      {
+      int bls = Integer.parseInt (blksize.trim ());
+      dataset.setBlksize (String.format ("%,7d", bls));
+      //      }
+      //      catch (NumberFormatException e)
+      //      {
+      //        System.out.println ("bollocks");
+      //        System.out.printf ("[%s]%n", blksize);
+      //      }
+      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", dsorg, recfm, lrecl, blksize);
     }
   }
 
@@ -496,12 +492,19 @@ public class ScreenDetails
   {
     if (!details.trim ().isEmpty ())
     {
-      dataset.setDsorg (details.substring (0, 5).trim ());
-      dataset.setRecfm (details.substring (6, 11).trim ());
-      dataset.setLrecl (details.substring (12, 19).trim ());
-      String blkSize = details.substring (20).trim ();
-      int bls = Integer.parseInt (blkSize);
+      String dsorg = details.substring (0, 5);
+      String recfm = details.substring (6, 11);
+      String lrecl = details.substring (12, 18);
+      String blksize = details.substring (19);
+
+      dataset.setDsorg (dsorg.trim ());
+      dataset.setRecfm (recfm.trim ());
+      dataset.setLrecl (lrecl.trim ());
+
+      int bls = Integer.parseInt (blksize.trim ());
       dataset.setBlksize (String.format ("%,7d", bls));
+
+      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", dsorg, recfm, lrecl, blksize);
     }
   }
 
@@ -718,7 +721,7 @@ public class ScreenDetails
 
     text.append ("Screen details:\n");
     text.append (String.format ("TSO screen ..... %s%n", isTSOCommandScreen));
-    text.append (String.format ("TSO field ...... %s%n", tsoCommandField));
+    text.append (String.format ("Prompt field ... %s%n", tsoCommandField));
     text.append (String.format ("Dataset list ... %s%n", isDatasetList));
     text.append (String.format ("Members list ... %s%n", isMemberList));
     text.append (String.format ("Userid/prefix .. %s / %s%n", userid, prefix));
