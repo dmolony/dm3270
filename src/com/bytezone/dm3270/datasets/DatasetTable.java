@@ -88,10 +88,10 @@ public class DatasetTable extends TableView<Dataset>
     String parentName = memberName.substring (0, pos);
     String childName = memberName.substring (pos + 1, memberName.length () - 1);
 
-    System.out.println (parentName + "--" + childName);
+    //    System.out.println (parentName + "--" + childName);
 
     for (Dataset existingDataset : datasets)
-      if (existingDataset.getDatasetName ().equals (parentName))
+      if (existingDataset.getDatasetName ().equals (memberName))
       {
         foundDataset = existingDataset;
         break;
@@ -99,14 +99,14 @@ public class DatasetTable extends TableView<Dataset>
 
     if (foundDataset == null)
     {
-      //      datasets.add (member);
-      System.out.println ("parent not found");
+      datasets.add (member);
+      //      System.out.println ("parent not found");
     }
     else
     {
       //      foundDataset.merge (member);
       //      foundDataset.getChildren ().add (childName);
-      System.out.println ("parent found");
+      //      System.out.println ("parent found");
       //      refresh ();
     }
   }

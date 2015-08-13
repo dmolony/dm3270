@@ -11,10 +11,12 @@ public class ScreenDetails
       { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
   private static final String[] pdsMenus =
       { "Menu", "Functions", "Confirm", "Utilities", "Help" };
+  private static String ispfScreen = "ISPF Primary Option Menu";
+  private static String zosScreen = "z/OS Primary Option Menu";
 
   private final Screen screen;
 
-  private FieldManager fieldManager;
+  //  private FieldManager fieldManager;
   private List<Field> fields;
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -38,7 +40,7 @@ public class ScreenDetails
 
   public void check (FieldManager fieldManager)
   {
-    this.fieldManager = fieldManager;
+    //    this.fieldManager = fieldManager;
 
     tsoCommandField = null;
     isTSOCommandScreen = false;
@@ -58,6 +60,16 @@ public class ScreenDetails
   public boolean isTSOCommandScreen ()
   {
     return isTSOCommandScreen;
+  }
+
+  public boolean isDatasetList ()
+  {
+    return isDatasetList;
+  }
+
+  public boolean isMemberList ()
+  {
+    return isMemberList;
   }
 
   public String getCurrentDataset ()
@@ -85,15 +97,19 @@ public class ScreenDetails
     return members;
   }
 
+  private void checkTSOCommandField2 ()
+  {
+    List<Field> fields = getRowFields (2, 3);
+  }
+
   private void checkTSOCommandField ()
   {
     int maxLocation = screen.columns * 5 + 20;
     int minLocation = screen.columns;
     boolean promptFound = false;
 
-    for (Field field : fieldManager.getFields ())
+    for (Field field : fields)
     {
-      //      System.out.println (field);
       if (field.getFirstLocation () > maxLocation)
         break;
 
@@ -147,30 +163,34 @@ public class ScreenDetails
       if (!isDatasetList)
         isMemberList = checkMemberList ();
     }
+    System.out.println (this);
   }
 
   private void checkPrefixScreen ()
   {
+    System.out.println ("checking prefix: " + fields.size ());
     if (fields.size () < 73)
       return;
 
-    String ispfScreen = "ISPF Primary Option Menu";
-
     Field field = fields.get (10);
-    if (!ispfScreen.equals (field.getText ()))
+    String heading = field.getText ();
+    if (!ispfScreen.equals (heading) && !zosScreen.equals (heading))
       return;
 
+    System.out.println ("here0");
     field = fields.get (23);
     if (!" User ID . :".equals (field.getText ()))
       return;
     if (field.getFirstLocation () != 457)
       return;
 
+    System.out.println ("here1");
     field = fields.get (24);
     if (field.getFirstLocation () != 470)
       return;
 
     userid = field.getText ().trim ();
+    System.out.println ("here2");
 
     field = fields.get (72);
     if (!" TSO prefix:".equals (field.getText ()))
@@ -515,6 +535,8 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
+    if (!mode.equals ("EDIT"))
+      System.out.println ("Unexpected mode: " + mode);
 
     field = fields.get (9);
     if (field.getFirstLocation () != 179)
@@ -537,10 +559,9 @@ public class ScreenDetails
 
     int rowFrom = Integer.parseInt (fields.get (11).getText ().trim ());
     int rowTo = Integer.parseInt (fields.get (13).getText ().trim ());
-    //    int totalMembers = rowTo - rowFrom + 1;
 
-    System.out.print ("\nMember list of " + datasetName + " in " + mode + " mode");
-    System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
+    //    System.out.print ("\nMember list of " + datasetName + " in " + mode + " mode");
+    //    System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
 
     List<Field> headings = getFieldsOnRow (4);
     int maxRows = Math.min (19, rowTo - rowFrom + 1) + 5;
@@ -564,6 +585,8 @@ public class ScreenDetails
         String id = details.substring (44);
         System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 5 + rowFrom,
                            memberName, size, created, modified, time, id);
+        member.setCreated (created);
+        member.setReferred (modified);
       }
       else if (headings.size () == 13)
       {
@@ -612,7 +635,7 @@ public class ScreenDetails
 
   private void checkBrowseDataset ()
   {
-    if (fields.size () < 8)
+    if (fields.size () < 9)
       return;
 
     Field field = fields.get (7);
@@ -697,6 +720,7 @@ public class ScreenDetails
     text.append (String.format ("TSO screen ..... %s%n", isTSOCommandScreen));
     text.append (String.format ("TSO field ...... %s%n", tsoCommandField));
     text.append (String.format ("Dataset list ... %s%n", isDatasetList));
+    text.append (String.format ("Members list ... %s%n", isMemberList));
     text.append (String.format ("Userid/prefix .. %s / %s%n", userid, prefix));
     text.append (String.format ("Datasets for ... %s%n", datasetsMatching));
     text.append (String.format ("Volume ......... %s%n", datasetsOnVolume));
