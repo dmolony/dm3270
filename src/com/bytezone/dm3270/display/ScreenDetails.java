@@ -301,8 +301,6 @@ public class ScreenDetails
     }
     else if (fields.size () == 6)
     {
-      //      fields = getRowFields (7, 1);
-      //      if (fields.get (0).getText ().startsWith ("---"))
       if (!datasetsOnVolume.isEmpty ())
       {
         screenType = 5;
@@ -351,41 +349,31 @@ public class ScreenDetails
       {
         case 1:
           if (fields.size () != 2)
+          {
+            System.out.println ("wrong size: " + fields.size ());
             break;
+          }
 
           datasetName = fields.get (0).getText ().trim ();
           dataset = new Dataset (datasetName);
           datasets.add (dataset);
-          String details = fields.get (1).getText ();
 
-          if (details.trim ().isEmpty ())
-            break;
-
-          dataset.setTracks (details.substring (0, 6).trim ());
-          dataset.setPercentUsed (details.substring (7, 11).trim ());
-          dataset.setExtents (details.substring (12, 15).trim ());
-          dataset.setDevice (details.substring (17).trim ());
+          setSpace2 (dataset, fields.get (1).getText ());
 
           break;
 
         case 2:
           if (fields.size () != 2)
+          {
+            System.out.println ("wrong size: " + fields.size ());
             break;
+          }
 
           datasetName = fields.get (0).getText ().trim ();
           dataset = new Dataset (datasetName);
           datasets.add (dataset);
-          details = fields.get (1).getText ();
 
-          if (details.trim ().isEmpty ())
-            break;
-
-          dataset.setDsorg (details.substring (0, 5).trim ());
-          dataset.setRecfm (details.substring (6, 11).trim ());
-          dataset.setLrecl (details.substring (12, 19).trim ());
-          String blkSize = details.substring (20).trim ();
-          int bls = Integer.parseInt (blkSize);
-          dataset.setBlksize (String.format ("%,7d", bls));
+          setDisposition2 (dataset, fields.get (1).getText ());
 
           break;
 
@@ -393,64 +381,25 @@ public class ScreenDetails
           datasetName = fields.get (0).getText ().trim ();
           dataset = new Dataset (datasetName);
           datasets.add (dataset);
-          details = fields.get (2).getText ();
-          dataset.setVolume (details.trim ());
+          dataset.setVolume (fields.get (2).getText ().trim ());
           break;
 
         case 4:
           if (fields.size () != 7)
+          {
+            System.out.println ("wrong size: " + fields.size ());
             break;
+          }
 
           datasetName = fields.get (0).getText ().trim ();
           dataset = new Dataset (datasetName);
           datasets.add (dataset);
 
-          details = fields.get (2).getText ();
-          dataset.setVolume (details.trim ());
-
-          details = fields.get (3).getText ();
-          if (!details.trim ().isEmpty ())
-          {
-            int length = details.length ();
-            if (length > 6)
-              dataset.setTracks (details.substring (0, 6).trim ());
-            if (length > 10)
-              dataset.setPercentUsed (details.substring (7, 10).trim ());
-            if (length > 14)
-              dataset.setExtents (details.substring (11, 14).trim ());
-            if (length > 15)
-              dataset.setDevice (details.substring (15).trim ());
-          }
-
-          details = fields.get (4).getText ();
-          if (!details.trim ().isEmpty ())
-          {
-            dataset.setDsorg (details.substring (0, 5).trim ());
-            dataset.setRecfm (details.substring (5, 10).trim ());
-            dataset.setLrecl (details.substring (10, 17).trim ());
-            blkSize = details.substring (17).trim ();
-            try
-            {
-              bls = Integer.parseInt (blkSize);
-              dataset.setBlksize (String.format ("%,7d", bls));
-            }
-            catch (NumberFormatException e)
-            {
-              System.out.println ("bollocks");
-              System.out.printf ("[%s]%n", blkSize);
-            }
-          }
-
-          details = fields.get (5).getText ();
-          if (!details.trim ().isEmpty ())
-          {
-            dataset.setCreated (details.substring (0, 10).trim ());
-            dataset.setExpires (details.substring (11, 20).trim ());
-            dataset.setReferred (details.substring (22).trim ());
-          }
-
-          details = fields.get (6).getText ();
-          dataset.setCatalog (details.trim ());
+          dataset.setVolume (fields.get (2).getText ().trim ());
+          setSpace1 (dataset, fields.get (3).getText ());
+          setDisposition1 (dataset, fields.get (4).getText ());
+          setDates (dataset, fields.get (5).getText ());
+          dataset.setCatalog (fields.get (6).getText ().trim ());
 
           nextLine++;// skip the row of hyphens
           break;
@@ -460,40 +409,13 @@ public class ScreenDetails
           dataset = new Dataset (datasetName);
           datasets.add (dataset);
 
-          details = fields.get (2).getText ();
-          dataset.setVolume (details.trim ());
+          dataset.setVolume (fields.get (2).getText ().trim ());
 
           if (fields.size () >= 6)
           {
-            details = fields.get (3).getText ();
-            dataset.setTracks (details.substring (0, 6).trim ());
-            dataset.setPercentUsed (details.substring (7, 10).trim ());
-            dataset.setExtents (details.substring (11, 14).trim ());
-            dataset.setDevice (details.substring (15).trim ());
-
-            details = fields.get (4).getText ();
-            dataset.setDsorg (details.substring (0, 5).trim ());
-            dataset.setRecfm (details.substring (5, 10).trim ());
-            dataset.setLrecl (details.substring (10, 17).trim ());
-            blkSize = details.substring (17).trim ();
-            try
-            {
-              bls = Integer.parseInt (blkSize);
-              dataset.setBlksize (String.format ("%,7d", bls));
-            }
-            catch (NumberFormatException e)
-            {
-              System.out.println ("bollocks");
-              System.out.printf ("[%s]%n", blkSize);
-            }
-
-            details = fields.get (5).getText ();
-            if (!details.trim ().isEmpty ())
-            {
-              dataset.setCreated (details.substring (0, 10).trim ());
-              dataset.setExpires (details.substring (11, 20).trim ());
-              dataset.setReferred (details.substring (22).trim ());
-            }
+            setSpace1 (dataset, fields.get (3).getText ());
+            setDisposition1 (dataset, fields.get (4).getText ());
+            setDates (dataset, fields.get (5).getText ());
           }
 
           nextLine++;// skip the row of hyphens
@@ -505,6 +427,72 @@ public class ScreenDetails
     }
 
     return true;
+  }
+
+  private void setSpace1 (Dataset dataset, String details)
+  {
+    if (!details.trim ().isEmpty ())
+    {
+      dataset.setTracks (details.substring (0, 6).trim ());
+      dataset.setPercentUsed (details.substring (7, 10).trim ());
+      dataset.setExtents (details.substring (11, 14).trim ());
+      dataset.setDevice (details.substring (15).trim ());
+    }
+  }
+
+  private void setSpace2 (Dataset dataset, String details)
+  {
+    if (!details.trim ().isEmpty ())
+    {
+      dataset.setTracks (details.substring (0, 6).trim ());
+      dataset.setPercentUsed (details.substring (8, 11).trim ());
+      dataset.setExtents (details.substring (12, 15).trim ());
+      dataset.setDevice (details.substring (17).trim ());
+    }
+  }
+
+  private void setDisposition1 (Dataset dataset, String details)
+  {
+    if (!details.trim ().isEmpty ())
+    {
+      dataset.setDsorg (details.substring (0, 5).trim ());
+      dataset.setRecfm (details.substring (5, 9).trim ());
+      dataset.setLrecl (details.substring (9, 17).trim ());
+      String blkSize = details.substring (17).trim ();
+      try
+      {
+        int bls = Integer.parseInt (blkSize);
+        dataset.setBlksize (String.format ("%,7d", bls));
+      }
+      catch (NumberFormatException e)
+      {
+        System.out.println ("bollocks");
+        System.out.printf ("[%s]%n", blkSize);
+      }
+    }
+  }
+
+  private void setDisposition2 (Dataset dataset, String details)
+  {
+    if (!details.trim ().isEmpty ())
+    {
+      dataset.setDsorg (details.substring (0, 5).trim ());
+      dataset.setRecfm (details.substring (6, 11).trim ());
+      dataset.setLrecl (details.substring (12, 19).trim ());
+      String blkSize = details.substring (20).trim ();
+      int bls = Integer.parseInt (blkSize);
+      dataset.setBlksize (String.format ("%,7d", bls));
+    }
+  }
+
+  private void setDates (Dataset dataset, String details)
+  {
+    if (!details.trim ().isEmpty ())
+    {
+      dataset.setCreated (details.substring (0, 10).trim ());
+      dataset.setExpires (details.substring (11, 20).trim ());
+      dataset.setReferred (details.substring (22).trim ());
+    }
   }
 
   private boolean checkMemberList ()
