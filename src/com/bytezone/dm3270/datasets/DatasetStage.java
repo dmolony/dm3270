@@ -144,12 +144,6 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
       tsoCommandField.setText (txtCommand.getText ());
       if (consolePane != null)
         consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-
-      //      if (selectedBatchJob.getOutputFile () == null)
-      //      {
-      //        selectedBatchJob.setOutputFile (selectedBatchJob.datasetName ());
-      //        jobTable.refresh ();
-      //      }
     }
   }
 
@@ -163,6 +157,9 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
   public void screenChanged (ScreenDetails screenDetails)
   {
     this.screenDetails = screenDetails;
+    this.isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
+    this.tsoCommandField = screenDetails.getTSOCommandField ();
+
     List<Dataset> datasets = screenDetails.getDatasets ();
     if (datasets != null)
       for (Dataset dataset : datasets)
@@ -173,6 +170,7 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
       for (Dataset dataset : members)
         datasetTable.addMember (dataset);
 
-    datasetTable.refresh ();
+    datasetTable.refresh ();// temporary fix until 8u60
+    setButton ();
   }
 }

@@ -44,31 +44,33 @@ public class ScreenDetails
     isTSOCommandScreen = false;
     datasets.clear ();
     members.clear ();
+    currentDataset = "";
 
     fields = fieldManager.getFields ();
     if (fields.size () > 2)
     {
       boolean promptFound = hasPromptField ();
-      isTSOCommandScreen = checkTSOCommandScreen ();
 
-      if (promptFound && !isTSOCommandScreen)
+      if (promptFound)
       {
-
         if (prefix.isEmpty ())
-          checkPrefixScreen ();
+          checkPrefixScreen ();// initial ISPF screen
 
-        currentDataset = "";
-        isDatasetList = checkDatasetList ();
-
-        if (!isDatasetList)
+        isTSOCommandScreen = checkTSOCommandScreen ();
+        if (!isTSOCommandScreen)
         {
-          checkEditOrViewDataset ();
-          if (currentDataset.isEmpty ())
-            checkBrowseDataset ();
-        }
+          isDatasetList = checkDatasetList ();
 
-        if (!isDatasetList)
-          isMemberList = checkMemberList ();
+          if (!isDatasetList)
+          {
+            checkEditOrViewDataset ();
+            if (currentDataset.isEmpty ())
+              checkBrowseDataset ();
+          }
+
+          if (!isDatasetList)
+            isMemberList = checkMemberList ();
+        }
       }
 
       if (false)
