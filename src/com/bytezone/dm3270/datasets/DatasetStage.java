@@ -61,7 +61,7 @@ public class DatasetStage extends Stage implements TSOCommandStatusListener
     bottomBorderPane.setLeft (optionsBox);
     bottomBorderPane.setRight (buttonBox);
 
-    btnHide.setOnAction (e -> hide ());
+    btnHide.setOnAction (e -> closeWindow ());
     btnExecute.setOnAction (e -> execute ());
 
     datasetTable.getSelectionModel ().selectedItemProperty ()
