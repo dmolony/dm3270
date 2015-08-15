@@ -26,8 +26,10 @@ public class AssistantStage extends Stage implements TSOCommandStatusListener
 
   private final TSOCommand tsoCommand = new TSOCommand ();
   private final Button btnHide = new Button ("Hide Window");
+
   private final TabPane tabPane = new TabPane ();
   private final DatasetTab datasetTab;
+  private final JobTab jobTab;
 
   public AssistantStage ()
   {
@@ -37,7 +39,8 @@ public class AssistantStage extends Stage implements TSOCommandStatusListener
     btnHide.setOnAction (e -> closeWindow ());
 
     datasetTab = new DatasetTab (tsoCommand.txtCommand, tsoCommand.btnExecute);
-    tabPane.getTabs ().add (datasetTab);
+    jobTab = new JobTab (tsoCommand.txtCommand, tsoCommand.btnExecute);
+    tabPane.getTabs ().addAll (datasetTab, jobTab);
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
@@ -79,5 +82,17 @@ public class AssistantStage extends Stage implements TSOCommandStatusListener
   {
     tsoCommand.screenChanged (screenDetails);
     datasetTab.screenChanged (screenDetails);
+    jobTab.screenChanged (screenDetails);
+  }
+
+  public void batchJobSubmitted (int jobNumber, String jobName)
+  {
+    jobTab.batchJobSubmitted (jobNumber, jobName);
+  }
+
+  public void batchJobEnded (int jobNumber, String jobName, String time,
+      int conditionCode)
+  {
+    jobTab.batchJobEnded (jobNumber, jobName, time, conditionCode);
   }
 }

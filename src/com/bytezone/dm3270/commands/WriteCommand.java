@@ -13,29 +13,33 @@ import com.bytezone.dm3270.orders.TextOrder;
 
 public class WriteCommand extends Command
 {
-  private static final Pattern jobSubmittedPattern = Pattern
-      .compile ("^JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
-  private static final Pattern jobCompletedPattern = Pattern
-      .compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
+  private static final Pattern jobSubmittedPattern =
+      Pattern.compile ("^JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
+  private static final Pattern jobCompletedPattern =
+      Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* MAXCC=(\\d+).*");
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
 
-  private final byte[] systemMessage1 = { //
-      Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
-          Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
-  private final byte[] systemMessage2 = { //
-      Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-          Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-          Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
-  private final byte[] systemMessage3 = { //
-      Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-          Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-          Order.INSERT_CURSOR };
+  private final byte[] systemMessage1 =
+      { //
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+  private final byte[] systemMessage2 =
+      { //
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+  private final byte[] systemMessage3 =
+      { //
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.INSERT_CURSOR };
   private String systemMessageText;
 
-  public WriteCommand (byte[] buffer, int offset, int length, Screen screen, boolean erase)
+  public WriteCommand (byte[] buffer, int offset, int length, Screen screen,
+      boolean erase)
   {
     super (buffer, offset, length, screen);
 
@@ -84,7 +88,7 @@ public class WriteCommand extends Command
     this.orders.addAll (orders);
 
     // create new data buffer
-    int length = 2;                   // command + WCC
+    int length = 2;// command + WCC
     for (Order order : orders)
       length += order.size ();
     data = new byte[length];
@@ -111,12 +115,12 @@ public class WriteCommand extends Command
     boolean drawScreen = false;
 
     if (eraseWrite)
-      screen.clearScreen ();                // resets pen
+      screen.clearScreen ();// resets pen
 
     if (orders.size () > 0)
     {
       for (Order order : orders)
-        order.process (screen);             // modifies pen
+        order.process (screen);// modifies pen
 
       cursor.moveTo (cursorLocation);
       screen.buildFields (writeControlCharacter);
@@ -125,7 +129,7 @@ public class WriteCommand extends Command
 
     if (writeControlCharacter != null)
     {
-      writeControlCharacter.process (screen);     // may unlock the keyboard
+      writeControlCharacter.process (screen);// may unlock the keyboard
       screen.checkRecording ();
     }
 
@@ -138,7 +142,7 @@ public class WriteCommand extends Command
     if (drawScreen)
       screen.drawScreen ();
 
-    checkSystemMessage ();       // check screen for jobs submitted or finished
+    checkSystemMessage ();// check screen for jobs submitted or finished
   }
 
   private boolean checkSystemMessage ()
@@ -184,6 +188,7 @@ public class WriteCommand extends Command
     {
       int jobNumber = Integer.parseInt (matcher.group (2));
       screen.getJobStage ().batchJobSubmitted (jobNumber, matcher.group (1));
+      screen.getAssistantStage ().batchJobSubmitted (jobNumber, matcher.group (1));
     }
 
     matcher = jobCompletedPattern.matcher (systemMessageText);
@@ -193,6 +198,8 @@ public class WriteCommand extends Command
       int conditionCode = Integer.parseInt (matcher.group (4));
       screen.getJobStage ().batchJobEnded (jobNumber, matcher.group (3),
                                            matcher.group (1), conditionCode);
+      screen.getAssistantStage ().batchJobEnded (jobNumber, matcher.group (3),
+                                                 matcher.group (1), conditionCode);
     }
 
     return true;

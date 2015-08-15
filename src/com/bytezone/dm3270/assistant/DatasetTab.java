@@ -28,6 +28,7 @@ public class DatasetTab extends Tab implements TSOCommandStatusListener
   {
     super ("Datasets");
 
+    setClosable (false);
     this.txtCommand = text;
     this.btnExecute = execute;
     //    setTitle ("Datasets");
@@ -74,11 +75,6 @@ public class DatasetTab extends Tab implements TSOCommandStatusListener
     //    windowSaver = new WindowSaver (prefs, this, "DatasetStage");
     //    windowSaver.restoreWindow ();
   }
-
-  //  public void setConsolePane (ConsolePane consolePane)
-  //  {
-  //    this.consolePane = consolePane;
-  //  }
 
   private void select (Dataset dataset)
   {
