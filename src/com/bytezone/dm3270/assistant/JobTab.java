@@ -74,6 +74,12 @@ public class JobTab extends TransferTab implements TSOCommandStatusListener
   @Override
       void setText ()
   {
+    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
+    {
+      txtCommand.setText ("");
+      return;
+    }
+
     String report = selectedBatchJob.getOutputFile ();
     String command = report == null ? selectedBatchJob.outputCommand ()
         : String.format ("IND$FILE GET %s", report);

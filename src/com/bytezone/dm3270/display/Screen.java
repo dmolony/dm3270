@@ -17,10 +17,6 @@ import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
-import com.bytezone.dm3270.datasets.DatasetStage;
-import com.bytezone.dm3270.filetransfer.FileStage;
-import com.bytezone.dm3270.filetransfer.TransferStage;
-import com.bytezone.dm3270.jobs.JobStage;
 import com.bytezone.dm3270.plugins.PluginsStage;
 
 import javafx.scene.canvas.Canvas;
@@ -34,11 +30,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final ScreenPosition[] screenPositions;
   private final FieldManager fieldManager;
   private final FontManager fontManager;
-  private final JobStage jobStage;
-  private final DatasetStage datasetStage;
-  private final FileStage fileStage;
   private final PluginsStage pluginsStage;
-  private final TransferStage transferStage;
   private final AssistantStage assistantStage;
   private final ScreenDetails screenDetails;
 
@@ -82,10 +74,6 @@ public class Screen extends Canvas implements DisplayScreen
     screenDetails = new ScreenDetails (this);
     fieldManager = new FieldManager (this, pen.getBase ());
 
-    jobStage = new JobStage ();
-    datasetStage = new DatasetStage ();
-    fileStage = new FileStage (prefs);
-    transferStage = new TransferStage (this);
     assistantStage = new AssistantStage ();
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
@@ -101,10 +89,6 @@ public class Screen extends Canvas implements DisplayScreen
       screenPositions[i] =
           new ScreenPosition (i, graphicsContext, characterSize, baseContext);
 
-    addTSOCommandStatusChangeListener (jobStage);
-    addTSOCommandStatusChangeListener (datasetStage);
-    addTSOCommandStatusChangeListener (transferStage);
-    addTSOCommandStatusChangeListener (fileStage);
     addTSOCommandStatusChangeListener (assistantStage);
   }
 
@@ -112,9 +96,6 @@ public class Screen extends Canvas implements DisplayScreen
   // ConsolePane is needed to send an AID command
   public void setConsolePane (ConsolePane consolePane)
   {
-    jobStage.setConsolePane (consolePane);
-    datasetStage.setConsolePane (consolePane);
-    transferStage.setConsolePane (consolePane);
     assistantStage.setConsolePane (consolePane);
   }
 
@@ -139,30 +120,10 @@ public class Screen extends Canvas implements DisplayScreen
     return pluginsStage;
   }
 
-  //  public JobStage getJobStage ()
-  //  {
-  //    return jobStage;
-  //  }
-
-  public DatasetStage getDatasetStage ()
-  {
-    return datasetStage;
-  }
-
   public AssistantStage getAssistantStage ()
   {
     return assistantStage;
   }
-
-  //  public FileStage getFileStage ()
-  //  {
-  //    return fileStage;
-  //  }
-
-  //  public TransferStage getTransferStage ()
-  //  {
-  //    return transferStage;
-  //  }
 
   public Function getFunction ()
   {
