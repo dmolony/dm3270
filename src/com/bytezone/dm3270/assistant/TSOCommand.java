@@ -11,30 +11,40 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 
 public class TSOCommand implements TSOCommandStatusListener
 {
   private final HBox hbox = new HBox (10);
 
   private final Label lblCommand = new Label ("TSO Command");
-  private final TextField txtCommand = new TextField ();
+  final TextField txtCommand = new TextField ();
+  final Button btnExecute = new Button ("Execute");
 
   private ConsolePane consolePane;
   private ScreenDetails screenDetails;
 
-  private final Button btnExecute = new Button ("Execute");
-
   public TSOCommand ()
   {
+    txtCommand.setEditable (false);
+    txtCommand.setPrefWidth (320);
+    txtCommand.setFont (Font.font ("Monospaced", 12));
+    txtCommand.setFocusTraversable (false);
+
     btnExecute.setOnAction (e -> execute ());
 
-    hbox.getChildren ().addAll (lblCommand, txtCommand);
+    hbox.getChildren ().addAll (lblCommand, txtCommand, btnExecute);
     hbox.setAlignment (Pos.CENTER_LEFT);
   }
 
   public HBox getBox ()
   {
     return hbox;
+  }
+
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    this.consolePane = consolePane;
   }
 
   private void execute ()

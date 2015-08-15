@@ -105,7 +105,7 @@ public class Screen extends Canvas implements DisplayScreen
     addTSOCommandStatusChangeListener (datasetStage);
     addTSOCommandStatusChangeListener (transferStage);
     addTSOCommandStatusChangeListener (fileStage);
-    addTSOCommandStatusChangeListener (assistantStage.getTSOCommand ());
+    addTSOCommandStatusChangeListener (assistantStage);
   }
 
   // this is called from the ConsolePane constructor
@@ -115,6 +115,7 @@ public class Screen extends Canvas implements DisplayScreen
     jobStage.setConsolePane (consolePane);
     datasetStage.setConsolePane (consolePane);
     transferStage.setConsolePane (consolePane);
+    assistantStage.setConsolePane (consolePane);
   }
 
   public FieldManager getFieldManager ()
