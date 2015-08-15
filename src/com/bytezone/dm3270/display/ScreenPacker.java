@@ -1,7 +1,9 @@
 package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
@@ -168,7 +170,7 @@ public class ScreenPacker
     if (!minCommand.isEmpty ())
     {
       tsoCommands.add (minCommand);
-      System.out.println ("Adding TSO command: " + minCommand);
+      notifyTSOCommandListeners (minCommand);
     }
   }
 
@@ -184,5 +186,23 @@ public class ScreenPacker
     System.out.println ("User commands:");
     for (String command : tsoCommands)
       System.out.printf ("[%s]%n", command);
+  }
+
+  private final Set<TSOCommandListener> tsoCommandListeners = new HashSet<> ();
+
+  void notifyTSOCommandListeners (String command)
+  {
+    for (TSOCommandListener listener : tsoCommandListeners)
+      listener.tsoCommand (command);
+  }
+
+  public void addTSOCommandListener (TSOCommandListener listener)
+  {
+    tsoCommandListeners.add (listener);
+  }
+
+  public void removeTSOCommandListener (TSOCommandListener listener)
+  {
+    tsoCommandListeners.remove (listener);
   }
 }

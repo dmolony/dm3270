@@ -4,8 +4,9 @@ import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.WindowSaver;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDetails;
+import com.bytezone.dm3270.display.TSOCommandListener;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
 
@@ -18,7 +19,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class AssistantStage extends Stage implements ScreenChangeListener
+public class AssistantStage extends Stage
+    implements ScreenChangeListener, TSOCommandListener
 {
   private final static String OS = System.getProperty ("os.name");
   private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
@@ -136,5 +138,11 @@ public class AssistantStage extends Stage implements ScreenChangeListener
   public byte[] getCurrentFileBuffer ()
   {
     return fileTransferTab.getCurrentFileBuffer ();
+  }
+
+  @Override
+  public void tsoCommand (String command)
+  {
+    jobTab.tsoCommand (command);
   }
 }

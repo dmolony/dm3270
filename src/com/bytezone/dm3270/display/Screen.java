@@ -75,6 +75,8 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager = new FieldManager (this, pen.getBase ());
 
     assistantStage = new AssistantStage ();
+    screenPacker.addTSOCommandListener (assistantStage);
+
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
 
@@ -479,23 +481,22 @@ public class Screen extends Canvas implements DisplayScreen
     keyboardStatusListeners.remove (listener);
   }
 
-  private final Set<ScreenChangeListener> tsoCommandStatusListeners =
-      new HashSet<> ();
+  private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
 
   void notifyScreenChangeListeners ()
   {
-    for (ScreenChangeListener listener : tsoCommandStatusListeners)
+    for (ScreenChangeListener listener : screenChangeListeners)
       listener.screenChanged (screenDetails);
   }
 
   public void addTSOCommandStatusChangeListener (ScreenChangeListener listener)
   {
-    tsoCommandStatusListeners.add (listener);
+    screenChangeListeners.add (listener);
   }
 
   public void removeTSOCommandStatusChangeListener (ScreenChangeListener listener)
   {
-    tsoCommandStatusListeners.remove (listener);
+    screenChangeListeners.remove (listener);
   }
 
   // ---------------------------------------------------------------------------------//

@@ -87,6 +87,21 @@ public class JobTable extends TableView<BatchJob>
     batchJobs.add (batchJob);
   }
 
+  void setOutlist (String jobName, String jobNumber, String outlist)
+  {
+    System.out.println ("looking for :" + jobNumber);
+    for (BatchJob batchJob : batchJobs)
+    {
+      if (batchJob.getJobNumber ().equals (jobNumber))
+      {
+        System.out.println ("found");
+        batchJob.setOutputFile (outlist);
+        refresh ();
+        break;
+      }
+    }
+  }
+
   public BatchJob getBatchJob (int jobNumber)
   {
     for (BatchJob batchJob : batchJobs)
