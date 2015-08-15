@@ -80,7 +80,6 @@ public class AssistantStage extends Stage implements TSOCommandStatusListener
 
   private void select (Tab tab)
   {
-    System.out.println (tab);
     ((TransferTab) tab).setText ();
   }
 
