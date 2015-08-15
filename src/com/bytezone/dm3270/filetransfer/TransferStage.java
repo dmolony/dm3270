@@ -8,7 +8,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDetails;
-import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.dm3270.display.ScreenChangeListener;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,7 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class TransferStage extends Stage implements TSOCommandStatusListener
+public class TransferStage extends Stage implements ScreenChangeListener
 {
   private static final int BUTTON_WIDTH = 100;
   private static final int LABEL_WIDTH = 100;

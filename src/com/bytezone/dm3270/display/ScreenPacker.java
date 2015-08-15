@@ -161,11 +161,15 @@ public class ScreenPacker
     return ptr;
   }
 
-  public void addTSOCommand (String command)
+  // called from the constructor above, and also from Screen in replay mode
+      void addTSOCommand (String command)
   {
     String minCommand = command.trim ();
     if (!minCommand.isEmpty ())
+    {
       tsoCommands.add (minCommand);
+      System.out.println ("Adding TSO command: " + minCommand);
+    }
   }
 
   public String getPreviousTSOCommand ()

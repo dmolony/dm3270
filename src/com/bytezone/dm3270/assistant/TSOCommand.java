@@ -4,7 +4,7 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenDetails;
-import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.dm3270.display.ScreenChangeListener;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
-public class TSOCommand implements TSOCommandStatusListener
+public class TSOCommand implements ScreenChangeListener
 {
   private final HBox hbox = new HBox (10);
 

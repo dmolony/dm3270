@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.display;
 
-public interface TSOCommandStatusListener
+public interface ScreenChangeListener
 {
   public abstract void screenChanged (ScreenDetails screenDetails);
 }

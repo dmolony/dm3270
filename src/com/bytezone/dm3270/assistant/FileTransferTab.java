@@ -6,7 +6,7 @@ import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenDetails;
-import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
@@ -22,7 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
 public class FileTransferTab extends TransferTab
-    implements TSOCommandStatusListener, NodeSelectionListener
+    implements ScreenChangeListener, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;

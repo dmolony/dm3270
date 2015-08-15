@@ -248,7 +248,7 @@ public class Screen extends Canvas implements DisplayScreen
   public void buildFields (WriteControlCharacter wcc)
   {
     fieldManager.buildFields ();// what about resetModified?
-    notifyTSOCommandStatusChange ();
+    notifyScreenChangeListeners ();
   }
 
   public void checkRecording ()
@@ -479,21 +479,21 @@ public class Screen extends Canvas implements DisplayScreen
     keyboardStatusListeners.remove (listener);
   }
 
-  private final Set<TSOCommandStatusListener> tsoCommandStatusListeners =
+  private final Set<ScreenChangeListener> tsoCommandStatusListeners =
       new HashSet<> ();
 
-  void notifyTSOCommandStatusChange ()
+  void notifyScreenChangeListeners ()
   {
-    for (TSOCommandStatusListener listener : tsoCommandStatusListeners)
+    for (ScreenChangeListener listener : tsoCommandStatusListeners)
       listener.screenChanged (screenDetails);
   }
 
-  public void addTSOCommandStatusChangeListener (TSOCommandStatusListener listener)
+  public void addTSOCommandStatusChangeListener (ScreenChangeListener listener)
   {
     tsoCommandStatusListeners.add (listener);
   }
 
-  public void removeTSOCommandStatusChangeListener (TSOCommandStatusListener listener)
+  public void removeTSOCommandStatusChangeListener (ScreenChangeListener listener)
   {
     tsoCommandStatusListeners.remove (listener);
   }

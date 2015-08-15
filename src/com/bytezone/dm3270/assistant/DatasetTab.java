@@ -4,12 +4,12 @@ import java.util.List;
 
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenDetails;
-import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.dm3270.display.ScreenChangeListener;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class DatasetTab extends TransferTab implements TSOCommandStatusListener
+public class DatasetTab extends TransferTab implements ScreenChangeListener
 {
   private final DatasetTable datasetTable = new DatasetTable ();
 
