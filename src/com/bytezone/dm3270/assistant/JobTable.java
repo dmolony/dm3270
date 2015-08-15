@@ -18,8 +18,7 @@ public class JobTable extends TableView<BatchJob>
 
   public JobTable ()
   {
-    //    setStyle ("-fx-font-size: 11;");
-    setStyle ("-fx-font-size: 11; -fx-font-family: Monospaced");
+    setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
     TableColumn<BatchJob, String> colJobNumber = new TableColumn<> ("Job #");
@@ -89,17 +88,13 @@ public class JobTable extends TableView<BatchJob>
 
   void setOutlist (String jobName, String jobNumber, String outlist)
   {
-    System.out.println ("looking for :" + jobNumber);
     for (BatchJob batchJob : batchJobs)
-    {
       if (batchJob.getJobNumber ().equals (jobNumber))
       {
-        System.out.println ("found");
         batchJob.setOutputFile (outlist);
-        refresh ();
+        refresh ();// temp
         break;
       }
-    }
   }
 
   public BatchJob getBatchJob (int jobNumber)

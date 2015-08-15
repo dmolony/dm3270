@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
@@ -35,7 +35,7 @@ public class FileTransferTab extends TransferTab
 
   public FileTransferTab (TextField text, Button execute, Preferences prefs)
   {
-    super ("Report Display", text, execute);
+    super ("Transfers", text, execute);
 
     try
     {

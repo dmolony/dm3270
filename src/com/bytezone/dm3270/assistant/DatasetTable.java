@@ -25,8 +25,7 @@ public class DatasetTable extends TableView<Dataset>
 
   public DatasetTable ()
   {
-    //    setStyle ("-fx-font-size: 11;");
-    setStyle ("-fx-font-size: 11; -fx-font-family: Monospaced");
+    setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
     createJustifications ();
