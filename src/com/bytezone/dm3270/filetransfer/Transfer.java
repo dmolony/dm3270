@@ -62,6 +62,11 @@ public class Transfer
     return dataRecords.size ();
   }
 
+  public boolean isSendData ()
+  {
+    return transferContents == TransferContents.DATA && transferType == TransferType.SEND;
+  }
+
   public byte[] combineDataBuffers ()
   {
     byte[] fullBuffer = new byte[dataLength];

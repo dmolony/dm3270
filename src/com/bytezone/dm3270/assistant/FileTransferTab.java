@@ -9,8 +9,6 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
-import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
-import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
@@ -53,15 +51,12 @@ public class FileTransferTab extends TransferTab
 
     if (reporterNode == null)
     {
-
     }
   }
 
   public void addTransfer (Transfer transfer)
   {
-    System.out.println (transfer);
-    if (transfer.getTransferContents () == TransferContents.DATA
-        && transfer.getTransferType () == TransferType.SEND)
+    if (transfer.isSendData ())
     {
       transfers.add (transfer);
       Platform.runLater ( () -> addBuffer (transfer));
