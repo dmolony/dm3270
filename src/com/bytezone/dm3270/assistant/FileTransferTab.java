@@ -18,37 +18,24 @@ import com.bytezone.reporter.application.TreePanel.FileNode;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
-public class FileTransferTab extends Tab
+public class FileTransferTab extends TransferTab
     implements TSOCommandStatusListener, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
-  //  private final WindowSaver windowSaver;
 
   private ReporterNode reporterNode;
   private final BorderPane borderPane = new BorderPane ();
-  //  private MenuBar menuBar;
-
-  //  private HBox optionsBox;
-  private final Button btnExecute;
-  private final TextField txtCommand;
-  //  private final Label lblCommand = new Label ("Command");
-  //  private boolean isTransferPanelVisible;
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
 
   public FileTransferTab (TextField text, Button execute, Preferences prefs)
   {
-    super ("Report display");
-
-    setClosable (false);
-    this.txtCommand = text;
-    this.btnExecute = execute;
+    super ("Report Display", text, execute);
 
     try
     {
@@ -128,15 +115,7 @@ public class FileTransferTab extends Tab
 
     TreePanel treePanel = reporterNode.getTreePanel ();
     treePanel.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
-    //    if (!this.isShowing ())
-    //      show ();
   }
-
-  //  private void closeWindow ()
-  //  {
-  //    windowSaver.saveWindow ();
-  //    hide ();
-  //  }
 
   public byte[] getCurrentFileBuffer ()
   {
@@ -189,26 +168,8 @@ public class FileTransferTab extends Tab
     currentTransfer = null;
   }
 
-  //  private void uploadFile ()
-  //  {
-  //    if (isTransferPanelVisible)
-  //    {
-  //      borderPane.setBottom (null);
-  //      isTransferPanelVisible = false;
-  //    }
-  //    else
-  //    {
-  //      borderPane.setBottom (optionsBox);
-  //      isTransferPanelVisible = true;
-  //    }
-  //  }
-  //
-  //  private void downloadFile ()
-  //  {
-  //
-  //  }
-
-  private void setText ()
+  @Override
+      void setText ()
   {
     //    String report = selectedBatchJob.getOutputFile ();
     //    String command = report == null ? selectedBatchJob.outputCommand ()
@@ -222,14 +183,9 @@ public class FileTransferTab extends Tab
     setButton ();
   }
 
-  private void setButton ()
+  @Override
+      void setButton ()
   {
-    //    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
-    //    {
-    //      btnExecute.setDisable (true);
-    //      return;
-    //    }
-
     String command = txtCommand.getText ();
     btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }

@@ -7,19 +7,11 @@ import com.bytezone.dm3270.jobs.BatchJob;
 import com.bytezone.dm3270.jobs.JobTable;
 
 import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 
-public class JobTab extends Tab implements TSOCommandStatusListener
+public class JobTab extends TransferTab implements TSOCommandStatusListener
 {
-  //  private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
-  //  private final WindowSaver windowSaver;
-  //  private ConsolePane consolePane;
-  //  private final Button btnHide = new Button ("Hide Window");
-  private final Button btnExecute;
-  private final TextField txtCommand;
   private final JobTable jobTable = new JobTable ();
-  //  private final Label lblCommand = new Label ("Command");
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
@@ -28,11 +20,7 @@ public class JobTab extends Tab implements TSOCommandStatusListener
 
   public JobTab (TextField text, Button execute)
   {
-    super ("Batch Jobs");
-
-    setClosable (false);
-    this.txtCommand = text;
-    this.btnExecute = execute;
+    super ("Batch Jobs", text, execute);
 
     //    HBox buttonBox = new HBox ();
     //    btnHide.setPrefWidth (120);
@@ -77,18 +65,14 @@ public class JobTab extends Tab implements TSOCommandStatusListener
     setContent (jobTable);
   }
 
-  //  public void setConsolePane (ConsolePane consolePane)
-  //  {
-  //    this.consolePane = consolePane;
-  //  }
-
   private void select (BatchJob batchJob)
   {
     selectedBatchJob = batchJob;
     setText ();
   }
 
-  private void setText ()
+  @Override
+      void setText ()
   {
     String report = selectedBatchJob.getOutputFile ();
     String command = report == null ? selectedBatchJob.outputCommand ()
@@ -101,7 +85,8 @@ public class JobTab extends Tab implements TSOCommandStatusListener
     setButton ();
   }
 
-  private void setButton ()
+  @Override
+      void setButton ()
   {
     if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
     {
@@ -113,22 +98,6 @@ public class JobTab extends Tab implements TSOCommandStatusListener
     btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 
-  //  private void execute ()
-  //  {
-  //    if (tsoCommandField != null) // are we on a suitable screen?
-  //    {
-  //      tsoCommandField.setText (txtCommand.getText ());
-  //      if (consolePane != null)
-  //        consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-  //
-  //      if (selectedBatchJob.getOutputFile () == null)
-  //      {
-  //        selectedBatchJob.setOutputFile (selectedBatchJob.datasetName ());
-  //        jobTable.refresh ();
-  //      }
-  //    }
-  //  }
-
   public void addBatchJob (BatchJob batchJob)
   {
     jobTable.addJob (batchJob);
@@ -138,12 +107,6 @@ public class JobTab extends Tab implements TSOCommandStatusListener
   {
     return jobTable.getBatchJob (jobNumber);
   }
-
-  //  private void closeWindow ()
-  //  {
-  //    windowSaver.saveWindow ();
-  //    hide ();
-  //  }
 
   @Override
   public void screenChanged (ScreenDetails screenDetails)

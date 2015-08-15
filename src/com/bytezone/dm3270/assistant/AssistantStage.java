@@ -12,6 +12,7 @@ import com.bytezone.dm3270.filetransfer.Transfer;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -69,6 +70,18 @@ public class AssistantStage extends Stage implements TSOCommandStatusListener
 
     windowSaver = new WindowSaver (prefs, this, "DatasetStage");
     windowSaver.restoreWindow ();
+
+    tabPane.getSelectionModel ().selectedItemProperty ()
+        .addListener ( (obs, oldSelection, newSelection) -> {
+          if (newSelection != null)
+            select (newSelection);
+        });
+  }
+
+  private void select (Tab tab)
+  {
+    System.out.println (tab);
+    ((TransferTab) tab).setText ();
   }
 
   public void setConsolePane (ConsolePane consolePane)

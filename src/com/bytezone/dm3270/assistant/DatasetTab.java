@@ -9,15 +9,11 @@ import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
 import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 
-public class DatasetTab extends Tab implements TSOCommandStatusListener
+public class DatasetTab extends TransferTab implements TSOCommandStatusListener
 {
   private final DatasetTable datasetTable = new DatasetTable ();
-
-  private final Button btnExecute;
-  private final TextField txtCommand;
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
@@ -26,11 +22,8 @@ public class DatasetTab extends Tab implements TSOCommandStatusListener
 
   public DatasetTab (TextField text, Button execute)
   {
-    super ("Datasets");
+    super ("Datasets", text, execute);
 
-    setClosable (false);
-    this.txtCommand = text;
-    this.btnExecute = execute;
     //    setTitle ("Datasets");
 
     //    HBox buttonBox = new HBox ();
@@ -82,7 +75,8 @@ public class DatasetTab extends Tab implements TSOCommandStatusListener
     setText ();
   }
 
-  private void setText ()
+  @Override
+      void setText ()
   {
     String datasetName = selectedDataset == null ? "" : selectedDataset.getDatasetName ();
     if (datasetName == null || datasetName.isEmpty ())
@@ -113,7 +107,8 @@ public class DatasetTab extends Tab implements TSOCommandStatusListener
     setButton ();
   }
 
-  private void setButton ()
+  @Override
+      void setButton ()
   {
     if (selectedDataset == null)
     {
