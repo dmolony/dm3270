@@ -27,7 +27,7 @@ public class TSOCommand implements TSOCommandStatusListener
   public TSOCommand ()
   {
     txtCommand.setEditable (false);
-    txtCommand.setPrefWidth (320);
+    txtCommand.setPrefWidth (400);
     txtCommand.setFont (Font.font ("Monospaced", 12));
     txtCommand.setFocusTraversable (false);
 

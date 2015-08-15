@@ -20,40 +20,6 @@ public class JobTab extends TransferTab implements TSOCommandStatusListener
   {
     super ("Batch Jobs", text, execute);
 
-    //    HBox buttonBox = new HBox ();
-    //    btnHide.setPrefWidth (120);
-    //    buttonBox.setAlignment (Pos.CENTER_RIGHT);
-    //    buttonBox.setPadding (new Insets (10, 10, 10, 10));// trbl
-    //    buttonBox.getChildren ().add (btnHide);
-
-    //    HBox optionsBox = new HBox (10);
-    //    optionsBox.setAlignment (Pos.CENTER_LEFT);
-    //    optionsBox.setPadding (new Insets (10, 10, 10, 10));// trbl
-    //    txtCommand.setEditable (false);
-    //    txtCommand.setPrefWidth (320);
-    //    txtCommand.setFont (Font.font ("Monospaced", 12));
-    //    txtCommand.setFocusTraversable (false);
-    //    optionsBox.getChildren ().addAll (lblCommand, txtCommand, btnExecute);
-
-    //    BorderPane bottomBorderPane = new BorderPane ();
-    //    bottomBorderPane.setLeft (optionsBox);
-    //    bottomBorderPane.setRight (buttonBox);
-
-    //    btnHide.setOnAction (e -> hide ());
-    //    btnExecute.setOnAction (e -> execute ());
-
-    //    BorderPane borderPane = new BorderPane ();
-    //    borderPane.setCenter (jobTable);
-    //    borderPane.setBottom (bottomBorderPane);
-
-    //    Scene scene = new Scene (borderPane, 500, 500);
-    //    setScene (scene);
-
-    //    windowSaver = new WindowSaver (prefs, this, "JobStage");
-    //    windowSaver.restoreWindow ();
-
-    //    setOnCloseRequest (e -> closeWindow ());
-
     jobTable.getSelectionModel ().selectedItemProperty ()
         .addListener ( (obs, oldSelection, newSelection) -> {
           if (newSelection != null)
