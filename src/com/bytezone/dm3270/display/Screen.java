@@ -12,6 +12,7 @@ import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
@@ -38,6 +39,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final FileStage fileStage;
   private final PluginsStage pluginsStage;
   private final TransferStage transferStage;
+  private final AssistantStage assistantStage;
   private final ScreenDetails screenDetails;
 
   private final Pen pen;
@@ -84,6 +86,7 @@ public class Screen extends Canvas implements DisplayScreen
     datasetStage = new DatasetStage ();
     fileStage = new FileStage (prefs);
     transferStage = new TransferStage (this);
+    assistantStage = new AssistantStage ();
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
 
@@ -102,6 +105,7 @@ public class Screen extends Canvas implements DisplayScreen
     addTSOCommandStatusChangeListener (datasetStage);
     addTSOCommandStatusChangeListener (transferStage);
     addTSOCommandStatusChangeListener (fileStage);
+    addTSOCommandStatusChangeListener (assistantStage.getTSOCommand ());
   }
 
   // this is called from the ConsolePane constructor
@@ -142,6 +146,11 @@ public class Screen extends Canvas implements DisplayScreen
   public DatasetStage getDatasetStage ()
   {
     return datasetStage;
+  }
+
+  public AssistantStage getAssistantStage ()
+  {
+    return assistantStage;
   }
 
   public FileStage getFileStage ()

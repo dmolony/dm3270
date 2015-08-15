@@ -7,6 +7,10 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.plugins.PluginsStage;
+import com.bytezone.dm3270.session.Session;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
@@ -16,15 +20,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
-import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.plugins.PluginsStage;
-import com.bytezone.dm3270.session.Session;
-
 public class Console extends Application
 {
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
-  private static final Site DEFAULT_MAINFRAME = new Site ("mainframe", "localhost",
-      MAINFRAME_EMULATOR_PORT, true, false);
+  private static final Site DEFAULT_MAINFRAME =
+      new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true, false);
 
   private Stage primaryStage;
   private Rectangle2D primaryScreenBounds;
@@ -97,17 +97,16 @@ public class Console extends Application
     switch (optionText)
     {
       case "Replay":
-        Path path =
-            Paths
-                .get (optionStage.spyFolder + "/" + optionStage.fileComboBox.getValue ());
+        Path path = Paths
+            .get (optionStage.spyFolder + "/" + optionStage.fileComboBox.getValue ());
         if (!Files.exists (path))
           errorMessage = path + " does not exist";
         else
           try
           {
             Screen screen = createScreen (Function.REPLAY);
-            Session session = new Session (screen, path);     // can throw Exception
-            setConsolePane (screen, null);                    // reassigns primaryStage
+            Session session = new Session (screen, path);// can throw Exception
+            setConsolePane (screen, null);// reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
@@ -239,8 +238,8 @@ public class Console extends Application
 
   private void savePreferences ()
   {
-    prefs.put ("Function", (String) optionStage.functionsGroup.getSelectedToggle ()
-        .getUserData ());
+    prefs.put ("Function",
+               (String) optionStage.functionsGroup.getSelectedToggle ().getUserData ());
 
     if (screen != null)
     {
@@ -248,18 +247,18 @@ public class Console extends Application
       prefs.put ("FontSize", "" + screen.getFontManager ().getFontSize ());
     }
 
-    prefs
-        .put ("Mode", optionStage.toggleModeMenuItem.isSelected () ? "Release" : "Debug");
+    prefs.put ("Mode",
+               optionStage.toggleModeMenuItem.isSelected () ? "Release" : "Debug");
 
     String filename = optionStage.fileComboBox.getValue ();
     if (filename != null)
       prefs.put ("ReplayFile", filename);
 
     prefs.put ("SpyFolder", optionStage.spyFolder);
-    prefs.put ("ServerName", optionStage.serverComboBox.getSelectionModel ()
-        .getSelectedItem ());
-    prefs.put ("ClientName", optionStage.clientComboBox.getSelectionModel ()
-        .getSelectedItem ());
+    prefs.put ("ServerName",
+               optionStage.serverComboBox.getSelectionModel ().getSelectedItem ());
+    prefs.put ("ClientName",
+               optionStage.clientComboBox.getSelectionModel ().getSelectedItem ());
 
     if (consoleWindowSaver != null)
       consoleWindowSaver.saveWindow ();

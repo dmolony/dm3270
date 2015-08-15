@@ -3,6 +3,7 @@ package com.bytezone.dm3270.assistant;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.WindowSaver;
+import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,6 +35,8 @@ public class AssistantStage extends Stage
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
+    AnchorPane.setBottomAnchor (tsoCommand.getBox (), 10.0);
+    AnchorPane.setBottomAnchor (btnHide, 10.0);
     AnchorPane.setRightAnchor (btnHide, 10.0);
     anchorPane.getChildren ().addAll (tsoCommand.getBox (), btnHide);
 
@@ -50,6 +53,11 @@ public class AssistantStage extends Stage
 
     windowSaver = new WindowSaver (prefs, this, "DatasetStage");
     windowSaver.restoreWindow ();
+  }
+
+  public TSOCommandStatusListener getTSOCommand ()
+  {
+    return tsoCommand;
   }
 
   private void closeWindow ()

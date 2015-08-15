@@ -6,6 +6,7 @@ import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -15,7 +16,7 @@ public class TSOCommand implements TSOCommandStatusListener
 {
   private final HBox hbox = new HBox (10);
 
-  private final Label lblCommand = new Label ("Command");
+  private final Label lblCommand = new Label ("TSO Command");
   private final TextField txtCommand = new TextField ();
 
   private ConsolePane consolePane;
@@ -28,6 +29,7 @@ public class TSOCommand implements TSOCommandStatusListener
     btnExecute.setOnAction (e -> execute ());
 
     hbox.getChildren ().addAll (lblCommand, txtCommand);
+    hbox.setAlignment (Pos.CENTER_LEFT);
   }
 
   public HBox getBox ()
@@ -37,16 +39,16 @@ public class TSOCommand implements TSOCommandStatusListener
 
   private void execute ()
   {
-    if (screenDetails == null)
+    if (screenDetails == null || consolePane == null)
       return;
 
     Field tsoCommandField = screenDetails.getTSOCommandField ();
+    String command = txtCommand.getText ();
 
-    if (tsoCommandField != null) // are we on a suitable screen?
+    if (tsoCommandField != null && !command.isEmpty ())
     {
-      tsoCommandField.setText (txtCommand.getText ());
-      if (consolePane != null)
-        consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
+      tsoCommandField.setText (command);
+      consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
     }
   }
 

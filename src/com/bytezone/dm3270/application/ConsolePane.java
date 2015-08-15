@@ -143,10 +143,14 @@ public class ConsolePane extends BorderPane
     MenuItem menuItemDatasetDisplay =
         getMenuItem ("Datasets", e -> screen.getDatasetStage ().show (), KeyCode.D);
 
+    MenuItem menuItemAssistant =
+        getMenuItem ("Assistant", e -> screen.getAssistantStage ().show (), KeyCode.A);
+
     if (screen.getFileStage () == null)
     {
       menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-                                       menuItemJobDisplay, menuItemDatasetDisplay);
+                                       menuItemJobDisplay, menuItemDatasetDisplay,
+                                       menuItemAssistant);
     }
     else
     {
@@ -158,7 +162,8 @@ public class ConsolePane extends BorderPane
           getMenuItem ("Reports", e -> screen.getFileStage ().show (), KeyCode.R);
       menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
                                        menuItemFileTransfer, menuItemReportDisplay,
-                                       menuItemJobDisplay, menuItemDatasetDisplay);
+                                       menuItemJobDisplay, menuItemDatasetDisplay,
+                                       menuItemAssistant);
     }
 
     if (!SYSTEM_MENUBAR)
