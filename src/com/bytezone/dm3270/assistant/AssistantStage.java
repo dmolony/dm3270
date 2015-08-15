@@ -6,6 +6,8 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
+import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
+import com.bytezone.dm3270.filetransfer.Transfer;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,17 +32,20 @@ public class AssistantStage extends Stage implements TSOCommandStatusListener
   private final TabPane tabPane = new TabPane ();
   private final DatasetTab datasetTab;
   private final JobTab jobTab;
+  private final FileTransferTab fileTransferTab;
 
   public AssistantStage ()
   {
-    setTitle ("Assistant");
+    setTitle ("Session Details");
 
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
 
     datasetTab = new DatasetTab (tsoCommand.txtCommand, tsoCommand.btnExecute);
     jobTab = new JobTab (tsoCommand.txtCommand, tsoCommand.btnExecute);
-    tabPane.getTabs ().addAll (datasetTab, jobTab);
+    fileTransferTab =
+        new FileTransferTab (tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
+    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab);
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
@@ -94,5 +99,30 @@ public class AssistantStage extends Stage implements TSOCommandStatusListener
       int conditionCode)
   {
     jobTab.batchJobEnded (jobNumber, jobName, time, conditionCode);
+  }
+
+  public void openTransfer (Transfer transfer)
+  {
+    fileTransferTab.openTransfer (transfer);
+  }
+
+  public Transfer getTransfer (FileTransferOutboundSF transferRecord)
+  {
+    return fileTransferTab.getTransfer (transferRecord);
+  }
+
+  public void closeTransfer ()
+  {
+    fileTransferTab.closeTransfer ();
+  }
+
+  public Transfer closeTransfer (FileTransferOutboundSF transferRecord)
+  {
+    return fileTransferTab.closeTransfer (transferRecord);
+  }
+
+  public byte[] getCurrentFileBuffer ()
+  {
+    return fileTransferTab.getCurrentFileBuffer ();
   }
 }

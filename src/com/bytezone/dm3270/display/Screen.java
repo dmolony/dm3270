@@ -139,10 +139,10 @@ public class Screen extends Canvas implements DisplayScreen
     return pluginsStage;
   }
 
-  public JobStage getJobStage ()
-  {
-    return jobStage;
-  }
+  //  public JobStage getJobStage ()
+  //  {
+  //    return jobStage;
+  //  }
 
   public DatasetStage getDatasetStage ()
   {
@@ -154,15 +154,15 @@ public class Screen extends Canvas implements DisplayScreen
     return assistantStage;
   }
 
-  public FileStage getFileStage ()
-  {
-    return fileStage;
-  }
+  //  public FileStage getFileStage ()
+  //  {
+  //    return fileStage;
+  //  }
 
-  public TransferStage getTransferStage ()
-  {
-    return transferStage;
-  }
+  //  public TransferStage getTransferStage ()
+  //  {
+  //    return transferStage;
+  //  }
 
   public Function getFunction ()
   {

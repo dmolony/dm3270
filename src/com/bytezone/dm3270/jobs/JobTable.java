@@ -18,7 +18,8 @@ public class JobTable extends TableView<BatchJob>
 
   public JobTable ()
   {
-    setStyle ("-fx-font-size: 11;");
+    //    setStyle ("-fx-font-size: 11;");
+    setStyle ("-fx-font-size: 11; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
     TableColumn<BatchJob, String> colJobNumber = new TableColumn<> ("Job #");

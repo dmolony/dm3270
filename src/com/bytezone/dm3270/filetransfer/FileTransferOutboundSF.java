@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.filetransfer;
 
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
@@ -8,12 +9,12 @@ import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
-  private final FileStage fileStage;
+  private final AssistantStage assistantStage;
 
   public FileTransferOutboundSF (byte[] buffer, int offset, int length, Screen screen)
   {
     super (buffer, offset, length, screen, "Outbound");
-    fileStage = screen.getFileStage ();
+    assistantStage = screen.getAssistantStage ();
 
     if (rectype == 0 && subtype == 0x12)
       transferType = TransferType.SEND;
@@ -101,7 +102,7 @@ public class FileTransferOutboundSF extends FileTransferSF
   {
     transfer = new Transfer ();
     transfer.add (this);
-    fileStage.openTransfer (transfer);
+    assistantStage.openTransfer (transfer);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
@@ -110,13 +111,13 @@ public class FileTransferOutboundSF extends FileTransferSF
     {
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
       if (transfer.getTransferType () == TransferType.RECEIVE)
-        transfer.setTransferBuffer (fileStage.getCurrentFileBuffer ());
+        transfer.setTransferBuffer (assistantStage.getCurrentFileBuffer ());
     }
   }
 
   private void processClose ()
   {
-    transfer = fileStage.closeTransfer (this);
+    transfer = assistantStage.closeTransfer (this);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
@@ -124,12 +125,12 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processSend0x45 ()
   {
-    transfer = fileStage.getTransfer (this);
+    transfer = assistantStage.getTransfer (this);
   }
 
   private void processSend0x46 ()
   {
-    transfer = fileStage.getTransfer (this);
+    transfer = assistantStage.getTransfer (this);
 
     byte[] replyBuffer;
     int ptr = 0;
@@ -168,7 +169,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processReceive ()
   {
-    transfer = fileStage.getTransfer (this);
+    transfer = assistantStage.getTransfer (this);
 
     if (subtype == 0x04) // message or transfer buffer
     {
@@ -198,7 +199,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       // message transfers don't close
       if (transfer.getTransferContents () == TransferContents.MSG)
-        fileStage.closeTransfer ();
+        assistantStage.closeTransfer ();
     }
   }
 

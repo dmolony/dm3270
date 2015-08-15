@@ -187,7 +187,7 @@ public class WriteCommand extends Command
     if (matcher.matches ())
     {
       int jobNumber = Integer.parseInt (matcher.group (2));
-      screen.getJobStage ().batchJobSubmitted (jobNumber, matcher.group (1));
+      //      screen.getJobStage ().batchJobSubmitted (jobNumber, matcher.group (1));
       screen.getAssistantStage ().batchJobSubmitted (jobNumber, matcher.group (1));
     }
 
@@ -196,8 +196,8 @@ public class WriteCommand extends Command
     {
       int jobNumber = Integer.parseInt (matcher.group (2));
       int conditionCode = Integer.parseInt (matcher.group (4));
-      screen.getJobStage ().batchJobEnded (jobNumber, matcher.group (3),
-                                           matcher.group (1), conditionCode);
+      //      screen.getJobStage ().batchJobEnded (jobNumber, matcher.group (3),
+      //                                           matcher.group (1), conditionCode);
       screen.getAssistantStage ().batchJobEnded (jobNumber, matcher.group (3),
                                                  matcher.group (1), conditionCode);
     }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -45,6 +46,8 @@ public class DatasetTable extends TableView<Dataset>
     addColumn ("Expires", "Expires", 100, Justification.CENTER);
     addColumn ("Referred", "Referred", 100, Justification.CENTER);
     addColumn ("Catalog", "Catalog", 150, Justification.LEFT);
+
+    setPlaceholder (new Label ("No datasets have been seen in this session"));
 
     setItems (datasets);
   }

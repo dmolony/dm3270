@@ -137,34 +137,30 @@ public class ConsolePane extends BorderPane
     MenuItem menuItemToggleScreens =
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
-    MenuItem menuItemJobDisplay =
-        getMenuItem ("Batch jobs", e -> screen.getJobStage ().show (), KeyCode.J);
-
-    MenuItem menuItemDatasetDisplay =
-        getMenuItem ("Datasets", e -> screen.getDatasetStage ().show (), KeyCode.D);
+    //    MenuItem menuItemJobDisplay =
+    //        getMenuItem ("Batch jobs", e -> screen.getJobStage ().show (), KeyCode.J);
+    //
+    //    MenuItem menuItemDatasetDisplay =
+    //        getMenuItem ("Datasets", e -> screen.getDatasetStage ().show (), KeyCode.D);
 
     MenuItem menuItemAssistant =
-        getMenuItem ("Assistant", e -> screen.getAssistantStage ().show (), KeyCode.A);
+        getMenuItem ("Assistant", e -> screen.getAssistantStage ().show (), KeyCode.D);
 
-    if (screen.getFileStage () == null)
-    {
-      menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-                                       menuItemJobDisplay, menuItemDatasetDisplay,
-                                       menuItemAssistant);
-    }
-    else
-    {
-      MenuItem menuItemFileTransfer =
-          getMenuItem ("File transfer", e -> screen.getTransferStage ().show (),
-                       KeyCode.F);
+    //    if (screen.getFileStage () == null)
+    //    {
+    //      menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
+    //                                       menuItemAssistant);
+    //    }
+    //    else
+    //    {
+    //    MenuItem menuItemFileTransfer =
+    //        getMenuItem ("File transfer", e -> screen.getTransferStage ().show (), KeyCode.F);
 
-      MenuItem menuItemReportDisplay =
-          getMenuItem ("Reports", e -> screen.getFileStage ().show (), KeyCode.R);
-      menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-                                       menuItemFileTransfer, menuItemReportDisplay,
-                                       menuItemJobDisplay, menuItemDatasetDisplay,
-                                       menuItemAssistant);
-    }
+    //    MenuItem menuItemReportDisplay =
+    //        getMenuItem ("Reports", e -> screen.getFileStage ().show (), KeyCode.R);
+
+    menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
+                                     menuItemAssistant);
 
     if (!SYSTEM_MENUBAR)
     {

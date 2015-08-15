@@ -31,17 +31,17 @@ public class Transfer
   byte[] inboundBuffer;
   int inboundBufferPtr;
 
-  enum TransferContents
+  public enum TransferContents
   {
     MSG, DATA
   }
 
-  enum TransferType
+  public enum TransferType
   {
     SEND, RECEIVE
   }
 
-  void add (FileTransferOutboundSF outboundRecord)
+  public void add (FileTransferOutboundSF outboundRecord)
   {
     outboundRecords.add (outboundRecord);
 
@@ -62,7 +62,7 @@ public class Transfer
     return dataRecords.size ();
   }
 
-  byte[] combineDataBuffers ()
+  public byte[] combineDataBuffers ()
   {
     byte[] fullBuffer = new byte[dataLength];
 
@@ -98,12 +98,12 @@ public class Transfer
     return dataRecords.size ();
   }
 
-  TransferContents getTransferContents ()
+  public TransferContents getTransferContents ()
   {
     return transferContents;
   }
 
-  TransferType getTransferType ()
+  public TransferType getTransferType ()
   {
     return transferType;
   }
@@ -180,7 +180,7 @@ public class Transfer
     }
   }
 
-  String getFileName ()
+  public String getFileName ()
   {
     return fileName;
   }
