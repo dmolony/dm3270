@@ -3,8 +3,6 @@ package com.bytezone.dm3270.assistant;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;
-import com.bytezone.dm3270.jobs.BatchJob;
-import com.bytezone.dm3270.jobs.JobTable;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

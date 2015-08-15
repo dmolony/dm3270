@@ -3,7 +3,7 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.datasets.Dataset;
+import com.bytezone.dm3270.assistant.Dataset;
 
 public class ScreenDetails
 {

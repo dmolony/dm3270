@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.jobs;
+package com.bytezone.dm3270.assistant;
 
 import java.util.ArrayList;
 import java.util.List;

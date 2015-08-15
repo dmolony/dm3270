@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.datasets;
+package com.bytezone.dm3270.assistant;
 
 import java.util.ArrayList;
 import java.util.List;

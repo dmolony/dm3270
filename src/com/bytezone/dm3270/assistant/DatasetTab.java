@@ -2,8 +2,6 @@ package com.bytezone.dm3270.assistant;
 
 import java.util.List;
 
-import com.bytezone.dm3270.datasets.Dataset;
-import com.bytezone.dm3270.datasets.DatasetTable;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandStatusListener;

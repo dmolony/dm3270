@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.jobs;
+package com.bytezone.dm3270.assistant;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
