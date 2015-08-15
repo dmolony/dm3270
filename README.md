@@ -8,6 +8,7 @@
 * [Batch jobs](resources/jobs.md)
 * [File transfers](resources/transfers.md)
 * [Project layout](resources/structure.md)
+* [Console assistant](resources/assistant.md)
 
 ### Installation
 * Download dm3270.jar from the [releases](https://github.com/dmolony/dm3270/releases) page.
