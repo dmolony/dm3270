@@ -546,8 +546,8 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!mode.equals ("EDIT"))
-      System.out.println ("Unexpected mode: " + mode);
+    if (!mode.equals ("EDIT") && !mode.equals ("BROWSE"))
+      System.out.printf ("Unexpected mode: [%s]%n", mode);
 
     field = fields.get (9);
     if (field.getFirstLocation () != 179)
