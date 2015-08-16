@@ -2,23 +2,20 @@ package com.bytezone.dm3270.assistant;
 
 import java.util.List;
 
-import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 
 public class DatasetTab extends TransferTab implements ScreenChangeListener
 {
   private final DatasetTable datasetTable = new DatasetTable ();
+  private final DatasetTreeTable datasetTreeTable = new DatasetTreeTable ();
   private final Screen screen;
-
-  private boolean isTSOCommandScreen;
-  private Field tsoCommandField;
   private Dataset selectedDataset;
-  //  private ScreenDetails screenDetails;
 
   public DatasetTab (Screen screen, TextField text, Button execute)
   {
@@ -32,12 +29,24 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
             select (newSelection);
         });
 
-    setContent (datasetTable);
+    datasetTreeTable.getSelectionModel ().selectedItemProperty ()
+        .addListener ( (obs, oldSelection, newSelection) -> {
+          if (newSelection != null)
+            select (newSelection);
+        });
+
+    setContent (datasetTreeTable);
   }
 
   private void select (Dataset dataset)
   {
     selectedDataset = dataset;
+    setText ();
+  }
+
+  private void select (TreeItem<Dataset> treeItem)
+  {
+    selectedDataset = treeItem.getValue ();
     setText ();
   }
 
@@ -67,7 +76,7 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
 
     String command = String.format ("IND$FILE GET %s", datasetName);
 
-    if (!isTSOCommandScreen)
+    if (!screenDetails.isTSOCommandScreen ())
       command = "TSO " + command;
 
     txtCommand.setText (command);
@@ -83,27 +92,32 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       return;
     }
 
+    ScreenDetails screenDetails = screen.getScreenDetails ();
     String command = txtCommand.getText ();
-    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
+    btnExecute
+        .setDisable (screenDetails.getTSOCommandField () == null || command.isEmpty ());
   }
 
   @Override
   public void screenChanged ()
   {
-    //    this.screenDetails = screenDetails;
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    this.isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
-    this.tsoCommandField = screenDetails.getTSOCommandField ();
 
     List<Dataset> datasets = screenDetails.getDatasets ();
     if (datasets != null)
       for (Dataset dataset : datasets)
+      {
         datasetTable.addDataset (dataset);
+        datasetTreeTable.addDataset (dataset);
+      }
 
     List<Dataset> members = screenDetails.getMembers ();
     if (members != null)
       for (Dataset dataset : members)
+      {
         datasetTable.addMember (dataset);
+        datasetTreeTable.addMember (dataset);
+      }
 
     datasetTable.refresh ();// temporary fix until 8u60
     setButton ();
