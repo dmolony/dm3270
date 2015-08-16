@@ -19,6 +19,7 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
   TreeTableCell<Dataset, String>> rightJustified;
 
   private final Map<String, Dataset> datasets = new HashMap<> ();
+  private final Map<String, Map<String, Dataset>> parents = new HashMap<> ();
   private final TreeItem<Dataset> root = new TreeItem<> (new Dataset ("Root"));
 
   enum Justification
@@ -68,6 +69,33 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
       foundDataset.merge (dataset);
   }
 
+  public void addMember2 (Dataset dataset)
+  {
+    String datasetName = dataset.getDatasetName ();
+    int pos = datasetName.indexOf ('(');
+    String parentName = datasetName.substring (0, pos);
+    String memberName = datasetName.substring (pos + 1, datasetName.length () - 1);
+
+    Map<String, Dataset> members = parents.get (parentName);
+    if (members == null)
+    {
+      members = new HashMap<> ();
+      members.put (memberName, dataset);
+      parents.put (parentName, members);
+    }
+    else
+    {
+      Dataset member = members.get (memberName);
+      if (member == null)
+        members.put (memberName, dataset);
+      else
+        member.merge (dataset);
+    }
+
+    TreeItem<Dataset> parentTreeItem = getParent (parentName);
+
+  }
+
   public void addMember (Dataset member)
   {
     String memberName = member.getDatasetName ();
@@ -104,6 +132,28 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     }
     else
       foundDataset.merge (member);
+  }
+
+  private TreeItem<Dataset> getParent (String parentName)
+  {
+    for (TreeItem<Dataset> treeItem : root.getChildren ())
+      if (treeItem.getValue ().getDatasetName ().equals (parentName))
+        return treeItem;
+
+    return new TreeItem<> (new Dataset (parentName));
+  }
+
+  private TreeItem<Dataset> getChild (TreeItem<Dataset> parent, String childName)
+  {
+    for (TreeItem<Dataset> treeItem : parent.getChildren ())
+      if (treeItem.getValue ().getDatasetName ().equals (childName))
+        return treeItem;
+
+    Dataset dataset = new Dataset (childName);
+    datasets.put (childName, dataset);
+    TreeItem<Dataset> parentTreeItem = new TreeItem<> (dataset);
+    parent.getChildren ().add (parentTreeItem);
+    return parentTreeItem;
   }
 
   private void addColumn (String id, String heading, int width,
