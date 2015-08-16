@@ -3,8 +3,9 @@ package com.bytezone.dm3270.assistant;
 import java.util.List;
 
 import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.ScreenDetails;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -12,15 +13,18 @@ import javafx.scene.control.TextField;
 public class DatasetTab extends TransferTab implements ScreenChangeListener
 {
   private final DatasetTable datasetTable = new DatasetTable ();
+  private final Screen screen;
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
   private Dataset selectedDataset;
-  private ScreenDetails screenDetails;
+  //  private ScreenDetails screenDetails;
 
-  public DatasetTab (TextField text, Button execute)
+  public DatasetTab (Screen screen, TextField text, Button execute)
   {
     super ("Datasets", text, execute);
+
+    this.screen = screen;
 
     datasetTable.getSelectionModel ().selectedItemProperty ()
         .addListener ( (obs, oldSelection, newSelection) -> {
@@ -47,6 +51,7 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       return;
     }
 
+    ScreenDetails screenDetails = screen.getScreenDetails ();
     String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
     {
@@ -83,9 +88,10 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged ()
   {
-    this.screenDetails = screenDetails;
+    //    this.screenDetails = screenDetails;
+    ScreenDetails screenDetails = screen.getScreenDetails ();
     this.isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     this.tsoCommandField = screenDetails.getTSOCommandField ();
 

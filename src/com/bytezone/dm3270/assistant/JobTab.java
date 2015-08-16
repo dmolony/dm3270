@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 
@@ -15,15 +16,18 @@ public class JobTab extends TransferTab implements ScreenChangeListener
   private static final Pattern outlistPattern = Pattern
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");
   private final JobTable jobTable = new JobTable ();
+  private final Screen screen;
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
 
   private BatchJob selectedBatchJob;
 
-  public JobTab (TextField text, Button execute)
+  public JobTab (Screen screen, TextField text, Button execute)
   {
     super ("Batch Jobs", text, execute);
+
+    this.screen = screen;
 
     jobTable.getSelectionModel ().selectedItemProperty ()
         .addListener ( (obs, oldSelection, newSelection) -> {
@@ -96,8 +100,9 @@ public class JobTab extends TransferTab implements ScreenChangeListener
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged ()
   {
+    ScreenDetails screenDetails = screen.getScreenDetails ();
     isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     tsoCommandField = screenDetails.getTSOCommandField ();
     setButton ();

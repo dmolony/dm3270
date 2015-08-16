@@ -7,8 +7,8 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -143,8 +143,9 @@ public class TransferStage extends Stage implements ScreenChangeListener
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged ()
   {
+    ScreenDetails screenDetails = screen.getScreenDetails ();
     String datasetName = screenDetails.getCurrentDataset ();
 
     if (!datasetName.isEmpty ())

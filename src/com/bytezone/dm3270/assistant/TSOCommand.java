@@ -3,8 +3,8 @@ package com.bytezone.dm3270.assistant;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDetails;
-import com.bytezone.dm3270.display.ScreenChangeListener;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,19 +13,22 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
-public class TSOCommand implements ScreenChangeListener
+public class TSOCommand//implements ScreenChangeListener
 {
   private final HBox hbox = new HBox (10);
+  private final Screen screen;
 
   private final Label lblCommand = new Label ("TSO Command");
   final TextField txtCommand = new TextField ();
   final Button btnExecute = new Button ("Execute");
 
   private ConsolePane consolePane;
-  private ScreenDetails screenDetails;
+  //  private ScreenDetails screenDetails;
 
-  public TSOCommand ()
+  public TSOCommand (Screen screen)
   {
+    this.screen = screen;
+
     txtCommand.setEditable (false);
     txtCommand.setPrefWidth (400);
     txtCommand.setFont (Font.font ("Monospaced", 12));
@@ -49,6 +52,7 @@ public class TSOCommand implements ScreenChangeListener
 
   private void execute ()
   {
+    ScreenDetails screenDetails = screen.getScreenDetails ();
     if (screenDetails == null || consolePane == null)
       return;
 
@@ -60,11 +64,5 @@ public class TSOCommand implements ScreenChangeListener
       tsoCommandField.setText (command);
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
     }
-  }
-
-  @Override
-  public void screenChanged (ScreenDetails screenDetails)
-  {
-    this.screenDetails = screenDetails;
   }
 }

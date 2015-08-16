@@ -4,8 +4,8 @@ import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.WindowSaver;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandListener;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
@@ -28,8 +28,9 @@ public class AssistantStage extends Stage
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final MenuBar menuBar = new MenuBar ();
+  private final Screen screen;
 
-  private final TSOCommand tsoCommand = new TSOCommand ();
+  private final TSOCommand tsoCommand;
   private final Button btnHide = new Button ("Hide Window");
 
   private final TabPane tabPane = new TabPane ();
@@ -37,17 +38,20 @@ public class AssistantStage extends Stage
   private final JobTab jobTab;
   private final FileTransferTab fileTransferTab;
 
-  public AssistantStage ()
+  public AssistantStage (Screen screen)
   {
     setTitle ("Session Details");
+
+    this.screen = screen;
 
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
 
-    datasetTab = new DatasetTab (tsoCommand.txtCommand, tsoCommand.btnExecute);
-    jobTab = new JobTab (tsoCommand.txtCommand, tsoCommand.btnExecute);
+    tsoCommand = new TSOCommand (screen);
+    datasetTab = new DatasetTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    jobTab = new JobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     fileTransferTab =
-        new FileTransferTab (tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
+        new FileTransferTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
     tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab);
 
     AnchorPane anchorPane = new AnchorPane ();
@@ -97,11 +101,12 @@ public class AssistantStage extends Stage
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged ()
   {
-    tsoCommand.screenChanged (screenDetails);
-    datasetTab.screenChanged (screenDetails);
-    jobTab.screenChanged (screenDetails);
+    //    ScreenDetails screenDetails = screen.getScreenDetails ();
+    //    tsoCommand.screenChanged ();
+    datasetTab.screenChanged ();
+    jobTab.screenChanged ();
   }
 
   public void batchJobSubmitted (int jobNumber, String jobName)

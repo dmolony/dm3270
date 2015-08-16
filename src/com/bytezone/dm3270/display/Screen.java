@@ -74,7 +74,7 @@ public class Screen extends Canvas implements DisplayScreen
     screenDetails = new ScreenDetails (this);
     fieldManager = new FieldManager (this, pen.getBase ());
 
-    assistantStage = new AssistantStage ();
+    assistantStage = new AssistantStage (this);
     screenPacker.addTSOCommandListener (assistantStage);
 
     this.pluginsStage = pluginsStage;
@@ -486,7 +486,7 @@ public class Screen extends Canvas implements DisplayScreen
   void notifyScreenChangeListeners ()
   {
     for (ScreenChangeListener listener : screenChangeListeners)
-      listener.screenChanged (screenDetails);
+      listener.screenChanged ();
   }
 
   public void addTSOCommandStatusChangeListener (ScreenChangeListener listener)

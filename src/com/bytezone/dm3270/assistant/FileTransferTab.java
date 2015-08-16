@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
@@ -25,15 +26,19 @@ public class FileTransferTab extends TransferTab
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
 
+  private final Screen screen;
   private ReporterNode reporterNode;
   private final BorderPane borderPane = new BorderPane ();
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
 
-  public FileTransferTab (TextField text, Button execute, Preferences prefs)
+  public FileTransferTab (Screen screen, TextField text, Button execute,
+      Preferences prefs)
   {
     super ("Transfers", text, execute);
+
+    this.screen = screen;
 
     try
     {
@@ -146,8 +151,9 @@ public class FileTransferTab extends TransferTab
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged ()
   {
+    ScreenDetails screenDetails = screen.getScreenDetails ();
     isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     tsoCommandField = screenDetails.getTSOCommandField ();
     setText ();
