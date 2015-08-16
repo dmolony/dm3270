@@ -49,29 +49,25 @@ public class ScreenDetails
     fields = fieldManager.getFields ();
     if (fields.size () > 2)
     {
-      boolean promptFound = hasPromptField ();
-
-      if (promptFound)
+      if (hasPromptField ())
       {
         if (prefix.isEmpty ())
           checkPrefixScreen ();// initial ISPF screen
 
-        isTSOCommandScreen = checkTSOCommandScreen ();
-        if (!isTSOCommandScreen)
+        isDatasetList = checkDatasetList ();
+
+        if (!isDatasetList)
         {
-          isDatasetList = checkDatasetList ();
-
-          if (!isDatasetList)
-          {
-            checkEditOrViewDataset ();
-            if (currentDataset.isEmpty ())
-              checkBrowseDataset ();
-          }
-
-          if (!isDatasetList)
-            isMemberList = checkMemberList ();
+          checkEditOrViewDataset ();
+          if (currentDataset.isEmpty ())
+            checkBrowseDataset ();
         }
+
+        if (!isDatasetList)
+          isMemberList = checkMemberList ();
       }
+      else
+        isTSOCommandScreen = checkTSOCommandScreen ();
 
       if (false)
       {

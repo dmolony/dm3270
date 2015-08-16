@@ -3,6 +3,7 @@ package com.bytezone.dm3270.assistant;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
@@ -28,6 +29,7 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
   public DatasetTreeTable ()
   {
     setRoot (root);
+    setShowRoot (false);
 
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
@@ -49,6 +51,8 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     addColumn ("Expires", "Expires", 100, Justification.CENTER);
     addColumn ("Referred", "Referred", 100, Justification.CENTER);
     addColumn ("Catalog", "Catalog", 150, Justification.LEFT);
+
+    setPlaceholder (new Label ("No datasets have been seen in this session"));
   }
 
   public void addDataset (Dataset dataset)
@@ -85,16 +89,13 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
         root.getChildren ().add (parentTreeItem);
       }
       else
-      {
         for (TreeItem<Dataset> treeItem : root.getChildren ())
-        {
           if (treeItem.getValue ().getDatasetName ().equals (parentName))
           {
             parentTreeItem = treeItem;
             break;
           }
-        }
-      }
+
       // add child to parent
       if (parentTreeItem == null)
         System.out.println ("null parent");
