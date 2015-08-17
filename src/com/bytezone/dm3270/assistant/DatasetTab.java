@@ -116,7 +116,7 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       for (Dataset dataset : members)
       {
         datasetTable.addMember (dataset);
-        datasetTreeTable.addMember (dataset);
+        datasetTreeTable.addDataset (dataset);
       }
 
     datasetTable.refresh ();// temporary fix until 8u60

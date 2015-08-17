@@ -1,6 +1,8 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.scene.control.Label;
@@ -18,9 +20,11 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
   private Callback<TreeTableColumn<Dataset, String>, //
   TreeTableCell<Dataset, String>> rightJustified;
 
-  private final Map<String, Dataset> datasets = new HashMap<> ();
-  private final Map<String, Map<String, Dataset>> parents = new HashMap<> ();
+  //  private final Map<String, Dataset> datasets = new HashMap<> ();
+  //  private final Map<String, Map<String, Dataset>> parents = new HashMap<> ();
   private final TreeItem<Dataset> root = new TreeItem<> (new Dataset ("Root"));
+
+  private final Map<String, DatasetEntry> entries = new HashMap<> ();
 
   enum Justification
   {
@@ -58,102 +62,32 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
 
   public void addDataset (Dataset dataset)
   {
-    Dataset foundDataset = datasets.get (dataset.getDatasetName ());
-
-    if (foundDataset == null)
+    DatasetEntry datasetEntry = entries.get (dataset.getDatasetName ());
+    if (datasetEntry == null)
     {
-      datasets.put (dataset.getDatasetName (), dataset);
-      root.getChildren ().add (new TreeItem<> (dataset));
-    }
-    else
-      foundDataset.merge (dataset);
-  }
-
-  public void addMember2 (Dataset dataset)
-  {
-    String datasetName = dataset.getDatasetName ();
-    int pos = datasetName.indexOf ('(');
-    String parentName = datasetName.substring (0, pos);
-    String memberName = datasetName.substring (pos + 1, datasetName.length () - 1);
-
-    Map<String, Dataset> members = parents.get (parentName);
-    if (members == null)
-    {
-      members = new HashMap<> ();
-      members.put (memberName, dataset);
-      parents.put (parentName, members);
-    }
-    else
-    {
-      Dataset member = members.get (memberName);
-      if (member == null)
-        members.put (memberName, dataset);
-      else
-        member.merge (dataset);
-    }
-
-    TreeItem<Dataset> parentTreeItem = getParent (parentName);
-
-  }
-
-  public void addMember (Dataset member)
-  {
-    String memberName = member.getDatasetName ();
-    int pos = memberName.indexOf ('(');
-    String parentName = memberName.substring (0, pos);
-    String childName = memberName.substring (pos + 1, memberName.length () - 1);
-
-    Dataset foundDataset = datasets.get (memberName);
-    if (foundDataset == null)
-    {
-      datasets.put (memberName, member);// add child (full name) to list
-      Dataset parent = datasets.get (parentName);
-      TreeItem<Dataset> parentTreeItem = null;
-      if (parent == null)
+      datasetEntry = new DatasetEntry (dataset);
+      entries.put (dataset.getDatasetName (), datasetEntry);
+      if (datasetEntry.isPDSMember ())
       {
-        parent = new Dataset (parentName);
-        datasets.put (parentName, parent);
-        parentTreeItem = new TreeItem<> (parent);
-        root.getChildren ().add (parentTreeItem);
+        DatasetEntry parentEntry = entries.get (datasetEntry.parentName);
+        if (parentEntry == null)
+        {
+          parentEntry = new DatasetEntry (datasetEntry.parentName);
+          entries.put (datasetEntry.parentName, parentEntry);
+          root.getChildren ().add (parentEntry.treeItem);
+        }
+
+        parentEntry.add (dataset);
+        parentEntry.treeItem.getChildren ().add (datasetEntry.treeItem);
       }
       else
-        for (TreeItem<Dataset> treeItem : root.getChildren ())
-          if (treeItem.getValue ().getDatasetName ().equals (parentName))
-          {
-            parentTreeItem = treeItem;
-            break;
-          }
-
-      // add child to parent
-      if (parentTreeItem == null)
-        System.out.println ("null parent");
-      else
-        parentTreeItem.getChildren ().add (new TreeItem<> (member));
+        root.getChildren ().add (datasetEntry.treeItem);
     }
     else
-      foundDataset.merge (member);
-  }
-
-  private TreeItem<Dataset> getParent (String parentName)
-  {
-    for (TreeItem<Dataset> treeItem : root.getChildren ())
-      if (treeItem.getValue ().getDatasetName ().equals (parentName))
-        return treeItem;
-
-    return new TreeItem<> (new Dataset (parentName));
-  }
-
-  private TreeItem<Dataset> getChild (TreeItem<Dataset> parent, String childName)
-  {
-    for (TreeItem<Dataset> treeItem : parent.getChildren ())
-      if (treeItem.getValue ().getDatasetName ().equals (childName))
-        return treeItem;
-
-    Dataset dataset = new Dataset (childName);
-    datasets.put (childName, dataset);
-    TreeItem<Dataset> parentTreeItem = new TreeItem<> (dataset);
-    parent.getChildren ().add (parentTreeItem);
-    return parentTreeItem;
+    {
+      System.out.println ("merging");
+      datasetEntry.dataset.merge (dataset);
+    }
   }
 
   private void addColumn (String id, String heading, int width,
@@ -215,5 +149,62 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
             return cell;
           }
         };
+  }
+
+  class DatasetEntry
+  {
+    Dataset dataset;
+    TreeItem<Dataset> treeItem;
+
+    List<Dataset> members;// only a PDS uses this
+
+    String parentName;// only PDS members use these 2 name fields
+    String memberName;
+
+    public DatasetEntry (Dataset dataset)
+    {
+      // check whether this is a PDS member
+      String name = dataset.getDatasetName ();
+      int pos = name.indexOf ('(');
+      if (pos > 0)
+      {
+        parentName = name.substring (0, pos);
+        memberName = name.substring (pos + 1, name.length () - 1);
+      }
+
+      this.dataset = dataset;
+      treeItem = new TreeItem<> (dataset);
+    }
+
+    // only used when we have a PDS member with no parent
+    public DatasetEntry (String name)
+    {
+      dataset = new Dataset (name);
+      parentName = name;
+      members = new ArrayList<> ();
+      treeItem = new TreeItem<> (dataset);
+    }
+
+    public void add (Dataset pdsMember)
+    {
+      if (members == null)
+        members = new ArrayList<> ();
+      members.add (pdsMember);
+    }
+
+    public boolean isFlatFile ()
+    {
+      return parentName == null && members == null;
+    }
+
+    public boolean isPDS ()
+    {
+      return members != null;
+    }
+
+    public boolean isPDSMember ()
+    {
+      return parentName != null;
+    }
   }
 }
