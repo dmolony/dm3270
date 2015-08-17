@@ -149,8 +149,10 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
   // this is a workaround until jdk 8u60 is released
   public void refresh ()
   {
-    setRoot (null);
-    setRoot (root);
+    //    setRoot (null);
+    //    setRoot (root);
+    setShowRoot (true);
+    setShowRoot (false);
   }
 
   class DatasetEntry
