@@ -57,6 +57,7 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
     if (datasetName == null || datasetName.isEmpty ())
     {
       txtCommand.setText ("");
+      setButton ();
       return;
     }
 

@@ -41,7 +41,6 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
 
     addColumn ("DatasetName", "Dataset name", 300, Justification.LEFT);
     addColumn ("Tracks", "Tracks", 50, Justification.RIGHT);
-    //    addColumn ("Cylinders", "Cyls", 50, Justification.RIGHT);
     addColumn ("PercentUsed", "% used", 50, Justification.RIGHT);
     addColumn ("Extents", "XT", 50, Justification.RIGHT);
     addColumn ("Device", "Device", 50, Justification.CENTER);
