@@ -20,8 +20,6 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
   private Callback<TreeTableColumn<Dataset, String>, //
   TreeTableCell<Dataset, String>> rightJustified;
 
-  //  private final Map<String, Dataset> datasets = new HashMap<> ();
-  //  private final Map<String, Map<String, Dataset>> parents = new HashMap<> ();
   private final TreeItem<Dataset> root = new TreeItem<> (new Dataset ("Root"));
 
   private final Map<String, DatasetEntry> entries = new HashMap<> ();
@@ -84,10 +82,7 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
         root.getChildren ().add (datasetEntry.treeItem);
     }
     else
-    {
-      System.out.println ("merging");
       datasetEntry.dataset.merge (dataset);
-    }
   }
 
   private void addColumn (String id, String heading, int width,
@@ -149,6 +144,13 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
             return cell;
           }
         };
+  }
+
+  // this is a workaround until jdk 8u60 is released
+  public void refresh ()
+  {
+    setRoot (null);
+    setRoot (root);
   }
 
   class DatasetEntry

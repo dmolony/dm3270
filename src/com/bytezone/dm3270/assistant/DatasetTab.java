@@ -120,6 +120,7 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       }
 
     datasetTable.refresh ();// temporary fix until 8u60
+    datasetTreeTable.refresh ();
     setButton ();
   }
 }

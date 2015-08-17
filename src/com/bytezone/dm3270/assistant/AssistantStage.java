@@ -103,8 +103,6 @@ public class AssistantStage extends Stage
   @Override
   public void screenChanged ()
   {
-    //    ScreenDetails screenDetails = screen.getScreenDetails ();
-    //    tsoCommand.screenChanged ();
     datasetTab.screenChanged ();
     jobTab.screenChanged ();
   }
