@@ -31,12 +31,11 @@ public class DatasetTable extends TableView<Dataset>
     createJustifications ();
 
     addColumn ("DatasetName", "Dataset name", 300, Justification.LEFT);
+    addColumn ("Volume", "Volume", 70, Justification.LEFT);
     addColumn ("Tracks", "Tracks", 50, Justification.RIGHT);
-    //    addColumn ("Cylinders", "Cyls", 50, Justification.RIGHT);
     addColumn ("PercentUsed", "% used", 50, Justification.RIGHT);
     addColumn ("Extents", "XT", 50, Justification.RIGHT);
     addColumn ("Device", "Device", 50, Justification.CENTER);
-    addColumn ("Volume", "Volume", 70, Justification.LEFT);
     addColumn ("Dsorg", "Dsorg", 50, Justification.LEFT);
     addColumn ("Recfm", "Recfm", 50, Justification.LEFT);
     addColumn ("Lrecl", "Lrecl", 50, Justification.RIGHT);
