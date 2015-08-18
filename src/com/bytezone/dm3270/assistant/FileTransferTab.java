@@ -10,7 +10,6 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
-import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
 import com.bytezone.reporter.application.TreePanel.FileNode;
@@ -20,8 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
-public class FileTransferTab extends TransferTab
-    implements ScreenChangeListener, NodeSelectionListener
+public class FileTransferTab extends TransferTab implements ScreenChangeListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
@@ -45,7 +43,7 @@ public class FileTransferTab extends TransferTab
       reporterNode = new ReporterNode (prefs);
       borderPane.setCenter (reporterNode.getRootNode ());
       reporterNode.getTreePanel ().getTree ().requestFocus ();
-      reporterNode.getTreePanel ().addNodeSelectionListener (this);
+      reporterNode.getTreePanel ().addNodeSelectionListener (e -> setText ());
 
       setContent (borderPane);
     }
@@ -131,6 +129,12 @@ public class FileTransferTab extends TransferTab
   @Override
       void setText ()
   {
+    if (reporterNode == null)
+    {
+      txtCommand.setText ("");
+      setButton ();
+      return;
+    }
     //    String report = selectedBatchJob.getOutputFile ();
     //    String command = report == null ? selectedBatchJob.outputCommand ()
     //        : String.format ("IND$FILE GET %s", report);
@@ -156,12 +160,6 @@ public class FileTransferTab extends TransferTab
     ScreenDetails screenDetails = screen.getScreenDetails ();
     isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     tsoCommandField = screenDetails.getTSOCommandField ();
-    setText ();
-  }
-
-  @Override
-  public void nodeSelected (FileNode fileNode)
-  {
     setText ();
   }
 }
