@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableColumn.CellDataFeatures;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.util.Callback;
 
 public class DatasetTreeTable extends TreeTableView<Dataset>
@@ -39,20 +40,34 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
 
     createJustifications ();
 
-    addColumn ("DatasetName", "Dataset name", 300, Justification.LEFT);
-    addColumn ("Volume", "Volume", 70, Justification.LEFT);
-    addColumn ("Tracks", "Tracks", 50, Justification.RIGHT);
-    addColumn ("PercentUsed", "% used", 50, Justification.RIGHT);
-    addColumn ("Extents", "XT", 50, Justification.RIGHT);
-    addColumn ("Device", "Device", 50, Justification.CENTER);
-    addColumn ("Dsorg", "Dsorg", 50, Justification.LEFT);
-    addColumn ("Recfm", "Recfm", 50, Justification.LEFT);
-    addColumn ("Lrecl", "Lrecl", 50, Justification.RIGHT);
-    addColumn ("Blksize", "Blksize", 70, Justification.RIGHT);
-    addColumn ("Created", "Created", 100, Justification.CENTER);
-    addColumn ("Expires", "Expires", 100, Justification.CENTER);
-    addColumn ("Referred", "Referred", 100, Justification.CENTER);
-    addColumn ("Catalog", "Catalog", 150, Justification.LEFT);
+    addColumn ("Dataset name", 300, Justification.LEFT,
+               e -> e.getValue ().getValue ().propertyDatasetName ());
+    addColumn ("Volume", 70, Justification.LEFT,
+               e -> e.getValue ().getValue ().propertyVolume ());
+    addColumn ("Tracks", 50, Justification.RIGHT,
+               e -> e.getValue ().getValue ().propertyTracks ());
+    addColumn ("% used", 50, Justification.RIGHT,
+               e -> e.getValue ().getValue ().propertyPercentUsed ());
+    addColumn ("XT", 50, Justification.RIGHT,
+               e -> e.getValue ().getValue ().propertyExtents ());
+    addColumn ("Device", 50, Justification.CENTER,
+               e -> e.getValue ().getValue ().propertyDevice ());
+    addColumn ("Dsorg", 50, Justification.LEFT,
+               e -> e.getValue ().getValue ().propertyDsorg ());
+    addColumn ("Recfm", 50, Justification.LEFT,
+               e -> e.getValue ().getValue ().propertyRecfm ());
+    addColumn ("Lrecl", 50, Justification.RIGHT,
+               e -> e.getValue ().getValue ().propertyLrecl ());
+    addColumn ("Blksize", 70, Justification.RIGHT,
+               e -> e.getValue ().getValue ().propertyBlksize ());
+    addColumn ("Created", 100, Justification.CENTER,
+               e -> e.getValue ().getValue ().propertyCreated ());
+    addColumn ("Expires", 100, Justification.CENTER,
+               e -> e.getValue ().getValue ().propertyExpires ());
+    addColumn ("Referred", 100, Justification.CENTER,
+               e -> e.getValue ().getValue ().propertyReferred ());
+    addColumn ("Catalog", 150, Justification.LEFT,
+               e -> e.getValue ().getValue ().propertyCatalog ());
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));
   }
@@ -84,12 +99,12 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
       datasetEntry.dataset.merge (dataset);
   }
 
-  private void addColumn (String id, String heading, int width,
-      Justification justification)
+  private void addColumn (String heading, int width, Justification justification,
+      Callback<CellDataFeatures<Dataset, String>, ObservableValue<String>> callback)
   {
     TreeTableColumn<Dataset, String> column = new TreeTableColumn<> (heading);
     column.setPrefWidth (width);
-    column.setCellValueFactory (new TreeItemPropertyValueFactory<> (id));
+    column.setCellValueFactory (callback);
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
@@ -143,16 +158,6 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
             return cell;
           }
         };
-  }
-
-  // this is a workaround until jdk 8u60 is released
-  @Override
-  public void refresh ()
-  {
-    //    setRoot (null);
-    //    setRoot (root);
-    setShowRoot (true);
-    setShowRoot (false);
   }
 
   class DatasetEntry
