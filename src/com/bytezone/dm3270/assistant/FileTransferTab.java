@@ -127,14 +127,24 @@ public class FileTransferTab extends TransferTab implements ScreenChangeListener
   }
 
   @Override
+  public void screenChanged ()
+  {
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+    isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
+    tsoCommandField = screenDetails.getTSOCommandField ();
+    setText ();
+  }
+
+  @Override
       void setText ()
   {
     if (reporterNode == null)
     {
       txtCommand.setText ("");
-      setButton ();
+      btnExecute.setDisable (true);
       return;
     }
+
     //    String report = selectedBatchJob.getOutputFile ();
     //    String command = report == null ? selectedBatchJob.outputCommand ()
     //        : String.format ("IND$FILE GET %s", report);
@@ -152,14 +162,5 @@ public class FileTransferTab extends TransferTab implements ScreenChangeListener
   {
     String command = txtCommand.getText ();
     btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
-  }
-
-  @Override
-  public void screenChanged ()
-  {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
-    isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
-    tsoCommandField = screenDetails.getTSOCommandField ();
-    setText ();
   }
 }

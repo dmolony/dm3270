@@ -3,8 +3,9 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.ArrayList;
 import java.util.List;
 
-// Control Unit Terminal (CUT) - Buffered
-// Distributed Function Terminal (DFT) - WSF
+// CUT - Control Unit Terminal --------- Buffered
+// DFT - Distributed Function Terminal - WSF
+// http://publibz.boulder.ibm.com/cgi-bin/bookmgr/BOOKS/cn7a7003/2.4.1
 
 public class Transfer
 {

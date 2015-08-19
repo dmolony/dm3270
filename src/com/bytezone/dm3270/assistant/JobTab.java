@@ -44,39 +44,6 @@ public class JobTab extends TransferTab implements ScreenChangeListener
     setText ();
   }
 
-  @Override
-      void setText ()
-  {
-    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
-    {
-      txtCommand.setText ("");
-      return;
-    }
-
-    String report = selectedBatchJob.getOutputFile ();
-    String command = report == null ? selectedBatchJob.outputCommand ()
-        : String.format ("IND$FILE GET %s", report);
-
-    if (!isTSOCommandScreen)
-      command = "TSO " + command;
-
-    txtCommand.setText (command);
-    setButton ();
-  }
-
-  @Override
-      void setButton ()
-  {
-    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
-    {
-      btnExecute.setDisable (true);
-      return;
-    }
-
-    String command = txtCommand.getText ();
-    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
-  }
-
   public void addBatchJob (BatchJob batchJob)
   {
     jobTable.addJob (batchJob);
@@ -105,7 +72,41 @@ public class JobTab extends TransferTab implements ScreenChangeListener
     ScreenDetails screenDetails = screen.getScreenDetails ();
     isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     tsoCommandField = screenDetails.getTSOCommandField ();
+    setText ();
+  }
+
+  @Override
+      void setText ()
+  {
+    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
+    {
+      txtCommand.setText ("");
+      btnExecute.setDisable (true);
+      return;
+    }
+
+    String report = selectedBatchJob.getOutputFile ();
+    String command = report == null ? selectedBatchJob.outputCommand ()
+        : String.format ("IND$FILE GET %s", report);
+
+    if (!isTSOCommandScreen)
+      command = "TSO " + command;
+
+    txtCommand.setText (command);
     setButton ();
+  }
+
+  @Override
+      void setButton ()
+  {
+    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
+    {
+      btnExecute.setDisable (true);
+      return;
+    }
+
+    String command = txtCommand.getText ();
+    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 
   // ---------------------------------------------------------------------------------//
@@ -125,6 +126,16 @@ public class JobTab extends TransferTab implements ScreenChangeListener
     if (batchJob != null)
     {
       batchJob.completed (time, conditionCode);
+      jobTable.refresh ();// temp fix before jdk 8u60
+    }
+  }
+
+  public void batchJobFailed (int jobNumber, String jobName, String time)
+  {
+    BatchJob batchJob = getBatchJob (jobNumber);
+    if (batchJob != null)
+    {
+      batchJob.failed (time);
       jobTable.refresh ();// temp fix before jdk 8u60
     }
   }

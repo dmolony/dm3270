@@ -29,7 +29,7 @@ public class TSOCommand//implements ScreenChangeListener
   {
     this.screen = screen;
 
-    txtCommand.setEditable (false);
+    txtCommand.setEditable (true);
     txtCommand.setPrefWidth (400);
     txtCommand.setFont (Font.font ("Monospaced", 12));
     txtCommand.setFocusTraversable (false);

@@ -265,6 +265,8 @@ public class Console extends Application
 
     if (spyWindowSaver != null)
       spyWindowSaver.saveWindow ();
+
+    screen.getAssistantStage ().closeWindow ();
   }
 
   private Screen createScreen (Function function)

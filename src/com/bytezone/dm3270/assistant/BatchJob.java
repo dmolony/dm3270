@@ -34,6 +34,14 @@ public class BatchJob
     setJobConditionCode (conditionCode + "");
   }
 
+  public void failed (String timeCompleted)
+  {
+    this.timeCompleted = timeCompleted;
+
+    setJobCompleted (timeCompleted);
+    setJobConditionCode ("JCL ERROR");
+  }
+
   public String outputCommand ()
   {
     return String.format ("OUT %s(%s) PRINT(%s)", jobName, getJobNumber (),

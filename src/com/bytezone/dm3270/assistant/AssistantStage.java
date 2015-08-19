@@ -74,6 +74,9 @@ public class AssistantStage extends Stage
     Scene scene = new Scene (borderPane, 800, 500);// width/height
     setScene (scene);
 
+    setOnCloseRequest (e -> closeWindow ());
+    setOnShowing (e -> showing ());
+
     windowSaver = new WindowSaver (prefs, this, "DatasetStage");
     windowSaver.restoreWindow ();
 
@@ -94,10 +97,15 @@ public class AssistantStage extends Stage
     tsoCommand.setConsolePane (consolePane);
   }
 
-  private void closeWindow ()
+  public void closeWindow ()
   {
     windowSaver.saveWindow ();
     hide ();
+  }
+
+  private void showing ()
+  {
+    System.out.println ("hi");
   }
 
   @Override
@@ -116,6 +124,11 @@ public class AssistantStage extends Stage
       int conditionCode)
   {
     jobTab.batchJobEnded (jobNumber, jobName, time, conditionCode);
+  }
+
+  public void batchJobFailed (int jobNumber, String jobName, String time)
+  {
+    jobTab.batchJobFailed (jobNumber, jobName, time);
   }
 
   public void openTransfer (Transfer transfer)

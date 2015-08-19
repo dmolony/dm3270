@@ -15,9 +15,14 @@ public class WriteCommand extends Command
 {
   private static final Pattern jobSubmittedPattern =
       Pattern.compile ("^JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
+
   private static final Pattern jobCompletedPattern =
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* MAXCC=(\\d+).*");
+  private static final Pattern jobFailedPattern =
+      Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
+          + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR .*");
+
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
@@ -182,12 +187,11 @@ public class WriteCommand extends Command
     else
       return false;
 
-    //    System.out.println (systemMessageText);
+    System.out.println (systemMessageText);
     Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
     if (matcher.matches ())
     {
       int jobNumber = Integer.parseInt (matcher.group (2));
-      //      screen.getJobStage ().batchJobSubmitted (jobNumber, matcher.group (1));
       screen.getAssistantStage ().batchJobSubmitted (jobNumber, matcher.group (1));
     }
 
@@ -200,6 +204,15 @@ public class WriteCommand extends Command
       //                                           matcher.group (1), conditionCode);
       screen.getAssistantStage ().batchJobEnded (jobNumber, matcher.group (3),
                                                  matcher.group (1), conditionCode);
+    }
+
+    matcher = jobFailedPattern.matcher (systemMessageText);
+    if (matcher.matches ())
+    {
+      int jobNumber = Integer.parseInt (matcher.group (2));
+      String jobName = matcher.group (3);
+      String time = matcher.group (1);
+      screen.getAssistantStage ().batchJobFailed (jobNumber, jobName, time);
     }
 
     return true;

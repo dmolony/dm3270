@@ -51,13 +51,39 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
   }
 
   @Override
+  public void screenChanged ()
+  {
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+
+    List<Dataset> datasets = screenDetails.getDatasets ();
+    if (datasets != null)
+      for (Dataset dataset : datasets)
+      {
+        datasetTable.addDataset (dataset);
+        datasetTreeTable.addDataset (dataset);
+      }
+
+    List<Dataset> members = screenDetails.getMembers ();
+    if (members != null)
+      for (Dataset dataset : members)
+      {
+        datasetTable.addMember (dataset);
+        datasetTreeTable.addDataset (dataset);
+      }
+
+    datasetTable.refresh ();// temporary fix until 8u60
+    datasetTreeTable.refresh ();
+    setText ();
+  }
+
+  @Override
       void setText ()
   {
     String datasetName = selectedDataset == null ? "" : selectedDataset.getDatasetName ();
     if (datasetName == null || datasetName.isEmpty ())
     {
       txtCommand.setText ("");
-      setButton ();
+      btnExecute.setDisable (true);
       return;
     }
 
@@ -97,31 +123,5 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
     String command = txtCommand.getText ();
     btnExecute
         .setDisable (screenDetails.getTSOCommandField () == null || command.isEmpty ());
-  }
-
-  @Override
-  public void screenChanged ()
-  {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
-
-    List<Dataset> datasets = screenDetails.getDatasets ();
-    if (datasets != null)
-      for (Dataset dataset : datasets)
-      {
-        datasetTable.addDataset (dataset);
-        datasetTreeTable.addDataset (dataset);
-      }
-
-    List<Dataset> members = screenDetails.getMembers ();
-    if (members != null)
-      for (Dataset dataset : members)
-      {
-        datasetTable.addMember (dataset);
-        datasetTreeTable.addDataset (dataset);
-      }
-
-    datasetTable.refresh ();// temporary fix until 8u60
-    datasetTreeTable.refresh ();
-    setButton ();
   }
 }
