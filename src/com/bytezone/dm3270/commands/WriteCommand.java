@@ -19,6 +19,7 @@ public class WriteCommand extends Command
   private static final Pattern jobCompletedPattern =
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* MAXCC=(\\d+).*");
+
   private static final Pattern jobFailedPattern =
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR .*");
@@ -27,6 +28,7 @@ public class WriteCommand extends Command
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
 
+  // this whole SystemMessage idea needs to be rewritten
   private final byte[] systemMessage1 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,

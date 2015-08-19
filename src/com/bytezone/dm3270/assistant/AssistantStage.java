@@ -69,7 +69,7 @@ public class AssistantStage extends Stage
     borderPane.setBottom (anchorPane);
 
     if (SYSTEM_MENUBAR)
-      menuBar.useSystemMenuBarProperty ().set (true);
+      menuBar.setUseSystemMenuBar (true);
 
     Scene scene = new Scene (borderPane, 800, 500);// width/height
     setScene (scene);
