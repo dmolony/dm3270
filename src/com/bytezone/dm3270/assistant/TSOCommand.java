@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
-public class TSOCommand//implements ScreenChangeListener
+public class TSOCommand
 {
   private final HBox hbox = new HBox (10);
   private final Screen screen;
@@ -23,7 +23,6 @@ public class TSOCommand//implements ScreenChangeListener
   final Button btnExecute = new Button ("Execute");
 
   private ConsolePane consolePane;
-  //  private ScreenDetails screenDetails;
 
   public TSOCommand (Screen screen)
   {

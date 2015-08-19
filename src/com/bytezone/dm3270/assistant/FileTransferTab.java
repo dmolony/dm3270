@@ -10,6 +10,7 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
+import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel;
 import com.bytezone.reporter.application.TreePanel.FileNode;
@@ -19,17 +20,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
-public class FileTransferTab extends TransferTab implements ScreenChangeListener
+public class FileTransferTab extends TransferTab
+    implements ScreenChangeListener, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
 
   private final Screen screen;
-  private ReporterNode reporterNode;
+  private final ReporterNode reporterNode;
   private final BorderPane borderPane = new BorderPane ();
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
+  private FileNode currentFileNode;
 
   public FileTransferTab (Screen screen, TextField text, Button execute,
       Preferences prefs)
@@ -38,23 +41,20 @@ public class FileTransferTab extends TransferTab implements ScreenChangeListener
 
     this.screen = screen;
 
-    try
-    {
-      reporterNode = new ReporterNode (prefs);
-      borderPane.setCenter (reporterNode.getRootNode ());
-      reporterNode.getTreePanel ().getTree ().requestFocus ();
-      reporterNode.getTreePanel ().addNodeSelectionListener (e -> setText ());
+    reporterNode = new ReporterNode (prefs);
+    borderPane.setCenter (reporterNode.getRootNode ());
+    reporterNode.getTreePanel ().addNodeSelectionListener (this);
+    reporterNode.getTreePanel ().getTree ().requestFocus ();
+    currentFileNode = reporterNode.getSelectedNode ();
 
-      setContent (borderPane);
-    }
-    catch (NoClassDefFoundError e)
-    {
-      System.out.println ("ReporterNode class not available");
-    }
+    setContent (borderPane);
+  }
 
-    if (reporterNode == null)
-    {
-    }
+  @Override
+  public void nodeSelected (FileNode fileNode)
+  {
+    currentFileNode = fileNode;
+    setText ();
   }
 
   public void addTransfer (Transfer transfer)
@@ -132,35 +132,36 @@ public class FileTransferTab extends TransferTab implements ScreenChangeListener
     ScreenDetails screenDetails = screen.getScreenDetails ();
     isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     tsoCommandField = screenDetails.getTSOCommandField ();
+
     setText ();
   }
 
   @Override
       void setText ()
   {
-    if (reporterNode == null)
+    if (currentFileNode == null)
     {
       txtCommand.setText ("");
       btnExecute.setDisable (true);
       return;
     }
+    //    if (reporterNode == null)
+    //    {
+    //      txtCommand.setText ("");
+    //      btnExecute.setDisable (true);
+    //      return;
+    //    }
 
     //    String report = selectedBatchJob.getOutputFile ();
     //    String command = report == null ? selectedBatchJob.outputCommand ()
     //        : String.format ("IND$FILE GET %s", report);
-    String command = "IND$FILE PUT " + reporterNode.getSelectedNode ();
+    String command = "IND$FILE PUT " + currentFileNode;
 
     if (!isTSOCommandScreen)
       command = "TSO " + command;
 
     txtCommand.setText (command);
-    setButton ();
-  }
 
-  @Override
-      void setButton ()
-  {
-    String command = txtCommand.getText ();
     btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 }

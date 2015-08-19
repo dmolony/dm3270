@@ -105,20 +105,15 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       command = "TSO " + command;
 
     txtCommand.setText (command);
-    setButton ();
-  }
 
-  @Override
-      void setButton ()
-  {
     if (selectedDataset == null)
     {
       btnExecute.setDisable (true);
       return;
     }
 
-    ScreenDetails screenDetails = screen.getScreenDetails ();
-    String command = txtCommand.getText ();
+    //    ScreenDetails screenDetails = screen.getScreenDetails ();
+    //    String command = txtCommand.getText ();
     btnExecute
         .setDisable (screenDetails.getTSOCommandField () == null || command.isEmpty ());
   }

@@ -75,7 +75,6 @@ public class AssistantStage extends Stage
     setScene (scene);
 
     setOnCloseRequest (e -> closeWindow ());
-    //    setOnShowing (e -> showing ());
 
     windowSaver = new WindowSaver (prefs, this, "DatasetStage");
     windowSaver.restoreWindow ();
@@ -103,16 +102,12 @@ public class AssistantStage extends Stage
     hide ();
   }
 
-  //  private void showing ()
-  //  {
-  //    System.out.println ("hi");
-  //  }
-
   @Override
   public void screenChanged ()
   {
     datasetTab.screenChanged ();
     jobTab.screenChanged ();
+    fileTransferTab.screenChanged ();
   }
 
   public void batchJobSubmitted (int jobNumber, String jobName)

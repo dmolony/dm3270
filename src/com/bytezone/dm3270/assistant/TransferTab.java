@@ -19,6 +19,4 @@ public abstract class TransferTab extends Tab
   }
 
   abstract void setText ();
-
-  abstract void setButton ();
 }

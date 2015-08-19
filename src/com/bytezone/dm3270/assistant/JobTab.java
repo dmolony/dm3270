@@ -93,19 +93,13 @@ public class JobTab extends TransferTab implements ScreenChangeListener
       command = "TSO " + command;
 
     txtCommand.setText (command);
-    setButton ();
-  }
 
-  @Override
-      void setButton ()
-  {
     if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
     {
       btnExecute.setDisable (true);
       return;
     }
 
-    String command = txtCommand.getText ();
     btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
   }
 
