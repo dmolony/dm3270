@@ -235,13 +235,16 @@ public class WriteCommand extends Command
                                                  matcher.group (1), conditionCode);
     }
 
-    matcher = jobFailedPattern.matcher (systemMessageText2);
-    if (matcher.matches ())
+    if (systemMessageText2 != null)
     {
-      int jobNumber = Integer.parseInt (matcher.group (2));
-      String jobName = matcher.group (3);
-      String time = matcher.group (1);
-      screen.getAssistantStage ().batchJobFailed (jobNumber, jobName, time);
+      matcher = jobFailedPattern.matcher (systemMessageText2);
+      if (matcher.matches ())
+      {
+        int jobNumber = Integer.parseInt (matcher.group (2));
+        String jobName = matcher.group (3);
+        String time = matcher.group (1);
+        screen.getAssistantStage ().batchJobFailed (jobNumber, jobName, time);
+      }
     }
 
     return true;
