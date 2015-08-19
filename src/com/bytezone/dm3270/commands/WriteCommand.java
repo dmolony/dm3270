@@ -31,17 +31,28 @@ public class WriteCommand extends Command
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+
   private final byte[] systemMessage2 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+
   private final byte[] systemMessage3 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.INSERT_CURSOR };
+
+  private final byte[] systemMessage4 =
+      { //
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+
   private String systemMessageText;
+  private String systemMessageText2;
 
   public WriteCommand (byte[] buffer, int offset, int length, Screen screen,
       boolean erase)
@@ -154,6 +165,7 @@ public class WriteCommand extends Command
   {
     int ptr = 0;
 
+    //    System.out.printf ("Orders: %d%n", orders.size ());
     if (eraseWrite && orders.size () == 8)
     {
       for (Order order : orders)
@@ -174,6 +186,17 @@ public class WriteCommand extends Command
       }
       systemMessageText = Utility.getString (orders.get (4).getBuffer ());
     }
+    else if (eraseWrite && orders.size () == 15)
+    {
+      for (Order order : orders)
+      {
+        byte reqType = systemMessage4[ptr++];
+        if (reqType != 0 && reqType != order.getType ())
+          return false;
+      }
+      systemMessageText = Utility.getString (orders.get (4).getBuffer ());
+      systemMessageText2 = Utility.getString (orders.get (8).getBuffer ());
+    }
     else if (!eraseWrite && orders.size () == 6)
     {
       for (Order order : orders)
@@ -185,9 +208,13 @@ public class WriteCommand extends Command
       systemMessageText = Utility.getString (orders.get (2).getBuffer ());
     }
     else
+    {
+      //      for (Order order : orders)
+      //        System.out.println (order);
       return false;
+    }
 
-    System.out.println (systemMessageText);
+    //    System.out.println (systemMessageText);
     Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
     if (matcher.matches ())
     {
@@ -206,7 +233,7 @@ public class WriteCommand extends Command
                                                  matcher.group (1), conditionCode);
     }
 
-    matcher = jobFailedPattern.matcher (systemMessageText);
+    matcher = jobFailedPattern.matcher (systemMessageText2);
     if (matcher.matches ())
     {
       int jobNumber = Integer.parseInt (matcher.group (2));

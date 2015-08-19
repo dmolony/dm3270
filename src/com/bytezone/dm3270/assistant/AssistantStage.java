@@ -75,7 +75,7 @@ public class AssistantStage extends Stage
     setScene (scene);
 
     setOnCloseRequest (e -> closeWindow ());
-    setOnShowing (e -> showing ());
+    //    setOnShowing (e -> showing ());
 
     windowSaver = new WindowSaver (prefs, this, "DatasetStage");
     windowSaver.restoreWindow ();
@@ -103,10 +103,10 @@ public class AssistantStage extends Stage
     hide ();
   }
 
-  private void showing ()
-  {
-    System.out.println ("hi");
-  }
+  //  private void showing ()
+  //  {
+  //    System.out.println ("hi");
+  //  }
 
   @Override
   public void screenChanged ()

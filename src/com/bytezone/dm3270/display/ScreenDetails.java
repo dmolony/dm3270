@@ -590,8 +590,8 @@ public class ScreenDetails
         String modified = details.substring (23, 33);
         String time = details.substring (34, 42);
         String id = details.substring (44);
-        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 5 + rowFrom,
-                           memberName, size, created, modified, time, id);
+        //        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 5 + rowFrom,
+        //                           memberName, size, created, modified, time, id);
         member.setCreated (created);
         member.setReferred (modified);
       }
@@ -602,8 +602,8 @@ public class ScreenDetails
         String mod = details.substring (19, 25);
         String vvmm = details.substring (31, 36);
         String id = details.substring (44);
-        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 5 + rowFrom,
-                           memberName, size, init, mod, vvmm, id);
+        //        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", row - 5 + rowFrom,
+        //                           memberName, size, init, mod, vvmm, id);
       }
       else
         System.out.println ("Unexpected headings size: " + headings.size ());

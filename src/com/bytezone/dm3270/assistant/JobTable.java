@@ -36,7 +36,7 @@ public class JobTable extends TableView<BatchJob>
     colJobCompleted.setPrefWidth (100);
     colJobCompleted.setCellValueFactory (new PropertyValueFactory<> ("JobCompleted"));
 
-    colJobCC.setPrefWidth (50);
+    colJobCC.setPrefWidth (80);
     colJobCC.setCellValueFactory (new PropertyValueFactory<> ("JobConditionCode"));
 
     colOutputFile.setPrefWidth (200);
