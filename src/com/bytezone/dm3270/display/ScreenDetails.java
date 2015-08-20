@@ -427,7 +427,6 @@ public class ScreenDetails
       dataset.setPercentUsed (pct.trim ());
       dataset.setExtents (extents.trim ());
       dataset.setDevice (device.trim ());
-      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", tracks, pct, extents, device);
     }
   }
 
@@ -444,7 +443,6 @@ public class ScreenDetails
       dataset.setPercentUsed (pct.trim ());
       dataset.setExtents (extents.trim ());
       dataset.setDevice (device.trim ());
-      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", tracks, pct, extents, device);
     }
   }
 
@@ -460,17 +458,9 @@ public class ScreenDetails
       dataset.setDsorg (dsorg.trim ());
       dataset.setRecfm (recfm.trim ());
       dataset.setLrecl (lrecl.trim ());
-      //      try
-      //      {
+
       int bls = Integer.parseInt (blksize.trim ());
       dataset.setBlksize (String.format ("%,7d", bls));
-      //      }
-      //      catch (NumberFormatException e)
-      //      {
-      //        System.out.println ("bollocks");
-      //        System.out.printf ("[%s]%n", blksize);
-      //      }
-      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", dsorg, recfm, lrecl, blksize);
     }
   }
 
@@ -489,8 +479,6 @@ public class ScreenDetails
 
       int bls = Integer.parseInt (blksize.trim ());
       dataset.setBlksize (String.format ("%,7d", bls));
-
-      //      System.out.printf ("[%s] [%s] [%s] [%s]%n", dsorg, recfm, lrecl, blksize);
     }
   }
 
