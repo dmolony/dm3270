@@ -71,7 +71,8 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
         datasetTreeTable.addDataset (dataset);
       }
 
-    setText ();
+    if (isSelected ())
+      setText ();
   }
 
   @Override

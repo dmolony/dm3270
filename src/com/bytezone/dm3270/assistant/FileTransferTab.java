@@ -133,7 +133,8 @@ public class FileTransferTab extends TransferTab
     isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     tsoCommandField = screenDetails.getTSOCommandField ();
 
-    setText ();
+    if (isSelected ())
+      setText ();
   }
 
   @Override

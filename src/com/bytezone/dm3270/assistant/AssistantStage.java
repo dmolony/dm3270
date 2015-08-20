@@ -84,6 +84,8 @@ public class AssistantStage extends Stage
           if (newSelection != null)
             select (newSelection);
         });
+
+    tabPane.getSelectionModel ().select (datasetTab);
   }
 
   private void select (Tab tab)

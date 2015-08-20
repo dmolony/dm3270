@@ -72,7 +72,9 @@ public class JobTab extends TransferTab implements ScreenChangeListener
     ScreenDetails screenDetails = screen.getScreenDetails ();
     isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
     tsoCommandField = screenDetails.getTSOCommandField ();
-    setText ();
+
+    if (isSelected ())
+      setText ();
   }
 
   @Override
