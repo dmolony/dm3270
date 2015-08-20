@@ -78,21 +78,23 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
   @Override
       void setText ()
   {
-    String datasetName = selectedDataset == null ? "" : selectedDataset.getDatasetName ();
-    if (datasetName == null || datasetName.isEmpty ())
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+    if (selectedDataset == null || screenDetails.getTSOCommandField () == null)
     {
       txtCommand.setText ("");
       btnExecute.setDisable (true);
       return;
     }
 
-    ScreenDetails screenDetails = screen.getScreenDetails ();
+    String datasetName = selectedDataset.getDatasetName ();
     String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
+    assert prefix != null;
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
     {
       if (datasetName.length () == prefix.length ())
       {
         txtCommand.setText ("");
+        btnExecute.setDisable (true);
         return;
       }
       datasetName = datasetName.substring (prefix.length () + 1);
@@ -100,22 +102,10 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
     else
       datasetName = "'" + datasetName + "'";
 
-    String command = String.format ("IND$FILE GET %s", datasetName);
-
-    if (!screenDetails.isTSOCommandScreen ())
-      command = "TSO " + command;
+    String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
+    String command = String.format ("%sIND$FILE GET %s", tsoPrefix, datasetName);
 
     txtCommand.setText (command);
-
-    if (selectedDataset == null)
-    {
-      btnExecute.setDisable (true);
-      return;
-    }
-
-    //    ScreenDetails screenDetails = screen.getScreenDetails ();
-    //    String command = txtCommand.getText ();
-    btnExecute
-        .setDisable (screenDetails.getTSOCommandField () == null || command.isEmpty ());
+    btnExecute.setDisable (false);
   }
 }
