@@ -17,7 +17,7 @@ public class ScreenDetails
 
   private final Screen screen;
 
-  private List<Field> fields;
+  //  private List<Field> fields;
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
 
@@ -46,28 +46,28 @@ public class ScreenDetails
     members.clear ();
     currentDataset = "";
 
-    fields = fieldManager.getFields ();
-    if (fields.size () > 2)
+    List<Field> screenFields = fieldManager.getFields ();
+    if (screenFields.size () > 2)
     {
-      if (hasPromptField ())
+      if (hasPromptField (screenFields))
       {
         if (prefix.isEmpty ())
-          checkPrefixScreen ();// initial ISPF screen
+          checkPrefixScreen (screenFields);// initial ISPF screen
 
-        isDatasetList = checkDatasetList ();
+        isDatasetList = checkDatasetList (screenFields);
 
         if (!isDatasetList)
         {
-          checkEditOrViewDataset ();
+          checkEditOrViewDataset (screenFields);
           if (currentDataset.isEmpty ())
-            checkBrowseDataset ();
+            checkBrowseDataset (screenFields);
         }
 
         if (!isDatasetList)
-          isMemberList = checkMemberList ();
+          isMemberList = checkMemberList (screenFields);
       }
       else
-        isTSOCommandScreen = checkTSOCommandScreen ();
+        isTSOCommandScreen = checkTSOCommandScreen (screenFields);
 
       if (false)
       {
@@ -122,19 +122,19 @@ public class ScreenDetails
     return members;
   }
 
-  private boolean hasPromptField ()
+  private boolean hasPromptField (List<Field> screenFields)
   {
-    List<Field> fields = getRowFields (2, 2);
-    for (int i = 0; i < fields.size (); i++)
+    List<Field> rowFields = getRowFields (screenFields, 2, 2);
+    for (int i = 0; i < rowFields.size (); i++)
     {
-      Field field = fields.get (i);
+      Field field = rowFields.get (i);
       String text = field.getText ();
       int column = field.getFirstLocation () % screen.columns;
       int nextFieldNo = i + 1;
-      if (nextFieldNo < fields.size () && column == 1
+      if (nextFieldNo < rowFields.size () && column == 1
           && ("Command ===>".equals (text) || "Option ===>".equals (text)))
       {
-        Field nextField = fields.get (nextFieldNo);
+        Field nextField = rowFields.get (nextFieldNo);
         int length = nextField.getDisplayLength ();
         boolean modifiable = nextField.isUnprotected ();
         boolean hidden = nextField.isHidden ();
@@ -151,61 +151,61 @@ public class ScreenDetails
     return false;
   }
 
-  private void checkPrefixScreen ()
+  private void checkPrefixScreen (List<Field> screenFields)
   {
-    if (fields.size () < 73)
+    if (screenFields.size () < 73)
       return;
 
-    Field field = fields.get (10);
+    Field field = screenFields.get (10);
     String heading = field.getText ();
     if (!ispfScreen.equals (heading) && !zosScreen.equals (heading))
       return;
 
-    field = fields.get (23);
+    field = screenFields.get (23);
     if (!" User ID . :".equals (field.getText ()))
       return;
     if (field.getFirstLocation () != 457)
       return;
 
-    field = fields.get (24);
+    field = screenFields.get (24);
     if (field.getFirstLocation () != 470)
       return;
 
     userid = field.getText ().trim ();
 
-    field = fields.get (72);
+    field = screenFields.get (72);
     if (!" TSO prefix:".equals (field.getText ()))
       return;
     if (field.getFirstLocation () != 1017)
       return;
 
-    field = fields.get (73);
+    field = screenFields.get (73);
     if (field.getFirstLocation () != 1030)
       return;
 
     prefix = field.getText ().trim ();
   }
 
-  private boolean checkTSOCommandScreen ()
+  private boolean checkTSOCommandScreen (List<Field> screenFields)
   {
-    if (fields.size () < 14)
+    if (screenFields.size () < 14)
       return false;
 
-    Field field = fields.get (10);
+    Field field = screenFields.get (10);
     if (!ispfShell.equals (field.getText ()))
       return false;
 
     int workstationFieldNo = 13;
-    field = fields.get (workstationFieldNo);
+    field = screenFields.get (workstationFieldNo);
     if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
     {
       ++workstationFieldNo;
-      field = fields.get (workstationFieldNo);
+      field = screenFields.get (workstationFieldNo);
       if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
         return false;
     }
 
-    List<String> menus = getMenus ();
+    List<String> menus = getMenus (screenFields);
     if (menus.size () != tsoMenus.length)
       return false;
 
@@ -214,7 +214,7 @@ public class ScreenDetails
       if (!tsoMenus[i++].equals (menu))
         return false;
 
-    field = fields.get (workstationFieldNo + 5);
+    field = screenFields.get (workstationFieldNo + 5);
     if (field.getDisplayLength () != 234)
       return false;
 
@@ -223,19 +223,19 @@ public class ScreenDetails
     return true;
   }
 
-  private boolean checkDatasetList ()
+  private boolean checkDatasetList (List<Field> screenFields)
   {
     datasetsOnVolume = "";
     datasetsMatching = "";
 
-    if (fields.size () < 21)
+    if (screenFields.size () < 21)
       return false;
 
-    List<Field> fields = getRowFields (2, 2);
-    if (fields.size () == 0)
+    List<Field> rowFields = getRowFields (screenFields, 2, 2);
+    if (rowFields.size () == 0)
       return false;
 
-    String text = fields.get (0).getText ();
+    String text = rowFields.get (0).getText ();
     if (!text.startsWith ("DSLIST - Data Sets "))
       return false;
 
@@ -274,11 +274,11 @@ public class ScreenDetails
       System.out.printf ("Max rows  : %d%n%n", maxRows);
     }
 
-    fields = getRowFields (5, 2);
-    if (fields.size () == 0)
+    rowFields = getRowFields (screenFields, 5, 2);
+    if (rowFields.size () == 0)
       return false;
 
-    text = fields.get (0).getText ();
+    text = rowFields.get (0).getText ();
     if (!text.startsWith ("Command - Enter"))
       return false;
 
@@ -288,21 +288,21 @@ public class ScreenDetails
     int datasetsToProcess = 0;
     int nextLine = 0;
 
-    if (fields.size () == 3)
+    if (rowFields.size () == 3)
     {
-      heading = fields.get (1).getText ().trim ();
+      heading = rowFields.get (1).getText ().trim ();
       if (heading.startsWith ("Tracks"))
         screenType = 1;
       else if (heading.startsWith ("Dsorg"))
         screenType = 2;
     }
-    else if (fields.size () == 4)
+    else if (rowFields.size () == 4)
     {
-      heading = fields.get (2).getText ().trim ();
+      heading = rowFields.get (2).getText ().trim ();
       if ("Volume".equals (heading))
         screenType = 3;
     }
-    else if (fields.size () == 6)
+    else if (rowFields.size () == 6)
     {
       if (!datasetsOnVolume.isEmpty ())
       {
@@ -320,7 +320,7 @@ public class ScreenDetails
       }
     }
     else
-      System.out.printf ("Unexpected number of fields: %d%n", fields.size ());
+      System.out.printf ("Unexpected number of fields: %d%n", rowFields.size ());
 
     if (screenType >= 1 && screenType <= 3)
     {
@@ -345,80 +345,55 @@ public class ScreenDetails
 
     while (datasetsToProcess > 0)
     {
-      String datasetName = "";
       Dataset dataset = null;
-      fields = getRowFields (nextLine, linesPerDataset);
+      rowFields = getRowFields (screenFields, nextLine, linesPerDataset);
+
       switch (screenType)
       {
         case 1:
-          if (fields.size () != 2)
+          if (rowFields.size () == 2)
           {
-            System.out.println ("wrong size: " + fields.size ());
-            break;
+            dataset = addDataset (rowFields.get (0));
+            setSpace2 (dataset, rowFields.get (1).getText ());
           }
-
-          datasetName = fields.get (0).getText ().trim ();
-          dataset = new Dataset (datasetName);
-          datasets.add (dataset);
-
-          setSpace2 (dataset, fields.get (1).getText ());
-
           break;
 
         case 2:
-          if (fields.size () != 2)
+          if (rowFields.size () == 2)
           {
-            System.out.println ("wrong size: " + fields.size ());
-            break;
+            dataset = addDataset (rowFields.get (0));
+            setDisposition2 (dataset, rowFields.get (1).getText ());
           }
-
-          datasetName = fields.get (0).getText ().trim ();
-          dataset = new Dataset (datasetName);
-          datasets.add (dataset);
-
-          setDisposition2 (dataset, fields.get (1).getText ());
-
           break;
 
         case 3:
-          datasetName = fields.get (0).getText ().trim ();
-          dataset = new Dataset (datasetName);
-          datasets.add (dataset);
-          dataset.setVolume (fields.get (2).getText ().trim ());
+          dataset = addDataset (rowFields.get (0));
+          dataset.setVolume (rowFields.get (2).getText ().trim ());
           break;
 
         case 4:
-          if (fields.size () != 7)
+          if (rowFields.size () == 7)
           {
-            System.out.println ("wrong size: " + fields.size ());
-            break;
+            dataset = addDataset (rowFields.get (0));
+            dataset.setVolume (rowFields.get (2).getText ().trim ());
+            setSpace1 (dataset, rowFields.get (3).getText ());
+            setDisposition1 (dataset, rowFields.get (4).getText ());
+            setDates (dataset, rowFields.get (5).getText ());
+            dataset.setCatalog (rowFields.get (6).getText ().trim ());
           }
-
-          datasetName = fields.get (0).getText ().trim ();
-          dataset = new Dataset (datasetName);
-          datasets.add (dataset);
-
-          dataset.setVolume (fields.get (2).getText ().trim ());
-          setSpace1 (dataset, fields.get (3).getText ());
-          setDisposition1 (dataset, fields.get (4).getText ());
-          setDates (dataset, fields.get (5).getText ());
-          dataset.setCatalog (fields.get (6).getText ().trim ());
 
           nextLine++;// skip the row of hyphens
           break;
 
         case 5:
-          datasetName = fields.get (0).getText ().trim ();
-          dataset = new Dataset (datasetName);
-          datasets.add (dataset);
+          dataset = addDataset (rowFields.get (0));
+          dataset.setVolume (rowFields.get (2).getText ().trim ());
 
-          dataset.setVolume (fields.get (2).getText ().trim ());
-
-          if (fields.size () >= 6)
+          if (rowFields.size () >= 6)
           {
-            setSpace1 (dataset, fields.get (3).getText ());
-            setDisposition1 (dataset, fields.get (4).getText ());
-            setDates (dataset, fields.get (5).getText ());
+            setSpace1 (dataset, rowFields.get (3).getText ());
+            setDisposition1 (dataset, rowFields.get (4).getText ());
+            setDates (dataset, rowFields.get (5).getText ());
           }
 
           nextLine++;// skip the row of hyphens
@@ -430,6 +405,13 @@ public class ScreenDetails
     }
 
     return true;
+  }
+
+  private Dataset addDataset (Field field)
+  {
+    Dataset dataset = new Dataset (field.getText ().trim ());
+    datasets.add (dataset);
+    return dataset;
   }
 
   private void setSpace1 (Dataset dataset, String details)
@@ -522,12 +504,12 @@ public class ScreenDetails
     }
   }
 
-  private boolean checkMemberList ()
+  private boolean checkMemberList (List<Field> screenFields)
   {
-    if (fields.size () < 14)
+    if (screenFields.size () < 14)
       return false;
 
-    List<String> menus = getMenus ();
+    List<String> menus = getMenus (screenFields);
     if (menus.size () != pdsMenus.length)
       return false;
 
@@ -536,7 +518,7 @@ public class ScreenDetails
       if (!pdsMenus[i++].equals (menu))
         return false;
 
-    Field field = fields.get (8);
+    Field field = screenFields.get (8);
     int location = field.getFirstLocation ();
     if (location != 161)
       return false;
@@ -545,43 +527,43 @@ public class ScreenDetails
     if (!mode.equals ("EDIT") && !mode.equals ("BROWSE"))
       System.out.printf ("Unexpected mode: [%s]%n", mode);
 
-    field = fields.get (9);
+    field = screenFields.get (9);
     if (field.getFirstLocation () != 179)
       return false;
     String datasetName = field.getText ().trim ();
 
-    field = fields.get (10);
+    field = screenFields.get (10);
     if (field.getFirstLocation () != 221)
       return false;
     String rowText = field.getText ().trim ();
     if (!"Row".equals (rowText))
       return false;
 
-    field = fields.get (12);
+    field = screenFields.get (12);
     if (field.getFirstLocation () != 231)
       return false;
     String ofText = field.getText ().trim ();
     if (!"of".equals (ofText))
       return false;
 
-    int rowFrom = Integer.parseInt (fields.get (11).getText ().trim ());
-    int rowTo = Integer.parseInt (fields.get (13).getText ().trim ());
+    int rowFrom = Integer.parseInt (screenFields.get (11).getText ().trim ());
+    int rowTo = Integer.parseInt (screenFields.get (13).getText ().trim ());
 
     //    System.out.print ("\nMember list of " + datasetName + " in " + mode + " mode");
     //    System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
 
-    List<Field> headings = getFieldsOnRow (4);
+    List<Field> headings = getFieldsOnRow (screenFields, 4);
     int maxRows = Math.min (19, rowTo - rowFrom + 1) + 5;
 
     for (int row = 5; row < maxRows; row++)
     {
-      List<Field> fields = getFieldsOnRow (row);
+      List<Field> rowFields = getFieldsOnRow (screenFields, row);
 
-      String memberName = fields.get (1).getText ().trim ();
+      String memberName = rowFields.get (1).getText ().trim ();
       Dataset member = new Dataset (datasetName + "(" + memberName + ")");
       members.add (member);
 
-      String details = fields.get (3).getText ();
+      String details = rowFields.get (3).getText ();
 
       if (headings.size () == 7)
       {
@@ -613,7 +595,7 @@ public class ScreenDetails
     return true;
   }
 
-  private void checkEditOrViewDataset ()
+  private void checkEditOrViewDataset (List<Field> fields)
   {
     if (fields.size () < 13)
       return;
@@ -641,7 +623,7 @@ public class ScreenDetails
     }
   }
 
-  private void checkBrowseDataset ()
+  private void checkBrowseDataset (List<Field> fields)
   {
     if (fields.size () < 9)
       return;
@@ -669,11 +651,11 @@ public class ScreenDetails
     }
   }
 
-  private List<String> getMenus ()
+  private List<String> getMenus (List<Field> screenFields)
   {
     List<String> menus = new ArrayList<> ();
 
-    for (Field field : fields)
+    for (Field field : screenFields)
     {
       if (field.getFirstLocation () >= screen.columns)
         break;
@@ -689,21 +671,21 @@ public class ScreenDetails
     return menus;
   }
 
-  private List<Field> getFieldsOnRow (int requestedRow)
+  private List<Field> getFieldsOnRow (List<Field> fields, int requestedRow)
   {
     int firstLocation = requestedRow * screen.columns;
     int lastLocation = firstLocation + screen.columns - 1;
-    return getFields (firstLocation, lastLocation);
+    return getFields (fields, firstLocation, lastLocation);
   }
 
-  private List<Field> getRowFields (int requestedRowFrom, int rows)
+  private List<Field> getRowFields (List<Field> fields, int requestedRowFrom, int rows)
   {
     int firstLocation = requestedRowFrom * screen.columns;
     int lastLocation = (requestedRowFrom + rows) * screen.columns - 1;
-    return getFields (firstLocation, lastLocation);
+    return getFields (fields, firstLocation, lastLocation);
   }
 
-  private List<Field> getFields (int firstLocation, int lastLocation)
+  private List<Field> getFields (List<Field> fields, int firstLocation, int lastLocation)
   {
     List<Field> rowFields = new ArrayList<> ();
     for (Field field : fields)
