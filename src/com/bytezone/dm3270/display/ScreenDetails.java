@@ -11,13 +11,13 @@ public class ScreenDetails
       { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
   private static final String[] pdsMenus =
       { "Menu", "Functions", "Confirm", "Utilities", "Help" };
+
   private static String ispfScreen = "ISPF Primary Option Menu";
   private static String zosScreen = "z/OS Primary Option Menu";
   private static String ispfShell = "ISPF Command Shell";
 
   private final Screen screen;
 
-  //  private List<Field> fields;
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
 

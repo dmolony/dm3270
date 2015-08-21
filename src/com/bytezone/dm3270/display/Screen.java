@@ -127,6 +127,11 @@ public class Screen extends Canvas implements DisplayScreen
     return assistantStage;
   }
 
+  public void closeAssistantStage ()
+  {
+    assistantStage.closeWindow ();
+  }
+
   public Function getFunction ()
   {
     return function;

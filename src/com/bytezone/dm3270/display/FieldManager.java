@@ -46,7 +46,7 @@ public class FieldManager
     int first = -1;
     int ptr = 0;
 
-    while (ptr != first)                   // not wrapped around to the first field yet
+    while (ptr != first)// not wrapped around to the first field yet
     {
       ScreenPosition screenPosition = screen.getScreenPosition (ptr);
 
@@ -60,22 +60,22 @@ public class FieldManager
           positions.clear ();
         }
         else
-          first = ptr;                     // this is the first field on the screen
+          first = ptr;// this is the first field on the screen
 
-        start = ptr;                       // beginning of the current field
+        start = ptr;// beginning of the current field
       }
 
       // add ScreenPosition to the current field
       if (start >= 0)
         // if we are in a field...
-        positions.add (screenPosition);     // collect next field's positions
+        positions.add (screenPosition);// collect next field's positions
 
       // increment ptr and wrap around
       if (++ptr == screen.screenSize)
-      {           // faster than validate()
+      {// faster than validate()
         ptr = 0;
         if (first == -1)
-          break;                          // wrapped around and still no fields
+          break;// wrapped around and still no fields
       }
     }
 
@@ -144,7 +144,7 @@ public class FieldManager
         ++hiddenUnprotectedFields;
   }
 
-  public Field getField (int position)      // this needs to be improved
+  public Field getField (int position)// this needs to be improved
   {
     for (Field field : fields)
       if (field.contains (position))
@@ -176,6 +176,16 @@ public class FieldManager
       field.clear (true);
 
     return unprotectedFields.get (0);
+  }
+
+  public int getScreenRows ()
+  {
+    return screen.rows;
+  }
+
+  public int getScreenColumns ()
+  {
+    return screen.columns;
   }
 
   // ---------------------------------------------------------------------------------//
