@@ -10,9 +10,9 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
+import com.bytezone.reporter.application.FormatBox;
 import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
-import com.bytezone.reporter.application.TreePanel;
 import com.bytezone.reporter.application.TreePanel.FileNode;
 
 import javafx.application.Platform;
@@ -43,8 +43,8 @@ public class FileTransferTab extends TransferTab
 
     reporterNode = new ReporterNode (prefs);
     borderPane.setCenter (reporterNode.getRootNode ());
-    reporterNode.getTreePanel ().addNodeSelectionListener (this);
-    reporterNode.getTreePanel ().getTree ().requestFocus ();
+    reporterNode.addNodeSelectionListener (this);
+    reporterNode.requestFocus ();
     currentFileNode = reporterNode.getSelectedNode ();
 
     setContent (borderPane);
@@ -71,8 +71,7 @@ public class FileTransferTab extends TransferTab
     if (reporterNode == null)
       return;
 
-    TreePanel treePanel = reporterNode.getTreePanel ();
-    treePanel.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
+    reporterNode.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
   }
 
   public byte[] getCurrentFileBuffer ()
@@ -146,17 +145,16 @@ public class FileTransferTab extends TransferTab
       btnExecute.setDisable (true);
       return;
     }
-    //    if (reporterNode == null)
-    //    {
-    //      txtCommand.setText ("");
-    //      btnExecute.setDisable (true);
-    //      return;
-    //    }
 
-    //    String report = selectedBatchJob.getOutputFile ();
-    //    String command = report == null ? selectedBatchJob.outputCommand ()
-    //        : String.format ("IND$FILE GET %s", report);
-    String command = "IND$FILE PUT " + currentFileNode;
+    String fileName = currentFileNode.toString ().toUpperCase ();
+    if (fileName.endsWith (".TXT"))
+      fileName = fileName.substring (0, fileName.length () - 4);
+
+    String command = "IND$FILE PUT " + fileName;
+    //    ReportData reportData = currentFileNode.getReportData ();
+    FormatBox formatBox = currentFileNode.getFormatBox ();
+    if (formatBox.isAscii ())
+      command += " ASCII CRLF";
 
     if (!isTSOCommandScreen)
       command = "TSO " + command;
