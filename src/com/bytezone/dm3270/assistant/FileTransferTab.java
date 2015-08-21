@@ -10,7 +10,6 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
-import com.bytezone.reporter.application.FormatBox;
 import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 import com.bytezone.reporter.application.TreePanel.FileNode;
@@ -151,9 +150,7 @@ public class FileTransferTab extends TransferTab
       fileName = fileName.substring (0, fileName.length () - 4);
 
     String command = "IND$FILE PUT " + fileName;
-    //    ReportData reportData = currentFileNode.getReportData ();
-    FormatBox formatBox = currentFileNode.getFormatBox ();
-    if (formatBox.isAscii ())
+    if (currentFileNode.isAscii ())
       command += " ASCII CRLF";
 
     if (!isTSOCommandScreen)
