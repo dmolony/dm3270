@@ -103,8 +103,11 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
     else
       datasetName = "'" + datasetName + "'";
 
+    int pos = datasetName.indexOf (".CNTL");
+    boolean jclMember = pos > 0 && datasetName.endsWith (")");
+
     String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
-    String ascii = true ? "" : " ASCII CRLF";
+    String ascii = jclMember ? " ASCII CRLF" : "";
 
     String command = String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, ascii);
 
