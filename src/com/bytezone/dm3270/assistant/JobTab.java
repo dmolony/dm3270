@@ -3,7 +3,6 @@ package com.bytezone.dm3270.assistant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -17,9 +16,6 @@ public class JobTab extends TransferTab implements ScreenChangeListener
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");
   private final JobTable jobTable = new JobTable ();
   private final Screen screen;
-
-  private boolean isTSOCommandScreen;
-  private Field tsoCommandField;
 
   private BatchJob selectedBatchJob;
 
@@ -69,10 +65,6 @@ public class JobTab extends TransferTab implements ScreenChangeListener
   @Override
   public void screenChanged ()
   {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
-    isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
-    tsoCommandField = screenDetails.getTSOCommandField ();
-
     if (isSelected ())
       setText ();
   }
@@ -80,7 +72,9 @@ public class JobTab extends TransferTab implements ScreenChangeListener
   @Override
       void setText ()
   {
-    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+    if (screenDetails.getTSOCommandField () == null || selectedBatchJob == null
+        || selectedBatchJob.getJobCompleted () == null)
     {
       txtCommand.setText ("");
       btnExecute.setDisable (true);
@@ -88,14 +82,14 @@ public class JobTab extends TransferTab implements ScreenChangeListener
     }
 
     String report = selectedBatchJob.getOutputFile ();
-    String command = report == null ? selectedBatchJob.outputCommand ()
-        : String.format ("IND$FILE GET %s", report);
+    String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
+    String ascii = false ? "" : " ASCII CRLF";
 
-    if (!isTSOCommandScreen)
-      command = "TSO " + command;
+    String command = report == null ? selectedBatchJob.outputCommand ()
+        : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);
-    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
+    btnExecute.setDisable (false);
   }
 
   // ---------------------------------------------------------------------------------//

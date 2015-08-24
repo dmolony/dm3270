@@ -79,6 +79,7 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
+
     if (selectedDataset == null || screenDetails.getTSOCommandField () == null)
     {
       txtCommand.setText ("");
@@ -103,7 +104,9 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       datasetName = "'" + datasetName + "'";
 
     String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
-    String command = String.format ("%sIND$FILE GET %s", tsoPrefix, datasetName);
+    String ascii = true ? "" : " ASCII CRLF";
+
+    String command = String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, ascii);
 
     txtCommand.setText (command);
     btnExecute.setDisable (false);
