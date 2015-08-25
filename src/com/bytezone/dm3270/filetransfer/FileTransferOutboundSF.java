@@ -109,7 +109,10 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     if (transfer.getTransferContents () == TransferContents.DATA)
     {
+      // get the user command that initiated the transfer
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
+
+      // connect the buffer that contains the data to send
       if (transfer.getTransferType () == TransferType.RECEIVE)
         transfer.setTransferBuffer (assistantStage.getCurrentFileBuffer ());
     }
@@ -194,6 +197,8 @@ public class FileTransferOutboundSF extends FileTransferSF
         int bufferNumber = transfer.add (dataRecord);
         RecordNumber recordNumber = new RecordNumber (bufferNumber);
         ptr = recordNumber.pack (buffer, ptr);
+        if (transfer.getTransferContents () == TransferContents.DATA)
+          System.out.printf ("Bytes received: %d%n", transfer.dataLength);
       }
       reply = new ReadStructuredFieldCommand (buffer, screen);
 

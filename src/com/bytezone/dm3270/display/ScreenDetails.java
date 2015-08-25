@@ -578,7 +578,6 @@ public class ScreenDetails
       else
         System.out.println ("Unexpected headings size: " + headings.size ());
     }
-    System.out.println ();
 
     return true;
   }
