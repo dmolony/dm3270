@@ -58,6 +58,14 @@ public class TSOCommand
     Field tsoCommandField = screenDetails.getTSOCommandField ();
     String command = txtCommand.getText ();
 
+    if (command.length () > tsoCommandField.getDisplayLength ())
+    {
+      System.out.println ("Command is too long for the input field");
+      System.out.printf ("Field: %d, command: %d%n", tsoCommandField.getDisplayLength (),
+                         command.length ());
+      return;
+    }
+
     if (tsoCommandField != null && !command.isEmpty ())
     {
       tsoCommandField.setText (command);
