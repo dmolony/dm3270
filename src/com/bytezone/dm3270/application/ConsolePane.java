@@ -6,7 +6,6 @@ import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.FontManager;
-import com.bytezone.dm3270.display.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenHistory;
 import com.bytezone.dm3270.display.UserScreen;
@@ -40,7 +39,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class ConsolePane extends BorderPane
-    implements FieldChangeListener, CursorMoveListener, KeyboardStatusListener
+    implements FieldChangeListener, CursorMoveListener
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;
@@ -88,7 +87,7 @@ public class ConsolePane extends BorderPane
     screen.setConsolePane (this);
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
-    screen.addStatusChangeListener (this);
+    //    screen.addStatusChangeListener (this);
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
@@ -115,8 +114,8 @@ public class ConsolePane extends BorderPane
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
     topPane.setTop (menuBar);
-    if (SYSTEM_MENUBAR)
-      menuBar.useSystemMenuBarProperty ().set (true);
+    //    if (SYSTEM_MENUBAR)
+    menuBar.useSystemMenuBarProperty ().set (SYSTEM_MENUBAR);
 
     setTop (topPane);
     setCenter (screen);
@@ -125,6 +124,12 @@ public class ConsolePane extends BorderPane
     setHistoryBar ();
 
     screen.requestFocus ();
+  }
+
+  public void setStatusText (String text)
+  {
+    //    System.out.printf ("Setting text: %s%n", text);
+    status.setText (text);
   }
 
   private Menu getCommandsMenu ()
@@ -137,27 +142,8 @@ public class ConsolePane extends BorderPane
     MenuItem menuItemToggleScreens =
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
-    //    MenuItem menuItemJobDisplay =
-    //        getMenuItem ("Batch jobs", e -> screen.getJobStage ().show (), KeyCode.J);
-    //
-    //    MenuItem menuItemDatasetDisplay =
-    //        getMenuItem ("Datasets", e -> screen.getDatasetStage ().show (), KeyCode.D);
-
     MenuItem menuItemAssistant =
         getMenuItem ("Assistant", e -> screen.getAssistantStage ().show (), KeyCode.D);
-
-    //    if (screen.getFileStage () == null)
-    //    {
-    //      menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-    //                                       menuItemAssistant);
-    //    }
-    //    else
-    //    {
-    //    MenuItem menuItemFileTransfer =
-    //        getMenuItem ("File transfer", e -> screen.getTransferStage ().show (), KeyCode.F);
-
-    //    MenuItem menuItemReportDisplay =
-    //        getMenuItem ("Reports", e -> screen.getFileStage ().show (), KeyCode.R);
 
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
                                      menuItemAssistant);
@@ -398,11 +384,10 @@ public class ConsolePane extends BorderPane
     fieldChanged (currentField, currentField);// update the acronym
   }
 
-  @Override
   public void keyboardStatusChanged (boolean keyboardLocked, String keyName,
       boolean insert)
   {
-    status.setText (keyboardLocked ? keyName : "       ");
+    setStatusText (keyboardLocked ? keyName : "       ");
     insertMode.setText (insert ? "Insert" : "      ");
   }
 }

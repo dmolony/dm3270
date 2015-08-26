@@ -33,6 +33,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
   private final ScreenDetails screenDetails;
+  private ConsolePane consolePane;
 
   private final Pen pen;
   private final Cursor cursor = new Cursor (this);
@@ -94,10 +95,16 @@ public class Screen extends Canvas implements DisplayScreen
     addTSOCommandStatusChangeListener (assistantStage);
   }
 
+  public void setStatusText (String text)
+  {
+    consolePane.setStatusText (text);
+  }
+
   // this is called from the ConsolePane constructor
   // ConsolePane is needed to send an AID command
   public void setConsolePane (ConsolePane consolePane)
   {
+    this.consolePane = consolePane;
     assistantStage.setConsolePane (consolePane);
   }
 
@@ -468,22 +475,9 @@ public class Screen extends Canvas implements DisplayScreen
   // Listener events
   // ---------------------------------------------------------------------------------//
 
-  private final Set<KeyboardStatusListener> keyboardStatusListeners = new HashSet<> ();
-
-  void notifyKeyboardStatusChange (String keyName)
+  private void notifyKeyboardStatusChange (String keyName)
   {
-    for (KeyboardStatusListener listener : keyboardStatusListeners)
-      listener.keyboardStatusChanged (keyboardLocked, keyName, insertMode);
-  }
-
-  public void addStatusChangeListener (KeyboardStatusListener listener)
-  {
-    keyboardStatusListeners.add (listener);
-  }
-
-  public void removeStatusChangeListener (KeyboardStatusListener listener)
-  {
-    keyboardStatusListeners.remove (listener);
+    consolePane.keyboardStatusChanged (keyboardLocked, keyName, insertMode);
   }
 
   private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();

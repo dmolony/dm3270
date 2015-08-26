@@ -198,7 +198,11 @@ public class FileTransferOutboundSF extends FileTransferSF
         RecordNumber recordNumber = new RecordNumber (bufferNumber);
         ptr = recordNumber.pack (buffer, ptr);
         if (transfer.getTransferContents () == TransferContents.DATA)
-          System.out.printf ("Bytes received: %d%n", transfer.dataLength);
+        {
+          //          System.out.printf ("Bytes received: %d%n", transfer.dataLength);
+          screen.setStatusText (String.format ("Bytes received: %,d%n",
+                                               transfer.dataLength));
+        }
       }
       reply = new ReadStructuredFieldCommand (buffer, screen);
 
