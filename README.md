@@ -6,9 +6,8 @@
 * [Screen history](resources/history.md)
 * [Plugins](resources/plugins.md)
 * [Batch jobs](resources/jobs.md)
-* [File transfers](resources/transfers.md)
 * [Project layout](resources/structure.md)
-* [Session details](resources/assistant.md)
+* [File transfers](resources/assistant.md)
 
 ### Installation
 * Download dm3270.jar from the [releases](https://github.com/dmolony/dm3270/releases) page.
