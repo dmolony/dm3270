@@ -128,7 +128,6 @@ public class ConsolePane extends BorderPane
 
   public void setStatusText (String text)
   {
-    //    System.out.printf ("Setting text: %s%n", text);
     status.setText (text);
   }
 
@@ -143,7 +142,8 @@ public class ConsolePane extends BorderPane
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
     MenuItem menuItemAssistant =
-        getMenuItem ("Assistant", e -> screen.getAssistantStage ().show (), KeyCode.D);
+        getMenuItem ("File Transfers", e -> screen.getAssistantStage ().show (),
+                     KeyCode.F);
 
     menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
                                      menuItemAssistant);

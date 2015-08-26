@@ -40,7 +40,7 @@ public class AssistantStage extends Stage
 
   public AssistantStage (Screen screen)
   {
-    setTitle ("Session Details");
+    setTitle ("File Transfers");
 
     this.screen = screen;
 
@@ -68,8 +68,7 @@ public class AssistantStage extends Stage
     borderPane.setCenter (tabPane);
     borderPane.setBottom (anchorPane);
 
-    if (SYSTEM_MENUBAR)
-      menuBar.setUseSystemMenuBar (true);
+    menuBar.setUseSystemMenuBar (SYSTEM_MENUBAR);
 
     Scene scene = new Scene (borderPane, 800, 500);// width/height
     setScene (scene);
