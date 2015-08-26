@@ -91,6 +91,11 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
+    if (screenDetails == null)
+    {
+      System.out.println ("Null screenDetails");
+      return;
+    }
     Field tsoCommandField = screenDetails.getTSOCommandField ();
 
     if (selectedDataset == null || tsoCommandField == null)

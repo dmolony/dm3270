@@ -56,6 +56,11 @@ public class TSOCommand
       return;
 
     Field tsoCommandField = screenDetails.getTSOCommandField ();
+    if (tsoCommandField == null)
+    {
+      System.out.println ("Null TSO command field");
+      return;
+    }
     String command = txtCommand.getText ();
 
     if (command.length () > tsoCommandField.getDisplayLength ())
