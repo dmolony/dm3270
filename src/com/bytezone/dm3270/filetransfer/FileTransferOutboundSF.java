@@ -114,7 +114,12 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       // connect the buffer that contains the data to send
       if (transfer.getTransferType () == TransferType.RECEIVE)
+      {
         transfer.setTransferBuffer (assistantStage.getCurrentFileBuffer ());
+        screen.setStatusText ("Sending...");
+      }
+      else
+        screen.setStatusText ("Receiving...");
     }
   }
 
@@ -124,6 +129,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
     reply = new ReadStructuredFieldCommand (buffer, screen);
+    screen.setStatusText ("Closing...");
   }
 
   private void processSend0x45 ()
