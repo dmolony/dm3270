@@ -67,9 +67,6 @@ public class FileTransferTab extends TransferTab
 
   private void addBuffer (Transfer transfer)
   {
-    if (reporterNode == null)
-      return;
-
     reporterNode.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
   }
 
@@ -84,7 +81,7 @@ public class FileTransferTab extends TransferTab
     else
     {
       System.out.println ("File to transfer: " + fileNode);
-      return fileNode.getBuffer ();
+      return fileNode.getReportData ().getBuffer ();
     }
   }
 

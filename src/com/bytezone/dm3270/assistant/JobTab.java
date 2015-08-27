@@ -85,7 +85,8 @@ public class JobTab extends TransferTab implements ScreenChangeListener
     String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
     String ascii = false ? "" : " ASCII CRLF";
 
-    String command = report == null ? selectedBatchJob.outputCommand ()
+    String command = report == null
+        ? String.format ("%s%s", tsoPrefix, selectedBatchJob.outputCommand ())
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);

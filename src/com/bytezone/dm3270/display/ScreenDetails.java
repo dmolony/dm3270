@@ -367,8 +367,12 @@ public class ScreenDetails
           break;
 
         case 3:
-          dataset = addDataset (rowFields.get (0));
-          dataset.setVolume (rowFields.get (2).getText ().trim ());
+          //          dumpFields (rowFields);
+          if (rowFields.size () >= 3)
+          {
+            dataset = addDataset (rowFields.get (0));
+            dataset.setVolume (rowFields.get (2).getText ().trim ());
+          }
           break;
 
         case 4:
@@ -405,6 +409,13 @@ public class ScreenDetails
     }
 
     return true;
+  }
+
+  private void dumpFields (List<Field> fields)
+  {
+    for (Field field : fields)
+      System.out.println (field);
+    System.out.println ("-------------------------");
   }
 
   private Dataset addDataset (Field field)

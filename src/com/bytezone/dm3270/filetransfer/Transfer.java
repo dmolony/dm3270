@@ -146,8 +146,18 @@ public class Transfer
         System.out.printf ("Chunk %d: %s%n", count++, chunk);
     }
 
-    assert"ind$file".equals (chunks[0]);
-    assert"put".equals (chunks[1]) || "get".equals (chunks[1]);
+    // check for a reconnection after an abort during a file transfer
+    if (!"ind$file".equals (chunks[0]))
+    {
+      System.out.printf ("Unexpected error: %s%n", chunks[0]);
+      int count = 0;
+      for (String chunk : chunks)
+        System.out.printf ("Chunk %d: %s%n", count++, chunk);
+      return;
+    }
+
+    //    assert"ind$file".equals (chunks[0]);
+    //    assert"put".equals (chunks[1]) || "get".equals (chunks[1]);
 
     this.fileName = chunks[2];
     this.direction = chunks[1];
