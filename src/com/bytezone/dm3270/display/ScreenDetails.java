@@ -367,8 +367,7 @@ public class ScreenDetails
           break;
 
         case 3:
-          //          dumpFields (rowFields);
-          if (rowFields.size () >= 3)
+          if (rowFields.size () == 3)
           {
             dataset = addDataset (rowFields.get (0));
             dataset.setVolume (rowFields.get (2).getText ().trim ());
@@ -390,8 +389,11 @@ public class ScreenDetails
           break;
 
         case 5:
-          dataset = addDataset (rowFields.get (0));
-          dataset.setVolume (rowFields.get (2).getText ().trim ());
+          if (rowFields.size () >= 3)
+          {
+            dataset = addDataset (rowFields.get (0));
+            dataset.setVolume (rowFields.get (2).getText ().trim ());
+          }
 
           if (rowFields.size () >= 6)
           {
