@@ -41,7 +41,8 @@ public class FileTransferTab extends TransferTab
     this.screen = screen;
 
     reporterNode = new ReporterNode (prefs);
-    borderPane.setCenter (reporterNode.getRootNode ());
+    //    borderPane.setCenter (reporterNode.getRootNode ());
+    borderPane.setCenter (reporterNode.getBorderPane ());
     reporterNode.addNodeSelectionListener (this);
     reporterNode.requestFocus ();
     currentFileNode = reporterNode.getSelectedNode ();
