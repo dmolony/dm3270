@@ -17,7 +17,6 @@ import com.bytezone.reporter.application.TreePanel.FileNode;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 
 public class FileTransferTab extends TransferTab
     implements ScreenChangeListener, NodeSelectionListener
@@ -27,7 +26,6 @@ public class FileTransferTab extends TransferTab
 
   private final Screen screen;
   private final ReporterNode reporterNode;
-  private final BorderPane borderPane = new BorderPane ();
 
   private boolean isTSOCommandScreen;
   private Field tsoCommandField;
@@ -41,13 +39,11 @@ public class FileTransferTab extends TransferTab
     this.screen = screen;
 
     reporterNode = new ReporterNode (prefs);
-    //    borderPane.setCenter (reporterNode.getRootNode ());
-    borderPane.setCenter (reporterNode.getBorderPane ());
     reporterNode.addNodeSelectionListener (this);
     reporterNode.requestFocus ();
     currentFileNode = reporterNode.getSelectedNode ();
 
-    setContent (borderPane);
+    setContent (reporterNode);
   }
 
   @Override
