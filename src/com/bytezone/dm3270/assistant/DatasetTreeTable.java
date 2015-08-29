@@ -91,6 +91,8 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
 
         parentEntry.add (dataset);
         parentEntry.treeItem.getChildren ().add (datasetEntry.treeItem);
+
+        // would be good to open the parent
       }
       else
         root.getChildren ().add (datasetEntry.treeItem);
