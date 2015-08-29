@@ -18,11 +18,12 @@ import javafx.stage.Stage;
 
 public class FontManager
 {
-  private static final String[] fontNames = { //
-      "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
-          "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
-          "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 1m", "Panic Sans",
-          "PT Mono", "Source Code Pro", "Ubuntu Mono", "Monospaced" };
+  private static final String[] fontNames =
+      { //
+        "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
+        "Hack", "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
+        "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 1m", "Panic Sans",
+        "PT Mono", "Source Code Pro", "Ubuntu Mono", "Monospaced" };
   private static final int[] fontSizes = { 10, 12, 14, 15, 16, 17, 18, 20, 22 };
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
