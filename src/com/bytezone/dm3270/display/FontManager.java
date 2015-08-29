@@ -24,7 +24,7 @@ public class FontManager
         "Hack", "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
         "Input Mono Narrow", "Luculent", "Menlo", "Monaco", "M+ 1m", "Panic Sans",
         "PT Mono", "Source Code Pro", "Ubuntu Mono", "Monospaced" };
-  private static final int[] fontSizes = { 10, 12, 14, 15, 16, 17, 18, 20, 22 };
+  private static final int[] fontSizes = { 9, 10, 12, 14, 15, 16, 17, 18, 20, 22 };
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
@@ -130,7 +130,7 @@ public class FontManager
       }
   }
 
-  private void bigger ()
+  public void bigger ()
   {
     int selectedSize = getSelectedSize ();
     for (int i = 0; i < fontSizes.length - 1; i++)
