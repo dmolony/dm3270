@@ -87,7 +87,6 @@ public class ConsolePane extends BorderPane
     screen.setConsolePane (this);
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
-    //    screen.addStatusChangeListener (this);
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
@@ -99,14 +98,6 @@ public class ConsolePane extends BorderPane
     btnForward.setOnAction (e -> forward ());
     btnCurrent.setOnAction (e -> toggleHistory ());
 
-    // byte[] buffer = { (byte) 0xF5, (byte) 0xC3 };
-    // Command clearCommand = Command.getCommand (buffer, 0, buffer.length, screen);
-    // btnClear.setOnAction (e -> clearCommand.process ());
-    //
-    // byte[] buffer2 = { (byte) 0xF1, (byte) 0xC2 };
-    // Command resetCommand = Command.getCommand (buffer2, 0, buffer2.length, screen);
-    // btnReset.setOnAction (e -> resetCommand.process ());
-
     menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
 
     // allow null for replay testing
@@ -114,7 +105,6 @@ public class ConsolePane extends BorderPane
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
     topPane.setTop (menuBar);
-    //    if (SYSTEM_MENUBAR)
     menuBar.useSystemMenuBarProperty ().set (SYSTEM_MENUBAR);
 
     setTop (topPane);
