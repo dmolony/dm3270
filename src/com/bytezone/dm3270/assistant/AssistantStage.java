@@ -28,7 +28,6 @@ public class AssistantStage extends Stage
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final MenuBar menuBar = new MenuBar ();
-  //  private final Screen screen;
 
   private final TSOCommand tsoCommand;
   private final Button btnHide = new Button ("Hide Window");
@@ -42,8 +41,6 @@ public class AssistantStage extends Stage
   public AssistantStage (Screen screen)
   {
     setTitle ("File Transfers");
-
-    //    this.screen = screen;
 
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
@@ -111,6 +108,7 @@ public class AssistantStage extends Stage
     datasetTab.screenChanged ();
     jobTab.screenChanged ();
     fileTransferTab.screenChanged ();
+    commandsTab.screenChanged ();
   }
 
   public void batchJobSubmitted (int jobNumber, String jobName)
@@ -152,6 +150,14 @@ public class AssistantStage extends Stage
   public byte[] getCurrentFileBuffer ()
   {
     return fileTransferTab.getCurrentFileBuffer ();
+  }
+
+  public void keyboardStatusChanged ()
+  {
+    datasetTab.screenChanged ();
+    jobTab.screenChanged ();
+    fileTransferTab.screenChanged ();
+    commandsTab.screenChanged ();
   }
 
   @Override

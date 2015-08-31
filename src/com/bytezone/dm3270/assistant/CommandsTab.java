@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandListener;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class CommandsTab extends TransferTab implements TSOCommandListener
+public class CommandsTab extends TransferTab
+    implements TSOCommandListener, ScreenChangeListener
 {
   List<String> commands = new ArrayList<> ();
 
@@ -29,6 +31,8 @@ public class CommandsTab extends TransferTab implements TSOCommandListener
       return;
     }
 
+    System.out.printf ("checking: %slocked%n",
+                       screenDetails.isKeyboardLocked () ? "" : "un");
     if (screenDetails.isKeyboardLocked ())
     {
       btnExecute.setDisable (true);
@@ -38,7 +42,8 @@ public class CommandsTab extends TransferTab implements TSOCommandListener
     if (commands.size () > 0)
     {
       txtCommand.setText (commands.get (commands.size () - 1));
-      btnExecute.setDisable (true);
+      btnExecute.setDisable (false);
+      System.out.println ("click me");
     }
   }
 
@@ -46,6 +51,13 @@ public class CommandsTab extends TransferTab implements TSOCommandListener
   public void tsoCommand (String command)
   {
     commands.add (command);
+    if (isSelected ())
+      setText ();
+  }
+
+  @Override
+  public void screenChanged ()
+  {
     if (isSelected ())
       setText ();
   }

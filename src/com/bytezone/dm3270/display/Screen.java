@@ -219,7 +219,7 @@ public class Screen extends Canvas implements DisplayScreen
   public void toggleInsertMode ()
   {
     insertMode = !insertMode;
-    notifyKeyboardStatusChange ("");
+    fireKeyboardStatusChange ("");
   }
 
   public boolean isInsertMode ()
@@ -457,13 +457,13 @@ public class Screen extends Canvas implements DisplayScreen
     setAID (NO_AID_SPECIFIED);
     cursor.setVisible (true);
     keyboardLocked = false;
-    notifyKeyboardStatusChange ("");
+    fireKeyboardStatusChange ("");
   }
 
   public void lockKeyboard (String keyName)
   {
     keyboardLocked = true;
-    notifyKeyboardStatusChange (keyName);
+    fireKeyboardStatusChange (keyName);
 
     if (function == TERMINAL)
       cursor.setVisible (false);
@@ -485,9 +485,11 @@ public class Screen extends Canvas implements DisplayScreen
   // Listener events
   // ---------------------------------------------------------------------------------//
 
-  private void notifyKeyboardStatusChange (String keyName)
+  private void fireKeyboardStatusChange (String keyName)
   {
+    System.out.printf ("keyboard %slocked%n", keyboardLocked ? "" : "un");
     consolePane.keyboardStatusChanged (keyboardLocked, keyName, insertMode);
+    assistantStage.keyboardStatusChanged ();
   }
 
   private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();

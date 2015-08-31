@@ -6,11 +6,11 @@ import java.util.List;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldManager;
 
-public class ScreenData
+class ScreenData
 {
-  int columns;
-  List<Field> fields;
-  boolean isIspfScreen;
+  private final int columns;
+  private List<Field> fields;
+  private boolean isIspfScreen;
 
   public ScreenData (FieldManager fieldManager)
   {

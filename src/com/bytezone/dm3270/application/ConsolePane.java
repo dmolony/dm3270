@@ -58,12 +58,7 @@ public class ConsolePane extends BorderPane
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
 
-  //  private final BorderPane topPane = new BorderPane ();
-
   private ScreenHistory screenHistory;
-  //  private final Button btnBack = new Button ("<");
-  //  private final Button btnForward = new Button (">");
-  //  private final Button btnCurrent = new Button ("Screens");
 
   private HBox historyBox;
   private final Label historyLabel = new Label ();
@@ -72,9 +67,6 @@ public class ConsolePane extends BorderPane
 
   private final MenuBar menuBar = new MenuBar ();
   private final FontManager fontManager;
-
-  //  private final ToolBar toolbar = new ToolBar ();
-  //  private boolean toolbarVisible;
 
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
@@ -88,21 +80,12 @@ public class ConsolePane extends BorderPane
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
-    //    toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
-    //    btnBack.setDisable (true);
-    //    btnForward.setDisable (true);
-
-    //    btnBack.setOnAction (e -> back ());
-    //    btnForward.setOnAction (e -> forward ());
-    //    btnCurrent.setOnAction (e -> toggleHistory ());
-
     menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
 
     // allow null for replay testing
     if (server == null || server.getPlugins ())
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
-    //    topPane.setTop (menuBar);
     menuBar.useSystemMenuBarProperty ().set (SYSTEM_MENUBAR);
 
     setTop (menuBar);
@@ -122,9 +105,6 @@ public class ConsolePane extends BorderPane
   private Menu getCommandsMenu ()
   {
     Menu menuCommands = new Menu ("Commands");
-
-    //    MenuItem menuItemToggleToolbar =
-    //        getMenuItem ("Toolbar", e -> toggleToolbar (), KeyCode.T);
 
     MenuItem menuItemToggleScreens =
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
@@ -175,11 +155,6 @@ public class ConsolePane extends BorderPane
     right.getChildren ().addAll (div[3], fieldType, div[4], cursorLocation, div[5]);
 
     setFont (fontManager.getDefaultFont ());
-    //    status.setFont (statusBarFont);
-    //    insertMode.setFont (statusBarFont);
-    //    cursorLocation.setFont (statusBarFont);
-    //    fieldType.setFont (statusBarFont);
-    //    fieldLocation.setFont (statusBarFont);
 
     BorderPane statusPane = new BorderPane ();
     statusPane.setLeft (left);
@@ -191,7 +166,6 @@ public class ConsolePane extends BorderPane
 
   private void setFont (Font font)
   {
-    //    Font statusBarFont = fontManager.getDefaultFont ();
     status.setFont (font);
     insertMode.setFont (font);
     cursorLocation.setFont (font);
@@ -221,13 +195,6 @@ public class ConsolePane extends BorderPane
     return hbox;
   }
 
-  //  private void toggleToolbar ()
-  //  {
-  //    toolbarVisible = !toolbarVisible;
-  //    topPane.setBottom (toolbarVisible ? toolbar : null);
-  //    ((Stage) getScene ().getWindow ()).sizeToScene ();
-  //  }
-
   private void toggleHistory ()
   {
     if (screenHistory == null)
@@ -237,16 +204,11 @@ public class ConsolePane extends BorderPane
         return;// no history to show
 
       changeScreen (screenHistory.current ());
-
-      //      btnBack.setDisable (false);
-      //      btnForward.setDisable (false);
       setBottom (historyBox);
     }
     else
     {
       setView (null);
-      //      btnBack.setDisable (true);
-      //      btnForward.setDisable (true);
       setBottom (statusPane);
     }
   }
