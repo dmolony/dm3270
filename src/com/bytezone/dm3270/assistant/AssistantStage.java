@@ -28,7 +28,7 @@ public class AssistantStage extends Stage
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final MenuBar menuBar = new MenuBar ();
-  private final Screen screen;
+  //  private final Screen screen;
 
   private final TSOCommand tsoCommand;
   private final Button btnHide = new Button ("Hide Window");
@@ -37,12 +37,13 @@ public class AssistantStage extends Stage
   private final DatasetTab datasetTab;
   private final JobTab jobTab;
   private final FileTransferTab fileTransferTab;
+  private final CommandsTab commandsTab;
 
   public AssistantStage (Screen screen)
   {
     setTitle ("File Transfers");
 
-    this.screen = screen;
+    //    this.screen = screen;
 
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
@@ -52,7 +53,8 @@ public class AssistantStage extends Stage
     jobTab = new JobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     fileTransferTab =
         new FileTransferTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
-    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab);
+    commandsTab = new CommandsTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab, commandsTab);
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
@@ -156,5 +158,6 @@ public class AssistantStage extends Stage
   public void tsoCommand (String command)
   {
     jobTab.tsoCommand (command);
+    commandsTab.tsoCommand (command);
   }
 }

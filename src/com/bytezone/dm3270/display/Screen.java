@@ -21,6 +21,7 @@ import com.bytezone.dm3270.plugins.PluginsStage;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.stage.Stage;
 
 public class Screen extends Canvas implements DisplayScreen
 {
@@ -85,12 +86,11 @@ public class Screen extends Canvas implements DisplayScreen
     fontManager = new FontManager (this, prefs);
 
     ScreenContext baseContext = pen.getBase ();
-    CharacterSize characterSize = fontManager.getCharacterSize ();
+    FontData fontData = fontManager.getFontData ();
 
     screenPositions = new ScreenPosition[screenSize];
     for (int i = 0; i < screenSize; i++)
-      screenPositions[i] =
-          new ScreenPosition (i, graphicsContext, characterSize, baseContext);
+      screenPositions[i] = new ScreenPosition (i, graphicsContext, fontData, baseContext);
 
     addTSOCommandStatusChangeListener (assistantStage);
   }
@@ -296,22 +296,32 @@ public class Screen extends Canvas implements DisplayScreen
     drawPosition (cursor.getLocation (), true);// draw the cursor
   }
 
+  // called from FontManager when a new font is selected
+  public void redraw ()
+  {
+    ((Stage) getScene ().getWindow ()).sizeToScene ();
+    eraseScreen ();
+    drawScreen ();
+  }
+
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    CharacterSize characterSize = fontManager.getCharacterSize ();// too slow!!
+    FontData characterSize = fontManager.getFontData ();// too slow!!
     int x = xOffset + col * characterSize.getWidth ();
     int y = yOffset + row * characterSize.getHeight ();
 
     screenPosition.draw (x, y, hasCursor);
   }
 
-  void characterSizeChanged (CharacterSize characterSize)
+  void characterSizeChanged (FontData fontData)
   {
-    setWidth (characterSize.getWidth () * columns + xOffset * 2);
-    setHeight (characterSize.getHeight () * rows + yOffset * 2);
+    setWidth (fontData.getWidth () * columns + xOffset * 2);
+    setHeight (fontData.getHeight () * rows + yOffset * 2);
 
-    graphicsContext.setFont (characterSize.getFont ());
+    graphicsContext.setFont (fontData.getFont ());
+    if (consolePane != null)
+      consolePane.setFontData (fontData);
   }
 
   @Override

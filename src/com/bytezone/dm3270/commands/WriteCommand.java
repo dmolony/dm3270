@@ -22,7 +22,7 @@ public class WriteCommand extends Command
 
   private static final Pattern jobFailedPattern =
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
-          + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR .*");
+          + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR.*");
 
   private final boolean eraseWrite;
   private final WriteControlCharacter writeControlCharacter;
@@ -159,7 +159,8 @@ public class WriteCommand extends Command
     if (drawScreen)
       screen.drawScreen ();
 
-    checkSystemMessage ();// check screen for jobs submitted or finished
+    if (orders.size () > 0)
+      checkSystemMessage ();// check screen for jobs submitted or finished
   }
 
   private boolean checkSystemMessage ()
@@ -210,8 +211,14 @@ public class WriteCommand extends Command
     }
     else
     {
-      //      for (Order order : orders)
-      //        System.out.println (order);
+      if (orders.size () < 30)
+      {
+        System.out.printf ("Orders: %d%n", orders.size ());
+        System.out.printf ("Erase : %s%n", eraseWrite);
+        for (Order order : orders)
+          System.out.println (order);
+        System.out.println ("-------------------------------");
+      }
       return false;
     }
 

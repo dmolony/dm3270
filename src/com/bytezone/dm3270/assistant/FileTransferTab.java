@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -24,19 +23,13 @@ public class FileTransferTab extends TransferTab
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
 
-  private final Screen screen;
   private final ReporterNode reporterNode;
-
-  private boolean isTSOCommandScreen;
-  private Field tsoCommandField;
   private FileNode currentFileNode;
 
   public FileTransferTab (Screen screen, TextField text, Button execute,
       Preferences prefs)
   {
-    super ("Transfers", text, execute);
-
-    this.screen = screen;
+    super ("Files", screen, text, execute);
 
     reporterNode = new ReporterNode (prefs);
     reporterNode.addNodeSelectionListener (this);
@@ -76,10 +69,7 @@ public class FileTransferTab extends TransferTab
       return null;
     }
     else
-    {
-      System.out.println ("File to transfer: " + fileNode);
       return fileNode.getReportData ().getBuffer ();
-    }
   }
 
   // called from FileTransferOutboundSF.processOpen()
@@ -121,10 +111,6 @@ public class FileTransferTab extends TransferTab
   @Override
   public void screenChanged ()
   {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
-    isTSOCommandScreen = screenDetails.isTSOCommandScreen ();
-    tsoCommandField = screenDetails.getTSOCommandField ();
-
     if (isSelected ())
       setText ();
   }
@@ -132,10 +118,10 @@ public class FileTransferTab extends TransferTab
   @Override
       void setText ()
   {
-    if (currentFileNode == null)
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+    if (currentFileNode == null || screenDetails.getTSOCommandField () == null)
     {
-      txtCommand.setText ("");
-      btnExecute.setDisable (true);
+      eraseCommand ();
       return;
     }
 
@@ -147,11 +133,12 @@ public class FileTransferTab extends TransferTab
     if (currentFileNode.isAscii ())
       command += " ASCII CRLF";
 
-    if (!isTSOCommandScreen)
+    if (!screenDetails.isTSOCommandScreen ())
       command = "TSO " + command;
 
     txtCommand.setText (command);
 
-    btnExecute.setDisable (tsoCommandField == null || command.isEmpty ());
+    btnExecute
+        .setDisable (screenDetails.getTSOCommandField () == null || command.isEmpty ());
   }
 }

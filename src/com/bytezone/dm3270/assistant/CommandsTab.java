@@ -1,0 +1,52 @@
+package com.bytezone.dm3270.assistant;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDetails;
+import com.bytezone.dm3270.display.TSOCommandListener;
+
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+
+public class CommandsTab extends TransferTab implements TSOCommandListener
+{
+  List<String> commands = new ArrayList<> ();
+
+  public CommandsTab (Screen screen, TextField text, Button execute)
+  {
+    super ("Commands", screen, text, execute);
+  }
+
+  @Override
+      void setText ()
+  {
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+    if (screenDetails.getTSOCommandField () == null)
+    {
+      eraseCommand ();
+      return;
+    }
+
+    if (screenDetails.isKeyboardLocked ())
+    {
+      btnExecute.setDisable (true);
+      return;
+    }
+
+    if (commands.size () > 0)
+    {
+      txtCommand.setText (commands.get (commands.size () - 1));
+      btnExecute.setDisable (true);
+    }
+  }
+
+  @Override
+  public void tsoCommand (String command)
+  {
+    commands.add (command);
+    if (isSelected ())
+      setText ();
+  }
+}

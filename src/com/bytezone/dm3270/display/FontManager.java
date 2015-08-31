@@ -14,7 +14,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
 public class FontManager
 {
@@ -31,21 +30,21 @@ public class FontManager
   private Font defaultFont;
   private final Screen screen;
   private final RadioMenuItem[] fontSizeItems = new RadioMenuItem[fontSizes.length];
-  private final CharacterSize characterSize;
+  private final FontData fontData;
 
   public FontManager (Screen screen, Preferences prefs)
   {
     this.screen = screen;
-    characterSize = new CharacterSize ();
+    fontData = new FontData ();
 
     String fontSelected = prefs.get ("FontName", "Monospaced");
     String sizeSelected = prefs.get ("FontSize", "16");
     setFont (fontSelected, Integer.parseInt (sizeSelected));
   }
 
-  public CharacterSize getCharacterSize ()
+  public FontData getFontData ()
   {
-    return characterSize;
+    return fontData;
   }
 
   public Menu getFontMenu ()
@@ -66,7 +65,7 @@ public class FontManager
     }
 
     if (!fontSelected.isEmpty ())
-      defaultFont = Font.font (fontSelected, 14);
+      defaultFont = Font.font (fontSelected, getFontSize ());
 
     // select Monospaced if there is still no font selected
     if (fontGroup.getSelectedToggle () == null)
@@ -156,29 +155,26 @@ public class FontManager
   {
     String name = getSelectedFont ();
     int size = getSelectedSize ();
-    if (name.equals (characterSize.getName ()) && size == characterSize.getSize ())
+    if (fontData.matches (name, size))
       return;
 
     setFont (name, size);
-    ((Stage) screen.getScene ().getWindow ()).sizeToScene ();
-
-    screen.eraseScreen ();
-    screen.drawScreen ();
+    screen.redraw ();
   }
 
   private void setFont (String name, int size)
   {
-    characterSize.changeFont (name, size);
-    screen.characterSizeChanged (characterSize);
+    fontData.changeFont (name, size);
+    screen.characterSizeChanged (fontData);
   }
 
   public String getFontName ()
   {
-    return characterSize.getName ();
+    return fontData.getName ();
   }
 
   public int getFontSize ()
   {
-    return characterSize.getSize ();
+    return fontData.getSize ();
   }
 }

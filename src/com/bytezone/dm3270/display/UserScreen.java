@@ -32,7 +32,7 @@ public class UserScreen extends Canvas implements DisplayScreen
     return this.command.matches (command);
   }
 
-  void characterSizeChanged (CharacterSize characterSize)
+  void characterSizeChanged (FontData characterSize)
   {
     setWidth (characterSize.getWidth () * columns + xOffset * 2);
     setHeight (characterSize.getHeight () * rows + yOffset * 2);
@@ -40,7 +40,7 @@ public class UserScreen extends Canvas implements DisplayScreen
     gc.setFont (characterSize.getFont ());
   }
 
-  private void createScreen (CharacterSize characterSize)
+  private void createScreen (FontData characterSize)
   {
     characterSizeChanged (characterSize);
     screenPositions = new ScreenPosition[screenSize];
@@ -54,7 +54,7 @@ public class UserScreen extends Canvas implements DisplayScreen
       order.process (this);
   }
 
-  public void drawScreen (CharacterSize characterSize)
+  public void drawScreen (FontData characterSize)
   {
     if (screenPositions == null)
       createScreen (characterSize);

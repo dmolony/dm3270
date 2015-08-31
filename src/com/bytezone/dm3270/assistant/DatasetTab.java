@@ -2,7 +2,6 @@ package com.bytezone.dm3270.assistant;
 
 import java.util.List;
 
-import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -13,7 +12,6 @@ import javafx.scene.control.TreeItem;
 
 public class DatasetTab extends TransferTab implements ScreenChangeListener
 {
-  private final Screen screen;
   private Dataset selectedDataset;
 
   private final boolean useTable = false;
@@ -22,9 +20,7 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
 
   public DatasetTab (Screen screen, TextField text, Button execute)
   {
-    super ("Datasets", text, execute);
-
-    this.screen = screen;
+    super ("Datasets", screen, text, execute);
 
     if (useTable)
     {
@@ -91,16 +87,10 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
       void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    if (screenDetails == null)
-    {
-      System.out.println ("Null screenDetails");
-      return;
-    }
-    Field tsoCommandField = screenDetails.getTSOCommandField ();
 
-    if (selectedDataset == null || tsoCommandField == null)
+    if (selectedDataset == null || screenDetails.getTSOCommandField () == null)
     {
-      btnExecute.setDisable (true);
+      eraseCommand ();
       return;
     }
 

@@ -15,15 +15,12 @@ public class JobTab extends TransferTab implements ScreenChangeListener
   private static final Pattern outlistPattern = Pattern
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");
   private final JobTable jobTable = new JobTable ();
-  private final Screen screen;
 
   private BatchJob selectedBatchJob;
 
   public JobTab (Screen screen, TextField text, Button execute)
   {
-    super ("Batch Jobs", text, execute);
-
-    this.screen = screen;
+    super ("Batch Jobs", screen, text, execute);
 
     jobTable.getSelectionModel ().selectedItemProperty ()
         .addListener ( (obs, oldSelection, newSelection) -> {
@@ -73,11 +70,10 @@ public class JobTab extends TransferTab implements ScreenChangeListener
       void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    if (screenDetails.getTSOCommandField () == null || selectedBatchJob == null
-        || selectedBatchJob.getJobCompleted () == null)
+    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null
+        || screenDetails.getTSOCommandField () == null)
     {
-      txtCommand.setText ("");
-      btnExecute.setDisable (true);
+      eraseCommand ();
       return;
     }
 

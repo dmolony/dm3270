@@ -34,7 +34,7 @@ public final class ScreenPosition
   private ScreenContext screenContext;
   private final ScreenContext baseContext;
 
-  private final CharacterSize characterSize;
+  private final FontData characterSize;
   private final GraphicsContext gc;
 
   static
@@ -47,7 +47,7 @@ public final class ScreenPosition
       charString[i] = (char) i + "";
   }
 
-  public ScreenPosition (int position, GraphicsContext gc, CharacterSize characterSize,
+  public ScreenPosition (int position, GraphicsContext gc, FontData characterSize,
       ScreenContext base)
   {
     this.position = position;

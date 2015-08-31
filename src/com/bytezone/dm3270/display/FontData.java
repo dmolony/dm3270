@@ -1,11 +1,11 @@
 package com.bytezone.dm3270.display;
 
-import javafx.scene.text.Font;
-
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 
-public class CharacterSize
+import javafx.scene.text.Font;
+
+public class FontData
 {
   private Font font;
   private String name;
@@ -58,6 +58,11 @@ public class CharacterSize
     }
   }
 
+  public boolean matches (String name, int size)
+  {
+    return this.name.equals (name) && this.size == size;
+  }
+
   public int getWidth ()
   {
     return width;
@@ -86,9 +91,10 @@ public class CharacterSize
   @Override
   public String toString ()
   {
-    return String.format ("[Font=%s, height=%d, width=%d, ascent=%d, descent=%d, "
-                              + "leading=%d, ratio=%2.2f]", font.getName (), height,
-                          width, ascent, descent,
-                          leading, (float) height / width);
+    return String.format (
+                          "[Font=%s, height=%d, width=%d, ascent=%d, descent=%d, "
+                              + "leading=%d, ratio=%2.2f]",
+                          font.getName (), height, width, ascent, descent, leading,
+                          (float) height / width);
   }
 }

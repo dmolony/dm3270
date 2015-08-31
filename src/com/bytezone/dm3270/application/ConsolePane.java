@@ -5,6 +5,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
+import com.bytezone.dm3270.display.FontData;
 import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenHistory;
@@ -22,21 +23,18 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
 public class ConsolePane extends BorderPane
     implements FieldChangeListener, CursorMoveListener
@@ -60,12 +58,12 @@ public class ConsolePane extends BorderPane
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
 
-  private final BorderPane topPane = new BorderPane ();
+  //  private final BorderPane topPane = new BorderPane ();
 
   private ScreenHistory screenHistory;
-  private final Button btnBack = new Button ("<");
-  private final Button btnForward = new Button (">");
-  private final Button btnCurrent = new Button ("Screens");
+  //  private final Button btnBack = new Button ("<");
+  //  private final Button btnForward = new Button (">");
+  //  private final Button btnCurrent = new Button ("Screens");
 
   private HBox historyBox;
   private final Label historyLabel = new Label ();
@@ -75,8 +73,8 @@ public class ConsolePane extends BorderPane
   private final MenuBar menuBar = new MenuBar ();
   private final FontManager fontManager;
 
-  private final ToolBar toolbar = new ToolBar ();
-  private boolean toolbarVisible;
+  //  private final ToolBar toolbar = new ToolBar ();
+  //  private boolean toolbarVisible;
 
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
@@ -90,13 +88,13 @@ public class ConsolePane extends BorderPane
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
-    toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
-    btnBack.setDisable (true);
-    btnForward.setDisable (true);
+    //    toolbar.getItems ().addAll (btnBack, btnCurrent, btnForward);
+    //    btnBack.setDisable (true);
+    //    btnForward.setDisable (true);
 
-    btnBack.setOnAction (e -> back ());
-    btnForward.setOnAction (e -> forward ());
-    btnCurrent.setOnAction (e -> toggleHistory ());
+    //    btnBack.setOnAction (e -> back ());
+    //    btnForward.setOnAction (e -> forward ());
+    //    btnCurrent.setOnAction (e -> toggleHistory ());
 
     menuBar.getMenus ().addAll (getCommandsMenu (), fontManager.getFontMenu ());
 
@@ -104,10 +102,10 @@ public class ConsolePane extends BorderPane
     if (server == null || server.getPlugins ())
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
-    topPane.setTop (menuBar);
+    //    topPane.setTop (menuBar);
     menuBar.useSystemMenuBarProperty ().set (SYSTEM_MENUBAR);
 
-    setTop (topPane);
+    setTop (menuBar);
     setCenter (screen);
     setBottom (statusPane = getStatusBar ());
 
@@ -125,18 +123,16 @@ public class ConsolePane extends BorderPane
   {
     Menu menuCommands = new Menu ("Commands");
 
-    MenuItem menuItemToggleToolbar =
-        getMenuItem ("Toolbar", e -> toggleToolbar (), KeyCode.T);
+    //    MenuItem menuItemToggleToolbar =
+    //        getMenuItem ("Toolbar", e -> toggleToolbar (), KeyCode.T);
 
     MenuItem menuItemToggleScreens =
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
     MenuItem menuItemAssistant =
-        getMenuItem ("File Transfers", e -> screen.getAssistantStage ().show (),
-                     KeyCode.F);
+        getMenuItem ("TSO Commands", e -> screen.getAssistantStage ().show (), KeyCode.T);
 
-    menuCommands.getItems ().addAll (menuItemToggleToolbar, menuItemToggleScreens,
-                                     menuItemAssistant);
+    menuCommands.getItems ().addAll (menuItemToggleScreens, menuItemAssistant);
 
     if (!SYSTEM_MENUBAR)
     {
@@ -178,12 +174,12 @@ public class ConsolePane extends BorderPane
     HBox right = getHBox (new Insets (2, 0, 2, GAP), Pos.CENTER_RIGHT);
     right.getChildren ().addAll (div[3], fieldType, div[4], cursorLocation, div[5]);
 
-    Font statusBarFont = fontManager.getDefaultFont ();
-    status.setFont (statusBarFont);
-    insertMode.setFont (statusBarFont);
-    cursorLocation.setFont (statusBarFont);
-    fieldType.setFont (statusBarFont);
-    fieldLocation.setFont (statusBarFont);
+    setFont (fontManager.getDefaultFont ());
+    //    status.setFont (statusBarFont);
+    //    insertMode.setFont (statusBarFont);
+    //    cursorLocation.setFont (statusBarFont);
+    //    fieldType.setFont (statusBarFont);
+    //    fieldLocation.setFont (statusBarFont);
 
     BorderPane statusPane = new BorderPane ();
     statusPane.setLeft (left);
@@ -191,6 +187,21 @@ public class ConsolePane extends BorderPane
     statusPane.setRight (right);
 
     return statusPane;
+  }
+
+  private void setFont (Font font)
+  {
+    //    Font statusBarFont = fontManager.getDefaultFont ();
+    status.setFont (font);
+    insertMode.setFont (font);
+    cursorLocation.setFont (font);
+    fieldType.setFont (font);
+    fieldLocation.setFont (font);
+  }
+
+  public void setFontData (FontData fontData)
+  {
+    setFont (fontData.getFont ());
   }
 
   private void setHistoryBar ()
@@ -210,12 +221,12 @@ public class ConsolePane extends BorderPane
     return hbox;
   }
 
-  private void toggleToolbar ()
-  {
-    toolbarVisible = !toolbarVisible;
-    topPane.setBottom (toolbarVisible ? toolbar : null);
-    ((Stage) getScene ().getWindow ()).sizeToScene ();
-  }
+  //  private void toggleToolbar ()
+  //  {
+  //    toolbarVisible = !toolbarVisible;
+  //    topPane.setBottom (toolbarVisible ? toolbar : null);
+  //    ((Stage) getScene ().getWindow ()).sizeToScene ();
+  //  }
 
   private void toggleHistory ()
   {
@@ -227,15 +238,15 @@ public class ConsolePane extends BorderPane
 
       changeScreen (screenHistory.current ());
 
-      btnBack.setDisable (false);
-      btnForward.setDisable (false);
+      //      btnBack.setDisable (false);
+      //      btnForward.setDisable (false);
       setBottom (historyBox);
     }
     else
     {
       setView (null);
-      btnBack.setDisable (true);
-      btnForward.setDisable (true);
+      //      btnBack.setDisable (true);
+      //      btnForward.setDisable (true);
       setBottom (statusPane);
     }
   }
@@ -254,7 +265,7 @@ public class ConsolePane extends BorderPane
 
   private void changeScreen (UserScreen userScreen)
   {
-    userScreen.drawScreen (screen.getFontManager ().getCharacterSize ());
+    userScreen.drawScreen (screen.getFontManager ().getFontData ());
     setView (userScreen);
     historyLabel.setText (String.format ("Screen %02d of %02d",
                                          screenHistory.getCurrentIndex () + 1,

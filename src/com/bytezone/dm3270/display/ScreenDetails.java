@@ -77,6 +77,11 @@ public class ScreenDetails
     }
   }
 
+  public boolean isKeyboardLocked ()
+  {
+    return screen.isKeyboardLocked ();
+  }
+
   public Field getTSOCommandField ()
   {
     return tsoCommandField;
