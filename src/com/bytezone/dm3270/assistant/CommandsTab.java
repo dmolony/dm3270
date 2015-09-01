@@ -16,28 +16,19 @@ public class CommandsTab extends TransferTab
 {
   ObservableList<String> commands = FXCollections.observableArrayList ();
   ListView<String> commandList = new ListView<> (commands);
-  String selectedCommand;
 
   public CommandsTab (Screen screen, TextField text, Button execute)
   {
     super ("Commands", screen, text, execute);
     setContent (commandList);
     commandList.getSelectionModel ().selectedItemProperty ()
-        .addListener ( (obs, oldSelection, newSelection) -> {
-          if (newSelection != null)
-            select (newSelection);
-        });
-  }
-
-  private void select (String newSelection)
-  {
-    selectedCommand = newSelection;
-    setText ();
+        .addListener ( (obs, oldSelection, newSelection) -> setText ());
   }
 
   @Override
       void setText ()
   {
+    String selectedCommand = commandList.getSelectionModel ().getSelectedItem ();
     ScreenDetails screenDetails = screen.getScreenDetails ();
     if (screenDetails.getTSOCommandField () == null || selectedCommand == null)
     {
