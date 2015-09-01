@@ -29,7 +29,7 @@ public class TSOCommand
     this.screen = screen;
 
     txtCommand.setEditable (true);
-    txtCommand.setPrefWidth (400);
+    txtCommand.setPrefWidth (500);
     txtCommand.setFont (Font.font ("Monospaced", 12));
     txtCommand.setFocusTraversable (false);
 

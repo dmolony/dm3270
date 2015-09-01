@@ -1,35 +1,51 @@
 package com.bytezone.dm3270.assistant;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandListener;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class CommandsTab extends TransferTab
     implements TSOCommandListener, ScreenChangeListener
 {
-  List<String> commands = new ArrayList<> ();
+  ObservableList<String> commands = FXCollections.observableArrayList ();
+  ListView<String> commandList = new ListView<> (commands);
+  String selectedCommand;
 
   public CommandsTab (Screen screen, TextField text, Button execute)
   {
     super ("Commands", screen, text, execute);
+    setContent (commandList);
+    commandList.getSelectionModel ().selectedItemProperty ()
+        .addListener ( (obs, oldSelection, newSelection) -> {
+          if (newSelection != null)
+            select (newSelection);
+        });
+  }
+
+  private void select (String newSelection)
+  {
+    selectedCommand = newSelection;
+    setText ();
   }
 
   @Override
       void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    if (screenDetails.getTSOCommandField () == null)
+    if (screenDetails.getTSOCommandField () == null || selectedCommand == null)
     {
       eraseCommand ();
       return;
     }
+
+    txtCommand.setText (selectedCommand);
 
     if (screenDetails.isKeyboardLocked ())
     {
@@ -37,17 +53,21 @@ public class CommandsTab extends TransferTab
       return;
     }
 
-    if (commands.size () > 0)
-    {
-      txtCommand.setText (commands.get (commands.size () - 1));
-      btnExecute.setDisable (false);
-    }
+    btnExecute.setDisable (false);
   }
 
   @Override
   public void tsoCommand (String command)
   {
-    commands.add (command);
+    if (command.startsWith ("="))
+      return;
+
+    ScreenDetails screenDetails = screen.getScreenDetails ();
+
+    if (screenDetails.isTSOCommandScreen () || command.toUpperCase ().startsWith ("TSO "))
+      if (!commands.contains (command))
+        commands.add (command);
+
     if (isSelected ())
       setText ();
   }
