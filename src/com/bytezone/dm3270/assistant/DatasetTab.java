@@ -119,6 +119,6 @@ public class DatasetTab extends TransferTab implements ScreenChangeListener
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
     txtCommand.setText (command);
-    btnExecute.setDisable (false);
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
   }
 }

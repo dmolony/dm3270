@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.ConsolePane;
@@ -39,6 +41,7 @@ public class AssistantStage extends Stage
   private final JobTab jobTab;
   private final FileTransferTab fileTransferTab;
   private final CommandsTab commandsTab;
+  private final List<ScreenChangeListener> screenChangeListeners;
 
   public AssistantStage (Screen screen)
   {
@@ -54,6 +57,9 @@ public class AssistantStage extends Stage
         new FileTransferTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
     commandsTab = new CommandsTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab, commandsTab);
+
+    screenChangeListeners =
+        Arrays.asList (datasetTab, jobTab, fileTransferTab, commandsTab);
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
@@ -104,15 +110,6 @@ public class AssistantStage extends Stage
     hide ();
   }
 
-  @Override
-  public void screenChanged ()
-  {
-    datasetTab.screenChanged ();
-    jobTab.screenChanged ();
-    fileTransferTab.screenChanged ();
-    commandsTab.screenChanged ();
-  }
-
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
     jobTab.batchJobSubmitted (jobNumber, jobName);
@@ -155,12 +152,16 @@ public class AssistantStage extends Stage
   }
 
   @Override
+  public void screenChanged ()
+  {
+    for (ScreenChangeListener listener : screenChangeListeners)
+      listener.screenChanged ();
+  }
+
+  @Override
   public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
-    datasetTab.screenChanged ();
-    jobTab.screenChanged ();
-    fileTransferTab.screenChanged ();
-    commandsTab.screenChanged ();
+    screenChanged ();
   }
 
   @Override

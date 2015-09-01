@@ -37,14 +37,7 @@ public class CommandsTab extends TransferTab
     }
 
     txtCommand.setText (selectedCommand);
-
-    if (screenDetails.isKeyboardLocked ())
-    {
-      btnExecute.setDisable (true);
-      return;
-    }
-
-    btnExecute.setDisable (false);
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
   }
 
   @Override

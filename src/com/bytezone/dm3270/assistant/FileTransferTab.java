@@ -137,8 +137,6 @@ public class FileTransferTab extends TransferTab
       command = "TSO " + command;
 
     txtCommand.setText (command);
-
-    btnExecute
-        .setDisable (screenDetails.getTSOCommandField () == null || command.isEmpty ());
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
   }
 }

@@ -13,4 +13,16 @@ public class KeyboardStatusChangedEvent
     this.keyboardLocked = keyboardLocked;
     this.keyName = keyName;
   }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("Keyboard locked ... %s%n", keyboardLocked));
+    text.append (String.format ("Insert mode on .... %s%n", insertMode));
+    text.append (String.format ("Key pressed ....... %s%n", keyName));
+
+    return text.toString ();
+  }
 }

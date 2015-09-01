@@ -86,7 +86,7 @@ public class JobTab extends TransferTab implements ScreenChangeListener
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);
-    btnExecute.setDisable (false);
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
   }
 
   // ---------------------------------------------------------------------------------//
