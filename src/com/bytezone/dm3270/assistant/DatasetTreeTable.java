@@ -66,7 +66,7 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
                e -> e.getValue ().getValue ().propertyExpires ());
     addColumn ("Referred", 100, Justification.CENTER,
                e -> e.getValue ().getValue ().propertyReferred ());
-    addColumn ("Catalog", 150, Justification.LEFT,
+    addColumn ("Catalog/ID", 150, Justification.LEFT,
                e -> e.getValue ().getValue ().propertyCatalog ());
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));

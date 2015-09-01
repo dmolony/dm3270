@@ -583,6 +583,8 @@ public class ScreenDetails
         //                           memberName, size, created, modified, time, id);
         member.setCreated (created);
         member.setReferred (modified);
+        member.setCatalog (id);
+        member.setExtents (size);
       }
       else if (headings.size () == 13)
       {
@@ -594,6 +596,8 @@ public class ScreenDetails
         //        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", 
         //row - 5 + rowFrom,
         //                           memberName, size, init, mod, vvmm, id);
+        member.setCatalog (id);
+        member.setExtents (size);
       }
       else
         System.out.println ("Unexpected headings size: " + headings.size ());
