@@ -53,6 +53,12 @@ public class WriteCommand extends Command
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
+  private final byte[] systemMessage5 =
+      { //
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.INSERT_CURSOR };
+
   private String systemMessageText;
   private String systemMessageText2;
 
@@ -209,9 +215,19 @@ public class WriteCommand extends Command
       }
       systemMessageText = Utility.getString (orders.get (2).getBuffer ());
     }
+    else if (!eraseWrite && orders.size () == 9)
+    {
+      for (Order order : orders)
+      {
+        byte reqType = systemMessage5[ptr++];
+        if (reqType != 0 && reqType != order.getType ())
+          return false;
+      }
+      systemMessageText2 = Utility.getString (orders.get (2).getBuffer ());
+    }
     else
     {
-      if (orders.size () < 30)
+      if (orders.size () < 30 && false)
       {
         System.out.printf ("Orders: %d%n", orders.size ());
         System.out.printf ("Erase : %s%n", eraseWrite);
@@ -223,27 +239,30 @@ public class WriteCommand extends Command
     }
 
     //    System.out.println (systemMessageText);
-    Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
-    if (matcher.matches ())
+    if (systemMessageText != null)
     {
-      int jobNumber = Integer.parseInt (matcher.group (2));
-      screen.getAssistantStage ().batchJobSubmitted (jobNumber, matcher.group (1));
-    }
+      Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
+      if (matcher.matches ())
+      {
+        int jobNumber = Integer.parseInt (matcher.group (2));
+        screen.getAssistantStage ().batchJobSubmitted (jobNumber, matcher.group (1));
+      }
 
-    matcher = jobCompletedPattern.matcher (systemMessageText);
-    if (matcher.matches ())
-    {
-      int jobNumber = Integer.parseInt (matcher.group (2));
-      int conditionCode = Integer.parseInt (matcher.group (4));
-      //      screen.getJobStage ().batchJobEnded (jobNumber, matcher.group (3),
-      //                                           matcher.group (1), conditionCode);
-      screen.getAssistantStage ().batchJobEnded (jobNumber, matcher.group (3),
-                                                 matcher.group (1), conditionCode);
+      matcher = jobCompletedPattern.matcher (systemMessageText);
+      if (matcher.matches ())
+      {
+        int jobNumber = Integer.parseInt (matcher.group (2));
+        int conditionCode = Integer.parseInt (matcher.group (4));
+        //      screen.getJobStage ().batchJobEnded (jobNumber, matcher.group (3),
+        //                                           matcher.group (1), conditionCode);
+        screen.getAssistantStage ().batchJobEnded (jobNumber, matcher.group (3),
+                                                   matcher.group (1), conditionCode);
+      }
     }
 
     if (systemMessageText2 != null)
     {
-      matcher = jobFailedPattern.matcher (systemMessageText2);
+      Matcher matcher = jobFailedPattern.matcher (systemMessageText2);
       if (matcher.matches ())
       {
         int jobNumber = Integer.parseInt (matcher.group (2));
