@@ -31,8 +31,6 @@ public class CommandsTab extends TransferTab
       return;
     }
 
-    System.out.printf ("checking: %slocked%n",
-                       screenDetails.isKeyboardLocked () ? "" : "un");
     if (screenDetails.isKeyboardLocked ())
     {
       btnExecute.setDisable (true);
@@ -43,7 +41,6 @@ public class CommandsTab extends TransferTab
     {
       txtCommand.setText (commands.get (commands.size () - 1));
       btnExecute.setDisable (false);
-      System.out.println ("click me");
     }
   }
 

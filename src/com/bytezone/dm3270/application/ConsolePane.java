@@ -37,7 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
 public class ConsolePane extends BorderPane
-    implements FieldChangeListener, CursorMoveListener
+    implements FieldChangeListener, CursorMoveListener, KeyboardStatusListener
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;
@@ -347,10 +347,10 @@ public class ConsolePane extends BorderPane
     fieldChanged (currentField, currentField);// update the acronym
   }
 
-  public void keyboardStatusChanged (boolean keyboardLocked, String keyName,
-      boolean insert)
+  @Override
+  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
-    setStatusText (keyboardLocked ? keyName : "       ");
-    insertMode.setText (insert ? "Insert" : "      ");
+    setStatusText (evt.keyboardLocked ? evt.keyName : "       ");
+    insertMode.setText (evt.insertMode ? "Insert" : "      ");
   }
 }

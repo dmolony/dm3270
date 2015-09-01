@@ -3,6 +3,8 @@ package com.bytezone.dm3270.assistant;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
+import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
@@ -20,7 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class AssistantStage extends Stage
-    implements ScreenChangeListener, TSOCommandListener
+    implements ScreenChangeListener, TSOCommandListener, KeyboardStatusListener
 {
   private final static String OS = System.getProperty ("os.name");
   private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
@@ -152,7 +154,8 @@ public class AssistantStage extends Stage
     return fileTransferTab.getCurrentFileBuffer ();
   }
 
-  public void keyboardStatusChanged ()
+  @Override
+  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
     datasetTab.screenChanged ();
     jobTab.screenChanged ();

@@ -12,6 +12,8 @@ import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
+import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -78,6 +80,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     assistantStage = new AssistantStage (this);
     screenPacker.addTSOCommandListener (assistantStage);
+    addKeyboardStatusChangeListener (assistantStage);
 
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
@@ -106,6 +109,7 @@ public class Screen extends Canvas implements DisplayScreen
   {
     this.consolePane = consolePane;
     assistantStage.setConsolePane (consolePane);
+    addKeyboardStatusChangeListener (consolePane);
   }
 
   public FieldManager getFieldManager ()
@@ -485,11 +489,24 @@ public class Screen extends Canvas implements DisplayScreen
   // Listener events
   // ---------------------------------------------------------------------------------//
 
+  private final Set<KeyboardStatusListener> keyboardChangeListeners = new HashSet<> ();
+
   private void fireKeyboardStatusChange (String keyName)
   {
-    System.out.printf ("keyboard %slocked%n", keyboardLocked ? "" : "un");
-    consolePane.keyboardStatusChanged (keyboardLocked, keyName, insertMode);
-    assistantStage.keyboardStatusChanged ();
+    KeyboardStatusChangedEvent evt =
+        new KeyboardStatusChangedEvent (insertMode, keyboardLocked, keyName);
+    for (KeyboardStatusListener listener : keyboardChangeListeners)
+      listener.keyboardStatusChanged (evt);
+  }
+
+  public void addKeyboardStatusChangeListener (KeyboardStatusListener listener)
+  {
+    keyboardChangeListeners.add (listener);
+  }
+
+  public void removeKeyboardStatusChangeListener (KeyboardStatusListener listener)
+  {
+    keyboardChangeListeners.remove (listener);
   }
 
   private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
