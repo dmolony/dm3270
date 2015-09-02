@@ -61,6 +61,7 @@ public class AssistantStage extends Stage
         new TransfersTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab, commandsTab,
                                transfersTab);
+    tabPane.setTabMinWidth (80);
 
     screenChangeListeners =
         Arrays.asList (datasetTab, jobTab, fileTransferTab, commandsTab, transfersTab);

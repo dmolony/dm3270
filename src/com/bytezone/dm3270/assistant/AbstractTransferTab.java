@@ -17,7 +17,6 @@ public abstract class AbstractTransferTab extends Tab
     super (name);
 
     setClosable (false);
-    // set fixed tab width - how??
 
     this.screen = screen;
     this.txtCommand = text;
