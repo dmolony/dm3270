@@ -2,7 +2,7 @@
 ##### Commands menu
 Select Release Mode to switch between Release Mode and Debug Mode. The Plugins Manager allows you to modify the list of available [plugins](plugins.md).  
 ![Commands](commands1menu.png?raw=true "commands")  
-Select Screen history to display previous screens. Select [TSO Commands](assistant.md) to bring up the transfer window.  
+Select [Screen history](history.md) to display previous screens. Select [TSO Commands](assistant.md) to bring up the transfer window.  
 ![Commands](commands2menu.png?raw=true "commands")  
 ##### Font menu
 Here you may choose the font and font size for the terminal screen, and whether to run in Debug or Release mode. The fonts listed are the only ones that dm3270 will attempt to load, and then only if you have them installed on your machine. Most of the fonts are freely available on the web.  
