@@ -39,7 +39,8 @@ public class AssistantStage extends Stage
   private final TabPane tabPane = new TabPane ();
   private final DatasetTab datasetTab;
   private final JobTab jobTab;
-  private final FileTransferTab fileTransferTab;
+  private final FilesTab fileTransferTab;
+  private final TransfersTab transfersTab;
   private final CommandsTab commandsTab;
   private final List<ScreenChangeListener> screenChangeListeners;
 
@@ -54,12 +55,15 @@ public class AssistantStage extends Stage
     datasetTab = new DatasetTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     jobTab = new JobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     fileTransferTab =
-        new FileTransferTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
+        new FilesTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
     commandsTab = new CommandsTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab, commandsTab);
+    transfersTab =
+        new TransfersTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab, commandsTab,
+                               transfersTab);
 
     screenChangeListeners =
-        Arrays.asList (datasetTab, jobTab, fileTransferTab, commandsTab);
+        Arrays.asList (datasetTab, jobTab, fileTransferTab, commandsTab, transfersTab);
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
@@ -96,7 +100,7 @@ public class AssistantStage extends Stage
 
   private void select (Tab tab)
   {
-    ((TransferTab) tab).setText ();
+    ((AbstractTransferTab) tab).setText ();
   }
 
   public void setConsolePane (ConsolePane consolePane)

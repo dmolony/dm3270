@@ -11,7 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-public class CommandsTab extends TransferTab
+public class CommandsTab extends AbstractTransferTab
     implements TSOCommandListener, ScreenChangeListener
 {
   ObservableList<String> commands = FXCollections.observableArrayList ();

@@ -10,7 +10,7 @@ import com.bytezone.dm3270.display.ScreenDetails;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class JobTab extends TransferTab implements ScreenChangeListener
+public class JobTab extends AbstractTransferTab implements ScreenChangeListener
 {
   private static final Pattern outlistPattern = Pattern
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");

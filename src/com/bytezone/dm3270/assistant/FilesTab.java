@@ -17,7 +17,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class FileTransferTab extends TransferTab
+public class FilesTab extends AbstractTransferTab
     implements ScreenChangeListener, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
@@ -26,7 +26,7 @@ public class FileTransferTab extends TransferTab
   private final ReporterNode reporterNode;
   private FileNode currentFileNode;
 
-  public FileTransferTab (Screen screen, TextField text, Button execute,
+  public FilesTab (Screen screen, TextField text, Button execute,
       Preferences prefs)
   {
     super ("Files", screen, text, execute);

@@ -10,7 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 
-public class DatasetTab extends TransferTab implements ScreenChangeListener
+public class DatasetTab extends AbstractTransferTab implements ScreenChangeListener
 {
   private Dataset selectedDataset;
 
