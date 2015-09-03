@@ -88,7 +88,7 @@ public class DatasetTab extends AbstractTransferTab implements ScreenChangeListe
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
 
-    if (selectedDataset == null || screenDetails.getTSOCommandField () == null)
+    if (selectedDataset == null)
     {
       eraseCommand ();
       return;
@@ -119,6 +119,7 @@ public class DatasetTab extends AbstractTransferTab implements ScreenChangeListe
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
     txtCommand.setText (command);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+        || screenDetails.getTSOCommandField () == null);
   }
 }

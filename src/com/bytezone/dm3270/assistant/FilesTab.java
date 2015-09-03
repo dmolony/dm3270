@@ -26,8 +26,7 @@ public class FilesTab extends AbstractTransferTab
   private final ReporterNode reporterNode;
   private FileNode currentFileNode;
 
-  public FilesTab (Screen screen, TextField text, Button execute,
-      Preferences prefs)
+  public FilesTab (Screen screen, TextField text, Button execute, Preferences prefs)
   {
     super ("Files", screen, text, execute);
 
@@ -119,7 +118,7 @@ public class FilesTab extends AbstractTransferTab
       void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    if (currentFileNode == null || screenDetails.getTSOCommandField () == null)
+    if (currentFileNode == null)
     {
       eraseCommand ();
       return;
@@ -137,6 +136,7 @@ public class FilesTab extends AbstractTransferTab
       command = "TSO " + command;
 
     txtCommand.setText (command);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+        || screenDetails.getTSOCommandField () == null);
   }
 }

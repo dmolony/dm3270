@@ -70,8 +70,7 @@ public class JobTab extends AbstractTransferTab implements ScreenChangeListener
       void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null
-        || screenDetails.getTSOCommandField () == null)
+    if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
     {
       eraseCommand ();
       return;
@@ -86,7 +85,8 @@ public class JobTab extends AbstractTransferTab implements ScreenChangeListener
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+        || screenDetails.getTSOCommandField () == null);
   }
 
   // ---------------------------------------------------------------------------------//

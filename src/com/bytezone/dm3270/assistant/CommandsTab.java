@@ -30,14 +30,15 @@ public class CommandsTab extends AbstractTransferTab
   {
     String selectedCommand = commandList.getSelectionModel ().getSelectedItem ();
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    if (screenDetails.getTSOCommandField () == null || selectedCommand == null)
+    if (selectedCommand == null)
     {
       eraseCommand ();
       return;
     }
 
     txtCommand.setText (selectedCommand);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ());
+    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+        || screenDetails.getTSOCommandField () == null);
   }
 
   @Override
