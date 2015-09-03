@@ -1,7 +1,9 @@
 package com.bytezone.dm3270.assistant;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.display.Screen;
@@ -43,6 +45,7 @@ public class FilesTab extends AbstractTransferTab
   {
     currentFileNode = fileNode;
     setText ();
+    fireFileSelected (currentFileNode.toString ());
   }
 
   public void addTransfer (Transfer transfer)
@@ -138,5 +141,23 @@ public class FilesTab extends AbstractTransferTab
     txtCommand.setText (command);
     btnExecute.setDisable (screenDetails.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
+  }
+
+  private final Set<FileSelectionListener> selectionListeners = new HashSet<> ();
+
+  void fireFileSelected (String filename)
+  {
+    for (FileSelectionListener listener : selectionListeners)
+      listener.fileSelected (filename);
+  }
+
+  void addFileSelectionListener (FileSelectionListener listener)
+  {
+    selectionListeners.add (listener);
+  }
+
+  void removeFileSelectionListener (FileSelectionListener listener)
+  {
+    selectionListeners.remove (listener);
   }
 }

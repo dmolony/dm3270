@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,7 @@ public class JobTab extends AbstractTransferTab implements ScreenChangeListener
   {
     selectedBatchJob = batchJob;
     setText ();
+    fireJobSelected (batchJob);
   }
 
   public void addBatchJob (BatchJob batchJob)
@@ -118,5 +121,27 @@ public class JobTab extends AbstractTransferTab implements ScreenChangeListener
       batchJob.failed (time);
       jobTable.refresh ();// temp fix before jdk 8u60
     }
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Batch job selection listeners
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<JobSelectionListener> selectionListeners = new HashSet<> ();
+
+  void fireJobSelected (BatchJob job)
+  {
+    for (JobSelectionListener listener : selectionListeners)
+      listener.jobSelected (job);
+  }
+
+  void addJobSelectionListener (JobSelectionListener listener)
+  {
+    selectionListeners.add (listener);
+  }
+
+  void removeJobSelectionListener (JobSelectionListener listener)
+  {
+    selectionListeners.remove (listener);
   }
 }

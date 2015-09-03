@@ -1,6 +1,8 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
@@ -52,6 +54,7 @@ public class DatasetTab extends AbstractTransferTab implements ScreenChangeListe
   {
     selectedDataset = treeItem.getValue ();
     setText ();
+    fireDatasetSelected (selectedDataset);
   }
 
   @Override
@@ -121,5 +124,23 @@ public class DatasetTab extends AbstractTransferTab implements ScreenChangeListe
     txtCommand.setText (command);
     btnExecute.setDisable (screenDetails.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
+  }
+
+  private final Set<DatasetSelectionListener> selectionListeners = new HashSet<> ();
+
+  void fireDatasetSelected (Dataset dataset)
+  {
+    for (DatasetSelectionListener listener : selectionListeners)
+      listener.datasetSelected (dataset);
+  }
+
+  void addDatasetSelectionListener (DatasetSelectionListener listener)
+  {
+    selectionListeners.add (listener);
+  }
+
+  void removeDatasetSelectionListener (DatasetSelectionListener listener)
+  {
+    selectionListeners.remove (listener);
   }
 }
