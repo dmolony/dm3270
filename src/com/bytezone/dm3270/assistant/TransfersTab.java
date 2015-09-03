@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -18,15 +19,15 @@ import javafx.scene.text.Font;
 public class TransfersTab extends AbstractTransferTab implements ScreenChangeListener,
     DatasetSelectionListener, FileSelectionListener, JobSelectionListener
 {
-  Label lblDatasets = new Label ("Datasets");
-  Label lblFiles = new Label ("Files");
-  Label lblJobs = new Label ("Batch Jobs");
-  Label lblSpecify = new Label ("Specify");
+  //  Label lblDatasets = new Label ("Datasets");
+  //  Label lblFiles = new Label ("Files");
+  //  Label lblJobs = new Label ("Batch Jobs");
+  //  Label lblSpecify = new Label ("Specify");
 
-  RadioButton btnDatasets = new RadioButton ();
-  RadioButton btnFiles = new RadioButton ();
-  RadioButton btnJobs = new RadioButton ();
-  RadioButton btnSpecify = new RadioButton ();
+  RadioButton btnDatasets = new RadioButton ("Datasets");
+  RadioButton btnFiles = new RadioButton ("Files");
+  RadioButton btnJobs = new RadioButton ("Jobs");
+  RadioButton btnSpecify = new RadioButton ("Specify");
 
   TextField txtDatasets = new TextField ();
   TextField txtFiles = new TextField ();
@@ -37,30 +38,40 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   Label lblBlksize = new Label ("BLKSIZE");
   Label lblSpace = new Label ("SPACE");
 
+  RadioButton btnCylinders = new RadioButton ("CYL");
+  RadioButton btnTracks = new RadioButton ("TRK");
+  RadioButton btnBlocks = new RadioButton ("BLK");
+
   TextField txtLrecl = new TextField ();
   TextField txtBlksize = new TextField ();
   TextField txtSpace = new TextField ();
 
   private final ToggleGroup grpFileName = new ToggleGroup ();
+  private final ToggleGroup grpSpaceUnits = new ToggleGroup ();
 
   public TransfersTab (Screen screen, TextField text, Button execute)
   {
     super ("Transfers", screen, text, execute);
 
-    grpFileName.getToggles ().addAll (btnDatasets, btnFiles, btnJobs, btnSpecify);
+    btnTracks.setSelected (true);
+    btnFiles.setSelected (true);
 
-    grpFileName.selectedToggleProperty ().addListener ( (ov, oldToggle, newToggle) -> {
-      if (newToggle != null)
-        selectDataset ((TextField) newToggle.getUserData ());
-    });
+    grpFileName.getToggles ().addAll (btnDatasets, btnFiles, btnJobs, btnSpecify);
+    grpSpaceUnits.getToggles ().addAll (btnTracks, btnCylinders, btnBlocks);
+
+    grpFileName.selectedToggleProperty ()
+        .addListener ( (ov, oldToggle, newToggle) -> toggleSelected (newToggle));
+
+    grpSpaceUnits.selectedToggleProperty ()
+        .addListener ( (ov, oldToggle, newToggle) -> toggleSelected (newToggle));
 
     VBox datasetBlock = new VBox (10);
     datasetBlock.setPadding (new Insets (10, 10, 10, 10));
 
-    HBox line1 = getLine (btnDatasets, lblDatasets, txtDatasets);
-    HBox line2 = getLine (btnJobs, lblJobs, txtJobs);
-    HBox line3 = getLine (btnFiles, lblFiles, txtFiles);
-    HBox line4 = getLine (btnSpecify, lblSpecify, txtSpecify);
+    HBox line1 = getLine (btnDatasets, txtDatasets);
+    HBox line2 = getLine (btnJobs, txtJobs);
+    HBox line3 = getLine (btnFiles, txtFiles);
+    HBox line4 = getLine (btnSpecify, txtSpecify);
 
     txtSpecify.setEditable (true);
 
@@ -71,16 +82,18 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
 
     HBox line5 = getLine (lblLrecl, txtLrecl);
     HBox line6 = getLine (lblBlksize, txtBlksize);
-    HBox line7 = getLine (lblSpace, txtSpace);
+    HBox line7 = getLine (btnTracks, btnCylinders, btnBlocks);
+    HBox line8 = getLine (lblSpace, txtSpace, line7);
 
-    spaceBlock.getChildren ().addAll (line5, line6, line7);
+    spaceBlock.getChildren ().addAll (line5, line6, line8);
 
     datasetBlock.setStyle ("-fx-border-color: grey; -fx-border-width: 1;"
         + " -fx-border-insets: 10");
     spaceBlock.setStyle ("-fx-border-color: grey; -fx-border-width: 1;"
         + " -fx-border-insets: 10");
 
-    VBox column = new VBox (10);
+    VBox column = new VBox ();
+    column.setPadding (new Insets (10, 10, 10, 10));
     column.getChildren ().addAll (datasetBlock, spaceBlock);
 
     BorderPane borderPane = new BorderPane ();
@@ -89,16 +102,17 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     setContent (borderPane);
   }
 
-  private void selectDataset (TextField text)
+  private void toggleSelected (Toggle toggle)
   {
-    setText ();
+    if (toggle != null)
+      setText ();
   }
 
-  private HBox getLine (RadioButton button, Label label, TextField text)
+  private HBox getLine (RadioButton button, TextField text)
   {
     HBox line = new HBox (10);
-    line.getChildren ().addAll (button, label, text);
-    label.setPrefWidth (70);
+    line.getChildren ().addAll (button, text);
+    button.setPrefWidth (90);
     text.setPrefWidth (300);
     text.setFont (Font.font ("Monospaced", 12));
     text.setPromptText ("nothing yet");
@@ -122,6 +136,30 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     return line;
   }
 
+  private HBox getLine (Label label, TextField text, HBox hbox)
+  {
+    HBox line = new HBox (10);
+
+    line.getChildren ().addAll (label, text, hbox);
+    label.setPrefWidth (70);
+    text.setPrefWidth (100);
+    text.setFont (Font.font ("Monospaced", 12));
+    text.setEditable (true);
+    text.setFocusTraversable (true);
+
+    return line;
+  }
+
+  private HBox getLine (RadioButton... buttons)
+  {
+    HBox line = new HBox (10);
+
+    for (RadioButton button : buttons)
+      line.getChildren ().add (button);
+
+    return line;
+  }
+
   @Override
       void setText ()
   {
@@ -131,6 +169,9 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
       eraseCommand ();
       return;
     }
+
+    RadioButton selectedSpaceUnitsButton =
+        (RadioButton) grpSpaceUnits.getSelectedToggle ();
 
     txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
     ScreenDetails screenDetails = screen.getScreenDetails ();
