@@ -154,6 +154,8 @@ public class FilesTab extends AbstractTransferTab
   void addFileSelectionListener (FileSelectionListener listener)
   {
     selectionListeners.add (listener);
+    if (currentFileNode != null)
+      listener.fileSelected (currentFileNode.toString ());
   }
 
   void removeFileSelectionListener (FileSelectionListener listener)

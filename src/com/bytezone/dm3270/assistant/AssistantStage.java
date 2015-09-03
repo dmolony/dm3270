@@ -39,7 +39,7 @@ public class AssistantStage extends Stage
   private final TabPane tabPane = new TabPane ();
   private final DatasetTab datasetTab;
   private final JobTab jobTab;
-  private final FilesTab fileTransferTab;
+  private final FilesTab fileTab;
   private final TransfersTab transfersTab;
   private final CommandsTab commandsTab;
   private final List<ScreenChangeListener> screenChangeListeners;
@@ -54,21 +54,20 @@ public class AssistantStage extends Stage
     tsoCommand = new TSOCommand (screen);
     datasetTab = new DatasetTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     jobTab = new JobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    fileTransferTab =
-        new FilesTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
+    fileTab = new FilesTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
     commandsTab = new CommandsTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     transfersTab =
         new TransfersTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTransferTab, commandsTab,
-                               transfersTab);
+    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
     tabPane.setTabMinWidth (80);
 
     screenChangeListeners =
-        Arrays.asList (datasetTab, jobTab, fileTransferTab, commandsTab, transfersTab);
+        Arrays.asList (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
 
     datasetTab.addDatasetSelectionListener (transfersTab);
-    fileTransferTab.addFileSelectionListener (transfersTab);
+    fileTab.addFileSelectionListener (transfersTab);
     jobTab.addJobSelectionListener (transfersTab);
+    fileTab.getCurrentFileBuffer ();
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
@@ -137,27 +136,27 @@ public class AssistantStage extends Stage
 
   public void openTransfer (Transfer transfer)
   {
-    fileTransferTab.openTransfer (transfer);
+    fileTab.openTransfer (transfer);
   }
 
   public Transfer getTransfer (FileTransferOutboundSF transferRecord)
   {
-    return fileTransferTab.getTransfer (transferRecord);
+    return fileTab.getTransfer (transferRecord);
   }
 
   public void closeTransfer ()
   {
-    fileTransferTab.closeTransfer ();
+    fileTab.closeTransfer ();
   }
 
   public Transfer closeTransfer (FileTransferOutboundSF transferRecord)
   {
-    return fileTransferTab.closeTransfer (transferRecord);
+    return fileTab.closeTransfer (transferRecord);
   }
 
   public byte[] getCurrentFileBuffer ()
   {
-    return fileTransferTab.getCurrentFileBuffer ();
+    return fileTab.getCurrentFileBuffer ();
   }
 
   @Override
