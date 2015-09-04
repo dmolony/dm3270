@@ -23,6 +23,11 @@ public class FontData
     return font;
   }
 
+  public Font getFont (int sizeChange)
+  {
+    return Font.font (name, size + sizeChange);
+  }
+
   public String getName ()
   {
     return name;

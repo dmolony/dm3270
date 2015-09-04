@@ -19,11 +19,6 @@ import javafx.scene.text.Font;
 public class TransfersTab extends AbstractTransferTab implements ScreenChangeListener,
     DatasetSelectionListener, FileSelectionListener, JobSelectionListener
 {
-  //  Label lblDatasets = new Label ("Datasets");
-  //  Label lblFiles = new Label ("Files");
-  //  Label lblJobs = new Label ("Batch Jobs");
-  //  Label lblSpecify = new Label ("Specify");
-
   RadioButton btnDatasets = new RadioButton ("Datasets");
   RadioButton btnFiles = new RadioButton ("Files");
   RadioButton btnJobs = new RadioButton ("Jobs");
@@ -34,6 +29,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   TextField txtJobs = new TextField ();
   TextField txtSpecify = new TextField ();
 
+  Label lblDisposition = new Label ("Disposition");
   Label lblLrecl = new Label ("LRECL");
   Label lblBlksize = new Label ("BLKSIZE");
   Label lblSpace = new Label ("SPACE");
@@ -46,8 +42,12 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   TextField txtBlksize = new TextField ();
   TextField txtSpace = new TextField ();
 
+  RadioButton btnFB = new RadioButton ("FB");
+  RadioButton btnPS = new RadioButton ("PS");
+
   private final ToggleGroup grpFileName = new ToggleGroup ();
   private final ToggleGroup grpSpaceUnits = new ToggleGroup ();
+  private final ToggleGroup grpDisposition = new ToggleGroup ();
 
   public TransfersTab (Screen screen, TextField text, Button execute)
   {
@@ -55,6 +55,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
 
     btnTracks.setSelected (true);
     btnFiles.setSelected (true);
+    btnFB.setSelected (true);
 
     grpFileName.getToggles ().addAll (btnDatasets, btnFiles, btnJobs, btnSpecify);
     grpSpaceUnits.getToggles ().addAll (btnTracks, btnCylinders, btnBlocks);
@@ -73,6 +74,10 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     HBox line3 = getLine (btnFiles, txtFiles);
     HBox line4 = getLine (btnSpecify, txtSpecify);
 
+    txtDatasets.setPromptText ("no dataset selected");
+    txtJobs.setPromptText ("no batch job selected");
+    txtFiles.setPromptText ("no file selected");
+
     txtSpecify.setEditable (true);
 
     datasetBlock.getChildren ().addAll (line1, line2, line3, line4);
@@ -84,8 +89,10 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     HBox line6 = getLine (lblBlksize, txtBlksize);
     HBox line7 = getLine (btnTracks, btnCylinders, btnBlocks);
     HBox line8 = getLine (lblSpace, txtSpace, line7);
+    HBox line9 = getLine (btnFB, btnPS);
+    HBox line10 = getLine (lblDisposition, line9);
 
-    spaceBlock.getChildren ().addAll (line5, line6, line8);
+    spaceBlock.getChildren ().addAll (line10, line5, line6, line8);
 
     datasetBlock.setStyle ("-fx-border-color: grey; -fx-border-width: 1;"
         + " -fx-border-insets: 10");
@@ -115,7 +122,6 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     button.setPrefWidth (90);
     text.setPrefWidth (300);
     text.setFont (Font.font ("Monospaced", 12));
-    text.setPromptText ("nothing yet");
     text.setEditable (false);
     text.setFocusTraversable (false);
     button.setUserData (text);
@@ -127,7 +133,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   {
     HBox line = new HBox (10);
     line.getChildren ().addAll (label, text);
-    label.setPrefWidth (70);
+    label.setPrefWidth (90);
     text.setPrefWidth (100);
     text.setFont (Font.font ("Monospaced", 12));
     text.setEditable (true);
@@ -141,11 +147,21 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     HBox line = new HBox (10);
 
     line.getChildren ().addAll (label, text, hbox);
-    label.setPrefWidth (70);
+    label.setPrefWidth (90);
     text.setPrefWidth (100);
     text.setFont (Font.font ("Monospaced", 12));
     text.setEditable (true);
     text.setFocusTraversable (true);
+
+    return line;
+  }
+
+  private HBox getLine (Label label, HBox hbox)
+  {
+    HBox line = new HBox (10);
+
+    line.getChildren ().addAll (label, hbox);
+    label.setPrefWidth (90);
 
     return line;
   }

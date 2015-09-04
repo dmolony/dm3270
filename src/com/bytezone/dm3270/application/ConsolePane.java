@@ -145,26 +145,26 @@ public class ConsolePane extends BorderPane
       div[i].setOrientation (Orientation.VERTICAL);
     }
 
-    HBox left = getHBox (new Insets (2, GAP, 2, 3), Pos.CENTER_LEFT);
-    left.getChildren ().addAll (div[0], fieldLocation, div[1], insertMode, div[2]);
+    HBox leftBox = getHBox (new Insets (2, GAP, 2, 3), Pos.CENTER_LEFT);
+    leftBox.getChildren ().addAll (div[0], fieldLocation, div[1], insertMode, div[2]);
 
-    HBox center = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
-    center.getChildren ().addAll (status);
+    HBox centerBox = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
+    centerBox.getChildren ().add (status);
 
-    HBox right = getHBox (new Insets (2, 0, 2, GAP), Pos.CENTER_RIGHT);
-    right.getChildren ().addAll (div[3], fieldType, div[4], cursorLocation, div[5]);
+    HBox rightBox = getHBox (new Insets (2, 0, 2, GAP), Pos.CENTER_RIGHT);
+    rightBox.getChildren ().addAll (div[3], fieldType, div[4], cursorLocation, div[5]);
 
-    setFont (fontManager.getDefaultFont ());
+    setStatusFont (fontManager.getDefaultFont ());
 
     BorderPane statusPane = new BorderPane ();
-    statusPane.setLeft (left);
-    statusPane.setCenter (center);
-    statusPane.setRight (right);
+    statusPane.setLeft (leftBox);
+    statusPane.setCenter (centerBox);
+    statusPane.setRight (rightBox);
 
     return statusPane;
   }
 
-  private void setFont (Font font)
+  private void setStatusFont (Font font)
   {
     status.setFont (font);
     insertMode.setFont (font);
@@ -175,7 +175,7 @@ public class ConsolePane extends BorderPane
 
   public void setFontData (FontData fontData)
   {
-    setFont (fontData.getFont ());
+    setStatusFont (fontData.getFont (-2));
   }
 
   private void setHistoryBar ()

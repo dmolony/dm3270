@@ -66,7 +66,7 @@ public class FontManager
     }
 
     if (!fontSelected.isEmpty ())
-      defaultFont = Font.font (fontSelected, getFontSize ());
+      defaultFont = Font.font (fontSelected, getFontSize () - 2);
 
     // select Monospaced if there is still no font selected
     if (fontGroup.getSelectedToggle () == null)
