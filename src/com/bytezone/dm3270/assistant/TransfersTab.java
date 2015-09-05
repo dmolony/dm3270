@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -48,6 +49,8 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   private final ToggleGroup grpFileName = new ToggleGroup ();
   private final ToggleGroup grpSpaceUnits = new ToggleGroup ();
   private final ToggleGroup grpDisposition = new ToggleGroup ();
+
+  private final TextArea txtDescription = new TextArea ();
 
   private final Font defaultFont = Font.font ("Monospaced", 12);
 
@@ -103,12 +106,19 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     spaceBlock.setStyle ("-fx-border-color: grey; -fx-border-width: 1;"
         + " -fx-border-insets: 10");
 
-    VBox column = new VBox ();
-    column.setPadding (new Insets (10, 10, 10, 10));
-    column.getChildren ().addAll (datasetBlock, spaceBlock);
+    txtDescription.setText ("Hello");
+
+    VBox columnLeft = new VBox ();
+    columnLeft.setPadding (new Insets (10, 10, 10, 10));
+    columnLeft.getChildren ().addAll (datasetBlock, spaceBlock);
+
+    VBox columnRight = new VBox ();
+    columnRight.setPadding (new Insets (10, 10, 10, 10));
+    columnRight.getChildren ().addAll (txtDescription);
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setLeft (column);
+    borderPane.setLeft (columnLeft);
+    borderPane.setRight (columnRight);
 
     setContent (borderPane);
   }
