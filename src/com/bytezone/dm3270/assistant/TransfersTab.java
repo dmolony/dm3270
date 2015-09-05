@@ -19,35 +19,37 @@ import javafx.scene.text.Font;
 public class TransfersTab extends AbstractTransferTab implements ScreenChangeListener,
     DatasetSelectionListener, FileSelectionListener, JobSelectionListener
 {
-  RadioButton btnDatasets = new RadioButton ("Datasets");
-  RadioButton btnFiles = new RadioButton ("Files");
-  RadioButton btnJobs = new RadioButton ("Jobs");
-  RadioButton btnSpecify = new RadioButton ("Specify");
+  private final RadioButton btnDatasets = new RadioButton ("Datasets");
+  private final RadioButton btnFiles = new RadioButton ("Files");
+  private final RadioButton btnJobs = new RadioButton ("Jobs");
+  private final RadioButton btnSpecify = new RadioButton ("Specify");
 
-  TextField txtDatasets = new TextField ();
-  TextField txtFiles = new TextField ();
-  TextField txtJobs = new TextField ();
-  TextField txtSpecify = new TextField ();
+  private final TextField txtDatasets = new TextField ();
+  private final TextField txtFiles = new TextField ();
+  private final TextField txtJobs = new TextField ();
+  private final TextField txtSpecify = new TextField ();
 
-  Label lblDisposition = new Label ("Disposition");
-  Label lblLrecl = new Label ("LRECL");
-  Label lblBlksize = new Label ("BLKSIZE");
-  Label lblSpace = new Label ("SPACE");
+  private final Label lblDisposition = new Label ("Disposition");
+  private final Label lblLrecl = new Label ("LRECL");
+  private final Label lblBlksize = new Label ("BLKSIZE");
+  private final Label lblSpace = new Label ("SPACE");
 
-  RadioButton btnCylinders = new RadioButton ("CYL");
-  RadioButton btnTracks = new RadioButton ("TRK");
-  RadioButton btnBlocks = new RadioButton ("BLK");
+  private final RadioButton btnCylinders = new RadioButton ("CYL");
+  private final RadioButton btnTracks = new RadioButton ("TRK");
+  private final RadioButton btnBlocks = new RadioButton ("BLK");
 
-  TextField txtLrecl = new TextField ();
-  TextField txtBlksize = new TextField ();
-  TextField txtSpace = new TextField ();
+  private final TextField txtLrecl = new TextField ();
+  private final TextField txtBlksize = new TextField ();
+  private final TextField txtSpace = new TextField ();
 
-  RadioButton btnFB = new RadioButton ("FB");
-  RadioButton btnPS = new RadioButton ("PS");
+  private final RadioButton btnFB = new RadioButton ("FB");
+  private final RadioButton btnPS = new RadioButton ("PS");
 
   private final ToggleGroup grpFileName = new ToggleGroup ();
   private final ToggleGroup grpSpaceUnits = new ToggleGroup ();
   private final ToggleGroup grpDisposition = new ToggleGroup ();
+
+  private final Font defaultFont = Font.font ("Monospaced", 12);
 
   public TransfersTab (Screen screen, TextField text, Button execute)
   {
@@ -123,7 +125,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     line.getChildren ().addAll (button, text);
     button.setPrefWidth (90);
     text.setPrefWidth (300);
-    text.setFont (Font.font ("Monospaced", 12));
+    text.setFont (defaultFont);
     text.setEditable (false);
     text.setFocusTraversable (false);
     button.setUserData (text);
@@ -137,7 +139,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     line.getChildren ().addAll (label, text);
     label.setPrefWidth (90);
     text.setPrefWidth (100);
-    text.setFont (Font.font ("Monospaced", 12));
+    text.setFont (defaultFont);
     text.setEditable (true);
     text.setFocusTraversable (true);
 
@@ -151,7 +153,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     line.getChildren ().addAll (label, text, hbox);
     label.setPrefWidth (90);
     text.setPrefWidth (100);
-    text.setFont (Font.font ("Monospaced", 12));
+    text.setFont (defaultFont);
     text.setEditable (true);
     text.setFocusTraversable (true);
 
