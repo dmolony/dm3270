@@ -79,6 +79,8 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     txtFiles.setPromptText ("no file selected");
 
     txtSpecify.setEditable (true);
+    txtBlksize.setText ("0");
+    txtLrecl.setText ("80");
 
     datasetBlock.getChildren ().addAll (line1, line2, line3, line4);
 
