@@ -20,6 +20,8 @@ public class CommandsTab extends AbstractTransferTab
   public CommandsTab (Screen screen, TextField text, Button execute)
   {
     super ("Commands", screen, text, execute);
+
+    commandList.setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setContent (commandList);
     commandList.getSelectionModel ().selectedItemProperty ()
         .addListener ( (obs, oldSelection, newSelection) -> setText ());

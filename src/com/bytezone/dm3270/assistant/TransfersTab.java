@@ -192,6 +192,8 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
 
     RadioButton selectedSpaceUnitsButton =
         (RadioButton) grpSpaceUnits.getSelectedToggle ();
+    RadioButton selectedDispositionButton =
+        (RadioButton) grpDisposition.getSelectedToggle ();
 
     txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
     ScreenDetails screenDetails = screen.getScreenDetails ();
