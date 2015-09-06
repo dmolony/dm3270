@@ -12,7 +12,8 @@ import com.bytezone.dm3270.display.ScreenDetails;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class JobTab extends AbstractTransferTab implements ScreenChangeListener
+public class JobTab extends AbstractTransferTab
+    implements ScreenChangeListener, BatchJobListener
 {
   private static final Pattern outlistPattern = Pattern
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");
@@ -81,7 +82,7 @@ public class JobTab extends AbstractTransferTab implements ScreenChangeListener
 
     String report = selectedBatchJob.getOutputFile ();
     String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
-    String ascii = false ? "" : " ASCII CRLF";
+    String ascii = " ASCII CRLF";
 
     String command = report == null
         ? String.format ("%s%s", tsoPrefix, selectedBatchJob.outputCommand ())
@@ -93,15 +94,17 @@ public class JobTab extends AbstractTransferTab implements ScreenChangeListener
   }
 
   // ---------------------------------------------------------------------------------//
-  // Batch jobs
+  // BatchJobListener
   // ---------------------------------------------------------------------------------//
 
+  @Override
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
     BatchJob batchJob = new BatchJob (jobNumber, jobName);
     addBatchJob (batchJob);
   }
 
+  @Override
   public void batchJobEnded (int jobNumber, String jobName, String time,
       int conditionCode)
   {
@@ -113,6 +116,7 @@ public class JobTab extends AbstractTransferTab implements ScreenChangeListener
     }
   }
 
+  @Override
   public void batchJobFailed (int jobNumber, String jobName, String time)
   {
     BatchJob batchJob = getBatchJob (jobNumber);

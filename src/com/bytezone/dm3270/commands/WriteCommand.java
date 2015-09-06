@@ -1,11 +1,14 @@
 package com.bytezone.dm3270.commands;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
@@ -100,6 +103,8 @@ public class WriteCommand extends Command
 
       ptr += order.size ();
     }
+
+    addBatchJobListener (screen.getAssistantStage ());// fix this
   }
 
   // Used by MainframeStage.createCommand() when building a screen
@@ -238,25 +243,19 @@ public class WriteCommand extends Command
       return false;
     }
 
-    //    System.out.println (systemMessageText);
     if (systemMessageText != null)
     {
       Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
       if (matcher.matches ())
-      {
-        int jobNumber = Integer.parseInt (matcher.group (2));
-        screen.getAssistantStage ().batchJobSubmitted (jobNumber, matcher.group (1));
-      }
+        fireBatchJobSubmitted (Integer.parseInt (matcher.group (2)), matcher.group (1));
 
       matcher = jobCompletedPattern.matcher (systemMessageText);
       if (matcher.matches ())
       {
         int jobNumber = Integer.parseInt (matcher.group (2));
         int conditionCode = Integer.parseInt (matcher.group (4));
-        //      screen.getJobStage ().batchJobEnded (jobNumber, matcher.group (3),
-        //                                           matcher.group (1), conditionCode);
-        screen.getAssistantStage ().batchJobEnded (jobNumber, matcher.group (3),
-                                                   matcher.group (1), conditionCode);
+        fireBatchJobEnded (jobNumber, matcher.group (3), matcher.group (1),
+                           conditionCode);
       }
     }
 
@@ -268,7 +267,7 @@ public class WriteCommand extends Command
         int jobNumber = Integer.parseInt (matcher.group (2));
         String jobName = matcher.group (3);
         String time = matcher.group (1);
-        screen.getAssistantStage ().batchJobFailed (jobNumber, jobName, time);
+        fireBatchJobFailed (jobNumber, jobName, time);
       }
     }
 
@@ -305,5 +304,39 @@ public class WriteCommand extends Command
     }
 
     return text.toString ();
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // BatchJobListener
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<BatchJobListener> batchJobListeners = new HashSet<> ();
+
+  void fireBatchJobSubmitted (int jobNumber, String jobName)
+  {
+    for (BatchJobListener listener : batchJobListeners)
+      listener.batchJobSubmitted (jobNumber, jobName);
+  }
+
+  void fireBatchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
+  {
+    for (BatchJobListener listener : batchJobListeners)
+      listener.batchJobEnded (jobNumber, jobName, time, conditionCode);
+  }
+
+  void fireBatchJobFailed (int jobNumber, String jobName, String time)
+  {
+    for (BatchJobListener listener : batchJobListeners)
+      listener.batchJobFailed (jobNumber, jobName, time);
+  }
+
+  public void addBatchJobListener (BatchJobListener listener)
+  {
+    batchJobListeners.add (listener);
+  }
+
+  public void removeBatchJobListener (BatchJobListener listener)
+  {
+    batchJobListeners.remove (listener);
   }
 }

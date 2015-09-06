@@ -23,8 +23,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class AssistantStage extends Stage
-    implements ScreenChangeListener, TSOCommandListener, KeyboardStatusListener
+public class AssistantStage extends Stage implements ScreenChangeListener,
+    TSOCommandListener, KeyboardStatusListener, BatchJobListener
 {
   private final static String OS = System.getProperty ("os.name");
   private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
@@ -118,17 +118,20 @@ public class AssistantStage extends Stage
     hide ();
   }
 
+  @Override
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
     jobTab.batchJobSubmitted (jobNumber, jobName);
   }
 
+  @Override
   public void batchJobEnded (int jobNumber, String jobName, String time,
       int conditionCode)
   {
     jobTab.batchJobEnded (jobNumber, jobName, time, conditionCode);
   }
 
+  @Override
   public void batchJobFailed (int jobNumber, String jobName, String time)
   {
     jobTab.batchJobFailed (jobNumber, jobName, time);
