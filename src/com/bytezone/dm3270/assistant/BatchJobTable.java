@@ -73,7 +73,7 @@ public class BatchJobTable extends TableView<BatchJob>
   public BatchJob getBatchJob (int jobNumber)
   {
     for (BatchJob batchJob : batchJobs)
-      if (batchJob.getIntegerJobNumber () == jobNumber)
+      if (batchJob.matches (jobNumber))
         return batchJob;
 
     return null;
