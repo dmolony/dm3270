@@ -100,8 +100,7 @@ public class BatchJobTab extends AbstractTransferTab
   @Override
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
-    BatchJob batchJob = new BatchJob (jobNumber, jobName);
-    addBatchJob (batchJob);
+    addBatchJob (new BatchJob (jobNumber, jobName));
   }
 
   @Override
@@ -110,10 +109,7 @@ public class BatchJobTab extends AbstractTransferTab
   {
     BatchJob batchJob = getBatchJob (jobNumber);
     if (batchJob != null)
-    {
       batchJob.completed (time, conditionCode);
-      //      jobTable.refresh ();// temp fix before jdk 8u60
-    }
   }
 
   @Override
@@ -121,10 +117,7 @@ public class BatchJobTab extends AbstractTransferTab
   {
     BatchJob batchJob = getBatchJob (jobNumber);
     if (batchJob != null)
-    {
       batchJob.failed (time);
-      //      jobTable.refresh ();// temp fix before jdk 8u60
-    }
   }
 
   // ---------------------------------------------------------------------------------//
