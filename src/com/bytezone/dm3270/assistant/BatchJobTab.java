@@ -112,7 +112,7 @@ public class BatchJobTab extends AbstractTransferTab
     if (batchJob != null)
     {
       batchJob.completed (time, conditionCode);
-      jobTable.refresh ();// temp fix before jdk 8u60
+      //      jobTable.refresh ();// temp fix before jdk 8u60
     }
   }
 
@@ -123,12 +123,12 @@ public class BatchJobTab extends AbstractTransferTab
     if (batchJob != null)
     {
       batchJob.failed (time);
-      jobTable.refresh ();// temp fix before jdk 8u60
+      //      jobTable.refresh ();// temp fix before jdk 8u60
     }
   }
 
   // ---------------------------------------------------------------------------------//
-  // Batch job selection listeners
+  // BatchJobSelectionListener
   // ---------------------------------------------------------------------------------//
 
   private final Set<BatchJobSelectionListener> selectionListeners = new HashSet<> ();
