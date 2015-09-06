@@ -38,7 +38,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
   private final TabPane tabPane = new TabPane ();
   private final DatasetTab datasetTab;
-  private final JobTab jobTab;
+  private final BatchJobTab jobTab;
   private final FilesTab fileTab;
   private final TransfersTab transfersTab;
   private final CommandsTab commandsTab;
@@ -53,7 +53,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
     tsoCommand = new TSOCommand (screen);
     datasetTab = new DatasetTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    jobTab = new JobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    jobTab = new BatchJobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     fileTab = new FilesTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
     commandsTab = new CommandsTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     transfersTab =

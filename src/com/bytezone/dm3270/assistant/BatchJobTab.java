@@ -12,16 +12,16 @@ import com.bytezone.dm3270.display.ScreenDetails;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class JobTab extends AbstractTransferTab
+public class BatchJobTab extends AbstractTransferTab
     implements ScreenChangeListener, BatchJobListener
 {
   private static final Pattern outlistPattern = Pattern
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");
-  private final JobTable jobTable = new JobTable ();
+  private final BatchJobTable jobTable = new BatchJobTable ();
 
   private BatchJob selectedBatchJob;
 
-  public JobTab (Screen screen, TextField text, Button execute)
+  public BatchJobTab (Screen screen, TextField text, Button execute)
   {
     super ("Batch Jobs", screen, text, execute);
 
@@ -131,20 +131,20 @@ public class JobTab extends AbstractTransferTab
   // Batch job selection listeners
   // ---------------------------------------------------------------------------------//
 
-  private final Set<JobSelectionListener> selectionListeners = new HashSet<> ();
+  private final Set<BatchJobSelectionListener> selectionListeners = new HashSet<> ();
 
   void fireJobSelected (BatchJob job)
   {
-    for (JobSelectionListener listener : selectionListeners)
+    for (BatchJobSelectionListener listener : selectionListeners)
       listener.jobSelected (job);
   }
 
-  void addJobSelectionListener (JobSelectionListener listener)
+  void addJobSelectionListener (BatchJobSelectionListener listener)
   {
     selectionListeners.add (listener);
   }
 
-  void removeJobSelectionListener (JobSelectionListener listener)
+  void removeJobSelectionListener (BatchJobSelectionListener listener)
   {
     selectionListeners.remove (listener);
   }

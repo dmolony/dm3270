@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class TransfersTab extends AbstractTransferTab implements ScreenChangeListener,
-    DatasetSelectionListener, FileSelectionListener, JobSelectionListener
+    DatasetSelectionListener, FileSelectionListener, BatchJobSelectionListener
 {
   private final RadioButton btnDatasets = new RadioButton ("Datasets");
   private final RadioButton btnFiles = new RadioButton ("Files");

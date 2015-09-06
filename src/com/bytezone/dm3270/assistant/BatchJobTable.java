@@ -12,11 +12,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-public class JobTable extends TableView<BatchJob>
+public class BatchJobTable extends TableView<BatchJob>
 {
   private final ObservableList<BatchJob> batchJobs = FXCollections.observableArrayList ();
 
-  public JobTable ()
+  public BatchJobTable ()
   {
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
