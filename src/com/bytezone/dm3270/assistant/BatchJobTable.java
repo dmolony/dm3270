@@ -23,7 +23,7 @@ public class BatchJobTable extends TableView<BatchJob>
     setFixedCellSize (20.0);
     createJustifications ();
 
-    addColumn ("Job #", 100, Justification.CENTER,
+    addColumn ("Job ID", 100, Justification.CENTER,
                e -> e.getValue ().propertyJobNumber ());
     addColumn ("Job Name", 150, Justification.LEFT,
                e -> e.getValue ().propertyJobName ());
@@ -31,7 +31,7 @@ public class BatchJobTable extends TableView<BatchJob>
                e -> e.getValue ().propertyJobCompleted ());
     addColumn ("Cond", 80, Justification.CENTER,
                e -> e.getValue ().propertyConditionCode ());
-    addColumn ("Job #", 200, Justification.LEFT,
+    addColumn ("Output dataset", 200, Justification.LEFT,
                e -> e.getValue ().propertyOutputFile ());
 
     setItems (batchJobs);
@@ -73,8 +73,9 @@ public class BatchJobTable extends TableView<BatchJob>
   public BatchJob getBatchJob (int jobNumber)
   {
     for (BatchJob batchJob : batchJobs)
-      if (batchJob.jobNumber == jobNumber)
+      if (batchJob.getIntegerJobNumber () == jobNumber)
         return batchJob;
+
     return null;
   }
 

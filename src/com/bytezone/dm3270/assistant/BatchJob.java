@@ -5,10 +5,10 @@ import javafx.beans.property.StringProperty;
 
 public class BatchJob
 {
-  public final int jobNumber;
-  public final String jobName;
-  private String timeCompleted;
-  private int conditionCode;
+  private final int jobNumber;
+  //  public final String jobName;
+  //  private String timeCompleted;
+  //  private int conditionCode;
 
   private StringProperty propertyJobNumber;
   private StringProperty propertyJobName;
@@ -18,17 +18,22 @@ public class BatchJob
 
   public BatchJob (int jobNumber, String jobName)
   {
-    this.jobName = jobName;
+    //    this.jobName = jobName;
     this.jobNumber = jobNumber;
 
     setJobNumber (String.format ("JOB%05d", jobNumber));
     setJobName (jobName);
   }
 
+  public int getIntegerJobNumber ()
+  {
+    return jobNumber;
+  }
+
   public void completed (String timeCompleted, int conditionCode)
   {
-    this.timeCompleted = timeCompleted;
-    this.conditionCode = conditionCode;
+    //    this.timeCompleted = timeCompleted;
+    //    this.conditionCode = conditionCode;
 
     setJobCompleted (timeCompleted);
     setJobConditionCode (conditionCode + "");
@@ -36,7 +41,7 @@ public class BatchJob
 
   public void failed (String timeCompleted)
   {
-    this.timeCompleted = timeCompleted;
+    //    this.timeCompleted = timeCompleted;
 
     setJobCompleted (timeCompleted);
     setJobConditionCode ("JCL ERROR");
@@ -44,7 +49,9 @@ public class BatchJob
 
   public String outputCommand ()
   {
-    return String.format ("OUT %s(%s) PRINT(%s)", jobName, getJobNumber (),
+    //    return String.format ("OUT %s(%s) PRINT(%s)", jobName, getJobNumber (),
+    //                          getJobNumber ());
+    return String.format ("OUT %s(%s) PRINT(%s)", propertyJobName, getJobNumber (),
                           getJobNumber ());
   }
 
@@ -57,12 +64,12 @@ public class BatchJob
 
   public void setJobNumber (String value)
   {
-    propertyJobNumber ().set (value);
+    propertyJobNumber ().setValue (value);
   }
 
   public String getJobNumber ()
   {
-    return propertyJobNumber ().get ();
+    return propertyJobNumber ().getValue ();
   }
 
   public StringProperty propertyJobNumber ()
@@ -153,13 +160,15 @@ public class BatchJob
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String.format ("Job number ... : %d%n", jobNumber));
-    text.append (String.format ("Job name ..... : %s%n", jobName));
+    text.append (String.format ("Job number ... : %s%n", propertyJobNumber.getValue ()));
+    text.append (String.format ("Job name ..... : %s%n", propertyJobName.getValue ()));
 
-    if (timeCompleted != null)
+    if (propertyJobCompleted != null)
     {
-      text.append (String.format ("Completed .... : %s%n", timeCompleted));
-      text.append (String.format ("Condition .... : %s%n", conditionCode));
+      text.append (String.format ("Completed .... : %s%n",
+                                  propertyJobCompleted.getValue ()));
+      text.append (String.format ("Condition .... : %s%n",
+                                  propertyConditionCode.getValue ()));
     }
 
     return text.toString ();
