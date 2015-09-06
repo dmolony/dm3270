@@ -26,16 +26,16 @@ public class BatchJobTab extends AbstractTransferTab
     super ("Batch Jobs", screen, text, execute);
 
     jobTable.getSelectionModel ().selectedItemProperty ()
-        .addListener ( (obs, oldSelection, newSelection) -> {
-          if (newSelection != null)
-            select (newSelection);
-        });
+        .addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
 
     setContent (jobTable);
   }
 
   private void select (BatchJob batchJob)
   {
+    if (batchJob == null)
+      return;
+
     selectedBatchJob = batchJob;
     setText ();
     fireJobSelected (batchJob);
