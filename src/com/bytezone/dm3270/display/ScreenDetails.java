@@ -441,9 +441,9 @@ public class ScreenDetails
       String extents = details.substring (10, 14);
       String device = details.substring (15);
 
-      dataset.setTracks (tracks.trim ());
-      dataset.setPercentUsed (pct.trim ());
-      dataset.setExtents (extents.trim ());
+      dataset.setTracks (Integer.parseInt (tracks.trim ()));
+      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
+      dataset.setExtents (Integer.parseInt (extents.trim ()));
       dataset.setDevice (device.trim ());
     }
   }
@@ -457,9 +457,9 @@ public class ScreenDetails
       String extents = details.substring (11, 15);
       String device = details.substring (17);
 
-      dataset.setTracks (tracks.trim ());
-      dataset.setPercentUsed (pct.trim ());
-      dataset.setExtents (extents.trim ());
+      dataset.setTracks (Integer.parseInt (tracks.trim ()));
+      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
+      dataset.setExtents (Integer.parseInt (extents.trim ()));
       dataset.setDevice (device.trim ());
     }
   }
@@ -475,10 +475,10 @@ public class ScreenDetails
 
       dataset.setDsorg (dsorg.trim ());
       dataset.setRecfm (recfm.trim ());
-      dataset.setLrecl (lrecl.trim ());
+      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
 
-      int bls = Integer.parseInt (blksize.trim ());
-      dataset.setBlksize (String.format ("%,7d", bls));
+      //      int bls = Integer.parseInt (blksize.trim ());
+      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
     }
   }
 
@@ -493,10 +493,10 @@ public class ScreenDetails
 
       dataset.setDsorg (dsorg.trim ());
       dataset.setRecfm (recfm.trim ());
-      dataset.setLrecl (lrecl.trim ());
+      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
 
-      int bls = Integer.parseInt (blksize.trim ());
-      dataset.setBlksize (String.format ("%,7d", bls));
+      //      int bls = Integer.parseInt (blksize.trim ());
+      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
     }
   }
 
@@ -584,7 +584,7 @@ public class ScreenDetails
         member.setCreated (created);
         member.setReferred (modified);
         member.setCatalog (id);
-        member.setExtents (size);
+        member.setExtents (Integer.parseInt (size.trim ()));
       }
       else if (headings.size () == 13)
       {
@@ -597,7 +597,7 @@ public class ScreenDetails
         //row - 5 + rowFrom,
         //                           memberName, size, init, mod, vvmm, id);
         member.setCatalog (id);
-        member.setExtents (size);
+        member.setExtents (Integer.parseInt (size.trim ()));
       }
       else
         System.out.println ("Unexpected headings size: " + headings.size ());

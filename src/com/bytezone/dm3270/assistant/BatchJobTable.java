@@ -6,7 +6,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -14,14 +13,12 @@ import javafx.util.Callback;
 
 public class BatchJobTable extends TableView<BatchJob>
 {
-  private Callback<TableColumn<BatchJob, String>, TableCell<BatchJob, String>> centreJustified;
   private final ObservableList<BatchJob> batchJobs = FXCollections.observableArrayList ();
 
   public BatchJobTable ()
   {
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
-    //    createJustifications ();
 
     addColumn ("Job ID", 100, Justification.CENTER,
                e -> e.getValue ().propertyJobNumber ());
@@ -33,15 +30,13 @@ public class BatchJobTable extends TableView<BatchJob>
                e -> e.getValue ().propertyConditionCode ());
     addColumn ("Output dataset", 200, Justification.LEFT,
                e -> e.getValue ().propertyOutputFile ());
-    addIntColumn ("Random", 80, Justification.LEFT, e -> e.getValue ().propertyRandom ());
 
     setItems (batchJobs);
 
     setPlaceholder (new Label ("No jobs have been submitted in this session"));
   }
 
-  private TableColumn<BatchJob, String> addColumn (String heading, int width,
-      Justification justification,
+  private void addColumn (String heading, int width, Justification justification,
       Callback<CellDataFeatures<BatchJob, String>, ObservableValue<String>> callback)
   {
     TableColumn<BatchJob, String> column = new TableColumn<> (heading);
@@ -50,26 +45,7 @@ public class BatchJobTable extends TableView<BatchJob>
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
-      //      column.setCellFactory (centreJustified);
       column.setStyle ("-fx-alignment: CENTER;");
-
-    return column;
-  }
-
-  private TableColumn<BatchJob, Number> addIntColumn (String heading, int width,
-      Justification justification,
-      Callback<CellDataFeatures<BatchJob, Number>, ObservableValue<Number>> callback)
-  {
-    TableColumn<BatchJob, Number> column = new TableColumn<> (heading);
-    column.setPrefWidth (width);
-    column.setCellValueFactory (callback);
-    getColumns ().add (column);
-    column.setStyle ("-fx-alignment: CENTER-RIGHT;");
-
-    //    if (justification == Justification.CENTER)
-    //      column.setCellFactory (centreJustified);
-
-    return column;
   }
 
   public void addJob (BatchJob batchJob)
@@ -83,7 +59,6 @@ public class BatchJobTable extends TableView<BatchJob>
       if (batchJob.getJobNumber ().equals (jobNumber))
       {
         batchJob.setOutputFile (outlist);
-        refresh ();// temp
         break;
       }
   }
@@ -96,29 +71,4 @@ public class BatchJobTable extends TableView<BatchJob>
 
     return null;
   }
-
-  //  private void createJustifications ()
-  //  {
-  //    centreJustified = new Callback<TableColumn<BatchJob, String>, //
-  //    TableCell<BatchJob, String>> ()
-  //    {
-  //      @Override
-  //      public TableCell<BatchJob, String> call (TableColumn<BatchJob, String> p)
-  //      {
-  //        TableCell<BatchJob, String> cell = new TableCell<BatchJob, String> ()
-  //        {
-  //          @Override
-  //          public void updateItem (String item, boolean empty)
-  //          {
-  //            super.updateItem (item, empty);
-  //            setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-  //            setGraphic (null);
-  //          }
-  //        };
-  //
-  //        cell.setStyle ("-fx-alignment: center;");
-  //        return cell;
-  //      }
-  //    };
-  //  }
 }

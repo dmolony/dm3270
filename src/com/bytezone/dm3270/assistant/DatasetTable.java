@@ -4,7 +4,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -13,8 +12,8 @@ import javafx.util.Callback;
 public class DatasetTable extends TableView<Dataset>
 {
   private final ObservableList<Dataset> datasets = FXCollections.observableArrayList ();
-  Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> centreJustified;
-  Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> rightJustified;
+  //  Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> centreJustified;
+  //  Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> rightJustified;
 
   enum Justification
   {
@@ -31,15 +30,14 @@ public class DatasetTable extends TableView<Dataset>
     addColumn ("Dataset name", 300, Justification.LEFT,
                e -> e.getValue ().propertyDatasetName ());
     addColumn ("Volume", 70, Justification.LEFT, e -> e.getValue ().propertyVolume ());
-    addColumn ("Tracks", 50, Justification.RIGHT, e -> e.getValue ().propertyTracks ());
-    addColumn ("% used", 50, Justification.RIGHT,
-               e -> e.getValue ().propertyPercentUsed ());
-    addColumn ("XT", 50, Justification.RIGHT, e -> e.getValue ().propertyExtents ());
+    addIntegerColumn ("Tracks", 50, e -> e.getValue ().propertyTracks ());
+    addIntegerColumn ("% used", 50, e -> e.getValue ().propertyPercentUsed ());
+    addIntegerColumn ("XT", 50, e -> e.getValue ().propertyExtents ());
     addColumn ("Device", 50, Justification.CENTER, e -> e.getValue ().propertyDevice ());
     addColumn ("Dsorg", 50, Justification.LEFT, e -> e.getValue ().propertyDsorg ());
     addColumn ("Recfm", 50, Justification.LEFT, e -> e.getValue ().propertyRecfm ());
-    addColumn ("Lrecl", 50, Justification.RIGHT, e -> e.getValue ().propertyLrecl ());
-    addColumn ("Blksize", 70, Justification.RIGHT, e -> e.getValue ().propertyBlksize ());
+    addIntegerColumn ("Lrecl", 50, e -> e.getValue ().propertyLrecl ());
+    addIntegerColumn ("Blksize", 70, e -> e.getValue ().propertyBlksize ());
     addColumn ("Created", 100, Justification.CENTER,
                e -> e.getValue ().propertyCreated ());
     addColumn ("Expires", 100, Justification.CENTER,
@@ -53,8 +51,7 @@ public class DatasetTable extends TableView<Dataset>
     setItems (datasets);
   }
 
-  private TableColumn<Dataset, String> addColumn (String heading, int width,
-      Justification justification,
+  private void addColumn (String heading, int width, Justification justification,
       Callback<CellDataFeatures<Dataset, String>, ObservableValue<String>> callback)
   {
     TableColumn<Dataset, String> column = new TableColumn<> (heading);
@@ -63,14 +60,17 @@ public class DatasetTable extends TableView<Dataset>
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
-      //      column.setCellFactory (centreJustified);
       column.setStyle ("-fx-alignment: CENTER;");
-    else
-      if (justification == Justification.RIGHT)
-        //      column.setCellFactory (rightJustified);
-        column.setStyle ("-fx-alignment: CENTER-RIGHT;");
+  }
 
-    return column;
+  private void addIntegerColumn (String heading, int width,
+      Callback<CellDataFeatures<Dataset, Number>, ObservableValue<Number>> callback)
+  {
+    TableColumn<Dataset, Number> column = new TableColumn<> (heading);
+    column.setPrefWidth (width);
+    column.setCellValueFactory (callback);
+    getColumns ().add (column);
+    column.setStyle ("-fx-alignment: CENTER-RIGHT;");
   }
 
   public void addDataset (Dataset dataset)
@@ -120,51 +120,4 @@ public class DatasetTable extends TableView<Dataset>
       //      refresh ();
     }
   }
-
-  //  private void createJustifications ()
-  //  {
-  //    centreJustified =
-  //        new Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> ()
-  //        {
-  //          @Override
-  //          public TableCell<Dataset, String> call (TableColumn<Dataset, String> p)
-  //          {
-  //            TableCell<Dataset, String> cell = new TableCell<Dataset, String> ()
-  //            {
-  //              @Override
-  //              public void updateItem (String item, boolean empty)
-  //              {
-  //                super.updateItem (item, empty);
-  //                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-  //                setGraphic (null);
-  //              }
-  //            };
-  //
-  //            cell.setStyle ("-fx-alignment: center;");
-  //            return cell;
-  //          }
-  //        };
-  //
-  //    rightJustified =
-  //        new Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> ()
-  //        {
-  //          @Override
-  //          public TableCell<Dataset, String> call (TableColumn<Dataset, String> p)
-  //          {
-  //            TableCell<Dataset, String> cell = new TableCell<Dataset, String> ()
-  //            {
-  //              @Override
-  //              public void updateItem (String item, boolean empty)
-  //              {
-  //                super.updateItem (item, empty);
-  //                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-  //                setGraphic (null);
-  //              }
-  //            };
-  //
-  //            cell.setStyle ("-fx-alignment: center-right;");
-  //            return cell;
-  //          }
-  //        };
-  //  }
 }

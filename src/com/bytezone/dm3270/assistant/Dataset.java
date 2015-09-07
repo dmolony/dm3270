@@ -1,21 +1,23 @@
 package com.bytezone.dm3270.assistant;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Dataset
 {
   private StringProperty propertyDatasetName;
-  private StringProperty propertyTracks;
+  private IntegerProperty propertyTracks;
   private StringProperty propertyCylinders;
-  private StringProperty propertyExtents;
-  private StringProperty propertyPercentUsed;
+  private IntegerProperty propertyExtents;
+  private IntegerProperty propertyPercentUsed;
   private StringProperty propertyVolume;
   private StringProperty propertyDevice;
   private StringProperty propertyDsorg;
   private StringProperty propertyRecfm;
-  private StringProperty propertyLrecl;
-  private StringProperty propertyBlksize;
+  private IntegerProperty propertyLrecl;
+  private IntegerProperty propertyBlksize;
   private StringProperty propertyCatalog;
   private StringProperty propertyCreated;
   private StringProperty propertyExpires;
@@ -28,9 +30,9 @@ public class Dataset
 
   public void merge (Dataset other)
   {
-    if (other.getBlksize () != null)
+    if (other.getBlksize () > 0)
       setBlksize (other.getBlksize ());
-    if (other.getLrecl () != null)
+    if (other.getLrecl () > 0)
       setLrecl (other.getLrecl ());
     if (other.getRecfm () != null)
       setRecfm (other.getRecfm ());
@@ -38,11 +40,11 @@ public class Dataset
       setDsorg (other.getDsorg ());
     if (other.getDevice () != null)
       setDevice (other.getDevice ());
-    if (other.getExtents () != null)
+    if (other.getExtents () > 0)
       setExtents (other.getExtents ());
-    if (other.getPercentUsed () != null)
+    if (other.getPercentUsed () > 0)
       setPercentUsed (other.getPercentUsed ());
-    if (other.getTracks () != null)
+    if (other.getTracks () > 0)
       setTracks (other.getTracks ());
     if (other.getCylinders () != null)
       setCylinders (other.getCylinders ());
@@ -79,20 +81,20 @@ public class Dataset
 
   // Tracks
 
-  public void setTracks (String value)
+  public void setTracks (int value)
   {
-    propertyTracks ().set (value);
+    propertyTracks ().setValue (value);
   }
 
-  public String getTracks ()
+  public int getTracks ()
   {
-    return propertyTracks ().get ();
+    return propertyTracks ().getValue ();
   }
 
-  public StringProperty propertyTracks ()
+  public IntegerProperty propertyTracks ()
   {
     if (propertyTracks == null)
-      propertyTracks = new SimpleStringProperty (this, "Tracks");
+      propertyTracks = new SimpleIntegerProperty (this, "Tracks");
     return propertyTracks;
   }
 
@@ -117,39 +119,39 @@ public class Dataset
 
   // Extents
 
-  public void setExtents (String value)
+  public void setExtents (int value)
   {
-    propertyExtents ().set (value);
+    propertyExtents ().setValue (value);
   }
 
-  public String getExtents ()
+  public int getExtents ()
   {
-    return propertyExtents ().get ();
+    return propertyExtents ().getValue ();
   }
 
-  public StringProperty propertyExtents ()
+  public IntegerProperty propertyExtents ()
   {
     if (propertyExtents == null)
-      propertyExtents = new SimpleStringProperty (this, "Extents");
+      propertyExtents = new SimpleIntegerProperty (this, "Extents");
     return propertyExtents;
   }
 
   // PercentUsed
 
-  public void setPercentUsed (String value)
+  public void setPercentUsed (int value)
   {
-    propertyPercentUsed ().set (value);
+    propertyPercentUsed ().setValue (value);
   }
 
-  public String getPercentUsed ()
+  public int getPercentUsed ()
   {
-    return propertyPercentUsed ().get ();
+    return propertyPercentUsed ().getValue ();
   }
 
-  public StringProperty propertyPercentUsed ()
+  public IntegerProperty propertyPercentUsed ()
   {
     if (propertyPercentUsed == null)
-      propertyPercentUsed = new SimpleStringProperty (this, "PercentUsed");
+      propertyPercentUsed = new SimpleIntegerProperty (this, "PercentUsed");
     return propertyPercentUsed;
   }
 
@@ -231,39 +233,39 @@ public class Dataset
 
   // LRECL
 
-  public void setLrecl (String value)
+  public void setLrecl (int value)
   {
-    propertyLrecl ().set (value);
+    propertyLrecl ().setValue (value);
   }
 
-  public String getLrecl ()
+  public int getLrecl ()
   {
-    return propertyLrecl ().get ();
+    return propertyLrecl ().getValue ();
   }
 
-  public StringProperty propertyLrecl ()
+  public IntegerProperty propertyLrecl ()
   {
     if (propertyLrecl == null)
-      propertyLrecl = new SimpleStringProperty (this, "LRECL");
+      propertyLrecl = new SimpleIntegerProperty (this, "LRECL");
     return propertyLrecl;
   }
 
   // BLKSIZE
 
-  public void setBlksize (String value)
+  public void setBlksize (int value)
   {
-    propertyBlksize ().set (value);
+    propertyBlksize ().setValue (value);
   }
 
-  public String getBlksize ()
+  public int getBlksize ()
   {
-    return propertyBlksize ().get ();
+    return propertyBlksize ().getValue ();
   }
 
-  public StringProperty propertyBlksize ()
+  public IntegerProperty propertyBlksize ()
   {
     if (propertyBlksize == null)
-      propertyBlksize = new SimpleStringProperty (this, "BLKSIZE");
+      propertyBlksize = new SimpleIntegerProperty (this, "BLKSIZE");
     return propertyBlksize;
   }
 
