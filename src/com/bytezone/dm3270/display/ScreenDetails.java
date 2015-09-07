@@ -552,8 +552,8 @@ public class ScreenDetails
     if (!"of".equals (ofText))
       return false;
 
-    int rowFrom = Integer.parseInt (screenFields.get (11).getText ().trim ());
-    int rowTo = Integer.parseInt (screenFields.get (13).getText ().trim ());
+    int rowFrom = getInteger ("RowFrom", screenFields.get (11).getText ().trim ());
+    int rowTo = getInteger ("RowTo", screenFields.get (13).getText ().trim ());
 
     //    System.out.print ("\nMember list of " + datasetName + " in " + mode + " mode");
     //    System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
@@ -584,7 +584,7 @@ public class ScreenDetails
         member.setCreated (created);
         member.setReferred (modified);
         member.setCatalog (id);
-        member.setExtents (Integer.parseInt (size.trim ()));
+        member.setExtents (getInteger ("Ext1:" + memberName, size.trim ()));
       }
       else if (headings.size () == 13)
       {
@@ -597,13 +597,31 @@ public class ScreenDetails
         //row - 5 + rowFrom,
         //                           memberName, size, init, mod, vvmm, id);
         member.setCatalog (id);
-        member.setExtents (Integer.parseInt (size.trim ()));
+        member.setExtents (getInteger ("Ext2:" + memberName, size.trim ()));
       }
       else
         System.out.println ("Unexpected headings size: " + headings.size ());
     }
 
     return true;
+  }
+
+  private int getInteger (String id, String value)
+  {
+    if (value == null || value.isEmpty ())
+    {
+      //      System.out.printf ("Empty string %s: [%s]%n", id, value);
+      return 0;
+    }
+    try
+    {
+      return Integer.parseInt (value);
+    }
+    catch (NumberFormatException e)
+    {
+      System.out.printf ("Error with %s: [%s]%n", id, value);
+      return 0;
+    }
   }
 
   private void checkEditOrViewDataset (List<Field> fields)
