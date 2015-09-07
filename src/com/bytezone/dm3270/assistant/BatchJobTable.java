@@ -21,7 +21,7 @@ public class BatchJobTable extends TableView<BatchJob>
   {
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
-    createJustifications ();
+    //    createJustifications ();
 
     addColumn ("Job ID", 100, Justification.CENTER,
                e -> e.getValue ().propertyJobNumber ());
@@ -33,6 +33,7 @@ public class BatchJobTable extends TableView<BatchJob>
                e -> e.getValue ().propertyConditionCode ());
     addColumn ("Output dataset", 200, Justification.LEFT,
                e -> e.getValue ().propertyOutputFile ());
+    addIntColumn ("Random", 80, Justification.LEFT, e -> e.getValue ().propertyRandom ());
 
     setItems (batchJobs);
 
@@ -49,7 +50,24 @@ public class BatchJobTable extends TableView<BatchJob>
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
-      column.setCellFactory (centreJustified);
+      //      column.setCellFactory (centreJustified);
+      column.setStyle ("-fx-alignment: CENTER;");
+
+    return column;
+  }
+
+  private TableColumn<BatchJob, Number> addIntColumn (String heading, int width,
+      Justification justification,
+      Callback<CellDataFeatures<BatchJob, Number>, ObservableValue<Number>> callback)
+  {
+    TableColumn<BatchJob, Number> column = new TableColumn<> (heading);
+    column.setPrefWidth (width);
+    column.setCellValueFactory (callback);
+    getColumns ().add (column);
+    column.setStyle ("-fx-alignment: CENTER-RIGHT;");
+
+    //    if (justification == Justification.CENTER)
+    //      column.setCellFactory (centreJustified);
 
     return column;
   }
@@ -79,28 +97,28 @@ public class BatchJobTable extends TableView<BatchJob>
     return null;
   }
 
-  private void createJustifications ()
-  {
-    centreJustified = new Callback<TableColumn<BatchJob, String>, //
-    TableCell<BatchJob, String>> ()
-    {
-      @Override
-      public TableCell<BatchJob, String> call (TableColumn<BatchJob, String> p)
-      {
-        TableCell<BatchJob, String> cell = new TableCell<BatchJob, String> ()
-        {
-          @Override
-          public void updateItem (String item, boolean empty)
-          {
-            super.updateItem (item, empty);
-            setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-            setGraphic (null);
-          }
-        };
-
-        cell.setStyle ("-fx-alignment: center;");
-        return cell;
-      }
-    };
-  }
+  //  private void createJustifications ()
+  //  {
+  //    centreJustified = new Callback<TableColumn<BatchJob, String>, //
+  //    TableCell<BatchJob, String>> ()
+  //    {
+  //      @Override
+  //      public TableCell<BatchJob, String> call (TableColumn<BatchJob, String> p)
+  //      {
+  //        TableCell<BatchJob, String> cell = new TableCell<BatchJob, String> ()
+  //        {
+  //          @Override
+  //          public void updateItem (String item, boolean empty)
+  //          {
+  //            super.updateItem (item, empty);
+  //            setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+  //            setGraphic (null);
+  //          }
+  //        };
+  //
+  //        cell.setStyle ("-fx-alignment: center;");
+  //        return cell;
+  //      }
+  //    };
+  //  }
 }

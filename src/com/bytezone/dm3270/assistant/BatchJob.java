@@ -1,10 +1,15 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.Random;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class BatchJob
 {
+  private static Random random = new Random ();
   private final int jobNumber;
 
   private StringProperty propertyJobNumber;
@@ -12,6 +17,7 @@ public class BatchJob
   private StringProperty propertyJobCompleted;
   private StringProperty propertyConditionCode;
   private StringProperty propertyOutputFile;
+  private IntegerProperty propertyRandom;
 
   public BatchJob (int jobNumber, String jobName)
   {
@@ -19,6 +25,7 @@ public class BatchJob
 
     setJobNumber (String.format ("JOB%05d", jobNumber));
     setJobName (jobName);
+    setRandom (random.nextInt (100));
   }
 
   public boolean matches (int jobNumber)
@@ -142,6 +149,25 @@ public class BatchJob
     if (propertyOutputFile == null)
       propertyOutputFile = new SimpleStringProperty (this, "OutputFile");
     return propertyOutputFile;
+  }
+
+  // Random number
+
+  public void setRandom (int value)
+  {
+    propertyRandom ().setValue (value);
+  }
+
+  public int getRandom ()
+  {
+    return propertyRandom ().getValue ();
+  }
+
+  public IntegerProperty propertyRandom ()
+  {
+    if (propertyRandom == null)
+      propertyRandom = new SimpleIntegerProperty (this, "Random Number");
+    return propertyRandom;
   }
 
   @Override

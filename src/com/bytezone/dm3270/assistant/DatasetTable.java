@@ -26,7 +26,7 @@ public class DatasetTable extends TableView<Dataset>
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
-    createJustifications ();
+    //    createJustifications ();
 
     addColumn ("Dataset name", 300, Justification.LEFT,
                e -> e.getValue ().propertyDatasetName ());
@@ -63,9 +63,12 @@ public class DatasetTable extends TableView<Dataset>
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
-      column.setCellFactory (centreJustified);
-    else if (justification == Justification.RIGHT)
-      column.setCellFactory (rightJustified);
+      //      column.setCellFactory (centreJustified);
+      column.setStyle ("-fx-alignment: CENTER;");
+    else
+      if (justification == Justification.RIGHT)
+        //      column.setCellFactory (rightJustified);
+        column.setStyle ("-fx-alignment: CENTER-RIGHT;");
 
     return column;
   }
@@ -118,50 +121,50 @@ public class DatasetTable extends TableView<Dataset>
     }
   }
 
-  private void createJustifications ()
-  {
-    centreJustified =
-        new Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> ()
-        {
-          @Override
-          public TableCell<Dataset, String> call (TableColumn<Dataset, String> p)
-          {
-            TableCell<Dataset, String> cell = new TableCell<Dataset, String> ()
-            {
-              @Override
-              public void updateItem (String item, boolean empty)
-              {
-                super.updateItem (item, empty);
-                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-                setGraphic (null);
-              }
-            };
-
-            cell.setStyle ("-fx-alignment: center;");
-            return cell;
-          }
-        };
-
-    rightJustified =
-        new Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> ()
-        {
-          @Override
-          public TableCell<Dataset, String> call (TableColumn<Dataset, String> p)
-          {
-            TableCell<Dataset, String> cell = new TableCell<Dataset, String> ()
-            {
-              @Override
-              public void updateItem (String item, boolean empty)
-              {
-                super.updateItem (item, empty);
-                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-                setGraphic (null);
-              }
-            };
-
-            cell.setStyle ("-fx-alignment: center-right;");
-            return cell;
-          }
-        };
-  }
+  //  private void createJustifications ()
+  //  {
+  //    centreJustified =
+  //        new Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> ()
+  //        {
+  //          @Override
+  //          public TableCell<Dataset, String> call (TableColumn<Dataset, String> p)
+  //          {
+  //            TableCell<Dataset, String> cell = new TableCell<Dataset, String> ()
+  //            {
+  //              @Override
+  //              public void updateItem (String item, boolean empty)
+  //              {
+  //                super.updateItem (item, empty);
+  //                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+  //                setGraphic (null);
+  //              }
+  //            };
+  //
+  //            cell.setStyle ("-fx-alignment: center;");
+  //            return cell;
+  //          }
+  //        };
+  //
+  //    rightJustified =
+  //        new Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> ()
+  //        {
+  //          @Override
+  //          public TableCell<Dataset, String> call (TableColumn<Dataset, String> p)
+  //          {
+  //            TableCell<Dataset, String> cell = new TableCell<Dataset, String> ()
+  //            {
+  //              @Override
+  //              public void updateItem (String item, boolean empty)
+  //              {
+  //                super.updateItem (item, empty);
+  //                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+  //                setGraphic (null);
+  //              }
+  //            };
+  //
+  //            cell.setStyle ("-fx-alignment: center-right;");
+  //            return cell;
+  //          }
+  //        };
+  //  }
 }

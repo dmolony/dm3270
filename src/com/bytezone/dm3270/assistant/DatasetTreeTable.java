@@ -38,7 +38,7 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
-    createJustifications ();
+    //    createJustifications ();
 
     addColumn ("Dataset name", 300, Justification.LEFT,
                e -> e.getValue ().getValue ().propertyDatasetName ());
@@ -110,57 +110,60 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
-      column.setCellFactory (centreJustified);
-    else if (justification == Justification.RIGHT)
-      column.setCellFactory (rightJustified);
+      //      column.setCellFactory (centreJustified);
+      column.setStyle ("-fx-alignment: CENTER;");
+    else
+      if (justification == Justification.RIGHT)
+        //      column.setCellFactory (rightJustified);
+        column.setStyle ("-fx-alignment: CENTER-RIGHT;");
   }
 
-  private void createJustifications ()
-  {
-    centreJustified =
-        new Callback<TreeTableColumn<Dataset, String>, TreeTableCell<Dataset, String>> ()
-        {
-          @Override
-          public TreeTableCell<Dataset, String> call (TreeTableColumn<Dataset, String> p)
-          {
-            TreeTableCell<Dataset, String> cell = new TreeTableCell<Dataset, String> ()
-            {
-              @Override
-              public void updateItem (String item, boolean empty)
-              {
-                super.updateItem (item, empty);
-                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-                setGraphic (null);
-              }
-            };
-
-            cell.setStyle ("-fx-alignment: center;");
-            return cell;
-          }
-        };
-
-    rightJustified =
-        new Callback<TreeTableColumn<Dataset, String>, TreeTableCell<Dataset, String>> ()
-        {
-          @Override
-          public TreeTableCell<Dataset, String> call (TreeTableColumn<Dataset, String> p)
-          {
-            TreeTableCell<Dataset, String> cell = new TreeTableCell<Dataset, String> ()
-            {
-              @Override
-              public void updateItem (String item, boolean empty)
-              {
-                super.updateItem (item, empty);
-                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
-                setGraphic (null);
-              }
-            };
-
-            cell.setStyle ("-fx-alignment: center-right;");
-            return cell;
-          }
-        };
-  }
+  //  private void createJustifications ()
+  //  {
+  //    centreJustified =
+  //        new Callback<TreeTableColumn<Dataset, String>, TreeTableCell<Dataset, String>> ()
+  //        {
+  //          @Override
+  //          public TreeTableCell<Dataset, String> call (TreeTableColumn<Dataset, String> p)
+  //          {
+  //            TreeTableCell<Dataset, String> cell = new TreeTableCell<Dataset, String> ()
+  //            {
+  //              @Override
+  //              public void updateItem (String item, boolean empty)
+  //              {
+  //                super.updateItem (item, empty);
+  //                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+  //                setGraphic (null);
+  //              }
+  //            };
+  //
+  //            cell.setStyle ("-fx-alignment: center;");
+  //            return cell;
+  //          }
+  //        };
+  //
+  //    rightJustified =
+  //        new Callback<TreeTableColumn<Dataset, String>, TreeTableCell<Dataset, String>> ()
+  //        {
+  //          @Override
+  //          public TreeTableCell<Dataset, String> call (TreeTableColumn<Dataset, String> p)
+  //          {
+  //            TreeTableCell<Dataset, String> cell = new TreeTableCell<Dataset, String> ()
+  //            {
+  //              @Override
+  //              public void updateItem (String item, boolean empty)
+  //              {
+  //                super.updateItem (item, empty);
+  //                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+  //                setGraphic (null);
+  //              }
+  //            };
+  //
+  //            cell.setStyle ("-fx-alignment: center-right;");
+  //            return cell;
+  //          }
+  //        };
+  //  }
 
   class DatasetEntry
   {
