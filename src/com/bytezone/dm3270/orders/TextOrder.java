@@ -13,7 +13,7 @@ public class TextOrder extends Order
 
   public TextOrder (byte[] buffer, int ptr, int max)
   {
-    bufferOffset = ptr;             // save for later scrambling
+    bufferOffset = ptr;// save for later scrambling
     originalBuffer = buffer;
 
     int dataLength = getDataLength (buffer, ptr, max);
@@ -40,7 +40,7 @@ public class TextOrder extends Order
     while (ptr < max)
     {
       int value = buffer[ptr++] & 0xFF;
-      if (value <= 0x3C && value > 0)       // must be a new command
+      if (value > 0 && value <= 0x3C) // must be a new command
         break;
       length++;
     }
