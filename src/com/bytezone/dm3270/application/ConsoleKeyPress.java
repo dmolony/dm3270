@@ -1,19 +1,19 @@
 package com.bytezone.dm3270.application;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Cursor.Direction;
 import com.bytezone.dm3270.display.Screen;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
   private static final KeyCode[] PFKeyCodes = //
       { KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6,
-       KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12 };
+        KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12 };
 
   private final Screen screen;
   private final ConsolePane consolePane;
@@ -63,7 +63,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           keyEvent.consume ();
           break;
 
-        case H:                   // OSX ctrl-h conflicts with Hide Windows command
+        case H:// OSX ctrl-h conflicts with Hide Windows command
           cursor.home ();
           keyEvent.consume ();
           break;
@@ -94,7 +94,14 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       return;
     }
 
-    if (keyEvent.isControlDown ())         // OSX has to share ctrl-h
+    if (keyEvent.isShiftDown () && keyCodePressed == KeyCode.ENTER)
+    {
+      cursor.newLine ();
+      keyEvent.consume ();
+      return;
+    }
+
+    if (keyEvent.isControlDown ()) // OSX has to share ctrl-h
     {
       switch (keyCodePressed)
       {
@@ -175,7 +182,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case ESCAPE:
-          System.out.println ("escape");    // CLR key?
+          System.out.println ("escape");// CLR key?
           keyEvent.consume ();
           break;
 
