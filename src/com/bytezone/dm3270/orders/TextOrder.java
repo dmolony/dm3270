@@ -39,8 +39,14 @@ public class TextOrder extends Order
     int length = 1;
     while (ptr < max)
     {
-      int value = buffer[ptr++] & 0xFF;
-      if (value > 0 && value <= 0x3C) // must be a new command
+      byte value = buffer[ptr++];
+      if (value >= 0 && value <= 0x3C) // must be a new command
+        //      if (value == START_FIELD || value == START_FIELD_EXTENDED
+        //          || value == SET_BUFFER_ADDRESS || value == INSERT_CURSOR
+        //          || value == GRAPHICS_ESCAPE || value == REPEAT_TO_ADDRESS
+        //          || value == ERASE_UNPROTECTED || value == PROGRAM_TAB 
+        //          || value == SET_ATTRIBUTE
+        //          || value == MODIFY_FIELD)
         break;
       length++;
     }
