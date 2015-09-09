@@ -40,17 +40,36 @@ public class TextOrder extends Order
     while (ptr < max)
     {
       byte value = buffer[ptr++];
-      if (value >= 0 && value <= 0x3C) // must be a new command
-        //      if (value == START_FIELD || value == START_FIELD_EXTENDED
-        //          || value == SET_BUFFER_ADDRESS || value == INSERT_CURSOR
-        //          || value == GRAPHICS_ESCAPE || value == REPEAT_TO_ADDRESS
-        //          || value == ERASE_UNPROTECTED || value == PROGRAM_TAB 
-        //          || value == SET_ATTRIBUTE
-        //          || value == MODIFY_FIELD)
-        break;
+      if (value == GRAPHICS_ESCAPE)
+      {
+        System.out.printf ("GE  %04X  %02X %s%n", ptr, buffer[ptr],
+                           GraphicsEscapeOrder.isValid (buffer[ptr]));
+        if (GraphicsEscapeOrder.isValid (buffer[ptr]))
+          break;
+      }
+      //      else if (value == REPEAT_TO_ADDRESS)
+      //      {
+      //        System.out.printf ("RTA %04X  %02X %s%n", ptr, buffer[ptr],
+      //                           RepeatToAddressOrder.isValid (buffer[ptr]));
+      //        if (RepeatToAddressOrder.isValid (buffer[ptr]))
+      //          break;
+      //      }
+      else
+      {
+        System.out.printf ("%04X  %02X%n", ptr, value);
+        if (value >= 0 && value <= 0x3C) // must be a new command
+          break;
+      }
+      //      if (value == START_FIELD || value == START_FIELD_EXTENDED
+      //          || value == SET_BUFFER_ADDRESS || value == INSERT_CURSOR
+      //          || value == GRAPHICS_ESCAPE || value == REPEAT_TO_ADDRESS
+      //          || value == ERASE_UNPROTECTED || value == PROGRAM_TAB 
+      //          || value == SET_ATTRIBUTE
+      //          || value == MODIFY_FIELD)
+
       length++;
     }
-
+    System.out.println ("---------------");
     return length;
   }
 

@@ -140,7 +140,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         default:
-          System.out.println ("Impossible");
+          System.out.println ("Impossible arrow key");
           break;
       }
     else

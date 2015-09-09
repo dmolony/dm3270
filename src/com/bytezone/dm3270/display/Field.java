@@ -45,9 +45,18 @@ public class Field implements Iterable<ScreenPosition>
   void setScreenContexts (ScreenContext base)
   {
     ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
+    if (startPosition == 66)
+    {
+      System.out.println (this);
+      System.out.println (defaultContext);
+      System.out.println (base);
+      System.out.println (startFieldAttribute);
+    }
     for (ScreenPosition sp : screenPositions)
+    {
       if (sp.getScreenContext () == base)
         sp.setScreenContext (defaultContext);
+    }
   }
 
   // link two unprotected fields to each other

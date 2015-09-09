@@ -17,12 +17,12 @@ public final class ScreenPosition
   private static String[] charString = new String[256];
 
   // GraphicsEscape characters
-  private static final byte TOP_LEFT = (byte) 0xC5;
-  private static final byte TOP_RIGHT = (byte) 0xD5;
-  private static final byte BOTTOM_LEFT = (byte) 0xC4;
-  private static final byte BOTTOM_RIGHT = (byte) 0xD4;
-  private static final byte HORIZONTAL_LINE = (byte) 0xA2;
-  private static final byte VERTICAL_LINE = (byte) 0x85;
+  public static final byte TOP_LEFT = (byte) 0xC5;
+  public static final byte TOP_RIGHT = (byte) 0xD5;
+  public static final byte BOTTOM_LEFT = (byte) 0xC4;
+  public static final byte BOTTOM_RIGHT = (byte) 0xD4;
+  public static final byte HORIZONTAL_LINE = (byte) 0xA2;
+  public static final byte VERTICAL_LINE = (byte) 0x85;
 
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();

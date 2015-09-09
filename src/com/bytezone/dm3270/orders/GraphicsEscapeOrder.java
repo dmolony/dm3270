@@ -2,6 +2,7 @@ package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
+import com.bytezone.dm3270.display.ScreenPosition;
 
 public class GraphicsEscapeOrder extends Order
 {
@@ -41,5 +42,14 @@ public class GraphicsEscapeOrder extends Order
   {
     String duplicateText = duplicates == 0 ? "" : "x " + (duplicates + 1);
     return String.format ("GE  : %02X %s", code, duplicateText);
+  }
+
+  public static boolean isValid (byte value)
+  {
+    if (value == ScreenPosition.HORIZONTAL_LINE || value == ScreenPosition.VERTICAL_LINE
+        || value == ScreenPosition.TOP_LEFT || value == ScreenPosition.TOP_RIGHT
+        || value == ScreenPosition.BOTTOM_LEFT || value == ScreenPosition.BOTTOM_RIGHT)
+      return true;
+    return false;
   }
 }

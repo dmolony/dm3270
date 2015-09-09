@@ -8,7 +8,7 @@ public class RepeatToAddressOrder extends Order
 {
   private final BufferAddress stopAddress;
   private char repeatCharacter;
-  private byte rptChar;           // only kept for toString()
+  private byte rptChar;// only kept for toString()
 
   public RepeatToAddressOrder (byte[] buffer, int offset)
   {
@@ -56,5 +56,10 @@ public class RepeatToAddressOrder extends Order
   {
     return String.format ("RTA : %-12s : %02X [%1.1s]", stopAddress, rptChar,
                           repeatCharacter);
+  }
+
+  public static boolean isValid (byte value)
+  {
+    return value <= 0 || value >= 0x40;
   }
 }
