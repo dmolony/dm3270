@@ -8,7 +8,7 @@ public class RepeatToAddressOrder extends Order
 {
   private final BufferAddress stopAddress;
   private char repeatCharacter;
-  private byte rptChar;// only kept for toString()
+  private byte rptChar;
 
   public RepeatToAddressOrder (byte[] buffer, int offset)
   {

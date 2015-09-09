@@ -4,6 +4,7 @@ import com.bytezone.dm3270.display.DisplayScreen;
 
 public abstract class Order
 {
+  // Buffer Control Orders
   public final static byte PROGRAM_TAB = 0x05;
   public final static byte GRAPHICS_ESCAPE = 0x08;
   public final static byte SET_BUFFER_ADDRESS = 0x11;
@@ -15,6 +16,17 @@ public abstract class Order
   public final static byte MODIFY_FIELD = 0x2C;
   public final static byte REPEAT_TO_ADDRESS = 0x3C;
 
+  // Format Control Orders
+  public final static byte FCO_NULL = 0x00;
+  public final static byte FCO_SUBSTITUTE = 0x3F;
+  public final static byte FCO_DUPLICATE = 0x1C;
+  public final static byte FCO_FIELD_MARK = 0x1E;
+  public final static byte FCO_FORM_FEED = 0x0C;
+  public final static byte FCO_CARRIAGE_RETURN = 0x0D;
+  public final static byte FCO_NEWLINE = 0x15;
+  public final static byte FCO_END_OF_MEDIUM = 0x19;// check this
+  public final static byte FCO_EIGHT_ONES = (byte) 0xFF;
+
   protected boolean rejected;
 
   protected byte[] buffer;
@@ -24,35 +36,46 @@ public abstract class Order
   {
     switch (buffer[ptr])
     {
-      case Order.START_FIELD:
+      case START_FIELD:
         return new StartFieldOrder (buffer, ptr);
 
-      case Order.START_FIELD_EXTENDED:
+      case START_FIELD_EXTENDED:
         return new StartFieldExtendedOrder (buffer, ptr);
 
-      case Order.SET_BUFFER_ADDRESS:
+      case SET_BUFFER_ADDRESS:
         return new SetBufferAddressOrder (buffer, ptr);
 
-      case Order.SET_ATTRIBUTE:
+      case SET_ATTRIBUTE:
         return new SetAttributeOrder (buffer, ptr);
 
-      case Order.MODIFY_FIELD:
+      case MODIFY_FIELD:
         return new ModifyFieldOrder (buffer, ptr);
 
-      case Order.INSERT_CURSOR:
+      case INSERT_CURSOR:
         return new InsertCursorOrder (buffer, ptr);
 
-      case Order.PROGRAM_TAB:
+      case PROGRAM_TAB:
         return new ProgramTabOrder (buffer, ptr);
 
-      case Order.REPEAT_TO_ADDRESS:
+      case REPEAT_TO_ADDRESS:
         return new RepeatToAddressOrder (buffer, ptr);
 
-      case Order.ERASE_UNPROTECTED:
+      case ERASE_UNPROTECTED:
         return new EraseUnprotectedToAddressOrder (buffer, ptr);
 
-      case Order.GRAPHICS_ESCAPE:
+      case GRAPHICS_ESCAPE:
         return new GraphicsEscapeOrder (buffer, ptr);
+
+      case FCO_NULL:
+      case FCO_SUBSTITUTE:
+      case FCO_DUPLICATE:
+      case FCO_FIELD_MARK:
+      case FCO_FORM_FEED:
+      case FCO_CARRIAGE_RETURN:
+      case FCO_NEWLINE:
+      case FCO_END_OF_MEDIUM:
+      case FCO_EIGHT_ONES:
+        return new FormatControlOrder (buffer, ptr);
 
       default:
         return new TextOrder (buffer, ptr, max);
