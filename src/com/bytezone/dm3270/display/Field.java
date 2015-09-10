@@ -35,11 +35,12 @@ public class Field implements Iterable<ScreenPosition>
     startPosition = start;
     endPosition = end;
     screenPositions.addAll (positions);
-    startFieldAttribute = positions.get (0).getStartFieldAttribute ();
+    startFieldAttribute = firstScreenPosition.getStartFieldAttribute ();
 
     if (startFieldAttribute.isHidden ())
       for (ScreenPosition screenPosition : positions)
         screenPosition.setVisible (false);
+    //    else if ()   if not extended then remove any extended attributes from all positions
   }
 
   void setScreenContexts (ScreenContext base)

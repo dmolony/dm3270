@@ -29,7 +29,7 @@ public class FormatControlOrder extends Order
   public String toString ()
   {
     byte value = buffer[0];
-    String text = "";
+    String text = "????";
     for (int i = 0; i < orderValues.length; i++)
       if (value == orderValues[i])
       {
