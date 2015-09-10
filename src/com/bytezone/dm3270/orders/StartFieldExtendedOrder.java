@@ -72,7 +72,8 @@ public class StartFieldExtendedOrder extends Order
   {
     Pen pen = screen.getPen ();
     location = pen.getPosition ();
-    startFieldAttribute.process (pen);
+    startFieldAttribute.process (pen);// calls pen.startField()
+    pen.setExtendedMode ();// allows extended attributes later in the field
 
     for (Attribute attribute : attributes)
     {
