@@ -8,6 +8,12 @@ import com.bytezone.dm3270.display.Pen;
 
 public class TextOrder extends Order
 {
+  private static byte[] orderValues =
+      { START_FIELD, START_FIELD_EXTENDED, SET_BUFFER_ADDRESS, INSERT_CURSOR,
+        GRAPHICS_ESCAPE, REPEAT_TO_ADDRESS, ERASE_UNPROTECTED, PROGRAM_TAB, SET_ATTRIBUTE,
+        MODIFY_FIELD, FCO_NULL, FCO_SUBSTITUTE, FCO_DUPLICATE, FCO_FIELD_MARK,
+        FCO_FORM_FEED, FCO_CARRIAGE_RETURN, FCO_NEWLINE, FCO_END_OF_MEDIUM,
+        FCO_EIGHT_ONES };
   private int bufferOffset;
   byte[] originalBuffer;
 
@@ -37,39 +43,21 @@ public class TextOrder extends Order
   {
     int ptr = offset + 1;
     int length = 1;
-    while (ptr < max)
+    outer_loop: while (ptr < max)
     {
       byte value = buffer[ptr++];
       if (value == GRAPHICS_ESCAPE)
       {
-        //        System.out.printf ("GE  %04X  %02X %s%n", ptr, buffer[ptr],
-        //                           GraphicsEscapeOrder.isValid (buffer[ptr]));
         if (GraphicsEscapeOrder.isValid (buffer[ptr]))
           break;
       }
-      //      else if (value == REPEAT_TO_ADDRESS)
-      //      {
-      //        System.out.printf ("RTA %04X  %02X %s%n", ptr, buffer[ptr],
-      //                           RepeatToAddressOrder.isValid (buffer[ptr]));
-      //        if (RepeatToAddressOrder.isValid (buffer[ptr]))
-      //          break;
-      //      }
-      else
-      {
-        //        System.out.printf ("%04X  %02X%n", ptr, value);
-        if (value >= 0 && value <= 0x3C) // must be a new command
-          break;
-      }
-      //      if (value == START_FIELD || value == START_FIELD_EXTENDED
-      //          || value == SET_BUFFER_ADDRESS || value == INSERT_CURSOR
-      //          || value == GRAPHICS_ESCAPE || value == REPEAT_TO_ADDRESS
-      //          || value == ERASE_UNPROTECTED || value == PROGRAM_TAB 
-      //          || value == SET_ATTRIBUTE
-      //          || value == MODIFY_FIELD)
+      else if (value >= 0 && value <= 0x3F) // could be a new command
+        for (int i = 0; i < orderValues.length; i++)
+          if (value == orderValues[i])
+            break outer_loop;
 
       length++;
     }
-    //    System.out.println ("---------------");
     return length;
   }
 
