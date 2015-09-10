@@ -42,8 +42,8 @@ public class TextOrder extends Order
       byte value = buffer[ptr++];
       if (value == GRAPHICS_ESCAPE)
       {
-        System.out.printf ("GE  %04X  %02X %s%n", ptr, buffer[ptr],
-                           GraphicsEscapeOrder.isValid (buffer[ptr]));
+        //        System.out.printf ("GE  %04X  %02X %s%n", ptr, buffer[ptr],
+        //                           GraphicsEscapeOrder.isValid (buffer[ptr]));
         if (GraphicsEscapeOrder.isValid (buffer[ptr]))
           break;
       }
@@ -56,7 +56,7 @@ public class TextOrder extends Order
       //      }
       else
       {
-        System.out.printf ("%04X  %02X%n", ptr, value);
+        //        System.out.printf ("%04X  %02X%n", ptr, value);
         if (value >= 0 && value <= 0x3C) // must be a new command
           break;
       }
@@ -69,7 +69,7 @@ public class TextOrder extends Order
 
       length++;
     }
-    System.out.println ("---------------");
+    //    System.out.println ("---------------");
     return length;
   }
 
