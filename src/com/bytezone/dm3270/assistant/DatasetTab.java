@@ -98,6 +98,8 @@ public class DatasetTab extends AbstractTransferTab implements ScreenChangeListe
     }
 
     String datasetName = selectedDataset.getDatasetName ();
+    int pos = datasetName.indexOf (".CNTL");
+    boolean jclMember = pos > 0 && datasetName.endsWith (")");
     String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
 
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
@@ -112,9 +114,6 @@ public class DatasetTab extends AbstractTransferTab implements ScreenChangeListe
     }
     else
       datasetName = "'" + datasetName + "'";
-
-    int pos = datasetName.indexOf (".CNTL");
-    boolean jclMember = pos > 0 && datasetName.endsWith (")");
 
     String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
     String options = jclMember ? " ASCII CRLF" : "";

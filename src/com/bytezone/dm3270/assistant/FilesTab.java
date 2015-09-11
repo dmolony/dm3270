@@ -17,6 +17,7 @@ import com.bytezone.reporter.application.TreePanel.FileNode;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 
 public class FilesTab extends AbstractTransferTab
@@ -46,6 +47,11 @@ public class FilesTab extends AbstractTransferTab
     currentFileNode = fileNode;
     setText ();
     fireFileSelected (currentFileNode.toString ());
+  }
+
+  MenuBar getMenuBar ()
+  {
+    return reporterNode.getMenuBar ();
   }
 
   public void addTransfer (Transfer transfer)

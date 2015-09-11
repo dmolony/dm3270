@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
+import com.bytezone.dm3270.plugins.PluginsStage;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,8 +38,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-
-import com.bytezone.dm3270.plugins.PluginsStage;
 
 public class OptionStage extends Stage
 {
@@ -107,7 +107,7 @@ public class OptionStage extends Stage
     functionsBox.setPadding (new Insets (10, 10, 0, 10));
 
     serverBox = row ("Server", serverComboBox, editServersButton);
-    serverBox.setPadding (new Insets (10, 10, 10, 10));     // trbl
+    serverBox.setPadding (new Insets (10, 10, 10, 10));// trbl
 
     HBox clientBox = row ("Client", clientComboBox, editClientsButton);
     HBox spyBox = row ("Replay", fileComboBox, editLocationButton);
@@ -123,11 +123,10 @@ public class OptionStage extends Stage
     outerPane.setBottom (buttonsBox);
     setMode (release ? Mode.RELEASE : Mode.DEBUG);
 
-    functionsGroup.selectedToggleProperty ()
-        .addListener ( (ov, oldToggle, newToggle) -> {
-          if (newToggle != null)
-            disableButtons ((String) newToggle.getUserData ());
-        });
+    functionsGroup.selectedToggleProperty ().addListener ( (ov, oldToggle, newToggle) -> {
+      if (newToggle != null)
+        disableButtons ((String) newToggle.getUserData ());
+    });
 
     if (release)
       optionSelected = "Terminal";
@@ -142,7 +141,7 @@ public class OptionStage extends Stage
       }
 
     if (!found)
-      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
+      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));// Terminal
     disableButtons (optionSelected);
 
     editLocationButton.setOnAction (e -> editLocation ());
@@ -160,9 +159,8 @@ public class OptionStage extends Stage
     toggleModeMenuItem.setAccelerator (new KeyCodeCombination (KeyCode.M,
         KeyCombination.SHORTCUT_DOWN));
 
-    if (SYSTEM_MENUBAR)
-      menuBar.useSystemMenuBarProperty ().set (true);
-    else
+    menuBar.setUseSystemMenuBar (SYSTEM_MENUBAR);
+    if (!SYSTEM_MENUBAR)
     {
       MenuItem quitMenuItem = new MenuItem ("Quit");
       menuCommands.getItems ().addAll (new SeparatorMenuItem (), quitMenuItem);
@@ -196,7 +194,7 @@ public class OptionStage extends Stage
       innerPane.setTop (null);
       innerPane.setBottom (null);
       setTitle ("Connect to Server");
-      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
+      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));// Terminal
     }
 
     okButton.requestFocus ();
@@ -231,12 +229,10 @@ public class OptionStage extends Stage
     {
       Path path = Paths.get (folderName);
       if (Files.exists (path) && Files.isDirectory (path))
-        files =
-            Files
-                .list (path)
-                .filter (p -> p.getFileName ().toString ()
-                             .matches ("[sS][Pp][yY][0-9]{1,4}(\\.[tT][xX][tT])*"))
-                .collect (Collectors.toList ());
+        files = Files.list (path)
+            .filter (p -> p.getFileName ().toString ()
+                .matches ("[sS][Pp][yY][0-9]{1,4}(\\.[tT][xX][tT])*"))
+            .collect (Collectors.toList ());
     }
     catch (IOException e)
     {
@@ -244,7 +240,7 @@ public class OptionStage extends Stage
     }
 
     if (files == null)
-      files = new ArrayList<Path> ();      // empty list
+      files = new ArrayList<Path> ();// empty list
 
     return FXCollections
         .observableArrayList (files.stream ().map (p -> p.getFileName ().toString ())
@@ -271,7 +267,7 @@ public class OptionStage extends Stage
   private void disableButtons (String selection)
   {
     if (selection.equals (optionList[0]))
-      setDisable (false, false, true);          // server, client, file
+      setDisable (false, false, true);// server, client, file
     else if (selection.equals (optionList[1]))
       setDisable (true, true, false);
     else if (selection.equals (optionList[2]))

@@ -31,7 +31,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
-  private final MenuBar menuBar = new MenuBar ();
+  private final MenuBar menuBar;
 
   private final TSOCommand tsoCommand;
   private final Button btnHide = new Button ("Hide Window");
@@ -79,6 +79,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     anchorPane.getChildren ().addAll (tsoCommand.getBox (), btnHide);
 
     BorderPane borderPane = new BorderPane ();
+    menuBar = fileTab.getMenuBar ();
     borderPane.setTop (menuBar);
     borderPane.setCenter (tabPane);
     borderPane.setBottom (anchorPane);

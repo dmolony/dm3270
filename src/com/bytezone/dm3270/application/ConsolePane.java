@@ -86,11 +86,12 @@ public class ConsolePane extends BorderPane
     if (server == null || server.getPlugins ())
       menuBar.getMenus ().add (pluginsStage.getMenu (server));
 
-    menuBar.useSystemMenuBarProperty ().set (SYSTEM_MENUBAR);
+    //    menuBar.useSystemMenuBarProperty ().set (SYSTEM_MENUBAR);
 
     setTop (menuBar);
     setCenter (screen);
     setBottom (statusPane = getStatusBar ());
+    menuBar.setUseSystemMenuBar (SYSTEM_MENUBAR);
 
     setHistoryBar ();
 
