@@ -16,6 +16,7 @@ public class StartFieldAttribute extends Attribute
   private final boolean isNumeric;// bit 3
   private final boolean isModified;// bit 7
 
+  private boolean isExtended;// created by StartFieldExtendedOrder
   private boolean userModified;// used to avoid altering the original bit 7
 
   // these three fields are stored in two bits (4&5)
@@ -37,6 +38,11 @@ public class StartFieldAttribute extends Attribute
     isHighIntensity = display == 2;
   }
 
+  public void setExtended ()
+  {
+    isExtended = true;
+  }
+
   public static byte compile (boolean prot, boolean num, boolean bit4, boolean bit5,
       boolean mod)
   {
@@ -54,6 +60,11 @@ public class StartFieldAttribute extends Attribute
       value |= 0x01;
 
     return BufferAddress.address[value];
+  }
+
+  public boolean isExtended ()
+  {
+    return isExtended;
   }
 
   public boolean isProtected ()// P/p - Protected/unprotected

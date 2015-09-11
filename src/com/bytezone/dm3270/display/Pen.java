@@ -19,7 +19,6 @@ public class Pen
   private int currentPosition;
   private int startFieldPosition;
   private int totalFields;
-  private boolean extendedMode;
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
@@ -54,7 +53,6 @@ public class Pen
     startFieldPosition = currentPosition;
     reset ((byte) 0);
     storeCurrentContext ();
-    extendedMode = false;
 
     // sometimes a reset attribute is overwritten by a new SFA
     if (pendingAttributes.size () > 0)
@@ -67,11 +65,6 @@ public class Pen
       }
       pendingAttributes.clear ();
     }
-  }
-
-  public void setExtendedMode ()
-  {
-    extendedMode = true;
   }
 
   public void addAttribute (Attribute attribute)

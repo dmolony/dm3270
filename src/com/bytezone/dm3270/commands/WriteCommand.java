@@ -141,7 +141,7 @@ public class WriteCommand extends Command
     Cursor cursor = screen.getScreenCursor ();
     int cursorLocation = cursor.getLocation ();
     screen.lockKeyboard ("Inhibit");
-    boolean drawScreen = false;
+    boolean screenDrawRequired = false;
 
     if (eraseWrite)
       screen.clearScreen ();// resets pen
@@ -153,7 +153,7 @@ public class WriteCommand extends Command
 
       cursor.moveTo (cursorLocation);
       screen.buildFields (writeControlCharacter);
-      drawScreen = true;
+      screenDrawRequired = true;
     }
 
     if (writeControlCharacter != null)
@@ -167,8 +167,8 @@ public class WriteCommand extends Command
       reply = screen.getPluginsStage ().processPluginAuto ();// check for suppressDisplay
     }
 
-    if (drawScreen)
-      screen.drawScreen ();
+    if (screenDrawRequired)
+      screen.draw ();
 
     if (orders.size () > 0)
       checkSystemMessage ();// check screen for jobs submitted or finished

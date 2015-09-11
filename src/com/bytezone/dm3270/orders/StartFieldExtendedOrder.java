@@ -41,6 +41,7 @@ public class StartFieldExtendedOrder extends Order
       this.buffer[bptr++] = buffer[ptr++];
     }
     assert startFieldAttribute != null;
+    startFieldAttribute.setExtended ();
   }
 
   public StartFieldExtendedOrder (StartFieldAttribute startFieldAttribute,
@@ -73,7 +74,6 @@ public class StartFieldExtendedOrder extends Order
     Pen pen = screen.getPen ();
     location = pen.getPosition ();
     startFieldAttribute.process (pen);// calls pen.startField()
-    pen.setExtendedMode ();// allows extended attributes later in the field
 
     for (Attribute attribute : attributes)
     {

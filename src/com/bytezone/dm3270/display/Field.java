@@ -40,19 +40,24 @@ public class Field implements Iterable<ScreenPosition>
     if (startFieldAttribute.isHidden ())
       for (ScreenPosition screenPosition : positions)
         screenPosition.setVisible (false);
-    //    else if ()   if not extended then remove any extended attributes from all positions
+    //    else if (!startFieldAttribute.isExtended ()) // remove any extended attributes
+    //    {
+    //      System.out.println ("clearing");
+    //      for (ScreenPosition screenPosition : positions)
+    //        screenPosition.clearAttributes ();
+    //    }
   }
 
   void setScreenContexts (ScreenContext base)
   {
     ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
-    if (startPosition == 66)
-    {
-      System.out.println (this);
-      System.out.println (defaultContext);
-      System.out.println (base);
-      System.out.println (startFieldAttribute);
-    }
+    //    if (startPosition == 66)
+    //    {
+    //      System.out.println (this);
+    //      System.out.println (defaultContext);
+    //      System.out.println (base);
+    //      System.out.println (startFieldAttribute);
+    //    }
     for (ScreenPosition sp : screenPositions)
     {
       if (sp.getScreenContext () == base)

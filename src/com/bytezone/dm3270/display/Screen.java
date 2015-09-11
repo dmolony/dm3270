@@ -250,7 +250,7 @@ public class Screen extends Canvas implements DisplayScreen
     restoreKeyboard ();
     resetModified ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
-    drawScreen ();
+    draw ();
 
     if (firstUnprotectedField != null)
       cursor.moveTo (firstUnprotectedField.getFirstLocation ());
@@ -283,7 +283,7 @@ public class Screen extends Canvas implements DisplayScreen
     }
   }
 
-  public void drawScreen ()
+  public void draw ()
   {
     int pos = 0;
     for (int row = 0; row < rows; row++)
@@ -305,7 +305,7 @@ public class Screen extends Canvas implements DisplayScreen
   {
     ((Stage) getScene ().getWindow ()).sizeToScene ();
     eraseScreen ();
-    drawScreen ();
+    draw ();
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
