@@ -156,11 +156,10 @@ public class Transfer
       return;
     }
 
-    //    assert"ind$file".equals (chunks[0]);
-    //    assert"put".equals (chunks[1]) || "get".equals (chunks[1]);
-
-    this.fileName = chunks[2];
     this.direction = chunks[1];
+    this.fileName = chunks[2];
+    if (fileName.startsWith ("'") && fileName.endsWith ("'") && fileName.length () > 2)
+      fileName = fileName.substring (1, fileName.length () - 1);
 
     int lengthMinusOne = chunks.length - 1;
     for (int i = 3; i < chunks.length; i++)
