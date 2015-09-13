@@ -16,7 +16,7 @@ public class Field implements Iterable<ScreenPosition>
   private Field next, previous;// unprotected fields
 
   private final StartFieldAttribute startFieldAttribute;
-  private final List<ScreenPosition> screenPositions = new ArrayList<> ();
+  private final List<ScreenPosition> screenPositions;
 
   private final boolean debug = false;
 
@@ -34,7 +34,8 @@ public class Field implements Iterable<ScreenPosition>
     this.screen = screen;
     startPosition = start;
     endPosition = end;
-    screenPositions.addAll (positions);
+
+    screenPositions = new ArrayList<> (positions);
     startFieldAttribute = firstScreenPosition.getStartFieldAttribute ();
 
     if (startFieldAttribute.isHidden ())
