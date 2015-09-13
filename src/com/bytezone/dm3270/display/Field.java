@@ -22,21 +22,15 @@ public class Field implements Iterable<ScreenPosition>
 
   public Field (Screen screen, List<ScreenPosition> positions)
   {
-    // later we can drop start and end
+    this.screen = screen;
     ScreenPosition firstScreenPosition = positions.get (0);
     ScreenPosition lastScreenPosition = positions.get (positions.size () - 1);
-    int start = firstScreenPosition.position;
-    int end = lastScreenPosition.position;
-
-    assert positions
-        .size () == (start > end ? screen.screenSize - start + end + 1 : end - start + 1);
-
-    this.screen = screen;
-    startPosition = start;
-    endPosition = end;
 
     screenPositions = new ArrayList<> (positions);
     startFieldAttribute = firstScreenPosition.getStartFieldAttribute ();
+
+    startPosition = firstScreenPosition.position;
+    endPosition = lastScreenPosition.position;
 
     if (startFieldAttribute.isHidden ())
       for (ScreenPosition screenPosition : positions)
