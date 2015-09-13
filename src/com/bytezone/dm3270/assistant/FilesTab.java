@@ -11,9 +11,9 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
+import com.bytezone.reporter.application.FileNode;
 import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
-import com.bytezone.reporter.application.TreePanel.FileNode;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
