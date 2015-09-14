@@ -33,8 +33,9 @@ public class Field implements Iterable<ScreenPosition>
     if (startFieldAttribute.isHidden ())
       for (ScreenPosition screenPosition : positions)
         screenPosition.setVisible (false);
-    else if (!startFieldAttribute.isExtended ()) // remove any extended attributes
+    else if (!startFieldAttribute.isExtended ())
     {
+      // remove any extended attributes (see spy115.txt)
       ScreenContext defaultContext = firstScreenPosition.getScreenContext ();
       for (ScreenPosition screenPosition : positions)
       {
