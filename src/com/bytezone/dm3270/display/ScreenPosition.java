@@ -164,8 +164,13 @@ public final class ScreenPosition
           return "-";
         case VERTICAL_LINE:
           return "|";
-        default:
+        case TOP_LEFT:
+        case TOP_RIGHT:
+        case BOTTOM_LEFT:
+        case BOTTOM_RIGHT:
           return "*";
+        default:
+          return ".";
       }
 
     return charString[Utility.ebc2asc[value & 0xFF]];
@@ -335,12 +340,13 @@ public final class ScreenPosition
         break;
 
       default:
-        gc.fillText (getCharString (), x, y + fontData.getAscent ());
-        //        System.out.printf ("Unknown graphics character: %02X%n", value);
+        gc.setFill (foregroundColor);
+        gc.fillText (".", x, y + fontData.getAscent ());
     }
 
     if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
     {
+      // extend the vertical line through the leading
       gc.setStroke (backgroundColor);
       dy = y + fontData.getAscent () + fontData.getDescent () + 1;
       gc.strokeLine (x + dx, dy, x + dx, y + height);
@@ -351,17 +357,12 @@ public final class ScreenPosition
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-    //    text.append (String.format ("%4d %-20s", position, screenContext));
     if (isStartField ())
-    {
-      text.append ("  ");
-      text.append (startFieldAttribute);
-    }
+      text.append ("  " + startFieldAttribute);
     else
-    {
       for (Attribute attribute : attributes)
         text.append ("  " + attribute);
-    }
+
     text.append (", byte: " + getCharString ());
 
     return text.toString ();
