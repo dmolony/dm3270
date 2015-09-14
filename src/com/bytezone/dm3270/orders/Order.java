@@ -24,7 +24,7 @@ public abstract class Order
   public final static byte FCO_FORM_FEED = 0x0C;
   public final static byte FCO_CARRIAGE_RETURN = 0x0D;
   public final static byte FCO_NEWLINE = 0x15;
-  public final static byte FCO_END_OF_MEDIUM = 0x19;// check this
+  public final static byte FCO_END_OF_MEDIUM = 0x19;
   public final static byte FCO_EIGHT_ONES = (byte) 0xFF;
 
   protected boolean rejected;

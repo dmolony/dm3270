@@ -336,7 +336,7 @@ public final class ScreenPosition
 
       default:
         gc.fillText (getCharString (), x, y + fontData.getAscent ());
-        System.out.printf ("Unknown graphics character: %02X%n", value);
+        //        System.out.printf ("Unknown graphics character: %02X%n", value);
     }
 
     if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
