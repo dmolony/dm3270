@@ -18,8 +18,6 @@ public class Field implements Iterable<ScreenPosition>
   private final StartFieldAttribute startFieldAttribute;
   private final List<ScreenPosition> screenPositions;
 
-  private final boolean debug = false;
-
   public Field (Screen screen, List<ScreenPosition> positions)
   {
     this.screen = screen;
@@ -50,18 +48,9 @@ public class Field implements Iterable<ScreenPosition>
       void setScreenContexts (ScreenContext base)
   {
     ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
-    //    if (startPosition == 66)
-    //    {
-    //      System.out.println (this);
-    //      System.out.println (defaultContext);
-    //      System.out.println (base);
-    //      System.out.println (startFieldAttribute);
-    //    }
-    for (ScreenPosition sp : screenPositions)
-    {
-      if (sp.getScreenContext () == base)
-        sp.setScreenContext (defaultContext);
-    }
+    for (ScreenPosition screenPosition : screenPositions)
+      if (screenPosition.getScreenContext () == base)
+        screenPosition.setScreenContext (defaultContext);
   }
 
   // link two unprotected fields to each other
