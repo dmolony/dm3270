@@ -199,6 +199,7 @@ public class WriteCommand extends Command
           return false;
       }
       systemMessageText = Utility.getString (orders.get (4).getBuffer ());
+      System.out.println (systemMessageText);
     }
     else if (eraseWrite && orders.size () == 15)
     {
@@ -245,34 +246,36 @@ public class WriteCommand extends Command
     }
 
     if (systemMessageText != null)
-    {
-      Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
-      if (matcher.matches ())
-        fireBatchJobSubmitted (Integer.parseInt (matcher.group (2)), matcher.group (1));
-
-      matcher = jobCompletedPattern.matcher (systemMessageText);
-      if (matcher.matches ())
-      {
-        int jobNumber = Integer.parseInt (matcher.group (2));
-        int conditionCode = Integer.parseInt (matcher.group (4));
-        fireBatchJobEnded (jobNumber, matcher.group (3), matcher.group (1),
-                           conditionCode);
-      }
-    }
+      checkSystemMessage (systemMessageText);
 
     if (systemMessageText2 != null)
-    {
-      Matcher matcher = jobFailedPattern.matcher (systemMessageText2);
-      if (matcher.matches ())
-      {
-        int jobNumber = Integer.parseInt (matcher.group (2));
-        String jobName = matcher.group (3);
-        String time = matcher.group (1);
-        fireBatchJobFailed (jobNumber, jobName, time);
-      }
-    }
+      checkSystemMessage (systemMessageText2);
 
     return true;
+  }
+
+  private void checkSystemMessage (String systemMessageText)
+  {
+    Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
+    if (matcher.matches ())
+      fireBatchJobSubmitted (Integer.parseInt (matcher.group (2)), matcher.group (1));
+
+    matcher = jobCompletedPattern.matcher (systemMessageText);
+    if (matcher.matches ())
+    {
+      int jobNumber = Integer.parseInt (matcher.group (2));
+      int conditionCode = Integer.parseInt (matcher.group (4));
+      fireBatchJobEnded (jobNumber, matcher.group (3), matcher.group (1), conditionCode);
+    }
+
+    matcher = jobFailedPattern.matcher (systemMessageText);
+    if (matcher.matches ())
+    {
+      int jobNumber = Integer.parseInt (matcher.group (2));
+      String jobName = matcher.group (3);
+      String time = matcher.group (1);
+      fireBatchJobFailed (jobNumber, jobName, time);
+    }
   }
 
   // Used by Session.checkServerName() when searching for the server's name
