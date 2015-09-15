@@ -62,9 +62,6 @@ public class WriteCommand extends Command
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.INSERT_CURSOR };
 
-  private String systemMessageText;
-  private String systemMessageText2;
-
   public WriteCommand (byte[] buffer, int offset, int length, Screen screen,
       boolean erase)
   {
@@ -175,82 +172,65 @@ public class WriteCommand extends Command
       checkSystemMessage ();// check screen for jobs submitted or finished
   }
 
-  private boolean checkSystemMessage ()
+  private void checkSystemMessage ()
   {
-    int ptr = 0;
-
-    //    System.out.printf ("Orders: %d%n", orders.size ());
     if (eraseWrite && orders.size () == 8)
     {
-      for (Order order : orders)
-      {
-        byte reqType = systemMessage3[ptr++];
-        if (reqType != 0 && reqType != order.getType ())
-          return false;
-      }
-      systemMessageText = Utility.getString (orders.get (4).getBuffer ());
-    }
-    else if (eraseWrite && orders.size () == 11)
-    {
-      for (Order order : orders)
-      {
-        byte reqType = systemMessage2[ptr++];
-        if (reqType != 0 && reqType != order.getType ())
-          return false;
-      }
-      systemMessageText = Utility.getString (orders.get (4).getBuffer ());
-      System.out.println (systemMessageText);
-    }
-    else if (eraseWrite && orders.size () == 15)
-    {
-      for (Order order : orders)
-      {
-        byte reqType = systemMessage4[ptr++];
-        if (reqType != 0 && reqType != order.getType ())
-          return false;
-      }
-      systemMessageText = Utility.getString (orders.get (4).getBuffer ());
-      systemMessageText2 = Utility.getString (orders.get (8).getBuffer ());
-    }
-    else if (!eraseWrite && orders.size () == 6)
-    {
-      for (Order order : orders)
-      {
-        byte reqType = systemMessage1[ptr++];
-        if (reqType != 0 && reqType != order.getType ())
-          return false;
-      }
-      systemMessageText = Utility.getString (orders.get (2).getBuffer ());
-    }
-    else if (!eraseWrite && orders.size () == 9)
-    {
-      for (Order order : orders)
-      {
-        byte reqType = systemMessage5[ptr++];
-        if (reqType != 0 && reqType != order.getType ())
-          return false;
-      }
-      systemMessageText2 = Utility.getString (orders.get (2).getBuffer ());
-    }
-    else
-    {
-      if (orders.size () < 30 && false)
-      {
-        System.out.printf ("Orders: %d%n", orders.size ());
-        System.out.printf ("Erase : %s%n", eraseWrite);
-        for (Order order : orders)
-          System.out.println (order);
-        System.out.println ("-------------------------------");
-      }
-      return false;
+      if (checkOrders (systemMessage3))
+        checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+      return;
     }
 
-    if (systemMessageText != null)
-      checkSystemMessage (systemMessageText);
+    if (eraseWrite && orders.size () == 11)
+    {
+      if (checkOrders (systemMessage2))
+        checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+      return;
+    }
 
-    if (systemMessageText2 != null)
-      checkSystemMessage (systemMessageText2);
+    if (eraseWrite && orders.size () == 15)
+    {
+      if (checkOrders (systemMessage4))
+      {
+        checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+        checkSystemMessage (Utility.getString (orders.get (8).getBuffer ()));
+      }
+      return;
+    }
 
+    if (!eraseWrite && orders.size () == 6)
+    {
+      if (checkOrders (systemMessage1))
+        checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
+      return;
+    }
+
+    if (!eraseWrite && orders.size () == 9)
+    {
+      if (checkOrders (systemMessage5))
+        checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
+      return;
+    }
+
+    if (orders.size () < 30 && false)
+    {
+      System.out.printf ("Orders: %d%n", orders.size ());
+      System.out.printf ("Erase : %s%n", eraseWrite);
+      for (Order order : orders)
+        System.out.println (order);
+      System.out.println ("-------------------------------");
+    }
+  }
+
+  private boolean checkOrders (byte[] systemMessage)
+  {
+    int ptr = 0;
+    for (Order order : orders)
+    {
+      byte reqType = systemMessage[ptr++];
+      if (reqType != 0 && reqType != order.getType ())
+        return false;
+    }
     return true;
   }
 
@@ -258,7 +238,10 @@ public class WriteCommand extends Command
   {
     Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
     if (matcher.matches ())
+    {
       fireBatchJobSubmitted (Integer.parseInt (matcher.group (2)), matcher.group (1));
+      return;
+    }
 
     matcher = jobCompletedPattern.matcher (systemMessageText);
     if (matcher.matches ())
@@ -266,6 +249,7 @@ public class WriteCommand extends Command
       int jobNumber = Integer.parseInt (matcher.group (2));
       int conditionCode = Integer.parseInt (matcher.group (4));
       fireBatchJobEnded (jobNumber, matcher.group (3), matcher.group (1), conditionCode);
+      return;
     }
 
     matcher = jobFailedPattern.matcher (systemMessageText);
@@ -275,6 +259,7 @@ public class WriteCommand extends Command
       String jobName = matcher.group (3);
       String time = matcher.group (1);
       fireBatchJobFailed (jobNumber, jobName, time);
+      return;
     }
   }
 
