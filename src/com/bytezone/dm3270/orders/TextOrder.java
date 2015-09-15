@@ -46,15 +46,18 @@ public class TextOrder extends Order
     outer_loop: while (ptr < max)
     {
       byte value = buffer[ptr++];
-      if (value == GRAPHICS_ESCAPE)
-      {
-        if (GraphicsEscapeOrder.isValid (buffer[ptr]))
-          break;
-      }
-      else if (value >= 0 && value <= 0x3F) // could be a new command
-        for (int i = 0; i < orderValues.length; i++)
-          if (value == orderValues[i])
-            break outer_loop;
+      if (value >= 0x40 && value < 0xFF)
+        continue;
+      //      if (value == GRAPHICS_ESCAPE)
+      //      {
+      //        //        if (GraphicsEscapeOrder.isValid (buffer[ptr]))
+      //        break;
+      //      }
+      //      else 
+      //      if (value >= 0 && value <= 0x3F) // could be a new command
+      for (int i = 0; i < orderValues.length; i++)
+        if (value == orderValues[i])
+          break outer_loop;
 
       length++;
     }

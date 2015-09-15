@@ -64,10 +64,10 @@ public abstract class Order
         return new EraseUnprotectedToAddressOrder (buffer, ptr);
 
       case GRAPHICS_ESCAPE:
-        if (GraphicsEscapeOrder.isValid (buffer[ptr + 1]))
-          return new GraphicsEscapeOrder (buffer, ptr);
-        else
-          return new TextOrder (buffer, ptr, max);
+        //        if (GraphicsEscapeOrder.isValid (buffer[ptr + 1]))
+        return new GraphicsEscapeOrder (buffer, ptr);
+      //        else
+      //          return new TextOrder (buffer, ptr, max);
 
       case FCO_NULL:
       case FCO_SUBSTITUTE:
