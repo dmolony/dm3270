@@ -27,6 +27,13 @@ public abstract class Order
   public final static byte FCO_END_OF_MEDIUM = 0x19;
   public final static byte FCO_EIGHT_ONES = (byte) 0xFF;
 
+  public static byte[] orderValues =
+      { START_FIELD, START_FIELD_EXTENDED, SET_BUFFER_ADDRESS, INSERT_CURSOR,
+        GRAPHICS_ESCAPE, REPEAT_TO_ADDRESS, ERASE_UNPROTECTED, PROGRAM_TAB, SET_ATTRIBUTE,
+        MODIFY_FIELD, FCO_NULL, FCO_SUBSTITUTE, FCO_DUPLICATE, FCO_FIELD_MARK,
+        FCO_FORM_FEED, FCO_CARRIAGE_RETURN, FCO_NEWLINE, FCO_END_OF_MEDIUM,
+        FCO_EIGHT_ONES };
+
   protected boolean rejected;
 
   protected byte[] buffer;
@@ -64,10 +71,7 @@ public abstract class Order
         return new EraseUnprotectedToAddressOrder (buffer, ptr);
 
       case GRAPHICS_ESCAPE:
-        //        if (GraphicsEscapeOrder.isValid (buffer[ptr + 1]))
         return new GraphicsEscapeOrder (buffer, ptr);
-      //        else
-      //          return new TextOrder (buffer, ptr, max);
 
       case FCO_NULL:
       case FCO_SUBSTITUTE:

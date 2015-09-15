@@ -104,7 +104,8 @@ public class WriteCommand extends Command
       ptr += order.size ();
     }
 
-    addBatchJobListener (screen.getAssistantStage ());// fix this
+    if (screen != null) // mainframe mode has no screen
+      addBatchJobListener (screen.getAssistantStage ());// fix this
   }
 
   // Used by MainframeStage.createCommand() when building a screen

@@ -8,12 +8,6 @@ import com.bytezone.dm3270.display.Pen;
 
 public class TextOrder extends Order
 {
-  private static byte[] orderValues =
-      { START_FIELD, START_FIELD_EXTENDED, SET_BUFFER_ADDRESS, INSERT_CURSOR,
-        GRAPHICS_ESCAPE, REPEAT_TO_ADDRESS, ERASE_UNPROTECTED, PROGRAM_TAB, SET_ATTRIBUTE,
-        MODIFY_FIELD, FCO_NULL, FCO_SUBSTITUTE, FCO_DUPLICATE, FCO_FIELD_MARK,
-        FCO_FORM_FEED, FCO_CARRIAGE_RETURN, FCO_NEWLINE, FCO_END_OF_MEDIUM,
-        FCO_EIGHT_ONES };
   private int bufferOffset;
   byte[] originalBuffer;
 

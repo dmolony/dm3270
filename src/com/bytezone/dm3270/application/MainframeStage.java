@@ -8,20 +8,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Orientation;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Separator;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.attributes.ForegroundColor;
@@ -42,6 +28,20 @@ import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.MainframeServer;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class MainframeStage extends Stage implements Mainframe
 {
@@ -65,7 +65,7 @@ public class MainframeStage extends Stage implements Mainframe
   private final Button btnReadModified;
   private final Button btnReadModifiedAll;
   private final Button btnEraseAllUnprotected;
-  private final Button btnProgramTab;
+  //  private final Button btnProgramTab;
 
   private final CommandFactory commandFactory = new CommandFactory ();
 
@@ -79,7 +79,7 @@ public class MainframeStage extends Stage implements Mainframe
   private final StartFieldAttribute fldEnd = new StartFieldAttribute (
       StartFieldAttribute.compile (PROTECTED, NUMERIC, true, true, false));
 
-  public MainframeStage (int mainframePort)     // usually 5555
+  public MainframeStage (int mainframePort)// usually 5555
   {
     mainframeServer = new MainframeServer (mainframePort);
     mainframeServer.setStage (this);
@@ -97,7 +97,7 @@ public class MainframeStage extends Stage implements Mainframe
     btnReadModified = factory.getButton ("Read Modified", vbox2, BUTTON_WIDTH);
     btnReadModifiedAll = factory.getButton ("Read Mod All", vbox2, BUTTON_WIDTH);
     btnEraseAllUnprotected = factory.getButton ("Erase All Unpr", vbox2, BUTTON_WIDTH);
-    btnProgramTab = factory.getButton ("Program Tab", vbox2, BUTTON_WIDTH);
+    //    btnProgramTab = factory.getButton ("Program Tab", vbox2, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
@@ -105,7 +105,7 @@ public class MainframeStage extends Stage implements Mainframe
     btnExtendedFieldMode =
         factory.getRadioButton ("Extended Field Mode", vbox2, modeGroup);
     btnCharacterMode = factory.getRadioButton ("Character Mode", vbox2, modeGroup);
-    btnFieldMode.setSelected (true);        // match the default setting
+    btnFieldMode.setSelected (true);// match the default setting
 
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
 
@@ -151,8 +151,7 @@ public class MainframeStage extends Stage implements Mainframe
         LocalDateTime.now (), true);
   }
 
-  private void
-      addOutputField (List<Order> orders, String label, int position, byte color)
+  private void addOutputField (List<Order> orders, String label, int position, byte color)
   {
     orders.add (new SetBufferAddressOrder (position));
     attributes.clear ();
@@ -183,9 +182,8 @@ public class MainframeStage extends Stage implements Mainframe
 
   private void prepareButtons ()
   {
-    InputStream in =
-        Console.class.getClassLoader ()
-            .getResourceAsStream ("com/bytezone/dm3270/application/mf.txt");
+    InputStream in = Console.class.getClassLoader ()
+        .getResourceAsStream ("com/bytezone/dm3270/application/mf.txt");
     if (in == null)
     {
       System.out.println ("mf.txt not found");
@@ -221,8 +219,8 @@ public class MainframeStage extends Stage implements Mainframe
         if (buttonNo < buttons.size ())
         {
           Button button = buttons.get (buttonNo);
-          button.setOnAction (x -> mainframeServer.write (sessionRecord.getMessage ()
-              .getTelnetData ()));
+          button.setOnAction (x -> mainframeServer
+              .write (sessionRecord.getMessage ().getTelnetData ()));
 
           if (buttonNo < labels.size ())
             button.setText (labels.get (buttonNo));
@@ -237,18 +235,18 @@ public class MainframeStage extends Stage implements Mainframe
     }
 
     btnReadBuffer.setOnAction ( (x) -> {
-      mainframeServer.write (commandFactory
-          .createReadBufferCommand (Command.READ_BUFFER_F2));
+      mainframeServer
+          .write (commandFactory.createReadBufferCommand (Command.READ_BUFFER_F2));
     });
 
     btnReadModified.setOnAction ( (x) -> {
-      mainframeServer.write (commandFactory
-          .createReadBufferCommand (Command.READ_MODIFIED_F6));
+      mainframeServer
+          .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_F6));
     });
 
     btnReadModifiedAll.setOnAction ( (x) -> {
-      mainframeServer.write (commandFactory
-          .createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
+      mainframeServer
+          .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
     });
 
     btnEraseAllUnprotected.setOnAction ( (x) -> {
@@ -256,9 +254,9 @@ public class MainframeStage extends Stage implements Mainframe
           .createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F));
     });
 
-    btnProgramTab.setOnAction ( (x) -> {
-      mainframeServer.write (commandFactory.createProgramTabCommand ());
-    });
+    //    btnProgramTab.setOnAction ( (x) -> {
+    //      mainframeServer.write (commandFactory.createProgramTabCommand ());
+    //    });
   }
 
   @Override
@@ -270,8 +268,8 @@ public class MainframeStage extends Stage implements Mainframe
     if (command instanceof AIDCommand && ((AIDCommand) command).isPAKey ())
     {
       mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 2));
-      mainframeServer.write (commandFactory
-          .createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
+      mainframeServer
+          .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
     }
   }
 
@@ -284,15 +282,15 @@ public class MainframeStage extends Stage implements Mainframe
     btnReadModified.setDisable (!enable);
     btnReadModifiedAll.setDisable (!enable);
     btnEraseAllUnprotected.setDisable (!enable);
-    btnProgramTab.setDisable (!enable);
+    //    btnProgramTab.setDisable (!enable);
 
     btnFieldMode.setDisable (!enable);
     btnExtendedFieldMode.setDisable (!enable);
     btnCharacterMode.setDisable (!enable);
 
     toFront ();
-    buttons.get (3).fire ();        // ISPF (Erase Write)
-    buttons.get (4).fire ();        // 3.4  (Write)
+    buttons.get (3).fire ();// ISPF (Erase Write)
+    buttons.get (4).fire ();// 3.4  (Write)
     this.requestFocus ();
     buttons.get (4).requestFocus ();
   }
