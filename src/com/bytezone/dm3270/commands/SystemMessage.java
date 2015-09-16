@@ -24,31 +24,31 @@ public class SystemMessage
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR.*");
 
-  private final byte[] systemMessage1 =
+  private static final byte[] systemMessage1 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
 
-  private final byte[] systemMessage2 =
+  private static final byte[] systemMessage2 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
-  private final byte[] systemMessage3 =
+  private static final byte[] systemMessage3 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.INSERT_CURSOR };
 
-  private final byte[] systemMessage4 =
+  private static final byte[] systemMessage4 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
         Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
-  private final byte[] systemMessage5 =
+  private static final byte[] systemMessage5 =
       { //
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
@@ -63,8 +63,7 @@ public class SystemMessage
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
   {
-    if (screen != null) // mainframe mode has no screen
-      addBatchJobListener (screen.getAssistantStage ());// fix this
+    addBatchJobListener (screen.getAssistantStage ());// this is clumsy
 
     if (eraseWrite && orders.size () == 8)
     {

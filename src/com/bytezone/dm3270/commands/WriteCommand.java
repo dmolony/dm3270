@@ -23,11 +23,6 @@ public class WriteCommand extends Command
 
     this.eraseWrite = erase;
 
-    // ?????
-    // I think that this command (when sourced from a WSF command) has an address
-    // field after the WCC. Perhaps the constructor could be passed the WCC and
-    // starting address.
-
     if (length > 1)
       writeControlCharacter = new WriteControlCharacter (buffer[offset + 1]);
     else
