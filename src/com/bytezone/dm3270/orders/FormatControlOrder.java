@@ -22,7 +22,19 @@ public class FormatControlOrder extends Order
   public void process (DisplayScreen screen)
   {
     Pen pen = screen.getPen ();
-    pen.write ((byte) 0x40);
+    int max = duplicates;
+    while (max-- >= 0)
+      // always do at least one
+      pen.write ((byte) 0x40);
+  }
+
+  @Override
+  public boolean matches (Order order)
+  {
+    if (order instanceof FormatControlOrder
+        && this.buffer[0] == ((FormatControlOrder) order).buffer[0])
+      return true;
+    return false;
   }
 
   @Override
@@ -36,6 +48,7 @@ public class FormatControlOrder extends Order
         text = orderNames[i];
         break;
       }
-    return String.format ("FCO : %-12s : %02X", text, buffer[0]);
+    String duplicateText = duplicates == 0 ? "" : "x " + (duplicates + 1);
+    return String.format ("FCO : %-12s : %02X %s", text, buffer[0], duplicateText);
   }
 }

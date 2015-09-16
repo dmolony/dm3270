@@ -100,9 +100,6 @@ public class WriteCommand extends Command
 
       ptr += order.size ();
     }
-
-    if (screen != null) // mainframe mode has no screen
-      addBatchJobListener (screen.getAssistantStage ());// fix this
   }
 
   // Used by MainframeStage.createCommand() when building a screen
@@ -174,6 +171,9 @@ public class WriteCommand extends Command
 
   private void checkSystemMessage ()
   {
+    if (screen != null) // mainframe mode has no screen
+      addBatchJobListener (screen.getAssistantStage ());// fix this
+
     if (eraseWrite && orders.size () == 8)
     {
       if (checkOrders (systemMessage3))
