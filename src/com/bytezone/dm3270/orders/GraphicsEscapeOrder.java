@@ -42,15 +42,4 @@ public class GraphicsEscapeOrder extends Order
     String duplicateText = duplicates == 0 ? "" : "x " + (duplicates + 1);
     return String.format ("GE  : %02X %s", code, duplicateText);
   }
-
-  //  public static boolean isValid (byte value)
-  //  {
-  //    int v = value & 0xFF;
-  //    return v >= 0x40 && v != 0xFF;
-  //    //    if (value == ScreenPosition.HORIZONTAL_LINE || value == ScreenPosition.VERTICAL_LINE
-  //    //        || value == ScreenPosition.TOP_LEFT || value == ScreenPosition.TOP_RIGHT
-  //    //        || value == ScreenPosition.BOTTOM_LEFT || value == ScreenPosition.BOTTOM_RIGHT)
-  //    //      return true;
-  //    //    return false;
-  //  }
 }
