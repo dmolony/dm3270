@@ -41,10 +41,10 @@ public class BatchJobTab extends AbstractTransferTab
     fireJobSelected (batchJob);
   }
 
-  public void addBatchJob (BatchJob batchJob)
-  {
-    jobTable.addJob (batchJob);
-  }
+  //  private void addBatchJob (BatchJob batchJob)
+  //  {
+  //    jobTable.addJob (batchJob);
+  //  }
 
   public BatchJob getBatchJob (int jobNumber)
   {
@@ -100,7 +100,7 @@ public class BatchJobTab extends AbstractTransferTab
   @Override
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
-    addBatchJob (new BatchJob (jobNumber, jobName));
+    jobTable.addJob (new BatchJob (jobNumber, jobName));
   }
 
   @Override

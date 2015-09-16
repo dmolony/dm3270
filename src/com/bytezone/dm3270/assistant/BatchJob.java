@@ -23,6 +23,11 @@ public class BatchJob
     setJobName (jobName);
   }
 
+  public boolean matches (BatchJob batchJob)
+  {
+    return this.jobNumber == batchJob.jobNumber;
+  }
+
   public boolean matches (int jobNumber)
   {
     return this.jobNumber == jobNumber;

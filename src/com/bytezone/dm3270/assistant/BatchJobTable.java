@@ -26,7 +26,7 @@ public class BatchJobTable extends TableView<BatchJob>
                e -> e.getValue ().propertyJobName ());
     addColumn ("Completed", 100, Justification.CENTER,
                e -> e.getValue ().propertyJobCompleted ());
-    addColumn ("Cond", 80, Justification.CENTER,
+    addColumn ("Cond", 100, Justification.CENTER,
                e -> e.getValue ().propertyConditionCode ());
     addColumn ("Output dataset", 200, Justification.LEFT,
                e -> e.getValue ().propertyOutputFile ());
@@ -50,6 +50,10 @@ public class BatchJobTable extends TableView<BatchJob>
 
   public void addJob (BatchJob batchJob)
   {
+    for (BatchJob bj : batchJobs)
+      if (bj.matches (batchJob))
+        return;
+
     batchJobs.add (batchJob);
   }
 
