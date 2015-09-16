@@ -6,7 +6,7 @@ Not all keys are available on all platforms, and some keys aren't available at a
 |Home (first input field)   | control-h       | home            | control-h       |
 |Insert mode                | cmd-i           | insert          | control-i       |
 |Erase EOL                  | cmd-delete      | ?               | ?               |
-|Linefeed (new line)        | cmd-enter       | ?               | ?               |
+|Linefeed (new line)        | shift-enter     | shift-enter     | shift-enter     |
 |Delete forwards            | fn-delete       | delete          | ?               | 
 |Delete backwards           | delete          | backspace       | ?               | 
 |Screen history             | cmd-s           | control-s       | control-s       | 
