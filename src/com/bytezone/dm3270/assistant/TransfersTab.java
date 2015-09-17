@@ -108,7 +108,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     spaceBlock.setStyle ("-fx-border-color: grey; -fx-border-width: 1;"
         + " -fx-border-insets: 10");
 
-    txtDescription.setText ("Hello");
+    txtDescription.setText ("Not finished yet");
 
     VBox columnLeft = new VBox ();
     columnLeft.setPadding (new Insets (10, 10, 10, 10));
