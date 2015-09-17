@@ -12,8 +12,6 @@ import javafx.util.Callback;
 public class DatasetTable extends TableView<Dataset>
 {
   private final ObservableList<Dataset> datasets = FXCollections.observableArrayList ();
-  //  Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> centreJustified;
-  //  Callback<TableColumn<Dataset, String>, TableCell<Dataset, String>> rightJustified;
 
   enum Justification
   {
@@ -24,8 +22,6 @@ public class DatasetTable extends TableView<Dataset>
   {
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
-
-    //    createJustifications ();
 
     addColumn ("Dataset name", 300, Justification.LEFT,
                e -> e.getValue ().propertyDatasetName ());
@@ -97,8 +93,6 @@ public class DatasetTable extends TableView<Dataset>
     int pos = memberName.indexOf ('(');
     String parentName = memberName.substring (0, pos);
     String childName = memberName.substring (pos + 1, memberName.length () - 1);
-
-    //    System.out.println (parentName + "--" + childName);
 
     for (Dataset existingDataset : datasets)
       if (existingDataset.getDatasetName ().equals (memberName))

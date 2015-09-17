@@ -100,7 +100,7 @@ public class BatchJobTab extends AbstractTransferTab
   @Override
   public void batchJobSubmitted (int jobNumber, String jobName)
   {
-    jobTable.addJob (new BatchJob (jobNumber, jobName));
+    jobTable.addBatchJob (new BatchJob (jobNumber, jobName));
   }
 
   @Override

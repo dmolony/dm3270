@@ -48,7 +48,7 @@ public class BatchJobTable extends TableView<BatchJob>
       column.setStyle ("-fx-alignment: CENTER;");
   }
 
-  public void addJob (BatchJob batchJob)
+  public void addBatchJob (BatchJob batchJob)
   {
     for (BatchJob bj : batchJobs)
       if (bj.matches (batchJob))
