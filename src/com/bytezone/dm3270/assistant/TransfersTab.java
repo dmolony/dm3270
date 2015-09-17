@@ -20,9 +20,11 @@ import javafx.scene.text.Font;
 public class TransfersTab extends AbstractTransferTab implements ScreenChangeListener,
     DatasetSelectionListener, FileSelectionListener, BatchJobSelectionListener
 {
+  private static final int LABEL_WIDTH = 100;
+
   private final RadioButton btnDatasets = new RadioButton ("Datasets");
-  private final RadioButton btnFiles = new RadioButton ("Files");
-  private final RadioButton btnJobs = new RadioButton ("Jobs");
+  private final RadioButton btnJobs = new RadioButton ("Batch Jobs");
+  private final RadioButton btnFiles = new RadioButton ("Local Files");
   private final RadioButton btnSpecify = new RadioButton ("Specify");
 
   private final TextField txtDatasets = new TextField ();
@@ -133,7 +135,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   {
     HBox line = new HBox (10);
     line.getChildren ().addAll (button, text);
-    button.setPrefWidth (90);
+    button.setPrefWidth (LABEL_WIDTH);
     text.setPrefWidth (300);
     text.setFont (defaultFont);
     text.setEditable (false);
@@ -147,7 +149,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   {
     HBox line = new HBox (10);
     line.getChildren ().addAll (label, text);
-    label.setPrefWidth (90);
+    label.setPrefWidth (LABEL_WIDTH);
     text.setPrefWidth (100);
     text.setFont (defaultFont);
     text.setEditable (true);
@@ -161,7 +163,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     HBox line = new HBox (10);
 
     line.getChildren ().addAll (label, text, hbox);
-    label.setPrefWidth (90);
+    label.setPrefWidth (LABEL_WIDTH);
     text.setPrefWidth (100);
     text.setFont (defaultFont);
     text.setEditable (true);
@@ -175,7 +177,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
     HBox line = new HBox (10);
 
     line.getChildren ().addAll (label, hbox);
-    label.setPrefWidth (90);
+    label.setPrefWidth (LABEL_WIDTH);
 
     return line;
   }

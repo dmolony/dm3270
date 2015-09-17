@@ -31,7 +31,7 @@ public class FilesTab extends AbstractTransferTab
 
   public FilesTab (Screen screen, TextField text, Button execute, Preferences prefs)
   {
-    super ("Files", screen, text, execute);
+    super ("Local Files", screen, text, execute);
 
     reporterNode = new ReporterNode (prefs);
     reporterNode.addNodeSelectionListener (this);
