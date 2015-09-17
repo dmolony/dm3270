@@ -460,7 +460,6 @@ public class ScreenDetails
       catch (NumberFormatException e)
       {
         System.out.println ("NFE:");
-        //        System.out.println (dataset);
         System.out.println (details);
       }
     }
@@ -485,7 +484,6 @@ public class ScreenDetails
       catch (NumberFormatException e)
       {
         System.out.println ("NFE:");
-        //        System.out.println (dataset);
         System.out.println (details);
       }
     }
@@ -510,7 +508,6 @@ public class ScreenDetails
       catch (NumberFormatException e)
       {
         System.out.println ("NFE:");
-        //        System.out.println (dataset);
         System.out.println (details);
       }
     }
@@ -527,10 +524,17 @@ public class ScreenDetails
 
       dataset.setDsorg (dsorg.trim ());
       dataset.setRecfm (recfm.trim ());
-      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
 
-      //      int bls = Integer.parseInt (blksize.trim ());
-      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
+      try
+      {
+        dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
+        dataset.setBlksize (Integer.parseInt (blksize.trim ()));
+      }
+      catch (NumberFormatException e)
+      {
+        System.out.println ("NFE:");
+        System.out.println (details);
+      }
     }
   }
 
