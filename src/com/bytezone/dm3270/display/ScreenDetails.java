@@ -211,14 +211,6 @@ public class ScreenDetails
         return false;
     }
 
-    //    List<String> menus = getMenus (screenFields);
-    //    if (menus.size () != tsoMenus.length)
-    //      return false;
-
-    //    int i = 0;
-    //    for (String menu : menus)
-    //      if (!tsoMenus[i++].equals (menu))
-    //        return false;
     if (!listMatchesArray (getMenus (screenFields), tsoMenus))
       return false;
 
@@ -430,13 +422,6 @@ public class ScreenDetails
     return true;
   }
 
-  private void dumpFields (List<Field> fields)
-  {
-    for (Field field : fields)
-      System.out.println (field);
-    System.out.println ("-------------------------");
-  }
-
   private Dataset addDataset (Field field)
   {
     Dataset dataset = new Dataset (field.getText ().trim ());
@@ -463,8 +448,7 @@ public class ScreenDetails
     }
     catch (NumberFormatException e)
     {
-      System.out.println ("NFE:");
-      System.out.println (details);
+      System.out.printf ("NFE: %s%n", details);
     }
   }
 
@@ -487,8 +471,7 @@ public class ScreenDetails
     }
     catch (NumberFormatException e)
     {
-      System.out.println ("NFE:");
-      System.out.println (details);
+      System.out.printf ("NFE: %s%n", details);
     }
   }
 
@@ -511,8 +494,7 @@ public class ScreenDetails
     }
     catch (NumberFormatException e)
     {
-      System.out.println ("NFE:");
-      System.out.println (details);
+      System.out.printf ("NFE: %s%n", details);
     }
   }
 
@@ -536,8 +518,7 @@ public class ScreenDetails
     }
     catch (NumberFormatException e)
     {
-      System.out.println ("NFE:");
-      System.out.println (details);
+      System.out.printf ("NFE: %s%n", details);
     }
   }
 
@@ -556,14 +537,6 @@ public class ScreenDetails
     if (screenFields.size () < 14)
       return false;
 
-    //    List<String> menus = getMenus (screenFields);
-    //    if (menus.size () != pdsMenus.length)
-    //      return false;
-    //
-    //    int i = 0;
-    //    for (String menu : menus)
-    //      if (!pdsMenus[i++].equals (menu))
-    //        return false;
     if (!listMatchesArray (getMenus (screenFields), pdsMenus))
       return false;
 
@@ -680,10 +653,7 @@ public class ScreenDetails
     text = field.getText ().trim ();
     int pos = text.indexOf (' ');
     if (pos > 0)
-    {
-      String dataset = text.substring (0, pos);
-      currentDataset = dataset;
-    }
+      currentDataset = text.substring (0, pos);
   }
 
   private void checkBrowseDataset (List<Field> fields)
@@ -708,10 +678,7 @@ public class ScreenDetails
     text = field.getText ().trim ();
     int pos = text.indexOf (' ');
     if (pos > 0)
-    {
-      String dataset = text.substring (0, pos);
-      currentDataset = dataset;
-    }
+      currentDataset = text.substring (0, pos);
   }
 
   private boolean listMatchesArray (List<String> list, String[] array)
@@ -774,6 +741,13 @@ public class ScreenDetails
         rowFields.add (field);
     }
     return rowFields;
+  }
+
+  private void dumpFields (List<Field> fields)
+  {
+    for (Field field : fields)
+      System.out.println (field);
+    System.out.println ("-------------------------");
   }
 
   @Override
