@@ -47,33 +47,33 @@ public class ScreenDetails
     currentDataset = "";
 
     List<Field> screenFields = fieldManager.getFields ();
-    if (screenFields.size () > 2)
+    if (screenFields.size () <= 2)
+      return;
+
+    if (hasPromptField (screenFields))
     {
-      if (hasPromptField (screenFields))
+      if (prefix.isEmpty ())
+        checkPrefixScreen (screenFields);// initial ISPF screen
+
+      isDatasetList = checkDatasetList (screenFields);
+
+      if (!isDatasetList)
       {
-        if (prefix.isEmpty ())
-          checkPrefixScreen (screenFields);// initial ISPF screen
-
-        isDatasetList = checkDatasetList (screenFields);
-
-        if (!isDatasetList)
-        {
-          checkEditOrViewDataset (screenFields);
-          if (currentDataset.isEmpty ())
-            checkBrowseDataset (screenFields);
-        }
-
-        if (!isDatasetList)
-          isMemberList = checkMemberList (screenFields);
+        checkEditOrViewDataset (screenFields);
+        if (currentDataset.isEmpty ())
+          checkBrowseDataset (screenFields);
       }
-      else
-        isTSOCommandScreen = checkTSOCommandScreen (screenFields);
 
-      if (false)
-      {
-        System.out.println (this);
-        screen.listTSOCommands ();
-      }
+      if (!isDatasetList)
+        isMemberList = checkMemberList (screenFields);
+    }
+    else
+      isTSOCommandScreen = checkTSOCommandScreen (screenFields);
+
+    if (false)
+    {
+      System.out.println (this);
+      screen.listTSOCommands ();
     }
   }
 
@@ -202,22 +202,25 @@ public class ScreenDetails
 
     int workstationFieldNo = 13;
     field = screenFields.get (workstationFieldNo);
-    if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
+    String workstationText = "Enter TSO or Workstation commands below:";
+    if (!workstationText.equals (field.getText ()))
     {
       ++workstationFieldNo;
       field = screenFields.get (workstationFieldNo);
-      if (!"Enter TSO or Workstation commands below:".equals (field.getText ()))
+      if (!workstationText.equals (field.getText ()))
         return false;
     }
 
-    List<String> menus = getMenus (screenFields);
-    if (menus.size () != tsoMenus.length)
-      return false;
+    //    List<String> menus = getMenus (screenFields);
+    //    if (menus.size () != tsoMenus.length)
+    //      return false;
 
-    int i = 0;
-    for (String menu : menus)
-      if (!tsoMenus[i++].equals (menu))
-        return false;
+    //    int i = 0;
+    //    for (String menu : menus)
+    //      if (!tsoMenus[i++].equals (menu))
+    //        return false;
+    if (!listMatchesArray (getMenus (screenFields), tsoMenus))
+      return false;
 
     field = screenFields.get (workstationFieldNo + 5);
     if (field.getDisplayLength () != 234)
@@ -309,7 +312,7 @@ public class ScreenDetails
     }
     else if (rowFields.size () == 6)
     {
-      List<Field> rowFields2 = getRowFields (screenFields, 7, 1);
+      List<Field> rowFields2 = getRowFields (screenFields, 7);
       if (rowFields2.size () == 1)
       {
         String line = rowFields2.get (0).getText ().trim ();
@@ -443,109 +446,109 @@ public class ScreenDetails
 
   private void setSpace1 (Dataset dataset, String details)
   {
-    if (!details.trim ().isEmpty ())
-    {
-      String tracks = details.substring (0, 6);
-      String pct = details.substring (7, 10);
-      String extents = details.substring (10, 14);
-      String device = details.substring (15);
+    if (details.trim ().isEmpty ())
+      return;
 
-      try
-      {
-        dataset.setTracks (Integer.parseInt (tracks.trim ()));
-        dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
-        dataset.setExtents (Integer.parseInt (extents.trim ()));
-        dataset.setDevice (device.trim ());
-      }
-      catch (NumberFormatException e)
-      {
-        System.out.println ("NFE:");
-        System.out.println (details);
-      }
+    String tracks = details.substring (0, 6);
+    String pct = details.substring (7, 10);
+    String extents = details.substring (10, 14);
+    String device = details.substring (15);
+
+    try
+    {
+      dataset.setTracks (Integer.parseInt (tracks.trim ()));
+      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
+      dataset.setExtents (Integer.parseInt (extents.trim ()));
+      dataset.setDevice (device.trim ());
+    }
+    catch (NumberFormatException e)
+    {
+      System.out.println ("NFE:");
+      System.out.println (details);
     }
   }
 
   private void setSpace2 (Dataset dataset, String details)
   {
-    if (!details.trim ().isEmpty ())
-    {
-      String tracks = details.substring (0, 6);
-      String pct = details.substring (8, 11);
-      String extents = details.substring (11, 15);
-      String device = details.substring (17);
+    if (details.trim ().isEmpty ())
+      return;
 
-      try
-      {
-        dataset.setTracks (Integer.parseInt (tracks.trim ()));
-        dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
-        dataset.setExtents (Integer.parseInt (extents.trim ()));
-        dataset.setDevice (device.trim ());
-      }
-      catch (NumberFormatException e)
-      {
-        System.out.println ("NFE:");
-        System.out.println (details);
-      }
+    String tracks = details.substring (0, 6);
+    String pct = details.substring (8, 11);
+    String extents = details.substring (11, 15);
+    String device = details.substring (17);
+
+    try
+    {
+      dataset.setTracks (Integer.parseInt (tracks.trim ()));
+      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
+      dataset.setExtents (Integer.parseInt (extents.trim ()));
+      dataset.setDevice (device.trim ());
+    }
+    catch (NumberFormatException e)
+    {
+      System.out.println ("NFE:");
+      System.out.println (details);
     }
   }
 
   private void setDisposition1 (Dataset dataset, String details)
   {
-    if (!details.trim ().isEmpty ())
-    {
-      String dsorg = details.substring (0, 5);
-      String recfm = details.substring (5, 10);
-      String lrecl = details.substring (10, 16);
-      String blksize = details.substring (16);
+    if (details.trim ().isEmpty ())
+      return;
 
-      dataset.setDsorg (dsorg.trim ());
-      dataset.setRecfm (recfm.trim ());
-      try
-      {
-        dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
-        dataset.setBlksize (Integer.parseInt (blksize.trim ()));
-      }
-      catch (NumberFormatException e)
-      {
-        System.out.println ("NFE:");
-        System.out.println (details);
-      }
+    String dsorg = details.substring (0, 5);
+    String recfm = details.substring (5, 10);
+    String lrecl = details.substring (10, 16);
+    String blksize = details.substring (16);
+
+    dataset.setDsorg (dsorg.trim ());
+    dataset.setRecfm (recfm.trim ());
+    try
+    {
+      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
+      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
+    }
+    catch (NumberFormatException e)
+    {
+      System.out.println ("NFE:");
+      System.out.println (details);
     }
   }
 
   private void setDisposition2 (Dataset dataset, String details)
   {
-    if (!details.trim ().isEmpty ())
+    if (details.trim ().isEmpty ())
+      return;
+
+    String dsorg = details.substring (0, 5);
+    String recfm = details.substring (6, 11);
+    String lrecl = details.substring (12, 18);
+    String blksize = details.substring (19);
+
+    dataset.setDsorg (dsorg.trim ());
+    dataset.setRecfm (recfm.trim ());
+
+    try
     {
-      String dsorg = details.substring (0, 5);
-      String recfm = details.substring (6, 11);
-      String lrecl = details.substring (12, 18);
-      String blksize = details.substring (19);
-
-      dataset.setDsorg (dsorg.trim ());
-      dataset.setRecfm (recfm.trim ());
-
-      try
-      {
-        dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
-        dataset.setBlksize (Integer.parseInt (blksize.trim ()));
-      }
-      catch (NumberFormatException e)
-      {
-        System.out.println ("NFE:");
-        System.out.println (details);
-      }
+      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
+      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
+    }
+    catch (NumberFormatException e)
+    {
+      System.out.println ("NFE:");
+      System.out.println (details);
     }
   }
 
   private void setDates (Dataset dataset, String details)
   {
-    if (!details.trim ().isEmpty ())
-    {
-      dataset.setCreated (details.substring (0, 10).trim ());
-      dataset.setExpires (details.substring (11, 20).trim ());
-      dataset.setReferred (details.substring (22).trim ());
-    }
+    if (details.trim ().isEmpty ())
+      return;
+
+    dataset.setCreated (details.substring (0, 10).trim ());
+    dataset.setExpires (details.substring (11, 20).trim ());
+    dataset.setReferred (details.substring (22).trim ());
   }
 
   private boolean checkMemberList (List<Field> screenFields)
@@ -553,14 +556,16 @@ public class ScreenDetails
     if (screenFields.size () < 14)
       return false;
 
-    List<String> menus = getMenus (screenFields);
-    if (menus.size () != pdsMenus.length)
+    //    List<String> menus = getMenus (screenFields);
+    //    if (menus.size () != pdsMenus.length)
+    //      return false;
+    //
+    //    int i = 0;
+    //    for (String menu : menus)
+    //      if (!pdsMenus[i++].equals (menu))
+    //        return false;
+    if (!listMatchesArray (getMenus (screenFields), pdsMenus))
       return false;
-
-    int i = 0;
-    for (String menu : menus)
-      if (!pdsMenus[i++].equals (menu))
-        return false;
 
     Field field = screenFields.get (8);
     int location = field.getFirstLocation ();
@@ -593,15 +598,12 @@ public class ScreenDetails
     int rowFrom = getInteger ("RowFrom", screenFields.get (11).getText ().trim ());
     int rowTo = getInteger ("RowTo", screenFields.get (13).getText ().trim ());
 
-    //    System.out.print ("\nMember list of " + datasetName + " in " + mode + " mode");
-    //    System.out.printf ("- row %d of %d%n", rowFrom, rowTo);
-
-    List<Field> headings = getFieldsOnRow (screenFields, 4);
+    List<Field> headings = getRowFields (screenFields, 4);
     int maxRows = Math.min (19, rowTo - rowFrom + 1) + 5;
 
     for (int row = 5; row < maxRows; row++)
     {
-      List<Field> rowFields = getFieldsOnRow (screenFields, row);
+      List<Field> rowFields = getRowFields (screenFields, row);
 
       String memberName = rowFields.get (1).getText ().trim ();
       Dataset member = new Dataset (datasetName + "(" + memberName + ")");
@@ -616,9 +618,7 @@ public class ScreenDetails
         String modified = details.substring (23, 33);
         String time = details.substring (34, 42);
         String id = details.substring (44);
-        //        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", 
-        //row - 5 + rowFrom,
-        //                           memberName, size, created, modified, time, id);
+
         member.setCreated (created);
         member.setReferred (modified);
         member.setCatalog (id);
@@ -631,9 +631,7 @@ public class ScreenDetails
         String mod = details.substring (19, 25);
         String vvmm = details.substring (31, 36);
         String id = details.substring (44);
-        //        System.out.printf ("%3d [%-8s] [%s] [%s] [%s] [%s] [%s]%n", 
-        //row - 5 + rowFrom,
-        //                           memberName, size, init, mod, vvmm, id);
+
         member.setCatalog (id);
         member.setExtents (getInteger ("Ext2:" + memberName, size.trim ()));
       }
@@ -647,10 +645,8 @@ public class ScreenDetails
   private int getInteger (String id, String value)
   {
     if (value == null || value.isEmpty ())
-    {
-      //      System.out.printf ("Empty string %s: [%s]%n", id, value);
       return 0;
-    }
+
     try
     {
       return Integer.parseInt (value);
@@ -718,6 +714,17 @@ public class ScreenDetails
     }
   }
 
+  private boolean listMatchesArray (List<String> list, String[] array)
+  {
+    if (list.size () != array.length)
+      return false;
+    int i = 0;
+    for (String text : list)
+      if (!array[i++].equals (text))
+        return false;
+    return true;
+  }
+
   private List<String> getMenus (List<Field> screenFields)
   {
     List<String> menus = new ArrayList<> ();
@@ -738,21 +745,22 @@ public class ScreenDetails
     return menus;
   }
 
-  private List<Field> getFieldsOnRow (List<Field> fields, int requestedRow)
+  private List<Field> getRowFields (List<Field> fields, int requestedRow)
   {
     int firstLocation = requestedRow * screen.columns;
     int lastLocation = firstLocation + screen.columns - 1;
-    return getFields (fields, firstLocation, lastLocation);
+    return getFieldsInRange (fields, firstLocation, lastLocation);
   }
 
   private List<Field> getRowFields (List<Field> fields, int requestedRowFrom, int rows)
   {
     int firstLocation = requestedRowFrom * screen.columns;
     int lastLocation = (requestedRowFrom + rows) * screen.columns - 1;
-    return getFields (fields, firstLocation, lastLocation);
+    return getFieldsInRange (fields, firstLocation, lastLocation);
   }
 
-  private List<Field> getFields (List<Field> fields, int firstLocation, int lastLocation)
+  private List<Field> getFieldsInRange (List<Field> fields, int firstLocation,
+      int lastLocation)
   {
     List<Field> rowFields = new ArrayList<> ();
     for (Field field : fields)
