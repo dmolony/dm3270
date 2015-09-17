@@ -309,20 +309,29 @@ public class ScreenDetails
     }
     else if (rowFields.size () == 6)
     {
-      if (!datasetsOnVolume.isEmpty ())
+      List<Field> rowFields2 = getRowFields (screenFields, 7, 1);
+      if (rowFields2.size () == 1)
       {
-        screenType = 5;
-        linesPerDataset = 2;
-        nextLine = 8;
-        datasetsToProcess = Math.min (maxRows, 6);
+        String line = rowFields2.get (0).getText ().trim ();
+        if (line.startsWith ("--"))
+        {
+          screenType = 5;
+          linesPerDataset = 2;
+          nextLine = 8;
+          datasetsToProcess = Math.min (maxRows, 6);
+        }
+        else if (line.equals ("Catalog"))
+        {
+          screenType = 4;
+          linesPerDataset = 3;
+          nextLine = 9;
+          datasetsToProcess = Math.min (maxRows, 4);
+        }
+        else
+          System.out.println ("Expected 'Catalog'");
       }
       else
-      {
-        screenType = 4;
-        linesPerDataset = 3;
-        nextLine = 9;
-        datasetsToProcess = Math.min (maxRows, 4);
-      }
+        System.out.println ("unexpected fields size");
     }
     else
       System.out.printf ("Unexpected number of fields: %d%n", rowFields.size ());
@@ -441,10 +450,19 @@ public class ScreenDetails
       String extents = details.substring (10, 14);
       String device = details.substring (15);
 
-      dataset.setTracks (Integer.parseInt (tracks.trim ()));
-      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
-      dataset.setExtents (Integer.parseInt (extents.trim ()));
-      dataset.setDevice (device.trim ());
+      try
+      {
+        dataset.setTracks (Integer.parseInt (tracks.trim ()));
+        dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
+        dataset.setExtents (Integer.parseInt (extents.trim ()));
+        dataset.setDevice (device.trim ());
+      }
+      catch (NumberFormatException e)
+      {
+        System.out.println ("NFE:");
+        //        System.out.println (dataset);
+        System.out.println (details);
+      }
     }
   }
 
@@ -457,10 +475,19 @@ public class ScreenDetails
       String extents = details.substring (11, 15);
       String device = details.substring (17);
 
-      dataset.setTracks (Integer.parseInt (tracks.trim ()));
-      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
-      dataset.setExtents (Integer.parseInt (extents.trim ()));
-      dataset.setDevice (device.trim ());
+      try
+      {
+        dataset.setTracks (Integer.parseInt (tracks.trim ()));
+        dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
+        dataset.setExtents (Integer.parseInt (extents.trim ()));
+        dataset.setDevice (device.trim ());
+      }
+      catch (NumberFormatException e)
+      {
+        System.out.println ("NFE:");
+        //        System.out.println (dataset);
+        System.out.println (details);
+      }
     }
   }
 
@@ -475,10 +502,17 @@ public class ScreenDetails
 
       dataset.setDsorg (dsorg.trim ());
       dataset.setRecfm (recfm.trim ());
-      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
-
-      //      int bls = Integer.parseInt (blksize.trim ());
-      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
+      try
+      {
+        dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
+        dataset.setBlksize (Integer.parseInt (blksize.trim ()));
+      }
+      catch (NumberFormatException e)
+      {
+        System.out.println ("NFE:");
+        //        System.out.println (dataset);
+        System.out.println (details);
+      }
     }
   }
 
