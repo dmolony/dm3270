@@ -69,12 +69,6 @@ public class ScreenDetails
     }
     else
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
-
-    if (false)
-    {
-      System.out.println (this);
-      screen.listTSOCommands ();
-    }
   }
 
   public boolean isKeyboardLocked ()
@@ -288,50 +282,64 @@ public class ScreenDetails
     int datasetsToProcess = 0;
     int nextLine = 0;
 
-    if (rowFields.size () == 3)
+    System.out.println (rowFields.size ());
+    switch (rowFields.size ())
     {
-      heading = rowFields.get (1).getText ().trim ();
-      if (heading.startsWith ("Tracks"))
-        screenType = 1;
-      else if (heading.startsWith ("Dsorg"))
-        screenType = 2;
-    }
-    else if (rowFields.size () == 4)
-    {
-      heading = rowFields.get (2).getText ().trim ();
-      if ("Volume".equals (heading))
-        screenType = 3;
-    }
-    else if (rowFields.size () == 6)
-    {
-      List<Field> rowFields2 = getRowFields (screenFields, 7);
-      if (rowFields2.size () == 1)
-      {
-        String line = rowFields2.get (0).getText ().trim ();
-        if (line.startsWith ("--"))
+      case 3:
+        heading = rowFields.get (1).getText ().trim ();
+        if (heading.startsWith ("Tracks"))
+          screenType = 1;
+        else if (heading.startsWith ("Dsorg"))
+          screenType = 2;
+        else
+          System.out.println ("Not 1 or 2");
+        break;
+
+      case 4:
+        heading = rowFields.get (2).getText ().trim ();
+        if ("Volume".equals (heading))
+          screenType = 3;
+        else
+          System.out.println ("Not 3");
+        break;
+
+      case 6:
+        List<Field> rowFields2 = getRowFields (screenFields, 7);
+        if (rowFields2.size () == 1)
         {
-          screenType = 5;
-          linesPerDataset = 2;
-          nextLine = 8;
-          datasetsToProcess = Math.min (maxRows, 6);
-        }
-        else if (line.equals ("Catalog"))
-        {
-          screenType = 4;
-          linesPerDataset = 3;
-          nextLine = 9;
-          datasetsToProcess = Math.min (maxRows, 4);
+          String line = rowFields2.get (0).getText ().trim ();
+          if (line.equals ("Catalog"))
+          {
+            screenType = 4;
+            linesPerDataset = 3;
+            nextLine = 9;
+            datasetsToProcess = Math.min (maxRows, 4);
+          }
+          else if (line.startsWith ("--"))
+          {
+            screenType = 5;
+            linesPerDataset = 2;
+            nextLine = 8;
+            datasetsToProcess = Math.min (maxRows, 6);
+          }
+          else
+            System.out.println ("Expected 'Catalog'");
         }
         else
-          System.out.println ("Expected 'Catalog'");
-      }
-      else
-        System.out.println ("unexpected fields size");
-    }
-    else
-      System.out.printf ("Unexpected number of fields: %d%n", rowFields.size ());
+          System.out.println ("Not 4 or 5");
+        break;
 
-    if (screenType >= 1 && screenType <= 3)
+      default:
+        System.out.printf ("Unexpected number of fields: %d%n", rowFields.size ());
+    }
+
+    if (screenType == 0)
+    {
+      System.out.println ("Screen not recognised");
+      return false;
+    }
+
+    if (screenType <= 3)
     {
       linesPerDataset = 1;
       nextLine = 7;
@@ -344,12 +352,6 @@ public class ScreenDetails
       System.out.printf ("Lines per dataset  : %d%n", linesPerDataset);
       System.out.printf ("First line         : %d%n", nextLine);
       System.out.printf ("Datasets to process: %d%n%n", datasetsToProcess);
-    }
-
-    if (screenType == 0)
-    {
-      System.out.println ("Screen not recognised");
-      return false;
     }
 
     while (datasetsToProcess > 0)
