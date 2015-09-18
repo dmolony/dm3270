@@ -160,11 +160,13 @@ public class ScreenDetails
     if (!ispfScreen.equals (heading) && !zosScreen.equals (heading))
       return;
 
-    field = screenFields.get (23);
-    if (!" User ID . :".equals (field.getText ()))
+    //    field = screenFields.get (23);
+    //    if (!" User ID . :".equals (field.getText ()))
+    //      return;
+    if (!textMatches (screenFields.get (23), " User ID . :", 457))
       return;
-    if (field.getFirstLocation () != 457)
-      return;
+    //    if (field.getFirstLocation () != 457)
+    //      return;
 
     field = screenFields.get (24);
     if (field.getFirstLocation () != 470)
@@ -172,11 +174,13 @@ public class ScreenDetails
 
     userid = field.getText ().trim ();
 
-    field = screenFields.get (72);
-    if (!" TSO prefix:".equals (field.getText ()))
+    //    field = screenFields.get (72);
+    //    if (!" TSO prefix:".equals (field.getText ()))
+    //      return;
+    if (!textMatches (screenFields.get (72), " TSO prefix:", 1017))
       return;
-    if (field.getFirstLocation () != 1017)
-      return;
+    //    if (field.getFirstLocation () != 1017)
+    //      return;
 
     field = screenFields.get (73);
     if (field.getFirstLocation () != 1030)
@@ -190,25 +194,30 @@ public class ScreenDetails
     if (screenFields.size () < 14)
       return false;
 
-    Field field = screenFields.get (10);
-    if (!ispfShell.equals (field.getText ()))
+    //    Field field = screenFields.get (10);
+    //    if (!ispfShell.equals (field.getText ()))
+    //      return false;
+    if (!textMatches (screenFields.get (10), ispfShell))
       return false;
 
     int workstationFieldNo = 13;
-    field = screenFields.get (workstationFieldNo);
+    //    Field field = screenFields.get (workstationFieldNo);
     String workstationText = "Enter TSO or Workstation commands below:";
-    if (!workstationText.equals (field.getText ()))
+    //    if (!workstationText.equals (field.getText ()))
+    if (!textMatches (screenFields.get (workstationFieldNo), workstationText))
     {
-      ++workstationFieldNo;
-      field = screenFields.get (workstationFieldNo);
-      if (!workstationText.equals (field.getText ()))
+      //      ++workstationFieldNo;
+      //      field = screenFields.get (workstationFieldNo);
+      //      if (!workstationText.equals (field.getText ()))
+      //        return false;
+      if (!textMatches (screenFields.get (++workstationFieldNo), workstationText))
         return false;
     }
 
     if (!listMatchesArray (getMenus (screenFields), tsoMenus))
       return false;
 
-    field = screenFields.get (workstationFieldNo + 5);
+    Field field = screenFields.get (workstationFieldNo + 5);
     if (field.getDisplayLength () != 234)
       return false;
 
@@ -282,7 +291,6 @@ public class ScreenDetails
     int datasetsToProcess = 0;
     int nextLine = 0;
 
-    System.out.println (rowFields.size ());
     switch (rowFields.size ())
     {
       case 3:
@@ -692,6 +700,21 @@ public class ScreenDetails
       if (!array[i++].equals (text))
         return false;
     return true;
+  }
+
+  private boolean textMatches (Field field, String text)
+  {
+    return text.matches (field.getText ());
+  }
+
+  private boolean textMatches (Field field, String text, int location)
+  {
+    return field.getFirstLocation () == location && text.matches (field.getText ());
+  }
+
+  private boolean textMatchesTrim (Field field, String text)
+  {
+    return text.matches (field.getText ().trim ());
   }
 
   private List<String> getMenus (List<Field> screenFields)
