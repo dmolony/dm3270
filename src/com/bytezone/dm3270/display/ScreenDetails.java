@@ -160,13 +160,8 @@ public class ScreenDetails
     if (!ispfScreen.equals (heading) && !zosScreen.equals (heading))
       return;
 
-    //    field = screenFields.get (23);
-    //    if (!" User ID . :".equals (field.getText ()))
-    //      return;
     if (!textMatches (screenFields.get (23), " User ID . :", 457))
       return;
-    //    if (field.getFirstLocation () != 457)
-    //      return;
 
     field = screenFields.get (24);
     if (field.getFirstLocation () != 470)
@@ -195,10 +190,8 @@ public class ScreenDetails
     int workstationFieldNo = 13;
     String workstationText = "Enter TSO or Workstation commands below:";
     if (!textMatches (screenFields.get (workstationFieldNo), workstationText))
-    {
       if (!textMatches (screenFields.get (++workstationFieldNo), workstationText))
         return false;
-    }
 
     if (!listMatchesArray (getMenus (screenFields), tsoMenus))
       return false;
