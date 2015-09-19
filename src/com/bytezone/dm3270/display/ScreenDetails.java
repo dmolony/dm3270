@@ -552,21 +552,9 @@ public class ScreenDetails
 
     if (!textMatchesTrim (screenFields.get (10), "Row", 221))
       return false;
-    //    field = screenFields.get (10);
-    //    if (field.getFirstLocation () != 221)
-    //      return false;
-    //    String rowText = field.getText ().trim ();
-    //    if (!"Row".equals (rowText))
-    //      return false;
 
     if (!textMatchesTrim (screenFields.get (12), "of", 231))
       return false;
-    //    field = screenFields.get (12);
-    //    if (field.getFirstLocation () != 231)
-    //      return false;
-    //    String ofText = field.getText ().trim ();
-    //    if (!"of".equals (ofText))
-    //      return false;
 
     int rowFrom = getInteger ("RowFrom", screenFields.get (11).getText ().trim ());
     int rowTo = getInteger ("RowTo", screenFields.get (13).getText ().trim ());
@@ -661,21 +649,23 @@ public class ScreenDetails
     if (fields.size () < 9)
       return;
 
-    Field field = fields.get (7);
+    if (!textMatches (fields.get (7), "BROWSE   ", 161))
+      return;
+    //    Field field = fields.get (7);
+    //    int location = field.getFirstLocation ();
+    //    if (location != 161)
+    //      return;
+    //
+    //    String text = field.getText ();
+    //    if (!text.equals ("BROWSE   "))
+    //      return;
+
+    Field field = fields.get (8);
     int location = field.getFirstLocation ();
-    if (location != 161)
-      return;
-
-    String text = field.getText ();
-    if (!text.equals ("BROWSE   "))
-      return;
-
-    field = fields.get (8);
-    location = field.getFirstLocation ();
     if (location != 171)
       return;
 
-    text = field.getText ().trim ();
+    String text = field.getText ().trim ();
     int pos = text.indexOf (' ');
     if (pos > 0)
       currentDataset = text.substring (0, pos);
