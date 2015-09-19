@@ -174,13 +174,8 @@ public class ScreenDetails
 
     userid = field.getText ().trim ();
 
-    //    field = screenFields.get (72);
-    //    if (!" TSO prefix:".equals (field.getText ()))
-    //      return;
     if (!textMatches (screenFields.get (72), " TSO prefix:", 1017))
       return;
-    //    if (field.getFirstLocation () != 1017)
-    //      return;
 
     field = screenFields.get (73);
     if (field.getFirstLocation () != 1030)
@@ -194,22 +189,13 @@ public class ScreenDetails
     if (screenFields.size () < 14)
       return false;
 
-    //    Field field = screenFields.get (10);
-    //    if (!ispfShell.equals (field.getText ()))
-    //      return false;
     if (!textMatches (screenFields.get (10), ispfShell))
       return false;
 
     int workstationFieldNo = 13;
-    //    Field field = screenFields.get (workstationFieldNo);
     String workstationText = "Enter TSO or Workstation commands below:";
-    //    if (!workstationText.equals (field.getText ()))
     if (!textMatches (screenFields.get (workstationFieldNo), workstationText))
     {
-      //      ++workstationFieldNo;
-      //      field = screenFields.get (workstationFieldNo);
-      //      if (!workstationText.equals (field.getText ()))
-      //        return false;
       if (!textMatches (screenFields.get (++workstationFieldNo), workstationText))
         return false;
     }
@@ -564,19 +550,23 @@ public class ScreenDetails
       return false;
     String datasetName = field.getText ().trim ();
 
-    field = screenFields.get (10);
-    if (field.getFirstLocation () != 221)
+    if (!textMatchesTrim (screenFields.get (10), "Row", 221))
       return false;
-    String rowText = field.getText ().trim ();
-    if (!"Row".equals (rowText))
-      return false;
+    //    field = screenFields.get (10);
+    //    if (field.getFirstLocation () != 221)
+    //      return false;
+    //    String rowText = field.getText ().trim ();
+    //    if (!"Row".equals (rowText))
+    //      return false;
 
-    field = screenFields.get (12);
-    if (field.getFirstLocation () != 231)
+    if (!textMatchesTrim (screenFields.get (12), "of", 231))
       return false;
-    String ofText = field.getText ().trim ();
-    if (!"of".equals (ofText))
-      return false;
+    //    field = screenFields.get (12);
+    //    if (field.getFirstLocation () != 231)
+    //      return false;
+    //    String ofText = field.getText ().trim ();
+    //    if (!"of".equals (ofText))
+    //      return false;
 
     int rowFrom = getInteger ("RowFrom", screenFields.get (11).getText ().trim ());
     int rowTo = getInteger ("RowTo", screenFields.get (13).getText ().trim ());
@@ -715,6 +705,12 @@ public class ScreenDetails
   private boolean textMatchesTrim (Field field, String text)
   {
     return text.matches (field.getText ().trim ());
+  }
+
+  private boolean textMatchesTrim (Field field, String text, int location)
+  {
+    return field.getFirstLocation () == location
+        && text.matches (field.getText ().trim ());
   }
 
   private List<String> getMenus (List<Field> screenFields)
