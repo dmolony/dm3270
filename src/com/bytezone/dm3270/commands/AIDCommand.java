@@ -19,30 +19,49 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 {
   public static final byte NO_AID_SPECIFIED = 0x60;
   public static final byte AID_READ_PARTITION = 0x61;
+  public static final byte AID_CLEAR_PARTITION = 0x6A;
   public static final byte AID_PA3 = 0x6B;
   public static final byte AID_PA1 = 0x6C;
   public static final byte AID_CLEAR = 0x6D;
   public static final byte AID_PA2 = 0x6E;
   public static final byte AID_ENTER = 0x7D;
+  public static final byte AID_PF1 = (byte) 0xF1;
+  public static final byte AID_PF2 = (byte) 0xF2;
+  public static final byte AID_PF3 = (byte) 0xF3;
+  public static final byte AID_PF4 = (byte) 0xF4;
+  public static final byte AID_PF5 = (byte) 0xF5;
+  public static final byte AID_PF6 = (byte) 0xF6;
   public static final byte AID_PF7 = (byte) 0xF7;
   public static final byte AID_PF8 = (byte) 0xF8;
+  public static final byte AID_PF9 = (byte) 0xF9;
   public static final byte AID_PF10 = (byte) 0x7A;
   public static final byte AID_PF11 = (byte) 0x7B;
+  public static final byte AID_PF12 = (byte) 0x7C;
+  public static final byte AID_PF13 = (byte) 0xC1;
+  public static final byte AID_PF14 = (byte) 0xC2;
+  public static final byte AID_PF15 = (byte) 0xC3;
+  public static final byte AID_PF16 = (byte) 0xC4;
+  public static final byte AID_PF17 = (byte) 0xC5;
+  public static final byte AID_PF18 = (byte) 0xC6;
+  public static final byte AID_PF19 = (byte) 0xC7;
+  public static final byte AID_PF20 = (byte) 0xC8;
+  public static final byte AID_PF21 = (byte) 0xC9;
+  public static final byte AID_PF22 = (byte) 0x4A;
+  public static final byte AID_PF23 = (byte) 0x4B;
+  public static final byte AID_PF24 = (byte) 0x4C;
 
   private static byte[] keys =
-      { 0, NO_AID_SPECIFIED, AID_ENTER, //
-        (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
-        (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0x7A, (byte) 0x7B, (byte) 0x7C,
-        (byte) 0xC1, (byte) 0xC2, (byte) 0xC3, (byte) 0xC4, (byte) 0xC5, (byte) 0xC6,
-        (byte) 0xC7, (byte) 0xC8, (byte) 0xC9, (byte) 0x4A, (byte) 0x4B, (byte) 0x4C,
-        AID_PA1, AID_PA2, AID_PA3, AID_CLEAR, (byte) 0x6A, AID_READ_PARTITION };
+      { 0, NO_AID_SPECIFIED, AID_ENTER, AID_PF1, AID_PF2, AID_PF3, AID_PF4, AID_PF5,
+        AID_PF6, AID_PF7, AID_PF8, AID_PF9, AID_PF10, AID_PF11, AID_PF12, AID_PF13,
+        AID_PF14, AID_PF15, AID_PF16, AID_PF17, AID_PF18, AID_PF19, AID_PF20, AID_PF21,
+        AID_PF22, AID_PF23, AID_PF24, AID_PA1, AID_PA2, AID_PA3, AID_CLEAR,
+        AID_CLEAR_PARTITION, AID_READ_PARTITION };
 
   private static String[] keyNames =
-      { "Not found", "No AID", "ENTR", //
-        "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7", "PF8", "PF9", "PF10", "PF11",
-        "PF12", "PF13", "PF14", "PF15", "PF16", "PF17", "PF18", "PF19", "PF20", "PF21",
-        "PF22", "PF23", "PF24", //
-        "PA1", "PA2", "PA3", "CLR", "CLR Partition", "Read Partition" };
+      { "Not found", "No AID", "ENTR", "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7",
+        "PF8", "PF9", "PF10", "PF11", "PF12", "PF13", "PF14", "PF15", "PF16", "PF17",
+        "PF18", "PF19", "PF20", "PF21", "PF22", "PF23", "PF24", "PA1", "PA2", "PA3",
+        "CLR", "CLR Partition", "Read Partition" };
 
   private int key;
   private byte keyCommand;
@@ -304,34 +323,34 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     SetBufferAddressOrder sbaOrder;
     List<Order> orders = new ArrayList<> ();
 
-    public ModifiedField (SetBufferAddressOrder sbaOrder)
+    ModifiedField (SetBufferAddressOrder sbaOrder)
     {
       this.sbaOrder = sbaOrder;
     }
 
-    public void addOrder (Order order)
+    void addOrder (Order order)
     {
       orders.add (order);
     }
 
-    public int getLocation ()
+    int getLocation ()
     {
       return sbaOrder.getBufferAddress ().getLocation ();
     }
 
-    public void scramble ()
+    void scramble ()
     {
       for (Order order : orders)
         if (order instanceof TextOrder)
           ((TextOrder) order).scramble ();
     }
 
-    public boolean hasData ()
+    boolean hasData ()
     {
       return getBuffer ().length > 0;
     }
 
-    public byte[] getBuffer ()
+    byte[] getBuffer ()
     {
       for (Order order : orders)
         if (order instanceof TextOrder)
