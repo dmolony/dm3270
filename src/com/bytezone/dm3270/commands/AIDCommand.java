@@ -160,11 +160,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   @Override
   public void process ()
   {
-    // test to see whether this is data entry that was null suppressed into moving
-    // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
-    boolean done = modifiedFields.size () == 1 && checkForPrettyMove ();
-
-    if (!done)
+    if (!prettyMoveHandled ())
     {
       ScreenDetails screenDetails = screen.getScreenDetails ();
       FieldManager fieldManager = screen.getFieldManager ();
@@ -205,24 +201,29 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     screen.lockKeyboard (keyNames[key]);
   }
 
-  private boolean checkForPrettyMove ()
+  // test to see whether this is data entry that was null suppressed into moving
+  // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
+  private boolean prettyMoveHandled ()
   {
-    Cursor cursor = screen.getScreenCursor ();
-    Field currentField = cursor.getCurrentField ();
-    if (currentField != null)
+    if (modifiedFields.size () == 1)
     {
-      int cursorOldLocation = cursor.getLocation ();
-      if (cursorOldLocation != currentField.getFirstLocation ()
-          && currentField.contains (cursorOldLocation))
+      Cursor cursor = screen.getScreenCursor ();
+      Field currentField = cursor.getCurrentField ();
+      if (currentField != null)
       {
-        int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
-        byte[] buffer = modifiedFields.get (0).getBuffer ();
-        if (buffer.length == cursorDistance)
+        int cursorOldLocation = cursor.getLocation ();
+        if (cursorOldLocation != currentField.getFirstLocation ()
+            && currentField.contains (cursorOldLocation))
         {
-          // cannot call field.setText() as the data starts mid-field
-          for (byte b : buffer)
-            cursor.typeChar (b);// send characters through the old cursor
-          return true;
+          int cursorDistance = cursorAddress.getLocation () - cursorOldLocation;
+          byte[] buffer = modifiedFields.get (0).getBuffer ();
+          if (buffer.length == cursorDistance)
+          {
+            // cannot call field.setText() as the data starts mid-field
+            for (byte b : buffer)
+              cursor.typeChar (b);// send characters through the old cursor
+            return true;
+          }
         }
       }
     }
