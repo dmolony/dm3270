@@ -181,9 +181,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
         if (aidField.hasData ())
         {
-          byte[] buffer = aidField.getBuffer ();
-          field.setText (buffer);
-
+          field.setText (aidField.getBuffer ());
           if (field == tsoCommandField)
             screen.addTSOCommand (field.getText ());
         }
