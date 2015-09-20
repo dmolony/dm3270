@@ -48,19 +48,19 @@ public class BatchJobTable extends TableView<BatchJob>
       column.setStyle ("-fx-alignment: CENTER;");
   }
 
-  public void addBatchJob (BatchJob batchJob)
+  public void addBatchJob (BatchJob newBatchJob)
   {
-    for (BatchJob bj : batchJobs)
-      if (bj.matches (batchJob))
+    for (BatchJob batchJob : batchJobs)
+      if (batchJob.matches (newBatchJob))
         return;
 
-    batchJobs.add (batchJob);
+    batchJobs.add (newBatchJob);
   }
 
   void setOutlist (String jobName, String jobNumber, String outlist)
   {
     for (BatchJob batchJob : batchJobs)
-      if (batchJob.getJobNumber ().equals (jobNumber))
+      if (batchJob.matches (jobNumber))
       {
         batchJob.setOutputFile (outlist);
         break;

@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.assistant;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -13,7 +12,6 @@ public class BatchJob
   private StringProperty propertyJobCompleted;
   private StringProperty propertyConditionCode;
   private StringProperty propertyOutputFile;
-  private IntegerProperty propertyRandom;
 
   public BatchJob (int jobNumber, String jobName)
   {
@@ -31,6 +29,11 @@ public class BatchJob
   public boolean matches (int jobNumber)
   {
     return this.jobNumber == jobNumber;
+  }
+
+  public boolean matches (String jobNumber)
+  {
+    return propertyJobNumber.getValue ().equals (jobNumber);
   }
 
   public void completed (String timeCompleted, int conditionCode)

@@ -41,11 +41,6 @@ public class BatchJobTab extends AbstractTransferTab
     fireJobSelected (batchJob);
   }
 
-  //  private void addBatchJob (BatchJob batchJob)
-  //  {
-  //    jobTable.addJob (batchJob);
-  //  }
-
   public BatchJob getBatchJob (int jobNumber)
   {
     return jobTable.getBatchJob (jobNumber);
