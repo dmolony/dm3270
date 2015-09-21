@@ -17,6 +17,7 @@ public class ScreenDetails
   private static String ispfShell = "ISPF Command Shell";
 
   private final Screen screen;
+  private FieldManager fieldManager;
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -45,6 +46,7 @@ public class ScreenDetails
     datasets.clear ();
     members.clear ();
     currentDataset = "";
+    this.fieldManager = fieldManager;
 
     List<Field> screenFields = fieldManager.getFields ();
     if (screenFields.size () <= 2)
@@ -123,7 +125,7 @@ public class ScreenDetails
 
   private boolean hasPromptField (List<Field> screenFields)
   {
-    List<Field> rowFields = getRowFields (screenFields, 2, 2);
+    List<Field> rowFields = fieldManager.getRowFields (2, 2);
     for (int i = 0; i < rowFields.size (); i++)
     {
       Field field = rowFields.get (i);
@@ -213,7 +215,7 @@ public class ScreenDetails
     if (screenFields.size () < 21)
       return false;
 
-    List<Field> rowFields = getRowFields (screenFields, 2, 2);
+    List<Field> rowFields = fieldManager.getRowFields (2, 2);
     if (rowFields.size () == 0)
       return false;
 
@@ -256,7 +258,7 @@ public class ScreenDetails
       System.out.printf ("Max rows  : %d%n%n", maxRows);
     }
 
-    rowFields = getRowFields (screenFields, 5, 2);
+    rowFields = fieldManager.getRowFields (5, 2);
     if (rowFields.size () == 0)
       return false;
 
@@ -291,7 +293,7 @@ public class ScreenDetails
         break;
 
       case 6:
-        List<Field> rowFields2 = getRowFields (screenFields, 7);
+        List<Field> rowFields2 = fieldManager.getRowFields (7);
         if (rowFields2.size () == 1)
         {
           String line = rowFields2.get (0).getText ().trim ();
@@ -344,7 +346,7 @@ public class ScreenDetails
     while (datasetsToProcess > 0)
     {
       Dataset dataset = null;
-      rowFields = getRowFields (screenFields, nextLine, linesPerDataset);
+      rowFields = fieldManager.getRowFields (nextLine, linesPerDataset);
 
       switch (screenType)
       {
@@ -552,12 +554,12 @@ public class ScreenDetails
     int rowFrom = getInteger ("RowFrom", screenFields.get (11).getText ().trim ());
     int rowTo = getInteger ("RowTo", screenFields.get (13).getText ().trim ());
 
-    List<Field> headings = getRowFields (screenFields, 4);
+    List<Field> headings = fieldManager.getRowFields (4);
     int maxRows = Math.min (19, rowTo - rowFrom + 1) + 5;
 
     for (int row = 5; row < maxRows; row++)
     {
-      List<Field> rowFields = getRowFields (screenFields, row);
+      List<Field> rowFields = fieldManager.getRowFields (row);
 
       String memberName = rowFields.get (1).getText ().trim ();
       Dataset member = new Dataset (datasetName + "(" + memberName + ")");
@@ -644,14 +646,6 @@ public class ScreenDetails
 
     if (!textMatches (fields.get (7), "BROWSE   ", 161))
       return;
-    //    Field field = fields.get (7);
-    //    int location = field.getFirstLocation ();
-    //    if (location != 161)
-    //      return;
-    //
-    //    String text = field.getText ();
-    //    if (!text.equals ("BROWSE   "))
-    //      return;
 
     Field field = fields.get (8);
     int location = field.getFirstLocation ();
@@ -714,37 +708,6 @@ public class ScreenDetails
     }
 
     return menus;
-  }
-
-  private List<Field> getRowFields (List<Field> fields, int requestedRow)
-  {
-    int firstLocation = requestedRow * screen.columns;
-    int lastLocation = firstLocation + screen.columns - 1;
-    return getFieldsInRange (fields, firstLocation, lastLocation);
-  }
-
-  private List<Field> getRowFields (List<Field> fields, int requestedRowFrom, int rows)
-  {
-    int firstLocation = requestedRowFrom * screen.columns;
-    int lastLocation = (requestedRowFrom + rows) * screen.columns - 1;
-    return getFieldsInRange (fields, firstLocation, lastLocation);
-  }
-
-  private List<Field> getFieldsInRange (List<Field> fields, int firstLocation,
-      int lastLocation)
-  {
-    List<Field> rowFields = new ArrayList<> ();
-    for (Field field : fields)
-    {
-      int location = field.getFirstLocation ();
-      if (location < firstLocation)
-        continue;
-      if (location > lastLocation)
-        break;
-      if (field.getDisplayLength () > 0)
-        rowFields.add (field);
-    }
-    return rowFields;
   }
 
   private void dumpFields (List<Field> fields)

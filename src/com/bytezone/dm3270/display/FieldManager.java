@@ -188,6 +188,36 @@ public class FieldManager
     return screen.columns;
   }
 
+  List<Field> getRowFields (int requestedRow)
+  {
+    int firstLocation = requestedRow * screen.columns;
+    int lastLocation = firstLocation + screen.columns - 1;
+    return getFieldsInRange (firstLocation, lastLocation);
+  }
+
+  List<Field> getRowFields (int requestedRowFrom, int rows)
+  {
+    int firstLocation = requestedRowFrom * screen.columns;
+    int lastLocation = (requestedRowFrom + rows) * screen.columns - 1;
+    return getFieldsInRange (firstLocation, lastLocation);
+  }
+
+  private List<Field> getFieldsInRange (int firstLocation, int lastLocation)
+  {
+    List<Field> rowFields = new ArrayList<> ();
+    for (Field field : fields)
+    {
+      int location = field.getFirstLocation ();
+      if (location < firstLocation)
+        continue;
+      if (location > lastLocation)
+        break;
+      if (field.getDisplayLength () > 0)
+        rowFields.add (field);
+    }
+    return rowFields;
+  }
+
   // ---------------------------------------------------------------------------------//
   // Convert internal Fields to ScreenFields for use by plugins
   // ---------------------------------------------------------------------------------//
