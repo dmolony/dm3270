@@ -320,7 +320,7 @@ public class PluginsStage extends PreferencesStage
 
     for (PluginField screenField : data.changedFields)
     {
-      Field field = fieldManager.getField (screenField.location.location);   // first display location
+      Field field = fieldManager.getFieldAt (screenField.location.location);   // first display location
       assert field != null;
       if (field != null)    // should be impossible
       {

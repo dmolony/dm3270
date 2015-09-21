@@ -144,7 +144,7 @@ public class FieldManager
         ++hiddenUnprotectedFields;
   }
 
-  public Field getField (int position)// this needs to be improved
+  public Field getFieldAt (int position)// this needs to be improved
   {
     for (Field field : fields)
       if (field.contains (position))
@@ -248,6 +248,26 @@ public class FieldManager
   {
     return field.getFirstLocation () == location
         && text.matches (field.getText ().trim ());
+  }
+
+  List<String> getMenus ()
+  {
+    List<String> menus = new ArrayList<> ();
+
+    for (Field field : fields)
+    {
+      if (field.getFirstLocation () >= screen.columns)
+        break;
+
+      if (field.isProtected () && field.isVisible () && field.getDisplayLength () > 1)
+      {
+        String text = field.getText ().trim ();
+        if (!text.isEmpty ())
+          menus.add (text);
+      }
+    }
+
+    return menus;
   }
 
   // ---------------------------------------------------------------------------------//

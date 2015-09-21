@@ -52,7 +52,7 @@ public class ScreenDetails
     if (screenFields.size () <= 2)
       return;
 
-    if (hasPromptField (screenFields))
+    if (hasPromptField ())
     {
       if (prefix.isEmpty ())
         checkPrefixScreen (screenFields);// initial ISPF screen
@@ -123,7 +123,7 @@ public class ScreenDetails
     return members;
   }
 
-  private boolean hasPromptField (List<Field> screenFields)
+  private boolean hasPromptField ()
   {
     List<Field> rowFields = fieldManager.getRowFields (2, 2);
     for (int i = 0; i < rowFields.size (); i++)
@@ -195,7 +195,7 @@ public class ScreenDetails
       if (!fieldManager.textMatches (++workstationFieldNo, workstationText))
         return false;
 
-    if (!listMatchesArray (getMenus (screenFields), tsoMenus))
+    if (!listMatchesArray (fieldManager.getMenus (), tsoMenus))
       return false;
 
     Field field = screenFields.get (workstationFieldNo + 5);
@@ -528,7 +528,7 @@ public class ScreenDetails
     if (screenFields.size () < 14)
       return false;
 
-    if (!listMatchesArray (getMenus (screenFields), pdsMenus))
+    if (!listMatchesArray (fieldManager.getMenus (), pdsMenus))
       return false;
 
     Field field = screenFields.get (8);
@@ -537,7 +537,7 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!mode.equals ("EDIT") && !mode.equals ("BROWSE"))
+    if (!(mode.equals ("EDIT") || mode.equals ("BROWSE")))
       System.out.printf ("Unexpected mode: [%s]%n", mode);
 
     field = screenFields.get (9);
@@ -667,26 +667,6 @@ public class ScreenDetails
       if (!array[i++].equals (text))
         return false;
     return true;
-  }
-
-  private List<String> getMenus (List<Field> screenFields)
-  {
-    List<String> menus = new ArrayList<> ();
-
-    for (Field field : screenFields)
-    {
-      if (field.getFirstLocation () >= screen.columns)
-        break;
-
-      if (field.isProtected () && field.isVisible () && field.getDisplayLength () > 1)
-      {
-        String text = field.getText ().trim ();
-        if (!text.isEmpty ())
-          menus.add (text);
-      }
-    }
-
-    return menus;
   }
 
   private void dumpFields (List<Field> fields)
