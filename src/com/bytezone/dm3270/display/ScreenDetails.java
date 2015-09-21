@@ -162,7 +162,7 @@ public class ScreenDetails
     if (!ispfScreen.equals (heading) && !zosScreen.equals (heading))
       return;
 
-    if (!textMatches (screenFields.get (23), " User ID . :", 457))
+    if (!fieldManager.textMatches (23, " User ID . :", 457))
       return;
 
     field = screenFields.get (24);
@@ -171,7 +171,7 @@ public class ScreenDetails
 
     userid = field.getText ().trim ();
 
-    if (!textMatches (screenFields.get (72), " TSO prefix:", 1017))
+    if (!fieldManager.textMatches (72, " TSO prefix:", 1017))
       return;
 
     field = screenFields.get (73);
@@ -186,13 +186,13 @@ public class ScreenDetails
     if (screenFields.size () < 14)
       return false;
 
-    if (!textMatches (screenFields.get (10), ispfShell))
+    if (!fieldManager.textMatches (10, ispfShell))
       return false;
 
     int workstationFieldNo = 13;
     String workstationText = "Enter TSO or Workstation commands below:";
-    if (!textMatches (screenFields.get (workstationFieldNo), workstationText))
-      if (!textMatches (screenFields.get (++workstationFieldNo), workstationText))
+    if (!fieldManager.textMatches (workstationFieldNo, workstationText))
+      if (!fieldManager.textMatches (++workstationFieldNo, workstationText))
         return false;
 
     if (!listMatchesArray (getMenus (screenFields), tsoMenus))
@@ -545,10 +545,10 @@ public class ScreenDetails
       return false;
     String datasetName = field.getText ().trim ();
 
-    if (!textMatchesTrim (screenFields.get (10), "Row", 221))
+    if (!fieldManager.textMatchesTrim (screenFields.get (10), "Row", 221))
       return false;
 
-    if (!textMatchesTrim (screenFields.get (12), "of", 231))
+    if (!fieldManager.textMatchesTrim (screenFields.get (12), "of", 231))
       return false;
 
     int rowFrom = getInteger ("RowFrom", screenFields.get (11).getText ().trim ());
@@ -644,7 +644,7 @@ public class ScreenDetails
     if (fields.size () < 9)
       return;
 
-    if (!textMatches (fields.get (7), "BROWSE   ", 161))
+    if (!fieldManager.textMatches (fields.get (7), "BROWSE   ", 161))
       return;
 
     Field field = fields.get (8);
@@ -667,27 +667,6 @@ public class ScreenDetails
       if (!array[i++].equals (text))
         return false;
     return true;
-  }
-
-  private boolean textMatches (Field field, String text)
-  {
-    return text.matches (field.getText ());
-  }
-
-  private boolean textMatches (Field field, String text, int location)
-  {
-    return field.getFirstLocation () == location && text.matches (field.getText ());
-  }
-
-  private boolean textMatchesTrim (Field field, String text)
-  {
-    return text.matches (field.getText ().trim ());
-  }
-
-  private boolean textMatchesTrim (Field field, String text, int location)
-  {
-    return field.getFirstLocation () == location
-        && text.matches (field.getText ().trim ());
   }
 
   private List<String> getMenus (List<Field> screenFields)

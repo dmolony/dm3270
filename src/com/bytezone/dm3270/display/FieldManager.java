@@ -218,6 +218,38 @@ public class FieldManager
     return rowFields;
   }
 
+  boolean textMatches (Field field, String text)
+  {
+    return text.matches (field.getText ());
+  }
+
+  boolean textMatches (int fieldNo, String text)
+  {
+    return text.matches (fields.get (fieldNo).getText ());
+  }
+
+  boolean textMatches (Field field, String text, int location)
+  {
+    return field.getFirstLocation () == location && text.matches (field.getText ());
+  }
+
+  boolean textMatches (int fieldNo, String text, int location)
+  {
+    Field field = fields.get (fieldNo);
+    return field.getFirstLocation () == location && text.matches (field.getText ());
+  }
+
+  boolean textMatchesTrim (Field field, String text)
+  {
+    return text.matches (field.getText ().trim ());
+  }
+
+  boolean textMatchesTrim (Field field, String text, int location)
+  {
+    return field.getFirstLocation () == location
+        && text.matches (field.getText ().trim ());
+  }
+
   // ---------------------------------------------------------------------------------//
   // Convert internal Fields to ScreenFields for use by plugins
   // ---------------------------------------------------------------------------------//
