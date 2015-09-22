@@ -188,6 +188,10 @@ public class FieldManager
     return screen.columns;
   }
 
+  // ---------------------------------------------------------------------------------//
+      // Field utilities
+      // ---------------------------------------------------------------------------------//
+
   List<Field> getRowFields (int requestedRow)
   {
     int firstLocation = requestedRow * screen.columns;
