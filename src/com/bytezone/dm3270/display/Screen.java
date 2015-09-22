@@ -117,9 +117,19 @@ public class Screen extends Canvas implements DisplayScreen
     return fieldManager;
   }
 
-  public ScreenDetails getScreenDetails ()
+  public boolean isTSOCommandScreen ()
   {
-    return fieldManager.getScreenDetails ();
+    return fieldManager.getScreenDetails ().isTSOCommandScreen ();
+  }
+
+  public Field getTSOCommandField ()
+  {
+    return fieldManager.getScreenDetails ().getTSOCommandField ();
+  }
+
+  public String getPrefix ()
+  {
+    return fieldManager.getScreenDetails ().getPrefix ();
   }
 
   public FontManager getFontManager ()

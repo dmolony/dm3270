@@ -8,7 +8,6 @@ import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
 import com.bytezone.dm3270.orders.Order;
@@ -162,11 +161,11 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   {
     if (!prettyMoveHandled ())
     {
-      ScreenDetails screenDetails = screen.getScreenDetails ();
+      //      ScreenDetails screenDetails = screen.getScreenDetails ();
       FieldManager fieldManager = screen.getFieldManager ();
-      Field tsoCommandField = screenDetails.getTSOCommandField ();
+      Field tsoCommandField = screen.getTSOCommandField ();
 
-      if (modifiedFields.size () == 0 && screenDetails.isTSOCommandScreen ())
+      if (modifiedFields.size () == 0 && screen.isTSOCommandScreen ())
       {
         String tsoCommand = tsoCommandField.getText ();
         if (!tsoCommand.isEmpty ())
