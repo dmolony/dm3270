@@ -25,7 +25,7 @@ public class FieldManager
   public FieldManager (Screen screen)
   {
     this.screen = screen;
-    screenDetails = new ScreenDetails (screen, this);
+    screenDetails = new ScreenDetails (this, screen.columns);
   }
 
   // a new ScreenDetails should be sent to ScreenChangeListeners

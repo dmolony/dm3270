@@ -16,8 +16,9 @@ public class ScreenDetails
   private static String zosScreen = "z/OS Primary Option Menu";
   private static String ispfShell = "ISPF Command Shell";
 
-  private final Screen screen;
+  //  private final Screen screen;
   private final FieldManager fieldManager;
+  private final int screenColumns;
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -34,10 +35,10 @@ public class ScreenDetails
   private String userid = "";
   private String prefix = "";
 
-  public ScreenDetails (Screen screen, FieldManager fieldManager)
+  public ScreenDetails (FieldManager fieldManager, int screenColumns)
   {
-    this.screen = screen;
     this.fieldManager = fieldManager;
+    this.screenColumns = screenColumns;
   }
 
   public void check ()
@@ -72,11 +73,6 @@ public class ScreenDetails
     else
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
   }
-
-  //  public boolean isKeyboardLocked ()
-  //  {
-  //    return screen.isKeyboardLocked ();
-  //  }
 
   public Field getTSOCommandField ()
   {
@@ -130,7 +126,7 @@ public class ScreenDetails
     {
       Field field = rowFields.get (i);
       String text = field.getText ();
-      int column = field.getFirstLocation () % screen.columns;
+      int column = field.getFirstLocation () % screenColumns;
       int nextFieldNo = i + 1;
       if (nextFieldNo < rowFields.size () && column == 1
           && ("Command ===>".equals (text) || "Option ===>".equals (text)))
