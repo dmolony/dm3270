@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
+import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -17,8 +19,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class TransfersTab extends AbstractTransferTab implements ScreenChangeListener,
-    DatasetSelectionListener, FileSelectionListener, BatchJobSelectionListener
+public class TransfersTab extends AbstractTransferTab
+    implements ScreenChangeListener, KeyboardStatusListener, DatasetSelectionListener,
+    FileSelectionListener, BatchJobSelectionListener
 {
   private static final int LABEL_WIDTH = 100;
 
@@ -193,7 +196,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
   }
 
   @Override
-      void setText ()
+  protected void setText ()
   {
     RadioButton selectedFileButton = (RadioButton) grpFileName.getSelectedToggle ();
     if (selectedFileButton == null)
@@ -208,13 +211,21 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
         (RadioButton) grpDisposition.getSelectedToggle ();
 
     txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
+
     ScreenDetails screenDetails = screen.getScreenDetails ();
     btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }
 
   @Override
-  public void screenChanged ()
+  public void screenChanged (ScreenDetails screenDetails)
+  {
+    if (isSelected ())
+      setText ();
+  }
+
+  @Override
+  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
     if (isSelected ())
       setText ();

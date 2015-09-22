@@ -143,9 +143,9 @@ public class TransferStage extends Stage implements ScreenChangeListener
   }
 
   @Override
-  public void screenChanged ()
+  public void screenChanged (ScreenDetails screenDetails)
   {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
+    //    ScreenDetails screenDetails = screen.getScreenDetails ();
     String datasetName = screenDetails.getCurrentDataset ();
 
     if (!datasetName.isEmpty ())

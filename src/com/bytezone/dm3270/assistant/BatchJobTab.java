@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
+import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -13,7 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 public class BatchJobTab extends AbstractTransferTab
-    implements ScreenChangeListener, BatchJobListener
+    implements ScreenChangeListener, KeyboardStatusListener, BatchJobListener
 {
   private static final Pattern outlistPattern = Pattern
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");
@@ -59,14 +61,21 @@ public class BatchJobTab extends AbstractTransferTab
   }
 
   @Override
-  public void screenChanged ()
+  public void screenChanged (ScreenDetails screenDetails)
   {
     if (isSelected ())
       setText ();
   }
 
   @Override
-      void setText ()
+  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
+  {
+    if (isSelected ())
+      setText ();
+  }
+
+  @Override
+  protected void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
     if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)

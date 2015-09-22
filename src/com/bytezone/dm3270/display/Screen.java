@@ -93,7 +93,7 @@ public class Screen extends Canvas implements DisplayScreen
     for (int i = 0; i < screenSize; i++)
       screenPositions[i] = new ScreenPosition (i, graphicsContext, fontData, baseContext);
 
-    addTSOCommandStatusChangeListener (assistantStage);
+    fieldManager.addScreenChangeListener (assistantStage);
   }
 
   public void setStatusText (String text)
@@ -264,7 +264,7 @@ public class Screen extends Canvas implements DisplayScreen
   public void buildFields (WriteControlCharacter wcc)
   {
     fieldManager.buildFields ();// what about resetModified?
-    notifyScreenChangeListeners ();
+    //    fireScreenChanged ();
   }
 
   public void checkRecording ()
@@ -507,23 +507,23 @@ public class Screen extends Canvas implements DisplayScreen
     keyboardChangeListeners.remove (listener);
   }
 
-  private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
-
-  void notifyScreenChangeListeners ()
-  {
-    for (ScreenChangeListener listener : screenChangeListeners)
-      listener.screenChanged ();
-  }
-
-  public void addTSOCommandStatusChangeListener (ScreenChangeListener listener)
-  {
-    screenChangeListeners.add (listener);
-  }
-
-  public void removeTSOCommandStatusChangeListener (ScreenChangeListener listener)
-  {
-    screenChangeListeners.remove (listener);
-  }
+  //  private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
+  //
+  //  private void fireScreenChanged ()
+  //  {
+  //    for (ScreenChangeListener listener : screenChangeListeners)
+  //      listener.screenChanged ();
+  //  }
+  //
+  //  public void addTSOCommandStatusChangeListener (ScreenChangeListener listener)
+  //  {
+  //    screenChangeListeners.add (listener);
+  //  }
+  //
+  //  public void removeTSOCommandStatusChangeListener (ScreenChangeListener listener)
+  //  {
+  //    screenChangeListeners.remove (listener);
+  //  }
 
   // ---------------------------------------------------------------------------------//
   // Screen history

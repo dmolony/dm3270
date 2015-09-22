@@ -10,6 +10,7 @@ import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandListener;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
@@ -43,6 +44,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final TransfersTab transfersTab;
   private final CommandsTab commandsTab;
   private final List<ScreenChangeListener> screenChangeListeners;
+  private final List<KeyboardStatusListener> keyboardStatusListeners;
 
   public AssistantStage (Screen screen)
   {
@@ -62,6 +64,8 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tabPane.setTabMinWidth (80);
 
     screenChangeListeners =
+        Arrays.asList (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
+    keyboardStatusListeners =
         Arrays.asList (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
 
     datasetTab.addDatasetSelectionListener (transfersTab);
@@ -164,16 +168,17 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   }
 
   @Override
-  public void screenChanged ()
+  public void screenChanged (ScreenDetails screenDetails)
   {
     for (ScreenChangeListener listener : screenChangeListeners)
-      listener.screenChanged ();
+      listener.screenChanged (screenDetails);
   }
 
   @Override
   public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
-    screenChanged ();
+    for (KeyboardStatusListener listener : keyboardStatusListeners)
+      listener.keyboardStatusChanged (evt);
   }
 
   @Override

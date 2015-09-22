@@ -29,5 +29,5 @@ public abstract class AbstractTransferTab extends Tab
     btnExecute.setDisable (true);
   }
 
-  abstract void setText ();
+  abstract protected void setText ();
 }

@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
+import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -12,7 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class CommandsTab extends AbstractTransferTab
-    implements TSOCommandListener, ScreenChangeListener
+    implements TSOCommandListener, KeyboardStatusListener, ScreenChangeListener
 {
   ObservableList<String> commands = FXCollections.observableArrayList ();
   ListView<String> commandList = new ListView<> (commands);
@@ -28,7 +30,7 @@ public class CommandsTab extends AbstractTransferTab
   }
 
   @Override
-      void setText ()
+  protected void setText ()
   {
     String selectedCommand = commandList.getSelectionModel ().getSelectedItem ();
     ScreenDetails screenDetails = screen.getScreenDetails ();
@@ -60,7 +62,14 @@ public class CommandsTab extends AbstractTransferTab
   }
 
   @Override
-  public void screenChanged ()
+  public void screenChanged (ScreenDetails screenDetails)
+  {
+    if (isSelected ())
+      setText ();
+  }
+
+  @Override
+  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
     if (isSelected ())
       setText ();

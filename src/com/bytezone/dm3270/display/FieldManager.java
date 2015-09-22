@@ -1,7 +1,9 @@
 package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.bytezone.dm3270.plugins.PluginData;
 import com.bytezone.dm3270.plugins.PluginField;
@@ -128,6 +130,7 @@ public class FieldManager
     }
 
     screenDetails.check ();// should fireScreenChanged(new ScreenDetails())
+    fireScreenChanged (screenDetails);
   }
 
   private void addField (Field field)
@@ -292,6 +295,28 @@ public class FieldManager
       screenFields.add (field.getScreenField (sequence, count++));
 
     return new PluginData (sequence, row, column, screenFields);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // ScreenChangeListeners
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
+
+  private void fireScreenChanged (ScreenDetails screenDetails)
+  {
+    for (ScreenChangeListener listener : screenChangeListeners)
+      listener.screenChanged (screenDetails);
+  }
+
+  public void addScreenChangeListener (ScreenChangeListener listener)
+  {
+    screenChangeListeners.add (listener);
+  }
+
+  public void removeScreenChangeListener (ScreenChangeListener listener)
+  {
+    screenChangeListeners.remove (listener);
   }
 
   // ---------------------------------------------------------------------------------//

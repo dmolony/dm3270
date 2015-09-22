@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
+import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -21,7 +23,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 
 public class FilesTab extends AbstractTransferTab
-    implements ScreenChangeListener, NodeSelectionListener
+    implements ScreenChangeListener, KeyboardStatusListener, NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
@@ -117,14 +119,21 @@ public class FilesTab extends AbstractTransferTab
   }
 
   @Override
-  public void screenChanged ()
+  public void screenChanged (ScreenDetails screenDetails)
   {
     if (isSelected ())
       setText ();
   }
 
   @Override
-      void setText ()
+  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
+  {
+    if (isSelected ())
+      setText ();
+  }
+
+  @Override
+  protected void setText ()
   {
     ScreenDetails screenDetails = screen.getScreenDetails ();
     if (currentFileNode == null)
