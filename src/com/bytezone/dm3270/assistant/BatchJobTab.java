@@ -6,16 +6,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
-import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class BatchJobTab extends AbstractTransferTab
-    implements ScreenChangeListener, KeyboardStatusListener, BatchJobListener
+public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
 {
   private static final Pattern outlistPattern = Pattern
       .compile ("(TSO )?OUT ([A-Z0-9]{2,8})\\((JOB(\\d+))\\) PRINT\\(([A-Z0-9]+)\\)");

@@ -7,9 +7,7 @@ import java.util.Set;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
-import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
@@ -22,8 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 
-public class FilesTab extends AbstractTransferTab
-    implements ScreenChangeListener, KeyboardStatusListener, NodeSelectionListener
+public class FilesTab extends AbstractTransferTab implements NodeSelectionListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;

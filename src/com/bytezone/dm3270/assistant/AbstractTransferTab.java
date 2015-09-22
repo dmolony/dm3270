@@ -1,12 +1,15 @@
 package com.bytezone.dm3270.assistant;
 
+import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenChangeListener;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 
 public abstract class AbstractTransferTab extends Tab
+    implements ScreenChangeListener, KeyboardStatusListener
 {
   protected final Screen screen;
   protected final Button btnExecute;

@@ -1,9 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
-import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.geometry.Insets;
@@ -20,8 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class TransfersTab extends AbstractTransferTab
-    implements ScreenChangeListener, KeyboardStatusListener, DatasetSelectionListener,
-    FileSelectionListener, BatchJobSelectionListener
+    implements DatasetSelectionListener, FileSelectionListener, BatchJobSelectionListener
 {
   private static final int LABEL_WIDTH = 100;
 

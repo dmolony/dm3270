@@ -1,10 +1,10 @@
 package com.bytezone.dm3270.application;
 
-public class KeyboardStatusChangedEvent
+public final class KeyboardStatusChangedEvent
 {
-  boolean insertMode;
-  boolean keyboardLocked;
-  String keyName;
+  public final boolean insertMode;
+  public final boolean keyboardLocked;
+  public final String keyName;
 
   public KeyboardStatusChangedEvent (boolean insertMode, boolean keyboardLocked,
       String keyName)
