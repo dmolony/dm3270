@@ -17,7 +17,7 @@ public class ScreenDetails
   private static String ispfShell = "ISPF Command Shell";
 
   private final Screen screen;
-  private FieldManager fieldManager;
+  private final FieldManager fieldManager;
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -34,19 +34,19 @@ public class ScreenDetails
   private String userid = "";
   private String prefix = "";
 
-  public ScreenDetails (Screen screen)
+  public ScreenDetails (Screen screen, FieldManager fieldManager)
   {
     this.screen = screen;
+    this.fieldManager = fieldManager;
   }
 
-  public void check (FieldManager fieldManager)
+  public void check ()
   {
     tsoCommandField = null;
     isTSOCommandScreen = false;
     datasets.clear ();
     members.clear ();
     currentDataset = "";
-    this.fieldManager = fieldManager;
 
     List<Field> screenFields = fieldManager.getFields ();
     if (screenFields.size () <= 2)
@@ -73,10 +73,10 @@ public class ScreenDetails
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
   }
 
-  public boolean isKeyboardLocked ()
-  {
-    return screen.isKeyboardLocked ();
-  }
+  //  public boolean isKeyboardLocked ()
+  //  {
+  //    return screen.isKeyboardLocked ();
+  //  }
 
   public Field getTSOCommandField ()
   {

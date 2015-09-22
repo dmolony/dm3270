@@ -145,7 +145,7 @@ public class FilesTab extends AbstractTransferTab
       command = "TSO " + command;
 
     txtCommand.setText (command);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+    btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }
 

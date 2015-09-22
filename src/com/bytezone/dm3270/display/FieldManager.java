@@ -9,7 +9,6 @@ import com.bytezone.dm3270.plugins.PluginField;
 public class FieldManager
 {
   private final Screen screen;
-  private final ScreenContext baseContext;
   private final ScreenDetails screenDetails;
 
   private final List<Field> fields = new ArrayList<> ();
@@ -21,11 +20,16 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  public FieldManager (Screen screen, ScreenContext baseContext)
+  public FieldManager (Screen screen)
   {
     this.screen = screen;
-    this.baseContext = baseContext;
-    this.screenDetails = screen.getScreenDetails ();
+    screenDetails = new ScreenDetails (screen, this);
+  }
+
+  // a new ScreenDetails should be sent to ScreenChangeListeners
+  public ScreenDetails getScreenDetails ()
+  {
+    return screenDetails;
   }
 
   // this is called after the pen and screen positions have been modified
@@ -86,6 +90,7 @@ public class FieldManager
 
     // build screen contexts for every position and link uprotected fields
     Field previousUnprotectedField = null;
+    ScreenContext baseContext = screen.getPen ().getBase ();
     for (Field field : fields)
     {
       field.setScreenContexts (baseContext);
@@ -122,7 +127,7 @@ public class FieldManager
         }
     }
 
-    screenDetails.check (this);
+    screenDetails.check ();// should fireScreenChanged(new ScreenDetails())
   }
 
   private void addField (Field field)

@@ -35,7 +35,6 @@ public class Screen extends Canvas implements DisplayScreen
   private final FontManager fontManager;
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
-  private final ScreenDetails screenDetails;
   private ConsolePane consolePane;
 
   private final Pen pen;
@@ -75,8 +74,7 @@ public class Screen extends Canvas implements DisplayScreen
     this.function = function;
 
     pen = new Pen (this);
-    screenDetails = new ScreenDetails (this);
-    fieldManager = new FieldManager (this, pen.getBase ());
+    fieldManager = new FieldManager (this);
 
     assistantStage = new AssistantStage (this);
     screenPacker.addTSOCommandListener (assistantStage);
@@ -119,7 +117,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   public ScreenDetails getScreenDetails ()
   {
-    return screenDetails;
+    return fieldManager.getScreenDetails ();
   }
 
   public FontManager getFontManager ()

@@ -84,7 +84,7 @@ public class BatchJobTab extends AbstractTransferTab
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+    btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }
 

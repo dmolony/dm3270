@@ -209,7 +209,7 @@ public class TransfersTab extends AbstractTransferTab implements ScreenChangeLis
 
     txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
     ScreenDetails screenDetails = screen.getScreenDetails ();
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+    btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }
 

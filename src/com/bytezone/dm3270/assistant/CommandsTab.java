@@ -39,7 +39,7 @@ public class CommandsTab extends AbstractTransferTab
     }
 
     txtCommand.setText (selectedCommand);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+    btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }
 

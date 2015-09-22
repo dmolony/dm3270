@@ -121,7 +121,7 @@ public class DatasetTab extends AbstractTransferTab implements ScreenChangeListe
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
     txtCommand.setText (command);
-    btnExecute.setDisable (screenDetails.isKeyboardLocked ()
+    btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }
 
