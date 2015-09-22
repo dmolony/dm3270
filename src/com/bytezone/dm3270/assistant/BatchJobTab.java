@@ -19,6 +19,7 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
   private final BatchJobTable jobTable = new BatchJobTable ();
 
   private BatchJob selectedBatchJob;
+  private ScreenDetails screenDetails;
 
   public BatchJobTab (Screen screen, TextField text, Button execute)
   {
@@ -60,21 +61,24 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
+    this.screenDetails = screenDetails;
     if (isSelected ())
+    {
       setText ();
+      setButton ();
+    }
   }
 
   @Override
   public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
     if (isSelected ())
-      setText ();
+      setButton ();
   }
 
   @Override
   protected void setText ()
   {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
     if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
     {
       eraseCommand ();
@@ -90,6 +94,11 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);
+  }
+
+  @Override
+  protected void setButton ()
+  {
     btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }

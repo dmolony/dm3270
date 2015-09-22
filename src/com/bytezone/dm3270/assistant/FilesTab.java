@@ -27,6 +27,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
 
   private final ReporterNode reporterNode;
   private FileNode currentFileNode;
+  private ScreenDetails screenDetails;
 
   public FilesTab (Screen screen, TextField text, Button execute, Preferences prefs)
   {
@@ -118,21 +119,24 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
+    this.screenDetails = screenDetails;
     if (isSelected ())
+    {
       setText ();
+      setButton ();
+    }
   }
 
   @Override
   public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
     if (isSelected ())
-      setText ();
+      setButton ();
   }
 
   @Override
   protected void setText ()
   {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
     if (currentFileNode == null)
     {
       eraseCommand ();
@@ -151,6 +155,11 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       command = "TSO " + command;
 
     txtCommand.setText (command);
+  }
+
+  @Override
+  protected void setButton ()
+  {
     btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }

@@ -19,6 +19,7 @@ public class DatasetTab extends AbstractTransferTab
   private final boolean useTable = false;
   private final DatasetTable datasetTable = new DatasetTable ();
   private final DatasetTreeTable datasetTreeTable = new DatasetTreeTable ();
+  private ScreenDetails screenDetails;
 
   public DatasetTab (Screen screen, TextField text, Button execute)
   {
@@ -60,6 +61,7 @@ public class DatasetTab extends AbstractTransferTab
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
+    this.screenDetails = screenDetails;
     List<Dataset> datasets = screenDetails.getDatasets ();
     if (datasets != null)
       for (Dataset dataset : datasets)
@@ -81,21 +83,22 @@ public class DatasetTab extends AbstractTransferTab
       }
 
     if (isSelected ())
+    {
       setText ();
+      setButton ();
+    }
   }
 
   @Override
   public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
     if (isSelected ())
-      setText ();
+      setButton ();
   }
 
   @Override
   protected void setText ()
   {
-    ScreenDetails screenDetails = screen.getScreenDetails ();
-
     if (selectedDataset == null)
     {
       eraseCommand ();
@@ -126,7 +129,11 @@ public class DatasetTab extends AbstractTransferTab
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
     txtCommand.setText (command);
+  }
 
+  @Override
+  protected void setButton ()
+  {
     btnExecute.setDisable (screen.isKeyboardLocked ()
         || screenDetails.getTSOCommandField () == null);
   }

@@ -18,6 +18,7 @@ public class CommandsTab extends AbstractTransferTab
 {
   ObservableList<String> commands = FXCollections.observableArrayList ();
   ListView<String> commandList = new ListView<> (commands);
+  private ScreenDetails screenDetails;
 
   public CommandsTab (Screen screen, TextField text, Button execute)
   {
@@ -30,28 +31,12 @@ public class CommandsTab extends AbstractTransferTab
   }
 
   @Override
-  protected void setText ()
-  {
-    String selectedCommand = commandList.getSelectionModel ().getSelectedItem ();
-    ScreenDetails screenDetails = screen.getScreenDetails ();
-    if (selectedCommand == null)
-    {
-      eraseCommand ();
-      return;
-    }
-
-    txtCommand.setText (selectedCommand);
-    btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null);
-  }
-
-  @Override
   public void tsoCommand (String command)
   {
     if (command.startsWith ("="))
       return;
 
-    ScreenDetails screenDetails = screen.getScreenDetails ();
+    //    ScreenDetails screenDetails = screen.getScreenDetails ();
 
     if (screenDetails.isTSOCommandScreen () || command.toUpperCase ().startsWith ("TSO "))
       if (!commands.contains (command))
@@ -64,14 +49,38 @@ public class CommandsTab extends AbstractTransferTab
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
+    this.screenDetails = screenDetails;
     if (isSelected ())
+    {
       setText ();
+      setButton ();
+    }
   }
 
   @Override
   public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
     if (isSelected ())
-      setText ();
+      setButton ();
+  }
+
+  @Override
+  protected void setText ()
+  {
+    String selectedCommand = commandList.getSelectionModel ().getSelectedItem ();
+    if (selectedCommand == null)
+    {
+      eraseCommand ();
+      return;
+    }
+
+    txtCommand.setText (selectedCommand);
+  }
+
+  @Override
+  protected void setButton ()
+  {
+    btnExecute.setDisable (screen.isKeyboardLocked ()
+        || screenDetails.getTSOCommandField () == null);
   }
 }
