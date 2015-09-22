@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 
 public class Screen extends Canvas implements DisplayScreen
 {
-  private final ScreenPacker screenPacker = new ScreenPacker (this);
+  private final ScreenPacker screenPacker;
   private final Function function;
 
   private final ScreenPosition[] screenPositions;
@@ -75,8 +75,9 @@ public class Screen extends Canvas implements DisplayScreen
 
     pen = new Pen (this);
     fieldManager = new FieldManager (this);
-
     assistantStage = new AssistantStage (this);
+
+    screenPacker = new ScreenPacker (this);
     screenPacker.addTSOCommandListener (assistantStage);
     addKeyboardStatusChangeListener (assistantStage);
 
@@ -94,6 +95,7 @@ public class Screen extends Canvas implements DisplayScreen
       screenPositions[i] = new ScreenPosition (i, graphicsContext, fontData, baseContext);
 
     fieldManager.addScreenChangeListener (assistantStage);
+    fieldManager.addScreenChangeListener (screenPacker);
   }
 
   public void setStatusText (String text)

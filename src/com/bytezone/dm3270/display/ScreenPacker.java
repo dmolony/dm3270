@@ -13,7 +13,7 @@ import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
-public class ScreenPacker
+public class ScreenPacker implements ScreenChangeListener
 {
   private final Screen screen;
   private final byte[] buffer = new byte[4096];
@@ -21,6 +21,7 @@ public class ScreenPacker
 
   private byte replyMode;
   private byte[] replyTypes;
+  private ScreenDetails screenDetails;
 
   public ScreenPacker (Screen screen)
   {
@@ -44,7 +45,7 @@ public class ScreenPacker
     BufferAddress ba = new BufferAddress (cursorLocation);
     ptr = ba.packAddress (buffer, ptr);
 
-    ScreenDetails screenDetails = screen.getScreenDetails ();
+    //    ScreenDetails screenDetails = screen.getScreenDetails ();
     Field tsoCommandField = screenDetails.getTSOCommandField ();
     boolean isTSOScreen = screenDetails.isTSOCommandScreen ();
     boolean tsoFieldSent = false;
@@ -204,5 +205,11 @@ public class ScreenPacker
   public void removeTSOCommandListener (TSOCommandListener listener)
   {
     tsoCommandListeners.remove (listener);
+  }
+
+  @Override
+  public void screenChanged (ScreenDetails screenDetails)
+  {
+    this.screenDetails = screenDetails;
   }
 }

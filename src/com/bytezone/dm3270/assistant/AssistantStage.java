@@ -53,7 +53,9 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
 
-    tsoCommand = new TSOCommand (screen);
+    tsoCommand = new TSOCommand ();
+    screen.getFieldManager ().addScreenChangeListener (tsoCommand);
+
     datasetTab = new DatasetTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     jobTab = new BatchJobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
     fileTab = new FilesTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
