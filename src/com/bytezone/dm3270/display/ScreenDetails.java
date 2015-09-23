@@ -11,6 +11,8 @@ public class ScreenDetails
       { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
   private static final String[] pdsMenus =
       { "Menu", "Functions", "Confirm", "Utilities", "Help" };
+  private static final String[] memberMenus =
+      { "Menu", "Functions", "Utilities", "Help" };
 
   private static String ispfScreen = "ISPF Primary Option Menu";
   private static String zosScreen = "z/OS Primary Option Menu";
@@ -525,7 +527,7 @@ public class ScreenDetails
       return false;
 
     if (!listMatchesArray (fieldManager.getMenus (), pdsMenus))
-      return false;
+      return checkMemberList2 (screenFields);
 
     Field field = screenFields.get (8);
     int location = field.getFirstLocation ();
@@ -589,6 +591,67 @@ public class ScreenDetails
       }
       else
         System.out.println ("Unexpected headings size: " + headings.size ());
+    }
+
+    return true;
+  }
+
+  private boolean checkMemberList2 (List<Field> screenFields)
+  {
+    if (screenFields.size () < 14)
+      return false;
+
+    if (!listMatchesArray (fieldManager.getMenus (), memberMenus))
+      return false;
+
+    Field field = screenFields.get (7);
+    int location = field.getFirstLocation ();
+    if (location != 161)
+      return false;
+
+    String mode = field.getText ().trim ();
+    if (!(mode.equals ("EDIT") || mode.equals ("BROWSE")))
+      System.out.printf ("Unexpected mode: [%s]%n", mode);
+
+    field = screenFields.get (8);
+    if (field.getFirstLocation () != 170)
+      return false;
+    String datasetName = field.getText ().trim ();
+
+    List<Field> headings = fieldManager.getRowFields (4);
+    dumpFields (headings);
+
+    int screenType = 0;
+    if (headings.size () == 10
+        && fieldManager.textMatchesTrim (headings.get (5), "Created"))
+      screenType = 1;
+    else if (headings.size () == 13
+        && fieldManager.textMatchesTrim (headings.get (5), "Init"))
+      screenType = 2;
+
+    if (screenType == 0)
+      return false;
+
+    for (int row = 5; row < 24; row++)
+    {
+      List<Field> rowFields = fieldManager.getRowFields (row);
+      if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
+        break;
+
+      if (screenType == 1)
+      {
+        String memberName = rowFields.get (1).getText ();
+        String details = rowFields.get (3).getText ();
+        System.out.printf ("[%s] [%s]%n", memberName, details);
+      }
+      else if (screenType == 2)
+      {
+        String memberName = rowFields.get (1).getText ();
+        String details = rowFields.get (3).getText ();
+        System.out.printf ("[%s] [%s]%n", memberName, details);
+      }
+      else
+        dumpFields (rowFields);
     }
 
     return true;
