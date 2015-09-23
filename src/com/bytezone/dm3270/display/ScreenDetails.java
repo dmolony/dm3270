@@ -16,7 +16,6 @@ public class ScreenDetails
   private static String zosScreen = "z/OS Primary Option Menu";
   private static String ispfShell = "ISPF Command Shell";
 
-  //  private final Screen screen;
   private final FieldManager fieldManager;
   private final int screenColumns;
 
@@ -35,10 +34,10 @@ public class ScreenDetails
   private String userid = "";
   private String prefix = "";
 
-  public ScreenDetails (FieldManager fieldManager, int screenColumns)
+  public ScreenDetails (FieldManager fieldManager)
   {
     this.fieldManager = fieldManager;
-    this.screenColumns = screenColumns;
+    this.screenColumns = fieldManager.getScreenColumns ();
   }
 
   public void check ()

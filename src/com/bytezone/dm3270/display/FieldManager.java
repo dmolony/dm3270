@@ -25,10 +25,11 @@ public class FieldManager
   public FieldManager (Screen screen)
   {
     this.screen = screen;
-    screenDetails = new ScreenDetails (this, screen.columns);
+    screenDetails = new ScreenDetails (this);
   }
 
   // a new ScreenDetails should be sent to ScreenChangeListeners
+  // ScreenDetails is never deleted, but most (not all) of its fields are refreshed
   public ScreenDetails getScreenDetails ()
   {
     return screenDetails;
