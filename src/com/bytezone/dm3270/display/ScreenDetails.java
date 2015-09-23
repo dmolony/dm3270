@@ -648,6 +648,7 @@ public class ScreenDetails
       {
         String created = details.substring (15, 25);
         String changed = details.substring (28, 38);
+        String time = details.substring (39, 47);
         member.setCreated (created);
         member.setReferred (changed);
       }
