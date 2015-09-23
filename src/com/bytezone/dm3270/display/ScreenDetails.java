@@ -598,9 +598,6 @@ public class ScreenDetails
 
   private boolean checkMemberList2 (List<Field> screenFields)
   {
-    if (screenFields.size () < 14)
-      return false;
-
     if (!listMatchesArray (fieldManager.getMenus (), memberMenus))
       return false;
 
@@ -619,7 +616,6 @@ public class ScreenDetails
     String datasetName = field.getText ().trim ();
 
     List<Field> headings = fieldManager.getRowFields (4);
-    dumpFields (headings);
 
     int screenType = 0;
     if (headings.size () == 10
@@ -638,17 +634,29 @@ public class ScreenDetails
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
         break;
 
+      String memberName = rowFields.get (1).getText ().trim ();
+      String details = rowFields.get (3).getText ();
+      String size = details.substring (0, 12).trim ();
+      String id = details.substring (51).trim ();
+
+      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
+      members.add (member);
+      member.setExtents (getInteger ("Ext3:" + memberName, size));
+      member.setCatalog (id);
+
       if (screenType == 1)
       {
-        String memberName = rowFields.get (1).getText ();
-        String details = rowFields.get (3).getText ();
-        System.out.printf ("[%s] [%s]%n", memberName, details);
+        String created = details.substring (15, 25);
+        String changed = details.substring (28, 38);
+        member.setCreated (created);
+        member.setReferred (changed);
       }
       else if (screenType == 2)
       {
-        String memberName = rowFields.get (1).getText ();
-        String details = rowFields.get (3).getText ();
-        System.out.printf ("[%s] [%s]%n", memberName, details);
+        String init = details.substring (15, 21).trim ();
+        String mod = details.substring (22, 31).trim ();
+        String vv = details.substring (38, 40);
+        String mm = details.substring (41, 43);
       }
       else
         dumpFields (rowFields);
