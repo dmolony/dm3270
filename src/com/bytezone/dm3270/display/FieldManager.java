@@ -233,34 +233,34 @@ public class FieldManager
 
   boolean textMatches (Field field, String text)
   {
-    return text.matches (field.getText ());
+    return text.equals (field.getText ());
   }
 
   boolean textMatches (int fieldNo, String text)
   {
-    return text.matches (fields.get (fieldNo).getText ());
+    return text.equals (fields.get (fieldNo).getText ());
   }
 
   boolean textMatches (Field field, String text, int location)
   {
-    return field.getFirstLocation () == location && text.matches (field.getText ());
+    return field.getFirstLocation () == location && text.equals (field.getText ());
   }
 
   boolean textMatches (int fieldNo, String text, int location)
   {
     Field field = fields.get (fieldNo);
-    return field.getFirstLocation () == location && text.matches (field.getText ());
+    return field.getFirstLocation () == location && text.equals (field.getText ());
   }
 
   boolean textMatchesTrim (Field field, String text)
   {
-    return text.matches (field.getText ().trim ());
+    return text.equals (field.getText ().trim ());
   }
 
   boolean textMatchesTrim (Field field, String text, int location)
   {
     return field.getFirstLocation () == location
-        && text.matches (field.getText ().trim ());
+        && text.equals (field.getText ().trim ());
   }
 
   List<String> getMenus ()

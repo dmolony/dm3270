@@ -44,6 +44,7 @@ public class ScreenDetails
   {
     tsoCommandField = null;
     isTSOCommandScreen = false;
+    isDatasetList = false;
     datasets.clear ();
     members.clear ();
     currentDataset = "";
@@ -149,7 +150,7 @@ public class ScreenDetails
 
   private void checkPrefixScreen (List<Field> screenFields)
   {
-    if (screenFields.size () < 73)
+    if (screenFields.size () < 74)
       return;
 
     Field field = screenFields.get (10);
@@ -178,7 +179,7 @@ public class ScreenDetails
 
   private boolean checkTSOCommandScreen (List<Field> screenFields)
   {
-    if (screenFields.size () < 14)
+    if (screenFields.size () < 19)
       return false;
 
     if (!fieldManager.textMatches (10, ispfShell))
