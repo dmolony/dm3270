@@ -535,62 +535,42 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!(mode.equals ("EDIT") || mode.equals ("BROWSE")))
-      System.out.printf ("Unexpected mode: [%s]%n", mode);
+    if (!(mode.equals ("EDIT") || mode.equals ("LIBRARY")))
+      System.out.printf ("Unexpected mode1: [%s]%n", mode);
 
     field = screenFields.get (9);
     if (field.getFirstLocation () != 179)
       return false;
     String datasetName = field.getText ().trim ();
 
-    if (!fieldManager.textMatchesTrim (screenFields.get (10), "Row", 221))
-      return false;
-
-    if (!fieldManager.textMatchesTrim (screenFields.get (12), "of", 231))
-      return false;
-
-    int rowFrom = getInteger ("RowFrom", screenFields.get (11).getText ().trim ());
-    int rowTo = getInteger ("RowTo", screenFields.get (13).getText ().trim ());
-
     List<Field> headings = fieldManager.getRowFields (4);
-    int maxRows = Math.min (19, rowTo - rowFrom + 1) + 5;
+    System.out.printf ("Mode1: %s Headings: %d%n", mode, headings.size ());
 
-    for (int row = 5; row < maxRows; row++)
+    for (int row = 5; row < 24; row++)
     {
       List<Field> rowFields = fieldManager.getRowFields (row);
+      if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
+        break;
 
-      String memberName = rowFields.get (1).getText ().trim ();
-      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
+      String memberName = rowFields.get (1).getText ();
+      Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
       members.add (member);
 
       String details = rowFields.get (3).getText ();
+      System.out.printf ("[%s] [%s]%n", memberName, details);
 
-      if (headings.size () == 7)
-      {
-        String size = details.substring (3, 9);
-        String created = details.substring (11, 21);
-        String modified = details.substring (23, 33);
-        String time = details.substring (34, 42);
-        String id = details.substring (44);
-
-        member.setCreated (created);
-        member.setReferred (modified);
-        member.setCatalog (id);
-        member.setExtents (getInteger ("Ext1:" + memberName, size.trim ()));
-      }
-      else if (headings.size () == 13)
-      {
-        String size = details.substring (3, 9);
-        String init = details.substring (11, 17);
-        String mod = details.substring (19, 25);
-        String vvmm = details.substring (31, 36);
-        String id = details.substring (44);
-
-        member.setCatalog (id);
-        member.setExtents (getInteger ("Ext2:" + memberName, size.trim ()));
-      }
+      if (headings.size () == 7 && "EDIT".equals (mode))
+        screenType1 (member, details, 9, 21, 33, 42);
       else
-        System.out.println ("Unexpected headings size: " + headings.size ());
+        if (headings.size () == 13 && ("EDIT".equals (mode) || "LIBRARY".equals (mode)))
+        screenType2 (member, details);
+      else if (headings.size () == 10 && "LIBRARY".equals (mode))
+        screenType1 (member, details, 12, 25, 38, 47);
+      else
+      {
+        dumpFields (headings);
+        dumpFields (rowFields);
+      }
     }
 
     return true;
@@ -607,8 +587,8 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!(mode.equals ("EDIT") || mode.equals ("BROWSE")))
-      System.out.printf ("Unexpected mode: [%s]%n", mode);
+    if (!(mode.equals ("EDIT") || mode.equals ("BROWSE") || mode.equals ("VIEW")))
+      System.out.printf ("Unexpected mode2: [%s]%n", mode);
 
     field = screenFields.get (8);
     if (field.getFirstLocation () != 170)
@@ -628,42 +608,60 @@ public class ScreenDetails
     if (screenType == 0)
       return false;
 
+    System.out.printf ("Mode2: %s Headings: %d%n", mode, headings.size ());
+
     for (int row = 5; row < 24; row++)
     {
       List<Field> rowFields = fieldManager.getRowFields (row);
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
         break;
 
-      String memberName = rowFields.get (1).getText ().trim ();
+      String memberName = rowFields.get (1).getText ();
       String details = rowFields.get (3).getText ();
-      String size = details.substring (0, 12).trim ();
-      String id = details.substring (51).trim ();
+      System.out.printf ("[%s] [%s]%n", memberName, details);
 
-      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
+      Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
       members.add (member);
-      member.setExtents (getInteger ("Ext3:" + memberName, size));
-      member.setCatalog (id);
 
       if (screenType == 1)
-      {
-        String created = details.substring (15, 25);
-        String changed = details.substring (28, 38);
-        String time = details.substring (39, 47);
-        member.setCreated (created);
-        member.setReferred (changed);
-      }
+        screenType1 (member, details, 12, 25, 38, 47);
       else if (screenType == 2)
-      {
-        String init = details.substring (15, 21).trim ();
-        String mod = details.substring (22, 31).trim ();
-        String vv = details.substring (38, 40);
-        String mm = details.substring (41, 43);
-      }
+        screenType2 (member, details);
       else
         dumpFields (rowFields);
     }
 
     return true;
+  }
+
+  private void screenType1 (Dataset member, String details, int... tabs)
+  {
+    String size = details.substring (0, tabs[0]);
+    String created = details.substring (tabs[0], tabs[1]);
+    String modified = details.substring (tabs[1], tabs[2]);
+    String time = details.substring (tabs[2], tabs[3]);
+    String id = details.substring (tabs[3]);
+
+    member.setCreated (created.trim ());
+    member.setReferred (modified.trim ());
+    member.setCatalog (id.trim ());
+    member.setExtents (getInteger ("Ext:" + member.getDatasetName (), size.trim ()));
+
+    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
+  }
+
+  private void screenType2 (Dataset member, String details)
+  {
+    String size = details.substring (3, 12);
+    String init = details.substring (12, 21);
+    String mod = details.substring (21, 31);
+    String vvmm = details.substring (31, 43);
+    String id = details.substring (43);
+
+    member.setCatalog (id);
+    member.setExtents (getInteger ("Ext:" + member.getDatasetName (), size.trim ()));
+
+    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, init, mod, vvmm, id);
   }
 
   private int getInteger (String id, String value)
