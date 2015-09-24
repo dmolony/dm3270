@@ -298,6 +298,9 @@ public class ScreenDetails
     {
       Dataset dataset = null;
       rowFields = fieldManager.getRowFields (nextLine, linesPerDataset);
+      if (false)
+        System.out.printf ("ScreenType: %d RowFields: %d%n", screenType,
+                           rowFields.size ());
 
       if (rowFields.size () <= 1)
         break;
@@ -308,7 +311,7 @@ public class ScreenDetails
           if (rowFields.size () == 2)
           {
             dataset = addDataset (rowFields.get (0));
-            setSpace2 (dataset, rowFields.get (1).getText ());
+            setSpace (dataset, rowFields.get (1).getText (), 6, 11, 15);
           }
           break;
 
@@ -316,7 +319,7 @@ public class ScreenDetails
           if (rowFields.size () == 2)
           {
             dataset = addDataset (rowFields.get (0));
-            setDisposition2 (dataset, rowFields.get (1).getText ());
+            setDisposition (dataset, rowFields.get (1).getText (), 5, 11, 18);
           }
           break;
 
@@ -333,8 +336,8 @@ public class ScreenDetails
           {
             dataset = addDataset (rowFields.get (0));
             dataset.setVolume (rowFields.get (2).getText ().trim ());
-            setSpace1 (dataset, rowFields.get (3).getText ());
-            setDisposition1 (dataset, rowFields.get (4).getText ());
+            setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
+            setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
             setDates (dataset, rowFields.get (5).getText ());
             dataset.setCatalog (rowFields.get (6).getText ().trim ());
           }
@@ -345,12 +348,13 @@ public class ScreenDetails
           {
             dataset = addDataset (rowFields.get (0));
             dataset.setVolume (rowFields.get (2).getText ().trim ());
-          }
-          if (rowFields.size () >= 6)
-          {
-            setSpace1 (dataset, rowFields.get (3).getText ());
-            setDisposition1 (dataset, rowFields.get (4).getText ());
-            setDates (dataset, rowFields.get (5).getText ());
+
+            if (rowFields.size () >= 6)
+            {
+              setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
+              setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
+              setDates (dataset, rowFields.get (5).getText ());
+            }
           }
           break;
       }
@@ -370,15 +374,15 @@ public class ScreenDetails
     return dataset;
   }
 
-  private void setSpace1 (Dataset dataset, String details)
+  private void setSpace (Dataset dataset, String details, int... tabs)
   {
     if (details.trim ().isEmpty ())
       return;
 
-    String tracks = details.substring (0, 6);
-    String pct = details.substring (7, 10);
-    String extents = details.substring (10, 14);
-    String device = details.substring (15);
+    String tracks = details.substring (0, tabs[0]);
+    String pct = details.substring (tabs[0], tabs[1]);
+    String extents = details.substring (tabs[1], tabs[2]);
+    String device = details.substring (tabs[2]);
 
     try
     {
@@ -393,61 +397,15 @@ public class ScreenDetails
     }
   }
 
-  private void setSpace2 (Dataset dataset, String details)
+  private void setDisposition (Dataset dataset, String details, int... tabs)
   {
     if (details.trim ().isEmpty ())
       return;
 
-    String tracks = details.substring (0, 6);
-    String pct = details.substring (6, 11);
-    String extents = details.substring (11, 15);
-    String device = details.substring (15);
-
-    try
-    {
-      dataset.setTracks (Integer.parseInt (tracks.trim ()));
-      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
-      dataset.setExtents (Integer.parseInt (extents.trim ()));
-      dataset.setDevice (device.trim ());
-    }
-    catch (NumberFormatException e)
-    {
-      System.out.printf ("NFE: %s%n", details);
-    }
-  }
-
-  private void setDisposition1 (Dataset dataset, String details)
-  {
-    if (details.trim ().isEmpty ())
-      return;
-
-    String dsorg = details.substring (0, 5);
-    String recfm = details.substring (5, 10);
-    String lrecl = details.substring (10, 16);
-    String blksize = details.substring (16);
-
-    dataset.setDsorg (dsorg.trim ());
-    dataset.setRecfm (recfm.trim ());
-    try
-    {
-      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
-      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
-    }
-    catch (NumberFormatException e)
-    {
-      System.out.printf ("NFE: %s%n", details);
-    }
-  }
-
-  private void setDisposition2 (Dataset dataset, String details)
-  {
-    if (details.trim ().isEmpty ())
-      return;
-
-    String dsorg = details.substring (0, 5);
-    String recfm = details.substring (6, 11);
-    String lrecl = details.substring (12, 18);
-    String blksize = details.substring (19);
+    String dsorg = details.substring (0, tabs[0]);
+    String recfm = details.substring (tabs[0], tabs[1]);
+    String lrecl = details.substring (tabs[1], tabs[2]);
+    String blksize = details.substring (tabs[2]);
 
     dataset.setDsorg (dsorg.trim ());
     dataset.setRecfm (recfm.trim ());
@@ -496,7 +454,6 @@ public class ScreenDetails
     String datasetName = field.getText ().trim ();
 
     List<Field> headings = fieldManager.getRowFields (4);
-    //    System.out.printf ("Mode1: %s Headings: %d%n", mode, headings.size ());
 
     for (int row = 5; row < screenRows; row++)
     {
@@ -506,7 +463,6 @@ public class ScreenDetails
 
       String memberName = rowFields.get (1).getText ();
       String details = rowFields.get (3).getText ();
-      //      System.out.printf ("[%s] [%s]%n", memberName, details);
 
       Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
       members.add (member);
