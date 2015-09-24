@@ -2,6 +2,8 @@ package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.Dataset;
 
@@ -13,6 +15,9 @@ public class ScreenDetails
       { "Menu", "Functions", "Confirm", "Utilities", "Help" };
   private static final String[] memberMenus =
       { "Menu", "Functions", "Utilities", "Help" };
+  private static String segment = "[A-Z@#$][-A-Z0-9@#$]{0,7}";
+  private static final Pattern datasetNamePattern =
+      Pattern.compile (segment + "(\\." + segment + "){0,21}");
 
   private static String ispfScreen = "ISPF Primary Option Menu";
   private static String zosScreen = "z/OS Primary Option Menu";
@@ -296,45 +301,39 @@ public class ScreenDetails
 
     while (nextLine < screenRows)
     {
-      Dataset dataset = null;
       rowFields = fieldManager.getRowFields (nextLine, linesPerDataset);
-      if (false)
-        System.out.printf ("ScreenType: %d RowFields: %d%n", screenType,
-                           rowFields.size ());
-
       if (rowFields.size () <= 1)
         break;
+
+      String datasetName = rowFields.get (0).getText ().trim ();
+      if (datasetName.isEmpty () || datasetName.length () > 44)
+        break;
+      Matcher matcher = datasetNamePattern.matcher (datasetName);
+      if (!matcher.matches ())
+        break;
+      Dataset dataset = new Dataset (datasetName);
+      datasets.add (dataset);
 
       switch (screenType)
       {
         case 1:
           if (rowFields.size () == 2)
-          {
-            dataset = addDataset (rowFields.get (0));
             setSpace (dataset, rowFields.get (1).getText (), 6, 11, 15);
-          }
           break;
 
         case 2:
           if (rowFields.size () == 2)
-          {
-            dataset = addDataset (rowFields.get (0));
             setDisposition (dataset, rowFields.get (1).getText (), 5, 11, 18);
-          }
           break;
 
         case 3:
           if (rowFields.size () == 3)
-          {
-            dataset = addDataset (rowFields.get (0));
             dataset.setVolume (rowFields.get (2).getText ().trim ());
-          }
           break;
 
         case 4:
           if (rowFields.size () == 7)
           {
-            dataset = addDataset (rowFields.get (0));
             dataset.setVolume (rowFields.get (2).getText ().trim ());
             setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
             setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
@@ -346,7 +345,6 @@ public class ScreenDetails
         case 5:
           if (rowFields.size () >= 3)
           {
-            dataset = addDataset (rowFields.get (0));
             dataset.setVolume (rowFields.get (2).getText ().trim ());
 
             if (rowFields.size () >= 6)
@@ -367,13 +365,6 @@ public class ScreenDetails
     return true;
   }
 
-  private Dataset addDataset (Field field)
-  {
-    Dataset dataset = new Dataset (field.getText ().trim ());
-    datasets.add (dataset);
-    return dataset;
-  }
-
   private void setSpace (Dataset dataset, String details, int... tabs)
   {
     if (details.trim ().isEmpty ())
@@ -384,17 +375,10 @@ public class ScreenDetails
     String extents = details.substring (tabs[1], tabs[2]);
     String device = details.substring (tabs[2]);
 
-    try
-    {
-      dataset.setTracks (Integer.parseInt (tracks.trim ()));
-      dataset.setPercentUsed (Integer.parseInt (pct.trim ()));
-      dataset.setExtents (Integer.parseInt (extents.trim ()));
-      dataset.setDevice (device.trim ());
-    }
-    catch (NumberFormatException e)
-    {
-      System.out.printf ("NFE: %s%n", details);
-    }
+    dataset.setTracks (getInteger ("tracks", tracks.trim ()));
+    dataset.setPercentUsed (getInteger ("pct", pct.trim ()));
+    dataset.setExtents (getInteger ("ext", extents.trim ()));
+    dataset.setDevice (device.trim ());
   }
 
   private void setDisposition (Dataset dataset, String details, int... tabs)
@@ -409,16 +393,8 @@ public class ScreenDetails
 
     dataset.setDsorg (dsorg.trim ());
     dataset.setRecfm (recfm.trim ());
-
-    try
-    {
-      dataset.setLrecl (Integer.parseInt (lrecl.trim ()));
-      dataset.setBlksize (Integer.parseInt (blksize.trim ()));
-    }
-    catch (NumberFormatException e)
-    {
-      System.out.printf ("NFE: %s%n", details);
-    }
+    dataset.setLrecl (getInteger ("lrecl", lrecl.trim ()));
+    dataset.setBlksize (getInteger ("blksize", blksize.trim ()));
   }
 
   private void setDates (Dataset dataset, String details)
@@ -518,8 +494,6 @@ public class ScreenDetails
     if (screenType == 0)
       return false;
 
-    //    System.out.printf ("Mode2: %s Headings: %d%n", mode, headings.size ());
-
     for (int row = 5; row < screenRows; row++)
     {
       List<Field> rowFields = fieldManager.getRowFields (row);
@@ -528,7 +502,6 @@ public class ScreenDetails
 
       String memberName = rowFields.get (1).getText ();
       String details = rowFields.get (3).getText ();
-      //      System.out.printf ("[%s] [%s]%n", memberName, details);
 
       Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
       members.add (member);
@@ -555,9 +528,7 @@ public class ScreenDetails
     member.setCreated (created.trim ());
     member.setReferred (modified.trim ());
     member.setCatalog (id.trim ());
-    member.setExtents (getInteger ("Ext:" + member.getDatasetName (), size.trim ()));
-
-    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
+    member.setExtents (getInteger ("Ext:", size.trim ()));
   }
 
   private void screenType2 (Dataset member, String details)
@@ -569,9 +540,7 @@ public class ScreenDetails
     String id = details.substring (43);
 
     member.setCatalog (id);
-    member.setExtents (getInteger ("Ext:" + member.getDatasetName (), size.trim ()));
-
-    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, init, mod, vvmm, id);
+    member.setExtents (getInteger ("Ext:", size.trim ()));
   }
 
   private int getInteger (String id, String value)
