@@ -223,40 +223,15 @@ public class ScreenDetails
     if (!text.startsWith ("DSLIST - Data Sets "))
       return false;
 
-    String rowText = "";
     String locationText = "";
-
-    int firstRow = 0;
-    int totalRows = 0;
-    int maxRows = 0;
-
     int pos = text.indexOf ("Row ");
     if (pos > 0)
-    {
-      rowText = text.substring (pos + 4);
       locationText = text.substring (19, pos).trim ();
-
-      pos = rowText.indexOf (" of ");
-      if (pos > 0)
-      {
-        firstRow = Integer.parseInt (rowText.substring (0, pos).trim ());
-        totalRows = Integer.parseInt (rowText.substring (pos + 4).trim ());
-        maxRows = totalRows - firstRow + 1;
-      }
-    }
 
     if (locationText.startsWith ("on volume "))
       datasetsOnVolume = locationText.substring (10);
     else if (locationText.startsWith ("Matching "))
       datasetsMatching = locationText.substring (9);
-
-    if (false)
-    {
-      System.out.printf ("%n[%s]%n", text);
-      System.out.printf ("First row : %d%n", firstRow);
-      System.out.printf ("Total rows: %d%n", totalRows);
-      System.out.printf ("Max rows  : %d%n%n", maxRows);
-    }
 
     rowFields = fieldManager.getRowFields (5, 2);
     if (rowFields.size () == 0)
@@ -319,13 +294,6 @@ public class ScreenDetails
       return false;
     }
 
-    if (false)
-    {
-      System.out.printf ("Screen type        : %d%n", screenType);
-      System.out.printf ("Lines per dataset  : %d%n", linesPerDataset);
-      System.out.printf ("First line         : %d%n", nextLine);
-    }
-
     while (nextLine < screenRows)
     {
       Dataset dataset = null;
@@ -370,8 +338,6 @@ public class ScreenDetails
             setDates (dataset, rowFields.get (5).getText ());
             dataset.setCatalog (rowFields.get (6).getText ().trim ());
           }
-
-          nextLine++;// skip the row of hyphens
           break;
 
         case 5:
@@ -380,19 +346,18 @@ public class ScreenDetails
             dataset = addDataset (rowFields.get (0));
             dataset.setVolume (rowFields.get (2).getText ().trim ());
           }
-
           if (rowFields.size () >= 6)
           {
             setSpace1 (dataset, rowFields.get (3).getText ());
             setDisposition1 (dataset, rowFields.get (4).getText ());
             setDates (dataset, rowFields.get (5).getText ());
           }
-
-          nextLine++;// skip the row of hyphens
           break;
       }
 
       nextLine += linesPerDataset;
+      if (linesPerDataset > 1)
+        nextLine++;// skip the row of hyphens
     }
 
     return true;
