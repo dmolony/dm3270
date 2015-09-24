@@ -544,7 +544,7 @@ public class ScreenDetails
     String datasetName = field.getText ().trim ();
 
     List<Field> headings = fieldManager.getRowFields (4);
-    System.out.printf ("Mode1: %s Headings: %d%n", mode, headings.size ());
+    //    System.out.printf ("Mode1: %s Headings: %d%n", mode, headings.size ());
 
     for (int row = 5; row < 24; row++)
     {
@@ -553,11 +553,11 @@ public class ScreenDetails
         break;
 
       String memberName = rowFields.get (1).getText ();
+      String details = rowFields.get (3).getText ();
+      //      System.out.printf ("[%s] [%s]%n", memberName, details);
+
       Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
       members.add (member);
-
-      String details = rowFields.get (3).getText ();
-      System.out.printf ("[%s] [%s]%n", memberName, details);
 
       if (headings.size () == 7 && "EDIT".equals (mode))
         screenType1 (member, details, 9, 21, 33, 42);
@@ -608,7 +608,7 @@ public class ScreenDetails
     if (screenType == 0)
       return false;
 
-    System.out.printf ("Mode2: %s Headings: %d%n", mode, headings.size ());
+    //    System.out.printf ("Mode2: %s Headings: %d%n", mode, headings.size ());
 
     for (int row = 5; row < 24; row++)
     {
@@ -618,7 +618,7 @@ public class ScreenDetails
 
       String memberName = rowFields.get (1).getText ();
       String details = rowFields.get (3).getText ();
-      System.out.printf ("[%s] [%s]%n", memberName, details);
+      //      System.out.printf ("[%s] [%s]%n", memberName, details);
 
       Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
       members.add (member);
