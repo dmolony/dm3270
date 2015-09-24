@@ -15,13 +15,13 @@ public class ScreenDetails
       { "Menu", "Functions", "Confirm", "Utilities", "Help" };
   private static final String[] memberMenus =
       { "Menu", "Functions", "Utilities", "Help" };
-  private static String segment = "[A-Z@#$][-A-Z0-9@#$]{0,7}";
+  private static final String segment = "[A-Z@#$][-A-Z0-9@#$]{0,7}";
   private static final Pattern datasetNamePattern =
       Pattern.compile (segment + "(\\." + segment + "){0,21}");
 
-  private static String ispfScreen = "ISPF Primary Option Menu";
-  private static String zosScreen = "z/OS Primary Option Menu";
-  private static String ispfShell = "ISPF Command Shell";
+  private static final String ispfScreen = "ISPF Primary Option Menu";
+  private static final String zosScreen = "z/OS Primary Option Menu";
+  private static final String ispfShell = "ISPF Command Shell";
 
   private final FieldManager fieldManager;
   private final int screenColumns;
@@ -310,7 +310,11 @@ public class ScreenDetails
         break;
       Matcher matcher = datasetNamePattern.matcher (datasetName);
       if (!matcher.matches ())
+      {
+        // what about GDGs?
+        System.out.printf ("Invalid dataset name: %s%n", datasetName);
         break;
+      }
       Dataset dataset = new Dataset (datasetName);
       datasets.add (dataset);
 
