@@ -266,30 +266,24 @@ public class ScreenDetails
     if (!text.startsWith ("Command - Enter"))
       return false;
 
-    String heading = "";
     int screenType = 0;
-    int linesPerDataset = 0;
-    int datasetsToProcess = 0;
-    int nextLine = 0;
+    int linesPerDataset = 1;
+    int nextLine = 7;
 
     switch (rowFields.size ())
     {
       case 3:
-        heading = rowFields.get (1).getText ().trim ();
+        String heading = rowFields.get (1).getText ().trim ();
         if (heading.startsWith ("Tracks"))
           screenType = 1;
         else if (heading.startsWith ("Dsorg"))
           screenType = 2;
-        else
-          System.out.println ("Not 1 or 2");
         break;
 
       case 4:
         heading = rowFields.get (2).getText ().trim ();
         if ("Volume".equals (heading))
           screenType = 3;
-        else
-          System.out.println ("Not 3");
         break;
 
       case 6:
@@ -302,20 +296,16 @@ public class ScreenDetails
             screenType = 4;
             linesPerDataset = 3;
             nextLine = 9;
-            datasetsToProcess = Math.min (maxRows, 4);
           }
           else if (line.startsWith ("--"))
           {
             screenType = 5;
             linesPerDataset = 2;
             nextLine = 8;
-            datasetsToProcess = Math.min (maxRows, 6);
           }
           else
             System.out.println ("Expected 'Catalog'");
         }
-        else
-          System.out.println ("Not 4 or 5");
         break;
 
       default:
@@ -325,14 +315,8 @@ public class ScreenDetails
     if (screenType == 0)
     {
       System.out.println ("Screen not recognised");
+      dumpFields (rowFields);
       return false;
-    }
-
-    if (screenType <= 3)
-    {
-      linesPerDataset = 1;
-      nextLine = 7;
-      datasetsToProcess = Math.min (maxRows, 17);
     }
 
     if (false)
@@ -340,13 +324,15 @@ public class ScreenDetails
       System.out.printf ("Screen type        : %d%n", screenType);
       System.out.printf ("Lines per dataset  : %d%n", linesPerDataset);
       System.out.printf ("First line         : %d%n", nextLine);
-      System.out.printf ("Datasets to process: %d%n%n", datasetsToProcess);
     }
 
-    while (datasetsToProcess > 0)
+    while (nextLine < screenRows)
     {
       Dataset dataset = null;
       rowFields = fieldManager.getRowFields (nextLine, linesPerDataset);
+
+      if (rowFields.size () <= 1)
+        break;
 
       switch (screenType)
       {
@@ -406,7 +392,6 @@ public class ScreenDetails
           break;
       }
 
-      datasetsToProcess--;
       nextLine += linesPerDataset;
     }
 
@@ -449,9 +434,9 @@ public class ScreenDetails
       return;
 
     String tracks = details.substring (0, 6);
-    String pct = details.substring (8, 11);
+    String pct = details.substring (6, 11);
     String extents = details.substring (11, 15);
-    String device = details.substring (17);
+    String device = details.substring (15);
 
     try
     {
