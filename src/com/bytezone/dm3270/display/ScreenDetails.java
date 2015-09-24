@@ -20,6 +20,7 @@ public class ScreenDetails
 
   private final FieldManager fieldManager;
   private final int screenColumns;
+  private final int screenRows;
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -36,10 +37,11 @@ public class ScreenDetails
   private String userid = "";
   private String prefix = "";
 
-  public ScreenDetails (FieldManager fieldManager)
+  public ScreenDetails (FieldManager fieldManager, int rows, int columns)
   {
     this.fieldManager = fieldManager;
-    this.screenColumns = fieldManager.getScreenColumns ();
+    screenRows = rows;
+    screenColumns = columns;
   }
 
   public void check ()
@@ -546,7 +548,7 @@ public class ScreenDetails
     List<Field> headings = fieldManager.getRowFields (4);
     //    System.out.printf ("Mode1: %s Headings: %d%n", mode, headings.size ());
 
-    for (int row = 5; row < 24; row++)
+    for (int row = 5; row < screenRows; row++)
     {
       List<Field> rowFields = fieldManager.getRowFields (row);
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
@@ -604,13 +606,15 @@ public class ScreenDetails
     else if (headings.size () == 13
         && fieldManager.textMatchesTrim (headings.get (5), "Init"))
       screenType = 2;
+    else
+      dumpFields (headings);
 
     if (screenType == 0)
       return false;
 
     //    System.out.printf ("Mode2: %s Headings: %d%n", mode, headings.size ());
 
-    for (int row = 5; row < 24; row++)
+    for (int row = 5; row < screenRows; row++)
     {
       List<Field> rowFields = fieldManager.getRowFields (row);
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
