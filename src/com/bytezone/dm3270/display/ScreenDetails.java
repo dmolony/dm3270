@@ -233,18 +233,24 @@ public class ScreenDetails
     int pos = text.indexOf ("Row ");
     if (pos > 0)
       locationText = text.substring (19, pos).trim ();
+    else
+      locationText = text.substring (19).trim ();
 
     if (locationText.startsWith ("on volume "))
       datasetsOnVolume = locationText.substring (10);
     else if (locationText.startsWith ("Matching "))
       datasetsMatching = locationText.substring (9);
+    else
+    {
+      System.out.println ("Unexpected text: " + locationText);
+      return false;
+    }
 
     rowFields = fieldManager.getRowFields (5, 2);
-    if (rowFields.size () == 0)
+    if (rowFields.size () < 3)
       return false;
 
-    text = rowFields.get (0).getText ();
-    if (!text.startsWith ("Command - Enter"))
+    if (!rowFields.get (0).getText ().startsWith ("Command - Enter"))
       return false;
 
     int screenType = 0;
@@ -262,30 +268,36 @@ public class ScreenDetails
         break;
 
       case 4:
+        String message = rowFields.get (1).getText ().trim ();
         heading = rowFields.get (2).getText ().trim ();
-        if ("Volume".equals (heading))
+        if ("Volume".equals (heading) && "Message".equals (message))
           screenType = 3;
         break;
 
       case 6:
-        List<Field> rowFields2 = fieldManager.getRowFields (7);
-        if (rowFields2.size () == 1)
+        message = rowFields.get (1).getText ().trim ();
+        heading = rowFields.get (2).getText ().trim ();
+        if ("Volume".equals (heading) && "Message".equals (message))
         {
-          String line = rowFields2.get (0).getText ().trim ();
-          if (line.equals ("Catalog"))
+          List<Field> rowFields2 = fieldManager.getRowFields (nextLine);
+          if (rowFields2.size () == 1)
           {
-            screenType = 4;
-            linesPerDataset = 3;
-            nextLine = 9;
+            String line = rowFields2.get (0).getText ().trim ();
+            if (line.equals ("Catalog"))
+            {
+              screenType = 4;
+              linesPerDataset = 3;
+              nextLine = 9;
+            }
+            else if (line.startsWith ("--"))
+            {
+              screenType = 5;
+              linesPerDataset = 2;
+              nextLine = 8;
+            }
+            else
+              System.out.println ("Expected 'Catalog' or underscores: " + line);
           }
-          else if (line.startsWith ("--"))
-          {
-            screenType = 5;
-            linesPerDataset = 2;
-            nextLine = 8;
-          }
-          else
-            System.out.println ("Expected 'Catalog'");
         }
         break;
 
@@ -433,8 +445,12 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!(mode.equals ("EDIT") || mode.equals ("LIBRARY") || mode.equals ("BROWSE")
-        || mode.equals ("VIEW") || mode.equals ("DSLIST")))
+    if (!(mode.equals ("LIBRARY")// 3.1
+        || mode.equals ("EDIT")//   3.4:E
+        || mode.equals ("BROWSE")// 3.4:B
+        || mode.equals ("VIEW")//   3.4:V
+        || mode.equals ("DSLIST")// 3.4:M
+    ))
     {
       System.out.printf ("Unexpected mode1: [%s]%n", mode);
       return false;
@@ -512,7 +528,10 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!(mode.equals ("EDIT") || mode.equals ("BROWSE") || mode.equals ("VIEW")))
+    if (!(mode.equals ("EDIT")//    Menu option 1 (browse mode not selected)
+        || mode.equals ("BROWSE")// Menu option 1 (browse mode selected)
+        || mode.equals ("VIEW")//   Menu option 2
+    ))
     {
       System.out.printf ("Unexpected mode2: [%s]%n", mode);
       return false;
