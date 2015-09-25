@@ -624,8 +624,7 @@ public class ScreenDetails
       return;
 
     Field field = fields.get (11);
-    int location = field.getFirstLocation ();
-    if (location != 161)
+    if (field.getFirstLocation () != 161)
       return;
 
     String text = field.getText ().trim ();
@@ -633,8 +632,7 @@ public class ScreenDetails
       return;
 
     field = fields.get (12);
-    location = field.getFirstLocation ();
-    if (location != 172)
+    if (field.getFirstLocation () != 172)
       return;
 
     text = field.getText ().trim ();
@@ -652,14 +650,12 @@ public class ScreenDetails
       return;
 
     Field field = fields.get (8);
-    int location = field.getFirstLocation ();
-    if (location != 171)
+    if (field.getFirstLocation () != 171)
       return;
 
     String text = field.getText ().trim ();
     int pos = text.indexOf (' ');
-    if (pos > 0)
-      currentDataset = text.substring (0, pos);
+    currentDataset = pos > 0 ? text.substring (0, pos) : text;
   }
 
   private boolean listMatchesArray (List<String> list, String[] array)
