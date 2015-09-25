@@ -18,6 +18,7 @@ public class ScreenDetails
   private static final String segment = "[A-Z@#$][-A-Z0-9@#$]{0,7}";
   private static final Pattern datasetNamePattern =
       Pattern.compile (segment + "(\\." + segment + "){0,21}");
+  private static final Pattern memberNamePattern = Pattern.compile (segment);
 
   private static final String ispfScreen = "ISPF Primary Option Menu";
   private static final String zosScreen = "z/OS Primary Option Menu";
@@ -306,7 +307,7 @@ public class ScreenDetails
         break;
 
       String datasetName = rowFields.get (0).getText ().trim ();
-      if (datasetName.isEmpty () || datasetName.length () > 44)
+      if (datasetName.length () > 44)
         break;
       Matcher matcher = datasetNamePattern.matcher (datasetName);
       if (!matcher.matches ())
@@ -441,10 +442,16 @@ public class ScreenDetails
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
         break;
 
-      String memberName = rowFields.get (1).getText ();
+      String memberName = rowFields.get (1).getText ().trim ();
+      Matcher matcher = memberNamePattern.matcher (memberName);
+      if (!matcher.matches ())
+      {
+        System.out.printf ("Invalid member name: %s%n", memberName);
+        break;
+      }
       String details = rowFields.get (3).getText ();
 
-      Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
+      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
       members.add (member);
 
       if (headings.size () == 7 && "EDIT".equals (mode))
@@ -504,7 +511,13 @@ public class ScreenDetails
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
         break;
 
-      String memberName = rowFields.get (1).getText ();
+      String memberName = rowFields.get (1).getText ().trim ();
+      Matcher matcher = memberNamePattern.matcher (memberName);
+      if (!matcher.matches ())
+      {
+        System.out.printf ("Invalid member name: %s%n", memberName);
+        break;
+      }
       String details = rowFields.get (3).getText ();
 
       Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
