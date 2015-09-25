@@ -346,6 +346,7 @@ public class ScreenDetails
             setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
             setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
             setDates (dataset, rowFields.get (5).getText ());
+
             String catalog = rowFields.get (6).getText ().trim ();
             matcher = datasetNamePattern.matcher (catalog);
             if (matcher.matches ())
@@ -376,15 +377,15 @@ public class ScreenDetails
     return true;
   }
 
-  private void setSpace (Dataset dataset, String details, int... tabs)
+  private void setSpace (Dataset dataset, String details, int t1, int t2, int t3)
   {
     if (details.trim ().isEmpty ())
       return;
 
-    String tracks = details.substring (0, tabs[0]);
-    String pct = details.substring (tabs[0], tabs[1]);
-    String extents = details.substring (tabs[1], tabs[2]);
-    String device = details.substring (tabs[2]);
+    String tracks = details.substring (0, t1);
+    String pct = details.substring (t1, t2);
+    String extents = details.substring (t2, t3);
+    String device = details.substring (t3);
 
     dataset.setTracks (getInteger ("tracks", tracks.trim ()));
     dataset.setPercentUsed (getInteger ("pct", pct.trim ()));
@@ -392,15 +393,15 @@ public class ScreenDetails
     dataset.setDevice (device.trim ());
   }
 
-  private void setDisposition (Dataset dataset, String details, int... tabs)
+  private void setDisposition (Dataset dataset, String details, int t1, int t2, int t3)
   {
     if (details.trim ().isEmpty ())
       return;
 
-    String dsorg = details.substring (0, tabs[0]);
-    String recfm = details.substring (tabs[0], tabs[1]);
-    String lrecl = details.substring (tabs[1], tabs[2]);
-    String blksize = details.substring (tabs[2]);
+    String dsorg = details.substring (0, t1);
+    String recfm = details.substring (t1, t2);
+    String lrecl = details.substring (t2, t3);
+    String blksize = details.substring (t3);
 
     dataset.setDsorg (dsorg.trim ());
     dataset.setRecfm (recfm.trim ());
@@ -414,8 +415,8 @@ public class ScreenDetails
       return;
 
     dataset.setCreated (details.substring (0, 10).trim ());
-    dataset.setExpires (details.substring (11, 20).trim ());
-    dataset.setReferred (details.substring (22).trim ());
+    dataset.setExpires (details.substring (10, 20).trim ());
+    dataset.setReferred (details.substring (20).trim ());
   }
 
   private boolean checkMemberList (List<Field> screenFields)
@@ -567,14 +568,15 @@ public class ScreenDetails
     return true;
   }
 
-  private void screenType1 (Dataset member, String details, int... tabs)
+  private void screenType1 (Dataset member, String details, int t1, int t2, int t3,
+      int t4)
   {
     //    System.out.printf ("[%s]%n", details);
-    String size = details.substring (0, tabs[0]);
-    String created = details.substring (tabs[0], tabs[1]);
-    String modified = details.substring (tabs[1], tabs[2]);
-    String time = details.substring (tabs[2], tabs[3]);
-    String id = details.substring (tabs[3]);
+    String size = details.substring (0, t1);
+    String created = details.substring (t1, t2);
+    String modified = details.substring (t2, t3);
+    String time = details.substring (t3, t4);
+    String id = details.substring (t4);
 
     member.setCreated (created.trim ());
     member.setReferred (modified.trim ());
@@ -584,14 +586,15 @@ public class ScreenDetails
     //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
   }
 
-  private void screenType2 (Dataset member, String details, int... tabs)
+  private void screenType2 (Dataset member, String details, int t1, int t2, int t3,
+      int t4)
   {
     //    System.out.printf ("[%s]%n", details);
-    String size = details.substring (0, tabs[0]);
-    String init = details.substring (tabs[0], tabs[1]);
-    String mod = details.substring (tabs[1], tabs[2]);
-    String vvmm = details.substring (tabs[2], tabs[3]);
-    String id = details.substring (tabs[3]);
+    String size = details.substring (0, t1);
+    String init = details.substring (t1, t2);
+    String mod = details.substring (t2, t3);
+    String vvmm = details.substring (t3, t4);
+    String id = details.substring (t4);
 
     member.setCatalog (id);
     member.setExtents (getInteger ("Ext:", size.trim ()));
