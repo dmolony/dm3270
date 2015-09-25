@@ -306,9 +306,12 @@ public class ScreenDetails
       if (rowFields.size () <= 1)
         break;
 
-      String datasetName = rowFields.get (0).getText ().trim ();
+      String datasetName = rowFields.get (0).getText ().substring (9).trim ();
       if (datasetName.length () > 44)
+      {
+        System.out.printf ("Dataset name too long: %s%n", datasetName);
         break;
+      }
       Matcher matcher = datasetNamePattern.matcher (datasetName);
       if (!matcher.matches ())
       {
@@ -343,7 +346,10 @@ public class ScreenDetails
             setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
             setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
             setDates (dataset, rowFields.get (5).getText ());
-            dataset.setCatalog (rowFields.get (6).getText ().trim ());
+            String catalog = rowFields.get (6).getText ().trim ();
+            matcher = datasetNamePattern.matcher (catalog);
+            if (matcher.matches ())
+              dataset.setCatalog (catalog);
           }
           break;
 
@@ -426,8 +432,12 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!(mode.equals ("EDIT") || mode.equals ("LIBRARY")))
+    if (!(mode.equals ("EDIT") || mode.equals ("LIBRARY") || mode.equals ("BROWSE")
+        || mode.equals ("VIEW") || mode.equals ("DSLIST")))
+    {
       System.out.printf ("Unexpected mode1: [%s]%n", mode);
+      return false;
+    }
 
     field = screenFields.get (9);
     if (field.getFirstLocation () != 179)
@@ -435,6 +445,7 @@ public class ScreenDetails
     String datasetName = field.getText ().trim ();
 
     List<Field> headings = fieldManager.getRowFields (4);
+    //    System.out.printf ("%nMode 1: %s, Headings: %d%n", mode, headings.size ());
 
     for (int row = 5; row < screenRows; row++)
     {
@@ -454,13 +465,31 @@ public class ScreenDetails
       Dataset member = new Dataset (datasetName + "(" + memberName + ")");
       members.add (member);
 
-      if (headings.size () == 7 && "EDIT".equals (mode))
-        screenType1 (member, details, 9, 21, 33, 42);
-      else
-        if (headings.size () == 13 && ("EDIT".equals (mode) || "LIBRARY".equals (mode)))
-        screenType2 (member, details);
-      else if (headings.size () == 10 && "LIBRARY".equals (mode))
-        screenType1 (member, details, 12, 25, 38, 47);
+      if (headings.size () == 7)
+      {
+        if ("EDIT".equals (mode) || "BROWSE".equals (mode) || "VIEW".equals (mode)
+            || "DSLIST".equals (mode))
+          screenType1 (member, details, 9, 21, 33, 42);
+        else
+          dumpFields (rowFields);
+      }
+      else if (headings.size () == 10)
+      {
+        if ("LIBRARY".equals (mode))
+          screenType1 (member, details, 12, 25, 38, 47);
+        else
+          dumpFields (rowFields);
+      }
+      else if (headings.size () == 13)
+      {
+        if ("EDIT".equals (mode) || "BROWSE".equals (mode) || "VIEW".equals (mode)
+            || "DSLIST".equals (mode))
+          screenType2 (member, details, 9, 17, 25, 36);
+        else if ("LIBRARY".equals (mode))
+          screenType2 (member, details, 12, 21, 31, 43);
+        else
+          dumpFields (rowFields);
+      }
       else
       {
         dumpFields (headings);
@@ -483,7 +512,10 @@ public class ScreenDetails
 
     String mode = field.getText ().trim ();
     if (!(mode.equals ("EDIT") || mode.equals ("BROWSE") || mode.equals ("VIEW")))
+    {
       System.out.printf ("Unexpected mode2: [%s]%n", mode);
+      return false;
+    }
 
     field = screenFields.get (8);
     if (field.getFirstLocation () != 170)
@@ -504,6 +536,7 @@ public class ScreenDetails
 
     if (screenType == 0)
       return false;
+    //    System.out.printf ("%nMode 2: %s, Headings: %d%n", mode, headings.size ());
 
     for (int row = 5; row < screenRows; row++)
     {
@@ -526,7 +559,7 @@ public class ScreenDetails
       if (screenType == 1)
         screenType1 (member, details, 12, 25, 38, 47);
       else if (screenType == 2)
-        screenType2 (member, details);
+        screenType2 (member, details, 12, 21, 31, 43);
       else
         dumpFields (rowFields);
     }
@@ -536,6 +569,7 @@ public class ScreenDetails
 
   private void screenType1 (Dataset member, String details, int... tabs)
   {
+    //    System.out.printf ("[%s]%n", details);
     String size = details.substring (0, tabs[0]);
     String created = details.substring (tabs[0], tabs[1]);
     String modified = details.substring (tabs[1], tabs[2]);
@@ -546,18 +580,23 @@ public class ScreenDetails
     member.setReferred (modified.trim ());
     member.setCatalog (id.trim ());
     member.setExtents (getInteger ("Ext:", size.trim ()));
+
+    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
   }
 
-  private void screenType2 (Dataset member, String details)
+  private void screenType2 (Dataset member, String details, int... tabs)
   {
-    String size = details.substring (3, 12);
-    String init = details.substring (12, 21);
-    String mod = details.substring (21, 31);
-    String vvmm = details.substring (31, 43);
-    String id = details.substring (43);
+    //    System.out.printf ("[%s]%n", details);
+    String size = details.substring (0, tabs[0]);
+    String init = details.substring (tabs[0], tabs[1]);
+    String mod = details.substring (tabs[1], tabs[2]);
+    String vvmm = details.substring (tabs[2], tabs[3]);
+    String id = details.substring (tabs[3]);
 
     member.setCatalog (id);
     member.setExtents (getInteger ("Ext:", size.trim ()));
+
+    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, init, mod, vvmm, id);
   }
 
   private int getInteger (String id, String value)
