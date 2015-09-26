@@ -370,7 +370,6 @@ public class ScreenDetails
           if (rowFields.size () >= 3)
           {
             dataset.setVolume (rowFields.get (2).getText ().trim ());
-
             if (rowFields.size () >= 6)
             {
               setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
@@ -445,15 +444,26 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!(mode.equals ("LIBRARY")// 3.1
-        || mode.equals ("EDIT")//   3.4:E
-        || mode.equals ("BROWSE")// 3.4:B
-        || mode.equals ("VIEW")//   3.4:V
-        || mode.equals ("DSLIST")// 3.4:M
-    ))
+    int[] tabs1 = null;
+    int[] tabs2 = null;
+
+    switch (mode)
     {
-      System.out.printf ("Unexpected mode1: [%s]%n", mode);
-      return false;
+      case "LIBRARY":// 3.1
+        tabs1 = new int[] { 12, 25, 38, 47 };
+        tabs2 = new int[] { 12, 21, 31, 43 };
+        break;
+
+      case "EDIT"://    3.4:e
+      case "BROWSE"://  3.4:b
+      case "VIEW"://    3.4:v
+      case "DSLIST"://  3.4:m
+        tabs1 = new int[] { 9, 21, 33, 42 };
+        tabs2 = new int[] { 9, 17, 25, 36 };
+        break;
+      default:
+        System.out.printf ("Unexpected mode1: [%s]%n", mode);
+        return false;
     }
 
     field = screenFields.get (9);
@@ -482,36 +492,10 @@ public class ScreenDetails
       Dataset member = new Dataset (datasetName + "(" + memberName + ")");
       members.add (member);
 
-      if (headings.size () == 7)
-      {
-        if ("EDIT".equals (mode) || "BROWSE".equals (mode) || "VIEW".equals (mode)
-            || "DSLIST".equals (mode))
-          screenType1 (member, details, 9, 21, 33, 42);
-        else
-          dumpFields (rowFields);
-      }
-      else if (headings.size () == 10)
-      {
-        if ("LIBRARY".equals (mode))
-          screenType1 (member, details, 12, 25, 38, 47);
-        else
-          dumpFields (rowFields);
-      }
+      if (headings.size () == 7 || headings.size () == 10)
+        screenType1 (member, details, tabs1);
       else if (headings.size () == 13)
-      {
-        if ("EDIT".equals (mode) || "BROWSE".equals (mode) || "VIEW".equals (mode)
-            || "DSLIST".equals (mode))
-          screenType2 (member, details, 9, 17, 25, 36);
-        else if ("LIBRARY".equals (mode))
-          screenType2 (member, details, 12, 21, 31, 43);
-        else
-          dumpFields (rowFields);
-      }
-      else
-      {
-        dumpFields (headings);
-        dumpFields (rowFields);
-      }
+        screenType2 (member, details, tabs2);
     }
 
     return true;
@@ -536,6 +520,9 @@ public class ScreenDetails
       System.out.printf ("Unexpected mode2: [%s]%n", mode);
       return false;
     }
+
+    int[] tabs1 = { 12, 25, 38, 47 };
+    int[] tabs2 = { 12, 21, 31, 43 };
 
     field = screenFields.get (8);
     if (field.getFirstLocation () != 170)
@@ -577,9 +564,9 @@ public class ScreenDetails
       members.add (member);
 
       if (screenType == 1)
-        screenType1 (member, details, 12, 25, 38, 47);
+        screenType1 (member, details, tabs1);
       else if (screenType == 2)
-        screenType2 (member, details, 12, 21, 31, 43);
+        screenType2 (member, details, tabs2);
       else
         dumpFields (rowFields);
     }
@@ -587,15 +574,14 @@ public class ScreenDetails
     return true;
   }
 
-  private void screenType1 (Dataset member, String details, int t1, int t2, int t3,
-      int t4)
+  private void screenType1 (Dataset member, String details, int[] tabs)
   {
     //    System.out.printf ("[%s]%n", details);
-    String size = details.substring (0, t1);
-    String created = details.substring (t1, t2);
-    String modified = details.substring (t2, t3);
-    String time = details.substring (t3, t4);
-    String id = details.substring (t4);
+    String size = details.substring (0, tabs[0]);
+    String created = details.substring (tabs[0], tabs[1]);
+    String modified = details.substring (tabs[1], tabs[2]);
+    String time = details.substring (tabs[2], tabs[3]);
+    String id = details.substring (tabs[3]);
 
     member.setCreated (created.trim ());
     member.setReferred (modified.trim ());
@@ -605,15 +591,14 @@ public class ScreenDetails
     //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
   }
 
-  private void screenType2 (Dataset member, String details, int t1, int t2, int t3,
-      int t4)
+  private void screenType2 (Dataset member, String details, int[] tabs)
   {
     //    System.out.printf ("[%s]%n", details);
-    String size = details.substring (0, t1);
-    String init = details.substring (t1, t2);
-    String mod = details.substring (t2, t3);
-    String vvmm = details.substring (t3, t4);
-    String id = details.substring (t4);
+    String size = details.substring (0, tabs[0]);
+    String init = details.substring (tabs[0], tabs[1]);
+    String mod = details.substring (tabs[1], tabs[2]);
+    String vvmm = details.substring (tabs[2], tabs[3]);
+    String id = details.substring (tabs[3]);
 
     member.setCatalog (id);
     member.setExtents (getInteger ("Ext:", size.trim ()));
