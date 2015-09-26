@@ -130,7 +130,7 @@ public class FieldManager
         }
     }
 
-    screenDetails.check ();// should fireScreenChanged(new ScreenDetails())
+    screenDetails.check ();
     fireScreenChanged (screenDetails);
   }
 
@@ -176,7 +176,8 @@ public class FieldManager
     return fields.size ();
   }
 
-  Field eraseAllUnprotected ()
+  // called from Screen.eraseAllUnprotected()
+      Field eraseAllUnprotected ()
   {
     if (unprotectedFields.size () == 0)
       return null;
@@ -185,16 +186,6 @@ public class FieldManager
       field.clear (true);
 
     return unprotectedFields.get (0);
-  }
-
-  public int getScreenRows ()
-  {
-    return screen.rows;
-  }
-
-  public int getScreenColumns ()
-  {
-    return screen.columns;
   }
 
   // ---------------------------------------------------------------------------------//

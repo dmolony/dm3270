@@ -50,7 +50,8 @@ public class ScreenDetails
     screenColumns = columns;
   }
 
-  public void check ()
+  // called by FieldManager after building a new screen
+      void check ()
   {
     tsoCommandField = null;
     isTSOCommandScreen = false;
@@ -588,7 +589,7 @@ public class ScreenDetails
     member.setCatalog (id.trim ());
     member.setExtents (getInteger ("Ext:", size.trim ()));
 
-    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
+    //System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
   }
 
   private void screenType2 (Dataset member, String details, int[] tabs)
