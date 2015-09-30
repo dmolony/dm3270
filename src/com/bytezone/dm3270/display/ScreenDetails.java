@@ -64,6 +64,9 @@ public class ScreenDetails
     if (screenFields.size () <= 2)
       return;
 
+    if (isSplitScreen ())
+      System.out.println ("split");
+
     if (hasPromptField ())
     {
       if (prefix.isEmpty ())
@@ -128,6 +131,27 @@ public class ScreenDetails
   public List<Dataset> getMembers ()
   {
     return members;
+  }
+
+  private boolean isSplitScreen ()
+  {
+    String lineSplit =
+        ".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .";
+    for (Field field : fieldManager.getFields ())
+    {
+      if (!field.isProtected ())
+        continue;
+      if (field.getDisplayLength () != 79)
+        continue;
+      if (field.getFirstLocation () % screenColumns != 1)
+        continue;
+      if (!lineSplit.equals (field.getText ()))
+        continue;
+
+      return true;
+    }
+
+    return false;
   }
 
   private boolean hasPromptField ()
@@ -394,15 +418,10 @@ public class ScreenDetails
     if (details.trim ().isEmpty ())
       return;
 
-    String tracks = details.substring (0, t1);
-    String pct = details.substring (t1, t2);
-    String extents = details.substring (t2, t3);
-    String device = details.substring (t3);
-
-    dataset.setTracks (getInteger ("tracks", tracks.trim ()));
-    dataset.setPercentUsed (getInteger ("pct", pct.trim ()));
-    dataset.setExtents (getInteger ("ext", extents.trim ()));
-    dataset.setDevice (device.trim ());
+    dataset.setTracks (getInteger ("tracks", details.substring (0, t1).trim ()));
+    dataset.setPercentUsed (getInteger ("pct", details.substring (t1, t2).trim ()));
+    dataset.setExtents (getInteger ("ext", details.substring (t2, t3).trim ()));
+    dataset.setDevice (details.substring (t3).trim ());
   }
 
   private void setDisposition (Dataset dataset, String details, int t1, int t2, int t3)
@@ -410,15 +429,10 @@ public class ScreenDetails
     if (details.trim ().isEmpty ())
       return;
 
-    String dsorg = details.substring (0, t1);
-    String recfm = details.substring (t1, t2);
-    String lrecl = details.substring (t2, t3);
-    String blksize = details.substring (t3);
-
-    dataset.setDsorg (dsorg.trim ());
-    dataset.setRecfm (recfm.trim ());
-    dataset.setLrecl (getInteger ("lrecl", lrecl.trim ()));
-    dataset.setBlksize (getInteger ("blksize", blksize.trim ()));
+    dataset.setDsorg (details.substring (0, t1).trim ());
+    dataset.setRecfm (details.substring (t1, t2).trim ());
+    dataset.setLrecl (getInteger ("lrecl", details.substring (t2, t3).trim ()));
+    dataset.setBlksize (getInteger ("blksize", details.substring (t3).trim ()));
   }
 
   private void setDates (Dataset dataset, String details)
@@ -426,9 +440,8 @@ public class ScreenDetails
     if (details.trim ().isEmpty ())
       return;
 
-    System.out.printf ("[%s]%n", details);
-    dataset.setCreated (details.substring (0, 10).trim ());
-    dataset.setExpires (details.substring (10, 22).trim ());
+    dataset.setCreated (details.substring (0, 11).trim ());
+    dataset.setExpires (details.substring (11, 22).trim ());
     dataset.setReferred (details.substring (22).trim ());
   }
 
@@ -474,7 +487,6 @@ public class ScreenDetails
     String datasetName = field.getText ().trim ();
 
     List<Field> headings = fieldManager.getRowFields (4);
-    //    System.out.printf ("%nMode 1: %s, Headings: %d%n", mode, headings.size ());
 
     for (int row = 5; row < screenRows; row++)
     {
@@ -545,7 +557,6 @@ public class ScreenDetails
 
     if (screenType == 0)
       return false;
-    //    System.out.printf ("%nMode 2: %s, Headings: %d%n", mode, headings.size ());
 
     for (int row = 5; row < screenRows; row++)
     {
