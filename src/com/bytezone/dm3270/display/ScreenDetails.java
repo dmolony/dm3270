@@ -15,6 +15,8 @@ public class ScreenDetails
       { "Menu", "Functions", "Confirm", "Utilities", "Help" };
   private static final String[] memberMenus =
       { "Menu", "Functions", "Utilities", "Help" };
+  private static final String SPLIT_LINE = ".  .  .  .  .  .  .  .  .  .  .  .  .  "
+      + ".  .  .  .  .  .  .  .  .  .  .  .  .  .";
   private static final String segment = "[A-Z@#$][-A-Z0-9@#$]{0,7}";
   private static final Pattern datasetNamePattern =
       Pattern.compile (segment + "(\\." + segment + "){0,21}");
@@ -38,6 +40,7 @@ public class ScreenDetails
   private boolean isTSOCommandScreen;
   private boolean isDatasetList;
   private boolean isMemberList;
+  private boolean isSplitScreen;
 
   private String currentDataset = "";
   private String userid = "";
@@ -56,6 +59,7 @@ public class ScreenDetails
     tsoCommandField = null;
     isTSOCommandScreen = false;
     isDatasetList = false;
+    isSplitScreen = false;
     datasets.clear ();
     members.clear ();
     currentDataset = "";
@@ -64,8 +68,9 @@ public class ScreenDetails
     if (screenFields.size () <= 2)
       return;
 
-    if (isSplitScreen ())
-      System.out.println ("split");
+    isSplitScreen = checkSplitScreen ();
+    if (isSplitScreen)
+      return;
 
     if (hasPromptField ())
     {
@@ -133,10 +138,8 @@ public class ScreenDetails
     return members;
   }
 
-  private boolean isSplitScreen ()
+  private boolean checkSplitScreen ()
   {
-    String lineSplit =
-        ".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .";
     for (Field field : fieldManager.getFields ())
     {
       if (!field.isProtected ())
@@ -145,7 +148,7 @@ public class ScreenDetails
         continue;
       if (field.getFirstLocation () % screenColumns != 1)
         continue;
-      if (!lineSplit.equals (field.getText ()))
+      if (!SPLIT_LINE.equals (field.getText ()))
         continue;
 
       return true;
