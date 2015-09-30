@@ -426,9 +426,10 @@ public class ScreenDetails
     if (details.trim ().isEmpty ())
       return;
 
+    System.out.printf ("[%s]%n", details);
     dataset.setCreated (details.substring (0, 10).trim ());
-    dataset.setExpires (details.substring (10, 20).trim ());
-    dataset.setReferred (details.substring (20).trim ());
+    dataset.setExpires (details.substring (10, 22).trim ());
+    dataset.setReferred (details.substring (22).trim ());
   }
 
   private boolean checkMemberList (List<Field> screenFields)
