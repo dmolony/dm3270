@@ -54,7 +54,7 @@ public class ScreenDetails
   }
 
   // called by FieldManager after building a new screen
-      void check ()
+  void check ()
   {
     tsoCommandField = null;
     isTSOCommandScreen = false;
@@ -75,7 +75,7 @@ public class ScreenDetails
     if (hasPromptField ())
     {
       if (prefix.isEmpty ())
-        checkPrefixScreen (screenFields);// initial ISPF screen
+        checkPrefixScreen (screenFields);       // initial ISPF screen
 
       isDatasetList = checkDatasetList (screenFields);
 
@@ -467,15 +467,15 @@ public class ScreenDetails
 
     switch (mode)
     {
-      case "LIBRARY":// 3.1
+      case "LIBRARY":                             // 3.1
         tabs1 = new int[] { 12, 25, 38, 47 };
         tabs2 = new int[] { 12, 21, 31, 43 };
         break;
 
-      case "EDIT"://    3.4:e
-      case "BROWSE"://  3.4:b
-      case "VIEW"://    3.4:v
-      case "DSLIST"://  3.4:m
+      case "EDIT":                                // 3.4:e
+      case "BROWSE":                              // 3.4:b
+      case "VIEW":                                // 3.4:v
+      case "DSLIST":                              // 3.4:m
         tabs1 = new int[] { 9, 21, 33, 42 };
         tabs2 = new int[] { 9, 17, 25, 36 };
         break;
@@ -529,9 +529,9 @@ public class ScreenDetails
       return false;
 
     String mode = field.getText ().trim ();
-    if (!(mode.equals ("EDIT")//    Menu option 1 (browse mode not selected)
-        || mode.equals ("BROWSE")// Menu option 1 (browse mode selected)
-        || mode.equals ("VIEW")//   Menu option 2
+    if (!(mode.equals ("EDIT")      // Menu option 1 (browse mode not selected)
+        || mode.equals ("BROWSE")   // Menu option 1 (browse mode selected)
+        || mode.equals ("VIEW")     // Menu option 2
     ))
     {
       System.out.printf ("Unexpected mode2: [%s]%n", mode);
@@ -592,7 +592,6 @@ public class ScreenDetails
 
   private void screenType1 (Dataset member, String details, int[] tabs)
   {
-    //    System.out.printf ("[%s]%n", details);
     String size = details.substring (0, tabs[0]);
     String created = details.substring (tabs[0], tabs[1]);
     String modified = details.substring (tabs[1], tabs[2]);
@@ -603,13 +602,10 @@ public class ScreenDetails
     member.setReferred (modified.trim ());
     member.setCatalog (id.trim ());
     member.setExtents (getInteger ("Ext:", size.trim ()));
-
-    //System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, created, modified, time, id);
   }
 
   private void screenType2 (Dataset member, String details, int[] tabs)
   {
-    //    System.out.printf ("[%s]%n", details);
     String size = details.substring (0, tabs[0]);
     String init = details.substring (tabs[0], tabs[1]);
     String mod = details.substring (tabs[1], tabs[2]);
@@ -618,8 +614,6 @@ public class ScreenDetails
 
     member.setCatalog (id);
     member.setExtents (getInteger ("Ext:", size.trim ()));
-
-    //    System.out.printf ("[%s] [%s] [%s] [%s] [%s]%n", size, init, mod, vvmm, id);
   }
 
   private int getInteger (String id, String value)
