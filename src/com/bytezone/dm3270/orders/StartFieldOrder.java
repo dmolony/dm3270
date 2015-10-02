@@ -33,7 +33,7 @@ public class StartFieldOrder extends Order
   {
     Pen pen = screen.getPen ();
     location = pen.getPosition ();
-    startFieldAttribute.process (pen);// calls pen.startField()
+    startFieldAttribute.process (pen);          // calls pen.startField()
     pen.moveRight ();
   }
 

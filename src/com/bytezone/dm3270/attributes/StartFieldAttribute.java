@@ -12,12 +12,12 @@ public class StartFieldAttribute extends Attribute
   private static final Color RED = ColorAttribute.colors[2];
   private static final Color GREEN = ColorAttribute.colors[4];
 
-  private final boolean isProtected;// bit 2
-  private final boolean isNumeric;// bit 3
-  private final boolean isModified;// bit 7
+  private final boolean isProtected;      // bit 2
+  private final boolean isNumeric;        // bit 3
+  private final boolean isModified;       // bit 7
 
-  private boolean isExtended;// created by StartFieldExtendedOrder
-  private boolean userModified;// used to avoid altering the original bit 7
+  private boolean isExtended;         // created by StartFieldExtendedOrder
+  private boolean userModified;       // used to avoid altering the original bit 7
 
   // these three fields are stored in two bits (4&5)
   private final boolean isHidden;
@@ -67,37 +67,37 @@ public class StartFieldAttribute extends Attribute
     return isExtended;
   }
 
-  public boolean isProtected ()// P/p - Protected/unprotected
+  public boolean isProtected ()           // P/p - Protected/unprotected
   {
     return isProtected;
   }
 
-  public boolean isAlphanumeric ()// A/a - Alphanumeric/numeric
+  public boolean isAlphanumeric ()        // A/a - Alphanumeric/numeric
   {
     return !isNumeric;
   }
 
-  public boolean isHidden ()// V/v - Visible/not visible
+  public boolean isHidden ()              // V/v - Visible/not visible
   {
     return isHidden;
   }
 
-  public boolean isVisible ()// V/v - Visible/not visible
+  public boolean isVisible ()             // V/v - Visible/not visible
   {
     return !isHidden;
   }
 
-  public boolean isIntensified ()// I/i - Intensified/not intensified
+  public boolean isIntensified ()         // I/i - Intensified/not intensified
   {
     return isHighIntensity;
   }
 
-  public boolean isDetectable ()// D/d - Detectable/not detectable
+  public boolean isDetectable ()          // D/d - Detectable/not detectable
   {
     return selectorPenDetectable;
   }
 
-  public boolean isModified ()// M/m - Modified/not modified
+  public boolean isModified ()            // M/m - Modified/not modified
   {
     return isModified || userModified;
   }
@@ -146,7 +146,7 @@ public class StartFieldAttribute extends Attribute
 
   private String getColorName ()
   {
-    return isHighIntensity ? //
+    return isHighIntensity ?        //
         isProtected ? "WH" : "RE" : //
         isProtected ? "BL" : "GR";
   }
@@ -155,12 +155,12 @@ public class StartFieldAttribute extends Attribute
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (isProtected ? "P" : "p");// Protected
-    text.append (isNumeric ? "a" : "A");// Alphanumeric
-    text.append (isHidden ? "v" : "V");// Visible
-    text.append (isHighIntensity ? "I" : "i");// Intensified
-    text.append (selectorPenDetectable ? "D" : "d");// Detectable
-    text.append (isModified () ? "M" : "m");// Modified
+    text.append (isProtected ? "P" : "p");              // Protected
+    text.append (isNumeric ? "a" : "A");                // Alphanumeric
+    text.append (isHidden ? "v" : "V");                 // Visible
+    text.append (isHighIntensity ? "I" : "i");          // Intensified
+    text.append (selectorPenDetectable ? "D" : "d");    // Detectable
+    text.append (isModified () ? "M" : "m");            // Modified
 
     return text.toString ();
   }
