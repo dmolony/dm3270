@@ -10,8 +10,8 @@
 * [File transfers](resources/assistant.md)
 
 ### Installation
-* Download dm3270.jar from the [releases](https://github.com/dmolony/dm3270/releases) page.
 * Install the **latest** version of the [Java Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (JRE or JDK).
+* Download dm3270.jar from the [releases](https://github.com/dmolony/dm3270/releases) page.
 * Double-click the jar file, or enter 'java -jar dm3270.jar' in the terminal.
 
 ### Connection
