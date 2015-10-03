@@ -73,7 +73,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     FileNode fileNode = reporterNode.getSelectedNode ();
     if (fileNode == null)
     {
-      System.out.println ("No file selected to transfer");
+      System.out.println ("No fileNode selected in FilesTab.getCurrentFileBuffer()");
       return null;
     }
     else

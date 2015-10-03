@@ -10,17 +10,21 @@ public class Site
   public final TextField port = new TextField ();
   public final CheckBox extended = new CheckBox ();
   public final CheckBox plugins = new CheckBox ();
+  public final TextField folder = new TextField ();
 
-  private final TextField[] textFieldList = { name, url, port, null };
-  private final CheckBox[] checkBoxFieldList = { null, null, null, extended, plugins };
+  private final TextField[] textFieldList = { name, url, port, null, null, folder };
+  private final CheckBox[] checkBoxFieldList =
+      { null, null, null, extended, plugins, null };
 
-  public Site (String name, String url, int port, boolean extended, boolean plugins)
+  public Site (String name, String url, int port, boolean extended, boolean plugins,
+      String folder)
   {
     this.name.setText (name);
     this.url.setText (url);
     this.port.setText (port == 23 && name.isEmpty () ? "" : port + "");
     this.extended.setSelected (extended);
     this.plugins.setSelected (plugins);
+    this.name.setText (folder);
   }
 
   public String getName ()
@@ -64,6 +68,11 @@ public class Site
     return plugins.isSelected ();
   }
 
+  public String getFolder ()
+  {
+    return folder.getText ();
+  }
+
   public TextField getTextField (int index)
   {
     return textFieldList[index];
@@ -77,7 +86,7 @@ public class Site
   @Override
   public String toString ()
   {
-    return String.format ("Site [name=%s, url=%s, port=%d]", getName (), getURL (),
-                          getPort ());
+    return String.format ("Site [name=%s, url=%s, port=%d, folder=%s]", getName (),
+                          getURL (), getPort (), getFolder ());
   }
 }

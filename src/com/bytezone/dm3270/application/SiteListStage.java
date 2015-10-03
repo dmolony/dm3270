@@ -36,6 +36,7 @@ public class SiteListStage extends PreferencesStage
     fields.add (new PreferenceField ("Port", 50, Type.NUMBER));
     fields.add (new PreferenceField ("3270-E", 50, Type.BOOLEAN));
     fields.add (new PreferenceField ("Plugins", 50, Type.BOOLEAN));
+    fields.add (new PreferenceField ("Folder", 80, Type.TEXT));
 
     VBox vbox = getHeadings ();
 
@@ -97,16 +98,17 @@ public class SiteListStage extends PreferencesStage
       int port = prefs.getInt (keyName + "Port", 23);
       boolean extended = prefs.getBoolean (keyName + "Extended", true);
       boolean plugins = prefs.getBoolean (keyName + "Plugins", false);
+      String folder = prefs.get (keyName + "Folder", "");
 
       if (port <= 0)
         port = 23;
 
       Site site = null;
       if (name.isEmpty () || url.isEmpty ())
-        site = new Site ("", "", 23, false, false);
+        site = new Site ("", "", 23, false, false, "");
       else
       {
-        site = new Site (name, url, port, extended, plugins);
+        site = new Site (name, url, port, extended, plugins, folder);
         siteNames.add (name);
       }
       sites.add (site);
@@ -125,6 +127,7 @@ public class SiteListStage extends PreferencesStage
       Site site = sites.get (i);
       String keyName = String.format ("%s%02d", key, i);
       String name = site.name.getText ();
+      String folder = site.folder.getText ();
       boolean extended = site.getExtended ();
       boolean plugins = site.getPlugins ();
 
@@ -133,6 +136,7 @@ public class SiteListStage extends PreferencesStage
       prefs.put (keyName + "Port", site.port.getText ());
       prefs.putBoolean (keyName + "Extended", extended);
       prefs.putBoolean (keyName + "Plugins", plugins);
+      prefs.put (keyName + "Folder", folder);
 
       if (name != null && !name.isEmpty ())
         siteNames.add (name);
