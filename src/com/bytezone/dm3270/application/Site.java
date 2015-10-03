@@ -24,7 +24,7 @@ public class Site
     this.port.setText (port == 23 && name.isEmpty () ? "" : port + "");
     this.extended.setSelected (extended);
     this.plugins.setSelected (plugins);
-    this.name.setText (folder);
+    this.folder.setText (folder);
   }
 
   public String getName ()
