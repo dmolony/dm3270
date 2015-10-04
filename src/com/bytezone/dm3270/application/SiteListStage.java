@@ -36,7 +36,7 @@ public class SiteListStage extends PreferencesStage
     fields.add (new PreferenceField ("Port", 50, Type.NUMBER));
     fields.add (new PreferenceField ("3270-E", 50, Type.BOOLEAN));
     fields.add (new PreferenceField ("Plugins", 50, Type.BOOLEAN));
-    fields.add (new PreferenceField ("Folder", 80, Type.TEXT));
+    fields.add (new PreferenceField ("Save folder", 80, Type.TEXT));
 
     VBox vbox = getHeadings ();
 
@@ -76,13 +76,15 @@ public class SiteListStage extends PreferencesStage
     Scene scene = new Scene (borderPane);
     setScene (scene);
 
-    saveButton.setOnAction (e -> {
-      savePrefs (key);
-      this.hide ();
-    });
-
+    saveButton.setOnAction (e -> save (key));
     cancelButton.setOnAction (e -> this.hide ());
     editListButton.setOnAction (e -> this.show ());
+  }
+
+  private void save (String key)
+  {
+    savePrefs (key);
+    this.hide ();
   }
 
   private void readPrefs (String key, int max)
