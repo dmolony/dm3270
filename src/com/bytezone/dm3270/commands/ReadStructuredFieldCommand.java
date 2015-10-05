@@ -35,8 +35,8 @@ public class ReadStructuredFieldCommand extends Command
   private static Map<String, String> clientNames = new HashMap<> ();
 
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
-  private static final String line = "\n----------------------------------------"
-      + "---------------------------------";
+  private static final String line =
+      "\n-------------------------------------------------------------------------";
 
   private String clientName = "";
   private String signature;

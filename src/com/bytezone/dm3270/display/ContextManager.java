@@ -3,9 +3,9 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.paint.Color;
-
 import com.bytezone.dm3270.attributes.ColorAttribute;
+
+import javafx.scene.paint.Color;
 
 public class ContextManager
 {
@@ -13,9 +13,8 @@ public class ContextManager
 
   public ContextManager ()
   {
-    ScreenContext base =
-        new ScreenContext (ColorAttribute.colors[8], ColorAttribute.colors[8], (byte) 0,
-            true);
+    ScreenContext base = new ScreenContext (ColorAttribute.colors[8],
+        ColorAttribute.colors[8], (byte) 0, true);
     contextPool.add (base);
   }
 
@@ -39,9 +38,8 @@ public class ContextManager
           && sc.highlight == oldContext.highlight
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
-    ScreenContext newContext =
-        new ScreenContext (color, oldContext.backgroundColor, oldContext.highlight,
-            oldContext.highIntensity);
+    ScreenContext newContext = new ScreenContext (color, oldContext.backgroundColor,
+        oldContext.highlight, oldContext.highIntensity);
     contextPool.add (newContext);
     return newContext;
   }
@@ -54,9 +52,8 @@ public class ContextManager
           && sc.highlight == oldContext.highlight
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
-    ScreenContext newContext =
-        new ScreenContext (oldContext.foregroundColor, color, oldContext.highlight,
-            oldContext.highIntensity);
+    ScreenContext newContext = new ScreenContext (oldContext.foregroundColor, color,
+        oldContext.highlight, oldContext.highIntensity);
     contextPool.add (newContext);
     return newContext;
   }
@@ -65,13 +62,12 @@ public class ContextManager
   {
     for (ScreenContext sc : contextPool)
       if (sc.backgroundColor == oldContext.backgroundColor
-          && sc.foregroundColor == oldContext.foregroundColor
+          && sc.foregroundColor == oldContext.foregroundColor //
           && sc.highlight == highlight //
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
-    ScreenContext newContext =
-        new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
-            highlight, oldContext.highIntensity);
+    ScreenContext newContext = new ScreenContext (oldContext.foregroundColor,
+        oldContext.backgroundColor, highlight, oldContext.highIntensity);
     contextPool.add (newContext);
     return newContext;
   }
@@ -84,9 +80,8 @@ public class ContextManager
           && sc.highlight == oldContext.highlight //
           && sc.highIntensity == highIntensity)
         return sc;
-    ScreenContext newContext =
-        new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
-            oldContext.highlight, highIntensity);
+    ScreenContext newContext = new ScreenContext (oldContext.foregroundColor,
+        oldContext.backgroundColor, oldContext.highlight, highIntensity);
     contextPool.add (newContext);
     return newContext;
   }

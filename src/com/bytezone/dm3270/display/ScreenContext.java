@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.display;
 
-import javafx.scene.paint.Color;
-
 import com.bytezone.dm3270.attributes.ColorAttribute;
+
+import javafx.scene.paint.Color;
 
 public class ScreenContext
 {
@@ -41,9 +41,9 @@ public class ScreenContext
   @Override
   public String toString ()
   {
-    return String.format ("[Fg:%-10s Bg:%-10s In:%s  Hl:%02X]", ColorAttribute
-                              .getName (foregroundColor), ColorAttribute
-                              .getName (backgroundColor),
+    return String.format ("[Fg:%-10s Bg:%-10s In:%s  Hl:%02X]",
+                          ColorAttribute.getName (foregroundColor),
+                          ColorAttribute.getName (backgroundColor),
                           (highIntensity ? 'x' : ' '), highlight);
   }
 }

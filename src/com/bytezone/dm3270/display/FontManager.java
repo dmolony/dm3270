@@ -18,8 +18,7 @@ import javafx.scene.text.Font;
 public class FontManager
 {
   private static final String[] fontNames =
-      { //
-        "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
+      { "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
         "Hack", "Hermit", "IBM 3270", "IBM 3270 Narrow", "Inconsolata", "Input Mono",
         "Input Mono Narrow", "Lucida Sans Typewriter", "Luculent", "Menlo", "Monaco",
         "M+ 1m", "Panic Sans", "PT Mono", "Source Code Pro", "Ubuntu Mono",

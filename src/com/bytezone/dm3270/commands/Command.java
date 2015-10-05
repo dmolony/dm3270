@@ -4,7 +4,7 @@ import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
 import com.bytezone.dm3270.display.Screen;
 
-//public abstract class Command extends AbstractTN3270Message
+// public abstract class Command extends AbstractTN3270Message
 public abstract class Command extends AbstractTN3270Command
 {
   // EBCDIC codes (SNA)
@@ -116,8 +116,8 @@ public abstract class Command extends AbstractTN3270Command
         return new ReadCommand (screen, buffer, offset, length);
 
       default:
-        System.out.println ("Unknown 3270 Command: "
-            + String.format ("%02X", buffer[offset]));
+        System.out
+            .println ("Unknown 3270 Command: " + String.format ("%02X", buffer[offset]));
         System.out.println (Utility.toHex (buffer, offset, length));
         Utility.printStackTrace ();
         return null;

@@ -62,7 +62,7 @@ public class WriteCommand extends Command
     this.orders.addAll (orders);
 
     // create new data buffer
-    int length = 2;// command + WCC
+    int length = 2;                 // command + WCC
     for (Order order : orders)
       length += order.size ();
     data = new byte[length];
@@ -90,12 +90,12 @@ public class WriteCommand extends Command
     boolean screenDrawRequired = false;
 
     if (eraseWrite)
-      screen.clearScreen ();// resets pen
+      screen.clearScreen ();            // resets pen
 
     if (orders.size () > 0)
     {
       for (Order order : orders)
-        order.process (screen);// modifies pen
+        order.process (screen);         // modifies pen
 
       cursor.moveTo (cursorLocation);
       screen.buildFields (writeControlCharacter);
@@ -104,7 +104,7 @@ public class WriteCommand extends Command
 
     if (writeControlCharacter != null)
     {
-      writeControlCharacter.process (screen);// may unlock the keyboard
+      writeControlCharacter.process (screen);       // may unlock the keyboard
       screen.checkRecording ();
     }
 

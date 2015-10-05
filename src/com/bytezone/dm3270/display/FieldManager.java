@@ -89,7 +89,7 @@ public class FieldManager
     if (start >= 0 && positions.size () > 0)
       addField (new Field (screen, positions));
 
-    assert(dataPositions + fields.size () == 1920) || fields.size () == 0;
+    assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
 
     // build screen contexts for every position and link uprotected fields
     Field previousUnprotectedField = null;
@@ -177,7 +177,7 @@ public class FieldManager
   }
 
   // called from Screen.eraseAllUnprotected()
-      Field eraseAllUnprotected ()
+  Field eraseAllUnprotected ()
   {
     if (unprotectedFields.size () == 0)
       return null;
@@ -189,8 +189,8 @@ public class FieldManager
   }
 
   // ---------------------------------------------------------------------------------//
-      // Field utilities
-      // ---------------------------------------------------------------------------------//
+  // Field utilities
+  // ---------------------------------------------------------------------------------//
 
   List<Field> getRowFields (int requestedRow)
   {

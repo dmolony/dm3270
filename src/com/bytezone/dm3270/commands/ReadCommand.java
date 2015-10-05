@@ -2,7 +2,7 @@ package com.bytezone.dm3270.commands;
 
 import com.bytezone.dm3270.display.Screen;
 
-// Inbound only command - creates a Reply of AID 
+// Inbound only command - creates a Reply of AID
 
 public class ReadCommand extends Command
 {

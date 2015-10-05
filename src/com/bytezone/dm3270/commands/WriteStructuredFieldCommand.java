@@ -18,7 +18,7 @@ import com.bytezone.dm3270.structuredfields.StructuredField;
 public class WriteStructuredFieldCommand extends Command
 {
   private static final String line =
-      "\n----------------------------------------" + "---------------------------------";
+      "\n-------------------------------------------------------------------------";
 
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private final List<Buffer> replies = new ArrayList<> ();

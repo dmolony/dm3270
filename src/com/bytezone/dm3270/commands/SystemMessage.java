@@ -26,33 +26,33 @@ public class SystemMessage
 
   private static final byte[] systemMessage1 =
       { //
-        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
-        Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+       Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage2 =
       { //
-        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+       Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage3 =
       { //
-        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.INSERT_CURSOR };
+       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+       Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage4 =
       { //
-        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+       Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage5 =
       { //
-        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
-        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
-        Order.INSERT_CURSOR };
+       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+       Order.INSERT_CURSOR };
 
   private final Screen screen;
 

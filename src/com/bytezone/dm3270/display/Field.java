@@ -46,7 +46,7 @@ public class Field implements Iterable<ScreenPosition>
   }
 
   // called from FieldManager.buildFields()
-      void setScreenContexts (ScreenContext base)
+  void setScreenContexts (ScreenContext base)
   {
     ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
     for (ScreenPosition screenPosition : screenPositions)
@@ -55,9 +55,9 @@ public class Field implements Iterable<ScreenPosition>
   }
 
   // link two unprotected fields to each other
-      void linkToNext (Field nextField)
+  void linkToNext (Field nextField)
   {
-    assert!isProtected ();
+    assert !isProtected ();
     this.next = nextField;
     nextField.previous = this;
   }

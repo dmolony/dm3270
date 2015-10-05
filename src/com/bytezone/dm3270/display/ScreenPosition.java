@@ -209,7 +209,7 @@ public final class ScreenPosition
 
   public int pack (byte[] buffer, int ptr, byte[] replyTypes)
   {
-    assert!isStartField ();
+    assert !isStartField ();
 
     for (Attribute attribute : attributes)
       if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
