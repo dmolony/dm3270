@@ -40,8 +40,6 @@ public class SessionTable extends TableView<SessionRecord>
     getColumns ().add (commandCol);
     getColumns ().add (sizeCol);
 
-    //    setTableMenuButtonVisible (true);
-
     Callback<TableColumn<SessionRecord, Integer>, //
     TableCell<SessionRecord, Integer>> rightJustified =
         new Callback<TableColumn<SessionRecord, Integer>, //
