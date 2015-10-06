@@ -106,8 +106,9 @@ public class DatasetTab extends AbstractTransferTab
     }
 
     String datasetName = selectedDataset.getDatasetName ();
-    int pos = datasetName.indexOf (".CNTL");
-    boolean jclMember = pos > 0 && datasetName.endsWith (")");
+    int pos1 = datasetName.indexOf (".CNTL");
+    int pos2 = datasetName.indexOf (".JCL");
+    boolean jclMember = (pos1 > 0 || pos2 > 0) && datasetName.endsWith (")");
     String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
 
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
