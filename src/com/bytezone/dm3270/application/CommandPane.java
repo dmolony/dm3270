@@ -1,12 +1,5 @@
 package com.bytezone.dm3270.application;
 
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Side;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.text.Font;
-
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -17,6 +10,12 @@ import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+
+import javafx.geometry.Side;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.text.Font;
 
 class CommandPane extends TabPane
 {
@@ -54,12 +53,8 @@ class CommandPane extends TabPane
     getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
                        tabReplyBuffer);
 
-    table
-        .getSelectionModel ()
-        .selectedItemProperty ()
-        .addListener ( (ObservableValue<? extends SessionRecord> observable,
-                          SessionRecord oldValue, SessionRecord newValue) //
-                      -> replay (newValue));
+    table.getSelectionModel ().selectedItemProperty ()
+        .addListener ( (observable, oldValue, newValue) -> replay (newValue));
   }
 
   public void setScreen (Screen screen)

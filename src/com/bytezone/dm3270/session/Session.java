@@ -9,11 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
-
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.Utility;
@@ -31,10 +26,15 @@ import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TelnetState;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+
 public class Session implements Iterable<SessionRecord>
 {
-  private final ObservableList<SessionRecord> dataRecords = FXCollections
-      .observableArrayList ();
+  private final ObservableList<SessionRecord> dataRecords =
+      FXCollections.observableArrayList ();
   private final Function function;
   private final Screen screen;
   private final TelnetState telnetState = new TelnetState ();
@@ -211,9 +211,8 @@ public class Session implements Iterable<SessionRecord>
 
   private void notifyChangeListeners ()
   {
-    Platform.runLater ( () -> headerLabel.setText (String.format ("%s : %s",
-                                                                  getServerName (),
-                                                                  getClientName ())));
+    Platform.runLater ( () -> headerLabel
+        .setText (String.format ("%s : %s", getServerName (), getClientName ())));
   }
 
   public ObservableList<SessionRecord> getDataRecords ()
@@ -250,8 +249,9 @@ public class Session implements Iterable<SessionRecord>
       PrintWriter writer = new PrintWriter (file, "UTF-8");
       for (SessionRecord dataRecord : dataRecords)
       {
-        writer.printf ("%s %s %s%n", dataRecord.getSource () == Source.CLIENT ? "Client"
-            : "Server", dataRecord.isGenuine () ? " " : "*", dataRecord.getDateTime ());
+        writer.printf ("%s %s %s%n",
+                       dataRecord.getSource () == Source.CLIENT ? "Client" : "Server",
+                       dataRecord.isGenuine () ? " " : "*", dataRecord.getDateTime ());
 
         // scramble user input
         if (safeFlag)

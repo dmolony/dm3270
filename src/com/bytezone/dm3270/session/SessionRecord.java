@@ -3,11 +3,6 @@ package com.bytezone.dm3270.session;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.extended.AbstractExtendedCommand;
@@ -16,12 +11,17 @@ import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class SessionRecord
 {
-  private static final DateTimeFormatter formatter = DateTimeFormatter
-      .ofPattern ("dd MMM uuuu HH:mm:ss.S");
-  private static final DateTimeFormatter timeFormatter = DateTimeFormatter
-      .ofPattern ("mm:ss");
+  private static final DateTimeFormatter formatter =
+      DateTimeFormatter.ofPattern ("dd MMM uuuu HH:mm:ss.S");
+  private static final DateTimeFormatter timeFormatter =
+      DateTimeFormatter.ofPattern ("mm:ss");
   private final ReplyBuffer message;
 
   private final Source source;

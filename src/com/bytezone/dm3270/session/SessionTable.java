@@ -48,20 +48,20 @@ public class SessionTable extends TableView<SessionRecord>
         TableCell<SessionRecord, Integer>> ()
         {
           @Override
-          public TableCell<SessionRecord, Integer> call (
-              TableColumn<SessionRecord, Integer> p)
+          public TableCell<SessionRecord, Integer>
+              call (TableColumn<SessionRecord, Integer> p)
           {
             TableCell<SessionRecord, Integer> cell =
                 new TableCell<SessionRecord, Integer> ()
-                {
-                  @Override
-                  public void updateItem (Integer item, boolean empty)
-                  {
-                    super.updateItem (item, empty);
-                    setText (empty ? null : String.format ("%,d    ", getItem ()));
-                    setGraphic (null);
-                  }
-                };
+            {
+              @Override
+              public void updateItem (Integer item, boolean empty)
+              {
+                super.updateItem (item, empty);
+                setText (empty ? null : String.format ("%,d    ", getItem ()));
+                setGraphic (null);
+              }
+            };
 
             cell.setStyle ("-fx-alignment: center-right;");
             return cell;
@@ -74,21 +74,20 @@ public class SessionTable extends TableView<SessionRecord>
         TableCell<SessionRecord, String>> ()
         {
           @Override
-          public TableCell<SessionRecord, String> call (
-              TableColumn<SessionRecord, String> p)
+          public TableCell<SessionRecord, String>
+              call (TableColumn<SessionRecord, String> p)
           {
             TableCell<SessionRecord, String> cell =
                 new TableCell<SessionRecord, String> ()
-                {
-                  @Override
-                  public void updateItem (String item, boolean empty)
-                  {
-                    super.updateItem (item, empty);
-                    setText (empty ? null : getItem () == null ? "" : getItem ()
-                        .toString ());
-                    setGraphic (null);
-                  }
-                };
+            {
+              @Override
+              public void updateItem (String item, boolean empty)
+              {
+                super.updateItem (item, empty);
+                setText (empty ? null : getItem () == null ? "" : getItem ().toString ());
+                setGraphic (null);
+              }
+            };
 
             cell.setStyle ("-fx-alignment: center;");
             return cell;
