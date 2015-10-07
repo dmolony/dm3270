@@ -22,8 +22,7 @@ public class GraphicsEscapeOrder extends Order
   {
     Pen pen = screen.getPen ();
     int max = duplicates;
-    while (max-- >= 0)
-      // always do at least one
+    while (max-- >= 0)                  // always do at least one
       pen.writeGraphics (code);
   }
 

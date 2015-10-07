@@ -5,6 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.application.PreferencesStage;
+import com.bytezone.dm3270.application.Site;
+import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.FieldManager;
+import com.bytezone.dm3270.display.Screen;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -23,22 +32,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import com.bytezone.dm3270.application.ConsolePane;
-import com.bytezone.dm3270.application.PreferencesStage;
-import com.bytezone.dm3270.application.Site;
-import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.display.Cursor;
-import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.FieldManager;
-import com.bytezone.dm3270.display.Screen;
-
 public class PluginsStage extends PreferencesStage
 {
   private static final int MAX_PLUGINS = 10;
-  private static KeyCode[] keyCodes = { KeyCode.DIGIT1, KeyCode.DIGIT2, KeyCode.DIGIT3,
-                                       KeyCode.DIGIT4, KeyCode.DIGIT5, KeyCode.DIGIT6,
-                                       KeyCode.DIGIT7, KeyCode.DIGIT8, KeyCode.DIGIT9,
-                                       KeyCode.DIGIT0 };
+  private static KeyCode[] keyCodes =
+      { KeyCode.DIGIT1, KeyCode.DIGIT2, KeyCode.DIGIT3, KeyCode.DIGIT4, KeyCode.DIGIT5,
+        KeyCode.DIGIT6, KeyCode.DIGIT7, KeyCode.DIGIT8, KeyCode.DIGIT9, KeyCode.DIGIT0 };
 
   private final List<PluginEntry> plugins = new ArrayList<> (MAX_PLUGINS);
   private Menu menu;
