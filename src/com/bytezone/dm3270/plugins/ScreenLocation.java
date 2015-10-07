@@ -4,7 +4,7 @@ public class ScreenLocation
 {
   static final int screenRows = 24;
   static final int screenColumns = 80;
-  static final int screenLocations = 1920;
+  static final int screenLocations = screenRows * screenColumns;
 
   public final int row;
   public final int column;

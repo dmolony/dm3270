@@ -30,8 +30,7 @@ public class TelnetCommand extends AbstractTelnetCommand
 
   public enum CommandName
   {
-    DO, DONT, WILL, WONT, SUBCOMMAND, NO_OP, INTERRUPT_PROCESS, END_SUBCOMMAND,
-    END_RECORD
+    DO, DONT, WILL, WONT, SUBCOMMAND, NO_OP, INTERRUPT_PROCESS, END_SUBCOMMAND, END_RECORD
   }
 
   public enum CommandType

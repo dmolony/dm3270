@@ -1,9 +1,9 @@
 package com.bytezone.dm3270.extended;
 
-
 public class UnbindCommand extends AbstractExtendedCommand
 {
-  public UnbindCommand (CommandHeader commandHeader, byte[] buffer, int offset, int length)
+  public UnbindCommand (CommandHeader commandHeader, byte[] buffer, int offset,
+      int length)
   {
     super (commandHeader, buffer, offset, length);
   }

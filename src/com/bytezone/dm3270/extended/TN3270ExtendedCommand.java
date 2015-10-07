@@ -26,8 +26,8 @@ public class TN3270ExtendedCommand extends AbstractExtendedCommand
   public byte[] getData ()
   {
     byte[] combinedData = new byte[command.size () + 5];
-    System
-        .arraycopy (commandHeader.getData (), 0, combinedData, 0, commandHeader.size ());
+    System.arraycopy (commandHeader.getData (), 0, combinedData, 0,
+                      commandHeader.size ());
     System.arraycopy (command.getData (), 0, combinedData, commandHeader.size (),
                       command.size ());
     return combinedData;

@@ -80,7 +80,7 @@ public class Transfer
   }
 
   // called from FileStage.setBuffer()
-      void setTransferBuffer (byte[] buffer)
+  void setTransferBuffer (byte[] buffer)
   {
     inboundBuffer = buffer;
     inboundBufferPtr = 0;
@@ -132,7 +132,7 @@ public class Transfer
   }
 
   // optional step to use the TSO command that started the transfer
-      void setTransferCommand (String command)
+  void setTransferCommand (String command)
   {
     command = command.toLowerCase ().trim ();
     if (command.startsWith ("tso "))
@@ -224,7 +224,6 @@ public class Transfer
     text.append (String.format ("%nBLKSIZE ........ %s", blksize == null ? "" : blksize));
     text.append (String.format ("%nUNITS .......... %s", units == null ? "" : units));
     text.append (String.format ("%nSPACE .......... %s", space == null ? "" : space));
-
     text.append (String.format ("%ninbuf length ... %d",
                                 inboundBuffer == null ? -1 : inboundBuffer.length));
     text.append (String.format ("%nin ptr ......... %d", inboundBufferPtr));

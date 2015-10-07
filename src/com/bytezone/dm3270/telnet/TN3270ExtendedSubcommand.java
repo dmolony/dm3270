@@ -84,8 +84,8 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
         break;
 
       default:
-        throw new InvalidParameterException (String.format ("Unknown Extended: %02X",
-                                                            buffer[3]));
+        throw new InvalidParameterException (
+            String.format ("Unknown Extended: %02X", buffer[3]));
     }
   }
 
@@ -112,8 +112,8 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
         funcList.append ("SYSREQ, ");
       }
       else
-        throw new InvalidParameterException (String.format ("Unknown function: %02X%n",
-                                                            buffer[ptr]));
+        throw new InvalidParameterException (
+            String.format ("Unknown function: %02X%n", buffer[ptr]));
     }
 
     if (funcList.length () > 0)
@@ -136,8 +136,8 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     {
       try
       {
-        byte[] header =
-            { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_DEVICE_TYPE, EXT_REQUEST };
+        byte[] header = { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_DEVICE_TYPE,
+                          EXT_REQUEST };
         byte[] terminal = terminalType.getBytes ("ASCII");
         byte[] reply = new byte[header.length + terminal.length + 2];
 
@@ -160,7 +160,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     {
       byte[] reply =
           { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_FUNCTIONS, EXT_REQUEST,
-           0x00, 0x02, 0x04, TelnetCommand.IAC, TelnetCommand.SE };
+            0x00, 0x02, 0x04, TelnetCommand.IAC, TelnetCommand.SE };
       this.reply = new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState);
     }
   }
