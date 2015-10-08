@@ -148,12 +148,9 @@ public class ScreenDetails
         continue;
       if (field.getFirstLocation () % screenColumns != 1)
         continue;
-      if (!SPLIT_LINE.equals (field.getText ()))
-        continue;
-
-      return true;
+      if (SPLIT_LINE.equals (field.getText ()))
+        return true;
     }
-
     return false;
   }
 
