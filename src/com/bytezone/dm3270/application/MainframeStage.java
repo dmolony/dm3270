@@ -65,7 +65,7 @@ public class MainframeStage extends Stage implements Mainframe
   private final Button btnReadModified;
   private final Button btnReadModifiedAll;
   private final Button btnEraseAllUnprotected;
-  //  private final Button btnProgramTab;
+  private final Button btnProgramTab;
 
   private final CommandFactory commandFactory = new CommandFactory ();
 
@@ -97,7 +97,7 @@ public class MainframeStage extends Stage implements Mainframe
     btnReadModified = factory.getButton ("Read Modified", vbox2, BUTTON_WIDTH);
     btnReadModifiedAll = factory.getButton ("Read Mod All", vbox2, BUTTON_WIDTH);
     btnEraseAllUnprotected = factory.getButton ("Erase All Unpr", vbox2, BUTTON_WIDTH);
-    //    btnProgramTab = factory.getButton ("Program Tab", vbox2, BUTTON_WIDTH);
+    btnProgramTab = factory.getButton ("Program Tab", vbox2, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
@@ -234,29 +234,20 @@ public class MainframeStage extends Stage implements Mainframe
       e.printStackTrace ();
     }
 
-    btnReadBuffer.setOnAction ( (x) -> {
-      mainframeServer
-          .write (commandFactory.createReadBufferCommand (Command.READ_BUFFER_F2));
-    });
+    btnReadBuffer.setOnAction ( (x) -> mainframeServer
+        .write (commandFactory.createReadBufferCommand (Command.READ_BUFFER_F2)));
 
-    btnReadModified.setOnAction ( (x) -> {
-      mainframeServer
-          .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_F6));
-    });
+    btnReadModified.setOnAction ( (x) -> mainframeServer
+        .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_F6)));
 
-    btnReadModifiedAll.setOnAction ( (x) -> {
-      mainframeServer
-          .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_ALL_6E));
-    });
+    btnReadModifiedAll.setOnAction ( (x) -> mainframeServer
+        .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_ALL_6E)));
 
-    btnEraseAllUnprotected.setOnAction ( (x) -> {
-      mainframeServer.write (commandFactory
-          .createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F));
-    });
+    btnEraseAllUnprotected.setOnAction ( (x) -> mainframeServer.write (commandFactory
+        .createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F)));
 
-    //    btnProgramTab.setOnAction ( (x) -> {
-    //      mainframeServer.write (commandFactory.createProgramTabCommand ());
-    //    });
+    btnProgramTab.setOnAction ( (x) -> mainframeServer
+        .write (commandFactory.createProgramTabCommand ()));
   }
 
   @Override
@@ -282,15 +273,15 @@ public class MainframeStage extends Stage implements Mainframe
     btnReadModified.setDisable (!enable);
     btnReadModifiedAll.setDisable (!enable);
     btnEraseAllUnprotected.setDisable (!enable);
-    //    btnProgramTab.setDisable (!enable);
+    btnProgramTab.setDisable (!enable);
 
     btnFieldMode.setDisable (!enable);
     btnExtendedFieldMode.setDisable (!enable);
     btnCharacterMode.setDisable (!enable);
 
     toFront ();
-    buttons.get (3).fire ();// ISPF (Erase Write)
-    buttons.get (4).fire ();// 3.4  (Write)
+    buttons.get (3).fire ();          // ISPF (Erase Write)
+    buttons.get (4).fire ();          // 3.4  (Write)
     this.requestFocus ();
     buttons.get (4).requestFocus ();
   }

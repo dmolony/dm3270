@@ -234,15 +234,11 @@ public class ScreenDetails
       return false;
 
     tsoCommandField = field;
-
     return true;
   }
 
   private boolean checkDatasetList (List<Field> screenFields)
   {
-    datasetsOnVolume = "";
-    datasetsMatching = "";
-
     if (screenFields.size () < 21)
       return false;
 
@@ -260,6 +256,9 @@ public class ScreenDetails
       locationText = text.substring (19, pos).trim ();
     else
       locationText = text.substring (19).trim ();
+
+    datasetsOnVolume = "";
+    datasetsMatching = "";
 
     if (locationText.startsWith ("on volume "))
       datasetsOnVolume = locationText.substring (10);
