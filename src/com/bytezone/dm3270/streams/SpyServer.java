@@ -65,12 +65,10 @@ public class SpyServer implements Runnable
       serverSocket.connect (new InetSocketAddress (serverURL, serverPort));
 
       // create two SocketListeners and link them to each other
-      clientTelnetSocket =
-          new TelnetSocket (Source.CLIENT, clientSocket, new TelnetListener (
-              Source.CLIENT, session));
-      serverTelnetSocket =
-          new TelnetSocket (Source.SERVER, serverSocket, new TelnetListener (
-              Source.SERVER, session));
+      clientTelnetSocket = new TelnetSocket (Source.CLIENT, clientSocket,
+          new TelnetListener (Source.CLIENT, session));
+      serverTelnetSocket = new TelnetSocket (Source.SERVER, serverSocket,
+          new TelnetListener (Source.SERVER, session));
 
       // TelnetSocket.link() will connect both sockets to each other (bidirectional)
       serverTelnetSocket.link (clientTelnetSocket);

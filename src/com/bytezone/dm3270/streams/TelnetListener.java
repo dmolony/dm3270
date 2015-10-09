@@ -2,8 +2,6 @@ package com.bytezone.dm3270.streams;
 
 import java.time.LocalDateTime;
 
-import javafx.application.Platform;
-
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.Utility;
@@ -27,6 +25,8 @@ import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
 import com.bytezone.dm3270.telnet.TelnetProcessor;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
+
+import javafx.application.Platform;
 
 public class TelnetListener implements BufferListener, TelnetCommandProcessor
 {
@@ -98,9 +98,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     // add the SessionRecord to the Session - is it OK to do this from a non-EDT?
     if (session != null)
     {
-      SessionRecord sessionRecord =
-          new SessionRecord (sessionRecordType, message, source, currentDateTime,
-              currentGenuine);
+      SessionRecord sessionRecord = new SessionRecord (sessionRecordType, message, source,
+          currentDateTime, currentGenuine);
       session.add (sessionRecord);
     }
 

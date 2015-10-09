@@ -15,9 +15,7 @@ public class ProgramTabOrder extends Order
   @Override
   public void process (DisplayScreen screen)
   {
-    // This makes no sense - why would a tab command be part of a Write? The fields
-    // haven't even been built yet.
-    System.out.println ("What do I do here?");
+    System.out.println ("In ProgramTabOrder.process()");
   }
 
   @Override

@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class TelnetState implements Runnable
 {
-  private static final DateTimeFormatter formatter = DateTimeFormatter
-      .ofPattern ("dd MMM uuuu HH:mm:ss.S");
+  private static final DateTimeFormatter formatter =
+      DateTimeFormatter.ofPattern ("dd MMM uuuu HH:mm:ss.S");
   private static byte[] noOp = { (byte) 0xFF, (byte) 0xF1 };
 
   // preferences
