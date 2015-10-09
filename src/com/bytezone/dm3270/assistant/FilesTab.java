@@ -68,6 +68,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     reporterNode.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
   }
 
+  // called from AssistantStage.getCurrentFileBuffer()
   public byte[] getCurrentFileBuffer ()
   {
     FileNode fileNode = reporterNode.getSelectedNode ();

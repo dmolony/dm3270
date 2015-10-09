@@ -73,7 +73,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     datasetTab.addDatasetSelectionListener (transfersTab);
     fileTab.addFileSelectionListener (transfersTab);
     jobTab.addJobSelectionListener (transfersTab);
-    fileTab.getCurrentFileBuffer ();
+    //    fileTab.getCurrentFileBuffer ();
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
