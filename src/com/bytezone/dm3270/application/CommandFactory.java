@@ -70,11 +70,12 @@ class CommandFactory
   protected byte[] createProgramTabCommand ()
   {
     int ptr = 0;
-    byte[] buffer = new byte[5];
+    byte[] buffer = new byte[6];
 
     buffer[ptr++] = Command.WRITE_01;
     buffer[ptr++] = (byte) 0xC3;                          // wcc
     buffer[ptr++] = Order.PROGRAM_TAB;
+    buffer[ptr++] = (byte) 0xC1;
     ptr = terminateBuffer (buffer, ptr);
 
     return buffer;

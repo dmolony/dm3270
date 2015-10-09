@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.display.DisplayScreen;
+import com.bytezone.dm3270.display.Pen;
 
 public class ProgramTabOrder extends Order
 {
@@ -15,7 +16,8 @@ public class ProgramTabOrder extends Order
   @Override
   public void process (DisplayScreen screen)
   {
-    System.out.println ("In ProgramTabOrder.process()");
+    Pen pen = screen.getPen ();
+    pen.tab ();
   }
 
   @Override

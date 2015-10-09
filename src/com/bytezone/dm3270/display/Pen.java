@@ -165,6 +165,25 @@ public class Pen
     currentPosition = screen.validate (currentPosition + 1);
   }
 
+  public void tab ()
+  {
+    System.out.printf ("Current position: %d%n", currentPosition);
+    int next = currentPosition;
+    int count = 0;
+    while (true)
+    {
+      next = findNextStartPosition (next);
+      System.out.printf ("Next: %d%n", next);
+      ScreenPosition sp = screen.getScreenPosition (next);
+      System.out.printf ("%s%n", sp);
+      if (!sp.getStartFieldAttribute ().isProtected ())
+        break;
+      if (++count > 1920)
+        break;
+    }
+    currentPosition = screen.validate (next + 1);
+  }
+
   public void write (String text)
   {
     for (byte b : text.getBytes ())
@@ -195,6 +214,25 @@ public class Pen
         currentContext = screen.getScreenPosition (pos).getScreenContext ();
       }
     }
+  }
+
+  private int findNextStartPosition (int position)
+  {
+    int pos = position;
+    while (true)
+    {
+      pos = screen.validate (pos + 1);
+      ScreenPosition sp = screen.getScreenPosition (pos);
+
+      if (sp.isStartField ())
+        return pos;
+
+      if (pos == position)
+        break;
+    }
+
+    System.out.printf ("No start field found: %d%n", totalFields);
+    return -1;
   }
 
   private int findStartPosition (int position)
