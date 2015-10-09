@@ -162,11 +162,11 @@ public class Field implements Iterable<ScreenPosition>
 
   public void clear (boolean setModified)
   {
-    if (setModified) // don't reset any already set flags
+    if (setModified)                  // don't reset any already set flags
       setModified (true);
 
     for (int i = 1; i < screenPositions.size (); i++)
-      screenPositions.get (i).reset ();
+      screenPositions.get (i).setChar ((byte) 0);         // leave screenContext
   }
 
   public void erase ()

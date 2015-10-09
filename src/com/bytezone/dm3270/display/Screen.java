@@ -313,7 +313,7 @@ public class Screen extends Canvas implements DisplayScreen
       cursor.setVisible (true);
     }
 
-    drawPosition (cursor.getLocation (), true);// draw the cursor
+    drawPosition (cursor.getLocation (), true);             // draw the cursor
   }
 
   // called from FontManager when a new font is selected
