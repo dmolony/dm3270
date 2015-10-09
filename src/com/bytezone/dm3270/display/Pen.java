@@ -207,7 +207,7 @@ public class Pen
 
     if (totalFields > 0)
     {
-      int pos = findStartPosition (currentPosition);
+      int pos = findPreviousStartPosition (currentPosition);
       if (pos >= 0)
       {
         startFieldPosition = pos;
@@ -235,7 +235,7 @@ public class Pen
     return -1;
   }
 
-  private int findStartPosition (int position)
+  private int findPreviousStartPosition (int position)
   {
     int pos = position;
     while (true)
