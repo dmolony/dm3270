@@ -231,7 +231,7 @@ public class Pen
         break;
     }
 
-    System.out.printf ("No start field found: %d%n", totalFields);
+    System.out.printf ("No previous start field found: %d%n", totalFields);
     return -1;
   }
 
@@ -250,7 +250,7 @@ public class Pen
         break;
     }
 
-    System.out.printf ("No start field found: %d%n", totalFields);
+    System.out.printf ("No next start field found: %d%n", totalFields);
     return -1;
   }
 }
