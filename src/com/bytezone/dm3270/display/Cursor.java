@@ -149,7 +149,7 @@ public class Cursor
       if (start > 0)
       {
         int end = currentField.getDisplayLength ();
-        currentField.clear (start, end);
+        currentField.clearData (start, end);
         currentField.setModified (true);
         notifyFieldChange (currentField, currentField);
       }

@@ -160,15 +160,17 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
-  public void clear (boolean setModified)
+  public void clearData (boolean alterModifiedFlag)
   {
-    if (setModified)                  // don't reset any already set flags
+    if (alterModifiedFlag)                  // don't reset any already set flags
       setModified (true);
 
     for (int i = 1; i < screenPositions.size (); i++)
       screenPositions.get (i).setChar ((byte) 0);         // leave screenContext
   }
 
+  // called from AIDCommand.process() - ie replay
+  // called from this.setText()
   public void erase ()
   {
     for (int i = 1; i < screenPositions.size (); i++)
@@ -176,7 +178,7 @@ public class Field implements Iterable<ScreenPosition>
     setModified (true);
   }
 
-  public void clear (int first, int last)
+  public void clearData (int first, int last)
   {
     for (int i = first; i <= last; i++)
       screenPositions.get (i).setChar ((byte) 0);
@@ -239,7 +241,7 @@ public class Field implements Iterable<ScreenPosition>
   {
     try
     {
-      erase ();// sets the field to modified
+      erase ();                                 // sets the field to modified
       setText (text.getBytes ("CP1047"));
       draw ();
     }

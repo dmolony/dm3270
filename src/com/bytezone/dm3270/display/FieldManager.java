@@ -183,7 +183,7 @@ public class FieldManager
       return null;
 
     for (Field field : unprotectedFields)
-      field.clear (true);
+      field.clearData (true);
 
     return unprotectedFields.get (0);
   }
