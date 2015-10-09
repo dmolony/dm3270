@@ -167,15 +167,21 @@ public class Pen
 
   public void tab ()
   {
-    System.out.printf ("Current position: %d%n", currentPosition);
+    ScreenPosition sp = screen.getScreenPosition (currentPosition);
+    if (sp.isStartField () && !sp.getStartFieldAttribute ().isProtected ())
+    {
+      currentPosition = screen.validate (currentPosition + 1);
+      return;
+    }
+    //    System.out.printf ("Current position: %d%n", currentPosition);
     int next = currentPosition;
     int count = 0;
     while (true)
     {
       next = findNextStartPosition (next);
-      System.out.printf ("Next: %d%n", next);
-      ScreenPosition sp = screen.getScreenPosition (next);
-      System.out.printf ("%s%n", sp);
+      //      System.out.printf ("Next: %d%n", next);
+      sp = screen.getScreenPosition (next);
+      //      System.out.printf ("%s%n", sp);
       if (!sp.getStartFieldAttribute ().isProtected ())
         break;
       if (++count > 1920)
