@@ -234,19 +234,19 @@ public class MainframeStage extends Stage implements Mainframe
       e.printStackTrace ();
     }
 
-    btnReadBuffer.setOnAction ( (x) -> mainframeServer
+    btnReadBuffer.setOnAction (x -> mainframeServer
         .write (commandFactory.createReadBufferCommand (Command.READ_BUFFER_F2)));
 
-    btnReadModified.setOnAction ( (x) -> mainframeServer
+    btnReadModified.setOnAction (x -> mainframeServer
         .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_F6)));
 
-    btnReadModifiedAll.setOnAction ( (x) -> mainframeServer
+    btnReadModifiedAll.setOnAction (x -> mainframeServer
         .write (commandFactory.createReadBufferCommand (Command.READ_MODIFIED_ALL_6E)));
 
-    btnEraseAllUnprotected.setOnAction ( (x) -> mainframeServer.write (commandFactory
-        .createReadBufferCommand (Command.ERASE_ALL_UNPROTECTED_6F)));
+    btnEraseAllUnprotected.setOnAction (x -> mainframeServer
+        .write (commandFactory.createEraseAllUnprotected ()));
 
-    btnProgramTab.setOnAction ( (x) -> mainframeServer
+    btnProgramTab.setOnAction (x -> mainframeServer
         .write (commandFactory.createProgramTabCommand ()));
   }
 

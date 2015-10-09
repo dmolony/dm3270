@@ -7,13 +7,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import javafx.application.Platform;
-
 import com.bytezone.dm3270.application.Mainframe;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
+
+import javafx.application.Platform;
 
 public class MainframeServer implements Runnable
 {
@@ -66,10 +66,10 @@ public class MainframeServer implements Runnable
       readAtLeast (6);
 
       // send Query to find out what the terminal supports
-      byte[] cmd = { (byte) 0xF3, 0x00, 0x06, 0x40, 0x00,   //
-                    (byte) 0xF1, (byte) 0xC2, 0x00, 0x05,   //
-                    0x01, (byte) 0xFF, (byte) 0xFF,         // note double FF
-                    0x02, (byte) 0xFF, (byte) 0xEF };
+      byte[] cmd = { (byte) 0xF3, 0x00, 0x06, 0x40, 0x00,    //
+                     (byte) 0xF1, (byte) 0xC0, 0x00, 0x05,   // note WCC = 0xC0
+                     0x01, (byte) 0xFF, (byte) 0xFF,         // note double FF
+                     0x02, (byte) 0xFF, (byte) 0xEF };
 
       write (cmd);
 

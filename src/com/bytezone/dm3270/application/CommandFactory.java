@@ -22,11 +22,7 @@ class CommandFactory
     byte[] buffer = new byte[3];
 
     buffer[ptr++] = command;
-
-    buffer[ptr++] = TelnetCommand.IAC;
-    buffer[ptr++] = TelnetCommand.EOR;
-
-    assert ptr == buffer.length;
+    ptr = terminateBuffer (buffer, ptr);
 
     return buffer;
   }
@@ -37,17 +33,11 @@ class CommandFactory
     byte[] buffer = new byte[8];
 
     buffer[ptr++] = Command.WRITE_STRUCTURED_FIELD_F3;
-
-    buffer[ptr++] = 0x00;
-    buffer[ptr++] = 0x05;// length
-    buffer[ptr++] = StructuredField.READ_PARTITION;// 0x01
-    buffer[ptr++] = 0x00;// partition 0
-    buffer[ptr++] = command;// RB-F2/RM-F6/RMA-6E
-
-    buffer[ptr++] = TelnetCommand.IAC;
-    buffer[ptr++] = TelnetCommand.EOR;
-
-    assert ptr == buffer.length;
+    ptr = Utility.packUnsignedShort (buffer.length - 3, buffer, ptr);
+    buffer[ptr++] = StructuredField.READ_PARTITION;         // 0x01
+    buffer[ptr++] = 0x00;                                   // partition 0
+    buffer[ptr++] = command;                                // RB-F2/RM-F6/RMA-6E
+    ptr = terminateBuffer (buffer, ptr);
 
     return buffer;
   }
@@ -58,12 +48,10 @@ class CommandFactory
     byte[] buffer = new byte[mode == 2 ? 13 : 8];
 
     buffer[ptr++] = Command.WRITE_STRUCTURED_FIELD_F3;
-
-    buffer[ptr++] = 0x00;
-    buffer[ptr++] = (byte) (mode == 2 ? 0x0A : 0x05);// length
+    ptr = Utility.packUnsignedShort (buffer.length - 3, buffer, ptr);
     buffer[ptr++] = StructuredField.SET_REPLY_MODE;
-    buffer[ptr++] = 0x00;// partition 0
-    buffer[ptr++] = mode;// reply mode
+    buffer[ptr++] = 0x00;                                   // partition 0
+    buffer[ptr++] = mode;                                   // reply mode
 
     if (mode == 2)
     {
@@ -74,27 +62,40 @@ class CommandFactory
       buffer[ptr++] = Attribute.XA_TRANSPARENCY;
     }
 
-    buffer[ptr++] = TelnetCommand.IAC;
-    buffer[ptr++] = TelnetCommand.EOR;
-
-    assert ptr == buffer.length;
+    ptr = terminateBuffer (buffer, ptr);
 
     return buffer;
   }
 
   protected byte[] createProgramTabCommand ()
   {
-    byte[] buffer = new byte[3];
     int ptr = 0;
+    byte[] buffer = new byte[5];
 
-    // need to build a WRITE command with a PT order
-    buffer[ptr++] = Order.PROGRAM_TAB;    // this makes no sense (and won't work)
+    buffer[ptr++] = Command.WRITE_01;
+    buffer[ptr++] = (byte) 0xC3;                          // wcc
+    buffer[ptr++] = Order.PROGRAM_TAB;
+    ptr = terminateBuffer (buffer, ptr);
 
+    return buffer;
+  }
+
+  protected byte[] createEraseAllUnprotected ()
+  {
+    int ptr = 0;
+    byte[] buffer = new byte[3];
+
+    buffer[ptr++] = Command.ERASE_ALL_UNPROTECTED_0F;
+    ptr = terminateBuffer (buffer, ptr);
+    return buffer;
+  }
+
+  private int terminateBuffer (byte[] buffer, int ptr)
+  {
     buffer[ptr++] = TelnetCommand.IAC;
     buffer[ptr++] = TelnetCommand.EOR;
 
     assert ptr == buffer.length;
-
-    return buffer;
+    return ptr;
   }
 }

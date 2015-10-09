@@ -260,6 +260,8 @@ public class Screen extends Canvas implements DisplayScreen
     restoreKeyboard ();
     resetModified ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
+
+    // bug: this is not drawing the field underscores
     draw ();
 
     if (firstUnprotectedField != null)
@@ -295,10 +297,14 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void draw ()
   {
+    FontData characterSize = fontManager.getFontData ();
+    int charHeight = characterSize.getHeight ();
+    int charWidth = characterSize.getWidth ();
     int pos = 0;
+
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
-        drawPosition (screenPositions[pos++], row, col, false);
+        drawPosition (screenPositions[pos++], row, col, false, charHeight, charWidth);
 
     if (insertedCursorPosition >= 0)
     {
@@ -321,9 +327,18 @@ public class Screen extends Canvas implements DisplayScreen
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    FontData characterSize = fontManager.getFontData ();// too slow!!
+    FontData characterSize = fontManager.getFontData ();
     int x = xOffset + col * characterSize.getWidth ();
     int y = yOffset + row * characterSize.getHeight ();
+
+    screenPosition.draw (x, y, hasCursor);
+  }
+
+  private void drawPosition (ScreenPosition screenPosition, int row, int col,
+      boolean hasCursor, int charHeight, int charWidth)
+  {
+    int x = xOffset + col * charWidth;
+    int y = yOffset + row * charHeight;
 
     screenPosition.draw (x, y, hasCursor);
   }
