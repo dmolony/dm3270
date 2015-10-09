@@ -27,6 +27,8 @@ import javafx.stage.Stage;
 
 public class Screen extends Canvas implements DisplayScreen
 {
+  private final static Toolkit defaultToolkit = Toolkit.getDefaultToolkit ();
+
   private final ScreenPacker screenPacker;
   private final Function function;
 
@@ -41,8 +43,8 @@ public class Screen extends Canvas implements DisplayScreen
   private final Cursor cursor = new Cursor (this);
   private final GraphicsContext graphicsContext;
 
-  private final int xOffset = 4;// padding left and right
-  private final int yOffset = 4;// padding top and bottom
+  private final int xOffset = 4;              // padding left and right
+  private final int yOffset = 4;              // padding top and bottom
 
   public final int rows;
   public final int columns;
@@ -243,13 +245,13 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void insertCursor ()
   {
-    insertedCursorPosition = cursor.getLocation ();// move it here later
+    insertedCursorPosition = cursor.getLocation ();   // move it here later
   }
 
   @Override
   public void insertCursor (int position)
   {
-    insertedCursorPosition = position;// move it here later
+    insertedCursorPosition = position;                // move it here later
   }
 
   // called from EraseAllUnprotectedCommand.process()
@@ -260,8 +262,6 @@ public class Screen extends Canvas implements DisplayScreen
     restoreKeyboard ();
     resetModified ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
-
-    // bug: this is not drawing the field underscores
     draw ();
 
     if (firstUnprotectedField != null)
@@ -277,8 +277,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void buildFields (WriteControlCharacter wcc)
   {
-    fieldManager.buildFields ();// what about resetModified?
-    //    fireScreenChanged ();
+    fieldManager.buildFields ();              // what about resetModified?
   }
 
   public void checkRecording ()
@@ -288,7 +287,7 @@ public class Screen extends Canvas implements DisplayScreen
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = getReplyTypes ();
 
-      screenHistory.requestScreen (this);// will call readBuffer()
+      screenHistory.requestScreen (this);     // will call readBuffer()
 
       replyMode = savedReplyMode;
       replyTypes = savedReplyTypes;
@@ -431,9 +430,10 @@ public class Screen extends Canvas implements DisplayScreen
                                             fieldManager, readModifiedAll);
   }
 
-  // Called from ReadCommand.process() in response to a ReadBuffer (F2) command
-  // Called from ReadPartitionSF.process() in response to a ReadBuffer (F2) command
-  // Called from Screen.lockKeyboard()
+  // Called from:
+  //      ReadCommand.process() in response to a ReadBuffer (F2) command
+  //      ReadPartitionSF.process() in response to a ReadBuffer (F2) command
+  //      Screen.lockKeyboard()
   public AIDCommand readBuffer ()
   {
     return screenPacker.readBuffer (screenPositions, getScreenCursor ().getLocation (),
@@ -478,7 +478,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void soundAlarm ()
   {
-    Toolkit.getDefaultToolkit ().beep ();
+    defaultToolkit.beep ();
   }
 
   public void restoreKeyboard ()
