@@ -101,17 +101,15 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     windowSaver.restoreWindow ();
 
     tabPane.getSelectionModel ().selectedItemProperty ()
-        .addListener ( (obs, oldSelection, newSelection) -> {
-          if (newSelection != null)
-            select (newSelection);
-        });
+        .addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
 
     tabPane.getSelectionModel ().select (datasetTab);
   }
 
-  private void select (Tab tab)
+  private void select (Tab tabSelected)
   {
-    ((AbstractTransferTab) tab).setText ();
+    if (tabSelected != null)
+      ((AbstractTransferTab) tabSelected).setText ();
   }
 
   public void setConsolePane (ConsolePane consolePane)
