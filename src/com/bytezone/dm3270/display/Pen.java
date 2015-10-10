@@ -22,22 +22,23 @@ public class Pen
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
-  public Pen (DisplayScreen screen)
+  Pen (DisplayScreen screen)
   {
     this.screen = screen;
     contextManager = new ContextManager ();
   }
 
-  public ScreenContext getBase ()
+  ScreenContext getBase ()
   {
     return contextManager.getBase ();
   }
 
-  public void reset ()
+  void reset ()
   {
     totalFields = 0;
   }
 
+  // called from StartFieldAttribute.process()
   public void startField (StartFieldAttribute startFieldAttribute)
   {
     currentContext = contextManager.getBase ();
@@ -66,16 +67,24 @@ public class Pen
     }
   }
 
+  // called from SetAttributeOrder.process()
+  // called from StartFieldExtendedOrder.process()
   public void addAttribute (Attribute attribute)
   {
     pendingAttributes.add (attribute);
   }
 
+  // called from InsertCursorOrder.process()
+  // called from RepeatToAddressOrder.process()
+  // called from StartFieldOrder.process()
+  // called from StartFieldExtendedOrder.process()
   public int getPosition ()
   {
     return currentPosition;
   }
 
+  // called from ForegroundColor.process()
+  // called from StartFieldAttribute.process()
   public void setForeground (Color color)
   {
     if (currentPosition == startFieldPosition)
@@ -85,6 +94,8 @@ public class Pen
     storeCurrentContext ();
   }
 
+  // called from BackgroundColor.process()
+  // called from StartFieldAttribute.process()
   public void setBackground (Color color)
   {
     if (currentPosition == startFieldPosition)
@@ -94,6 +105,8 @@ public class Pen
     storeCurrentContext ();
   }
 
+  // called from ExtendedHighlight.process()
+  // called from StartFieldAttribute.process()
   public void setHighlight (byte value)
   {
     if (currentPosition == startFieldPosition)
@@ -103,6 +116,7 @@ public class Pen
     storeCurrentContext ();
   }
 
+  // called from StartFieldAttribute.process()
   public void setHighIntensity (boolean value)
   {
     if (currentPosition == startFieldPosition)
@@ -112,6 +126,7 @@ public class Pen
     storeCurrentContext ();
   }
 
+  // called from ResetAttribute.process()
   public void reset (byte value)
   {
     overrideContext = null;
@@ -131,6 +146,7 @@ public class Pen
       screenPosition.setScreenContext (currentContext);
   }
 
+  // called from GraphicsEscapeOrder.process()
   public void writeGraphics (byte b)
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
@@ -140,6 +156,9 @@ public class Pen
     moveRight ();
   }
 
+  // called from FormatControlOrder.process()
+  // called from RepeatToAddressOrder.process()
+  // called from TextOrder.process()
   public void write (byte b)
   {
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
@@ -149,11 +168,11 @@ public class Pen
     moveRight ();
   }
 
-  public void write (String text)
-  {
-    for (byte b : text.getBytes ())
-      write (b);
-  }
+  //  private void write (String text)
+  //  {
+  //    for (byte b : text.getBytes ())
+  //      write (b);
+  //  }
 
   private void applyAttributes (ScreenPosition screenPosition)
   {
@@ -162,6 +181,8 @@ public class Pen
     pendingAttributes.clear ();
   }
 
+  // called from StartFieldOrder.process()
+  // called from StartFieldExtendedOrder.process()
   public void moveRight ()
   {
     if (pendingAttributes.size () > 0)
@@ -170,6 +191,7 @@ public class Pen
     currentPosition = screen.validate (currentPosition + 1);
   }
 
+  // called from ProgramTabOrder.process()
   public void eraseEOF ()
   {
     if (totalFields == 0)
@@ -188,6 +210,7 @@ public class Pen
     }
   }
 
+  // called from ProgramTabOrder.process()
   public void tab ()
   {
     ScreenPosition sp = screen.getScreenPosition (currentPosition);
@@ -212,6 +235,7 @@ public class Pen
     currentPosition = screen.validate (next + 1);
   }
 
+  // called from SetBufferAddressOrder.process()
   public void moveTo (int position)
   {
     // assert pendingAttributes.size () == 0;
