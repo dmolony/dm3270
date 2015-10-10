@@ -11,9 +11,8 @@ public class ScreenHistory
 {
   private static final int MAX_SCREENS = 20;
   private static final byte[] replyTypes =
-      { //
-       Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
-       Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
+      { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
+        Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
 
   private final List<UserScreen> screens = new ArrayList<> ();
 

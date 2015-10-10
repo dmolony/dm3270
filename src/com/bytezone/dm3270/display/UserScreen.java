@@ -21,7 +21,8 @@ public class UserScreen extends Canvas implements DisplayScreen
   private final Pen pen;
   GraphicsContext gc = getGraphicsContext2D ();
 
-  public UserScreen (AIDCommand command)
+  // created by ScreenHistory.add()
+  UserScreen (AIDCommand command)
   {
     this.command = command;
     this.pen = new Pen (this);

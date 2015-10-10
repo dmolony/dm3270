@@ -22,6 +22,7 @@ public class Pen
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
+  // created by Screen and UserScreen
   Pen (DisplayScreen screen)
   {
     this.screen = screen;
@@ -262,12 +263,12 @@ public class Pen
     }
   }
 
-  private int findNextStartPosition (int position)
+  private int findPreviousStartPosition (int position)
   {
     int pos = position;
     while (true)
     {
-      pos = screen.validate (pos + 1);
+      pos = screen.validate (pos - 1);
       ScreenPosition sp = screen.getScreenPosition (pos);
 
       if (sp.isStartField ())
@@ -281,12 +282,12 @@ public class Pen
     return -1;
   }
 
-  private int findPreviousStartPosition (int position)
+  private int findNextStartPosition (int position)
   {
     int pos = position;
     while (true)
     {
-      pos = screen.validate (pos - 1);
+      pos = screen.validate (pos + 1);
       ScreenPosition sp = screen.getScreenPosition (pos);
 
       if (sp.isStartField ())
