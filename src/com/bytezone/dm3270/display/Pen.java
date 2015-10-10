@@ -183,6 +183,7 @@ public class Pen
       if (screenPosition.isStartField ())
         break;
       screenPosition.setChar ((byte) 0);
+      screenPosition.clearAttributes ();
       moveRight ();
     }
   }
