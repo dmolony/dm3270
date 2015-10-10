@@ -81,6 +81,36 @@ class CommandFactory
     return buffer;
   }
 
+  protected byte[] createProgramTabCommand2 ()
+  {
+    int ptr = 0;
+    byte[] buffer = new byte[7];
+
+    buffer[ptr++] = Command.WRITE_01;
+    buffer[ptr++] = (byte) 0xC3;                          // wcc
+    buffer[ptr++] = Order.PROGRAM_TAB;
+    buffer[ptr++] = (byte) 0xC1;
+    buffer[ptr++] = Order.PROGRAM_TAB;
+    ptr = terminateBuffer (buffer, ptr);
+
+    return buffer;
+  }
+
+  protected byte[] createProgramTabCommand3 ()
+  {
+    int ptr = 0;
+    byte[] buffer = new byte[7];
+
+    buffer[ptr++] = Command.WRITE_01;
+    buffer[ptr++] = (byte) 0xC3;                          // wcc
+    buffer[ptr++] = Order.PROGRAM_TAB;
+    buffer[ptr++] = Order.PROGRAM_TAB;
+    buffer[ptr++] = (byte) 0xC1;
+    ptr = terminateBuffer (buffer, ptr);
+
+    return buffer;
+  }
+
   protected byte[] createEraseAllUnprotected ()
   {
     int ptr = 0;

@@ -173,18 +173,17 @@ public class Pen
       currentPosition = screen.validate (currentPosition + 1);
       return;
     }
-    //    System.out.printf ("Current position: %d%n", currentPosition);
     int next = currentPosition;
-    int count = 0;
     while (true)
     {
       next = findNextStartPosition (next);
-      //      System.out.printf ("Next: %d%n", next);
-      sp = screen.getScreenPosition (next);
-      //      System.out.printf ("%s%n", sp);
-      if (!sp.getStartFieldAttribute ().isProtected ())
+      if (next < currentPosition)         // wrapped around or not found
+      {
+        currentPosition = 0;
         break;
-      if (++count > 1920)
+      }
+      sp = screen.getScreenPosition (next);
+      if (!sp.getStartFieldAttribute ().isProtected ())
         break;
     }
     currentPosition = screen.validate (next + 1);
