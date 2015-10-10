@@ -5,6 +5,8 @@ import com.bytezone.dm3270.display.Pen;
 
 public class ProgramTabOrder extends Order
 {
+  Order previousOrder;
+
   public ProgramTabOrder (byte[] buffer, int offset)
   {
     assert buffer[offset] == Order.PROGRAM_TAB;
@@ -17,7 +19,25 @@ public class ProgramTabOrder extends Order
   public void process (DisplayScreen screen)
   {
     Pen pen = screen.getPen ();
+
+    // if the previous data was text then erase the remainder of the field
+    if (previousOrder instanceof TextOrder)
+    {
+      System.out.println ("previous text");
+      // erase to EOF
+      pen.eraseEOF ();
+    }
+    else
+      System.out.println ("previous not text");
+
     pen.tab ();
+  }
+
+  @Override
+  public boolean matchesPreviousOrder (Order previousOrder)
+  {
+    this.previousOrder = previousOrder;
+    return false;     // we don't care if it matched, but we want to know what it was
   }
 
   @Override

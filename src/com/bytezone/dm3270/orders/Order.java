@@ -106,7 +106,7 @@ public abstract class Order
 
   // this is so that a GraphicsEscapeOrder can override it - it is used to report
   // that there are x duplicate orders.
-  public boolean matches (Order order)
+  public boolean matchesPreviousOrder (Order order)
   {
     return false;
   }

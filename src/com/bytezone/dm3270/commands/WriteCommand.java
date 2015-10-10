@@ -39,8 +39,8 @@ public class WriteCommand extends Command
       if (order.rejected ())
         break;
 
-      if (previousOrder != null && previousOrder.matches (order))
-        previousOrder.incrementDuplicates ();
+      if (order.matchesPreviousOrder (previousOrder))
+        previousOrder.incrementDuplicates ();   // and discard this Order
       else
       {
         orders.add (order);

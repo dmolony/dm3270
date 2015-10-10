@@ -247,7 +247,7 @@ public class MainframeStage extends Stage implements Mainframe
         .write (commandFactory.createEraseAllUnprotected ()));
 
     btnProgramTab.setOnAction (x -> mainframeServer
-        .write (commandFactory.createProgramTabCommand3 ()));
+        .write (commandFactory.createProgramTabCommand2 ()));
   }
 
   @Override

@@ -27,7 +27,7 @@ public class GraphicsEscapeOrder extends Order
   }
 
   @Override
-  public boolean matches (Order order)
+  public boolean matchesPreviousOrder (Order order)
   {
     if (order instanceof GraphicsEscapeOrder
         && this.code == ((GraphicsEscapeOrder) order).code)

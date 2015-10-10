@@ -18,7 +18,7 @@ public class Pen
 
   private int currentPosition;
   private int startFieldPosition;
-  private int totalFields;
+  private int totalFields;          // used to indicate at least one SFA exists
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
@@ -33,7 +33,6 @@ public class Pen
     return contextManager.getBase ();
   }
 
-  // this is just a flag so we know that there is a start field somewhere
   public void reset ()
   {
     totalFields = 0;
@@ -150,6 +149,12 @@ public class Pen
     moveRight ();
   }
 
+  public void write (String text)
+  {
+    for (byte b : text.getBytes ())
+      write (b);
+  }
+
   private void applyAttributes (ScreenPosition screenPosition)
   {
     for (Attribute attribute : pendingAttributes)
@@ -163,6 +168,23 @@ public class Pen
       applyAttributes (screen.getScreenPosition (currentPosition));
 
     currentPosition = screen.validate (currentPosition + 1);
+  }
+
+  public void eraseEOF ()
+  {
+    if (totalFields == 0)
+    {
+      System.out.println ("No fields to erase");
+      return;
+    }
+    while (true)
+    {
+      ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+      if (screenPosition.isStartField ())
+        break;
+      screenPosition.setChar ((byte) 0);
+      moveRight ();
+    }
   }
 
   public void tab ()
@@ -187,12 +209,6 @@ public class Pen
         break;
     }
     currentPosition = screen.validate (next + 1);
-  }
-
-  public void write (String text)
-  {
-    for (byte b : text.getBytes ())
-      write (b);
   }
 
   public void moveTo (int position)

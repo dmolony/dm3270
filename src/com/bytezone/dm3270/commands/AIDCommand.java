@@ -96,7 +96,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
       Order order = Order.getOrder (data, ptr, max);
       if (!order.rejected ())
       {
-        if (previousOrder != null && previousOrder.matches (order))
+        if (previousOrder != null && previousOrder.matchesPreviousOrder (order))
           previousOrder.incrementDuplicates ();
         else
         {

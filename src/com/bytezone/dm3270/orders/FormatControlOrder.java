@@ -28,7 +28,7 @@ public class FormatControlOrder extends Order
   }
 
   @Override
-  public boolean matches (Order order)
+  public boolean matchesPreviousOrder (Order order)
   {
     if (order instanceof FormatControlOrder
         && this.buffer[0] == ((FormatControlOrder) order).buffer[0])
