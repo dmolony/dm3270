@@ -63,10 +63,7 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
   {
     this.screenDetails = screenDetails;
     if (isSelected ())
-    {
       setText ();
-      setButton ();
-    }
   }
 
   @Override
@@ -94,13 +91,15 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);
+    setButton ();
   }
 
   @Override
   protected void setButton ()
   {
     btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null);
+        || screenDetails.getTSOCommandField () == null
+        || txtCommand.getText ().isEmpty ());
   }
 
   // ---------------------------------------------------------------------------------//

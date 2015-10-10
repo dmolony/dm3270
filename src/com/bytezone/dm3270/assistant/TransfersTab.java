@@ -198,10 +198,7 @@ public class TransfersTab extends AbstractTransferTab
   {
     this.screenDetails = screenDetails;
     if (isSelected ())
-    {
       setText ();
-      setButton ();
-    }
   }
 
   @Override
@@ -227,13 +224,15 @@ public class TransfersTab extends AbstractTransferTab
         (RadioButton) grpDisposition.getSelectedToggle ();
 
     txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
+    setButton ();
   }
 
   @Override
   protected void setButton ()
   {
     btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null);
+        || screenDetails.getTSOCommandField () == null
+        || txtCommand.getText ().isEmpty ());
   }
 
   @Override

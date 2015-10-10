@@ -122,10 +122,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   {
     this.screenDetails = screenDetails;
     if (isSelected ())
-    {
       setText ();
-      setButton ();
-    }
   }
 
   @Override
@@ -156,13 +153,15 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       command = "TSO " + command;
 
     txtCommand.setText (command);
+    setButton ();
   }
 
   @Override
   protected void setButton ()
   {
     btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null);
+        || screenDetails.getTSOCommandField () == null
+        || txtCommand.getText ().isEmpty ());
   }
 
   private final Set<FileSelectionListener> selectionListeners = new HashSet<> ();

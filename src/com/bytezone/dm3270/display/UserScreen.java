@@ -106,7 +106,6 @@ public class UserScreen extends Canvas implements DisplayScreen
     for (ScreenPosition sp : screenPositions)
       sp.reset ();
 
-    //    cursor.moveTo (0);
     pen.reset ();
   }
 

@@ -112,9 +112,7 @@ public class ScreenHistory
 
   public UserScreen next ()
   {
-    if (hasNext ())
-      return screens.get (++currentScreen);
-    return null;
+    return hasNext () ? screens.get (++currentScreen) : null;
   }
 
   public UserScreen current ()

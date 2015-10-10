@@ -169,12 +169,6 @@ public class Pen
     moveRight ();
   }
 
-  //  private void write (String text)
-  //  {
-  //    for (byte b : text.getBytes ())
-  //      write (b);
-  //  }
-
   private void applyAttributes (ScreenPosition screenPosition)
   {
     for (Attribute attribute : pendingAttributes)

@@ -83,10 +83,7 @@ public class DatasetTab extends AbstractTransferTab
       }
 
     if (isSelected ())
-    {
       setText ();
-      setButton ();
-    }
   }
 
   @Override
@@ -130,13 +127,15 @@ public class DatasetTab extends AbstractTransferTab
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
     txtCommand.setText (command);
+    setButton ();
   }
 
   @Override
   protected void setButton ()
   {
     btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null);
+        || screenDetails.getTSOCommandField () == null
+        || txtCommand.getText ().isEmpty ());
   }
 
   private final Set<DatasetSelectionListener> selectionListeners = new HashSet<> ();
