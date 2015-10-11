@@ -7,25 +7,27 @@ import com.bytezone.dm3270.display.Screen;
 // public abstract class Command extends AbstractTN3270Message
 public abstract class Command extends AbstractTN3270Command
 {
-  // EBCDIC codes (SNA)
+  // EBCDIC codes (SNA) - Remote Attachment
   public final static byte WRITE_F1 = (byte) 0xF1;
   public final static byte ERASE_WRITE_F5 = (byte) 0xF5;
   public final static byte ERASE_WRITE_ALTERNATE_7E = 0x7E;
-  public final static byte READ_BUFFER_F2 = (byte) 0xF2;
-  public final static byte READ_MODIFIED_F6 = (byte) 0xF6;
-  public final static byte READ_MODIFIED_ALL_6E = 0x6E;
   public final static byte ERASE_ALL_UNPROTECTED_6F = 0x6F;
   public final static byte WRITE_STRUCTURED_FIELD_F3 = (byte) 0xF3;
 
-  // CCW opcodes (EXCP)
+  public final static byte READ_BUFFER_F2 = (byte) 0xF2;
+  public final static byte READ_MODIFIED_F6 = (byte) 0xF6;
+  public final static byte READ_MODIFIED_ALL_6E = 0x6E;
+
+  // CCW opcodes (EXCP) - Local Attachment
   public final static byte WRITE_01 = 0x01;
   public final static byte ERASE_WRITE_05 = 0x05;
   public final static byte ERASE_WRITE_ALTERNATE_0D = 0x0D;
+  public final static byte ERASE_ALL_UNPROTECTED_0F = 0x0F;
+  public final static byte WRITE_STRUCTURED_FIELD_11 = 0x11;
+
   public final static byte READ_BUFFER_02 = 0x02;
   public final static byte READ_MODIFIED_06 = 0x06;
   public final static byte READ_MODIFIED_ALL_0E = 0x0E;
-  public final static byte ERASE_ALL_UNPROTECTED_0F = 0x0F;
-  public final static byte WRITE_STRUCTURED_FIELD_11 = 0x11;
 
   // Reply code
   public final static byte READ_STRUCTURED_FIELD_88 = (byte) 0x88;
