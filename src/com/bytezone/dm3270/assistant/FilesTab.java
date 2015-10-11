@@ -71,7 +71,8 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       String tlq = screen.getPrefix ();
       System.out.printf ("Name: %s, hasTLQ: %s, TLQ: %s%n", name, transfer.hasTLQ (),
                          tlq);
-      name = tlq + "." + name;
+      if (!tlq.isEmpty ())
+        name = tlq + "." + name;
     }
     reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
   }

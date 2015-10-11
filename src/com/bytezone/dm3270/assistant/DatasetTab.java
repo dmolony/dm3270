@@ -3,6 +3,8 @@ package com.bytezone.dm3270.assistant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.display.Screen;
@@ -14,6 +16,7 @@ import javafx.scene.control.TreeItem;
 
 public class DatasetTab extends AbstractTransferTab
 {
+  private static final Pattern pattern = Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
   private Dataset selectedDataset;
 
   private final boolean useTable = false;
@@ -103,10 +106,10 @@ public class DatasetTab extends AbstractTransferTab
     }
 
     String datasetName = selectedDataset.getDatasetName ();
-    int pos1 = datasetName.indexOf (".CNTL");
-    int pos2 = datasetName.indexOf (".JCL");
-    boolean jclMember = (pos1 > 0 || pos2 > 0) && datasetName.endsWith (")");
     String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
+
+    Matcher matcher = pattern.matcher (datasetName);
+    boolean jclMember = matcher.matches ();
 
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
     {
