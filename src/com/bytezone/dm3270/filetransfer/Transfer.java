@@ -15,6 +15,7 @@ public class Transfer
   private TransferType transferType;
 
   private String fileName;
+  private boolean hasTLQ;
   private boolean crlf;
   private boolean ascii;
   private boolean append;
@@ -159,7 +160,10 @@ public class Transfer
     this.direction = chunks[1];
     this.fileName = chunks[2];
     if (fileName.startsWith ("'") && fileName.endsWith ("'") && fileName.length () > 2)
+    {
       fileName = fileName.substring (1, fileName.length () - 1);
+      hasTLQ = true;
+    }
 
     int lengthMinusOne = chunks.length - 1;
     for (int i = 3; i < chunks.length; i++)
@@ -200,6 +204,11 @@ public class Transfer
     return fileName;
   }
 
+  public boolean hasTLQ ()
+  {
+    return hasTLQ;
+  }
+
   @Override
   public String toString ()
   {
@@ -216,6 +225,7 @@ public class Transfer
     text.append (String.format ("%nLength ......... %,9d", dataLength));
     text.append (String.format ("%nCommand ........ %s", direction));
     text.append (String.format ("%nFile name ...... %s", fileName));
+    text.append (String.format ("%nhas TLQ ........ %s", hasTLQ));
     text.append (String.format ("%nCRLF ........... %s", crlf));
     text.append (String.format ("%nASCII .......... %s", ascii));
     text.append (String.format ("%nAPPEND ......... %s", append));

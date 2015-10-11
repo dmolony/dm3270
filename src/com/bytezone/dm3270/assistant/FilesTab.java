@@ -54,7 +54,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     return reporterNode.getMenuBar ();
   }
 
-  public void addTransfer (Transfer transfer)
+  private void addTransfer (Transfer transfer)
   {
     if (transfer.isSendData ())
     {
@@ -65,7 +65,15 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
 
   private void addBuffer (Transfer transfer)
   {
-    reporterNode.addBuffer (transfer.getFileName (), transfer.combineDataBuffers ());
+    String name = transfer.getFileName ();
+    if (!transfer.hasTLQ ())
+    {
+      String tlq = screen.getPrefix ();
+      System.out.printf ("Name: %s, hasTLQ: %s, TLQ: %s%n", name, transfer.hasTLQ (),
+                         tlq);
+      name = tlq + "." + name;
+    }
+    reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
   }
 
   // called from AssistantStage.getCurrentFileBuffer()
@@ -106,7 +114,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     Transfer transfer = currentTransfer;
     currentTransfer.add (transferRecord);
 
-    addTransfer (currentTransfer);// add to the file tree
+    addTransfer (currentTransfer);                // add to the file tree
     currentTransfer = null;
 
     return transfer;
