@@ -10,6 +10,7 @@ import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDetails;
 
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -30,32 +31,33 @@ public class DatasetTab extends AbstractTransferTab
 
     if (useTable)
     {
-      datasetTable.getSelectionModel ().selectedItemProperty ()
-          .addListener ( (obs, oldSelection, newSelection) -> {
-            if (newSelection != null)
-              select (newSelection);
-          });
+      ReadOnlyObjectProperty<Dataset> property =
+          datasetTable.getSelectionModel ().selectedItemProperty ();
+      property.addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
       setContent (datasetTable);
     }
     else
     {
-      datasetTreeTable.getSelectionModel ().selectedItemProperty ()
-          .addListener ( (obs, oldSelection, newSelection) -> {
-            if (newSelection != null)
-              select (newSelection);
-          });
+      ReadOnlyObjectProperty<TreeItem<Dataset>> property =
+          datasetTreeTable.getSelectionModel ().selectedItemProperty ();
+      property.addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
       setContent (datasetTreeTable);
     }
   }
 
   private void select (Dataset dataset)
   {
+    if (dataset == null)
+      return;
     selectedDataset = dataset;
     setText ();
+    fireDatasetSelected (selectedDataset);
   }
 
   private void select (TreeItem<Dataset> treeItem)
   {
+    if (treeItem == null)
+      return;
     selectedDataset = treeItem.getValue ();
     setText ();
     fireDatasetSelected (selectedDataset);
