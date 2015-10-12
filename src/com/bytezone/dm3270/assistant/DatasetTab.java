@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDetails;
 
@@ -23,7 +22,6 @@ public class DatasetTab extends AbstractTransferTab
   private final boolean useTable = false;
   private final DatasetTable datasetTable = new DatasetTable ();
   private final DatasetTreeTable datasetTreeTable = new DatasetTreeTable ();
-  private ScreenDetails screenDetails;
 
   public DatasetTab (Screen screen, TextField text, Button execute)
   {
@@ -66,7 +64,6 @@ public class DatasetTab extends AbstractTransferTab
   @Override
   public void screenChanged (ScreenDetails screenDetails)
   {
-    this.screenDetails = screenDetails;
     List<Dataset> datasets = screenDetails.getDatasets ();
     if (datasets != null)
       for (Dataset dataset : datasets)
@@ -87,15 +84,7 @@ public class DatasetTab extends AbstractTransferTab
           datasetTreeTable.addDataset (dataset);
       }
 
-    if (isSelected ())
-      setText ();
-  }
-
-  @Override
-  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
-  {
-    if (isSelected ())
-      setButton ();
+    super.screenChanged (screenDetails);
   }
 
   @Override
@@ -132,15 +121,6 @@ public class DatasetTab extends AbstractTransferTab
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
     txtCommand.setText (command);
-    setButton ();
-  }
-
-  @Override
-  protected void setButton ()
-  {
-    btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null
-        || txtCommand.getText ().isEmpty ());
   }
 
   private final Set<DatasetSelectionListener> selectionListeners = new HashSet<> ();

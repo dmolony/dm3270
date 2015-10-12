@@ -1,8 +1,6 @@
 package com.bytezone.dm3270.assistant;
 
-import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -55,7 +53,7 @@ public class TransfersTab extends AbstractTransferTab
   private final TextArea txtDescription = new TextArea ();
 
   private final Font defaultFont = Font.font ("Monospaced", 12);
-  private ScreenDetails screenDetails;
+  //  private ScreenDetails screenDetails;
 
   public TransfersTab (Screen screen, TextField text, Button execute)
   {
@@ -194,21 +192,6 @@ public class TransfersTab extends AbstractTransferTab
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
-  {
-    this.screenDetails = screenDetails;
-    if (isSelected ())
-      setText ();
-  }
-
-  @Override
-  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
-  {
-    if (isSelected ())
-      setButton ();
-  }
-
-  @Override
   protected void setText ()
   {
     RadioButton selectedFileButton = (RadioButton) grpFileName.getSelectedToggle ();
@@ -224,15 +207,6 @@ public class TransfersTab extends AbstractTransferTab
         (RadioButton) grpDisposition.getSelectedToggle ();
 
     txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
-    setButton ();
-  }
-
-  @Override
-  protected void setButton ()
-  {
-    btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null
-        || txtCommand.getText ().isEmpty ());
   }
 
   @Override

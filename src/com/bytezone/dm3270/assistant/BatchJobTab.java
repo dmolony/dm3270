@@ -5,9 +5,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -19,7 +17,6 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
   private final BatchJobTable jobTable = new BatchJobTable ();
 
   private BatchJob selectedBatchJob;
-  private ScreenDetails screenDetails;
 
   public BatchJobTab (Screen screen, TextField text, Button execute)
   {
@@ -59,21 +56,6 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
-  {
-    this.screenDetails = screenDetails;
-    if (isSelected ())
-      setText ();
-  }
-
-  @Override
-  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
-  {
-    if (isSelected ())
-      setButton ();
-  }
-
-  @Override
   protected void setText ()
   {
     if (selectedBatchJob == null || selectedBatchJob.getJobCompleted () == null)
@@ -91,15 +73,6 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
     txtCommand.setText (command);
-    setButton ();
-  }
-
-  @Override
-  protected void setButton ()
-  {
-    btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null
-        || txtCommand.getText ().isEmpty ());
   }
 
   // ---------------------------------------------------------------------------------//

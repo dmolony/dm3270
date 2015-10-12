@@ -1,8 +1,10 @@
 package com.bytezone.dm3270.assistant;
 
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDetails;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -14,6 +16,7 @@ public abstract class AbstractTransferTab extends Tab
   protected final Screen screen;
   protected final Button btnExecute;
   protected final TextField txtCommand;
+  protected ScreenDetails screenDetails;
 
   public AbstractTransferTab (String name, Screen screen, TextField text, Button execute)
   {
@@ -34,5 +37,30 @@ public abstract class AbstractTransferTab extends Tab
 
   abstract protected void setText ();
 
-  abstract protected void setButton ();
+  //  abstract protected void setButton ();
+
+  protected void setButton ()
+  {
+    btnExecute.setDisable (screen.isKeyboardLocked ()
+        || screenDetails.getTSOCommandField () == null
+        || txtCommand.getText ().isEmpty ());
+  }
+
+  @Override
+  public void screenChanged (ScreenDetails screenDetails)
+  {
+    this.screenDetails = screenDetails;
+    if (isSelected ())
+    {
+      setText ();
+      setButton ();
+    }
+  }
+
+  @Override
+  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
+  {
+    if (isSelected ())
+      setButton ();
+  }
 }

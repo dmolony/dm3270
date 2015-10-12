@@ -1,10 +1,8 @@
 package com.bytezone.dm3270.assistant;
 
-import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandListener;
 
 import javafx.collections.FXCollections;
@@ -18,7 +16,6 @@ public class CommandsTab extends AbstractTransferTab
 {
   ObservableList<String> commands = FXCollections.observableArrayList ();
   ListView<String> commandList = new ListView<> (commands);
-  private ScreenDetails screenDetails;
 
   public CommandsTab (Screen screen, TextField text, Button execute)
   {
@@ -45,24 +42,6 @@ public class CommandsTab extends AbstractTransferTab
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
-  {
-    this.screenDetails = screenDetails;
-    if (isSelected ())
-    {
-      setText ();
-      setButton ();
-    }
-  }
-
-  @Override
-  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
-  {
-    if (isSelected ())
-      setButton ();
-  }
-
-  @Override
   protected void setText ()
   {
     String selectedCommand = commandList.getSelectionModel ().getSelectedItem ();
@@ -73,12 +52,5 @@ public class CommandsTab extends AbstractTransferTab
     }
 
     txtCommand.setText (selectedCommand);
-  }
-
-  @Override
-  protected void setButton ()
-  {
-    btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null);
   }
 }

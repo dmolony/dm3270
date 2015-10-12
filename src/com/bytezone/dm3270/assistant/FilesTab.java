@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
-import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.reporter.application.FileNode;
@@ -27,7 +25,6 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
 
   private final ReporterNode reporterNode;
   private FileNode currentFileNode;
-  private ScreenDetails screenDetails;
 
   public FilesTab (Screen screen, TextField text, Button execute, Preferences prefs)
   {
@@ -127,21 +124,6 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
-  {
-    this.screenDetails = screenDetails;
-    if (isSelected ())
-      setText ();
-  }
-
-  @Override
-  public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
-  {
-    if (isSelected ())
-      setButton ();
-  }
-
-  @Override
   protected void setText ()
   {
     if (currentFileNode == null)
@@ -162,15 +144,6 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       command = "TSO " + command;
 
     txtCommand.setText (command);
-    setButton ();
-  }
-
-  @Override
-  protected void setButton ()
-  {
-    btnExecute.setDisable (screen.isKeyboardLocked ()
-        || screenDetails.getTSOCommandField () == null
-        || txtCommand.getText ().isEmpty ());
   }
 
   private final Set<FileSelectionListener> selectionListeners = new HashSet<> ();
