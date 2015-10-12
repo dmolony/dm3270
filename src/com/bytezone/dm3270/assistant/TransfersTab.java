@@ -53,7 +53,6 @@ public class TransfersTab extends AbstractTransferTab
   private final TextArea txtDescription = new TextArea ();
 
   private final Font defaultFont = Font.font ("Monospaced", 12);
-  //  private ScreenDetails screenDetails;
 
   public TransfersTab (Screen screen, TextField text, Button execute)
   {
