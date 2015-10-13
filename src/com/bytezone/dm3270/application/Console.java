@@ -104,9 +104,9 @@ public class Console extends Application
         else
           try
           {
-            Screen screen = createScreen (Function.REPLAY);
-            Session session = new Session (screen, path);// can throw Exception
-            setConsolePane (screen, null);// reassigns primaryStage
+            Screen screen = createScreen (Function.REPLAY);     // 124ms
+            Session session = new Session (screen, path);       // can throw Exception
+            setConsolePane (screen, null);                      // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();

@@ -115,7 +115,6 @@ public class OptionStage extends Stage
     clientSpyBox.setPadding (new Insets (0, 10, 10, 10));
 
     buttonsBox = buttons ();
-    buttonsBox.setPadding (new Insets (10, 10, 10, 10));
 
     innerPane.setTop (functionsBox);
     innerPane.setCenter (serverBox);
@@ -267,7 +266,7 @@ public class OptionStage extends Stage
   private void disableButtons (String selection)
   {
     if (selection.equals (optionList[0]))
-      setDisable (false, false, true);// server, client, file
+      setDisable (false, false, true);                  // server, client, files
     else if (selection.equals (optionList[1]))
       setDisable (true, true, false);
     else if (selection.equals (optionList[2]))
@@ -330,13 +329,12 @@ public class OptionStage extends Stage
 
     okButton.setDefaultButton (true);
     okButton.setPrefWidth (80);
-    //    okButton.setOnAction (e -> startSelectedFunction ());
 
     cancelButton.setCancelButton (true);
     cancelButton.setPrefWidth (80);
-    //    cancelButton.setOnAction (e -> primaryStage.hide ());
 
     hbox.getChildren ().addAll (cancelButton, okButton);
+    hbox.setPadding (new Insets (10, 10, 10, 10));
 
     return hbox;
   }
