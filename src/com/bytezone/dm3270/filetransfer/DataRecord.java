@@ -49,13 +49,26 @@ public class DataRecord extends TransferRecord
     return buffer.length;
   }
 
-  void checkAscii ()
+  void checkAscii (boolean allowCRLF)
   {
     for (int i = 0; i < buffer.length; i++)
     {
       int b = buffer[i] & 0xFF;
-      if ((b < 0x20 || b >= 0xC0) && (b != 0x0D && b != 0x0A && b != 0x1A))
-        System.out.printf ("Not ascii: %02X%n", b);
+      if (b >= 0x20 && b < 0xC0)
+        continue;
+
+      int nextPtr = i + 1;
+      if (b == 0x0D && allowCRLF)
+      {
+        if (nextPtr < buffer.length && buffer[nextPtr] == 0x0A)
+        {
+          ++i;            // skip the 0x0A
+          continue;
+        }
+      }
+      if (b == 0x1A && nextPtr == buffer.length)
+        continue;
+      System.out.printf ("Not ascii: %02X at offset: %06X%n", b, i);
     }
   }
 

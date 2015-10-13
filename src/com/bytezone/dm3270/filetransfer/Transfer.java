@@ -78,7 +78,7 @@ public class Transfer
     {
       ptr = dataRecord.packBuffer (fullBuffer, ptr);
       if (ascii)
-        dataRecord.checkAscii ();
+        dataRecord.checkAscii (crlf);
     }
 
     return fullBuffer;
