@@ -49,6 +49,26 @@ public class DataRecord extends TransferRecord
     return buffer.length;
   }
 
+  void checkAscii ()
+  {
+    for (int i = 0; i < buffer.length; i++)
+    {
+      int b = buffer[i] & 0xFF;
+      if ((b < 0x20 || b >= 0xC0) && (b != 0x0D && b != 0x0A && b != 0x1A))
+        System.out.printf ("Not ascii: %02X%n", b);
+    }
+  }
+
+  void checkEbcdic ()
+  {
+    for (int i = 0; i < buffer.length; i++)
+    {
+      int b = buffer[i] & 0xFF;
+      if (b != 0x40 && (b < 0x4B || b == 0xFF))
+        System.out.printf ("Not ebcdic: %02X%n", b);
+    }
+  }
+
   @Override
   public int pack (byte[] buffer, int ptr)
   {

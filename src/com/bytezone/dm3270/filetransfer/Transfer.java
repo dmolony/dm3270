@@ -75,7 +75,11 @@ public class Transfer
 
     int ptr = 0;
     for (DataRecord dataRecord : dataRecords)
+    {
       ptr = dataRecord.packBuffer (fullBuffer, ptr);
+      if (ascii)
+        dataRecord.checkAscii ();
+    }
 
     return fullBuffer;
   }
