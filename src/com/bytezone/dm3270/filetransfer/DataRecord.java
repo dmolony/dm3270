@@ -57,17 +57,20 @@ public class DataRecord extends TransferRecord
       if (b >= 0x20 && b < 0xC0)
         continue;
 
-      int nextPtr = i + 1;
-      if (b == 0x0D && allowCRLF)
+      if (allowCRLF)
       {
-        if (nextPtr < buffer.length && buffer[nextPtr] == 0x0A)
+        int nextPtr = i + 1;
+        if (b == 0x0D)
         {
-          ++i;            // skip the 0x0A
-          continue;
+          if (nextPtr < buffer.length && buffer[nextPtr] == 0x0A)
+          {
+            ++i;            // skip the 0x0A
+            continue;
+          }
         }
+        else if (b == 0x1A && nextPtr == buffer.length)
+          continue;
       }
-      else if (b == 0x1A && nextPtr == buffer.length)
-        continue;
       System.out.printf ("Not ascii: %02X at offset: %06X%n", b, i);
     }
   }
