@@ -66,7 +66,7 @@ public class DataRecord extends TransferRecord
           continue;
         }
       }
-      if (b == 0x1A && nextPtr == buffer.length)
+      else if (b == 0x1A && nextPtr == buffer.length)
         continue;
       System.out.printf ("Not ascii: %02X at offset: %06X%n", b, i);
     }
