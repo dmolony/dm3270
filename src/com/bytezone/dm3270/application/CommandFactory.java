@@ -67,7 +67,7 @@ class CommandFactory
     return buffer;
   }
 
-  protected byte[] createProgramTabCommand ()
+  protected byte[] createProgramTabCommand1 ()
   {
     int ptr = 0;
     byte[] buffer = new byte[6];

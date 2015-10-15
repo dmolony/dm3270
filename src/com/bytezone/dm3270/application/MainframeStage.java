@@ -65,7 +65,9 @@ public class MainframeStage extends Stage implements Mainframe
   private final Button btnReadModified;
   private final Button btnReadModifiedAll;
   private final Button btnEraseAllUnprotected;
-  private final Button btnProgramTab;
+  private final Button btnProgramTab1;
+  private final Button btnProgramTab2;
+  private final Button btnProgramTab3;
 
   private final CommandFactory commandFactory = new CommandFactory ();
 
@@ -97,7 +99,9 @@ public class MainframeStage extends Stage implements Mainframe
     btnReadModified = factory.getButton ("Read Modified", vbox2, BUTTON_WIDTH);
     btnReadModifiedAll = factory.getButton ("Read Mod All", vbox2, BUTTON_WIDTH);
     btnEraseAllUnprotected = factory.getButton ("Erase All Unpr", vbox2, BUTTON_WIDTH);
-    btnProgramTab = factory.getButton ("Program Tab", vbox2, BUTTON_WIDTH);
+    btnProgramTab1 = factory.getButton ("PT 1", vbox2, BUTTON_WIDTH);
+    btnProgramTab2 = factory.getButton ("PT 2", vbox2, BUTTON_WIDTH);
+    btnProgramTab3 = factory.getButton ("PT 3", vbox2, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
@@ -246,8 +250,14 @@ public class MainframeStage extends Stage implements Mainframe
     btnEraseAllUnprotected.setOnAction (x -> mainframeServer
         .write (commandFactory.createEraseAllUnprotected ()));
 
-    btnProgramTab.setOnAction (x -> mainframeServer
+    btnProgramTab1.setOnAction (x -> mainframeServer
+        .write (commandFactory.createProgramTabCommand1 ()));
+
+    btnProgramTab2.setOnAction (x -> mainframeServer
         .write (commandFactory.createProgramTabCommand2 ()));
+
+    btnProgramTab3.setOnAction (x -> mainframeServer
+        .write (commandFactory.createProgramTabCommand3 ()));
   }
 
   @Override
@@ -273,7 +283,9 @@ public class MainframeStage extends Stage implements Mainframe
     btnReadModified.setDisable (!enable);
     btnReadModifiedAll.setDisable (!enable);
     btnEraseAllUnprotected.setDisable (!enable);
-    btnProgramTab.setDisable (!enable);
+    btnProgramTab1.setDisable (!enable);
+    btnProgramTab2.setDisable (!enable);
+    btnProgramTab3.setDisable (!enable);
 
     btnFieldMode.setDisable (!enable);
     btnExtendedFieldMode.setDisable (!enable);
