@@ -22,13 +22,7 @@ public class ProgramTabOrder extends Order
 
     // if the previous data was text then erase the remainder of the field
     if (previousOrder instanceof TextOrder)
-    {
-      System.out.println ("previous text");
-      // erase to EOF
       pen.eraseEOF ();
-    }
-    else
-      System.out.println ("previous not text");
 
     pen.tab ();
   }
