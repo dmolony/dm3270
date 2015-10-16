@@ -109,7 +109,7 @@ public class MainframeStage extends Stage implements Mainframe
     btnExtendedFieldMode =
         factory.getRadioButton ("Extended Field Mode", vbox2, modeGroup);
     btnCharacterMode = factory.getRadioButton ("Character Mode", vbox2, modeGroup);
-    btnFieldMode.setSelected (true);// match the default setting
+    btnFieldMode.setSelected (true);                    // match the default setting
 
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
 
@@ -173,8 +173,7 @@ public class MainframeStage extends Stage implements Mainframe
     orders.add (new StartFieldExtendedOrder (alpha ? fldInAlpha : fldInNumeric,
         attributes));
 
-    // end of field
-    orders.add (new SetBufferAddressOrder (position + length + 1));
+    orders.add (new SetBufferAddressOrder (position + length + 1));     // end of field
     orders.add (new StartFieldOrder (fldEnd));
   }
 
@@ -312,12 +311,8 @@ public class MainframeStage extends Stage implements Mainframe
     @Override
     public void changed (ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1)
     {
-      if (t1 == btnFieldMode)
-        mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x00));
-      else if (t1 == btnExtendedFieldMode)
-        mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x01));
-      else if (t1 == btnCharacterMode)
-        mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) 0x02));
+      int value = t1 == btnFieldMode ? 0 : t1 == btnExtendedFieldMode ? 1 : 2;
+      mainframeServer.write (commandFactory.createSetReplyModeCommand ((byte) value));
     }
   }
 }
