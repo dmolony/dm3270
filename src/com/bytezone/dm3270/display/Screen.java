@@ -89,9 +89,9 @@ public class Screen extends Canvas implements DisplayScreen
     graphicsContext = getGraphicsContext2D ();
     fontManager = new FontManager (this, prefs);
 
-    ScreenContext baseContext = pen.getBase ();
     FontData fontData = fontManager.getFontData ();
 
+    ScreenContext baseContext = pen.getBase ();
     screenPositions = new ScreenPosition[screenSize];
     for (int i = 0; i < screenSize; i++)
       screenPositions[i] = new ScreenPosition (i, graphicsContext, fontData, baseContext);
@@ -366,7 +366,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   void eraseScreen ()
   {
-    graphicsContext.setFill (ColorAttribute.colors[8]);// black
+    graphicsContext.setFill (ColorAttribute.colors[8]);             // black
     graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
   }
 
