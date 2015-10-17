@@ -37,6 +37,7 @@ public class Pen
   void reset ()
   {
     totalFields = 0;
+    currentPosition = 0;
   }
 
   // called from StartFieldAttribute.process()
