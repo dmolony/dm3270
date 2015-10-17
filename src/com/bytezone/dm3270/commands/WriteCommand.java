@@ -91,6 +91,8 @@ public class WriteCommand extends Command
 
     if (eraseWrite)
       screen.clearScreen ();            // resets pen
+    //    else
+    //      screen.getPen ().moveTo (0);
 
     if (orders.size () > 0)
     {

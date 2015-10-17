@@ -37,7 +37,7 @@ public class Pen
   void reset ()
   {
     totalFields = 0;
-    currentPosition = 0;
+    //    currentPosition = 0;
   }
 
   // called from StartFieldAttribute.process()
@@ -226,9 +226,11 @@ public class Pen
       }
       sp = screen.getScreenPosition (next);
       if (!sp.getStartFieldAttribute ().isProtected ())
+      {
+        currentPosition = screen.validate (next + 1);
         break;
+      }
     }
-    currentPosition = screen.validate (next + 1);
   }
 
   // called from SetBufferAddressOrder.process()
