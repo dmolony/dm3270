@@ -242,6 +242,12 @@ public class Cursor
     }
   }
 
+  // called from Screen.eraseAllUnprotected()
+  // called from Screen.draw()
+  // called from Screen.clearScreen()
+  // called from WriteCommand.process()
+  // called from AIDCommand.process()
+  // called from PluginsStage.processReply()
   public void moveTo (int newPosition)
   {
     int oldPosition = currentPosition;
