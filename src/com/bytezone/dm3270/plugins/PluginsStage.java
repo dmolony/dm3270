@@ -63,7 +63,6 @@ public class PluginsStage extends PreferencesStage
 
     VBox vbox = getHeadings ();
 
-    // input fields
     for (PluginEntry pluginEntry : plugins)
     {
       HBox hbox = new HBox ();
@@ -376,6 +375,11 @@ public class PluginsStage extends PreferencesStage
 
     public PluginEntry (String name, String className, boolean activate)
     {
+      if (name == null || name.isEmpty ())
+        throw new IllegalArgumentException ("Plugin name not provided");
+      if (className == null || className.isEmpty ())
+        throw new IllegalArgumentException ("Plugin class not provided");
+
       this.name.setText (name);
       this.className.setText (className);
       this.activate.setSelected (activate);
@@ -416,9 +420,10 @@ public class PluginsStage extends PreferencesStage
 
     public Plugin instantiate ()
     {
+      plugin = null;
+
       try
       {
-        plugin = null;
         String classNameText = className.getText ();
         if (!classNameText.isEmpty ())
         {
@@ -429,6 +434,7 @@ public class PluginsStage extends PreferencesStage
       }
       catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
       {
+        System.out.printf ("Instantiation failed: %s%n", className);
       }
       return plugin;
     }
