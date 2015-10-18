@@ -232,7 +232,8 @@ public class PluginsStage extends PreferencesStage
       String pluginClass = prefs.get (String.format ("PluginClass-%02d", i), "");
       boolean pluginActivate =
           prefs.getBoolean (String.format ("PluginActivate-%02d", i), false);
-      plugins.add (new PluginEntry (pluginName, pluginClass, pluginActivate));
+      if (!pluginName.isEmpty ())
+        plugins.add (new PluginEntry (pluginName, pluginClass, pluginActivate));
     }
   }
 
@@ -434,7 +435,7 @@ public class PluginsStage extends PreferencesStage
       }
       catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
       {
-        System.out.printf ("Instantiation failed: %s%n", className);
+        System.out.printf ("Instantiation failed: %s - %s%n", name, className);
       }
       return plugin;
     }
