@@ -40,7 +40,7 @@ public class WriteCommand extends Command
         break;
 
       if (order.matchesPreviousOrder (previousOrder))
-        previousOrder.incrementDuplicates ();   // and discard this Order
+        previousOrder.incrementDuplicates ();           // and discard this Order
       else
       {
         orders.add (order);

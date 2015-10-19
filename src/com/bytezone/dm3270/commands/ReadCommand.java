@@ -50,6 +50,7 @@ public class ReadCommand extends Command
   @Override
   public void process ()
   {
+    // Create an AID command
     if (type == CommandType.READ_BUFFER)
       reply = screen.readBuffer ();
     else if (type == CommandType.READ_MODIFIED)
