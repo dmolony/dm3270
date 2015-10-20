@@ -25,34 +25,36 @@ public class SystemMessage
           + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR.*");
 
   private static final byte[] systemMessage1 =
-      { //
-       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
-       Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage2 =
-      { //
-       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-       Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage3 =
-      { //
-       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-       Order.INSERT_CURSOR };
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage4 =
-      { //
-       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-       Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-       Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
   private static final byte[] systemMessage5 =
-      { //
-       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
-       Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
-       Order.INSERT_CURSOR };
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.INSERT_CURSOR };
+
+  private static final byte[] profileMessage =
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.SET_BUFFER_ADDRESS, 0x00, Order.START_FIELD,
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
+        Order.INSERT_CURSOR };
 
   private final Screen screen;
 
@@ -101,6 +103,16 @@ public class SystemMessage
       if (checkOrders (systemMessage5, orders))
         checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
       return;
+    }
+
+    if (eraseWrite && orders.size () == 17)
+    {
+      if (checkOrders (profileMessage, orders))
+      {
+        checkProfileMessage (Utility.getString (orders.get (4).getBuffer ())
+            + Utility.getString (orders.get (6).getBuffer ()),
+                             Utility.getString (orders.get (10).getBuffer ()));
+      }
     }
 
     if (orders.size () < 30 && false)
@@ -152,6 +164,13 @@ public class SystemMessage
       fireBatchJobFailed (jobNumber, jobName, time);
       return;
     }
+  }
+
+  private void checkProfileMessage (String profileMessageText1,
+      String profileMessageText2)
+  {
+    System.out.println (profileMessageText1);
+    System.out.println (profileMessageText2);
   }
 
   // ---------------------------------------------------------------------------------//
