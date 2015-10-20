@@ -33,7 +33,6 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
 
     if (screen.isKeyboardLocked ())
     {
-      //      if (keyEvent.isMetaDown () || keyEvent.isControlDown ())
       if (keyCodePressed == KeyCode.LEFT)
       {
         consolePane.back ();
@@ -101,7 +100,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
       return;
     }
 
-    if (keyEvent.isControlDown ()) // OSX has to share ctrl-h
+    if (keyEvent.isControlDown ())              // OSX has to share ctrl-h
     {
       switch (keyCodePressed)
       {
@@ -182,7 +181,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           break;
 
         case ESCAPE:
-          System.out.println ("escape");// CLR key?
+          System.out.println ("escape");                // CLR key?
           keyEvent.consume ();
           break;
 

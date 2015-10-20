@@ -2,6 +2,12 @@ package com.bytezone.dm3270.application;
 
 import java.io.File;
 
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.session.Session;
+import com.bytezone.dm3270.session.SessionTable;
+import com.bytezone.dm3270.streams.SpyServer;
+import com.bytezone.dm3270.streams.TelnetState;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
@@ -12,12 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-
-import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.session.Session;
-import com.bytezone.dm3270.session.SessionTable;
-import com.bytezone.dm3270.streams.SpyServer;
-import com.bytezone.dm3270.streams.TelnetState;
 
 public class SpyPane extends BorderPane
 {
@@ -35,7 +35,7 @@ public class SpyPane extends BorderPane
 
     final Label label = session.getHeaderLabel ();
     label.setFont (new Font ("Arial", 20));
-    label.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    label.setPadding (new Insets (10, 10, 10, 10));         // trbl
 
     CommandPane commandPane =
         new CommandPane (table, CommandPane.ProcessInstruction.DontProcess);
@@ -48,7 +48,7 @@ public class SpyPane extends BorderPane
 
     final HBox hbox = new HBox ();
     hbox.setSpacing (15);
-    hbox.setPadding (new Insets (10, 10, 10, 10));    // trbl
+    hbox.setPadding (new Insets (10, 10, 10, 10));          // trbl
     hbox.getChildren ().addAll (btnSave, btnScramble);
 
     SplitPane splitPane = new SplitPane ();
@@ -62,9 +62,11 @@ public class SpyPane extends BorderPane
     setBottom (hbox);
 
     String message =
-        String.format ("Connect a terminal to localhost:%d%n%n"
-                           + "Will connect to mainframe at %s:%d", clientSite.getPort (),
-                       serverSite.getURL (), serverSite.getPort ());
+        String.format (
+                       "Connect a terminal to localhost:%d%n%n"
+                           + "Will connect to mainframe at %s:%d",
+                       clientSite.getPort (), serverSite.getURL (),
+                       serverSite.getPort ());
 
     table.setPlaceholder (new Label (message));
     table.setItems (session.getDataRecords ());

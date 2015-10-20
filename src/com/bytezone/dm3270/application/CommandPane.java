@@ -81,9 +81,7 @@ class CommandPane extends TabPane
     ReplyBuffer message = sessionRecord.getMessage ();
 
     if (process == ProcessInstruction.DoProcess)
-    {
       message.process ();       // only process the message when in Replay mode
-    }
 
     Buffer reply = message.getReply ();
 

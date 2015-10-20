@@ -16,7 +16,7 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
   }
 
   @Override
-  public void handle (KeyEvent e)// onKeyTyped
+  public void handle (KeyEvent e)                     // onKeyTyped
   {
     if (screen.isKeyboardLocked () || e.isMetaDown () || e.isControlDown ()
         || e.isAltDown ())
@@ -25,12 +25,12 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
       String key = e.getCharacter ();
       if (e.isMetaDown () && !key.isEmpty ())
       {
-        if (key.charAt (0) == '-') // osx fix
+        if (key.charAt (0) == '-')                    // osx fix
         {
           screen.getFontManager ().smaller ();
           e.consume ();
         }
-        else if (key.charAt (0) == '=') // osx fix
+        else if (key.charAt (0) == '=')               // osx fix
         {
           screen.getFontManager ().bigger ();
           e.consume ();

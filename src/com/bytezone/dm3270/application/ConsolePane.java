@@ -343,7 +343,7 @@ public class ConsolePane extends BorderPane
     int row = newLocation / screen.columns;
     int col = newLocation % screen.columns;
     cursorLocation.setText (String.format ("%03d/%03d", row, col));
-    fieldChanged (currentField, currentField);// update the acronym
+    fieldChanged (currentField, currentField);            // update the acronym
   }
 
   @Override
