@@ -24,6 +24,8 @@ public class SystemMessage
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR.*");
 
+  private static final Pattern prefixPattern = Pattern.compile (".*PREFIX\\((.*?)\\).*");
+
   private static final byte[] systemMessage1 =
       { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
@@ -169,8 +171,13 @@ public class SystemMessage
   private void checkProfileMessage (String profileMessageText1,
       String profileMessageText2)
   {
-    System.out.println (profileMessageText1);
-    System.out.println (profileMessageText2);
+    //    System.out.println (profileMessageText1);
+    //    System.out.println (profileMessageText2);
+    for (String token : profileMessageText1.split ("\\s+"))
+      System.out.println (token);
+    Matcher matcher = prefixPattern.matcher (profileMessageText1);
+    if (matcher.matches ())
+      System.out.printf ("Prefix=%s%n", matcher.group (1));
   }
 
   // ---------------------------------------------------------------------------------//
