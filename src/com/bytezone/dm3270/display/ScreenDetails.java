@@ -342,7 +342,11 @@ public class ScreenDetails
       if (rowFields.size () <= 1)
         break;
 
-      String datasetName = rowFields.get (0).getText ().substring (9).trim ();
+      String lineText = rowFields.get (0).getText ();
+      System.out.println (lineText);
+      if (lineText.isEmpty () || lineText.length () < 10)
+        break;
+      String datasetName = lineText.substring (9).trim ();
       if (datasetName.length () > 44)
       {
         System.out.printf ("Dataset name too long: %s%n", datasetName);

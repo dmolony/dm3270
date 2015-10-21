@@ -76,6 +76,11 @@ public class MainframeServer implements Runnable
       running = true;
       while (running)
       {
+        if (Thread.interrupted ())
+        {
+          System.out.println ("MainframeServer interrupted");
+          break;
+        }
         int bytesRead = clientIn.read (buffer);     // assumes all in one buffer !!
         if (mainframe != null && buffer[0] != TelnetCommand.IAC)
         {

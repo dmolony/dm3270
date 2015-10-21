@@ -85,6 +85,11 @@ public class TelnetSocket implements Runnable
     running = true;
     while (running)
     {
+      if (Thread.interrupted ())
+      {
+        System.out.println ("TelnetSocket interrupted");
+        break;
+      }
       try
       {
         bytesRead = inputStream.read (buffer);      // blocks
