@@ -34,6 +34,8 @@ public class Pen
     return contextManager.getBase ();
   }
 
+  // called from Screen.clearScreen()
+  // called from UserScreen.clearScreen()
   void reset ()
   {
     totalFields = 0;
