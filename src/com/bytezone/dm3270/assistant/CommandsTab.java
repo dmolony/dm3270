@@ -52,5 +52,6 @@ public class CommandsTab extends AbstractTransferTab
     }
 
     txtCommand.setText (selectedCommand);
+    setButton ();
   }
 }

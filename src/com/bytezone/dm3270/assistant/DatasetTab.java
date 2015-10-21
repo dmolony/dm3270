@@ -121,6 +121,7 @@ public class DatasetTab extends AbstractTransferTab
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
     txtCommand.setText (command);
+    setButton ();
   }
 
   private final Set<DatasetSelectionListener> selectionListeners = new HashSet<> ();

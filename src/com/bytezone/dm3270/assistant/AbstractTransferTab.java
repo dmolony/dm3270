@@ -37,8 +37,6 @@ public abstract class AbstractTransferTab extends Tab
 
   abstract protected void setText ();
 
-  //  abstract protected void setButton ();
-
   protected void setButton ()
   {
     btnExecute.setDisable (screen.isKeyboardLocked ()
@@ -50,17 +48,14 @@ public abstract class AbstractTransferTab extends Tab
   public void screenChanged (ScreenDetails screenDetails)
   {
     this.screenDetails = screenDetails;
-    if (isSelected ())
-    {
+    if (isSelected () && screenDetails != null)
       setText ();
-      setButton ();
-    }
   }
 
   @Override
   public void keyboardStatusChanged (KeyboardStatusChangedEvent evt)
   {
-    if (isSelected ())
+    if (isSelected () && screenDetails != null)
       setButton ();
   }
 }

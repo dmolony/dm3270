@@ -16,7 +16,6 @@ import javafx.scene.text.Font;
 public class TSOCommand implements ScreenChangeListener
 {
   private final HBox hbox = new HBox (10);
-  //  private final Screen screen;
 
   private final Label lblCommand = new Label ("TSO Command");
   final TextField txtCommand = new TextField ();
@@ -27,8 +26,6 @@ public class TSOCommand implements ScreenChangeListener
 
   public TSOCommand ()
   {
-    //    this.screen = screen;
-
     txtCommand.setEditable (true);
     txtCommand.setPrefWidth (500);
     txtCommand.setFont (Font.font ("Monospaced", 12));
@@ -52,7 +49,6 @@ public class TSOCommand implements ScreenChangeListener
 
   private void execute ()
   {
-    //    ScreenDetails screenDetails = screen.getScreenDetails ();
     if (screenDetails == null || consolePane == null)
       return;
 

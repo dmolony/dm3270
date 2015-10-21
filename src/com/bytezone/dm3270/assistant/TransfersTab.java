@@ -206,6 +206,7 @@ public class TransfersTab extends AbstractTransferTab
         (RadioButton) grpDisposition.getSelectedToggle ();
 
     txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
+    setButton ();
   }
 
   @Override
