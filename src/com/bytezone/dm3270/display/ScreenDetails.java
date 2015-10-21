@@ -343,9 +343,9 @@ public class ScreenDetails
         break;
 
       String lineText = rowFields.get (0).getText ();
-      System.out.println (lineText);
-      if (lineText.isEmpty () || lineText.length () < 10)
+      if (lineText.length () < 10)
         break;
+
       String datasetName = lineText.substring (9).trim ();
       if (datasetName.length () > 44)
       {
