@@ -124,6 +124,10 @@ public class DatasetTab extends AbstractTransferTab
     setButton ();
   }
 
+  // ---------------------------------------------------------------------------------//
+  // DatasetSelectionListener
+  // ---------------------------------------------------------------------------------//
+
   private final Set<DatasetSelectionListener> selectionListeners = new HashSet<> ();
 
   void fireDatasetSelected (Dataset dataset)
