@@ -120,6 +120,9 @@ public class FontManager
   public void smaller ()
   {
     int selectedSize = getSelectedSize ();
+    if (selectedSize == fontSizes[0])
+      return;
+
     for (int i = 1; i < fontSizes.length; i++)
       if (fontSizes[i] == selectedSize)
       {
@@ -132,7 +135,11 @@ public class FontManager
   public void bigger ()
   {
     int selectedSize = getSelectedSize ();
-    for (int i = 0; i < fontSizes.length - 1; i++)
+    int lengthMinusOne = fontSizes.length - 1;
+    if (selectedSize == fontSizes[lengthMinusOne])
+      return;
+
+    for (int i = 0; i < lengthMinusOne; i++)
       if (fontSizes[i] == selectedSize)
       {
         sizeGroup.selectToggle (fontSizeItems[i + 1]);
