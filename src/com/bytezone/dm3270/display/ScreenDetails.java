@@ -103,16 +103,6 @@ public class ScreenDetails
     return isTSOCommandScreen;
   }
 
-  public boolean isDatasetList ()
-  {
-    return isDatasetList;
-  }
-
-  public boolean isMemberList ()
-  {
-    return isMemberList;
-  }
-
   public String getCurrentDataset ()
   {
     return currentDataset;
