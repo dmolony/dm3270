@@ -189,6 +189,10 @@ public class ScreenPacker implements ScreenChangeListener
       System.out.printf ("[%s]%n", command);
   }
 
+  // ---------------------------------------------------------------------------------//
+  // TSOCommandListeners
+  // ---------------------------------------------------------------------------------//
+
   private final Set<TSOCommandListener> tsoCommandListeners = new HashSet<> ();
 
   void notifyTSOCommandListeners (String command)
