@@ -72,6 +72,8 @@ public class ScreenDetails
     if (isSplitScreen)
       return;
 
+    //    checkMenu ();
+
     if (hasPromptField ())
     {
       if (prefix.isEmpty ())
@@ -103,11 +105,6 @@ public class ScreenDetails
     return isTSOCommandScreen;
   }
 
-  public String getCurrentDataset ()
-  {
-    return currentDataset;
-  }
-
   public String getUserid ()
   {
     return userid;
@@ -126,6 +123,23 @@ public class ScreenDetails
   public List<Dataset> getMembers ()
   {
     return members;
+  }
+
+  private void checkMenu ()
+  {
+    List<Field> rowFields = fieldManager.getRowFields (0, 1);
+    dumpFields (rowFields);
+
+    if (rowFields.size () > 1 && rowFields.size () < 10)
+    {
+      Field menuField = rowFields.get (0);
+      String text = menuField.getText ();
+      if (" Menu".equals (text) && menuField.isAlphanumeric () && menuField.isProtected ()
+          && menuField.isVisible () && menuField.isIntensified ())
+      {
+        System.out.println ("Possible menu");
+      }
+    }
   }
 
   private boolean checkSplitScreen ()

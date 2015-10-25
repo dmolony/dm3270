@@ -136,6 +136,11 @@ public class Field implements Iterable<ScreenPosition>
     return startFieldAttribute.isVisible ();
   }
 
+  public boolean isIntensified ()
+  {
+    return startFieldAttribute.isIntensified ();
+  }
+
   public void setModified (boolean modified)
   {
     startFieldAttribute.setModified (modified);
