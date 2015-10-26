@@ -2,8 +2,8 @@ package com.bytezone.dm3270.filetransfer;
 
 import java.security.InvalidParameterException;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class ContentsRecord extends TransferRecord
 {

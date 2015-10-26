@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class SessionReader
 {

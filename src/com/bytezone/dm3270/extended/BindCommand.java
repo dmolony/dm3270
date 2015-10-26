@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.extended;
 
-import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.utilities.Utility;
 
 // See SNA Programming pp 807
 

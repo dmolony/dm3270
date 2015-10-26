@@ -3,7 +3,7 @@ package com.bytezone.dm3270.replyfield;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class CharacterSets extends QueryReplyField
 {
@@ -20,8 +20,8 @@ public class CharacterSets extends QueryReplyField
     super (CHARACTER_SETS_REPLY);
 
     int[] rest = { 0x82, 0x00, 0x07, 0x0C, 0x00, 0x00, 0x00, 0x00, //
-                  0x07, 0x00, 0x00, 0x00, 0x02, 0xB9, 0x04, 0x17,  //
-                  0x01, 0x00, 0xF1, 0x03, 0xC3, 0x01, 0x36 };
+                   0x07, 0x00, 0x00, 0x00, 0x02, 0xB9, 0x04, 0x17,  //
+                   0x01, 0x00, 0xF1, 0x03, 0xC3, 0x01, 0x36 };
     int ptr = createReply (rest.length);
     for (int b : rest)
       reply[ptr++] = (byte) b;

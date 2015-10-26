@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.commands;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.utilities.Utility;
 
 // public abstract class Command extends AbstractTN3270Message
 public abstract class Command extends AbstractTN3270Command

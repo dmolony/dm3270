@@ -3,7 +3,7 @@ package com.bytezone.dm3270.buffers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class MultiBuffer implements Buffer
 {

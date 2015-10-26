@@ -2,8 +2,8 @@ package com.bytezone.dm3270.telnet;
 
 import java.io.UnsupportedEncodingException;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.streams.TelnetState;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class TelnetProcessor
 {

@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import java.io.UnsupportedEncodingException;
 
-import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class RPQNames extends QueryReplyField
 {

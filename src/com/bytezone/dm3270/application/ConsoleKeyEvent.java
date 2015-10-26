@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.application;
 
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.utilities.Utility;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;

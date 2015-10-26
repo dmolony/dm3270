@@ -3,10 +3,10 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.orders.Order;
+import com.bytezone.dm3270.utilities.Utility;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

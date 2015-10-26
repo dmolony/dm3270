@@ -6,10 +6,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class SystemMessage
 {

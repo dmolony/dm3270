@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.structuredfields;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class DefaultStructuredField extends StructuredField
 {

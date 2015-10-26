@@ -3,8 +3,8 @@ package com.bytezone.dm3270.replyfield;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.structuredfields.StructuredField;
+import com.bytezone.dm3270.utilities.Utility;
 
 public abstract class QueryReplyField
 {
@@ -41,8 +41,8 @@ public abstract class QueryReplyField
   {
     replyTypes.add (new ReplyType (SUMMARY_QUERY_REPLY, "Summary"));
     replyTypes.add (new ReplyType (USABLE_AREA_REPLY, "Usable Area"));
-    replyTypes.add (new ReplyType (ALPHANUMERIC_PARTITIONS_REPLY,
-        "Alphanumeric Partitions"));
+    replyTypes
+        .add (new ReplyType (ALPHANUMERIC_PARTITIONS_REPLY, "Alphanumeric Partitions"));
     replyTypes.add (new ReplyType (CHARACTER_SETS_REPLY, "Character Sets"));
     replyTypes.add (new ReplyType (COLOR_QUERY_REPLY, "Color"));
     replyTypes.add (new ReplyType (HIGHLIGHT_QUERY_REPLY, "Highlight"));
@@ -201,9 +201,8 @@ public abstract class QueryReplyField
   {
     StringBuilder text = new StringBuilder ();
     Summary summary = getSummary ();
-    String message =
-        summary == null ? "no summary" : summary.isListed (replyType.type) ? ""
-            : "** missing **";
+    String message = summary == null ? "no summary"
+        : summary.isListed (replyType.type) ? "" : "** missing **";
     text.append (String.format ("  Type       : %-30s %s%n", replyType, message));
     return text.toString ();
   }

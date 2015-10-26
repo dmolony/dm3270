@@ -6,9 +6,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.time.LocalDateTime;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class TelnetSocket implements Runnable
 {

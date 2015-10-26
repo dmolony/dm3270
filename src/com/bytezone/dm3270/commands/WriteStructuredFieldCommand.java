@@ -3,7 +3,6 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.display.Screen;
@@ -14,6 +13,7 @@ import com.bytezone.dm3270.structuredfields.Outbound3270DS;
 import com.bytezone.dm3270.structuredfields.ReadPartitionSF;
 import com.bytezone.dm3270.structuredfields.SetReplyMode;
 import com.bytezone.dm3270.structuredfields.StructuredField;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class WriteStructuredFieldCommand extends Command
 {

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.FileTransferInboundSF;
 import com.bytezone.dm3270.replyfield.AlphanumericPartitions;
@@ -29,6 +28,7 @@ import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
 import com.bytezone.dm3270.structuredfields.Inbound3270DS;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class ReadStructuredFieldCommand extends Command
 {

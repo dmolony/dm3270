@@ -16,6 +16,7 @@ import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
+import com.bytezone.dm3270.utilities.Utility;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

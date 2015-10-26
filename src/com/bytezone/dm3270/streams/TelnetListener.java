@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.commands.Command;
@@ -25,6 +24,7 @@ import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
 import com.bytezone.dm3270.telnet.TelnetProcessor;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
+import com.bytezone.dm3270.utilities.Utility;
 
 import javafx.application.Platform;
 

@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.extended;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.AbstractReplyBuffer;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class CommandHeader extends AbstractReplyBuffer
 {

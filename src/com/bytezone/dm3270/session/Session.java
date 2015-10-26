@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
@@ -25,6 +24,7 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TelnetState;
+import com.bytezone.dm3270.utilities.Utility;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

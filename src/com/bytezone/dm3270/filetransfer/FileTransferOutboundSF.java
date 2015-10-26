@@ -1,11 +1,11 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {

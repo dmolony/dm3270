@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class RecordNumber extends TransferRecord
 {

@@ -1,12 +1,12 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.application.Utility;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class UsableArea extends QueryReplyField
 {
   private static String[] measurementUnits = { "Inches", "Millimetres" };
-  private static String[] addressingModes = { "Reserved", "12/14 bit", "Reserved",
-                                             "12/14/16 bit", "Unmapped" };
+  private static String[] addressingModes =
+      { "Reserved", "12/14 bit", "Reserved", "12/14/16 bit", "Unmapped" };
   byte flags1, flags2;
   int addressingMode;
   int width;
@@ -22,9 +22,8 @@ public class UsableArea extends QueryReplyField
     super (USABLE_AREA_REPLY);
 
     // leave a gap for the screen size fields
-    byte[] rest =
-        { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, (byte) 0xD3, 0x03, 0x20, 0x00,
-         (byte) 0x9E, 0x02, 0x58, 0x07, 0x0C, 0x07, (byte) 0x80 };
+    byte[] rest = { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, (byte) 0xD3, 0x03,
+                    0x20, 0x00, (byte) 0x9E, 0x02, 0x58, 0x07, 0x0C, 0x07, (byte) 0x80 };
 
     int ptr = createReply (rest.length);
 

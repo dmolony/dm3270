@@ -7,8 +7,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.LocalDateTime;
 
-import com.bytezone.dm3270.application.Utility;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+import com.bytezone.dm3270.utilities.Utility;
 
 public class TerminalServer implements Runnable
 {

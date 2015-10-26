@@ -5,6 +5,7 @@ import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.telnet.TelnetCommand;
+import com.bytezone.dm3270.utilities.Utility;
 
 class CommandFactory
 {
