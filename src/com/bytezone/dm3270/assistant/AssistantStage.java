@@ -7,13 +7,13 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
-import com.bytezone.dm3270.application.WindowSaver;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.TSOCommandListener;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
+import com.bytezone.dm3270.utilities.WindowSaver;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

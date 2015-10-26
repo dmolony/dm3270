@@ -7,6 +7,7 @@ import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
+import com.bytezone.dm3270.utilities.WindowSaver;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
