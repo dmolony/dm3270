@@ -622,7 +622,7 @@ public class ScreenDetails
 
   private int getInteger (String id, String value)
   {
-    if (value == null || value.isEmpty ())
+    if (value == null || value.isEmpty () || value.equals ("?"))
       return 0;
 
     try
