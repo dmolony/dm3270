@@ -120,7 +120,7 @@ class ReplayStage extends Stage
     if (dataRecord == null)
       dataRecord = session.getNext (SessionRecordType.TN3270);
 
-    if (dataRecord != null)
+    if (dataRecord == null)
     {
       System.out.println ("No suitable first screen found");
       return;
