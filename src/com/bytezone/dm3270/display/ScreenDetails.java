@@ -146,11 +146,8 @@ public class ScreenDetails
   {
     for (Field field : fieldManager.getFields ())
     {
-      if (!field.isProtected ())
-        continue;
-      if (field.getDisplayLength () != 79)
-        continue;
-      if (field.getFirstLocation () % screenColumns != 1)
+      if (!field.isProtected () || field.getDisplayLength () != 79
+          || field.getFirstLocation () % screenColumns != 1)
         continue;
       if (SPLIT_LINE.equals (field.getText ()))
         return true;
