@@ -41,27 +41,27 @@ public class UserScreen extends Canvas implements DisplayScreen
     gc.setFont (characterSize.getFont ());
   }
 
-  private void createScreen (FontData characterSize)
+  private void createScreen (FontData fontData)
   {
-    characterSizeChanged (characterSize);
+    characterSizeChanged (fontData);
     screenPositions = new ScreenPosition[screenSize];
     ScreenContext base = pen.getBase ();
 
     for (int i = 0; i < screenSize; i++)
-      screenPositions[i] = new ScreenPosition (i, gc, characterSize, base);
+      screenPositions[i] = new ScreenPosition (i, gc, fontData, base);
 
     clearScreen ();
     for (Order order : command)
       order.process (this);
   }
 
-  public void drawScreen (FontData characterSize)
+  public void drawScreen (FontData fontData)
   {
     if (screenPositions == null)
-      createScreen (characterSize);
+      createScreen (fontData);
 
-    int width = characterSize.getWidth ();
-    int height = characterSize.getHeight ();
+    int width = fontData.getWidth ();
+    int height = fontData.getHeight ();
 
     int pos = 0;
     for (int row = 0; row < rows; row++)

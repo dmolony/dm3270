@@ -196,7 +196,7 @@ public final class ScreenPosition
       buffer[ptr++] = startFieldAttribute.getAttributeValue ();
     else if (order == Order.START_FIELD_EXTENDED)
     {
-      buffer[ptr++] = (byte) (attributes.size () + 1);// includes the SFA
+      buffer[ptr++] = (byte) (attributes.size () + 1);      // includes the SFA
       ptr = startFieldAttribute.pack (buffer, ptr);
       for (Attribute attribute : attributes)
         ptr = attribute.pack (buffer, ptr);
@@ -215,7 +215,7 @@ public final class ScreenPosition
       if (attribute.matches (Attribute.XA_RESET) || attribute.matches (replyTypes))
       {
         buffer[ptr++] = Order.SET_ATTRIBUTE;
-        ptr = attribute.pack (buffer, ptr);// packs type/value pair
+        ptr = attribute.pack (buffer, ptr);         // packs type/value pair
       }
 
     buffer[ptr++] = value;
@@ -233,7 +233,7 @@ public final class ScreenPosition
     Color foregroundColor = null;
     Color backgroundColor = null;
 
-    gc.translate (0.5, 0.5);// move coordinate grid to use the center of pixels
+    gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
 
     // Draw background
     if (isVisible)
@@ -296,7 +296,7 @@ public final class ScreenPosition
           gc.strokeLine (x + 1, y2, x + charWidth, y2);
         }
       }
-    gc.translate (-0.5, -0.5);// restore coordinate grid
+    gc.translate (-0.5, -0.5);            // restore coordinate grid
   }
 
   private void doGraphics (Color foregroundColor, Color backgroundColor,
@@ -320,23 +320,23 @@ public final class ScreenPosition
         break;
 
       case TOP_LEFT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + height);// vertical
-        gc.strokeLine (x + dx, y + dy, x + width, y + dy);// horizontal
+        gc.strokeLine (x + dx, y + dy, x + dx, y + height);   // vertical
+        gc.strokeLine (x + dx, y + dy, x + width, y + dy);    // horizontal
         break;
 
       case TOP_RIGHT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + height);// vertical
-        gc.strokeLine (x, y + dy, x + dx, y + dy);// horizontal
+        gc.strokeLine (x + dx, y + dy, x + dx, y + height);   // vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);            // horizontal
         break;
 
       case BOTTOM_LEFT:
-        gc.strokeLine (x + dx, y, x + dx, y + dy);// vertical
-        gc.strokeLine (x + dx, y + dy, x + width, y + dy);// horizontal
+        gc.strokeLine (x + dx, y, x + dx, y + dy);            // vertical
+        gc.strokeLine (x + dx, y + dy, x + width, y + dy);    // horizontal
         break;
 
       case BOTTOM_RIGHT:
-        gc.strokeLine (x + dx, y, x + dx, y + dy);// vertical
-        gc.strokeLine (x, y + dy, x + dx, y + dy);// horizontal
+        gc.strokeLine (x + dx, y, x + dx, y + dy);            // vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);            // horizontal
         break;
 
       default:
