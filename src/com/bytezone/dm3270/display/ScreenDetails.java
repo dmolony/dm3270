@@ -425,10 +425,14 @@ public class ScreenDetails
     if (details.trim ().isEmpty ())
       return;
 
-    dataset.setTracks (getInteger ("tracks", details.substring (0, t1).trim ()));
-    dataset.setPercentUsed (getInteger ("pct", details.substring (t1, t2).trim ()));
-    dataset.setExtents (getInteger ("ext", details.substring (t2, t3).trim ()));
-    dataset.setDevice (details.substring (t3).trim ());
+    if (details.length () >= t1)
+      dataset.setTracks (getInteger ("tracks", details.substring (0, t1).trim ()));
+    if (details.length () >= t2)
+      dataset.setPercentUsed (getInteger ("pct", details.substring (t1, t2).trim ()));
+    if (details.length () >= t3)
+      dataset.setExtents (getInteger ("ext", details.substring (t2, t3).trim ()));
+    if (details.length () > t3)
+      dataset.setDevice (details.substring (t3).trim ());
   }
 
   private void setDisposition (Dataset dataset, String details, int t1, int t2, int t3)
@@ -436,10 +440,14 @@ public class ScreenDetails
     if (details.trim ().isEmpty ())
       return;
 
-    dataset.setDsorg (details.substring (0, t1).trim ());
-    dataset.setRecfm (details.substring (t1, t2).trim ());
-    dataset.setLrecl (getInteger ("lrecl", details.substring (t2, t3).trim ()));
-    dataset.setBlksize (getInteger ("blksize", details.substring (t3).trim ()));
+    if (details.length () >= t1)
+      dataset.setDsorg (details.substring (0, t1).trim ());
+    if (details.length () >= t2)
+      dataset.setRecfm (details.substring (t1, t2).trim ());
+    if (details.length () >= t3)
+      dataset.setLrecl (getInteger ("lrecl", details.substring (t2, t3).trim ()));
+    if (details.length () > t3)
+      dataset.setBlksize (getInteger ("blksize", details.substring (t3).trim ()));
   }
 
   private void setDates (Dataset dataset, String details)
