@@ -162,7 +162,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
       case TN3270_DATA:
         ReplyBuffer command =
             source == Source.SERVER ? Command.getCommand (data, offset, length, screen)
-                : Command.getReply (screen, data, offset, length);
+                : Command.getReply (data, offset, length, screen);
         if (currentCommandHeader != null)
           command = new TN3270ExtendedCommand (currentCommandHeader, (Command) command);
         addDataRecord (command, SessionRecordType.TN3270);

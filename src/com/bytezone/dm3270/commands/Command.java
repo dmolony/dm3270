@@ -4,7 +4,6 @@ import com.bytezone.dm3270.buffers.AbstractTN3270Command;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.utilities.Utility;
 
-// public abstract class Command extends AbstractTN3270Message
 public abstract class Command extends AbstractTN3270Command
 {
   // EBCDIC codes (SNA) - Remote Attachment
@@ -128,7 +127,7 @@ public abstract class Command extends AbstractTN3270Command
 
   public abstract String getName ();
 
-  public static Command getReply (Screen screen, byte[] buffer, int offset, int length)
+  public static Command getReply (byte[] buffer, int offset, int length, Screen screen)
   {
     switch (buffer[offset])
     {
