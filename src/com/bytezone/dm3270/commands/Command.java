@@ -106,7 +106,7 @@ public abstract class Command extends AbstractTN3270Command
 
       case Command.ERASE_ALL_UNPROTECTED_6F:
       case Command.ERASE_ALL_UNPROTECTED_0F:
-        return new EraseAllUnprotectedCommand (screen, buffer, offset, length);
+        return new EraseAllUnprotectedCommand (buffer, offset, length, screen);
 
       case Command.READ_BUFFER_F2:
       case Command.READ_BUFFER_02:
@@ -115,7 +115,7 @@ public abstract class Command extends AbstractTN3270Command
       case Command.READ_MODIFIED_ALL_6E:
       case Command.READ_MODIFIED_ALL_0E:
         // the ReadCommand creates a command with a reply of: AID, RM, RMA
-        return new ReadCommand (screen, buffer, offset, length);
+        return new ReadCommand (buffer, offset, length, screen);
 
       default:
         System.out

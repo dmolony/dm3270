@@ -5,7 +5,7 @@ import com.bytezone.dm3270.display.Screen;
 public class EraseAllUnprotectedCommand extends Command
 {
   // This command has no WCC or data.
-  public EraseAllUnprotectedCommand (Screen screen, byte[] buffer, int offset, int length)
+  public EraseAllUnprotectedCommand (byte[] buffer, int offset, int length, Screen screen)
   {
     super (buffer, offset, length, screen);
   }

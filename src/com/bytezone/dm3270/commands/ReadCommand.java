@@ -15,7 +15,7 @@ public class ReadCommand extends Command
   }
 
   // Called from the static Command.getCommand()
-  public ReadCommand (Screen screen, byte[] buffer, int offset, int length)
+  public ReadCommand (byte[] buffer, int offset, int length, Screen screen)
   {
     super (buffer, offset, length, screen);
 
