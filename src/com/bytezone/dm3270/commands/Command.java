@@ -135,7 +135,7 @@ public abstract class Command extends AbstractTN3270Command
         return new ReadStructuredFieldCommand (buffer, offset, length, screen);
 
       default:
-        return new AIDCommand (screen, buffer, offset, length);
+        return new AIDCommand (buffer, offset, length, screen);
     }
   }
 

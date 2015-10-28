@@ -39,7 +39,7 @@ public class ScreenPacker implements ScreenChangeListener
     if (!readModifiedAll)
       if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
           || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
-        return new AIDCommand (screen, buffer, 0, ptr);
+        return new AIDCommand (buffer, 0, ptr, screen);
 
     // pack the cursor address
     BufferAddress ba = new BufferAddress (cursorLocation);
@@ -69,7 +69,7 @@ public class ScreenPacker implements ScreenChangeListener
         addTSOCommand (tsoCommand);
     }
 
-    return new AIDCommand (screen, buffer, 0, ptr);
+    return new AIDCommand (buffer, 0, ptr, screen);
   }
 
   private int packField (Field field, byte[] buffer, int ptr)
@@ -84,7 +84,7 @@ public class ScreenPacker implements ScreenChangeListener
         ptr = ba.packAddress (buffer, ptr);
       }
       else if (!sp.isNull ())
-        buffer[ptr++] = sp.getByte ();// suppress nulls
+        buffer[ptr++] = sp.getByte ();                  // suppress nulls
 
     return ptr;
   }
@@ -108,9 +108,9 @@ public class ScreenPacker implements ScreenChangeListener
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr);
       else
-        ptr = packDataPosition (sp, buffer, ptr);// don't suppress nulls
+        ptr = packDataPosition (sp, buffer, ptr);       // don't suppress nulls
 
-    return new AIDCommand (screen, buffer, 0, ptr);
+    return new AIDCommand (buffer, 0, ptr, screen);
   }
 
   private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr)
@@ -129,11 +129,11 @@ public class ScreenPacker implements ScreenChangeListener
       buffer[ptr++] = Order.START_FIELD_EXTENDED;
 
       List<Attribute> attributes = sp.getAttributes ();
-      buffer[ptr++] = (byte) (attributes.size () + 1);// +1 for StartFieldAttribute
+      buffer[ptr++] = (byte) (attributes.size () + 1);    // +1 for StartFieldAttribute
 
-      ptr = sfa.pack (buffer, ptr);// pack the SFA first
+      ptr = sfa.pack (buffer, ptr);                       // pack the SFA first
       for (Attribute attribute : attributes)
-        ptr = attribute.pack (buffer, ptr);// then pack the rest
+        ptr = attribute.pack (buffer, ptr);               // then pack the rest
     }
     return ptr;
   }
