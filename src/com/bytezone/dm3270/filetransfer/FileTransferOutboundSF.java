@@ -145,7 +145,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     byte[] replyBuffer;
     int ptr = 0;
 
-    if (transfer.hasMoreData () && !transfer.cancelled ()) // have data to send
+    if (transfer.hasMoreData () && !transfer.cancelled ())    // have data to send
     {
       DataRecord dataHeader = transfer.getDataHeader ();
 
@@ -164,8 +164,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
     }
-    else
-    // finished sending buffers, now send an EOF
+    else      // finished sending buffers, now send an EOF
     {
       int length = 6 + ErrorRecord.RECORD_LENGTH;
       replyBuffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x08);
