@@ -65,7 +65,7 @@ class CommandPane extends TabPane
 
   protected void replay (SessionRecord sessionRecord)
   {
-    if (sessionRecord == null)     // nothing selected
+    if (sessionRecord == null)            // nothing selected
       return;
 
     boolean ebcdic = false;
@@ -82,7 +82,7 @@ class CommandPane extends TabPane
     ReplyBuffer message = sessionRecord.getMessage ();
 
     if (process == ProcessInstruction.DoProcess)
-      message.process ();       // only process the message when in Replay mode
+      message.process (screen);       // only process the message when in Replay mode
 
     Buffer reply = message.getReply ();
 

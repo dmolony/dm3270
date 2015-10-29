@@ -12,9 +12,9 @@ public class EraseResetSF extends StructuredField
     DEFAULT, ALTERNATE
   }
 
-  public EraseResetSF (byte[] buffer, int offset, int length, Screen screen)
+  public EraseResetSF (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     assert data[0] == StructuredField.ERASE_RESET;
     flags = data[1];
@@ -26,7 +26,7 @@ public class EraseResetSF extends StructuredField
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     // what to do?
   }

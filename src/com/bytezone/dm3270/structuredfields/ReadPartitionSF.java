@@ -9,9 +9,9 @@ public class ReadPartitionSF extends StructuredField
   private final byte partitionID;
   private String typeName;
 
-  public ReadPartitionSF (byte[] buffer, int offset, int length, Screen screen)
+  public ReadPartitionSF (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     assert data[0] == StructuredField.READ_PARTITION;
     partitionID = data[1];
@@ -44,19 +44,19 @@ public class ReadPartitionSF extends StructuredField
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     switch (data[2])
     {
       case (byte) 0x02:
-        if (partitionID == (byte) 0xFF)                         // query operation
-          reply = new ReadStructuredFieldCommand (screen);      // build a QueryReply
+        if (partitionID == (byte) 0xFF)                   // query operation
+          reply = new ReadStructuredFieldCommand ();      // build a QueryReply
         else
           System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
         break;
 
       case (byte) 0x03:
-        if (partitionID == (byte) 0xFF)                         // query operation
+        if (partitionID == (byte) 0xFF)                       // query operation
           switch (data[3])
           {
             case 0:
@@ -68,7 +68,7 @@ public class ReadPartitionSF extends StructuredField
               break;
 
             case 2:
-              reply = new ReadStructuredFieldCommand (screen);  // build a QueryReply
+              reply = new ReadStructuredFieldCommand ();      // build a QueryReply
               break;
 
             default:

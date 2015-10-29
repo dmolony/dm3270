@@ -115,7 +115,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
   private void processMessage (ReplyBuffer message)
   {
-    message.process ();
+    message.process (screen);
     Buffer reply = message.getReply ();
     if (reply != null)
       telnetState.write (reply.getTelnetData ());
@@ -161,8 +161,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     {
       case TN3270_DATA:
         ReplyBuffer command =
-            source == Source.SERVER ? Command.getCommand (data, offset, length, screen)
-                : Command.getReply (data, offset, length, screen);
+            source == Source.SERVER ? Command.getCommand (data, offset, length)
+                : Command.getReply (data, offset, length);
         if (currentCommandHeader != null)
           command = new TN3270ExtendedCommand (currentCommandHeader, (Command) command);
         addDataRecord (command, SessionRecordType.TN3270);
@@ -196,7 +196,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   public void processTelnetCommand (byte[] data, int dataPtr)
   {
     TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, dataPtr);
-    telnetCommand.process ();       // updates TelnetState
+    telnetCommand.process (screen);       // updates TelnetState
     addDataRecord (telnetCommand, SessionRecordType.TELNET);
   }
 
@@ -221,7 +221,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
     if (subcommand != null)
     {
-      subcommand.process ();
+      subcommand.process (screen);
       addDataRecord (subcommand, SessionRecordType.TELNET);
     }
   }

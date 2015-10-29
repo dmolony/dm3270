@@ -71,9 +71,9 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   private final List<Order> textOrders = new ArrayList<> ();
 
   // Called by Screen.readBuffer()
-  public AIDCommand (byte[] buffer, int offset, int length, Screen screen)
+  public AIDCommand (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);// copies buffer[offset:length] to data[]
+    super (buffer, offset, length);       // copies buffer[offset:length] to data[]
 
     keyCommand = data[0];
     key = findKey (keyCommand);
@@ -157,9 +157,9 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   // Normally an AID is a reply command (which never has process() called)
   // Testing out whether the plugin reply should pass through here.
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
-    if (!prettyMoveHandled ())
+    if (!prettyMoveHandled (screen))
     {
       //      ScreenDetails screenDetails = screen.getScreenDetails ();
       FieldManager fieldManager = screen.getFieldManager ();
@@ -200,7 +200,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
   // test to see whether this is data entry that was null suppressed into moving
   // elsewhere on the screen (like the TSO logoff command) - purely aesthetic
-  private boolean prettyMoveHandled ()
+  private boolean prettyMoveHandled (Screen screen)
   {
     if (modifiedFields.size () == 1)
     {

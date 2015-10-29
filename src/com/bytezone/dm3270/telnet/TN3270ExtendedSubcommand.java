@@ -5,6 +5,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
 
 public class TN3270ExtendedSubcommand extends TelnetSubcommand
@@ -130,7 +131,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     if (type == SubcommandType.SEND && subType == SubType.DEVICE_TYPE)
     {

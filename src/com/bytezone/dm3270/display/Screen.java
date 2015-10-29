@@ -79,7 +79,7 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager = new FieldManager (this);
     assistantStage = new AssistantStage (this);
 
-    screenPacker = new ScreenPacker (this);
+    screenPacker = new ScreenPacker ();
     screenPacker.addTSOCommandListener (assistantStage);
     addKeyboardStatusChangeListener (assistantStage);
 

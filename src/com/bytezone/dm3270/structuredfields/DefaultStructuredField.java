@@ -5,14 +5,14 @@ import com.bytezone.dm3270.utilities.Utility;
 
 public class DefaultStructuredField extends StructuredField
 {
-  public DefaultStructuredField (byte[] buffer, int offset, int length, Screen screen)
+  public DefaultStructuredField (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
     System.out.println ("Default Structured Field !!");
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     System.out.printf ("Processing a DefaultStructuredField: %02X%n", type);
   }

@@ -15,18 +15,12 @@ import com.bytezone.dm3270.structuredfields.SetReplyMode;
 
 public class ScreenPacker implements ScreenChangeListener
 {
-  private final Screen screen;
   private final byte[] buffer = new byte[4096];
   private final List<String> tsoCommands = new ArrayList<> ();
 
   private byte replyMode;
   private byte[] replyTypes;
   private ScreenDetails screenDetails;
-
-  public ScreenPacker (Screen screen)
-  {
-    this.screen = screen;
-  }
 
   public AIDCommand readModifiedFields (byte currentAID, int cursorLocation,
       FieldManager fieldManager, boolean readModifiedAll)
@@ -39,7 +33,7 @@ public class ScreenPacker implements ScreenChangeListener
     if (!readModifiedAll)
       if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
           || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR)
-        return new AIDCommand (buffer, 0, ptr, screen);
+        return new AIDCommand (buffer, 0, ptr);
 
     // pack the cursor address
     BufferAddress ba = new BufferAddress (cursorLocation);
@@ -69,7 +63,7 @@ public class ScreenPacker implements ScreenChangeListener
         addTSOCommand (tsoCommand);
     }
 
-    return new AIDCommand (buffer, 0, ptr, screen);
+    return new AIDCommand (buffer, 0, ptr);
   }
 
   private int packField (Field field, byte[] buffer, int ptr)
@@ -110,7 +104,7 @@ public class ScreenPacker implements ScreenChangeListener
       else
         ptr = packDataPosition (sp, buffer, ptr);       // don't suppress nulls
 
-    return new AIDCommand (buffer, 0, ptr, screen);
+    return new AIDCommand (buffer, 0, ptr);
   }
 
   private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr)

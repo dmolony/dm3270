@@ -1,12 +1,10 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.display.Screen;
-
 public class FileTransferInboundSF extends FileTransferSF
 {
-  public FileTransferInboundSF (byte[] buffer, int offset, int length, Screen screen)
+  public FileTransferInboundSF (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen, "Inbound");
+    super (buffer, offset, length, "Inbound");
 
     TransferRecord transferRecord;
 

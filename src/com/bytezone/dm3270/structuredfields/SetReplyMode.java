@@ -14,9 +14,9 @@ public class SetReplyMode extends StructuredField
   private final byte replyMode;
   private final byte[] types;
 
-  public SetReplyMode (byte[] buffer, int offset, int length, Screen screen)
+  public SetReplyMode (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     assert data[0] == StructuredField.SET_REPLY_MODE;
 
@@ -30,7 +30,7 @@ public class SetReplyMode extends StructuredField
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     screen.setReplyMode (replyMode, types);
   }

@@ -8,21 +8,21 @@ public class Outbound3270DS extends StructuredField
   private final byte partition;
   private final Command command;
 
-  public Outbound3270DS (byte[] buffer, int offset, int length, Screen screen)
+  public Outbound3270DS (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);   // copies buffer -> data
+    super (buffer, offset, length);             // copies buffer -> data
 
     assert data[0] == StructuredField.OUTBOUND_3270DS;
     partition = data[1];
 
     // can only be W/EW/EWA/EAU (i.e. one of the write commands)
-    command = Command.getCommand (buffer, offset + 2, length - 2, screen);
+    command = Command.getCommand (buffer, offset + 2, length - 2);
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
-    command.process ();
+    command.process (screen);
   }
 
   @Override

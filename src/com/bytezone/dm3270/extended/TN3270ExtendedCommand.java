@@ -6,6 +6,7 @@ import java.util.List;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.commands.Command;
+import com.bytezone.dm3270.display.Screen;
 
 public class TN3270ExtendedCommand extends AbstractExtendedCommand
 {
@@ -40,10 +41,10 @@ public class TN3270ExtendedCommand extends AbstractExtendedCommand
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
-    commandHeader.process ();
-    command.process ();
+    commandHeader.process (screen);
+    command.process (screen);
   }
 
   @Override

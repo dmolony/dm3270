@@ -23,10 +23,9 @@ public class WriteStructuredFieldCommand extends Command
   private final List<StructuredField> fields = new ArrayList<StructuredField> ();
   private final List<Buffer> replies = new ArrayList<> ();
 
-  public WriteStructuredFieldCommand (byte[] buffer, int offset, int length,
-      Screen screen)
+  public WriteStructuredFieldCommand (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     assert buffer[offset] == Command.WRITE_STRUCTURED_FIELD_11
         || buffer[offset] == Command.WRITE_STRUCTURED_FIELD_F3;
@@ -43,36 +42,36 @@ public class WriteStructuredFieldCommand extends Command
       {
         case StructuredField.RESET_PARTITION:
           System.out.println ("SF_RESET_PARTITION (00) not written yet");
-          fields.add (new DefaultStructuredField (buffer, ptr, size, screen));
+          fields.add (new DefaultStructuredField (buffer, ptr, size));
           break;
 
         case StructuredField.READ_PARTITION:
-          fields.add (new ReadPartitionSF (buffer, ptr, size, screen));
+          fields.add (new ReadPartitionSF (buffer, ptr, size));
           break;
 
         case StructuredField.SET_REPLY_MODE:
-          fields.add (new SetReplyMode (buffer, ptr, size, screen));
+          fields.add (new SetReplyMode (buffer, ptr, size));
           break;
 
         case StructuredField.ACTIVATE_PARTITION:
           System.out.println ("SF_ACTIVATE_PARTITION (0E) not written yet");
-          fields.add (new DefaultStructuredField (buffer, ptr, size, screen));
+          fields.add (new DefaultStructuredField (buffer, ptr, size));
           break;
 
         case StructuredField.OUTBOUND_3270DS:
-          fields.add (new Outbound3270DS (buffer, ptr, size, screen));
+          fields.add (new Outbound3270DS (buffer, ptr, size));
           break;
 
         case StructuredField.ERASE_RESET:
-          fields.add (new EraseResetSF (buffer, ptr, size, screen));
+          fields.add (new EraseResetSF (buffer, ptr, size));
           break;
 
         case StructuredField.IND$FILE:
-          fields.add (new FileTransferOutboundSF (buffer, ptr, size, screen));
+          fields.add (new FileTransferOutboundSF (buffer, ptr, size));
           break;
 
         default:
-          fields.add (new DefaultStructuredField (buffer, ptr, size, screen));
+          fields.add (new DefaultStructuredField (buffer, ptr, size));
           break;
       }
 
@@ -81,13 +80,13 @@ public class WriteStructuredFieldCommand extends Command
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     replies.clear ();
 
     for (StructuredField sf : fields)
     {
-      sf.process ();
+      sf.process (screen);
       Buffer reply = sf.getReply ();
       if (reply != null)
         replies.add (reply);

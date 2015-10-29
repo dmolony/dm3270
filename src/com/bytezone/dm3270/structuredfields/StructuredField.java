@@ -28,14 +28,14 @@ public abstract class StructuredField extends AbstractTN3270Command
 
   protected byte type;
 
-  public StructuredField (byte[] buffer, int offset, int length, Screen screen)
+  public StructuredField (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
     type = buffer[offset];
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     // do nothing 
   }

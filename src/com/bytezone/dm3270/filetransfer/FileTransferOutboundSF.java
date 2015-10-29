@@ -9,12 +9,11 @@ import com.bytezone.dm3270.utilities.Utility;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
-  private final AssistantStage assistantStage;
+  private AssistantStage assistantStage;
 
-  public FileTransferOutboundSF (byte[] buffer, int offset, int length, Screen screen)
+  public FileTransferOutboundSF (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen, "Outbound");
-    assistantStage = screen.getAssistantStage ();
+    super (buffer, offset, length, "Outbound");
 
     if (rectype == 0 && subtype == 0x12)
       transferType = TransferType.SEND;
@@ -65,22 +64,24 @@ public class FileTransferOutboundSF extends FileTransferSF
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     // check for an already processed replay command
     if (transfer != null)
       return;
 
+    assistantStage = screen.getAssistantStage ();
+
     switch (rectype)
     {
       case 0x00:// OPEN request
         if (subtype == 0x12)
-          processOpen ();
+          processOpen (screen);
         break;
 
       case 0x41:// CLOSE request
         if (subtype == 0x12)
-          processClose ();
+          processClose (screen);
         break;
 
       case 0x45:// something to do with SEND
@@ -89,23 +90,23 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       case 0x46:// send data transfer buffer
         if (subtype == 0x11)
-          processSend0x46 ();
+          processSend0x46 (screen);
         break;
 
       case 0x47:// receive data transfer buffer
-        processReceive ();
+        processReceive (screen);
         break;
     }
   }
 
-  private void processOpen ()
+  private void processOpen (Screen screen)
   {
     transfer = new Transfer ();
     transfer.add (this);
     assistantStage.openTransfer (transfer);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
-    reply = new ReadStructuredFieldCommand (buffer, screen);
+    reply = new ReadStructuredFieldCommand (buffer);
 
     if (transfer.getTransferContents () == TransferContents.DATA)
     {
@@ -123,12 +124,12 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processClose ()
+  private void processClose (Screen screen)
   {
     transfer = assistantStage.closeTransfer (this);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
-    reply = new ReadStructuredFieldCommand (buffer, screen);
+    reply = new ReadStructuredFieldCommand (buffer);
     screen.setStatusText ("Closing...");
   }
 
@@ -137,7 +138,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     transfer = assistantStage.getTransfer (this);
   }
 
-  private void processSend0x46 ()
+  private void processSend0x46 (Screen screen)
   {
     transfer = assistantStage.getTransfer (this);
 
@@ -174,10 +175,10 @@ public class FileTransferOutboundSF extends FileTransferSF
       ptr = errorRecord.pack (replyBuffer, ptr);
     }
 
-    reply = new ReadStructuredFieldCommand (replyBuffer, screen);
+    reply = new ReadStructuredFieldCommand (replyBuffer);
   }
 
-  private void processReceive ()
+  private void processReceive (Screen screen)
   {
     transfer = assistantStage.getTransfer (this);
 
@@ -208,7 +209,7 @@ public class FileTransferOutboundSF extends FileTransferSF
           screen.setStatusText (String.format ("Bytes received: %,d%n",
                                                transfer.dataLength));
       }
-      reply = new ReadStructuredFieldCommand (buffer, screen);
+      reply = new ReadStructuredFieldCommand (buffer);
 
       // message transfers don't close
       if (transfer.getTransferContents () == TransferContents.MSG)

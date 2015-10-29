@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.extended;
 
 import com.bytezone.dm3270.buffers.AbstractReplyBuffer;
+import com.bytezone.dm3270.display.Screen;
 
 public abstract class AbstractExtendedCommand extends AbstractReplyBuffer
 {
@@ -48,9 +49,9 @@ public abstract class AbstractExtendedCommand extends AbstractReplyBuffer
   public abstract String getName ();
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
-    commandHeader.process ();
+    commandHeader.process (screen);
   }
 
   public CommandHeader getCommandHeader ()

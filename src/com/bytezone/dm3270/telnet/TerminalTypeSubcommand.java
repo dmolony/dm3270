@@ -3,6 +3,7 @@ package com.bytezone.dm3270.telnet;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidParameterException;
 
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
 
 public class TerminalTypeSubcommand extends TelnetSubcommand
@@ -33,7 +34,7 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     if (type == SubcommandType.SEND)
     {

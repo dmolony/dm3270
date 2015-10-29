@@ -54,19 +54,19 @@ public class ReadStructuredFieldCommand extends Command
     clientNames.put ("BD47AE1B606E2DF29C7D24DD128648A8", "dm3270");
   }
 
-  public ReadStructuredFieldCommand (Screen screen)
+  public ReadStructuredFieldCommand ()
   {
-    this (buildReply (2), screen);
+    this (buildReply (2));
   }
 
-  public ReadStructuredFieldCommand (byte[] buffer, Screen screen)
+  public ReadStructuredFieldCommand (byte[] buffer)
   {
-    this (buffer, 0, buffer.length, screen);
+    this (buffer, 0, buffer.length);
   }
 
-  public ReadStructuredFieldCommand (byte[] buffer, int offset, int length, Screen screen)
+  public ReadStructuredFieldCommand (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     assert data[0] == (byte) 0x88;
 
@@ -81,23 +81,23 @@ public class ReadStructuredFieldCommand extends Command
       switch (data[ptr])
       {
         case StructuredField.QUERY_REPLY:
-          QueryReplySF queryReply = new QueryReplySF (data, ptr, size, screen);
+          QueryReplySF queryReply = new QueryReplySF (data, ptr, size);
           fields.add (queryReply);
           replies.add (queryReply.getReplyField ());
           break;
 
         case StructuredField.INBOUND_3270DS:
           System.out.println ("***************************** here RSF");
-          fields.add (new Inbound3270DS (data, ptr, size, screen));
+          fields.add (new Inbound3270DS (data, ptr, size));
           break;
 
         case StructuredField.IND$FILE:
-          fields.add (new FileTransferInboundSF (data, ptr, size, screen));
+          fields.add (new FileTransferInboundSF (data, ptr, size));
           break;
 
         default:
           System.out.printf ("Unknown Structured Field: %02X%n", data[ptr]);
-          fields.add (new DefaultStructuredField (data, ptr, size, screen));
+          fields.add (new DefaultStructuredField (data, ptr, size));
       }
       ptr += size;
     }
@@ -201,7 +201,7 @@ public class ReadStructuredFieldCommand extends Command
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
   }
 

@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.buffers;
 
+import com.bytezone.dm3270.display.Screen;
+
 public class DefaultBuffer extends AbstractBuffer
 {
   public DefaultBuffer (byte[] buffer)
@@ -8,7 +10,7 @@ public class DefaultBuffer extends AbstractBuffer
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     System.out.println ("Nothing to process");
   }

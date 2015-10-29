@@ -14,12 +14,11 @@ public class WriteCommand extends Command
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
 
-  private final SystemMessage systemMessage;
+  private SystemMessage systemMessage;
 
-  public WriteCommand (byte[] buffer, int offset, int length, Screen screen,
-      boolean erase)
+  public WriteCommand (byte[] buffer, int offset, int length, boolean erase)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     this.eraseWrite = erase;
 
@@ -49,13 +48,13 @@ public class WriteCommand extends Command
 
       ptr += order.size ();
     }
-    systemMessage = new SystemMessage (screen);
+    //    systemMessage = new SystemMessage (screen);
   }
 
   // Used by MainframeStage.createCommand() when building a screen
   public WriteCommand (WriteControlCharacter wcc, boolean erase, List<Order> orders)
   {
-    super (null);
+    //    super (null);
 
     this.writeControlCharacter = wcc;
     this.eraseWrite = erase;
@@ -82,7 +81,7 @@ public class WriteCommand extends Command
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     Cursor cursor = screen.getScreenCursor ();
     int cursorLocation = cursor.getLocation ();
@@ -119,6 +118,8 @@ public class WriteCommand extends Command
       screen.draw ();
 
     // check screen for jobs submitted or finished
+    if (systemMessage == null)
+      systemMessage = new SystemMessage (screen);
     if (orders.size () > 0 && systemMessage != null)
       systemMessage.checkSystemMessage (eraseWrite, orders);
   }

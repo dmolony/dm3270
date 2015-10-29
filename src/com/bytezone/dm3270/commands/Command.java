@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.commands;
 
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
-import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.utilities.Utility;
 
 public abstract class Command extends AbstractTN3270Command
@@ -85,27 +84,27 @@ public abstract class Command extends AbstractTN3270Command
    * used. A Short Read results in only the AID being sent inbound to the host.
    */
 
-  public static Command getCommand (byte[] buffer, int offset, int length, Screen screen)
+  public static Command getCommand (byte[] buffer, int offset, int length)
   {
     switch (buffer[offset])
     {
       case Command.WRITE_F1:
       case Command.WRITE_01:
-        return new WriteCommand (buffer, offset, length, screen, false);
+        return new WriteCommand (buffer, offset, length, false);
 
       case Command.ERASE_WRITE_F5:
       case Command.ERASE_WRITE_05:
       case Command.ERASE_WRITE_ALTERNATE_7E:
       case Command.ERASE_WRITE_ALTERNATE_0D:
-        return new WriteCommand (buffer, offset, length, screen, true);
+        return new WriteCommand (buffer, offset, length, true);
 
       case Command.WRITE_STRUCTURED_FIELD_F3:
       case Command.WRITE_STRUCTURED_FIELD_11:
-        return new WriteStructuredFieldCommand (buffer, offset, length, screen);
+        return new WriteStructuredFieldCommand (buffer, offset, length);
 
       case Command.ERASE_ALL_UNPROTECTED_6F:
       case Command.ERASE_ALL_UNPROTECTED_0F:
-        return new EraseAllUnprotectedCommand (buffer, offset, length, screen);
+        return new EraseAllUnprotectedCommand (buffer, offset, length);
 
       case Command.READ_BUFFER_F2:
       case Command.READ_BUFFER_02:
@@ -114,7 +113,7 @@ public abstract class Command extends AbstractTN3270Command
       case Command.READ_MODIFIED_ALL_6E:
       case Command.READ_MODIFIED_ALL_0E:
         // the ReadCommand creates a command with a reply of: AID, RM, RMA
-        return new ReadCommand (buffer, offset, length, screen);
+        return new ReadCommand (buffer, offset, length);
 
       default:
         System.out
@@ -127,26 +126,26 @@ public abstract class Command extends AbstractTN3270Command
 
   public abstract String getName ();
 
-  public static Command getReply (byte[] buffer, int offset, int length, Screen screen)
+  public static Command getReply (byte[] buffer, int offset, int length)
   {
     switch (buffer[offset])
     {
       case READ_STRUCTURED_FIELD_88:
-        return new ReadStructuredFieldCommand (buffer, offset, length, screen);
+        return new ReadStructuredFieldCommand (buffer, offset, length);
 
       default:
-        return new AIDCommand (buffer, offset, length, screen);
+        return new AIDCommand (buffer, offset, length);
     }
   }
 
-  public Command (Screen screen)
+  public Command (byte[] buffer, int offset, int length)
   {
-    super (screen);
+    super (buffer, offset, length);
   }
 
-  public Command (byte[] buffer, int offset, int length, Screen screen)
+  public Command ()
   {
-    super (buffer, offset, length, screen);
+    super ();
   }
 
   // reduce toString() to a single line

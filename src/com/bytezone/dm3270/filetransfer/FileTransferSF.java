@@ -3,7 +3,6 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.structuredfields.StructuredField;
@@ -21,10 +20,9 @@ public class FileTransferSF extends StructuredField
 
   protected final boolean debug = false;
 
-  public FileTransferSF (byte[] buffer, int offset, int length, Screen screen,
-      String direction)
+  public FileTransferSF (byte[] buffer, int offset, int length, String direction)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     assert data[0] == (byte) 0xD0;
 

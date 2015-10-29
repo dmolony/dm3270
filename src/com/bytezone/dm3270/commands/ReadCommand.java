@@ -15,9 +15,9 @@ public class ReadCommand extends Command
   }
 
   // Called from the static Command.getCommand()
-  public ReadCommand (byte[] buffer, int offset, int length, Screen screen)
+  public ReadCommand (byte[] buffer, int offset, int length)
   {
-    super (buffer, offset, length, screen);
+    super (buffer, offset, length);
 
     if (data[0] == READ_BUFFER_F2)
     {
@@ -48,7 +48,7 @@ public class ReadCommand extends Command
   }
 
   @Override
-  public void process ()
+  public void process (Screen screen)
   {
     // Create an AID command
     if (type == CommandType.READ_BUFFER)
