@@ -74,26 +74,26 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     switch (rectype)
     {
-      case 0x00:// OPEN request
+      case 0x00:                        // OPEN request
         if (subtype == 0x12)
           processOpen (screen);
         break;
 
-      case 0x41:// CLOSE request
+      case 0x41:                        // CLOSE request
         if (subtype == 0x12)
           processClose (screen);
         break;
 
-      case 0x45:// something to do with SEND
+      case 0x45:                        // something to do with SEND
         processSend0x45 ();
         break;
 
-      case 0x46:// send data transfer buffer
+      case 0x46:                        // send data transfer buffer
         if (subtype == 0x11)
           processSend0x46 (screen);
         break;
 
-      case 0x47:// receive data transfer buffer
+      case 0x47:                        // receive data transfer buffer
         processReceive (screen);
         break;
     }
