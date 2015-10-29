@@ -65,7 +65,7 @@ public class SystemMessage
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
   {
-    addBatchJobListener (screen.getAssistantStage ());// this is clumsy
+    addBatchJobListener (screen.getAssistantStage ());      // this is clumsy
 
     if (eraseWrite && orders.size () == 8)
     {
