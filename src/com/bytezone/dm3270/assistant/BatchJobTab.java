@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 
 import javafx.scene.control.Button;
@@ -18,9 +19,9 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
 
   private BatchJob selectedBatchJob;
 
-  public BatchJobTab (Screen screen, TextField text, Button execute)
+  public BatchJobTab (Screen screen, Site site, TextField text, Button execute)
   {
-    super ("Batch Jobs", screen, text, execute);
+    super ("Batch Jobs", screen, site, text, execute);
 
     jobTable.getSelectionModel ().selectedItemProperty ()
         .addListener ( (obs, oldSelection, newSelection) -> select (newSelection));

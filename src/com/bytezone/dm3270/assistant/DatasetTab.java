@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDetails;
 
@@ -23,9 +24,9 @@ public class DatasetTab extends AbstractTransferTab
   private final DatasetTable datasetTable = new DatasetTable ();
   private final DatasetTreeTable datasetTreeTable = new DatasetTreeTable ();
 
-  public DatasetTab (Screen screen, TextField text, Button execute)
+  public DatasetTab (Screen screen, Site site, TextField text, Button execute)
   {
-    super ("Datasets", screen, text, execute);
+    super ("Datasets", screen, site, text, execute);
 
     if (useTable)
     {

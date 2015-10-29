@@ -46,6 +46,7 @@ public class ConsolePane extends BorderPane
   private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
 
   private final Screen screen;
+  private final Site server;
   private final Label status = new Label ();
   private final Label insertMode = new Label ();
   private final Label cursorLocation = new Label ();
@@ -72,6 +73,8 @@ public class ConsolePane extends BorderPane
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
+    this.server = server;
+
     this.fontManager = screen.getFontManager ();
     pluginsStage.setConsolePane (this);
 

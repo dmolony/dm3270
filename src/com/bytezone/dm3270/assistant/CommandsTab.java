@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
 import com.bytezone.dm3270.application.KeyboardStatusListener;
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.TSOCommandListener;
@@ -17,9 +18,9 @@ public class CommandsTab extends AbstractTransferTab
   ObservableList<String> commands = FXCollections.observableArrayList ();
   ListView<String> commandList = new ListView<> (commands);
 
-  public CommandsTab (Screen screen, TextField text, Button execute)
+  public CommandsTab (Screen screen, Site site, TextField text, Button execute)
   {
-    super ("Commands", screen, text, execute);
+    super ("Commands", screen, site, text, execute);
 
     commandList.setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setContent (commandList);

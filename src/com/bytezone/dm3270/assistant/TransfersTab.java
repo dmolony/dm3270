@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.assistant;
 
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 
 import javafx.geometry.Insets;
@@ -54,9 +55,9 @@ public class TransfersTab extends AbstractTransferTab
 
   private final Font defaultFont = Font.font ("Monospaced", 12);
 
-  public TransfersTab (Screen screen, TextField text, Button execute)
+  public TransfersTab (Screen screen, Site site, TextField text, Button execute)
   {
-    super ("Transfers", screen, text, execute);
+    super ("Transfers", screen, site, text, execute);
 
     btnTracks.setSelected (true);
     btnFiles.setSelected (true);

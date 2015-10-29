@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
@@ -26,9 +27,10 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   private final ReporterNode reporterNode;
   private FileNode currentFileNode;
 
-  public FilesTab (Screen screen, TextField text, Button execute, Preferences prefs)
+  public FilesTab (Screen screen, Site site, TextField text, Button execute,
+      Preferences prefs)
   {
-    super ("Local Files", screen, text, execute);
+    super ("Local Files", screen, site, text, execute);
 
     reporterNode = new ReporterNode (prefs);
     reporterNode.addNodeSelectionListener (this);
@@ -71,6 +73,15 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       if (!tlq.isEmpty ())
         name = tlq + "." + name;
     }
+
+    // need to find out the current site's folder
+    if (site != null)
+    {
+      System.out.printf ("Current site: %s%n", site);
+    }
+    else
+      System.out.println ("Current site unknown");
+
     reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
   }
 

@@ -14,6 +14,7 @@ import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -68,7 +69,7 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   public Screen (int rows, int columns, Preferences prefs, Function function,
-      PluginsStage pluginsStage)
+      PluginsStage pluginsStage, Site site)
   {
     this.rows = rows;
     this.columns = columns;
@@ -77,7 +78,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     pen = new Pen (this);
     fieldManager = new FieldManager (this);
-    assistantStage = new AssistantStage (this);
+    assistantStage = new AssistantStage (this, site);
 
     screenPacker = new ScreenPacker ();
     screenPacker.addTSOCommandListener (assistantStage);
@@ -98,6 +99,11 @@ public class Screen extends Canvas implements DisplayScreen
 
     fieldManager.addScreenChangeListener (assistantStage);
     fieldManager.addScreenChangeListener (screenPacker);
+  }
+
+  public void setSite (Site site)
+  {
+    assistantStage.setSite (site);
   }
 
   public void setStatusText (String text)

@@ -105,7 +105,7 @@ public class Console extends Application
         else
           try
           {
-            Screen screen = createScreen (Function.REPLAY);     // 124ms
+            Screen screen = createScreen (Function.REPLAY, null);     // 124ms
             Session session = new Session (screen, path);       // can throw Exception
             setConsolePane (screen, null);                      // reassigns primaryStage
 
@@ -125,7 +125,7 @@ public class Console extends Application
           errorMessage = "No server selected";
         else
         {
-          setConsolePane (createScreen (Function.TERMINAL), serverSite);
+          setConsolePane (createScreen (Function.TERMINAL, serverSite), serverSite);
           consolePane.connect (serverSite);
         }
 
@@ -137,7 +137,7 @@ public class Console extends Application
         else if (clientSite == null)
           errorMessage = "No client selected";
         else
-          setSpyPane (createScreen (Function.SPY), serverSite, clientSite);
+          setSpyPane (createScreen (Function.SPY, null), serverSite, clientSite);
 
         break;
 
@@ -146,7 +146,7 @@ public class Console extends Application
           errorMessage = "No client selected";
         else
         {
-          setSpyPane (createScreen (Function.TEST), DEFAULT_MAINFRAME, clientSite);
+          setSpyPane (createScreen (Function.TEST, null), DEFAULT_MAINFRAME, clientSite);
           mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
           mainframeStage.show ();
           mainframeStage.startServer ();
@@ -159,9 +159,9 @@ public class Console extends Application
       optionStage.show ();
   }
 
-  private void setConsolePane (Screen screen, Site server)
+  private void setConsolePane (Screen screen, Site serverSite)
   {
-    consolePane = new ConsolePane (screen, server, pluginsStage);
+    consolePane = new ConsolePane (screen, serverSite, pluginsStage);
     Scene scene = new Scene (consolePane);
 
     primaryStage.setScene (scene);
@@ -271,9 +271,9 @@ public class Console extends Application
       screen.closeAssistantStage ();
   }
 
-  private Screen createScreen (Function function)
+  private Screen createScreen (Function function, Site site)
   {
-    screen = new Screen (24, 80, prefs, function, pluginsStage);
+    screen = new Screen (24, 80, prefs, function, pluginsStage, site);
     return screen;
   }
 }

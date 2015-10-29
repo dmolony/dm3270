@@ -2,6 +2,7 @@ package com.bytezone.dm3270.assistant;
 
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -14,17 +15,20 @@ public abstract class AbstractTransferTab extends Tab
     implements ScreenChangeListener, KeyboardStatusListener
 {
   protected final Screen screen;
+  protected final Site site;
   protected final Button btnExecute;
   protected final TextField txtCommand;
   protected ScreenDetails screenDetails;
 
-  public AbstractTransferTab (String name, Screen screen, TextField text, Button execute)
+  public AbstractTransferTab (String name, Screen screen, Site site, TextField text,
+      Button execute)
   {
     super (name);
 
     setClosable (false);
 
     this.screen = screen;
+    this.site = site;
     this.txtCommand = text;
     this.btnExecute = execute;
   }

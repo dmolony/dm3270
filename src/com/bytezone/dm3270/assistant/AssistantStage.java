@@ -7,6 +7,7 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDetails;
@@ -33,6 +34,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final MenuBar menuBar;
+  protected Site currentSite;
 
   private final TSOCommand tsoCommand;
   private final Button btnHide = new Button ("Hide Window");
@@ -46,7 +48,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final List<ScreenChangeListener> screenChangeListeners;
   private final List<KeyboardStatusListener> keyboardStatusListeners;
 
-  public AssistantStage (Screen screen)
+  public AssistantStage (Screen screen, Site site)
   {
     setTitle ("File Transfers");
 
@@ -56,12 +58,15 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tsoCommand = new TSOCommand ();
     screen.getFieldManager ().addScreenChangeListener (tsoCommand);
 
-    datasetTab = new DatasetTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    jobTab = new BatchJobTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    fileTab = new FilesTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
-    commandsTab = new CommandsTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    datasetTab =
+        new DatasetTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    jobTab = new BatchJobTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    fileTab =
+        new FilesTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
+    commandsTab =
+        new CommandsTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
     transfersTab =
-        new TransfersTab (screen, tsoCommand.txtCommand, tsoCommand.btnExecute);
+        new TransfersTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
     tabPane.getTabs ().addAll (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
     tabPane.setTabMinWidth (80);
 
@@ -104,6 +109,11 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
         .addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
 
     tabPane.getSelectionModel ().select (datasetTab);
+  }
+
+  public void setSite (Site serverSite)
+  {
+    this.currentSite = serverSite;
   }
 
   private void select (Tab tabSelected)
