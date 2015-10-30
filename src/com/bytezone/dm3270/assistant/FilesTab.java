@@ -1,5 +1,8 @@
 package com.bytezone.dm3270.assistant;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -74,10 +77,20 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
         name = tlq + "." + name;
     }
 
-    // need to find out the current site's folder
     if (site != null)
     {
       System.out.printf ("Current site: %s%n", site);
+      String folderName = site.folder.getText ();
+      if (!folderName.isEmpty ())
+      {
+        Path path =
+            Paths.get (System.getProperty ("user.home"), "dm3270", "files", folderName);
+        System.out.println (path);
+        if (Files.exists (path))
+          System.out.println ("path exists");
+        else
+          System.out.println ("path doesn't exist");
+      }
     }
     else
       System.out.println ("Current site unknown");
