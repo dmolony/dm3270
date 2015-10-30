@@ -77,25 +77,35 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
         name = tlq + "." + name;
     }
 
+    String folderName = "";
     if (site != null)
     {
       System.out.printf ("Current site: %s%n", site);
-      String folderName = site.folder.getText ();
+      folderName = site.folder.getText ();
       if (!folderName.isEmpty ())
       {
         Path path =
             Paths.get (System.getProperty ("user.home"), "dm3270", "files", folderName);
-        System.out.println (path);
+        //        System.out.println (path);
         if (Files.exists (path))
           System.out.println ("path exists");
         else
+        {
           System.out.println ("path doesn't exist");
+          folderName = "";
+        }
       }
+      else
+        System.out.println ("No folder specified in site record");
     }
     else
       System.out.println ("Current site unknown");
 
-    reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
+    if (folderName.isEmpty ())
+      reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
+    else
+      reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers (),
+                              folderName);
   }
 
   // called from AssistantStage.getCurrentFileBuffer()
