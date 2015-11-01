@@ -111,10 +111,10 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tabPane.getSelectionModel ().select (datasetTab);
   }
 
-  public void setSite (Site serverSite)
-  {
-    this.currentSite = serverSite;
-  }
+  //  public void setSite (Site serverSite)
+  //  {
+  //    this.currentSite = serverSite;
+  //  }
 
   private void select (Tab tabSelected)
   {

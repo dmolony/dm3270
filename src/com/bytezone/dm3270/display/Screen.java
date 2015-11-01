@@ -101,10 +101,10 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager.addScreenChangeListener (screenPacker);
   }
 
-  public void setSite (Site site)
-  {
-    assistantStage.setSite (site);
-  }
+  //  public void setSite (Site site)
+  //  {
+  //    assistantStage.setSite (site);
+  //  }
 
   public void setStatusText (String text)
   {

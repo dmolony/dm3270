@@ -38,6 +38,10 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     reporterNode = new ReporterNode (prefs);
     reporterNode.addNodeSelectionListener (this);
     reporterNode.requestFocus ();
+
+    //    if (!site.folder.getText ().isEmpty ())
+    //      reporterNode.setFolder (site.folder.getText ());
+
     currentFileNode = reporterNode.getSelectedNode ();
 
     setContent (reporterNode);
@@ -77,22 +81,22 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
         name = tlq + "." + name;
     }
 
-    String folderName = "";
+    String siteFolderName = "";
     if (site != null)
     {
       System.out.printf ("Current site: %s%n", site);
-      folderName = site.folder.getText ();
-      if (!folderName.isEmpty ())
+      siteFolderName = site.folder.getText ();
+      if (!siteFolderName.isEmpty ())
       {
-        Path path =
-            Paths.get (System.getProperty ("user.home"), "dm3270", "files", folderName);
+        Path path = Paths.get (System.getProperty ("user.home"), "dm3270", "files",
+                               siteFolderName);
         //        System.out.println (path);
         if (Files.exists (path))
           System.out.println ("path exists");
         else
         {
           System.out.println ("path doesn't exist");
-          folderName = "";
+          siteFolderName = "";
         }
       }
       else
@@ -101,11 +105,11 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     else
       System.out.println ("Current site unknown");
 
-    if (folderName.isEmpty ())
+    if (siteFolderName.isEmpty ())
       reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
     else
       reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers (),
-                              folderName);
+                              siteFolderName);
   }
 
   // called from AssistantStage.getCurrentFileBuffer()
