@@ -24,6 +24,9 @@ public class SystemMessage
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
           + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR.*");
 
+  private static final Pattern timePattern =
+      Pattern.compile ("^TIME-(\\d{2}:\\d{2}:\\d{2}) (AM|PM).*");
+
   private static final byte[] systemMessage1 =
       { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
@@ -55,6 +58,11 @@ public class SystemMessage
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.INSERT_CURSOR };
+
+  private static final byte[] timeMessage =
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
+        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
 
   private final Screen screen;
 
@@ -162,6 +170,14 @@ public class SystemMessage
       String jobName = matcher.group (3);
       String time = matcher.group (1);
       fireBatchJobFailed (jobNumber, jobName, time);
+      return;
+    }
+
+    matcher = timePattern.matcher (systemMessageText);
+    if (matcher.matches ())
+    {
+      System.out.print ("Time is: " + matcher.group (1));     // hh:mm:ss
+      System.out.println (" " + matcher.group (2));           // AM or PM
       return;
     }
   }
