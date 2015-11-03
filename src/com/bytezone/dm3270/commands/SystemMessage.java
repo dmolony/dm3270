@@ -27,6 +27,10 @@ public class SystemMessage
   private static final Pattern timePattern =
       Pattern.compile ("^TIME-(\\d{2}:\\d{2}:\\d{2}) (AM|PM).*");
 
+  private static final Pattern datePattern =
+      Pattern.compile ("^(\\d{2}/\\d{2}/\\d{4}) = (\\d{2}\\.\\d{3})"
+          + " \\(\\w{3}\\) (\\d{2}:\\d{2}:\\d{2}).*");
+
   private static final byte[] systemMessage1 =
       { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.SET_BUFFER_ADDRESS, Order.INSERT_CURSOR };
@@ -173,6 +177,8 @@ public class SystemMessage
       return;
     }
 
+    // TIME-11:04:34 PM. CPU-00:00:03 SERVICE-8464 SESSION-00:00:25 NOVEMBER 2,2015
+
     matcher = timePattern.matcher (systemMessageText);
     if (matcher.matches ())
     {
@@ -180,12 +186,21 @@ public class SystemMessage
       System.out.println (" " + matcher.group (2));           // AM or PM
       return;
     }
+
+    // 11/02/2015 = 15.306 (MON) 23:04:28
+
+    matcher = datePattern.matcher (systemMessageText);
+    if (matcher.matches ())
+    {
+      System.out.print ("Date is: " + matcher.group (1));     // mm/dd/yyyy
+      System.out.println ("Time is: " + matcher.group (3));     // hh:mm:ss
+      return;
+    }
   }
 
   private void checkProfileMessage (String profileMessageText1,
       String profileMessageText2)
   {
-    //    System.out.println (profileMessageText1);
     System.out.println ("Profile tokens:");
     for (String token : profileMessageText1.split ("\\s+"))
     {
