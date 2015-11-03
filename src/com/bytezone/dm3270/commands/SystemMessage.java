@@ -1,8 +1,6 @@
 package com.bytezone.dm3270.commands;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,11 +61,6 @@ public class SystemMessage
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.INSERT_CURSOR };
 
-  private static final byte[] timeMessage =
-      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.SET_BUFFER_ADDRESS,
-        Order.START_FIELD, 0x00, Order.START_FIELD, Order.INSERT_CURSOR };
-
   private final Screen screen;
 
   public SystemMessage (Screen screen)
@@ -77,57 +70,53 @@ public class SystemMessage
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
   {
-    addBatchJobListener (screen.getAssistantStage ());      // this is clumsy
-
-    if (eraseWrite && orders.size () == 8)
+    if (eraseWrite)
     {
-      if (checkOrders (systemMessage3, orders))
-        checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
-      return;
-    }
-
-    if (eraseWrite && orders.size () == 11)
-    {
-      if (checkOrders (systemMessage2, orders))
-        checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
-      return;
-    }
-
-    if (eraseWrite && orders.size () == 15)
-    {
-      if (checkOrders (systemMessage4, orders))
+      switch (orders.size ())
       {
-        checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
-        checkSystemMessage (Utility.getString (orders.get (8).getBuffer ()));
+        case 8:
+          if (checkOrders (systemMessage3, orders))
+            checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+          return;
+
+        case 11:
+          if (checkOrders (systemMessage2, orders))
+            checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+          return;
+
+        case 15:
+          if (checkOrders (systemMessage4, orders))
+          {
+            checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+            checkSystemMessage (Utility.getString (orders.get (8).getBuffer ()));
+          }
+          return;
+
+        case 17:
+          if (checkOrders (profileMessage, orders))
+            checkProfileMessage (Utility.getString (orders.get (4).getBuffer ())
+                + Utility.getString (orders.get (6).getBuffer ()),
+                                 Utility.getString (orders.get (10).getBuffer ()));
+          return;
       }
-      return;
     }
-
-    if (!eraseWrite && orders.size () == 6)
+    else
     {
-      if (checkOrders (systemMessage1, orders))
-        checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
-      return;
-    }
-
-    if (!eraseWrite && orders.size () == 9)
-    {
-      if (checkOrders (systemMessage5, orders))
-        checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
-      return;
-    }
-
-    if (eraseWrite && orders.size () == 17)
-    {
-      if (checkOrders (profileMessage, orders))
+      switch (orders.size ())
       {
-        checkProfileMessage (Utility.getString (orders.get (4).getBuffer ())
-            + Utility.getString (orders.get (6).getBuffer ()),
-                             Utility.getString (orders.get (10).getBuffer ()));
+        case 6:
+          if (checkOrders (systemMessage1, orders))
+            checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
+          return;
+
+        case 9:
+          if (checkOrders (systemMessage5, orders))
+            checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
+          return;
       }
     }
 
-    if (orders.size () < 30 && false)
+    if (orders.size () < 20 && false)
     {
       System.out.printf ("Orders: %d%n", orders.size ());
       System.out.printf ("Erase : %s%n", eraseWrite);
@@ -193,7 +182,7 @@ public class SystemMessage
     if (matcher.matches ())
     {
       System.out.print ("Date is: " + matcher.group (1));     // mm/dd/yyyy
-      System.out.println ("Time is: " + matcher.group (3));     // hh:mm:ss
+      System.out.println ("Time is: " + matcher.group (3));   // hh:mm:ss
       return;
     }
   }
@@ -208,40 +197,27 @@ public class SystemMessage
       if (token.startsWith ("PREFIX(") && token.endsWith (")"))
         System.out.printf ("Prefix=%s%n", token.substring (7, token.length () - 1));
     }
-    System.out.println (profileMessageText2);
   }
 
   // ---------------------------------------------------------------------------------//
   // BatchJobListener
   // ---------------------------------------------------------------------------------//
 
-  private final Set<BatchJobListener> batchJobListeners = new HashSet<> ();
-
   void fireBatchJobSubmitted (int jobNumber, String jobName)
   {
-    for (BatchJobListener listener : batchJobListeners)
-      listener.batchJobSubmitted (jobNumber, jobName);
+    BatchJobListener listener = screen.getAssistantStage ();
+    listener.batchJobSubmitted (jobNumber, jobName);
   }
 
   void fireBatchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
   {
-    for (BatchJobListener listener : batchJobListeners)
-      listener.batchJobEnded (jobNumber, jobName, time, conditionCode);
+    BatchJobListener listener = screen.getAssistantStage ();
+    listener.batchJobEnded (jobNumber, jobName, time, conditionCode);
   }
 
   void fireBatchJobFailed (int jobNumber, String jobName, String time)
   {
-    for (BatchJobListener listener : batchJobListeners)
-      listener.batchJobFailed (jobNumber, jobName, time);
-  }
-
-  public void addBatchJobListener (BatchJobListener listener)
-  {
-    batchJobListeners.add (listener);
-  }
-
-  public void removeBatchJobListener (BatchJobListener listener)
-  {
-    batchJobListeners.remove (listener);
+    BatchJobListener listener = screen.getAssistantStage ();
+    listener.batchJobFailed (jobNumber, jobName, time);
   }
 }
