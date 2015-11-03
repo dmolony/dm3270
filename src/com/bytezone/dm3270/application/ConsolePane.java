@@ -1,5 +1,9 @@
 package com.bytezone.dm3270.application;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
+import com.bytezone.dm3270.application.Parameters.SiteParameters;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.CursorMoveListener;
@@ -44,9 +48,10 @@ public class ConsolePane extends BorderPane
   private final static int GAP = 12;
   private final static String OS = System.getProperty ("os.name");
   private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
+  private final Parameters parameters = new Parameters ();
 
   private final Screen screen;
-  private final Site server;
+  //  private final Site server;
   private final Label status = new Label ();
   private final Label insertMode = new Label ();
   private final Label cursorLocation = new Label ();
@@ -73,7 +78,7 @@ public class ConsolePane extends BorderPane
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
-    this.server = server;
+    //    this.server = server;
 
     this.fontManager = screen.getFontManager ();
     pluginsStage.setConsolePane (this);
@@ -96,6 +101,25 @@ public class ConsolePane extends BorderPane
     menuBar.setUseSystemMenuBar (SYSTEM_MENUBAR);
 
     setHistoryBar ();
+
+    SiteParameters sp = parameters.getSiteParameters (server.getName ());
+    if (sp != null)
+    {
+      String offset = sp.getParameter ("offset");
+      if (!offset.isEmpty () && offset.length () > 4)
+      {
+        char direction = offset.charAt (3);
+        int value = Integer.parseInt (offset.substring (4));
+        System.out.printf ("Time offset: %s %d%n", direction, value);
+        ZonedDateTime now = ZonedDateTime.now (ZoneOffset.UTC);
+        System.out.println ("UTC : " + now);
+        if (direction == '+')
+          now = now.plusHours (value);
+        else
+          now = now.minusHours (value);
+        System.out.println ("Site: " + now);
+      }
+    }
 
     screen.requestFocus ();
   }

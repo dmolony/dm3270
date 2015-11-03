@@ -84,7 +84,9 @@ public class Parameters
 
     public String getParameter (String key)
     {
-      return parameters.get (key);
+      if (parameters.containsKey (key))
+        return parameters.get (key);
+      return "";
     }
 
     public String getName ()
@@ -99,7 +101,8 @@ public class Parameters
 
       text.append (String.format ("Site......... %s%n", siteName));
       for (String key : parameters.keySet ())
-        text.append (String.format ("%-10s %s%n", key, parameters.get (key)));
+        text.append (String.format ("%-13.13s %s%n", key + " ........",
+                                    parameters.get (key)));
 
       return text.toString ();
     }
