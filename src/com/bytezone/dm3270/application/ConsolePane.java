@@ -102,22 +102,25 @@ public class ConsolePane extends BorderPane
 
     setHistoryBar ();
 
-    SiteParameters sp = parameters.getSiteParameters (server.getName ());
-    if (sp != null)
+    if (server != null)
     {
-      String offset = sp.getParameter ("offset");
-      if (!offset.isEmpty () && offset.length () > 4)
+      SiteParameters sp = parameters.getSiteParameters (server.getName ());
+      if (sp != null)
       {
-        char direction = offset.charAt (3);
-        int value = Integer.parseInt (offset.substring (4));
-        System.out.printf ("Time offset: %s %d%n", direction, value);
-        ZonedDateTime now = ZonedDateTime.now (ZoneOffset.UTC);
-        System.out.println ("UTC : " + now);
-        if (direction == '+')
-          now = now.plusHours (value);
-        else
-          now = now.minusHours (value);
-        System.out.println ("Site: " + now);
+        String offset = sp.getParameter ("offset");
+        if (!offset.isEmpty () && offset.length () > 4)
+        {
+          char direction = offset.charAt (3);
+          int value = Integer.parseInt (offset.substring (4));
+          System.out.printf ("Time offset: %s %d%n", direction, value);
+          ZonedDateTime now = ZonedDateTime.now (ZoneOffset.UTC);
+          System.out.println ("UTC : " + now);
+          if (direction == '+')
+            now = now.plusHours (value);
+          else
+            now = now.minusHours (value);
+          System.out.println ("Site: " + now);
+        }
       }
     }
 

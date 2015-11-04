@@ -45,7 +45,7 @@ public class EraseUnprotectedToAddressOrder extends Order
     }
     else
     {
-      System.out.println ("EraseUnprotected not finished");
+      System.out.println ("EraseUnprotectedToAddress not finished");
     }
   }
 

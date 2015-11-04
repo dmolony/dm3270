@@ -83,7 +83,7 @@ public class ReadStructuredFieldCommand extends Command
         case StructuredField.QUERY_REPLY:
           QueryReplySF queryReply = new QueryReplySF (data, ptr, size);
           fields.add (queryReply);
-          replies.add (queryReply.getReplyField ());
+          replies.add (queryReply.getQueryReplyField ());
           break;
 
         case StructuredField.INBOUND_3270DS:
