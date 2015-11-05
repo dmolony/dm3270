@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.util.Optional;
+
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
@@ -116,8 +118,10 @@ public class FileTransferOutboundSF extends FileTransferSF
       // connect the buffer that contains the data to send
       if (transfer.getTransferType () == TransferType.RECEIVE)
       {
-        transfer.setTransferBuffer (assistantStage.getCurrentFileBuffer ());
         screen.setStatusText ("Sending...");
+        Optional<byte[]> optionalBuffer = assistantStage.getCurrentFileBuffer ();
+        if (optionalBuffer.isPresent ())
+          transfer.setTransferBuffer (optionalBuffer.get ());
       }
       else
         screen.setStatusText ("Receiving...");

@@ -2,6 +2,7 @@ package com.bytezone.dm3270.assistant;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.ConsolePane;
@@ -172,7 +173,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     return fileTab.closeTransfer (transferRecord);
   }
 
-  public byte[] getCurrentFileBuffer ()
+  public Optional<byte[]> getCurrentFileBuffer ()
   {
     return fileTab.getCurrentFileBuffer ();
   }

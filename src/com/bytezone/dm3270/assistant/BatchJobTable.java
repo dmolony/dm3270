@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.Optional;
+
 import com.bytezone.dm3270.assistant.DatasetTable.Justification;
 
 import javafx.beans.value.ObservableValue;
@@ -67,12 +69,12 @@ public class BatchJobTable extends TableView<BatchJob>
     batchJobs.add (newBatchJob);
   }
 
-  public BatchJob getBatchJob (int jobNumber)
+  public Optional<BatchJob> getBatchJob (int jobNumber)
   {
     for (BatchJob batchJob : batchJobs)
       if (batchJob.matches (jobNumber))
-        return batchJob;
+        return Optional.of (batchJob);
 
-    return null;
+    return Optional.empty ();
   }
 }

@@ -90,8 +90,10 @@ public class Console extends Application
     optionStage.hide ();
     String errorMessage = "";
 
-    Site serverSite = optionStage.serverSitesListStage.getSelectedSite ();
-    Site clientSite = optionStage.clientSitesListStage.getSelectedSite ();
+    Optional<Site> optionalServerSite =
+        optionStage.serverSitesListStage.getSelectedSite ();
+    Optional<Site> optionalClientSite =
+        optionStage.clientSitesListStage.getSelectedSite ();
 
     String optionText =
         (String) optionStage.functionsGroup.getSelectedToggle ().getUserData ();
@@ -121,31 +123,37 @@ public class Console extends Application
         break;
 
       case "Terminal":
-        if (serverSite == null)
-          errorMessage = "No server selected";
-        else
+        if (optionalServerSite.isPresent ())
         {
+          Site serverSite = optionalServerSite.get ();
           setConsolePane (createScreen (Function.TERMINAL, serverSite), serverSite);
           consolePane.connect (serverSite);
         }
+        else
+          errorMessage = "No server selected";
 
         break;
 
       case "Spy":
-        if (serverSite == null)
+        if (!optionalServerSite.isPresent ())
           errorMessage = "No server selected";
-        else if (clientSite == null)
+        else if (!optionalClientSite.isPresent ())
           errorMessage = "No client selected";
         else
+        {
+          Site serverSite = optionalServerSite.get ();
+          Site clientSite = optionalClientSite.get ();
           setSpyPane (createScreen (Function.SPY, null), serverSite, clientSite);
+        }
 
         break;
 
       case "Test":
-        if (clientSite == null)
+        if (!optionalClientSite.isPresent ())
           errorMessage = "No client selected";
         else
         {
+          Site clientSite = optionalClientSite.get ();
           setSpyPane (createScreen (Function.TEST, null), DEFAULT_MAINFRAME, clientSite);
           mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
           mainframeStage.show ();

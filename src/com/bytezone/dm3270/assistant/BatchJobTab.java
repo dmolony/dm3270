@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +40,7 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
     fireJobSelected (batchJob);
   }
 
-  public BatchJob getBatchJob (int jobNumber)
+  public Optional<BatchJob> getBatchJob (int jobNumber)
   {
     return jobTable.getBatchJob (jobNumber);
   }
@@ -91,17 +92,17 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
   public void batchJobEnded (int jobNumber, String jobName, String time,
       int conditionCode)
   {
-    BatchJob batchJob = getBatchJob (jobNumber);
-    if (batchJob != null)
-      batchJob.completed (time, conditionCode);
+    Optional<BatchJob> batchJob = getBatchJob (jobNumber);
+    if (batchJob.isPresent ())
+      batchJob.get ().completed (time, conditionCode);
   }
 
   @Override
   public void batchJobFailed (int jobNumber, String jobName, String time)
   {
-    BatchJob batchJob = getBatchJob (jobNumber);
-    if (batchJob != null)
-      batchJob.failed (time);
+    Optional<BatchJob> batchJob = getBatchJob (jobNumber);
+    if (batchJob.isPresent ())
+      batchJob.get ().failed (time);
   }
 
   // ---------------------------------------------------------------------------------//

@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -108,16 +109,16 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   }
 
   // called from AssistantStage.getCurrentFileBuffer()
-  public byte[] getCurrentFileBuffer ()
+  public Optional<byte[]> getCurrentFileBuffer ()
   {
     FileNode fileNode = reporterNode.getSelectedNode ();
     if (fileNode == null)
     {
       System.out.println ("No fileNode selected in FilesTab.getCurrentFileBuffer()");
-      return null;
+      return Optional.empty ();
     }
     else
-      return fileNode.getReportData ().getBuffer ();
+      return Optional.of (fileNode.getReportData ().getBuffer ());
   }
 
   // called from FileTransferOutboundSF.processOpen()

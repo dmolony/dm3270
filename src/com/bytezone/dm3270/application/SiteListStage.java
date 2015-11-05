@@ -2,6 +2,7 @@ package com.bytezone.dm3270.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import javafx.collections.FXCollections;
@@ -160,15 +161,15 @@ public class SiteListStage extends PreferencesStage
     }
   }
 
-  Site getSelectedSite ()
+  Optional<Site> getSelectedSite ()
   {
     String key = getSelectedName ();
     if (key == null || key.isEmpty ())
-      return null;
+      return Optional.empty ();
     for (Site site : sites)
       if (key.equals (site.getName ()))
-        return site;
-    return null;
+        return Optional.of (site);
+    return Optional.empty ();
   }
 
   String getSelectedName ()
