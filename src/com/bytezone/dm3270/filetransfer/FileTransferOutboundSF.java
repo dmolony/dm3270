@@ -130,11 +130,14 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processClose (Screen screen)
   {
-    transfer = assistantStage.closeTransfer (this);
-
-    byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
-    reply = new ReadStructuredFieldCommand (buffer);
-    screen.setStatusText ("Closing...");
+    Optional<Transfer> optionalTransfer = assistantStage.closeTransfer (this);
+    if (optionalTransfer.isPresent ())
+    {
+      transfer = optionalTransfer.get ();
+      byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
+      reply = new ReadStructuredFieldCommand (buffer);
+      screen.setStatusText ("Closing...");
+    }
   }
 
   private void processSend0x45 ()

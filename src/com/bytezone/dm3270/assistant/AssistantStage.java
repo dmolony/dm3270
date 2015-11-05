@@ -168,7 +168,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     fileTab.closeTransfer ();
   }
 
-  public Transfer closeTransfer (FileTransferOutboundSF transferRecord)
+  public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
   {
     return fileTab.closeTransfer (transferRecord);
   }
