@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.display;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Cursor
@@ -283,9 +284,14 @@ public class Cursor
   private void setCurrentField ()
   {
     Field lastField = currentField;
-    currentField = screen.getFieldManager ().getFieldAt (currentPosition);
-    if (currentField != lastField)
-      notifyFieldChange (lastField, currentField);
+    //    currentField = screen.getFieldManager ().getFieldAt (currentPosition);
+    Optional<Field> field = screen.getFieldManager ().getFieldAt (currentPosition);
+    if (field.isPresent ())
+    {
+      currentField = field.get ();
+      if (currentField != lastField)
+        notifyFieldChange (lastField, currentField);
+    }
   }
 
   // ---------------------------------------------------------------------------------//

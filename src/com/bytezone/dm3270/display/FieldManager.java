@@ -3,6 +3,7 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.bytezone.dm3270.plugins.PluginData;
@@ -151,12 +152,21 @@ public class FieldManager
         ++hiddenUnprotectedFields;
   }
 
-  public Field getFieldAt (int position)// this needs to be improved
+  //  public Field getFieldAt (int position)        // this needs to be improved
+  //  {
+  //    for (Field field : fields)
+  //      if (field.contains (position))
+  //        return field;
+  //    return null;
+  //  }
+
+  public Optional<Field> getFieldAt (int position)        // this needs to be improved
   {
-    for (Field field : fields)
-      if (field.contains (position))
-        return field;
-    return null;
+    return fields.stream ().filter (f -> f.contains (position)).findFirst ();
+    //    for (Field field : fields)
+    //      if (field.contains (position))
+    //        return field;
+    //    return null;
   }
 
   public List<Field> getUnprotectedFields ()
@@ -180,8 +190,9 @@ public class FieldManager
     if (unprotectedFields.size () == 0)
       return null;
 
-    for (Field field : unprotectedFields)
-      field.clearData (true);
+    //    for (Field field : unprotectedFields)
+    //      field.clearData (true);
+    unprotectedFields.stream ().forEach (f -> f.clearData (true));
 
     return unprotectedFields.get (0);
   }

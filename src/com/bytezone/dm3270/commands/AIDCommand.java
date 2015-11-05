@@ -3,6 +3,7 @@ package com.bytezone.dm3270.commands;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
@@ -174,10 +175,13 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
       for (ModifiedField aidField : modifiedFields)
       {
-        Field field = fieldManager.getFieldAt (aidField.getLocation ());
-        if (field == null)
-          continue;// in replay mode we cannot rely on the fields list
+        Optional<Field> optField = fieldManager.getFieldAt (aidField.getLocation ());
+        //        Field field = fieldManager.getFieldAt (aidField.getLocation ());
+        //        if (field == null)
+        if (!optField.isPresent ())
+          continue;             // in replay mode we cannot rely on the fields list
 
+        Field field = optField.get ();
         if (aidField.hasData ())
         {
           field.setText (aidField.getBuffer ());

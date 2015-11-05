@@ -3,6 +3,7 @@ package com.bytezone.dm3270.plugins;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.ConsolePane;
@@ -319,8 +320,11 @@ public class PluginsStage extends PreferencesStage
 
     for (PluginField screenField : data.changedFields)
     {
-      Field field = fieldManager.getFieldAt (screenField.location.location);   // first display location
-      assert field != null;
+      Optional<Field> optField = fieldManager.getFieldAt (screenField.location.location);
+      //      Field field = fieldManager.getFieldAt (screenField.location.location);   // first display location
+      //      assert field != null;
+      assert optField.isPresent ();
+      Field field = optField.get ();
       if (field != null)    // should be impossible
       {
         if (screenField.newData == null)
