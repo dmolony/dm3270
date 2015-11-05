@@ -68,10 +68,6 @@ public class FileTransferOutboundSF extends FileTransferSF
   @Override
   public void process (Screen screen)
   {
-    // check for an already processed replay command
-    if (transfer != null)
-      return;
-
     assistantStage = screen.getAssistantStage ();
 
     switch (rectype)
@@ -103,8 +99,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processOpen (Screen screen)
   {
-    transfer = new Transfer (this);
-    //    transfer.add (this);
+    Transfer transfer = new Transfer (this);
     assistantStage.openTransfer (transfer);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
@@ -133,7 +128,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     Optional<Transfer> optionalTransfer = assistantStage.closeTransfer (this);
     if (optionalTransfer.isPresent ())
     {
-      transfer = optionalTransfer.get ();
+      //      Transfer transfer = optionalTransfer.get ();
       byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
       reply = new ReadStructuredFieldCommand (buffer);
       screen.setStatusText ("Closing...");
@@ -142,22 +137,18 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processSend0x45 ()
   {
-    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
-    if (optionalTransfer.isPresent ())
-      transfer = optionalTransfer.get ();
   }
 
   private void processSend0x46 (Screen screen)
   {
     Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
-    if (optionalTransfer.isPresent ())
-      transfer = optionalTransfer.get ();
-    else
+    if (!optionalTransfer.isPresent ())
     {
       System.out.println ("No active transfer");
       return;
     }
 
+    Transfer transfer = optionalTransfer.get ();
     byte[] replyBuffer;
     int ptr = 0;
 
@@ -196,15 +187,14 @@ public class FileTransferOutboundSF extends FileTransferSF
   private void processReceive (Screen screen)
   {
     Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
-    if (optionalTransfer.isPresent ())
-      transfer = optionalTransfer.get ();
-    else
+    if (!optionalTransfer.isPresent ())
     {
       System.out.println ("No active transfer");
       return;
     }
 
-    if (subtype == 0x04) // message or transfer buffer
+    Transfer transfer = optionalTransfer.get ();
+    if (subtype == 0x04)                // message or transfer buffer
     {
       int ptr = 6;
       byte[] buffer;
