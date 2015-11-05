@@ -160,9 +160,9 @@ public class FieldManager
   //    return null;
   //  }
 
-  public Optional<Field> getFieldAt (int position)        // this needs to be improved
+  public Optional<Field> getFieldAt (int position)        // could this be indexed?
   {
-    return fields.stream ().filter (f -> f.contains (position)).findFirst ();
+    return fields.parallelStream ().filter (f -> f.contains (position)).findFirst ();
     //    for (Field field : fields)
     //      if (field.contains (position))
     //        return field;
@@ -185,16 +185,16 @@ public class FieldManager
   }
 
   // called from Screen.eraseAllUnprotected()
-  Field eraseAllUnprotected ()
+  Optional<Field> eraseAllUnprotected ()
   {
-    if (unprotectedFields.size () == 0)
-      return null;
+    //    if (unprotectedFields.size () == 0)
+    //      return null;
 
     //    for (Field field : unprotectedFields)
     //      field.clearData (true);
-    unprotectedFields.stream ().forEach (f -> f.clearData (true));
+    unprotectedFields.parallelStream ().forEach (f -> f.clearData (true));
 
-    return unprotectedFields.get (0);
+    return unprotectedFields.stream ().findFirst ();
   }
 
   // ---------------------------------------------------------------------------------//

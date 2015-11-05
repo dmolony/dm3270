@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -263,15 +264,15 @@ public class Screen extends Canvas implements DisplayScreen
   // called from EraseAllUnprotectedCommand.process()
   public void eraseAllUnprotected ()
   {
-    Field firstUnprotectedField = fieldManager.eraseAllUnprotected ();
+    Optional<Field> firstUnprotectedField = fieldManager.eraseAllUnprotected ();
 
     restoreKeyboard ();
     resetModified ();
     setAID (AIDCommand.NO_AID_SPECIFIED);
     draw ();
 
-    if (firstUnprotectedField != null)
-      cursor.moveTo (firstUnprotectedField.getFirstLocation ());
+    if (firstUnprotectedField.isPresent ())
+      cursor.moveTo (firstUnprotectedField.get ().getFirstLocation ());
   }
 
   void drawPosition (int position, boolean hasCursor)
