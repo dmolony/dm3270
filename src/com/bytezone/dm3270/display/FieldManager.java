@@ -160,13 +160,9 @@ public class FieldManager
   //    return null;
   //  }
 
-  public Optional<Field> getFieldAt (int position)        // could this be indexed?
+  public Optional<Field> getFieldAt (int position)        // should this be indexed?
   {
-    return fields.parallelStream ().filter (f -> f.contains (position)).findFirst ();
-    //    for (Field field : fields)
-    //      if (field.contains (position))
-    //        return field;
-    //    return null;
+    return fields.parallelStream ().filter (f -> f.contains (position)).findAny ();
   }
 
   public List<Field> getUnprotectedFields ()
