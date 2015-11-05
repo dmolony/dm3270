@@ -43,7 +43,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final TabPane tabPane = new TabPane ();
   private final DatasetTab datasetTab;
   private final BatchJobTab jobTab;
-  private final FilesTab fileTab;
+  private final FilesTab filesTab;
   private final TransfersTab transfersTab;
   private final CommandsTab commandsTab;
   private final List<ScreenChangeListener> screenChangeListeners;
@@ -62,22 +62,22 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     datasetTab =
         new DatasetTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
     jobTab = new BatchJobTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    fileTab =
+    filesTab =
         new FilesTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
     commandsTab =
         new CommandsTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
     transfersTab =
         new TransfersTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    tabPane.getTabs ().addAll (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
+    tabPane.getTabs ().addAll (datasetTab, jobTab, filesTab, commandsTab, transfersTab);
     tabPane.setTabMinWidth (80);
 
     screenChangeListeners =
-        Arrays.asList (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
+        Arrays.asList (datasetTab, jobTab, filesTab, commandsTab, transfersTab);
     keyboardStatusListeners =
-        Arrays.asList (datasetTab, jobTab, fileTab, commandsTab, transfersTab);
+        Arrays.asList (datasetTab, jobTab, filesTab, commandsTab, transfersTab);
 
     datasetTab.addDatasetSelectionListener (transfersTab);
-    fileTab.addFileSelectionListener (transfersTab);
+    filesTab.addFileSelectionListener (transfersTab);
     jobTab.addJobSelectionListener (transfersTab);
     //    fileTab.getCurrentFileBuffer ();
 
@@ -91,7 +91,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     anchorPane.getChildren ().addAll (tsoCommand.getBox (), btnHide);
 
     BorderPane borderPane = new BorderPane ();
-    menuBar = fileTab.getMenuBar ();
+    menuBar = filesTab.getMenuBar ();
     borderPane.setTop (menuBar);
     borderPane.setCenter (tabPane);
     borderPane.setBottom (anchorPane);
@@ -155,27 +155,27 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
   public void openTransfer (Transfer transfer)
   {
-    fileTab.openTransfer (transfer);
+    filesTab.openTransfer (transfer);
   }
 
-  public Transfer getTransfer (FileTransferOutboundSF transferRecord)
+  public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
   {
-    return fileTab.getTransfer (transferRecord);
+    return filesTab.getTransfer (transferRecord);
   }
 
   public void closeTransfer ()
   {
-    fileTab.closeTransfer ();
+    filesTab.closeTransfer ();
   }
 
   public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
   {
-    return fileTab.closeTransfer (transferRecord);
+    return filesTab.closeTransfer (transferRecord);
   }
 
   public Optional<byte[]> getCurrentFileBuffer ()
   {
-    return fileTab.getCurrentFileBuffer ();
+    return filesTab.getCurrentFileBuffer ();
   }
 
   @Override

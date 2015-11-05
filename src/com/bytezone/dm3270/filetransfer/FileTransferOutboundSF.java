@@ -103,8 +103,8 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processOpen (Screen screen)
   {
-    transfer = new Transfer ();
-    transfer.add (this);
+    transfer = new Transfer (this);
+    //    transfer.add (this);
     assistantStage.openTransfer (transfer);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
@@ -142,12 +142,21 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processSend0x45 ()
   {
-    transfer = assistantStage.getTransfer (this);
+    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
+    if (optionalTransfer.isPresent ())
+      transfer = optionalTransfer.get ();
   }
 
   private void processSend0x46 (Screen screen)
   {
-    transfer = assistantStage.getTransfer (this);
+    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
+    if (optionalTransfer.isPresent ())
+      transfer = optionalTransfer.get ();
+    else
+    {
+      System.out.println ("No active transfer");
+      return;
+    }
 
     byte[] replyBuffer;
     int ptr = 0;
@@ -186,7 +195,14 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processReceive (Screen screen)
   {
-    transfer = assistantStage.getTransfer (this);
+    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
+    if (optionalTransfer.isPresent ())
+      transfer = optionalTransfer.get ();
+    else
+    {
+      System.out.println ("No active transfer");
+      return;
+    }
 
     if (subtype == 0x04) // message or transfer buffer
     {

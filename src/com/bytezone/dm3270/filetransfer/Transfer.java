@@ -43,6 +43,11 @@ public class Transfer
     SEND, RECEIVE
   }
 
+  public Transfer (FileTransferOutboundSF outboundRecord)
+  {
+    add (outboundRecord);
+  }
+
   public void add (FileTransferOutboundSF outboundRecord)
   {
     outboundRecords.add (outboundRecord);

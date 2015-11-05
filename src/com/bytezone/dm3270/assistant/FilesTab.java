@@ -129,10 +129,16 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     currentTransfer = transfer;
   }
 
-  public Transfer getTransfer (FileTransferOutboundSF transferRecord)
+  public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
   {
+    if (currentTransfer == null)
+    {
+      System.out.println ("Null current transfer");
+      return Optional.empty ();
+    }
+
     currentTransfer.add (transferRecord);
-    return currentTransfer;
+    return Optional.of (currentTransfer);
   }
 
   public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
