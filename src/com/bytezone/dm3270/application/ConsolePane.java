@@ -2,6 +2,7 @@ package com.bytezone.dm3270.application;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import com.bytezone.dm3270.application.Parameters.SiteParameters;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
@@ -104,10 +105,10 @@ public class ConsolePane extends BorderPane
 
     if (server != null)
     {
-      SiteParameters sp = parameters.getSiteParameters (server.getName ());
-      if (sp != null)
+      Optional<SiteParameters> sp = parameters.getSiteParameters (server.getName ());
+      if (sp.isPresent ())
       {
-        String offset = sp.getParameter ("offset");
+        String offset = sp.get ().getParameter ("offset");
         if (!offset.isEmpty () && offset.length () > 4)
         {
           char direction = offset.charAt (3);

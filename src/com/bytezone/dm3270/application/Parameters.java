@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Parameters
 {
-  List<SiteParameters> siteParameters = new ArrayList<> ();
+  List<SiteParameters> siteParametersList = new ArrayList<> ();
 
   public Parameters ()
   {
@@ -23,19 +24,19 @@ public class Parameters
       if (line.startsWith ("["))
       {
         currentSiteParameters = new SiteParameters (line);
-        siteParameters.add (currentSiteParameters);
+        siteParametersList.add (currentSiteParameters);
       }
       else if (line.length () > 0)
         currentSiteParameters.addParameter (line);
     }
   }
 
-  public SiteParameters getSiteParameters (String name)
+  public Optional<SiteParameters> getSiteParameters (String name)
   {
-    for (SiteParameters sp : siteParameters)
-      if (sp.siteName.equals (name))
-        return sp;
-    return null;
+    for (SiteParameters siteParameters : siteParametersList)
+      if (siteParameters.siteName.equals (name))
+        return Optional.of (siteParameters);
+    return Optional.empty ();
   }
 
   private List<String> getLines ()
@@ -59,7 +60,7 @@ public class Parameters
   {
     StringBuilder text = new StringBuilder ();
 
-    for (SiteParameters sp : siteParameters)
+    for (SiteParameters sp : siteParametersList)
       text.append (sp + "\n");
 
     return text.toString ();
