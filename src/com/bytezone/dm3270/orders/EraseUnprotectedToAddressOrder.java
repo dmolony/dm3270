@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.display.DisplayScreen;
+import com.bytezone.dm3270.display.Pen;
 
 public class EraseUnprotectedToAddressOrder extends Order
 {
@@ -20,6 +21,7 @@ public class EraseUnprotectedToAddressOrder extends Order
   {
     if (false)
     {
+      Pen pen = screen.getPen ();
       //      Cursor cursor = screen.getScreenCursor ();
       //      int cursorPostion = cursor.getLocation ();
       //      Field resetField = null;
