@@ -50,19 +50,19 @@ public class MainframeServer implements Runnable
       clientIn = clientSocket.getInputStream ();
       clientOut = clientSocket.getOutputStream ();
 
-      writeMany (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.TERMINAL_TYPE);
+      writeAll (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.TERMINAL_TYPE);
       readAtLeast (1);
 
-      writeMany (TelnetCommand.IAC, TelnetCommand.SB, TelnetSubcommand.TERMINAL_TYPE,
+      writeAll (TelnetCommand.IAC, TelnetCommand.SB, TelnetSubcommand.TERMINAL_TYPE,
                  TerminalTypeSubcommand.OPTION_SEND, TelnetCommand.IAC, TelnetCommand.SE);
       readAtLeast (1);
 
-      writeMany (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.EOR);
-      writeMany (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.EOR);
+      writeAll (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.EOR);
+      writeAll (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.EOR);
       readAtLeast (6);
 
-      writeMany (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.BINARY);
-      writeMany (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.BINARY);
+      writeAll (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.BINARY);
+      writeAll (TelnetCommand.IAC, TelnetCommand.WILL, TelnetSubcommand.BINARY);
       readAtLeast (6);
 
       // send Query to find out what the terminal supports
@@ -153,7 +153,7 @@ public class MainframeServer implements Runnable
       bytesToRead -= clientIn.read (buffer);      // blocks
   }
 
-  private void writeMany (byte... buffer) throws IOException
+  private void writeAll (byte... buffer) throws IOException
   {
     write (buffer);
   }
