@@ -229,7 +229,7 @@ public class TransfersTab extends AbstractTransferTab
   @Override
   public void jobSelected (BatchJob job)
   {
-    txtJobs.setText (job.getOutputFile ());
+    txtJobs.setText (job.getJobOutputFile ());
     if (isSelected ())
       setText ();
   }

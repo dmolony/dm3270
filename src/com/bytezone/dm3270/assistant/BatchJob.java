@@ -10,8 +10,8 @@ public class BatchJob
   private StringProperty propertyJobNumber;
   private StringProperty propertyJobName;
   private StringProperty propertyJobCompleted;
-  private StringProperty propertyConditionCode;
-  private StringProperty propertyOutputFile;
+  private StringProperty propertyJobConditionCode;
+  private StringProperty propertyJobOutputFile;
 
   public BatchJob (int jobNumber, String jobName)
   {
@@ -71,7 +71,7 @@ public class BatchJob
     return propertyJobNumber ().getValue ();
   }
 
-  public StringProperty propertyJobNumber ()
+  StringProperty propertyJobNumber ()
   {
     if (propertyJobNumber == null)
       propertyJobNumber = new SimpleStringProperty (this, "JobNumber");
@@ -90,7 +90,7 @@ public class BatchJob
     return propertyJobName ().getValue ();
   }
 
-  public StringProperty propertyJobName ()
+  StringProperty propertyJobName ()
   {
     if (propertyJobName == null)
       propertyJobName = new SimpleStringProperty (this, "JobName");
@@ -109,49 +109,49 @@ public class BatchJob
     return propertyJobCompleted ().getValue ();
   }
 
-  public StringProperty propertyJobCompleted ()
+  StringProperty propertyJobCompleted ()
   {
     if (propertyJobCompleted == null)
       propertyJobCompleted = new SimpleStringProperty (this, "JobCompleted");
     return propertyJobCompleted;
   }
 
-  // ConditionCode
+  // JobConditionCode
 
   public void setJobConditionCode (String value)
   {
-    propertyConditionCode ().setValue (value);
+    propertyJobConditionCode ().setValue (value);
   }
 
   public String getJobConditionCode ()
   {
-    return propertyConditionCode ().getValue ();
+    return propertyJobConditionCode ().getValue ();
   }
 
-  public StringProperty propertyConditionCode ()
+  public StringProperty propertyJobConditionCode ()
   {
-    if (propertyConditionCode == null)
-      propertyConditionCode = new SimpleStringProperty (this, "JobConditionCode");
-    return propertyConditionCode;
+    if (propertyJobConditionCode == null)
+      propertyJobConditionCode = new SimpleStringProperty (this, "JobConditionCode");
+    return propertyJobConditionCode;
   }
 
   // OutputFile
 
-  public void setOutputFile (String value)
+  public void setJobOutputFile (String value)
   {
-    propertyOutputFile ().setValue (value);
+    propertyJobOutputFile ().setValue (value);
   }
 
-  public String getOutputFile ()
+  public String getJobOutputFile ()
   {
-    return propertyOutputFile ().getValue ();
+    return propertyJobOutputFile ().getValue ();
   }
 
-  public StringProperty propertyOutputFile ()
+  public StringProperty propertyJobOutputFile ()
   {
-    if (propertyOutputFile == null)
-      propertyOutputFile = new SimpleStringProperty (this, "OutputFile");
-    return propertyOutputFile;
+    if (propertyJobOutputFile == null)
+      propertyJobOutputFile = new SimpleStringProperty (this, "JobOutputFile");
+    return propertyJobOutputFile;
   }
 
   @Override
@@ -159,15 +159,13 @@ public class BatchJob
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String.format ("Job number ... : %s%n", propertyJobNumber.getValue ()));
-    text.append (String.format ("Job name ..... : %s%n", propertyJobName.getValue ()));
+    text.append (String.format ("Job number ... : %s%n", getJobNumber ()));
+    text.append (String.format ("Job name ..... : %s%n", getJobName ()));
 
     if (propertyJobCompleted != null)
     {
-      text.append (String.format ("Completed .... : %s%n",
-                                  propertyJobCompleted.getValue ()));
-      text.append (String.format ("Condition .... : %s%n",
-                                  propertyConditionCode.getValue ()));
+      text.append (String.format ("Completed .... : %s%n", getJobCompleted ()));
+      text.append (String.format ("Condition .... : %s%n", getJobConditionCode ()));
     }
 
     return text.toString ();
