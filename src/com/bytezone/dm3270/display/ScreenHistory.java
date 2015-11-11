@@ -14,7 +14,7 @@ public class ScreenHistory
       { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
         Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
 
-  private final List<UserScreen> screens = new ArrayList<> ();
+  private final List<UserScreen> screens = new ArrayList<> (MAX_SCREENS);
 
   private boolean keyboardLocked;       // save previous setting
   private boolean paused;
@@ -57,14 +57,13 @@ public class ScreenHistory
 
   void add (AIDCommand command)
   {
-    screens.add (new UserScreen (command));
-
-    if (screens.size () > MAX_SCREENS)
+    if (screens.size () == MAX_SCREENS)
     {
       screens.remove (0);
       if (currentScreen > 0)
         --currentScreen;
     }
+    screens.add (new UserScreen (command));
   }
 
   public int size ()
