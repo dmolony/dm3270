@@ -75,7 +75,7 @@ public class Dataset
   public StringProperty datasetNameProperty ()
   {
     if (propertyDatasetName == null)
-      propertyDatasetName = new SimpleStringProperty (this, "DatasetName");
+      propertyDatasetName = new SimpleStringProperty ();
     return propertyDatasetName;
   }
 
@@ -94,7 +94,7 @@ public class Dataset
   public IntegerProperty tracksProperty ()
   {
     if (propertyTracks == null)
-      propertyTracks = new SimpleIntegerProperty (this, "Tracks");
+      propertyTracks = new SimpleIntegerProperty ();
     return propertyTracks;
   }
 
@@ -113,7 +113,7 @@ public class Dataset
   public StringProperty cylindersProperty ()
   {
     if (propertyCylinders == null)
-      propertyCylinders = new SimpleStringProperty (this, "Cylinders");
+      propertyCylinders = new SimpleStringProperty ();
     return propertyCylinders;
   }
 
@@ -132,7 +132,7 @@ public class Dataset
   public IntegerProperty extentsProperty ()
   {
     if (propertyExtents == null)
-      propertyExtents = new SimpleIntegerProperty (this, "Extents");
+      propertyExtents = new SimpleIntegerProperty ();
     return propertyExtents;
   }
 
@@ -151,7 +151,7 @@ public class Dataset
   public IntegerProperty percentUsedProperty ()
   {
     if (propertyPercentUsed == null)
-      propertyPercentUsed = new SimpleIntegerProperty (this, "PercentUsed");
+      propertyPercentUsed = new SimpleIntegerProperty ();
     return propertyPercentUsed;
   }
 
@@ -170,7 +170,7 @@ public class Dataset
   public StringProperty volumeProperty ()
   {
     if (propertyVolume == null)
-      propertyVolume = new SimpleStringProperty (this, "Volume");
+      propertyVolume = new SimpleStringProperty ();
     return propertyVolume;
   }
 
@@ -189,7 +189,7 @@ public class Dataset
   public StringProperty deviceProperty ()
   {
     if (propertyDevice == null)
-      propertyDevice = new SimpleStringProperty (this, "Device");
+      propertyDevice = new SimpleStringProperty ();
     return propertyDevice;
   }
 
@@ -208,7 +208,7 @@ public class Dataset
   public StringProperty dsorgProperty ()
   {
     if (propertyDsorg == null)
-      propertyDsorg = new SimpleStringProperty (this, "DSORG");
+      propertyDsorg = new SimpleStringProperty ();
     return propertyDsorg;
   }
 
@@ -227,7 +227,7 @@ public class Dataset
   public StringProperty recfmProperty ()
   {
     if (propertyRecfm == null)
-      propertyRecfm = new SimpleStringProperty (this, "RECFM");
+      propertyRecfm = new SimpleStringProperty ();
     return propertyRecfm;
   }
 
@@ -246,7 +246,7 @@ public class Dataset
   public IntegerProperty lreclProperty ()
   {
     if (propertyLrecl == null)
-      propertyLrecl = new SimpleIntegerProperty (this, "LRECL");
+      propertyLrecl = new SimpleIntegerProperty ();
     return propertyLrecl;
   }
 
@@ -265,7 +265,7 @@ public class Dataset
   public IntegerProperty blksizeProperty ()
   {
     if (propertyBlksize == null)
-      propertyBlksize = new SimpleIntegerProperty (this, "BLKSIZE");
+      propertyBlksize = new SimpleIntegerProperty ();
     return propertyBlksize;
   }
 
@@ -284,7 +284,7 @@ public class Dataset
   public StringProperty catalogProperty ()
   {
     if (propertyCatalog == null)
-      propertyCatalog = new SimpleStringProperty (this, "Catalog");
+      propertyCatalog = new SimpleStringProperty ();
     return propertyCatalog;
   }
 
@@ -303,7 +303,7 @@ public class Dataset
   public StringProperty createdProperty ()
   {
     if (propertyCreated == null)
-      propertyCreated = new SimpleStringProperty (this, "Created");
+      propertyCreated = new SimpleStringProperty ();
     return propertyCreated;
   }
 
@@ -322,7 +322,7 @@ public class Dataset
   public StringProperty expiresProperty ()
   {
     if (propertyExpires == null)
-      propertyExpires = new SimpleStringProperty (this, "Expires");
+      propertyExpires = new SimpleStringProperty ();
     return propertyExpires;
   }
 
@@ -341,7 +341,7 @@ public class Dataset
   public StringProperty referredProperty ()
   {
     if (propertyReferred == null)
-      propertyReferred = new SimpleStringProperty (this, "Referred");
+      propertyReferred = new SimpleStringProperty ();
     return propertyReferred;
   }
 

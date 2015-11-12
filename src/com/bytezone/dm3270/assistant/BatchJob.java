@@ -74,7 +74,7 @@ public class BatchJob
   StringProperty jobNumberProperty ()
   {
     if (jobNumberProperty == null)
-      jobNumberProperty = new SimpleStringProperty (this, "JobNumber");
+      jobNumberProperty = new SimpleStringProperty ();
     return jobNumberProperty;
   }
 
@@ -112,7 +112,7 @@ public class BatchJob
   public StringProperty jobCompletedProperty ()
   {
     if (jobCompletedProperty == null)
-      jobCompletedProperty = new SimpleStringProperty (this, "jobCompleted");
+      jobCompletedProperty = new SimpleStringProperty ();
     return jobCompletedProperty;
   }
 
@@ -131,7 +131,7 @@ public class BatchJob
   public StringProperty jobConditionCodeProperty ()
   {
     if (jobConditionCodeProperty == null)
-      jobConditionCodeProperty = new SimpleStringProperty (this, "jobConditionCode");
+      jobConditionCodeProperty = new SimpleStringProperty ();
     return jobConditionCodeProperty;
   }
 
@@ -150,7 +150,7 @@ public class BatchJob
   public StringProperty jobOutputFileProperty ()
   {
     if (jobOutputFileProperty == null)
-      jobOutputFileProperty = new SimpleStringProperty (this, "jobOutputFile");
+      jobOutputFileProperty = new SimpleStringProperty ();
     return jobOutputFileProperty;
   }
 
