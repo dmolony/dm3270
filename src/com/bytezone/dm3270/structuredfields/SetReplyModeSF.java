@@ -3,7 +3,7 @@ package com.bytezone.dm3270.structuredfields;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.Screen;
 
-public class SetReplyMode extends StructuredField
+public class SetReplyModeSF extends StructuredField
 {
   public static final byte RM_FIELD = 0x00;
   public static final byte RM_EXTENDED_FIELD = 0x01;
@@ -14,7 +14,7 @@ public class SetReplyMode extends StructuredField
   private final byte replyMode;
   private final byte[] types;
 
-  public SetReplyMode (byte[] buffer, int offset, int length)
+  public SetReplyModeSF (byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length);
 

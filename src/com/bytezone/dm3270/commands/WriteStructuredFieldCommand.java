@@ -11,7 +11,7 @@ import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
 import com.bytezone.dm3270.structuredfields.EraseResetSF;
 import com.bytezone.dm3270.structuredfields.Outbound3270DS;
 import com.bytezone.dm3270.structuredfields.ReadPartitionSF;
-import com.bytezone.dm3270.structuredfields.SetReplyMode;
+import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.utilities.Utility;
 
@@ -50,7 +50,7 @@ public class WriteStructuredFieldCommand extends Command
           break;
 
         case StructuredField.SET_REPLY_MODE:
-          fields.add (new SetReplyMode (buffer, ptr, size));
+          fields.add (new SetReplyModeSF (buffer, ptr, size));
           break;
 
         case StructuredField.ACTIVATE_PARTITION:

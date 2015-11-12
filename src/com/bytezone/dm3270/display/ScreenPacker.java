@@ -11,7 +11,7 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
-import com.bytezone.dm3270.structuredfields.SetReplyMode;
+import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
 public class ScreenPacker implements ScreenChangeListener
 {
@@ -113,7 +113,7 @@ public class ScreenPacker implements ScreenChangeListener
 
     StartFieldAttribute sfa = sp.getStartFieldAttribute ();
 
-    if (replyMode == SetReplyMode.RM_FIELD)
+    if (replyMode == SetReplyModeSF.RM_FIELD)
     {
       buffer[ptr++] = Order.START_FIELD;
       buffer[ptr++] = sfa.getAttributeValue ();
@@ -134,7 +134,7 @@ public class ScreenPacker implements ScreenChangeListener
 
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
   {
-    if (replyMode == SetReplyMode.RM_CHARACTER)
+    if (replyMode == SetReplyModeSF.RM_CHARACTER)
       for (Attribute attribute : sp.getAttributes ())
         if (attribute.getAttributeType () == AttributeType.RESET)
         {
@@ -150,7 +150,7 @@ public class ScreenPacker implements ScreenChangeListener
               break;
             }
 
-    if (sp.isGraphicsChar () && replyMode != SetReplyMode.RM_FIELD)
+    if (sp.isGraphicsChar () && replyMode != SetReplyModeSF.RM_FIELD)
       buffer[ptr++] = Order.GRAPHICS_ESCAPE;
 
     buffer[ptr++] = sp.getByte ();

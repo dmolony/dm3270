@@ -292,7 +292,7 @@ public class Screen extends Canvas implements DisplayScreen
     if (recording && fieldManager.size () > 0 && !keyboardLocked)
     {
       byte savedReplyMode = replyMode;
-      byte[] savedReplyTypes = getReplyTypes ();
+      byte[] savedReplyTypes = replyTypes;
 
       screenHistory.requestScreen (this);     // will call readBuffer()
 
@@ -395,21 +395,22 @@ public class Screen extends Canvas implements DisplayScreen
     return currentAID;
   }
 
+  // called from SetReplyModeSF
   public void setReplyMode (byte replyMode, byte[] replyTypes)
   {
     this.replyMode = replyMode;
     this.replyTypes = replyTypes;
   }
 
-  public byte getReplyMode ()
-  {
-    return replyMode;
-  }
+  //  public byte getReplyMode ()
+  //  {
+  //    return replyMode;
+  //  }
 
-  public byte[] getReplyTypes ()
-  {
-    return replyTypes;
-  }
+  //  public byte[] getReplyTypes ()
+  //  {
+  //    return replyTypes;
+  //  }
 
   public void setFieldText (Field field, String text)
   {

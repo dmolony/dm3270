@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.structuredfields.SetReplyMode;
+import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
 public class ScreenHistory
 {
@@ -22,7 +22,7 @@ public class ScreenHistory
 
   void requestScreen (Screen screen)
   {
-    screen.setReplyMode (SetReplyMode.RM_CHARACTER, replyTypes);
+    screen.setReplyMode (SetReplyModeSF.RM_CHARACTER, replyTypes);
 
     AIDCommand command = screen.readBuffer ();
 
