@@ -32,29 +32,29 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     setFixedCellSize (20.0);
 
     addColumn ("Dataset name", 300, Justification.LEFT,
-               e -> e.getValue ().getValue ().propertyDatasetName ());
+               e -> e.getValue ().getValue ().datasetNameProperty ());
     addColumn ("Volume", 70, Justification.LEFT,
-               e -> e.getValue ().getValue ().propertyVolume ());
-    addIntegerColumn ("Tracks", 50, e -> e.getValue ().getValue ().propertyTracks ());
+               e -> e.getValue ().getValue ().volumeProperty ());
+    addIntegerColumn ("Tracks", 50, e -> e.getValue ().getValue ().tracksProperty ());
     addIntegerColumn ("% used", 50,
-                      e -> e.getValue ().getValue ().propertyPercentUsed ());
-    addIntegerColumn ("XT", 50, e -> e.getValue ().getValue ().propertyExtents ());
+                      e -> e.getValue ().getValue ().percentUsedProperty ());
+    addIntegerColumn ("XT", 50, e -> e.getValue ().getValue ().extentsProperty ());
     addColumn ("Device", 50, Justification.CENTER,
-               e -> e.getValue ().getValue ().propertyDevice ());
+               e -> e.getValue ().getValue ().deviceProperty ());
     addColumn ("Dsorg", 50, Justification.LEFT,
-               e -> e.getValue ().getValue ().propertyDsorg ());
+               e -> e.getValue ().getValue ().dsorgProperty ());
     addColumn ("Recfm", 50, Justification.LEFT,
-               e -> e.getValue ().getValue ().propertyRecfm ());
-    addIntegerColumn ("Lrecl", 50, e -> e.getValue ().getValue ().propertyLrecl ());
-    addIntegerColumn ("Blksize", 70, e -> e.getValue ().getValue ().propertyBlksize ());
+               e -> e.getValue ().getValue ().recfmProperty ());
+    addIntegerColumn ("Lrecl", 50, e -> e.getValue ().getValue ().lreclProperty ());
+    addIntegerColumn ("Blksize", 70, e -> e.getValue ().getValue ().blksizeProperty ());
     addColumn ("Created", 100, Justification.CENTER,
-               e -> e.getValue ().getValue ().propertyCreated ());
+               e -> e.getValue ().getValue ().createdProperty ());
     addColumn ("Expires", 100, Justification.CENTER,
-               e -> e.getValue ().getValue ().propertyExpires ());
+               e -> e.getValue ().getValue ().expiresProperty ());
     addColumn ("Referred", 100, Justification.CENTER,
-               e -> e.getValue ().getValue ().propertyReferred ());
+               e -> e.getValue ().getValue ().referredProperty ());
     addColumn ("Catalog/ID", 150, Justification.LEFT,
-               e -> e.getValue ().getValue ().propertyCatalog ());
+               e -> e.getValue ().getValue ().catalogProperty ());
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));
   }

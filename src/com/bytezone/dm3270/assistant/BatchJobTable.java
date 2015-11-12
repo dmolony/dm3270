@@ -20,18 +20,18 @@ public class BatchJobTable extends TableView<BatchJob>
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
-    addColumn ("Job ID", 100, Justification.CENTER, "jobNumber");
-    addColumn ("Job Name", 150, Justification.LEFT, "jobName");
-    addColumn ("Completed", 100, Justification.CENTER, "jobCompleted");
-    addColumn ("Cond", 100, Justification.CENTER, "jobConditionCode");
-    addColumn ("Output dataset", 200, Justification.LEFT, "jobOutputFile");
+    addColumnString ("Job ID", 100, Justification.CENTER, "jobNumber");
+    addColumnString ("Job Name", 150, Justification.LEFT, "jobName");
+    addColumnString ("Completed", 100, Justification.CENTER, "jobCompleted");
+    addColumnString ("Cond", 100, Justification.CENTER, "jobConditionCode");
+    addColumnString ("Output dataset", 200, Justification.LEFT, "jobOutputFile");
 
     setItems (batchJobs);
 
     setPlaceholder (new Label ("No jobs have been submitted in this session"));
   }
 
-  private void addColumn (String heading, int width, Justification justification,
+  private void addColumnString (String heading, int width, Justification justification,
       String propertyName)
   {
     TableColumn<BatchJob, String> column = new TableColumn<> (heading);

@@ -25,7 +25,7 @@ public class Dataset
 
   public Dataset (String name)
   {
-    propertyDatasetName ().set (name);
+    datasetNameProperty ().set (name);
   }
 
   public void merge (Dataset other)
@@ -64,15 +64,15 @@ public class Dataset
 
   public void setDatasetName (String value)
   {
-    propertyDatasetName ().set (value);
+    datasetNameProperty ().set (value);
   }
 
   public String getDatasetName ()
   {
-    return propertyDatasetName ().get ();
+    return datasetNameProperty ().get ();
   }
 
-  public StringProperty propertyDatasetName ()
+  public StringProperty datasetNameProperty ()
   {
     if (propertyDatasetName == null)
       propertyDatasetName = new SimpleStringProperty (this, "DatasetName");
@@ -83,15 +83,15 @@ public class Dataset
 
   public void setTracks (int value)
   {
-    propertyTracks ().setValue (value);
+    tracksProperty ().setValue (value);
   }
 
   public int getTracks ()
   {
-    return propertyTracks ().getValue ();
+    return tracksProperty ().getValue ();
   }
 
-  public IntegerProperty propertyTracks ()
+  public IntegerProperty tracksProperty ()
   {
     if (propertyTracks == null)
       propertyTracks = new SimpleIntegerProperty (this, "Tracks");
@@ -102,15 +102,15 @@ public class Dataset
 
   public void setCylinders (String value)
   {
-    propertyCylinders ().set (value);
+    cylindersProperty ().set (value);
   }
 
   public String getCylinders ()
   {
-    return propertyCylinders ().get ();
+    return cylindersProperty ().get ();
   }
 
-  public StringProperty propertyCylinders ()
+  public StringProperty cylindersProperty ()
   {
     if (propertyCylinders == null)
       propertyCylinders = new SimpleStringProperty (this, "Cylinders");
@@ -121,15 +121,15 @@ public class Dataset
 
   public void setExtents (int value)
   {
-    propertyExtents ().setValue (value);
+    extentsProperty ().setValue (value);
   }
 
   public int getExtents ()
   {
-    return propertyExtents ().getValue ();
+    return extentsProperty ().getValue ();
   }
 
-  public IntegerProperty propertyExtents ()
+  public IntegerProperty extentsProperty ()
   {
     if (propertyExtents == null)
       propertyExtents = new SimpleIntegerProperty (this, "Extents");
@@ -140,15 +140,15 @@ public class Dataset
 
   public void setPercentUsed (int value)
   {
-    propertyPercentUsed ().setValue (value);
+    percentUsedProperty ().setValue (value);
   }
 
   public int getPercentUsed ()
   {
-    return propertyPercentUsed ().getValue ();
+    return percentUsedProperty ().getValue ();
   }
 
-  public IntegerProperty propertyPercentUsed ()
+  public IntegerProperty percentUsedProperty ()
   {
     if (propertyPercentUsed == null)
       propertyPercentUsed = new SimpleIntegerProperty (this, "PercentUsed");
@@ -159,15 +159,15 @@ public class Dataset
 
   public void setVolume (String value)
   {
-    propertyVolume ().set (value);
+    volumeProperty ().set (value);
   }
 
   public String getVolume ()
   {
-    return propertyVolume ().get ();
+    return volumeProperty ().get ();
   }
 
-  public StringProperty propertyVolume ()
+  public StringProperty volumeProperty ()
   {
     if (propertyVolume == null)
       propertyVolume = new SimpleStringProperty (this, "Volume");
@@ -178,15 +178,15 @@ public class Dataset
 
   public void setDevice (String value)
   {
-    propertyDevice ().set (value);
+    deviceProperty ().set (value);
   }
 
   public String getDevice ()
   {
-    return propertyDevice ().get ();
+    return deviceProperty ().get ();
   }
 
-  public StringProperty propertyDevice ()
+  public StringProperty deviceProperty ()
   {
     if (propertyDevice == null)
       propertyDevice = new SimpleStringProperty (this, "Device");
@@ -197,15 +197,15 @@ public class Dataset
 
   public void setDsorg (String value)
   {
-    propertyDsorg ().set (value);
+    dsorgProperty ().set (value);
   }
 
   public String getDsorg ()
   {
-    return propertyDsorg ().get ();
+    return dsorgProperty ().get ();
   }
 
-  public StringProperty propertyDsorg ()
+  public StringProperty dsorgProperty ()
   {
     if (propertyDsorg == null)
       propertyDsorg = new SimpleStringProperty (this, "DSORG");
@@ -216,15 +216,15 @@ public class Dataset
 
   public void setRecfm (String value)
   {
-    propertyRecfm ().set (value);
+    recfmProperty ().set (value);
   }
 
   public String getRecfm ()
   {
-    return propertyRecfm ().get ();
+    return recfmProperty ().get ();
   }
 
-  public StringProperty propertyRecfm ()
+  public StringProperty recfmProperty ()
   {
     if (propertyRecfm == null)
       propertyRecfm = new SimpleStringProperty (this, "RECFM");
@@ -235,15 +235,15 @@ public class Dataset
 
   public void setLrecl (int value)
   {
-    propertyLrecl ().setValue (value);
+    lreclProperty ().setValue (value);
   }
 
   public int getLrecl ()
   {
-    return propertyLrecl ().getValue ();
+    return lreclProperty ().getValue ();
   }
 
-  public IntegerProperty propertyLrecl ()
+  public IntegerProperty lreclProperty ()
   {
     if (propertyLrecl == null)
       propertyLrecl = new SimpleIntegerProperty (this, "LRECL");
@@ -254,15 +254,15 @@ public class Dataset
 
   public void setBlksize (int value)
   {
-    propertyBlksize ().setValue (value);
+    blksizeProperty ().setValue (value);
   }
 
   public int getBlksize ()
   {
-    return propertyBlksize ().getValue ();
+    return blksizeProperty ().getValue ();
   }
 
-  public IntegerProperty propertyBlksize ()
+  public IntegerProperty blksizeProperty ()
   {
     if (propertyBlksize == null)
       propertyBlksize = new SimpleIntegerProperty (this, "BLKSIZE");
@@ -273,15 +273,15 @@ public class Dataset
 
   public void setCatalog (String value)
   {
-    propertyCatalog ().set (value);
+    catalogProperty ().set (value);
   }
 
   public String getCatalog ()
   {
-    return propertyCatalog ().get ();
+    return catalogProperty ().get ();
   }
 
-  public StringProperty propertyCatalog ()
+  public StringProperty catalogProperty ()
   {
     if (propertyCatalog == null)
       propertyCatalog = new SimpleStringProperty (this, "Catalog");
@@ -292,15 +292,15 @@ public class Dataset
 
   public void setCreated (String value)
   {
-    propertyCreated ().set (value);
+    createdProperty ().set (value);
   }
 
   public String getCreated ()
   {
-    return propertyCreated ().get ();
+    return createdProperty ().get ();
   }
 
-  public StringProperty propertyCreated ()
+  public StringProperty createdProperty ()
   {
     if (propertyCreated == null)
       propertyCreated = new SimpleStringProperty (this, "Created");
@@ -311,15 +311,15 @@ public class Dataset
 
   public void setExpires (String value)
   {
-    propertyExpires ().set (value);
+    expiresProperty ().set (value);
   }
 
   public String getExpires ()
   {
-    return propertyExpires ().get ();
+    return expiresProperty ().get ();
   }
 
-  public StringProperty propertyExpires ()
+  public StringProperty expiresProperty ()
   {
     if (propertyExpires == null)
       propertyExpires = new SimpleStringProperty (this, "Expires");
@@ -330,15 +330,15 @@ public class Dataset
 
   public void setReferred (String value)
   {
-    propertyReferred ().set (value);
+    referredProperty ().set (value);
   }
 
   public String getReferred ()
   {
-    return propertyReferred ().get ();
+    return referredProperty ().get ();
   }
 
-  public StringProperty propertyReferred ()
+  public StringProperty referredProperty ()
   {
     if (propertyReferred == null)
       propertyReferred = new SimpleStringProperty (this, "Referred");

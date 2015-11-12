@@ -1,13 +1,11 @@
 package com.bytezone.dm3270.assistant;
 
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
-import javafx.util.Callback;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class DatasetTable extends TableView<Dataset>
 {
@@ -23,48 +21,43 @@ public class DatasetTable extends TableView<Dataset>
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
-    addColumn ("Dataset name", 300, Justification.LEFT,
-               e -> e.getValue ().propertyDatasetName ());
-    addColumn ("Volume", 70, Justification.LEFT, e -> e.getValue ().propertyVolume ());
-    addIntegerColumn ("Tracks", 50, e -> e.getValue ().propertyTracks ());
-    addIntegerColumn ("% used", 50, e -> e.getValue ().propertyPercentUsed ());
-    addIntegerColumn ("XT", 50, e -> e.getValue ().propertyExtents ());
-    addColumn ("Device", 50, Justification.CENTER, e -> e.getValue ().propertyDevice ());
-    addColumn ("Dsorg", 50, Justification.LEFT, e -> e.getValue ().propertyDsorg ());
-    addColumn ("Recfm", 50, Justification.LEFT, e -> e.getValue ().propertyRecfm ());
-    addIntegerColumn ("Lrecl", 50, e -> e.getValue ().propertyLrecl ());
-    addIntegerColumn ("Blksize", 70, e -> e.getValue ().propertyBlksize ());
-    addColumn ("Created", 100, Justification.CENTER,
-               e -> e.getValue ().propertyCreated ());
-    addColumn ("Expires", 100, Justification.CENTER,
-               e -> e.getValue ().propertyExpires ());
-    addColumn ("Referred", 100, Justification.CENTER,
-               e -> e.getValue ().propertyReferred ());
-    addColumn ("Catalog", 150, Justification.LEFT, e -> e.getValue ().propertyCatalog ());
+    addColumnString ("Dataset name", 300, Justification.LEFT, "datasetName");
+    addColumnString ("Volume", 70, Justification.LEFT, "volume");
+    addColumnNumber ("Tracks", 50, "tracksProperty");
+    addColumnNumber ("% used", 50, "percentUsedProperty");
+    addColumnNumber ("XT", 50, "extentsProperty");
+    addColumnString ("Device", 50, Justification.CENTER, "deviceProperty");
+    addColumnString ("Dsorg", 50, Justification.LEFT, "dsorgProperty");
+    addColumnString ("Recfm", 50, Justification.LEFT, "recfmProperty");
+    addColumnNumber ("Lrecl", 50, "lreclProperty");
+    addColumnNumber ("Blksize", 70, "blksizeProperty");
+    addColumnString ("Created", 100, Justification.CENTER, "createdProperty");
+    addColumnString ("Expires", 100, Justification.CENTER, "expiresProperty");
+    addColumnString ("Referred", 100, Justification.CENTER, "referredProperty");
+    addColumnString ("Catalog", 150, Justification.LEFT, "catalogProperty");
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));
 
     setItems (datasets);
   }
 
-  private void addColumn (String heading, int width, Justification justification,
-      Callback<CellDataFeatures<Dataset, String>, ObservableValue<String>> callback)
+  private void addColumnString (String heading, int width, Justification justification,
+      String propertyName)
   {
     TableColumn<Dataset, String> column = new TableColumn<> (heading);
     column.setPrefWidth (width);
-    column.setCellValueFactory (callback);
+    column.setCellValueFactory (new PropertyValueFactory<Dataset, String> (propertyName));
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
       column.setStyle ("-fx-alignment: CENTER;");
   }
 
-  private void addIntegerColumn (String heading, int width,
-      Callback<CellDataFeatures<Dataset, Number>, ObservableValue<Number>> callback)
+  private void addColumnNumber (String heading, int width, String propertyName)
   {
     TableColumn<Dataset, Number> column = new TableColumn<> (heading);
     column.setPrefWidth (width);
-    column.setCellValueFactory (callback);
+    column.setCellValueFactory (new PropertyValueFactory<Dataset, Number> (propertyName));
     getColumns ().add (column);
     column.setStyle ("-fx-alignment: CENTER-RIGHT;");
   }
