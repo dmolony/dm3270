@@ -105,12 +105,12 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     Dataset dataset;
     TreeItem<Dataset> treeItem;
 
-    List<Dataset> members;// only a PDS uses this
+    List<Dataset> members;            // only a PDS uses this
 
-    String parentName;// only PDS members use these 2 name fields
+    String parentName;                // only PDS members use these 2 name fields
     String memberName;
 
-    public DatasetEntry (Dataset dataset)
+    DatasetEntry (Dataset dataset)
     {
       // check whether this is a PDS member
       String name = dataset.getDatasetName ();
@@ -126,32 +126,32 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     }
 
     // only used when we have a PDS member with no parent
-    public DatasetEntry (String name)
+    DatasetEntry (String name)
     {
       dataset = new Dataset (name);
       parentName = name;
-      members = new ArrayList<> ();
+      members = new ArrayList<> ();           // so isPDS() returns true
       treeItem = new TreeItem<> (dataset);
     }
 
-    public void add (Dataset pdsMember)
+    void add (Dataset pdsMember)
     {
       if (members == null)
         members = new ArrayList<> ();
       members.add (pdsMember);
     }
 
-    public boolean isFlatFile ()
+    boolean isFlatFile ()
     {
       return parentName == null && members == null;
     }
 
-    public boolean isPDS ()
+    boolean isPDS ()
     {
       return members != null;
     }
 
-    public boolean isPDSMember ()
+    boolean isPDSMember ()
     {
       return parentName != null;
     }
