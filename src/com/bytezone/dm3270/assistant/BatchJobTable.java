@@ -4,14 +4,12 @@ import java.util.Optional;
 
 import com.bytezone.dm3270.assistant.DatasetTable.Justification;
 
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
-import javafx.util.Callback;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class BatchJobTable extends TableView<BatchJob>
 {
@@ -22,16 +20,11 @@ public class BatchJobTable extends TableView<BatchJob>
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
-    addColumn ("Job ID", 100, Justification.CENTER,
-               e -> e.getValue ().propertyJobNumber ());
-    addColumn ("Job Name", 150, Justification.LEFT,
-               e -> e.getValue ().propertyJobName ());
-    addColumn ("Completed", 100, Justification.CENTER,
-               e -> e.getValue ().propertyJobCompleted ());
-    addColumn ("Cond", 100, Justification.CENTER,
-               e -> e.getValue ().propertyJobConditionCode ());
-    addColumn ("Output dataset", 200, Justification.LEFT,
-               e -> e.getValue ().propertyJobOutputFile ());
+    addColumn ("Job ID", 100, Justification.CENTER, "jobNumber");
+    addColumn ("Job Name", 150, Justification.LEFT, "jobName");
+    addColumn ("Completed", 100, Justification.CENTER, "jobCompleted");
+    addColumn ("Cond", 100, Justification.CENTER, "jobConditionCode");
+    addColumn ("Output dataset", 200, Justification.LEFT, "jobOutputFile");
 
     setItems (batchJobs);
 
@@ -39,11 +32,12 @@ public class BatchJobTable extends TableView<BatchJob>
   }
 
   private void addColumn (String heading, int width, Justification justification,
-      Callback<CellDataFeatures<BatchJob, String>, ObservableValue<String>> callback)
+      String propertyName)
   {
     TableColumn<BatchJob, String> column = new TableColumn<> (heading);
     column.setPrefWidth (width);
-    column.setCellValueFactory (callback);
+    column
+        .setCellValueFactory (new PropertyValueFactory<BatchJob, String> (propertyName));
     getColumns ().add (column);
 
     if (justification == Justification.CENTER)
@@ -52,29 +46,18 @@ public class BatchJobTable extends TableView<BatchJob>
 
   void setOutlist (String jobName, String jobNumber, String outlist)
   {
-    for (BatchJob batchJob : batchJobs)
-      if (batchJob.matches (jobNumber))
-      {
-        batchJob.setJobOutputFile (outlist);
-        break;
-      }
+    batchJobs.stream ().filter (b -> b.matches (jobNumber)).findFirst ()
+        .ifPresent (b -> b.setJobOutputFile (outlist));
   }
 
   public void addBatchJob (BatchJob newBatchJob)
   {
-    for (BatchJob batchJob : batchJobs)
-      if (batchJob.matches (newBatchJob))
-        return;
-
-    batchJobs.add (newBatchJob);
+    if (batchJobs.stream ().noneMatch (b -> b.matches (newBatchJob)))
+      batchJobs.add (newBatchJob);
   }
 
   public Optional<BatchJob> getBatchJob (int jobNumber)
   {
-    for (BatchJob batchJob : batchJobs)
-      if (batchJob.matches (jobNumber))
-        return Optional.of (batchJob);
-
-    return Optional.empty ();
+    return batchJobs.stream ().filter (b -> b.matches (jobNumber)).findFirst ();
   }
 }
