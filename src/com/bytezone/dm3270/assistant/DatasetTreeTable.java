@@ -47,7 +47,7 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     setPlaceholder (new Label ("No datasets have been seen in this session"));
   }
 
-  // NB propertyName assumes there is a corresponding method xxxProperty in Dataset
+  // NB propertyName must have a corresponding method xxxProperty in Dataset
   private void addColumnString (String heading, int width, Justification justification,
       String propertyName)
   {

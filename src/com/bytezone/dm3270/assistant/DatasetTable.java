@@ -43,7 +43,7 @@ public class DatasetTable extends TableView<Dataset>
     setItems (datasets);
   }
 
-  // NB propertyName assumes there is a corresponding method xxxProperty in Dataset
+  // NB propertyName must have a corresponding method xxxProperty in Dataset
   private void addColumnString (String heading, int width, Justification justification,
       String propertyName)
   {
