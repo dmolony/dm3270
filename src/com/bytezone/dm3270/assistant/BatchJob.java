@@ -59,8 +59,9 @@ public class BatchJob
     return String.format ("%s.OUTLIST", getJobNumber ());
   }
 
+  // ---------------------------------------------------------------------------------//
   // JobNumber
-
+  // ---------------------------------------------------------------------------------//
   public void setJobNumber (String value)
   {
     jobNumberProperty ().setValue (value);
@@ -78,8 +79,9 @@ public class BatchJob
     return jobNumberProperty;
   }
 
+  // ---------------------------------------------------------------------------------//
   // JobName
-
+  // ---------------------------------------------------------------------------------//
   public void setJobName (String value)
   {
     jobNameProperty ().setValue (value);
@@ -97,8 +99,9 @@ public class BatchJob
     return jobNameProperty;
   }
 
+  // ---------------------------------------------------------------------------------//
   // JobCompleted
-
+  // ---------------------------------------------------------------------------------//
   public void setJobCompleted (String value)
   {
     jobCompletedProperty ().setValue (value);
@@ -116,8 +119,9 @@ public class BatchJob
     return jobCompletedProperty;
   }
 
+  // ---------------------------------------------------------------------------------//
   // JobConditionCode
-
+  // ---------------------------------------------------------------------------------//
   public void setJobConditionCode (String value)
   {
     jobConditionCodeProperty ().setValue (value);
@@ -135,8 +139,9 @@ public class BatchJob
     return jobConditionCodeProperty;
   }
 
-  // OutputFile
-
+  // ---------------------------------------------------------------------------------//
+  // JobOutputFile
+  // ---------------------------------------------------------------------------------//
   public void setJobOutputFile (String value)
   {
     jobOutputFileProperty ().setValue (value);
