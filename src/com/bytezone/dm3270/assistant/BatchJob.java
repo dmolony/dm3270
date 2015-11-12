@@ -7,11 +7,11 @@ public class BatchJob
 {
   private final int jobNumber;
 
-  private StringProperty propertyJobNumber;
-  private StringProperty propertyJobName;
+  private StringProperty jobNumberProperty;
+  private StringProperty jobNameProperty;
   private StringProperty jobCompletedProperty;
-  private StringProperty propertyJobConditionCode;
-  private StringProperty propertyJobOutputFile;
+  private StringProperty jobConditionCodeProperty;
+  private StringProperty jobOutputFileProperty;
 
   public BatchJob (int jobNumber, String jobName)
   {
@@ -33,7 +33,7 @@ public class BatchJob
 
   public boolean matches (String jobNumber)
   {
-    return propertyJobNumber.getValue ().equals (jobNumber);
+    return jobNumberProperty.getValue ().equals (jobNumber);
   }
 
   public void completed (String timeCompleted, int conditionCode)
@@ -50,8 +50,8 @@ public class BatchJob
 
   public String outputCommand ()
   {
-    return String.format ("OUT %s(%s) PRINT(%s)", propertyJobName.getValue (),
-                          propertyJobNumber.getValue (), propertyJobNumber.getValue ());
+    return String.format ("OUT %s(%s) PRINT(%s)", jobNameProperty.getValue (),
+                          jobNumberProperty.getValue (), jobNumberProperty.getValue ());
   }
 
   public String datasetName ()
@@ -73,9 +73,9 @@ public class BatchJob
 
   StringProperty jobNumberProperty ()
   {
-    if (propertyJobNumber == null)
-      propertyJobNumber = new SimpleStringProperty (this, "JobNumber");
-    return propertyJobNumber;
+    if (jobNumberProperty == null)
+      jobNumberProperty = new SimpleStringProperty (this, "JobNumber");
+    return jobNumberProperty;
   }
 
   // JobName
@@ -90,11 +90,11 @@ public class BatchJob
     return jobNameProperty ().getValue ();
   }
 
-  StringProperty jobNameProperty ()
+  public StringProperty jobNameProperty ()
   {
-    if (propertyJobName == null)
-      propertyJobName = new SimpleStringProperty (this, "JobName");
-    return propertyJobName;
+    if (jobNameProperty == null)
+      jobNameProperty = new SimpleStringProperty ();
+    return jobNameProperty;
   }
 
   // JobCompleted
@@ -130,9 +130,9 @@ public class BatchJob
 
   public StringProperty jobConditionCodeProperty ()
   {
-    if (propertyJobConditionCode == null)
-      propertyJobConditionCode = new SimpleStringProperty (this, "jobConditionCode");
-    return propertyJobConditionCode;
+    if (jobConditionCodeProperty == null)
+      jobConditionCodeProperty = new SimpleStringProperty (this, "jobConditionCode");
+    return jobConditionCodeProperty;
   }
 
   // OutputFile
@@ -149,9 +149,9 @@ public class BatchJob
 
   public StringProperty jobOutputFileProperty ()
   {
-    if (propertyJobOutputFile == null)
-      propertyJobOutputFile = new SimpleStringProperty (this, "jobOutputFile");
-    return propertyJobOutputFile;
+    if (jobOutputFileProperty == null)
+      jobOutputFileProperty = new SimpleStringProperty (this, "jobOutputFile");
+    return jobOutputFileProperty;
   }
 
   @Override
