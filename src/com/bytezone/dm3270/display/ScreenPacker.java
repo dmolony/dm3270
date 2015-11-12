@@ -27,7 +27,7 @@ public class ScreenPacker implements ScreenChangeListener
   {
     // pack the AID
     int ptr = 0;
-    buffer[ptr++] = currentAID;// whatever key was pressed
+    buffer[ptr++] = currentAID;               // whatever key was pressed
 
     // PA keys and the CLR key only return the AID byte
     if (!readModifiedAll)
@@ -129,6 +129,7 @@ public class ScreenPacker implements ScreenChangeListener
       for (Attribute attribute : attributes)
         ptr = attribute.pack (buffer, ptr);               // then pack the rest
     }
+
     return ptr;
   }
 

@@ -167,6 +167,7 @@ public class Screen extends Canvas implements DisplayScreen
     return screenPacker.getPreviousTSOCommand ();
   }
 
+  // called from AIDCommand.process()
   public void addTSOCommand (String command)
   {
     screenPacker.addTSOCommand (command);

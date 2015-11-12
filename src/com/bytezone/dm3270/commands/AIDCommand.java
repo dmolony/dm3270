@@ -162,7 +162,6 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   {
     if (!prettyMoveHandled (screen))
     {
-      //      ScreenDetails screenDetails = screen.getScreenDetails ();
       FieldManager fieldManager = screen.getFieldManager ();
       Field tsoCommandField = screen.getTSOCommandField ();
 
@@ -176,10 +175,8 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
       for (ModifiedField aidField : modifiedFields)
       {
         Optional<Field> optField = fieldManager.getFieldAt (aidField.getLocation ());
-        //        Field field = fieldManager.getFieldAt (aidField.getLocation ());
-        //        if (field == null)
         if (!optField.isPresent ())
-          continue;             // in replay mode we cannot rely on the fields list
+          continue;                 // in replay mode we cannot rely on the fields list
 
         Field field = optField.get ();
         if (aidField.hasData ())
