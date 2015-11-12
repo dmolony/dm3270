@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.Optional;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
@@ -23,24 +25,25 @@ public class DatasetTable extends TableView<Dataset>
 
     addColumnString ("Dataset name", 300, Justification.LEFT, "datasetName");
     addColumnString ("Volume", 70, Justification.LEFT, "volume");
-    addColumnNumber ("Tracks", 50, "tracksProperty");
-    addColumnNumber ("% used", 50, "percentUsedProperty");
-    addColumnNumber ("XT", 50, "extentsProperty");
-    addColumnString ("Device", 50, Justification.CENTER, "deviceProperty");
-    addColumnString ("Dsorg", 50, Justification.LEFT, "dsorgProperty");
-    addColumnString ("Recfm", 50, Justification.LEFT, "recfmProperty");
-    addColumnNumber ("Lrecl", 50, "lreclProperty");
-    addColumnNumber ("Blksize", 70, "blksizeProperty");
-    addColumnString ("Created", 100, Justification.CENTER, "createdProperty");
-    addColumnString ("Expires", 100, Justification.CENTER, "expiresProperty");
-    addColumnString ("Referred", 100, Justification.CENTER, "referredProperty");
-    addColumnString ("Catalog", 150, Justification.LEFT, "catalogProperty");
+    addColumnNumber ("Tracks", 50, "tracks");
+    addColumnNumber ("% used", 50, "percentUsed");
+    addColumnNumber ("XT", 50, "extents");
+    addColumnString ("Device", 50, Justification.CENTER, "device");
+    addColumnString ("Dsorg", 50, Justification.LEFT, "dsorg");
+    addColumnString ("Recfm", 50, Justification.LEFT, "recfm");
+    addColumnNumber ("Lrecl", 50, "lrecl");
+    addColumnNumber ("Blksize", 70, "blksize");
+    addColumnString ("Created", 100, Justification.CENTER, "created");
+    addColumnString ("Expires", 100, Justification.CENTER, "expires");
+    addColumnString ("Referred", 100, Justification.CENTER, "referred");
+    addColumnString ("Catalog", 150, Justification.LEFT, "catalog");
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));
 
     setItems (datasets);
   }
 
+  // NB propertyName assumes there is a corresponding method xxxProperty in Dataset
   private void addColumnString (String heading, int width, Justification justification,
       String propertyName)
   {
@@ -64,28 +67,20 @@ public class DatasetTable extends TableView<Dataset>
 
   public void addDataset (Dataset dataset)
   {
-    Dataset foundDataset = null;
     String datasetName = dataset.getDatasetName ();
-    for (Dataset existingDataset : datasets)
-      if (existingDataset.getDatasetName ().equals (datasetName))
-      {
-        foundDataset = existingDataset;
-        break;
-      }
 
-    if (foundDataset == null)
-      datasets.add (dataset);
+    Optional<Dataset> dataset2 = datasets.stream ()
+        .filter (d -> d.getDatasetName ().equals (datasetName)).findAny ();
+    if (dataset2.isPresent ())
+      dataset2.get ().merge (dataset);
     else
-      foundDataset.merge (dataset);
+      datasets.add (dataset);
   }
 
   public void addMember (Dataset member)
   {
     Dataset foundDataset = null;
     String memberName = member.getDatasetName ();
-    int pos = memberName.indexOf ('(');
-    String parentName = memberName.substring (0, pos);
-    String childName = memberName.substring (pos + 1, memberName.length () - 1);
 
     for (Dataset existingDataset : datasets)
       if (existingDataset.getDatasetName ().equals (memberName))
@@ -95,16 +90,8 @@ public class DatasetTable extends TableView<Dataset>
       }
 
     if (foundDataset == null)
-    {
       datasets.add (member);
-      //      System.out.println ("parent not found");
-    }
     else
-    {
-      //      foundDataset.merge (member);
-      //      foundDataset.getChildren ().add (childName);
-      //      System.out.println ("parent found");
-      //      refresh ();
-    }
+      foundDataset.merge (member);
   }
 }

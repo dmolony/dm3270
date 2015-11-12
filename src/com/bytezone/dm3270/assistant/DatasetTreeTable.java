@@ -5,13 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableColumn.CellDataFeatures;
 import javafx.scene.control.TreeTableView;
-import javafx.util.Callback;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 public class DatasetTreeTable extends TreeTableView<Dataset>
 {
@@ -31,32 +29,46 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setFixedCellSize (20.0);
 
-    addColumn ("Dataset name", 300, Justification.LEFT,
-               e -> e.getValue ().getValue ().datasetNameProperty ());
-    addColumn ("Volume", 70, Justification.LEFT,
-               e -> e.getValue ().getValue ().volumeProperty ());
-    addIntegerColumn ("Tracks", 50, e -> e.getValue ().getValue ().tracksProperty ());
-    addIntegerColumn ("% used", 50,
-                      e -> e.getValue ().getValue ().percentUsedProperty ());
-    addIntegerColumn ("XT", 50, e -> e.getValue ().getValue ().extentsProperty ());
-    addColumn ("Device", 50, Justification.CENTER,
-               e -> e.getValue ().getValue ().deviceProperty ());
-    addColumn ("Dsorg", 50, Justification.LEFT,
-               e -> e.getValue ().getValue ().dsorgProperty ());
-    addColumn ("Recfm", 50, Justification.LEFT,
-               e -> e.getValue ().getValue ().recfmProperty ());
-    addIntegerColumn ("Lrecl", 50, e -> e.getValue ().getValue ().lreclProperty ());
-    addIntegerColumn ("Blksize", 70, e -> e.getValue ().getValue ().blksizeProperty ());
-    addColumn ("Created", 100, Justification.CENTER,
-               e -> e.getValue ().getValue ().createdProperty ());
-    addColumn ("Expires", 100, Justification.CENTER,
-               e -> e.getValue ().getValue ().expiresProperty ());
-    addColumn ("Referred", 100, Justification.CENTER,
-               e -> e.getValue ().getValue ().referredProperty ());
-    addColumn ("Catalog/ID", 150, Justification.LEFT,
-               e -> e.getValue ().getValue ().catalogProperty ());
+    addColumnString ("Dataset name", 300, Justification.LEFT, "datasetName");
+    addColumnString ("Volume", 70, Justification.LEFT, "volume");
+    addColumnNumber ("Tracks", 50, "tracks");
+    addColumnNumber ("% used", 50, "percentUsed");
+    addColumnNumber ("XT", 50, "extents");
+    addColumnString ("Device", 50, Justification.CENTER, "device");
+    addColumnString ("Dsorg", 50, Justification.LEFT, "dsorg");
+    addColumnString ("Recfm", 50, Justification.LEFT, "recfm");
+    addColumnNumber ("Lrecl", 50, "lrecl");
+    addColumnNumber ("Blksize", 70, "blksize");
+    addColumnString ("Created", 100, Justification.CENTER, "created");
+    addColumnString ("Expires", 100, Justification.CENTER, "expires");
+    addColumnString ("Referred", 100, Justification.CENTER, "referred");
+    addColumnString ("Catalog/ID", 150, Justification.LEFT, "catalog");
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));
+  }
+
+  // NB propertyName assumes there is a corresponding method xxxProperty in Dataset
+  private void addColumnString (String heading, int width, Justification justification,
+      String propertyName)
+  {
+    TreeTableColumn<Dataset, String> column = new TreeTableColumn<> (heading);
+    column.setPrefWidth (width);
+    column.setCellValueFactory (new TreeItemPropertyValueFactory<Dataset, String> (
+        propertyName));
+    getColumns ().add (column);
+
+    if (justification == Justification.CENTER)
+      column.setStyle ("-fx-alignment: CENTER;");
+  }
+
+  private void addColumnNumber (String heading, int width, String propertyName)
+  {
+    TreeTableColumn<Dataset, Number> column = new TreeTableColumn<> (heading);
+    column.setPrefWidth (width);
+    column.setCellValueFactory (new TreeItemPropertyValueFactory<Dataset, Number> (
+        propertyName));
+    getColumns ().add (column);
+    column.setStyle ("-fx-alignment: CENTER-RIGHT;");
   }
 
   public void addDataset (Dataset dataset)
@@ -86,28 +98,6 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     }
     else
       datasetEntry.dataset.merge (dataset);
-  }
-
-  private void addColumn (String heading, int width, Justification justification,
-      Callback<CellDataFeatures<Dataset, String>, ObservableValue<String>> callback)
-  {
-    TreeTableColumn<Dataset, String> column = new TreeTableColumn<> (heading);
-    column.setPrefWidth (width);
-    column.setCellValueFactory (callback);
-    getColumns ().add (column);
-
-    if (justification == Justification.CENTER)
-      column.setStyle ("-fx-alignment: CENTER;");
-  }
-
-  private void addIntegerColumn (String heading, int width,
-      Callback<CellDataFeatures<Dataset, Number>, ObservableValue<Number>> callback)
-  {
-    TreeTableColumn<Dataset, Number> column = new TreeTableColumn<> (heading);
-    column.setPrefWidth (width);
-    column.setCellValueFactory (callback);
-    getColumns ().add (column);
-    column.setStyle ("-fx-alignment: CENTER-RIGHT;");
   }
 
   class DatasetEntry
