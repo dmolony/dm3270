@@ -84,9 +84,6 @@ public class ScreenPacker implements ScreenChangeListener
   public AIDCommand readBuffer (ScreenPosition[] screenPositions, int cursorLocation,
       byte currentAID, byte replyMode, byte[] replyTypes)
   {
-    //    this.replyMode = replyMode;
-    //    this.replyTypes = replyTypes;
-
     // pack the AID
     int ptr = 0;
     buffer[ptr++] = currentAID;

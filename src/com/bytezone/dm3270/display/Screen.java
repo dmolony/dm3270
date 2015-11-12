@@ -290,10 +290,9 @@ public class Screen extends Canvas implements DisplayScreen
       byte savedReplyMode = replyMode;
       byte[] savedReplyTypes = replyTypes;
 
-      screenHistory.requestScreen (this);     // will call readBuffer()
+      screenHistory.requestScreen (this);     // calls setReplyMode() and readBuffer()
 
-      replyMode = savedReplyMode;
-      replyTypes = savedReplyTypes;
+      setReplyMode (savedReplyMode, savedReplyTypes);
     }
   }
 
