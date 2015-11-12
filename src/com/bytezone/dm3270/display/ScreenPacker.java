@@ -18,8 +18,6 @@ public class ScreenPacker implements ScreenChangeListener
   private final byte[] buffer = new byte[4096];
   private final List<String> tsoCommands = new ArrayList<> ();
 
-  private byte replyMode;
-  private byte[] replyTypes;
   private ScreenDetails screenDetails;
 
   public AIDCommand readModifiedFields (byte currentAID, int cursorLocation,
@@ -86,8 +84,8 @@ public class ScreenPacker implements ScreenChangeListener
   public AIDCommand readBuffer (ScreenPosition[] screenPositions, int cursorLocation,
       byte currentAID, byte replyMode, byte[] replyTypes)
   {
-    this.replyMode = replyMode;
-    this.replyTypes = replyTypes;
+    //    this.replyMode = replyMode;
+    //    this.replyTypes = replyTypes;
 
     // pack the AID
     int ptr = 0;
@@ -100,14 +98,16 @@ public class ScreenPacker implements ScreenChangeListener
     // pack every screen location
     for (ScreenPosition sp : screenPositions)
       if (sp.isStartField ())
-        ptr = packStartPosition (sp, buffer, ptr);
+        ptr = packStartPosition (sp, buffer, ptr, replyMode);
       else
-        ptr = packDataPosition (sp, buffer, ptr);       // don't suppress nulls
+        // don't suppress nulls
+        ptr = packDataPosition (sp, buffer, ptr, replyMode, replyTypes);
 
     return new AIDCommand (buffer, 0, ptr);
   }
 
-  private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr)
+  private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr,
+      byte replyMode)
   {
     assert sp.isStartField ();
 
@@ -133,7 +133,8 @@ public class ScreenPacker implements ScreenChangeListener
     return ptr;
   }
 
-  private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr)
+  private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr, byte replyMode,
+      byte[] replyTypes)
   {
     if (replyMode == SetReplyModeSF.RM_CHARACTER)
       for (Attribute attribute : sp.getAttributes ())

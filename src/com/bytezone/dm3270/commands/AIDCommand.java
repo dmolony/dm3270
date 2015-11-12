@@ -219,7 +219,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
           {
             // cannot call field.setText() as the data starts mid-field
             for (byte b : buffer)
-              cursor.typeChar (b);// send characters through the old cursor
+              cursor.typeChar (b);        // send characters through the old cursor
             return true;
           }
         }
@@ -295,8 +295,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
         text.append (aidField);
       }
     }
-    // response to a read buffer request
-    else if (orders.size () > 0)
+    else if (orders.size () > 0)          // response to a read buffer request
     {
       text.append (String.format ("%nOrders  : %d%n",
                                   orders.size () - textOrders.size ()));
@@ -353,7 +352,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     {
       for (Order order : orders)
         if (order instanceof TextOrder)
-          return ((TextOrder) order).getBuffer ();// only returning the first one!!!
+          return ((TextOrder) order).getBuffer ();        // assumes only one
       return new byte[0];
     }
 
