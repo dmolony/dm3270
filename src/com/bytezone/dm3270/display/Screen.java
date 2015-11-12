@@ -102,11 +102,6 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager.addScreenChangeListener (screenPacker);
   }
 
-  //  public void setSite (Site site)
-  //  {
-  //    assistantStage.setSite (site);
-  //  }
-
   public void setStatusText (String text)
   {
     consolePane.setStatusText (text);
@@ -402,16 +397,6 @@ public class Screen extends Canvas implements DisplayScreen
     this.replyTypes = replyTypes;
   }
 
-  //  public byte getReplyMode ()
-  //  {
-  //    return replyMode;
-  //  }
-
-  //  public byte[] getReplyTypes ()
-  //  {
-  //    return replyTypes;
-  //  }
-
   public void setFieldText (Field field, String text)
   {
     try
@@ -541,24 +526,6 @@ public class Screen extends Canvas implements DisplayScreen
   {
     keyboardChangeListeners.remove (listener);
   }
-
-  //  private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
-  //
-  //  private void fireScreenChanged ()
-  //  {
-  //    for (ScreenChangeListener listener : screenChangeListeners)
-  //      listener.screenChanged ();
-  //  }
-  //
-  //  public void addTSOCommandStatusChangeListener (ScreenChangeListener listener)
-  //  {
-  //    screenChangeListeners.add (listener);
-  //  }
-  //
-  //  public void removeTSOCommandStatusChangeListener (ScreenChangeListener listener)
-  //  {
-  //    screenChangeListeners.remove (listener);
-  //  }
 
   // ---------------------------------------------------------------------------------//
   // Screen history
