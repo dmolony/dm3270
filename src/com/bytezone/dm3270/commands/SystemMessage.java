@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.utilities.Utility;
 
@@ -60,11 +60,11 @@ public class SystemMessage
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.INSERT_CURSOR };
 
-  private final Screen screen;
+  private final BatchJobListener batchJobListener;
 
-  public SystemMessage (Screen screen)
+  public SystemMessage (BatchJobListener batchJobListener)
   {
-    this.screen = screen;
+    this.batchJobListener = batchJobListener;
   }
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
@@ -144,7 +144,7 @@ public class SystemMessage
     {
       String jobName = matcher.group (1);
       int jobNumber = Integer.parseInt (matcher.group (2));
-      screen.getAssistantStage ().batchJobSubmitted (jobNumber, jobName);
+      batchJobListener.batchJobSubmitted (jobNumber, jobName);
       return;
     }
 
@@ -155,7 +155,7 @@ public class SystemMessage
       String jobName = matcher.group (3);
       String time = matcher.group (1);
       int conditionCode = Integer.parseInt (matcher.group (4));
-      screen.getAssistantStage ().batchJobEnded (jobNumber, jobName, time, conditionCode);
+      batchJobListener.batchJobEnded (jobNumber, jobName, time, conditionCode);
       return;
     }
 
@@ -165,7 +165,7 @@ public class SystemMessage
       int jobNumber = Integer.parseInt (matcher.group (2));
       String jobName = matcher.group (3);
       String time = matcher.group (1);
-      screen.getAssistantStage ().batchJobFailed (jobNumber, jobName, time);
+      batchJobListener.batchJobFailed (jobNumber, jobName, time);
       return;
     }
 

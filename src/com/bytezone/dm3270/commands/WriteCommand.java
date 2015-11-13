@@ -116,7 +116,7 @@ public class WriteCommand extends Command
 
     // check screen for jobs submitted or finished
     if (systemMessage == null)
-      systemMessage = new SystemMessage (screen);
+      systemMessage = new SystemMessage (screen.getAssistantStage ());
     if (orders.size () > 0 && systemMessage != null)
       systemMessage.checkSystemMessage (eraseWrite, orders);
   }
