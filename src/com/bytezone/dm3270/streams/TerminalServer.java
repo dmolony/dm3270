@@ -50,6 +50,7 @@ public class TerminalServer implements Runnable
           System.out.println ("TerminalServer interrupted");
           break;
         }
+
         bytesRead = serverIn.read (buffer);
         if (bytesRead < 0)
         {
