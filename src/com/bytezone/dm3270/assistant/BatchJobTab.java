@@ -109,8 +109,7 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
 
   void fireJobSelected (BatchJob job)
   {
-    for (BatchJobSelectionListener listener : selectionListeners)
-      listener.jobSelected (job);
+    selectionListeners.forEach (listener -> listener.jobSelected (job));
   }
 
   void addJobSelectionListener (BatchJobSelectionListener listener)
