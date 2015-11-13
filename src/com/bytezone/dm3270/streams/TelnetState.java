@@ -88,8 +88,12 @@ public class TelnetState implements Runnable
         long delay = (System.currentTimeMillis () - lastTimeIChecked) / 1000;
         long sleep = limit - delay;
 
+        if (Thread.currentThread ().isInterrupted ())
+          return;
+
         if (sleep > 1)
           Thread.sleep (sleep * 1000);
+
         if (lastTimeIChecked == lastAccess.get ())
           write (noOp);
       }
