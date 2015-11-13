@@ -107,7 +107,7 @@ public class Console extends Application
         else
           try
           {
-            Screen screen = createScreen (Function.REPLAY, null);     // 124ms
+            createScreen (Function.REPLAY, null);               // 124ms
             Session session = new Session (screen, path);       // can throw Exception
             setConsolePane (screen, null);                      // reassigns primaryStage
 

@@ -66,7 +66,7 @@ public class ConsolePane extends BorderPane
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
 
-  private ScreenHistory screenHistory;
+  private ScreenHistory screenHistory;    // null unless showing screen history 
 
   private HBox historyBox;
   private final Label historyLabel = new Label ();
@@ -228,20 +228,18 @@ public class ConsolePane extends BorderPane
 
   private void toggleHistory ()
   {
-    if (screenHistory == null)
+    if (screenHistory == null)                  // in normal screen mode
     {
-      screenHistory = screen.pause ();
-      if (screenHistory == null)
-        return;// no history to show
-
-      changeScreen (screenHistory.current ());
-      setBottom (historyBox);
+      Optional<ScreenHistory> opt = screen.pause ();
+      if (opt.isPresent ())
+      {
+        screenHistory = opt.get ();
+        changeScreen (screenHistory.current ());
+        setBottom (historyBox);
+      }
     }
-    else
-    {
+    else                                        // in screen history mode
       setView (null);
-      setBottom (statusPane);
-    }
   }
 
   void back ()
@@ -271,6 +269,7 @@ public class ConsolePane extends BorderPane
     {
       screenHistory = null;
       setCenter (screen);
+      setBottom (statusPane);
       screen.resume ();
       setStyle (null);
     }

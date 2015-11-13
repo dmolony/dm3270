@@ -531,18 +531,18 @@ public class Screen extends Canvas implements DisplayScreen
   // Screen history
   // ---------------------------------------------------------------------------------//
 
-  public ScreenHistory pause ()// triggered by cmd-s
+  public Optional<ScreenHistory> pause ()             // triggered by cmd-s
   {
     if (screenHistory.size () == 0)
-      return null;
+      return Optional.empty ();
 
     screenHistory.pause (keyboardLocked);
     keyboardLocked = true;
 
-    return screenHistory;
+    return Optional.of (screenHistory);
   }
 
-  public void resume ()// also triggered by cmd-s
+  public void resume ()                     // also triggered by cmd-s
   {
     keyboardLocked = screenHistory.resume ();
   }

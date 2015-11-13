@@ -31,7 +31,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   {
     KeyCode keyCodePressed = keyEvent.getCode ();
 
-    if (screen.isKeyboardLocked ())
+    if (screen.isKeyboardLocked ())           // could be in screen history mode
     {
       if (keyCodePressed == KeyCode.LEFT)
       {
