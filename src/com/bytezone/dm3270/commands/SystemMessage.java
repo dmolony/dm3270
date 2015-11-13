@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.utilities.Utility;
@@ -143,7 +142,9 @@ public class SystemMessage
     Matcher matcher = jobSubmittedPattern.matcher (systemMessageText);
     if (matcher.matches ())
     {
-      fireBatchJobSubmitted (Integer.parseInt (matcher.group (2)), matcher.group (1));
+      String jobName = matcher.group (1);
+      int jobNumber = Integer.parseInt (matcher.group (2));
+      screen.getAssistantStage ().batchJobSubmitted (jobNumber, jobName);
       return;
     }
 
@@ -151,8 +152,10 @@ public class SystemMessage
     if (matcher.matches ())
     {
       int jobNumber = Integer.parseInt (matcher.group (2));
+      String jobName = matcher.group (3);
+      String time = matcher.group (1);
       int conditionCode = Integer.parseInt (matcher.group (4));
-      fireBatchJobEnded (jobNumber, matcher.group (3), matcher.group (1), conditionCode);
+      screen.getAssistantStage ().batchJobEnded (jobNumber, jobName, time, conditionCode);
       return;
     }
 
@@ -162,7 +165,7 @@ public class SystemMessage
       int jobNumber = Integer.parseInt (matcher.group (2));
       String jobName = matcher.group (3);
       String time = matcher.group (1);
-      fireBatchJobFailed (jobNumber, jobName, time);
+      screen.getAssistantStage ().batchJobFailed (jobNumber, jobName, time);
       return;
     }
 
@@ -197,27 +200,5 @@ public class SystemMessage
       if (token.startsWith ("PREFIX(") && token.endsWith (")"))
         System.out.printf ("Prefix=%s%n", token.substring (7, token.length () - 1));
     }
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // BatchJobListener
-  // ---------------------------------------------------------------------------------//
-
-  void fireBatchJobSubmitted (int jobNumber, String jobName)
-  {
-    BatchJobListener listener = screen.getAssistantStage ();
-    listener.batchJobSubmitted (jobNumber, jobName);
-  }
-
-  void fireBatchJobEnded (int jobNumber, String jobName, String time, int conditionCode)
-  {
-    BatchJobListener listener = screen.getAssistantStage ();
-    listener.batchJobEnded (jobNumber, jobName, time, conditionCode);
-  }
-
-  void fireBatchJobFailed (int jobNumber, String jobName, String time)
-  {
-    BatchJobListener listener = screen.getAssistantStage ();
-    listener.batchJobFailed (jobNumber, jobName, time);
   }
 }

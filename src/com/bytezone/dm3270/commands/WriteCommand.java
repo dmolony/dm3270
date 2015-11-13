@@ -48,14 +48,11 @@ public class WriteCommand extends Command
 
       ptr += order.size ();
     }
-    //    systemMessage = new SystemMessage (screen);
   }
 
   // Used by MainframeStage.createCommand() when building a screen
   public WriteCommand (WriteControlCharacter wcc, boolean erase, List<Order> orders)
   {
-    //    super (null);
-
     this.writeControlCharacter = wcc;
     this.eraseWrite = erase;
     this.orders.addAll (orders);
