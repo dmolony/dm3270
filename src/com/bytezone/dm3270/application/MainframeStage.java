@@ -52,8 +52,6 @@ public class MainframeStage extends Stage implements Mainframe
   private static boolean ALPHA = false;
   private static boolean NUMERIC = true;
 
-  private final GuiFactory factory = new GuiFactory ();
-
   private final List<Button> buttons = new ArrayList<> ();
   private MainframeServer mainframeServer;
 
@@ -86,29 +84,29 @@ public class MainframeStage extends Stage implements Mainframe
     mainframeServer = new MainframeServer (mainframePort);
     mainframeServer.setStage (this);
 
-    final VBox vbox1 = factory.getVBox ();
+    GuiFactory gui = new GuiFactory ();
+    final VBox vbox1 = gui.getVBox ();
 
     for (int i = 0; i < 10; i++)
-      buttons.add (factory.getButton ("Empty", vbox1, BUTTON_WIDTH));
+      buttons.add (gui.getButton ("Empty", vbox1, BUTTON_WIDTH));
 
     Separator separator = new Separator ();
     separator.setOrientation (Orientation.HORIZONTAL);
 
-    final VBox vbox2 = factory.getVBox ();
-    btnReadBuffer = factory.getButton ("Read Buffer", vbox2, BUTTON_WIDTH);
-    btnReadModified = factory.getButton ("Read Modified", vbox2, BUTTON_WIDTH);
-    btnReadModifiedAll = factory.getButton ("Read Mod All", vbox2, BUTTON_WIDTH);
-    btnEraseAllUnprotected = factory.getButton ("Erase All Unpr", vbox2, BUTTON_WIDTH);
-    btnProgramTab1 = factory.getButton ("PT 1", vbox2, BUTTON_WIDTH);
-    btnProgramTab2 = factory.getButton ("PT 2", vbox2, BUTTON_WIDTH);
-    btnProgramTab3 = factory.getButton ("PT 3", vbox2, BUTTON_WIDTH);
+    final VBox vbox2 = gui.getVBox ();
+    btnReadBuffer = gui.getButton ("Read Buffer", vbox2, BUTTON_WIDTH);
+    btnReadModified = gui.getButton ("Read Modified", vbox2, BUTTON_WIDTH);
+    btnReadModifiedAll = gui.getButton ("Read Mod All", vbox2, BUTTON_WIDTH);
+    btnEraseAllUnprotected = gui.getButton ("Erase All Unpr", vbox2, BUTTON_WIDTH);
+    btnProgramTab1 = gui.getButton ("PT 1", vbox2, BUTTON_WIDTH);
+    btnProgramTab2 = gui.getButton ("PT 2", vbox2, BUTTON_WIDTH);
+    btnProgramTab3 = gui.getButton ("PT 3", vbox2, BUTTON_WIDTH);
 
     final ToggleGroup modeGroup = new ToggleGroup ();
 
-    btnFieldMode = factory.getRadioButton ("Field Mode", vbox2, modeGroup);
-    btnExtendedFieldMode =
-        factory.getRadioButton ("Extended Field Mode", vbox2, modeGroup);
-    btnCharacterMode = factory.getRadioButton ("Character Mode", vbox2, modeGroup);
+    btnFieldMode = gui.getRadioButton ("Field Mode", vbox2, modeGroup);
+    btnExtendedFieldMode = gui.getRadioButton ("Extended Field Mode", vbox2, modeGroup);
+    btnCharacterMode = gui.getRadioButton ("Character Mode", vbox2, modeGroup);
     btnFieldMode.setSelected (true);                    // match the default setting
 
     modeGroup.selectedToggleProperty ().addListener (new OnToggleHandler ());
