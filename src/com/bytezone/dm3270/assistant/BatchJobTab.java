@@ -92,17 +92,13 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
   public void batchJobEnded (int jobNumber, String jobName, String time,
       int conditionCode)
   {
-    Optional<BatchJob> batchJob = getBatchJob (jobNumber);
-    if (batchJob.isPresent ())
-      batchJob.get ().completed (time, conditionCode);
+    getBatchJob (jobNumber).ifPresent (b -> b.completed (time, conditionCode));
   }
 
   @Override
   public void batchJobFailed (int jobNumber, String jobName, String time)
   {
-    Optional<BatchJob> batchJob = getBatchJob (jobNumber);
-    if (batchJob.isPresent ())
-      batchJob.get ().failed (time);
+    getBatchJob (jobNumber).ifPresent (b -> b.failed (time));
   }
 
   // ---------------------------------------------------------------------------------//
