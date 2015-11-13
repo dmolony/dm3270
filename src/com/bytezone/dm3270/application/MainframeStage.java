@@ -28,6 +28,7 @@ import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.MainframeServer;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+import com.bytezone.dm3270.utilities.GuiFactory;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
