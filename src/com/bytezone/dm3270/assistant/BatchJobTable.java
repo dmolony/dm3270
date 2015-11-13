@@ -46,7 +46,7 @@ public class BatchJobTable extends TableView<BatchJob>
 
   void setOutlist (String jobName, String jobNumber, String outlist)
   {
-    batchJobs.stream ().filter (b -> b.matches (jobNumber)).findFirst ()
+    batchJobs.stream ().filter (b -> b.matches (jobNumber)).findAny ()
         .ifPresent (b -> b.setJobOutputFile (outlist));
   }
 
@@ -58,6 +58,6 @@ public class BatchJobTable extends TableView<BatchJob>
 
   public Optional<BatchJob> getBatchJob (int jobNumber)
   {
-    return batchJobs.stream ().filter (b -> b.matches (jobNumber)).findFirst ();
+    return batchJobs.stream ().filter (b -> b.matches (jobNumber)).findAny ();
   }
 }
