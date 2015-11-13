@@ -239,7 +239,13 @@ public class ConsolePane extends BorderPane
       }
     }
     else                                        // in screen history mode
-      setView (null);
+    {
+      screenHistory = null;
+      setCenter (screen);
+      setBottom (statusPane);
+      screen.resume ();
+      setStyle (null);
+    }
   }
 
   void back ()
@@ -257,28 +263,12 @@ public class ConsolePane extends BorderPane
   private void changeScreen (UserScreen userScreen)
   {
     userScreen.drawScreen (screen.getFontManager ().getFontData ());
-    setView (userScreen);
+    setCenter (userScreen);
+    setMargin (userScreen, new Insets (MARGIN, MARGIN, 0, MARGIN));
+    setStyle ("-fx-background-color: navajowhite;");
     historyLabel.setText (String.format ("Screen %02d of %02d",
                                          screenHistory.getCurrentIndex () + 1,
                                          screenHistory.size ()));
-  }
-
-  private void setView (UserScreen userScreen)
-  {
-    if (userScreen == null)
-    {
-      screenHistory = null;
-      setCenter (screen);
-      setBottom (statusPane);
-      screen.resume ();
-      setStyle (null);
-    }
-    else
-    {
-      setCenter (userScreen);
-      setMargin (userScreen, new Insets (MARGIN, MARGIN, 0, MARGIN));
-      setStyle ("-fx-background-color: navajowhite;");
-    }
   }
 
   // called from ConsoleKeyPress.handle (KeyEvent e)
