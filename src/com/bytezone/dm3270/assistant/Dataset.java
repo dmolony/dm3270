@@ -86,86 +86,6 @@ public class Dataset
   }
 
   // ---------------------------------------------------------------------------------//
-  // Tracks
-  // ---------------------------------------------------------------------------------//
-  public final void setTracks (int value)
-  {
-    tracksProperty ().set (value);
-  }
-
-  public final int getTracks ()
-  {
-    return tracksProperty ().get ();
-  }
-
-  public final IntegerProperty tracksProperty ()
-  {
-    if (tracksProperty == null)
-      tracksProperty = new SimpleIntegerProperty ();
-    return tracksProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // Cylinders
-  // ---------------------------------------------------------------------------------//
-  public final void setCylinders (int value)
-  {
-    cylindersProperty ().set (value);
-  }
-
-  public final int getCylinders ()
-  {
-    return cylindersProperty ().get ();
-  }
-
-  public final IntegerProperty cylindersProperty ()
-  {
-    if (cylindersProperty == null)
-      cylindersProperty = new SimpleIntegerProperty ();
-    return cylindersProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // Extents
-  // ---------------------------------------------------------------------------------//
-  public final void setExtents (int value)
-  {
-    extentsProperty ().set (value);
-  }
-
-  public final int getExtents ()
-  {
-    return extentsProperty ().get ();
-  }
-
-  public final IntegerProperty extentsProperty ()
-  {
-    if (extentsProperty == null)
-      extentsProperty = new SimpleIntegerProperty ();
-    return extentsProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // PercentUsed
-  // ---------------------------------------------------------------------------------//
-  public final void setPercentUsed (int value)
-  {
-    percentUsedProperty ().set (value);
-  }
-
-  public final int getPercentUsed ()
-  {
-    return percentUsedProperty ().get ();
-  }
-
-  public final IntegerProperty percentUsedProperty ()
-  {
-    if (percentUsedProperty == null)
-      percentUsedProperty = new SimpleIntegerProperty ();
-    return percentUsedProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
   // Volume
   // ---------------------------------------------------------------------------------//
   public final void setVolume (String value)
@@ -243,46 +163,6 @@ public class Dataset
     if (recfmProperty == null)
       recfmProperty = new SimpleStringProperty ();
     return recfmProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // Lrecl
-  // ---------------------------------------------------------------------------------//
-  public final void setLrecl (int value)
-  {
-    lreclProperty ().set (value);
-  }
-
-  public final int getLrecl ()
-  {
-    return lreclProperty ().get ();
-  }
-
-  public final IntegerProperty lreclProperty ()
-  {
-    if (lreclProperty == null)
-      lreclProperty = new SimpleIntegerProperty ();
-    return lreclProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // Blksize
-  // ---------------------------------------------------------------------------------//
-  public final void setBlksize (int value)
-  {
-    blksizeProperty ().set (value);
-  }
-
-  public final int getBlksize ()
-  {
-    return blksizeProperty ().get ();
-  }
-
-  public final IntegerProperty blksizeProperty ()
-  {
-    if (blksizeProperty == null)
-      blksizeProperty = new SimpleIntegerProperty ();
-    return blksizeProperty;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -365,25 +245,148 @@ public class Dataset
     return referredProperty;
   }
 
+  // ---------------------------------------------------------------------------------//
+  // Tracks
+  // ---------------------------------------------------------------------------------//
+  public final void setTracks (int value)
+  {
+    tracksProperty ().set (value);
+  }
+
+  public final int getTracks ()
+  {
+    return tracksProperty ().get ();
+  }
+
+  public final IntegerProperty tracksProperty ()
+  {
+    if (tracksProperty == null)
+      tracksProperty = new SimpleIntegerProperty ();
+    return tracksProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Cylinders
+  // ---------------------------------------------------------------------------------//
+  public final void setCylinders (int value)
+  {
+    cylindersProperty ().set (value);
+  }
+
+  public final int getCylinders ()
+  {
+    return cylindersProperty ().get ();
+  }
+
+  public final IntegerProperty cylindersProperty ()
+  {
+    if (cylindersProperty == null)
+      cylindersProperty = new SimpleIntegerProperty ();
+    return cylindersProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Extents
+  // ---------------------------------------------------------------------------------//
+  public final void setExtents (int value)
+  {
+    extentsProperty ().set (value);
+  }
+
+  public final int getExtents ()
+  {
+    return extentsProperty ().get ();
+  }
+
+  public final IntegerProperty extentsProperty ()
+  {
+    if (extentsProperty == null)
+      extentsProperty = new SimpleIntegerProperty ();
+    return extentsProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // PercentUsed
+  // ---------------------------------------------------------------------------------//
+  public final void setPercentUsed (int value)
+  {
+    percentUsedProperty ().set (value);
+  }
+
+  public final int getPercentUsed ()
+  {
+    return percentUsedProperty ().get ();
+  }
+
+  public final IntegerProperty percentUsedProperty ()
+  {
+    if (percentUsedProperty == null)
+      percentUsedProperty = new SimpleIntegerProperty ();
+    return percentUsedProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Lrecl
+  // ---------------------------------------------------------------------------------//
+  public final void setLrecl (int value)
+  {
+    lreclProperty ().set (value);
+  }
+
+  public final int getLrecl ()
+  {
+    return lreclProperty ().get ();
+  }
+
+  public final IntegerProperty lreclProperty ()
+  {
+    if (lreclProperty == null)
+      lreclProperty = new SimpleIntegerProperty ();
+    return lreclProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Blksize
+  // ---------------------------------------------------------------------------------//
+  public final void setBlksize (int value)
+  {
+    blksizeProperty ().set (value);
+  }
+
+  public final int getBlksize ()
+  {
+    return blksizeProperty ().get ();
+  }
+
+  public final IntegerProperty blksizeProperty ()
+  {
+    if (blksizeProperty == null)
+      blksizeProperty = new SimpleIntegerProperty ();
+    return blksizeProperty;
+  }
+
   @Override
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("Name ............ %s%n", getDatasetName ()));
+
+    text.append (String.format ("Volume .......... %s%n", getVolume ()));
+    text.append (String.format ("Device .......... %s%n", getDevice ()));
+    text.append (String.format ("DSORG ........... %s%n", getDsorg ()));
+    text.append (String.format ("RECFM ........... %s%n", getRecfm ()));
+    text.append (String.format ("Catalog ......... %s%n", getCatalog ()));
+    text.append (String.format ("Created ......... %s%n", getCreated ()));
+    text.append (String.format ("Expires ......... %s%n", getExpires ()));
+    text.append (String.format ("Referred ........ %s%n", getReferred ()));
+
     text.append (String.format ("Tracks .......... %s%n", getTracks ()));
     text.append (String.format ("Cylinders ....... %s%n", getCylinders ()));
     text.append (String.format ("Extents ......... %s%n", getExtents ()));
     text.append (String.format ("Percent used .... %s%n", getPercentUsed ()));
-    text.append (String.format ("Device .......... %s%n", getDevice ()));
-    text.append (String.format ("DSORG ........... %s%n", getDsorg ()));
-    text.append (String.format ("RECFM ........... %s%n", getRecfm ()));
     text.append (String.format ("LRECL ........... %s%n", getLrecl ()));
-    text.append (String.format ("BLKSIZE ......... %s%n", getBlksize ()));
-    text.append (String.format ("Created ......... %s%n", getCreated ()));
-    text.append (String.format ("Expires ......... %s%n", getExpires ()));
-    text.append (String.format ("Referred ........ %s%n", getReferred ()));
-    text.append (String.format ("Catalog ......... %s", getCatalog ()));
+    text.append (String.format ("BLKSIZE ......... %s  ", getBlksize ()));
 
     return text.toString ();
   }

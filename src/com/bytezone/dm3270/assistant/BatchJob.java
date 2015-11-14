@@ -173,6 +173,11 @@ public class BatchJob
       text.append (String.format ("Condition .... : %s%n", getJobConditionCode ()));
     }
 
+    if (jobOutputFileProperty != null)
+      text.append (String.format ("Output file .. : %s%n", getJobOutputFile ()));
+
+    text.deleteCharAt (text.length () - 1);
+
     return text.toString ();
   }
 }
