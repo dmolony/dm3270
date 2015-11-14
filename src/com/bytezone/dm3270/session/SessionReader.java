@@ -62,6 +62,14 @@ public class SessionReader
     return lines;
   }
 
+  public byte[] nextBuffer () throws Exception
+  {
+    int bytesRead = next ();
+    byte[] data = new byte[bytesRead];
+    System.arraycopy (buffer, 0, data, 0, bytesRead);
+    return data;
+  }
+
   public int next () throws Exception
   {
     if (nextLine >= lines.size ())
@@ -77,21 +85,13 @@ public class SessionReader
       while (!line.isEmpty ())
       {
         String b = line.substring (0, 2).trim ();     // get hex value
-        line = line.substring (3);                    // remove it from the line
         if (b.isEmpty ())
           break;
         buffer[bytesWritten++] = (byte) Integer.parseInt (b, 16);
+        line = line.substring (3);                    // remove it from the line
       }
     }
     return bytesWritten;
-  }
-
-  public byte[] nextBuffer () throws Exception
-  {
-    int bytesRead = next ();
-    byte[] data = new byte[bytesRead];
-    System.arraycopy (buffer, 0, data, 0, bytesRead);
-    return data;
   }
 
   public boolean isGenuine ()
@@ -120,7 +120,6 @@ public class SessionReader
     {
       String line = lines.get (nextLine);
 
-      //      if (line.length () == 0)
       if (line.isEmpty ())
         break;
 
