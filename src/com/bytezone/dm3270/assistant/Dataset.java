@@ -90,12 +90,12 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   public final void setTracks (int value)
   {
-    tracksProperty ().setValue (value);
+    tracksProperty ().set (value);
   }
 
   public final int getTracks ()
   {
-    return tracksProperty ().getValue ();
+    return tracksProperty ().get ();
   }
 
   public final IntegerProperty tracksProperty ()
@@ -130,12 +130,12 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   public final void setExtents (int value)
   {
-    extentsProperty ().setValue (value);
+    extentsProperty ().set (value);
   }
 
   public final int getExtents ()
   {
-    return extentsProperty ().getValue ();
+    return extentsProperty ().get ();
   }
 
   public final IntegerProperty extentsProperty ()
@@ -150,12 +150,12 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   public final void setPercentUsed (int value)
   {
-    percentUsedProperty ().setValue (value);
+    percentUsedProperty ().set (value);
   }
 
   public final int getPercentUsed ()
   {
-    return percentUsedProperty ().getValue ();
+    return percentUsedProperty ().get ();
   }
 
   public final IntegerProperty percentUsedProperty ()
@@ -250,12 +250,12 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   public final void setLrecl (int value)
   {
-    lreclProperty ().setValue (value);
+    lreclProperty ().set (value);
   }
 
   public final int getLrecl ()
   {
-    return lreclProperty ().getValue ();
+    return lreclProperty ().get ();
   }
 
   public final IntegerProperty lreclProperty ()
@@ -270,12 +270,12 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   public final void setBlksize (int value)
   {
-    blksizeProperty ().setValue (value);
+    blksizeProperty ().set (value);
   }
 
   public final int getBlksize ()
   {
-    return blksizeProperty ().getValue ();
+    return blksizeProperty ().get ();
   }
 
   public final IntegerProperty blksizeProperty ()

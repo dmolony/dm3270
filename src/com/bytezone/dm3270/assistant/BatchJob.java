@@ -64,12 +64,12 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   public final void setJobNumber (String value)
   {
-    jobNumberProperty ().setValue (value);
+    jobNumberProperty ().set (value);
   }
 
   public final String getJobNumber ()
   {
-    return jobNumberProperty ().getValue ();
+    return jobNumberProperty ().get ();
   }
 
   public final StringProperty jobNumberProperty ()
@@ -84,12 +84,12 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   public final void setJobName (String value)
   {
-    jobNameProperty ().setValue (value);
+    jobNameProperty ().set (value);
   }
 
   public final String getJobName ()
   {
-    return jobNameProperty ().getValue ();
+    return jobNameProperty ().get ();
   }
 
   public final StringProperty jobNameProperty ()
@@ -104,12 +104,12 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   public final void setJobCompleted (String value)
   {
-    jobCompletedProperty ().setValue (value);
+    jobCompletedProperty ().set (value);
   }
 
   public final String getJobCompleted ()
   {
-    return jobCompletedProperty ().getValue ();
+    return jobCompletedProperty ().get ();
   }
 
   public final StringProperty jobCompletedProperty ()
@@ -124,12 +124,12 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   public final void setJobConditionCode (String value)
   {
-    jobConditionCodeProperty ().setValue (value);
+    jobConditionCodeProperty ().set (value);
   }
 
   public final String getJobConditionCode ()
   {
-    return jobConditionCodeProperty ().getValue ();
+    return jobConditionCodeProperty ().get ();
   }
 
   public final StringProperty jobConditionCodeProperty ()
@@ -144,12 +144,12 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   public final void setJobOutputFile (String value)
   {
-    jobOutputFileProperty ().setValue (value);
+    jobOutputFileProperty ().set (value);
   }
 
   public final String getJobOutputFile ()
   {
-    return jobOutputFileProperty ().getValue ();
+    return jobOutputFileProperty ().get ();
   }
 
   public final StringProperty jobOutputFileProperty ()
