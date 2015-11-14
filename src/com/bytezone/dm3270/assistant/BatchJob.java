@@ -62,17 +62,17 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobNumber
   // ---------------------------------------------------------------------------------//
-  public void setJobNumber (String value)
+  public final void setJobNumber (String value)
   {
     jobNumberProperty ().setValue (value);
   }
 
-  public String getJobNumber ()
+  public final String getJobNumber ()
   {
     return jobNumberProperty ().getValue ();
   }
 
-  StringProperty jobNumberProperty ()
+  public final StringProperty jobNumberProperty ()
   {
     if (jobNumberProperty == null)
       jobNumberProperty = new SimpleStringProperty ();
@@ -82,17 +82,17 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobName
   // ---------------------------------------------------------------------------------//
-  public void setJobName (String value)
+  public final void setJobName (String value)
   {
     jobNameProperty ().setValue (value);
   }
 
-  public String getJobName ()
+  public final String getJobName ()
   {
     return jobNameProperty ().getValue ();
   }
 
-  public StringProperty jobNameProperty ()
+  public final StringProperty jobNameProperty ()
   {
     if (jobNameProperty == null)
       jobNameProperty = new SimpleStringProperty ();
@@ -102,17 +102,17 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobCompleted
   // ---------------------------------------------------------------------------------//
-  public void setJobCompleted (String value)
+  public final void setJobCompleted (String value)
   {
     jobCompletedProperty ().setValue (value);
   }
 
-  public String getJobCompleted ()
+  public final String getJobCompleted ()
   {
     return jobCompletedProperty ().getValue ();
   }
 
-  public StringProperty jobCompletedProperty ()
+  public final StringProperty jobCompletedProperty ()
   {
     if (jobCompletedProperty == null)
       jobCompletedProperty = new SimpleStringProperty ();
@@ -122,17 +122,17 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobConditionCode
   // ---------------------------------------------------------------------------------//
-  public void setJobConditionCode (String value)
+  public final void setJobConditionCode (String value)
   {
     jobConditionCodeProperty ().setValue (value);
   }
 
-  public String getJobConditionCode ()
+  public final String getJobConditionCode ()
   {
     return jobConditionCodeProperty ().getValue ();
   }
 
-  public StringProperty jobConditionCodeProperty ()
+  public final StringProperty jobConditionCodeProperty ()
   {
     if (jobConditionCodeProperty == null)
       jobConditionCodeProperty = new SimpleStringProperty ();
@@ -142,17 +142,17 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobOutputFile
   // ---------------------------------------------------------------------------------//
-  public void setJobOutputFile (String value)
+  public final void setJobOutputFile (String value)
   {
     jobOutputFileProperty ().setValue (value);
   }
 
-  public String getJobOutputFile ()
+  public final String getJobOutputFile ()
   {
     return jobOutputFileProperty ().getValue ();
   }
 
-  public StringProperty jobOutputFileProperty ()
+  public final StringProperty jobOutputFileProperty ()
   {
     if (jobOutputFileProperty == null)
       jobOutputFileProperty = new SimpleStringProperty ();

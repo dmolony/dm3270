@@ -9,7 +9,7 @@ public class Dataset
 {
   private StringProperty datasetNameProperty;
   private IntegerProperty tracksProperty;
-  private StringProperty cylindersProperty;
+  private IntegerProperty cylindersProperty;
   private IntegerProperty extentsProperty;
   private IntegerProperty percentUsedProperty;
   private StringProperty volumeProperty;
@@ -46,7 +46,7 @@ public class Dataset
       setPercentUsed (other.getPercentUsed ());
     if (other.getTracks () > 0)
       setTracks (other.getTracks ());
-    if (other.getCylinders () != null)
+    if (other.getCylinders () > 0)
       setCylinders (other.getCylinders ());
     if (other.getVolume () != null)
       setVolume (other.getVolume ());
@@ -63,17 +63,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // DatasetName
   // ---------------------------------------------------------------------------------//
-  public void setDatasetName (String value)
+  public final void setDatasetName (String value)
   {
     datasetNameProperty ().set (value);
   }
 
-  public String getDatasetName ()
+  public final String getDatasetName ()
   {
     return datasetNameProperty ().get ();
   }
 
-  public StringProperty datasetNameProperty ()
+  public final StringProperty datasetNameProperty ()
   {
     if (datasetNameProperty == null)
       datasetNameProperty = new SimpleStringProperty ();
@@ -83,17 +83,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Tracks
   // ---------------------------------------------------------------------------------//
-  public void setTracks (int value)
+  public final void setTracks (int value)
   {
     tracksProperty ().setValue (value);
   }
 
-  public int getTracks ()
+  public final int getTracks ()
   {
     return tracksProperty ().getValue ();
   }
 
-  public IntegerProperty tracksProperty ()
+  public final IntegerProperty tracksProperty ()
   {
     if (tracksProperty == null)
       tracksProperty = new SimpleIntegerProperty ();
@@ -103,37 +103,37 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Cylinders
   // ---------------------------------------------------------------------------------//
-  public void setCylinders (String value)
+  public final void setCylinders (int value)
   {
     cylindersProperty ().set (value);
   }
 
-  public String getCylinders ()
+  public final int getCylinders ()
   {
     return cylindersProperty ().get ();
   }
 
-  public StringProperty cylindersProperty ()
+  public final IntegerProperty cylindersProperty ()
   {
     if (cylindersProperty == null)
-      cylindersProperty = new SimpleStringProperty ();
+      cylindersProperty = new SimpleIntegerProperty ();
     return cylindersProperty;
   }
 
   // ---------------------------------------------------------------------------------//
   // Extents
   // ---------------------------------------------------------------------------------//
-  public void setExtents (int value)
+  public final void setExtents (int value)
   {
     extentsProperty ().setValue (value);
   }
 
-  public int getExtents ()
+  public final int getExtents ()
   {
     return extentsProperty ().getValue ();
   }
 
-  public IntegerProperty extentsProperty ()
+  public final IntegerProperty extentsProperty ()
   {
     if (extentsProperty == null)
       extentsProperty = new SimpleIntegerProperty ();
@@ -143,17 +143,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // PercentUsed
   // ---------------------------------------------------------------------------------//
-  public void setPercentUsed (int value)
+  public final void setPercentUsed (int value)
   {
     percentUsedProperty ().setValue (value);
   }
 
-  public int getPercentUsed ()
+  public final int getPercentUsed ()
   {
     return percentUsedProperty ().getValue ();
   }
 
-  public IntegerProperty percentUsedProperty ()
+  public final IntegerProperty percentUsedProperty ()
   {
     if (percentUsedProperty == null)
       percentUsedProperty = new SimpleIntegerProperty ();
@@ -163,17 +163,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Volume
   // ---------------------------------------------------------------------------------//
-  public void setVolume (String value)
+  public final void setVolume (String value)
   {
     volumeProperty ().set (value);
   }
 
-  public String getVolume ()
+  public final String getVolume ()
   {
     return volumeProperty ().get ();
   }
 
-  public StringProperty volumeProperty ()
+  public final StringProperty volumeProperty ()
   {
     if (volumeProperty == null)
       volumeProperty = new SimpleStringProperty ();
@@ -183,17 +183,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Device
   // ---------------------------------------------------------------------------------//
-  public void setDevice (String value)
+  public final void setDevice (String value)
   {
     deviceProperty ().set (value);
   }
 
-  public String getDevice ()
+  public final String getDevice ()
   {
     return deviceProperty ().get ();
   }
 
-  public StringProperty deviceProperty ()
+  public final StringProperty deviceProperty ()
   {
     if (deviceProperty == null)
       deviceProperty = new SimpleStringProperty ();
@@ -203,17 +203,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Dsorg
   // ---------------------------------------------------------------------------------//
-  public void setDsorg (String value)
+  public final void setDsorg (String value)
   {
     dsorgProperty ().set (value);
   }
 
-  public String getDsorg ()
+  public final String getDsorg ()
   {
     return dsorgProperty ().get ();
   }
 
-  public StringProperty dsorgProperty ()
+  public final StringProperty dsorgProperty ()
   {
     if (dsorgProperty == null)
       dsorgProperty = new SimpleStringProperty ();
@@ -223,17 +223,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Recfm
   // ---------------------------------------------------------------------------------//
-  public void setRecfm (String value)
+  public final void setRecfm (String value)
   {
     recfmProperty ().set (value);
   }
 
-  public String getRecfm ()
+  public final String getRecfm ()
   {
     return recfmProperty ().get ();
   }
 
-  public StringProperty recfmProperty ()
+  public final StringProperty recfmProperty ()
   {
     if (recfmProperty == null)
       recfmProperty = new SimpleStringProperty ();
@@ -243,17 +243,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Lrecl
   // ---------------------------------------------------------------------------------//
-  public void setLrecl (int value)
+  public final void setLrecl (int value)
   {
     lreclProperty ().setValue (value);
   }
 
-  public int getLrecl ()
+  public final int getLrecl ()
   {
     return lreclProperty ().getValue ();
   }
 
-  public IntegerProperty lreclProperty ()
+  public final IntegerProperty lreclProperty ()
   {
     if (lreclProperty == null)
       lreclProperty = new SimpleIntegerProperty ();
@@ -263,17 +263,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Blksize
   // ---------------------------------------------------------------------------------//
-  public void setBlksize (int value)
+  public final void setBlksize (int value)
   {
     blksizeProperty ().setValue (value);
   }
 
-  public int getBlksize ()
+  public final int getBlksize ()
   {
     return blksizeProperty ().getValue ();
   }
 
-  public IntegerProperty blksizeProperty ()
+  public final IntegerProperty blksizeProperty ()
   {
     if (blksizeProperty == null)
       blksizeProperty = new SimpleIntegerProperty ();
@@ -283,17 +283,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Catalog
   // ---------------------------------------------------------------------------------//
-  public void setCatalog (String value)
+  public final void setCatalog (String value)
   {
     catalogProperty ().set (value);
   }
 
-  public String getCatalog ()
+  public final String getCatalog ()
   {
     return catalogProperty ().get ();
   }
 
-  public StringProperty catalogProperty ()
+  public final StringProperty catalogProperty ()
   {
     if (catalogProperty == null)
       catalogProperty = new SimpleStringProperty ();
@@ -303,17 +303,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Created
   // ---------------------------------------------------------------------------------//
-  public void setCreated (String value)
+  public final void setCreated (String value)
   {
     createdProperty ().set (value);
   }
 
-  public String getCreated ()
+  public final String getCreated ()
   {
     return createdProperty ().get ();
   }
 
-  public StringProperty createdProperty ()
+  public final StringProperty createdProperty ()
   {
     if (createdProperty == null)
       createdProperty = new SimpleStringProperty ();
@@ -323,17 +323,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Expires
   // ---------------------------------------------------------------------------------//
-  public void setExpires (String value)
+  public final void setExpires (String value)
   {
     expiresProperty ().set (value);
   }
 
-  public String getExpires ()
+  public final String getExpires ()
   {
     return expiresProperty ().get ();
   }
 
-  public StringProperty expiresProperty ()
+  public final StringProperty expiresProperty ()
   {
     if (expiresProperty == null)
       expiresProperty = new SimpleStringProperty ();
@@ -343,17 +343,17 @@ public class Dataset
   // ---------------------------------------------------------------------------------//
   // Referred
   // ---------------------------------------------------------------------------------//
-  public void setReferred (String value)
+  public final void setReferred (String value)
   {
     referredProperty ().set (value);
   }
 
-  public String getReferred ()
+  public final String getReferred ()
   {
     return referredProperty ().get ();
   }
 
-  public StringProperty referredProperty ()
+  public final StringProperty referredProperty ()
   {
     if (referredProperty == null)
       referredProperty = new SimpleStringProperty ();
