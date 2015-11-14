@@ -103,12 +103,14 @@ public class WriteCommand extends Command
     if (writeControlCharacter != null)
     {
       writeControlCharacter.process (screen);       // may unlock the keyboard
-      screen.checkRecording ();
+      if (screen.getFieldManager ().size () > 0 && !screen.isKeyboardLocked ())
+        screen.checkRecording ();
     }
 
     if (!screen.isKeyboardLocked () && screen.getFieldManager ().size () > 0)
     {
-      reply = screen.getPluginsStage ().processPluginAuto ();// check for suppressDisplay
+      // should check for suppressDisplay
+      reply = screen.getPluginsStage ().processPluginAuto ();
     }
 
     if (screenDrawRequired)
@@ -117,6 +119,7 @@ public class WriteCommand extends Command
     // check screen for jobs submitted or finished
     if (systemMessage == null)
       systemMessage = new SystemMessage (screen.getAssistantStage ());
+
     if (orders.size () > 0 && systemMessage != null)
       systemMessage.checkSystemMessage (eraseWrite, orders);
   }

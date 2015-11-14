@@ -120,7 +120,8 @@ public class SessionReader
     {
       String line = lines.get (nextLine);
 
-      if (line.length () == 0)
+      //      if (line.length () == 0)
+      if (line.isEmpty ())
         break;
 
       char firstChar = line.charAt (0);
@@ -131,7 +132,7 @@ public class SessionReader
         firstHexDigit = line.charAt (7) == ' ' ? 8 : 6;
 
       line = line.substring (firstHexDigit);
-      if (line.length () > 48)                        // 16 hex values plus spaces
+      if (line.length () > 48)                    // 16 hex values plus spaces
         line = line.substring (0, 48);            // leave a space on the end
       list.add (line);
 
@@ -147,6 +148,7 @@ public class SessionReader
     while (nextLine < lines.size ())
     {
       String line = lines.get (nextLine++);
+
       // skip to next line with our name
       if (line.startsWith (firstLetter))
       {
@@ -154,16 +156,15 @@ public class SessionReader
           genuine = line.charAt (7) != '*';
         else
           genuine = true;
+
         if (line.length () > 9)
           dateTime = LocalDateTime.parse (line.substring (9).trim ());
         else
           dateTime = null;
 
-        while (nextLine < lines.size ())          // skip all comments and blank lines
+        while (nextLine < lines.size ())            // skip all comments and blank lines
         {
-          if (lines.get (nextLine).startsWith ("0"))                                            // first
-            // buffer
-            // line
+          if (lines.get (nextLine).startsWith ("0"))    // first buffer line
             return;
           nextLine++;
         }
@@ -183,8 +184,12 @@ public class SessionReader
 
   public static void main (String[] args) throws IOException
   {
+    //    String base = "/Users/denismolony/Documents/workspace/"
+    //        + "dm3270/src/com/bytezone/dm3270/application/";
     String base = "/Users/denismolony/Dropbox/Mainframe documentation/";
-    String filename = String.format ("%smf.txt", base);
+    //        + "dm3270/src/com/bytezone/dm3270/application/";
+    //    String filename = String.format ("%smf.txt", base);
+    String filename = String.format ("%sspy001.txt", base);
     int mode = 2;
 
     SessionReader server = new SessionReader (Source.SERVER, Paths.get (filename));

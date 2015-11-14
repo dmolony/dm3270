@@ -61,7 +61,6 @@ public class Screen extends Canvas implements DisplayScreen
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final boolean recording = true;
   private final ScreenHistory screenHistory = new ScreenHistory ();
 
   public enum BuildInstruction
@@ -283,17 +282,15 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager.buildFields ();              // what about resetModified?
   }
 
+  // called from WriteCommand.process()
   public void checkRecording ()
   {
-    if (recording && fieldManager.size () > 0 && !keyboardLocked)
-    {
-      byte savedReplyMode = replyMode;
-      byte[] savedReplyTypes = replyTypes;
+    byte savedReplyMode = replyMode;
+    byte[] savedReplyTypes = replyTypes;
 
-      screenHistory.requestScreen (this);     // calls setReplyMode() and readBuffer()
+    screenHistory.requestScreen (this);     // calls setReplyMode() and readBuffer()
 
-      setReplyMode (savedReplyMode, savedReplyTypes);
-    }
+    setReplyMode (savedReplyMode, savedReplyTypes);
   }
 
   public void draw ()
@@ -426,7 +423,7 @@ public class Screen extends Canvas implements DisplayScreen
   // Called from:
   //      ReadCommand.process() in response to a ReadBuffer (F2) command
   //      ReadPartitionSF.process() in response to a ReadBuffer (F2) command
-  //      Screen.lockKeyboard()
+  //      ScreenHistory.requestScreen()
   public AIDCommand readBuffer ()
   {
     return screenPacker.readBuffer (screenPositions, getScreenCursor ().getLocation (),
