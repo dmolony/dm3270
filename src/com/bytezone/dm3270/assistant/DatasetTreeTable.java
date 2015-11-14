@@ -7,27 +7,16 @@ import java.util.Map;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
-public class DatasetTreeTable extends TreeTableView<Dataset>
+public class DatasetTreeTable extends DefaultTreeTable<Dataset>
 {
   private final TreeItem<Dataset> root = new TreeItem<> (new Dataset ("Root"));
   private final Map<String, DatasetEntry> entries = new HashMap<> ();
-
-  enum Justification
-  {
-    LEFT, CENTER, RIGHT
-  }
 
   public DatasetTreeTable ()
   {
     setRoot (root);
     setShowRoot (false);
-
-    setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
-    setFixedCellSize (20.0);
 
     addColumnString ("Dataset name", 300, Justification.LEFT, "datasetName");
     addColumnString ("Volume", 70, Justification.LEFT, "volume");
@@ -45,30 +34,6 @@ public class DatasetTreeTable extends TreeTableView<Dataset>
     addColumnString ("Catalog/ID", 150, Justification.LEFT, "catalog");
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));
-  }
-
-  // NB propertyName must have a corresponding method xxxProperty in Dataset
-  private void addColumnString (String heading, int width, Justification justification,
-      String propertyName)
-  {
-    TreeTableColumn<Dataset, String> column = new TreeTableColumn<> (heading);
-    column.setPrefWidth (width);
-    column.setCellValueFactory (new TreeItemPropertyValueFactory<Dataset, String> (
-        propertyName));
-    getColumns ().add (column);
-
-    if (justification == Justification.CENTER)
-      column.setStyle ("-fx-alignment: CENTER;");
-  }
-
-  private void addColumnNumber (String heading, int width, String propertyName)
-  {
-    TreeTableColumn<Dataset, Number> column = new TreeTableColumn<> (heading);
-    column.setPrefWidth (width);
-    column.setCellValueFactory (new TreeItemPropertyValueFactory<Dataset, Number> (
-        propertyName));
-    getColumns ().add (column);
-    column.setStyle ("-fx-alignment: CENTER-RIGHT;");
   }
 
   public void addDataset (Dataset dataset)
