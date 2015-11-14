@@ -5,24 +5,13 @@ import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
-public class DatasetTable extends TableView<Dataset>
+public class DatasetTable extends DefaultTable<Dataset>
 {
   private final ObservableList<Dataset> datasets = FXCollections.observableArrayList ();
 
-  enum Justification
-  {
-    LEFT, CENTER, RIGHT
-  }
-
   public DatasetTable ()
   {
-    setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
-    setFixedCellSize (20.0);
-
     addColumnString ("Dataset name", 300, Justification.LEFT, "datasetName");
     addColumnString ("Volume", 70, Justification.LEFT, "volume");
     addColumnNumber ("Tracks", 50, "tracks");
@@ -41,28 +30,6 @@ public class DatasetTable extends TableView<Dataset>
     setPlaceholder (new Label ("No datasets have been seen in this session"));
 
     setItems (datasets);
-  }
-
-  // NB propertyName must have a corresponding method xxxProperty in Dataset
-  private void addColumnString (String heading, int width, Justification justification,
-      String propertyName)
-  {
-    TableColumn<Dataset, String> column = new TableColumn<> (heading);
-    column.setPrefWidth (width);
-    column.setCellValueFactory (new PropertyValueFactory<Dataset, String> (propertyName));
-    getColumns ().add (column);
-
-    if (justification == Justification.CENTER)
-      column.setStyle ("-fx-alignment: CENTER;");
-  }
-
-  private void addColumnNumber (String heading, int width, String propertyName)
-  {
-    TableColumn<Dataset, Number> column = new TableColumn<> (heading);
-    column.setPrefWidth (width);
-    column.setCellValueFactory (new PropertyValueFactory<Dataset, Number> (propertyName));
-    getColumns ().add (column);
-    column.setStyle ("-fx-alignment: CENTER-RIGHT;");
   }
 
   public void addDataset (Dataset dataset)
