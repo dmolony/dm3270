@@ -8,20 +8,22 @@ import javafx.beans.property.StringProperty;
 public class Dataset
 {
   private StringProperty datasetNameProperty;
-  private IntegerProperty tracksProperty;
-  private IntegerProperty cylindersProperty;
-  private IntegerProperty extentsProperty;
-  private IntegerProperty percentUsedProperty;
+
   private StringProperty volumeProperty;
   private StringProperty deviceProperty;
   private StringProperty dsorgProperty;
   private StringProperty recfmProperty;
-  private IntegerProperty lreclProperty;
-  private IntegerProperty blksizeProperty;
   private StringProperty catalogProperty;
   private StringProperty createdProperty;
   private StringProperty expiresProperty;
   private StringProperty referredProperty;
+
+  private IntegerProperty tracksProperty;
+  private IntegerProperty cylindersProperty;
+  private IntegerProperty extentsProperty;
+  private IntegerProperty percentUsedProperty;
+  private IntegerProperty lreclProperty;
+  private IntegerProperty blksizeProperty;
 
   public Dataset (String name)
   {
@@ -30,26 +32,15 @@ public class Dataset
 
   public void merge (Dataset other)
   {
-    if (other.getBlksize () > 0)
-      setBlksize (other.getBlksize ());
-    if (other.getLrecl () > 0)
-      setLrecl (other.getLrecl ());
-    if (other.getRecfm () != null)
-      setRecfm (other.getRecfm ());
-    if (other.getDsorg () != null)
-      setDsorg (other.getDsorg ());
-    if (other.getDevice () != null)
-      setDevice (other.getDevice ());
-    if (other.getExtents () > 0)
-      setExtents (other.getExtents ());
-    if (other.getPercentUsed () > 0)
-      setPercentUsed (other.getPercentUsed ());
-    if (other.getTracks () > 0)
-      setTracks (other.getTracks ());
-    if (other.getCylinders () > 0)
-      setCylinders (other.getCylinders ());
+    // StringProperty
     if (other.getVolume () != null)
       setVolume (other.getVolume ());
+    if (other.getDevice () != null)
+      setDevice (other.getDevice ());
+    if (other.getDsorg () != null)
+      setDsorg (other.getDsorg ());
+    if (other.getRecfm () != null)
+      setRecfm (other.getRecfm ());
     if (other.getCatalog () != null)
       setCatalog (other.getCatalog ());
     if (other.getCreated () != null)
@@ -58,6 +49,20 @@ public class Dataset
       setExpires (other.getExpires ());
     if (other.getReferred () != null)
       setReferred (other.getReferred ());
+
+    // IntegerProperty
+    if (other.getTracks () > 0)
+      setTracks (other.getTracks ());
+    if (other.getCylinders () > 0)
+      setCylinders (other.getCylinders ());
+    if (other.getExtents () > 0)
+      setExtents (other.getExtents ());
+    if (other.getPercentUsed () > 0)
+      setPercentUsed (other.getPercentUsed ());
+    if (other.getLrecl () > 0)
+      setLrecl (other.getLrecl ());
+    if (other.getBlksize () > 0)
+      setBlksize (other.getBlksize ());
   }
 
   // ---------------------------------------------------------------------------------//
