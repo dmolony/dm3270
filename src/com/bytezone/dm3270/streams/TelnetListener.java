@@ -103,7 +103,6 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
       session.add (sessionRecord);
     }
 
-    //    if (sessionMode == SessionMode.TERMINAL)
     if (function == Function.TERMINAL)
     {
       if (sessionRecordType == SessionRecordType.TELNET)      // no gui involved

@@ -8,6 +8,8 @@ public class EraseAllUnprotectedCommand extends Command
   public EraseAllUnprotectedCommand (byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length);
+    assert buffer[offset] == Command.ERASE_ALL_UNPROTECTED_0F
+        || buffer[offset] == Command.ERASE_ALL_UNPROTECTED_6F;
   }
 
   @Override

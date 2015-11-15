@@ -19,17 +19,24 @@ public class ReadCommand extends Command
   {
     super (buffer, offset, length);
 
-    if (data[0] == READ_BUFFER_F2)
+    assert buffer[offset] == Command.READ_BUFFER_02
+        || buffer[offset] == Command.READ_BUFFER_F2
+        || buffer[offset] == Command.READ_MODIFIED_06
+        || buffer[offset] == Command.READ_MODIFIED_F6
+        || buffer[offset] == Command.READ_MODIFIED_ALL_0E
+        || buffer[offset] == Command.READ_MODIFIED_ALL_6E;
+
+    if (data[0] == READ_BUFFER_F2 || data[0] == READ_BUFFER_02)
     {
       name = "Read Buffer";
       type = CommandType.READ_BUFFER;
     }
-    else if (data[0] == READ_MODIFIED_F6)
+    else if (data[0] == READ_MODIFIED_F6 || data[0] == READ_MODIFIED_06)
     {
       name = "Read Modified";
       type = CommandType.READ_MODIFIED;
     }
-    else if (data[0] == READ_MODIFIED_ALL_6E)
+    else if (data[0] == READ_MODIFIED_ALL_6E || data[0] == READ_MODIFIED_ALL_0E)
     {
       name = "Read Modified All";
       type = CommandType.READ_MODIFIED_ALL;
