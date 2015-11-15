@@ -74,7 +74,6 @@ public class WriteCommand extends Command
       ptr = order.pack (data, ptr);
 
     assert ptr == data.length;
-    systemMessage = null;
   }
 
   @Override
@@ -117,11 +116,11 @@ public class WriteCommand extends Command
       screen.draw ();
 
     // check screen for jobs submitted or finished
-    if (systemMessage == null)
+    if (systemMessage == null && orders.size () > 0)
+    {
       systemMessage = new SystemMessage (screen.getAssistantStage ());
-
-    if (orders.size () > 0 && systemMessage != null)
       systemMessage.checkSystemMessage (eraseWrite, orders);
+    }
   }
 
   // Used by Session.checkServerName() when searching for the server's name

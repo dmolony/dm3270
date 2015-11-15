@@ -8,7 +8,7 @@ import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.utilities.Utility;
 
-public class SystemMessage
+class SystemMessage
 {
   private static final Pattern jobSubmittedPattern =
       Pattern.compile ("^JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
