@@ -16,16 +16,13 @@ public class WriteCommand extends Command
 
   private SystemMessage systemMessage;
 
-  public WriteCommand (byte[] buffer, int offset, int length, boolean erase)
+  public WriteCommand (byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length);
 
-    this.eraseWrite = erase;
-
-    if (length > 1)
-      writeControlCharacter = new WriteControlCharacter (buffer[offset + 1]);
-    else
-      writeControlCharacter = null;
+    eraseWrite = buffer[offset] != Command.WRITE_F1 && buffer[offset] != Command.WRITE_01;
+    writeControlCharacter =
+        length > 1 ? new WriteControlCharacter (buffer[offset + 1]) : null;
 
     int ptr = offset + 2;
     Order previousOrder = null;
@@ -103,7 +100,7 @@ public class WriteCommand extends Command
     {
       writeControlCharacter.process (screen);       // may unlock the keyboard
       if (screen.getFieldManager ().size () > 0 && !screen.isKeyboardLocked ())
-        screen.checkRecording ();
+        screen.checkRecording ();                   // make a copy of the screen
     }
 
     if (!screen.isKeyboardLocked () && screen.getFieldManager ().size () > 0)

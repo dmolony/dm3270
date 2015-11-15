@@ -21,19 +21,15 @@ public class WriteControlCharacter
     resetModified = (value & 0x01) > 0;
   }
 
-  public byte getValue ()
+  byte getValue ()
   {
     return value;
   }
 
-  public boolean resetKeyboard ()
-  {
-    return restoreKeyboard;
-  }
-
-  public void process (Screen screen)
+  void process (Screen screen)
   {
     screen.resetInsertMode ();
+
     if (resetPartition)
       screen.resetPartition ();
     if (startPrinter)

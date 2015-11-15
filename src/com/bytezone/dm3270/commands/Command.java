@@ -84,35 +84,36 @@ public abstract class Command extends AbstractTN3270Command
    * used. A Short Read results in only the AID being sent inbound to the host.
    */
 
+  // called by TelnetListener.processRecord()
+  // called by Outbound3270DS constructor
   public static Command getCommand (byte[] buffer, int offset, int length)
   {
     switch (buffer[offset])
     {
+      // Outbound commands
       case Command.WRITE_F1:
       case Command.WRITE_01:
-        return new WriteCommand (buffer, offset, length, false);
-
       case Command.ERASE_WRITE_F5:
       case Command.ERASE_WRITE_05:
       case Command.ERASE_WRITE_ALTERNATE_7E:
       case Command.ERASE_WRITE_ALTERNATE_0D:
-        return new WriteCommand (buffer, offset, length, true);
-
-      case Command.WRITE_STRUCTURED_FIELD_F3:
-      case Command.WRITE_STRUCTURED_FIELD_11:
-        return new WriteStructuredFieldCommand (buffer, offset, length);
+        return new WriteCommand (buffer, offset, length);
 
       case Command.ERASE_ALL_UNPROTECTED_6F:
       case Command.ERASE_ALL_UNPROTECTED_0F:
         return new EraseAllUnprotectedCommand (buffer, offset, length);
 
+      case Command.WRITE_STRUCTURED_FIELD_F3:
+      case Command.WRITE_STRUCTURED_FIELD_11:
+        return new WriteStructuredFieldCommand (buffer, offset, length);
+
+      // Inbound commands
       case Command.READ_BUFFER_F2:
       case Command.READ_BUFFER_02:
       case Command.READ_MODIFIED_F6:
       case Command.READ_MODIFIED_06:
       case Command.READ_MODIFIED_ALL_6E:
       case Command.READ_MODIFIED_ALL_0E:
-        // the ReadCommand creates a command with a reply of: AID, RM, RMA
         return new ReadCommand (buffer, offset, length);
 
       default:
@@ -126,6 +127,7 @@ public abstract class Command extends AbstractTN3270Command
 
   public abstract String getName ();
 
+  // called by TelnetListener.processRecord()
   public static Command getReply (byte[] buffer, int offset, int length)
   {
     switch (buffer[offset])
