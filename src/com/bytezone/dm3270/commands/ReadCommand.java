@@ -26,25 +26,29 @@ public class ReadCommand extends Command
         || buffer[offset] == Command.READ_MODIFIED_ALL_0E
         || buffer[offset] == Command.READ_MODIFIED_ALL_6E;
 
-    if (data[0] == READ_BUFFER_F2 || data[0] == READ_BUFFER_02)
+    switch (data[0])
     {
-      name = "Read Buffer";
-      type = CommandType.READ_BUFFER;
-    }
-    else if (data[0] == READ_MODIFIED_F6 || data[0] == READ_MODIFIED_06)
-    {
-      name = "Read Modified";
-      type = CommandType.READ_MODIFIED;
-    }
-    else if (data[0] == READ_MODIFIED_ALL_6E || data[0] == READ_MODIFIED_ALL_0E)
-    {
-      name = "Read Modified All";
-      type = CommandType.READ_MODIFIED_ALL;
-    }
-    else
-    {
-      name = "Unknown Command";
-      type = null;
+      case READ_BUFFER_F2:
+      case READ_BUFFER_02:
+        name = "Read Buffer";
+        type = CommandType.READ_BUFFER;
+        break;
+
+      case READ_MODIFIED_F6:
+      case READ_MODIFIED_06:
+        name = "Read Modified";
+        type = CommandType.READ_MODIFIED;
+        break;
+
+      case READ_MODIFIED_ALL_6E:
+      case READ_MODIFIED_ALL_0E:
+        name = "Read Modified All";
+        type = CommandType.READ_MODIFIED_ALL;
+        break;
+
+      default:
+        name = "Not found";
+        type = null;
     }
   }
 
@@ -71,6 +75,6 @@ public class ReadCommand extends Command
   @Override
   public String toString ()
   {
-    return getName ();
+    return name;
   }
 }
