@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 public final class ScreenPosition
 {
   // screen display characters
-  private static String[] charString = new String[256];
+  private static final String[] charString = new String[256];
 
   // GraphicsEscape characters
   public static final byte TOP_LEFT = (byte) 0xC5;
