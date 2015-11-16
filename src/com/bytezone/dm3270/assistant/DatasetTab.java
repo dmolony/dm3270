@@ -133,17 +133,18 @@ public class DatasetTab extends AbstractTransferTab
 
   void fireDatasetSelected (Dataset dataset)
   {
-    for (DatasetSelectionListener listener : selectionListeners)
-      listener.datasetSelected (dataset);
+    selectionListeners.forEach (l -> l.datasetSelected (dataset));
   }
 
   void addDatasetSelectionListener (DatasetSelectionListener listener)
   {
-    selectionListeners.add (listener);
+    if (!selectionListeners.contains (listener))
+      selectionListeners.add (listener);
   }
 
   void removeDatasetSelectionListener (DatasetSelectionListener listener)
   {
-    selectionListeners.remove (listener);
+    if (selectionListeners.contains (listener))
+      selectionListeners.remove (listener);
   }
 }

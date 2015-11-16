@@ -144,15 +144,11 @@ public class ScreenDetails
 
   private boolean checkSplitScreen ()
   {
-    for (Field field : fieldManager.getFields ())
-    {
-      if (!field.isProtected () || field.getDisplayLength () != 79
-          || field.getFirstLocation () % screenColumns != 1)
-        continue;
-      if (SPLIT_LINE.equals (field.getText ()))
-        return true;
-    }
-    return false;
+    return fieldManager.getFields ().parallelStream ()
+        .filter (f -> f.isProtected () && f.getDisplayLength () == 79
+            && f.getFirstLocation () % screenColumns == 1
+            && SPLIT_LINE.equals (f.getText ()))
+        .findAny ().isPresent ();
   }
 
   private boolean hasPromptField ()
@@ -170,9 +166,9 @@ public class ScreenDetails
         Field nextField = rowFields.get (nextFieldNo);
         int length = nextField.getDisplayLength ();
         boolean modifiable = nextField.isUnprotected ();
-        boolean hidden = nextField.isHidden ();
+        boolean visible = !nextField.isHidden ();
 
-        if (length == 66 || length == 48 && !hidden && modifiable)
+        if ((length == 66 || length == 48) && visible && modifiable)
         {
           tsoCommandField = nextField;
           return true;

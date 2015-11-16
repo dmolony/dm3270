@@ -270,13 +270,6 @@ public class Screen extends Canvas implements DisplayScreen
       cursor.moveTo (firstUnprotectedField.get ().getFirstLocation ());
   }
 
-  void drawPosition (int position, boolean hasCursor)
-  {
-    int row = position / columns;
-    int col = position % columns;
-    drawPosition (screenPositions[position], row, col, hasCursor);
-  }
-
   public void buildFields (WriteControlCharacter wcc)
   {
     fieldManager.buildFields ();              // what about resetModified?
@@ -312,6 +305,13 @@ public class Screen extends Canvas implements DisplayScreen
     }
 
     drawPosition (cursor.getLocation (), true);             // draw the cursor
+  }
+
+  void drawPosition (int position, boolean hasCursor)
+  {
+    int row = position / columns;
+    int col = position % columns;
+    drawPosition (screenPositions[position], row, col, hasCursor);
   }
 
   // called from FontManager when a new font is selected
