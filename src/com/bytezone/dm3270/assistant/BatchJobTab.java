@@ -114,11 +114,13 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
 
   void addJobSelectionListener (BatchJobSelectionListener listener)
   {
-    selectionListeners.add (listener);
+    if (!selectionListeners.contains (listener))
+      selectionListeners.add (listener);
   }
 
   void removeJobSelectionListener (BatchJobSelectionListener listener)
   {
-    selectionListeners.remove (listener);
+    if (selectionListeners.contains (listener))
+      selectionListeners.remove (listener);
   }
 }

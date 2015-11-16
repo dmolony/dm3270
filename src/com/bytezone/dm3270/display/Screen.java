@@ -510,18 +510,19 @@ public class Screen extends Canvas implements DisplayScreen
   {
     KeyboardStatusChangedEvent evt =
         new KeyboardStatusChangedEvent (insertMode, keyboardLocked, keyName);
-    for (KeyboardStatusListener listener : keyboardChangeListeners)
-      listener.keyboardStatusChanged (evt);
+    keyboardChangeListeners.forEach (l -> l.keyboardStatusChanged (evt));
   }
 
   public void addKeyboardStatusChangeListener (KeyboardStatusListener listener)
   {
-    keyboardChangeListeners.add (listener);
+    if (!keyboardChangeListeners.contains (listener))
+      keyboardChangeListeners.add (listener);
   }
 
   public void removeKeyboardStatusChangeListener (KeyboardStatusListener listener)
   {
-    keyboardChangeListeners.remove (listener);
+    if (keyboardChangeListeners.contains (listener))
+      keyboardChangeListeners.remove (listener);
   }
 
   // ---------------------------------------------------------------------------------//

@@ -40,9 +40,6 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     reporterNode.addNodeSelectionListener (this);
     reporterNode.requestFocus ();
 
-    //    if (!site.folder.getText ().isEmpty ())
-    //      reporterNode.setFolder (site.folder.getText ());
-
     currentFileNode = reporterNode.getSelectedNode ();
 
     setContent (reporterNode);
@@ -85,13 +82,11 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     String siteFolderName = "";
     if (site != null)
     {
-      //      System.out.printf ("Current site: %s%n", site);
       siteFolderName = site.folder.getText ();
       if (!siteFolderName.isEmpty ())
       {
         Path path = Paths.get (System.getProperty ("user.home"), "dm3270", "files",
                                siteFolderName);
-        //        System.out.println (path);
         if (!Files.exists (path))
           siteFolderName = "";
       }
@@ -186,23 +181,30 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     txtCommand.setText (command);
   }
 
+  // ---------------------------------------------------------------------------------//
+  // Listener events
+  // ---------------------------------------------------------------------------------//
+
   private final Set<FileSelectionListener> selectionListeners = new HashSet<> ();
 
   void fireFileSelected (String filename)
   {
-    for (FileSelectionListener listener : selectionListeners)
-      listener.fileSelected (filename);
+    selectionListeners.forEach (l -> l.fileSelected (filename));
   }
 
   void addFileSelectionListener (FileSelectionListener listener)
   {
-    selectionListeners.add (listener);
-    if (currentFileNode != null)
-      listener.fileSelected (currentFileNode.toString ());
+    if (!selectionListeners.contains (listener))
+    {
+      selectionListeners.add (listener);
+      if (currentFileNode != null)
+        listener.fileSelected (currentFileNode.toString ());
+    }
   }
 
   void removeFileSelectionListener (FileSelectionListener listener)
   {
-    selectionListeners.remove (listener);
+    if (selectionListeners.contains (listener))
+      selectionListeners.remove (listener);
   }
 }

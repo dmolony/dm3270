@@ -152,14 +152,6 @@ public class FieldManager
         ++hiddenUnprotectedFields;
   }
 
-  //  public Field getFieldAt (int position)        // this needs to be improved
-  //  {
-  //    for (Field field : fields)
-  //      if (field.contains (position))
-  //        return field;
-  //    return null;
-  //  }
-
   public Optional<Field> getFieldAt (int position)        // should this be indexed?
   {
     return fields.parallelStream ().filter (f -> f.contains (position)).findAny ();
@@ -183,11 +175,6 @@ public class FieldManager
   // called from Screen.eraseAllUnprotected()
   Optional<Field> eraseAllUnprotected ()
   {
-    //    if (unprotectedFields.size () == 0)
-    //      return null;
-
-    //    for (Field field : unprotectedFields)
-    //      field.clearData (true);
     unprotectedFields.parallelStream ().forEach (f -> f.clearData (true));
 
     return unprotectedFields.stream ().findFirst ();
@@ -302,18 +289,19 @@ public class FieldManager
 
   private void fireScreenChanged (ScreenDetails screenDetails)
   {
-    for (ScreenChangeListener listener : screenChangeListeners)
-      listener.screenChanged (screenDetails);
+    screenChangeListeners.forEach (l -> l.screenChanged (screenDetails));
   }
 
   public void addScreenChangeListener (ScreenChangeListener listener)
   {
-    screenChangeListeners.add (listener);
+    if (!screenChangeListeners.contains (listener))
+      screenChangeListeners.add (listener);
   }
 
   public void removeScreenChangeListener (ScreenChangeListener listener)
   {
-    screenChangeListeners.remove (listener);
+    if (screenChangeListeners.contains (listener))
+      screenChangeListeners.remove (listener);
   }
 
   // ---------------------------------------------------------------------------------//
