@@ -295,42 +295,50 @@ public class Cursor
   }
 
   // ---------------------------------------------------------------------------------//
-  // Listener events
+  // FieldChangeListener
   // ---------------------------------------------------------------------------------//
 
   private final Set<FieldChangeListener> fieldChangeListeners = new HashSet<> ();
-  private final Set<CursorMoveListener> cursorMoveListeners = new HashSet<> ();
 
   void notifyFieldChange (Field oldField, Field currentField)
   {
-    for (FieldChangeListener listener : fieldChangeListeners)
-      listener.fieldChanged (oldField, currentField);
+    fieldChangeListeners.forEach (l -> l.fieldChanged (oldField, currentField));
   }
 
   public void addFieldChangeListener (FieldChangeListener listener)
   {
-    fieldChangeListeners.add (listener);
+    if (!fieldChangeListeners.contains (listener))
+      fieldChangeListeners.add (listener);
   }
 
   public void removeFieldChangeListener (FieldChangeListener listener)
   {
-    fieldChangeListeners.remove (listener);
+    if (fieldChangeListeners.contains (listener))
+      fieldChangeListeners.remove (listener);
   }
+
+  // ---------------------------------------------------------------------------------//
+  // CursorMoveListener
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<CursorMoveListener> cursorMoveListeners = new HashSet<> ();
 
   void notifyCursorMove (int oldLocation, int currentLocation, Field currentField,
       int offset)
   {
-    for (CursorMoveListener listener : cursorMoveListeners)
-      listener.cursorMoved (oldLocation, currentLocation, currentField);
+    cursorMoveListeners
+        .forEach (l -> l.cursorMoved (oldLocation, currentLocation, currentField));
   }
 
   public void addCursorMoveListener (CursorMoveListener listener)
   {
-    cursorMoveListeners.add (listener);
+    if (!cursorMoveListeners.contains (listener))
+      cursorMoveListeners.add (listener);
   }
 
   public void removeCursorMoveListener (CursorMoveListener listener)
   {
-    cursorMoveListeners.remove (listener);
+    if (cursorMoveListeners.contains (listener))
+      cursorMoveListeners.remove (listener);
   }
 }

@@ -11,9 +11,9 @@ import com.bytezone.dm3270.plugins.PluginField;
 public class Field implements Iterable<ScreenPosition>
 {
   private final Screen screen;
-  private final int startPosition;// position of StartFieldAttribute
-  private final int endPosition;// last data position of this field
-  private Field next, previous;// unprotected fields
+  private final int startPosition;        // position of StartFieldAttribute
+  private final int endPosition;          // last data position of this field
+  private Field next, previous;           // unprotected fields
 
   private final StartFieldAttribute startFieldAttribute;
   private final List<ScreenPosition> screenPositions;
@@ -72,12 +72,12 @@ public class Field implements Iterable<ScreenPosition>
     this.next = field;
   }
 
-  public Field getNextUnprotectedField ()
+  Field getNextUnprotectedField ()
   {
     return next;
   }
 
-  public Field getPreviousUnprotectedField ()
+  Field getPreviousUnprotectedField ()
   {
     return previous;
   }
@@ -165,15 +165,6 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
-  public void clearData (boolean alterModifiedFlag)
-  {
-    if (alterModifiedFlag)                  // don't reset any already set flags
-      setModified (true);
-
-    for (int i = 1; i < screenPositions.size (); i++)
-      screenPositions.get (i).setChar ((byte) 0);         // leave screenContext
-  }
-
   // called from AIDCommand.process() - ie replay
   // called from this.setText()
   public void erase ()
@@ -183,6 +174,15 @@ public class Field implements Iterable<ScreenPosition>
     setModified (true);
   }
 
+  public void clearData (boolean alterModifiedFlag)
+  {
+    if (alterModifiedFlag)                  // don't reset any already set flags
+      setModified (true);
+
+    for (int i = 1; i < screenPositions.size (); i++)
+      screenPositions.get (i).setChar ((byte) 0);         // leave screenContext
+  }
+
   public void clearData (int first, int last)
   {
     for (int i = first; i <= last; i++)
@@ -190,7 +190,7 @@ public class Field implements Iterable<ScreenPosition>
   }
 
   // overwrites each position with the position to its right (delete)
-  public void pull (int first, int last)
+  void pull (int first, int last)
   {
     ScreenPosition spFirst = screenPositions.get (first);
     while (first < last)
@@ -206,7 +206,7 @@ public class Field implements Iterable<ScreenPosition>
   }
 
   // overwrites each position with the position to its left (insert)
-  public void push (int first, int last)
+  void push (int first, int last)
   {
     ScreenPosition spLast = screenPositions.get (last);
     while (first < last)
@@ -218,7 +218,7 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
-  public byte getByteAt (int position)
+  byte getByteAt (int position)
   {
     return screenPositions.get (position).getByte ();
   }
@@ -271,16 +271,16 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
-  public PluginField getScreenField (int screenSequence, int fieldSequence)
+  // called by FieldManager.getPluginScreen()
+  PluginField getPluginField (int screenSequence, int fieldSequence)
   {
     int firstLocation = getFirstLocation ();
     int row = firstLocation / screen.columns;
     int column = firstLocation % screen.columns;
     int length = getDisplayLength ();
-    PluginField screenField =
-        new PluginField (fieldSequence, firstLocation, row, column, length,
-            isProtected (), isAlphanumeric (), isVisible (), isModified (), getText ());
-    return screenField;
+
+    return new PluginField (fieldSequence, firstLocation, row, column, length,
+        isProtected (), isAlphanumeric (), isVisible (), isModified (), getText ());
   }
 
   public String toStringWithLinks ()

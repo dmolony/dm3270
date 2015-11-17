@@ -272,13 +272,13 @@ public class FieldManager
 
   public PluginData getPluginScreen (int sequence, int row, int column)
   {
-    List<PluginField> screenFields = new ArrayList<> ();
+    List<PluginField> pluginFields = new ArrayList<> ();
     int count = 0;
 
     for (Field field : fields)
-      screenFields.add (field.getScreenField (sequence, count++));
+      pluginFields.add (field.getPluginField (sequence, count++));
 
-    return new PluginData (sequence, row, column, screenFields);
+    return new PluginData (sequence, row, column, pluginFields);
   }
 
   // ---------------------------------------------------------------------------------//

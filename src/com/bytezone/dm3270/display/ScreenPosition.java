@@ -11,7 +11,7 @@ import com.bytezone.dm3270.utilities.Utility;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public final class ScreenPosition
+final class ScreenPosition
 {
   // screen display characters
   private static final String[] charString = new String[256];
@@ -57,33 +57,33 @@ public final class ScreenPosition
     reset ();
   }
 
-  public StartFieldAttribute getStartFieldAttribute ()
+  StartFieldAttribute getStartFieldAttribute ()
   {
     return startFieldAttribute;
   }
 
-  public void setStartField (StartFieldAttribute startFieldAttribute)
+  void setStartField (StartFieldAttribute startFieldAttribute)
   {
     this.startFieldAttribute = startFieldAttribute;
   }
 
-  public void addAttribute (Attribute attribute)
+  void addAttribute (Attribute attribute)
   {
     attributes.add (attribute);
   }
 
-  public List<Attribute> getAttributes ()
+  List<Attribute> getAttributes ()
   {
     return attributes;
   }
 
   // called by Field when deleting a character
-  public void clearAttributes ()
+  void clearAttributes ()
   {
     attributes.clear ();
   }
 
-  public void reset ()
+  void reset ()
   {
     isVisible = true;
     value = 0;
@@ -94,28 +94,28 @@ public final class ScreenPosition
   }
 
   // Password fields etc
-  public void setVisible (boolean visible)
+  void setVisible (boolean visible)
   {
     this.isVisible = visible;
   }
 
   // All the colour and highlight options
-  public void setScreenContext (ScreenContext screenContext)
+  void setScreenContext (ScreenContext screenContext)
   {
     this.screenContext = screenContext;
   }
 
-  public ScreenContext getScreenContext ()
+  ScreenContext getScreenContext ()
   {
     return screenContext;
   }
 
-  public boolean isStartField ()
+  boolean isStartField ()
   {
     return startFieldAttribute != null;
   }
 
-  public boolean isGraphicsChar ()
+  boolean isGraphicsChar ()
   {
     return isGraphics;
   }
@@ -126,14 +126,14 @@ public final class ScreenPosition
     isGraphics = false;
   }
 
-  public void setGraphicsChar (byte value)
+  void setGraphicsChar (byte value)
   {
     this.value = value;
     isGraphics = true;
   }
 
-  // only used by other classes
-  public char getChar ()
+  // used by Field.getText()
+  char getChar ()
   {
     if (isStartField () || (value <= 32 && value >= 0))
       return ' ';
@@ -152,7 +152,7 @@ public final class ScreenPosition
     return (char) Utility.ebc2asc[value & 0xFF];
   }
 
-  public String getCharString ()
+  String getCharString ()
   {
     if (isStartField ())
       return " ";
@@ -176,17 +176,17 @@ public final class ScreenPosition
     return charString[Utility.ebc2asc[value & 0xFF]];
   }
 
-  public byte getByte ()
+  byte getByte ()
   {
     return value;
   }
 
-  public boolean isNull ()
+  boolean isNull ()
   {
     return value == 0;
   }
 
-  public int pack (byte[] buffer, int ptr, byte order)
+  int pack (byte[] buffer, int ptr, byte order)
   {
     assert isStartField ();
 
@@ -207,7 +207,7 @@ public final class ScreenPosition
     return ptr;
   }
 
-  public int pack (byte[] buffer, int ptr, byte[] replyTypes)
+  int pack (byte[] buffer, int ptr, byte[] replyTypes)
   {
     assert !isStartField ();
 
@@ -223,7 +223,7 @@ public final class ScreenPosition
     return ptr;
   }
 
-  public void draw (int x, int y, boolean hasCursor)
+  void draw (int x, int y, boolean hasCursor)
   {
     int charWidth = fontData.getWidth ();
     int charHeight = fontData.getHeight ();

@@ -25,7 +25,6 @@ import com.bytezone.dm3270.replyfield.ReplyModes;
 import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.replyfield.UsableArea;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
-import com.bytezone.dm3270.structuredfields.Inbound3270DS;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.utilities.Utility;
@@ -86,10 +85,10 @@ public class ReadStructuredFieldCommand extends Command
           replies.add (queryReply.getQueryReplyField ());
           break;
 
-        case StructuredField.INBOUND_3270DS:
-          System.out.println ("***************************** here RSF");
-          fields.add (new Inbound3270DS (data, ptr, size));
-          break;
+        //        case StructuredField.INBOUND_3270DS:
+        //          System.out.println ("***************************** here RSF");
+        //          fields.add (new Inbound3270DS (data, ptr, size));
+        //          break;
 
         case StructuredField.IND$FILE:
           fields.add (new FileTransferInboundSF (data, ptr, size));

@@ -16,30 +16,43 @@ public class ReadPartitionSF extends StructuredField
     assert data[0] == StructuredField.READ_PARTITION;
     partitionID = data[1];
 
-    switch (data[2])
+    if (partitionID == (byte) 0xFF)
     {
-      case (byte) 0x02:
-        typeName = "Read Partition (Query)";
-        break;
+      switch (data[2])
+      {
+        case (byte) 0x02:
+          typeName = "Read Partition (Query)";
+          break;
 
-      case (byte) 0x03:
-        typeName = "Read Partition (QueryList)";
-        break;
+        case (byte) 0x03:
+          typeName = "Read Partition (QueryList)";
+          break;
 
-      case Command.READ_BUFFER_F2:        // NB 0x02 would conflict with RPQ above
-        typeName = "Read Partition (ReadBuffer)";
-        break;
+        default:
+          typeName = String.format ("Unknown READ PARTITION (Query) type: %02X", data[2]);
+      }
+    }
+    else
+    {
+      // wrapper for original read commands - RB, RM, RMA
+      assert (partitionID & (byte) 0x80) == 0;    // must be 0x00 - 0x7F
+      switch (data[2])
+      {
+        case Command.READ_BUFFER_F2:
+          typeName = "Read Partition (ReadBuffer)";
+          break;
 
-      case Command.READ_MODIFIED_F6:
-        typeName = "Read Partition (ReadModified)";
-        break;
+        case Command.READ_MODIFIED_F6:
+          typeName = "Read Partition (ReadModified)";
+          break;
 
-      case Command.READ_MODIFIED_ALL_6E:
-        typeName = "Read Partition (ReadModifiedAll)";
-        break;
+        case Command.READ_MODIFIED_ALL_6E:
+          typeName = "Read Partition (ReadModifiedAll)";
+          break;
 
-      default:
-        typeName = String.format ("Unknown READ PARTITION type: %02X", data[2]);
+        default:
+          typeName = String.format ("Unknown READ PARTITION type: %02X", data[2]);
+      }
     }
   }
 

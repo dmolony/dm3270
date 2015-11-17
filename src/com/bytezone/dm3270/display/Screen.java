@@ -203,6 +203,7 @@ public class Screen extends Canvas implements DisplayScreen
       position += screenSize;
     while (position >= screenSize)
       position -= screenSize;
+
     return position;
   }
 

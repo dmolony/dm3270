@@ -5,15 +5,17 @@ import com.bytezone.dm3270.display.Screen;
 
 public class Outbound3270DS extends StructuredField
 {
-  private final byte partition;
+  private final byte partitionID;
   private final Command command;
 
+  // wrapper for original write commands - W. EW, EWA, EAU
   public Outbound3270DS (byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length);             // copies buffer -> data
 
     assert data[0] == StructuredField.OUTBOUND_3270DS;
-    partition = data[1];
+    partitionID = data[1];
+    assert (partitionID & (byte) 0x80) == 0;    // must be 0x00 - 0x7F
 
     // can only be W/EW/EWA/EAU (i.e. one of the write commands)
     command = Command.getCommand (buffer, offset + 2, length - 2);
@@ -36,7 +38,7 @@ public class Outbound3270DS extends StructuredField
   {
     StringBuilder text = new StringBuilder ();
     text.append (String.format ("Struct Field : %02X Outbound3270DS\n", type));
-    text.append (String.format ("   partition : %02X%n", partition));
+    text.append (String.format ("   partition : %02X%n", partitionID));
     text.append (command);
     return text.toString ();
   }

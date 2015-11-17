@@ -1,8 +1,10 @@
 package com.bytezone.dm3270.structuredfields;
 
-public class Inbound3270DS extends StructuredField
+class Inbound3270DS extends StructuredField
 {
-  public Inbound3270DS (byte[] buffer, int offset, int length)
+  // ReadPartitionSF provides this functionality
+
+  private Inbound3270DS (byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length);
 

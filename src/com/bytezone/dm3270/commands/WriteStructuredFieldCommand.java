@@ -40,13 +40,19 @@ public class WriteStructuredFieldCommand extends Command
 
       switch (buffer[ptr])
       {
+        // wrapper for original write commands - W. EW, EWA, EAU
+        case StructuredField.OUTBOUND_3270DS:
+          fields.add (new Outbound3270DS (buffer, ptr, size));
+          break;
+
+        // wrapper for original read commands - RB, RM, RMA
+        case StructuredField.READ_PARTITION:
+          fields.add (new ReadPartitionSF (buffer, ptr, size));
+          break;
+
         case StructuredField.RESET_PARTITION:
           System.out.println ("SF_RESET_PARTITION (00) not written yet");
           fields.add (new DefaultStructuredField (buffer, ptr, size));
-          break;
-
-        case StructuredField.READ_PARTITION:
-          fields.add (new ReadPartitionSF (buffer, ptr, size));
           break;
 
         case StructuredField.SET_REPLY_MODE:
@@ -56,10 +62,6 @@ public class WriteStructuredFieldCommand extends Command
         case StructuredField.ACTIVATE_PARTITION:
           System.out.println ("SF_ACTIVATE_PARTITION (0E) not written yet");
           fields.add (new DefaultStructuredField (buffer, ptr, size));
-          break;
-
-        case StructuredField.OUTBOUND_3270DS:
-          fields.add (new Outbound3270DS (buffer, ptr, size));
           break;
 
         case StructuredField.ERASE_RESET:
