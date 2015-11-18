@@ -31,8 +31,7 @@ public class Field implements Iterable<ScreenPosition>
     endPosition = lastScreenPosition.position;
 
     if (startFieldAttribute.isHidden ())
-      for (ScreenPosition screenPosition : positions)
-        screenPosition.setVisible (false);
+      positions.forEach (sp -> sp.setVisible (false));
     else if (!startFieldAttribute.isExtended ())
     {
       // remove any extended attributes (see spy115.txt)
@@ -99,8 +98,7 @@ public class Field implements Iterable<ScreenPosition>
 
   public int getCursorOffset ()
   {
-    Cursor cursor = screen.getScreenCursor ();
-    int cursorLocation = cursor.getLocation ();
+    int cursorLocation = screen.getScreenCursor ().getLocation ();
     if (cursorLocation >= startPosition)
       return cursorLocation - startPosition;
     return screen.screenSize - startPosition + cursorLocation;

@@ -56,7 +56,7 @@ public class CommandHeader extends AbstractReplyBuffer
   {
     super (buffer, offset, length);
 
-    switch (buffer[0])
+    switch (data[0])
     {
       case TN3270_DATA:
         dataType = DataType.TN3270_DATA;
@@ -86,47 +86,59 @@ public class CommandHeader extends AbstractReplyBuffer
         dataType = DataType.PRINT_EOJ;
         break;
       default:
-        System.out.printf ("Unknown data type: %02X%n", buffer[0]);
+        System.out.printf ("Unknown data type: %02X%n", data[0]);
     }
 
-    if (dataType == DataType.REQUEST)
+    switch (dataType)
     {
-      if (buffer[2] == ERR_COND_CLEARED)
-        requestType = RequestType.ERR_COND_CLEARED;
-      else
-        System.out.println ("Unknown datatype: " + dataType);
+      case REQUEST:
+        if (data[2] == ERR_COND_CLEARED)
+          requestType = RequestType.ERR_COND_CLEARED;
+        else
+          System.out.println ("Unknown datatype: " + dataType);
+        break;
+
+      case TN3270_DATA:
+      case SCS_DATA:
+        switch (data[2])
+        {
+          case RQ_NO_RESPONSE:
+            responseType = ResponseType.NO_RESPONSE;
+            break;
+          case RQ_ERROR_RESPONSE:
+            responseType = ResponseType.ERROR_RESPONSE;
+            break;
+          case RQ_ALWAYS_RESPONSE:
+            responseType = ResponseType.ALWAYS_RESPONSE;
+            break;
+        }
+        break;
+
+      case RESPONSE:
+        switch (data[2])
+        {
+          case POSITIVE_RESPONSE:
+            responseType = ResponseType.POSITIVE_RESPONSE;
+            break;
+          case NEGATIVE_RESPONSE:
+            responseType = ResponseType.NEGATIVE_RESPONSE;
+            break;
+        }
+        break;
+
+      case BIND_IMAGE:
+        break;
+      case NVT_DATA:
+        break;
+      case PRINT_EOJ:
+        break;
+      case SSCP_LU_DATA:
+        break;
+      case UNBIND:
+        break;
     }
 
-    if (dataType == DataType.TN3270_DATA || dataType == DataType.SCS_DATA)
-    {
-      switch (buffer[2] & 0xFF)
-      {
-        case RQ_NO_RESPONSE:
-          responseType = ResponseType.NO_RESPONSE;
-          break;
-        case RQ_ERROR_RESPONSE:
-          responseType = ResponseType.ERROR_RESPONSE;
-          break;
-        case RQ_ALWAYS_RESPONSE:
-          responseType = ResponseType.ALWAYS_RESPONSE;
-          break;
-      }
-    }
-
-    if (dataType == DataType.RESPONSE)
-    {
-      switch (buffer[2] & 0xFF)
-      {
-        case POSITIVE_RESPONSE:
-          responseType = ResponseType.POSITIVE_RESPONSE;
-          break;
-        case NEGATIVE_RESPONSE:
-          responseType = ResponseType.NEGATIVE_RESPONSE;
-          break;
-      }
-    }
-
-    commandSeq = Utility.unsignedShort (buffer, 3);
+    commandSeq = Utility.unsignedShort (data, 3);
   }
 
   public DataType getDataType ()
