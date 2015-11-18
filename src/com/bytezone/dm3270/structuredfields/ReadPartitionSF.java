@@ -39,14 +39,17 @@ public class ReadPartitionSF extends StructuredField
       switch (data[2])
       {
         case Command.READ_BUFFER_F2:
+        case Command.READ_BUFFER_02:
           typeName = "Read Partition (ReadBuffer)";
           break;
 
         case Command.READ_MODIFIED_F6:
+        case Command.READ_MODIFIED_06:
           typeName = "Read Partition (ReadModified)";
           break;
 
         case Command.READ_MODIFIED_ALL_6E:
+        case Command.READ_MODIFIED_ALL_0E:
           typeName = "Read Partition (ReadModifiedAll)";
           break;
 

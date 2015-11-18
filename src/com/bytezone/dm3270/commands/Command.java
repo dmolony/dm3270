@@ -90,7 +90,6 @@ public abstract class Command extends AbstractTN3270Command
   {
     switch (buffer[offset])
     {
-      // Outbound commands
       case Command.WRITE_F1:
       case Command.WRITE_01:
       case Command.ERASE_WRITE_F5:
@@ -103,11 +102,6 @@ public abstract class Command extends AbstractTN3270Command
       case Command.ERASE_ALL_UNPROTECTED_0F:
         return new EraseAllUnprotectedCommand (buffer, offset, length);
 
-      case Command.WRITE_STRUCTURED_FIELD_F3:
-      case Command.WRITE_STRUCTURED_FIELD_11:
-        return new WriteStructuredFieldCommand (buffer, offset, length);
-
-      // Inbound commands
       case Command.READ_BUFFER_F2:
       case Command.READ_BUFFER_02:
       case Command.READ_MODIFIED_F6:
@@ -115,6 +109,10 @@ public abstract class Command extends AbstractTN3270Command
       case Command.READ_MODIFIED_ALL_6E:
       case Command.READ_MODIFIED_ALL_0E:
         return new ReadCommand (buffer, offset, length);
+
+      case Command.WRITE_STRUCTURED_FIELD_F3:
+      case Command.WRITE_STRUCTURED_FIELD_11:
+        return new WriteStructuredFieldCommand (buffer, offset, length);
 
       default:
         System.out

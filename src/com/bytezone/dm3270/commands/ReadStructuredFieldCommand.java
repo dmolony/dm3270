@@ -85,11 +85,6 @@ public class ReadStructuredFieldCommand extends Command
           replies.add (queryReply.getQueryReplyField ());
           break;
 
-        //        case StructuredField.INBOUND_3270DS:
-        //          System.out.println ("***************************** here RSF");
-        //          fields.add (new Inbound3270DS (data, ptr, size));
-        //          break;
-
         case StructuredField.IND$FILE:
           fields.add (new FileTransferInboundSF (data, ptr, size));
           break;

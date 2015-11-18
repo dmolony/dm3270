@@ -262,9 +262,9 @@ public class Screen extends Canvas implements DisplayScreen
   {
     Optional<Field> firstUnprotectedField = fieldManager.eraseAllUnprotected ();
 
-    restoreKeyboard ();
+    restoreKeyboard ();         // resets the AID to NO_AID_SPECIFIED
     resetModified ();
-    setAID (AIDCommand.NO_AID_SPECIFIED);
+    //    setAID (AIDCommand.NO_AID_SPECIFIED);
     draw ();
 
     if (firstUnprotectedField.isPresent ())
@@ -491,9 +491,11 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void resetModified ()
   {
-    for (Field field : fieldManager.getUnprotectedFields ())
-      if (field.isModified ())
-        field.setModified (false);
+    //    for (Field field : fieldManager.getUnprotectedFields ())
+    //      if (field.isModified ())
+    //        field.setModified (false);
+
+    fieldManager.getUnprotectedFields ().forEach (f -> f.setModified (false));
   }
 
   public boolean isKeyboardLocked ()
