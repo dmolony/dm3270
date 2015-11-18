@@ -6,15 +6,10 @@ import com.bytezone.dm3270.utilities.Utility;
 
 public class CommandHeader extends AbstractReplyBuffer
 {
-  //  private static final byte TN3270_DATA = 0x00;
-  //  private static final byte SCS_DATA = 0x01;
-  //  private static final byte RESPONSE = 0x02;
-  //  private static final byte BIND_IMAGE = 0x03;
-  //  private static final byte UNBIND = 0x04;
-  //  private static final byte NVT_DATA = 0x05;
-  //  private static final byte REQUEST = 0x06;
-  //  private static final byte SSCP_LU_DATA = 0x07;
-  //  private static final byte PRINT_EOJ = 0x08;
+  private static DataType[] dataTypes =
+      { DataType.TN3270_DATA, DataType.SCS_DATA, DataType.RESPONSE, DataType.BIND_IMAGE,
+        DataType.UNBIND, DataType.NVT_DATA, DataType.REQUEST, DataType.SSCP_LU_DATA,
+        DataType.PRINT_EOJ };
 
   private static final byte ERR_COND_CLEARED = 0x00;
 
@@ -25,7 +20,7 @@ public class CommandHeader extends AbstractReplyBuffer
   private static final byte POSITIVE_RESPONSE = 0x00;
   private static final byte NEGATIVE_RESPONSE = 0x01;
 
-  private DataType dataType;
+  private final DataType dataType;
   private ResponseType responseType;
   private RequestType requestType;
   private final int commandSeq;
@@ -56,56 +51,10 @@ public class CommandHeader extends AbstractReplyBuffer
   {
     super (buffer, offset, length);
 
-    int i = 0;
-    for (DataType dt : DataType.values ())
-      if (i++ == data[0])
-      {
-        dataType = dt;
-        break;
-      }
-
-    //    switch (data[0])
-    //    {
-    //      case TN3270_DATA:
-    //        dataType = DataType.TN3270_DATA;
-    //        break;
-    //      case SCS_DATA:
-    //        dataType = DataType.SCS_DATA;
-    //        break;
-    //      case RESPONSE:
-    //        dataType = DataType.RESPONSE;
-    //        break;
-    //      case BIND_IMAGE:
-    //        dataType = DataType.BIND_IMAGE;
-    //        break;
-    //      case UNBIND:
-    //        dataType = DataType.UNBIND;
-    //        break;
-    //      case NVT_DATA:
-    //        dataType = DataType.NVT_DATA;
-    //        break;
-    //      case REQUEST:
-    //        dataType = DataType.REQUEST;
-    //        break;
-    //      case SSCP_LU_DATA:
-    //        dataType = DataType.SSCP_LU_DATA;
-    //        break;
-    //      case PRINT_EOJ:
-    //        dataType = DataType.PRINT_EOJ;
-    //        break;
-    //      default:
-    //        System.out.printf ("Unknown data type: %02X%n", data[0]);
-    //    }
+    dataType = dataTypes[data[0]];
 
     switch (dataType)
     {
-      case REQUEST:
-        if (data[2] == ERR_COND_CLEARED)
-          requestType = RequestType.ERR_COND_CLEARED;
-        else
-          System.out.println ("Unknown datatype: " + dataType);
-        break;
-
       case TN3270_DATA:
       case SCS_DATA:
         switch (data[2])
@@ -136,13 +85,24 @@ public class CommandHeader extends AbstractReplyBuffer
 
       case BIND_IMAGE:
         break;
+
+      case UNBIND:
+        break;
+
       case NVT_DATA:
         break;
-      case PRINT_EOJ:
+
+      case REQUEST:
+        if (data[2] == ERR_COND_CLEARED)
+          requestType = RequestType.ERR_COND_CLEARED;
+        else
+          System.out.println ("Unknown datatype: " + dataType);
         break;
+
       case SSCP_LU_DATA:
         break;
-      case UNBIND:
+
+      case PRINT_EOJ:
         break;
     }
 
