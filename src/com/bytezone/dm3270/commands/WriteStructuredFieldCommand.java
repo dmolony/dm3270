@@ -20,7 +20,7 @@ public class WriteStructuredFieldCommand extends Command
   private static final String line =
       "\n-------------------------------------------------------------------------";
 
-  private final List<StructuredField> fields = new ArrayList<StructuredField> ();
+  private final List<StructuredField> structuredFields = new ArrayList<StructuredField> ();
   private final List<Buffer> replies = new ArrayList<> ();
 
   public WriteStructuredFieldCommand (byte[] buffer, int offset, int length)
@@ -42,38 +42,38 @@ public class WriteStructuredFieldCommand extends Command
       {
         // wrapper for original write commands - W. EW, EWA, EAU
         case StructuredField.OUTBOUND_3270DS:
-          fields.add (new Outbound3270DS (buffer, ptr, size));
+          structuredFields.add (new Outbound3270DS (buffer, ptr, size));
           break;
 
         // wrapper for original read commands - RB, RM, RMA
         case StructuredField.READ_PARTITION:
-          fields.add (new ReadPartitionSF (buffer, ptr, size));
+          structuredFields.add (new ReadPartitionSF (buffer, ptr, size));
           break;
 
         case StructuredField.RESET_PARTITION:
           System.out.println ("SF_RESET_PARTITION (00) not written yet");
-          fields.add (new DefaultStructuredField (buffer, ptr, size));
+          structuredFields.add (new DefaultStructuredField (buffer, ptr, size));
           break;
 
         case StructuredField.SET_REPLY_MODE:
-          fields.add (new SetReplyModeSF (buffer, ptr, size));
+          structuredFields.add (new SetReplyModeSF (buffer, ptr, size));
           break;
 
         case StructuredField.ACTIVATE_PARTITION:
           System.out.println ("SF_ACTIVATE_PARTITION (0E) not written yet");
-          fields.add (new DefaultStructuredField (buffer, ptr, size));
+          structuredFields.add (new DefaultStructuredField (buffer, ptr, size));
           break;
 
         case StructuredField.ERASE_RESET:
-          fields.add (new EraseResetSF (buffer, ptr, size));
+          structuredFields.add (new EraseResetSF (buffer, ptr, size));
           break;
 
         case StructuredField.IND$FILE:
-          fields.add (new FileTransferOutboundSF (buffer, ptr, size));
+          structuredFields.add (new FileTransferOutboundSF (buffer, ptr, size));
           break;
 
         default:
-          fields.add (new DefaultStructuredField (buffer, ptr, size));
+          structuredFields.add (new DefaultStructuredField (buffer, ptr, size));
           break;
       }
 
@@ -86,10 +86,10 @@ public class WriteStructuredFieldCommand extends Command
   {
     replies.clear ();
 
-    for (StructuredField sf : fields)
+    for (StructuredField structuredField : structuredFields)
     {
-      sf.process (screen);
-      Buffer reply = sf.getReply ();
+      structuredField.process (screen);
+      Buffer reply = structuredField.getReply ();
       if (reply != null)
         replies.add (reply);
     }
@@ -114,9 +114,9 @@ public class WriteStructuredFieldCommand extends Command
   @Override
   public String brief ()
   {
-    StringBuilder text = new StringBuilder (String.format ("WSF (%d):", fields.size ()));
+    StringBuilder text = new StringBuilder (String.format ("WSF (%d):", structuredFields.size ()));
 
-    for (StructuredField sf : fields)
+    for (StructuredField sf : structuredFields)
       text.append ("\n       : " + sf.brief ());
 
     return text.toString ();
@@ -131,16 +131,16 @@ public class WriteStructuredFieldCommand extends Command
   @Override
   public String toString ()
   {
-    StringBuilder text = new StringBuilder (String.format ("WSF (%d):", fields.size ()));
+    StringBuilder text = new StringBuilder (String.format ("WSF (%d):", structuredFields.size ()));
 
-    for (StructuredField sf : fields)
+    for (StructuredField sf : structuredFields)
     {
       text.append (line);
       text.append ("\n");
       text.append (sf);
     }
 
-    if (fields.size () > 0)
+    if (structuredFields.size () > 0)
       text.append (line);
 
     return text.toString ();

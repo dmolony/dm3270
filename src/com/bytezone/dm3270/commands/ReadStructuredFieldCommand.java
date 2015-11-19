@@ -33,7 +33,7 @@ public class ReadStructuredFieldCommand extends Command
 {
   private static Map<String, String> clientNames = new HashMap<> ();
 
-  private final List<StructuredField> fields = new ArrayList<StructuredField> ();
+  private final List<StructuredField> structuredFields = new ArrayList<> ();
   private static final String line =
       "\n-------------------------------------------------------------------------";
 
@@ -81,17 +81,17 @@ public class ReadStructuredFieldCommand extends Command
       {
         case StructuredField.QUERY_REPLY:
           QueryReplySF queryReply = new QueryReplySF (data, ptr, size);
-          fields.add (queryReply);
+          structuredFields.add (queryReply);
           replies.add (queryReply.getQueryReplyField ());
           break;
 
         case StructuredField.IND$FILE:
-          fields.add (new FileTransferInboundSF (data, ptr, size));
+          structuredFields.add (new FileTransferInboundSF (data, ptr, size));
           break;
 
         default:
           System.out.printf ("Unknown Structured Field: %02X%n", data[ptr]);
-          fields.add (new DefaultStructuredField (data, ptr, size));
+          structuredFields.add (new DefaultStructuredField (data, ptr, size));
       }
       ptr += size;
     }
@@ -125,10 +125,10 @@ public class ReadStructuredFieldCommand extends Command
     return clientName;
   }
 
-  public List<StructuredField> getFieldList ()
-  {
-    return fields;
-  }
+  //  private List<StructuredField> getFieldList ()
+  //  {
+  //    return structuredFields;
+  //  }
 
   private static byte[] buildReply (int version)
   {
@@ -208,7 +208,8 @@ public class ReadStructuredFieldCommand extends Command
   @Override
   public String toString ()
   {
-    StringBuilder text = new StringBuilder (String.format ("RSF (%d):", fields.size ()));
+    StringBuilder text =
+        new StringBuilder (String.format ("RSF (%d):", structuredFields.size ()));
 
     if (replies.size () > 0)
     {
@@ -216,14 +217,14 @@ public class ReadStructuredFieldCommand extends Command
       text.append (String.format ("%nClient name  : %s", clientName));
     }
 
-    for (StructuredField sf : fields)
+    for (StructuredField sf : structuredFields)
     {
       text.append (line);
       text.append ("\n");
       text.append (sf);
     }
 
-    if (fields.size () > 0)
+    if (structuredFields.size () > 0)
       text.append (line);
 
     return text.toString ();

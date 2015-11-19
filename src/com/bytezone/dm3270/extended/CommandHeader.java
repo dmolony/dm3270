@@ -96,7 +96,7 @@ public class CommandHeader extends AbstractReplyBuffer
         if (data[2] == ERR_COND_CLEARED)
           requestType = RequestType.ERR_COND_CLEARED;
         else
-          System.out.println ("Unknown datatype: " + dataType);
+          System.out.printf ("Unknown request data: %02X%n", data[2]);
         break;
 
       case SSCP_LU_DATA:

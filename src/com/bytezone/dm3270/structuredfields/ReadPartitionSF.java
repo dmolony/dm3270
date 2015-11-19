@@ -8,6 +8,7 @@ public class ReadPartitionSF extends StructuredField
 {
   private final byte partitionID;
   private String typeName;
+  private Command command;
 
   public ReadPartitionSF (byte[] buffer, int offset, int length)
   {
@@ -36,76 +37,93 @@ public class ReadPartitionSF extends StructuredField
     {
       // wrapper for original read commands - RB, RM, RMA
       assert (partitionID & (byte) 0x80) == 0;    // must be 0x00 - 0x7F
-      switch (data[2])
-      {
-        case Command.READ_BUFFER_F2:
-        case Command.READ_BUFFER_02:
-          typeName = "Read Partition (ReadBuffer)";
-          break;
+      //      switch (data[2])
+      //      {
+      //        case Command.READ_BUFFER_F2:
+      //        case Command.READ_BUFFER_02:
+      //          typeName = "Read Partition (ReadBuffer)";
+      //          break;
+      //
+      //        case Command.READ_MODIFIED_F6:
+      //        case Command.READ_MODIFIED_06:
+      //          typeName = "Read Partition (ReadModified)";
+      //          break;
+      //
+      //        case Command.READ_MODIFIED_ALL_6E:
+      //        case Command.READ_MODIFIED_ALL_0E:
+      //          typeName = "Read Partition (ReadModifiedAll)";
+      //          break;
+      //
+      //        default:
+      //          typeName = String.format ("Unknown READ PARTITION type: %02X", data[2]);
+      //      }
 
-        case Command.READ_MODIFIED_F6:
-        case Command.READ_MODIFIED_06:
-          typeName = "Read Partition (ReadModified)";
-          break;
-
-        case Command.READ_MODIFIED_ALL_6E:
-        case Command.READ_MODIFIED_ALL_0E:
-          typeName = "Read Partition (ReadModifiedAll)";
-          break;
-
-        default:
-          typeName = String.format ("Unknown READ PARTITION type: %02X", data[2]);
-      }
+      // can only be RB/RM/RMA (i.e. one of the read commands)
+      command = Command.getCommand (buffer, offset + 2, length - 2);
+      System.out.println (command);
     }
   }
 
   @Override
   public void process (Screen screen)
   {
-    switch (data[2])
+    if (reply != null)                // replay mode
+      return;
+
+    if (partitionID == (byte) 0xFF)
     {
-      case (byte) 0x02:
-        if (partitionID == (byte) 0xFF)                   // query operation
-          reply = new ReadStructuredFieldCommand ();      // build a QueryReply
-        else
-          System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
-        break;
+      switch (data[2])
+      {
+        case (byte) 0x02:
+          if (partitionID == (byte) 0xFF)                   // query operation
+            reply = new ReadStructuredFieldCommand ();      // build a QueryReply
+          else
+            System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
+          break;
 
-      case (byte) 0x03:
-        if (partitionID == (byte) 0xFF)                       // query operation
-          switch (data[3])
-          {
-            case 0:
-              System.out.println ("QCode List not written yet");
-              break;
+        case (byte) 0x03:
+          if (partitionID == (byte) 0xFF)                       // query operation
+            switch (data[3])
+            {
+              case 0:
+                System.out.println ("QCode List not written yet");
+                break;
 
-            case 1:
-              System.out.println ("Equivalent + QCode List not written yet");
-              break;
+              case 1:
+                System.out.println ("Equivalent + QCode List not written yet");
+                break;
 
-            case 2:
-              reply = new ReadStructuredFieldCommand ();      // build a QueryReply
-              break;
+              case 2:
+                reply = new ReadStructuredFieldCommand ();      // build a QueryReply
+                break;
 
-            default:
-              System.out.printf ("Unknown %s: %02X%n", type, data[3]);
-          }
-        else
-          System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
-        break;
+              default:
+                System.out.printf ("Unknown %s: %02X%n", type, data[3]);
+            }
+          else
+            System.out.printf ("Unknown %s pid: %02X%n", type, partitionID);
+          break;
 
-      // these three replies should be wrapped in an AID 0x88 (Read Structured Field)
-      case Command.READ_BUFFER_F2:            // NB 0x02 would conflict with RPQ above
-        reply = screen.readBuffer ();         // AID command
-        break;
-
-      case Command.READ_MODIFIED_F6:
-      case Command.READ_MODIFIED_ALL_6E:
-        reply = screen.readModifiedFields (data[2]);      // AID command
-        break;
-
-      default:
-        System.out.printf ("Unknown ReadStructuredField type: %02X%n", data[2]);
+        default:
+          System.out.printf ("Unknown ReadStructuredField type: %02X%n", data[2]);
+      }
+    }
+    else
+    {
+      //      switch (data[2])
+      //      {
+      //        case Command.READ_BUFFER_F2:
+      //          reply = screen.readBuffer ();                     // AID command
+      //          break;
+      //
+      //        case Command.READ_MODIFIED_F6:
+      //        case Command.READ_MODIFIED_ALL_6E:
+      //          reply = screen.readModifiedFields (data[2]);      // AID command
+      //          break;
+      //      }
+      command.process (screen);
+      reply = command.getReply ();
+      System.out.println ("testing command reply");
     }
   }
 
