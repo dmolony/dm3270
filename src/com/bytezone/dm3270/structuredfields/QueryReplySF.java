@@ -10,9 +10,10 @@ public class QueryReplySF extends StructuredField
   {
     super (buffer, offset, length);
     assert data[0] == StructuredField.QUERY_REPLY;
-    //    queryReplyField = QueryReplyField.getReplyField (data);
   }
 
+  // called from ReadStructuredFieldCommand constructor via Command.getReply() (replay)
+  // called from ReadStructuredFieldCommand constructor via ReadPartitionQuery (terminal)
   public QueryReplyField getQueryReplyField ()
   {
     if (queryReplyField == null)

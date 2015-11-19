@@ -63,6 +63,8 @@ public class ReadStructuredFieldCommand extends Command
     this (buffer, 0, buffer.length);
   }
 
+  // called from static Command.getReply()
+  // called from constructor above
   public ReadStructuredFieldCommand (byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length);

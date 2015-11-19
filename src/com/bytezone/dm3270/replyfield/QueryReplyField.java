@@ -1,7 +1,8 @@
 package com.bytezone.dm3270.replyfield;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.utilities.Utility;
@@ -35,33 +36,29 @@ public abstract class QueryReplyField
   protected List<QueryReplyField> replies;          // actual replies from REPLAY
 
   // change this to a treemap or an enum
-  public static final List<ReplyType> replyTypes = new ArrayList<> ();
-
-  static
-  {
-    replyTypes.add (new ReplyType (SUMMARY_QUERY_REPLY, "Summary"));
-    replyTypes.add (new ReplyType (USABLE_AREA_REPLY, "Usable Area"));
-    replyTypes
-        .add (new ReplyType (ALPHANUMERIC_PARTITIONS_REPLY, "Alphanumeric Partitions"));
-    replyTypes.add (new ReplyType (CHARACTER_SETS_REPLY, "Character Sets"));
-    replyTypes.add (new ReplyType (COLOR_QUERY_REPLY, "Color"));
-    replyTypes.add (new ReplyType (HIGHLIGHT_QUERY_REPLY, "Highlight"));
-    replyTypes.add (new ReplyType (REPLY_MODES_REPLY, "Reply Modes"));
-    replyTypes.add (new ReplyType (OEM_AUXILLIARY_DEVICE_REPLY, "OEM Aux Devices"));
-    replyTypes.add (new ReplyType (DISTRIBUTED_DATA_MANAGEMENT_REPLY,
-        "Distributed Data Management"));
-    replyTypes.add (new ReplyType (STORAGE_POOLS_REPLY, "Storage Pools"));
-    replyTypes.add (new ReplyType (AUXILLIARY_DEVICE_REPLY, "Auxilliary Devices"));
-    replyTypes.add (new ReplyType (RPQ_NAMES_REPLY, "RPQ Names"));
-    replyTypes.add (new ReplyType (IMP_PART_QUERY_REPLY, "Implicit Partition"));
-    replyTypes.add (new ReplyType (TRANSPARENCY_REPLY, "Transparency"));
-    replyTypes.add (new ReplyType (SEGMENT_REPLY, "Segment"));
-    replyTypes.add (new ReplyType (PROCEDURE_REPLY, "Procedure"));
-    replyTypes.add (new ReplyType (LINE_TYPE_REPLY, "Line Type"));
-    replyTypes.add (new ReplyType (PORT_REPLY, "Port"));
-    replyTypes.add (new ReplyType (GRAPHIC_COLOR_REPLY, "Graphic Color"));
-    replyTypes.add (new ReplyType (GRAPHIC_SYMBOL_SETS_REPLY, "Graphic Symbol Sets"));
-  }
+  public static final List<ReplyType> replyTypes =
+      Arrays.asList (new ReplyType (SUMMARY_QUERY_REPLY, "Summary"),
+                     new ReplyType (USABLE_AREA_REPLY, "Usable Area"),
+                     new ReplyType (ALPHANUMERIC_PARTITIONS_REPLY,
+                         "Alphanumeric Partitions"),
+                     new ReplyType (CHARACTER_SETS_REPLY, "Character Sets"),
+                     new ReplyType (COLOR_QUERY_REPLY, "Color"),
+                     new ReplyType (HIGHLIGHT_QUERY_REPLY, "Highlight"),
+                     new ReplyType (REPLY_MODES_REPLY, "Reply Modes"),
+                     new ReplyType (OEM_AUXILLIARY_DEVICE_REPLY, "OEM Aux Devices"),
+                     new ReplyType (DISTRIBUTED_DATA_MANAGEMENT_REPLY,
+                         "Distributed Data Management"),
+                     new ReplyType (STORAGE_POOLS_REPLY, "Storage Pools"),
+                     new ReplyType (AUXILLIARY_DEVICE_REPLY, "Auxilliary Devices"),
+                     new ReplyType (RPQ_NAMES_REPLY, "RPQ Names"),
+                     new ReplyType (IMP_PART_QUERY_REPLY, "Implicit Partition"),
+                     new ReplyType (TRANSPARENCY_REPLY, "Transparency"),
+                     new ReplyType (SEGMENT_REPLY, "Segment"),
+                     new ReplyType (PROCEDURE_REPLY, "Procedure"),
+                     new ReplyType (LINE_TYPE_REPLY, "Line Type"),
+                     new ReplyType (PORT_REPLY, "Port"),
+                     new ReplyType (GRAPHIC_COLOR_REPLY, "Graphic Color"),
+                     new ReplyType (GRAPHIC_SYMBOL_SETS_REPLY, "Graphic Symbol Sets"));
 
   public static QueryReplyField getReplyField (byte[] buffer)
   {
@@ -142,12 +139,12 @@ public abstract class QueryReplyField
     return false;
   }
 
-  protected Summary getSummary ()
+  protected Optional<Summary> getSummary ()
   {
     for (QueryReplyField reply : replies)
       if (reply.replyType.type == SUMMARY_QUERY_REPLY)
-        return (Summary) reply;
-    return null;
+        return Optional.of ((Summary) reply);
+    return Optional.empty ();
   }
 
   protected int createReply (int size)
@@ -200,9 +197,9 @@ public abstract class QueryReplyField
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-    Summary summary = getSummary ();
-    String message = summary == null ? "no summary"
-        : summary.isListed (replyType.type) ? "" : "** missing **";
+    Optional<Summary> summary = getSummary ();
+    String message = summary.isPresent ()
+        ? summary.get ().isListed (replyType.type) ? "" : "** missing **" : "no summary";
     text.append (String.format ("  Type       : %-30s %s%n", replyType, message));
     return text.toString ();
   }

@@ -50,13 +50,12 @@ public class ReadPartitionSF extends StructuredField
     {
       command.process (screen);
       reply = command.getReply ();
-      System.out.println ("testing query reply");
     }
     else
     {
       command.process (screen);
       reply = command.getReply ();
-      System.out.println ("testing command reply");
+      System.out.println ("testing read command reply");
     }
   }
 
