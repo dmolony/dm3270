@@ -4,6 +4,7 @@ import com.bytezone.dm3270.display.Screen;
 
 public class ReadPartitionQuery extends Command
 {
+  private String typeName;
 
   public ReadPartitionQuery (byte[] buffer, int offset, int length)
   {
@@ -20,6 +21,7 @@ public class ReadPartitionQuery extends Command
     {
       case (byte) 0x02:
         reply = new ReadStructuredFieldCommand ();      // build a QueryReply
+        typeName = "Read Partition (Query)";
         break;
 
       case (byte) 0x03:
@@ -35,6 +37,7 @@ public class ReadPartitionQuery extends Command
 
           case 2:
             reply = new ReadStructuredFieldCommand ();      // build a QueryReply
+            typeName = "Read Partition (QueryList)";
             break;
 
           default:
@@ -50,6 +53,16 @@ public class ReadPartitionQuery extends Command
   @Override
   public String getName ()
   {
-    return "ReadPartitionQuery";
+    return typeName;
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("%s", typeName));
+
+    return text.toString ();
   }
 }

@@ -7,8 +7,7 @@ import com.bytezone.dm3270.display.Screen;
 public class ReadPartitionSF extends StructuredField
 {
   private final byte partitionID;
-  private String typeName;
-  private Command command;
+  private final Command command;
 
   public ReadPartitionSF (byte[] buffer, int offset, int length)
   {
@@ -22,17 +21,12 @@ public class ReadPartitionSF extends StructuredField
       switch (data[2])
       {
         case (byte) 0x02:
-          typeName = "Read Partition (Query)";
-          command = new ReadPartitionQuery (buffer, offset, length);
-          break;
-
         case (byte) 0x03:
-          typeName = "Read Partition (QueryList)";
           command = new ReadPartitionQuery (buffer, offset, length);
           break;
 
         default:
-          typeName = String.format ("Unknown READ PARTITION (Query) type: %02X", data[2]);
+          command = null;
       }
     }
     else
@@ -78,7 +72,6 @@ public class ReadPartitionSF extends StructuredField
     StringBuilder text =
         new StringBuilder (String.format ("Struct Field : 01 Read Partition\n"));
     text.append (String.format ("   partition : %02X%n", partitionID));
-    text.append (String.format ("   type      : %02X %s", data[2], typeName));
     text.append (command);
     return text.toString ();
   }
