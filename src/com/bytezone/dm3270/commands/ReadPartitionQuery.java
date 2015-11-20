@@ -5,7 +5,6 @@ import com.bytezone.dm3270.structuredfields.StructuredField;
 
 public class ReadPartitionQuery extends Command
 {
-  private final byte partitionID;
   private String typeName;
 
   public ReadPartitionQuery (byte[] buffer, int offset, int length)
@@ -13,7 +12,7 @@ public class ReadPartitionQuery extends Command
     super (buffer, offset, length);
 
     assert data[0] == StructuredField.READ_PARTITION;
-    partitionID = data[1];
+    assert data[1] == (byte) 0xFF;
   }
 
   @Override

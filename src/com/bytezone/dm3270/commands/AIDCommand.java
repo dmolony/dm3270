@@ -18,6 +18,8 @@ import com.bytezone.dm3270.orders.TextOrder;
 public class AIDCommand extends Command implements BufferAddressSource, Iterable<Order>
 {
   public static final byte NO_AID_SPECIFIED = 0x60;
+  public static final byte NO_AID_SPECIFIED_PRINTER = (byte) 0xE8;
+  public static final byte AID_STRUCTURED_FIELD = (byte) 0x88;
   public static final byte AID_READ_PARTITION = 0x61;
   public static final byte AID_CLEAR_PARTITION = 0x6A;
   public static final byte AID_PA3 = 0x6B;

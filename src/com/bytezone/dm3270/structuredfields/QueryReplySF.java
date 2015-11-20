@@ -4,20 +4,19 @@ import com.bytezone.dm3270.replyfield.QueryReplyField;
 
 public class QueryReplySF extends StructuredField
 {
-  private QueryReplyField queryReplyField;
+  private final QueryReplyField queryReplyField;
 
   public QueryReplySF (byte[] buffer, int offset, int length)
   {
     super (buffer, offset, length);
     assert data[0] == StructuredField.QUERY_REPLY;
+    queryReplyField = QueryReplyField.getReplyField (data);
   }
 
   // called from ReadStructuredFieldCommand constructor via Command.getReply() (replay)
   // called from ReadStructuredFieldCommand constructor via ReadPartitionQuery (terminal)
   public QueryReplyField getQueryReplyField ()
   {
-    if (queryReplyField == null)
-      queryReplyField = QueryReplyField.getReplyField (data);
     return queryReplyField;
   }
 

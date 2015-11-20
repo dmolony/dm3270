@@ -53,6 +53,7 @@ public class ReadStructuredFieldCommand extends Command
     clientNames.put ("BD47AE1B606E2DF29C7D24DD128648A8", "dm3270");
   }
 
+  // called from ReadPartitionSF via ReadPartitionQuery
   public ReadStructuredFieldCommand ()
   {
     this (buildReply (2));
@@ -69,7 +70,7 @@ public class ReadStructuredFieldCommand extends Command
   {
     super (buffer, offset, length);
 
-    assert data[0] == (byte) 0x88;
+    assert data[0] == AIDCommand.AID_STRUCTURED_FIELD;
 
     int ptr = 1;
     int max = data.length;
@@ -185,7 +186,7 @@ public class ReadStructuredFieldCommand extends Command
     byte[] buffer = new byte[replyLength];
 
     int ptr = 0;
-    buffer[ptr++] = (byte) 0x88;      // AID
+    buffer[ptr++] = AIDCommand.AID_STRUCTURED_FIELD;
 
     // fill buffer with reply components
     for (QueryReplyField reply : summary)
