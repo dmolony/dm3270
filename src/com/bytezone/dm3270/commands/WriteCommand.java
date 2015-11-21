@@ -111,8 +111,9 @@ public class WriteCommand extends Command
 
     if (!screen.isKeyboardLocked () && screen.getFieldManager ().size () > 0)
     {
-      // should check for suppressDisplay
-      reply = screen.getPluginsStage ().processPluginAuto ();
+      if (orders.size () > 0 || !writeControlCharacter.isResetModified ())
+        // should check for suppressDisplay
+        reply = screen.getPluginsStage ().processPluginAuto ();
     }
 
     if (screenDrawRequired)

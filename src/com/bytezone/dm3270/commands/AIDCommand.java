@@ -144,7 +144,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
 
   private int findKey (byte keyCommand)
   {
-    for (int i = 1; i < keys.length; i++)
+    for (int i = 1; i < keys.length; i++)       // starts at offset 1
       if (keys[i] == keyCommand)
         return i;
     return 0;

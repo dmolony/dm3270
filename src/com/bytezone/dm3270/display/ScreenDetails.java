@@ -350,67 +350,75 @@ public class ScreenDetails
         break;
       }
       Matcher matcher = datasetNamePattern.matcher (datasetName);
-      if (!matcher.matches ())
+      if (matcher.matches ())
+        addDataset (datasetName, screenType, rowFields);
+      else
       {
+        // check for excluded datasets
+        if (!datasetName.equals ("-  -  -  -  -  -  -  -  -  -  -  -"))
+          System.out.printf ("Invalid dataset name: %s%n", datasetName);
+
         // what about GDGs?
-        System.out.printf ("Invalid dataset name: %s%n", datasetName);
-        break;
-      }
-      Dataset dataset = new Dataset (datasetName);
-      datasets.add (dataset);
-
-      switch (screenType)
-      {
-        case 1:
-          if (rowFields.size () == 2)
-            setSpace (dataset, rowFields.get (1).getText (), 6, 11, 15);
-          break;
-
-        case 2:
-          if (rowFields.size () == 2)
-            setDisposition (dataset, rowFields.get (1).getText (), 5, 11, 18);
-          break;
-
-        case 3:
-          if (rowFields.size () == 3)
-            dataset.setVolume (rowFields.get (2).getText ().trim ());
-          break;
-
-        case 4:
-          if (rowFields.size () == 7)
-          {
-            dataset.setVolume (rowFields.get (2).getText ().trim ());
-            setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
-            setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
-            setDates (dataset, rowFields.get (5).getText ());
-
-            String catalog = rowFields.get (6).getText ().trim ();
-            matcher = datasetNamePattern.matcher (catalog);
-            if (matcher.matches ())
-              dataset.setCatalog (catalog);
-          }
-          break;
-
-        case 5:
-          if (rowFields.size () >= 3)
-          {
-            dataset.setVolume (rowFields.get (2).getText ().trim ());
-            if (rowFields.size () >= 6)
-            {
-              setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
-              setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
-              setDates (dataset, rowFields.get (5).getText ());
-            }
-          }
-          break;
       }
 
       nextLine += linesPerDataset;
       if (linesPerDataset > 1)
-        nextLine++;// skip the row of hyphens
+        nextLine++;                           // skip the row of hyphens
     }
 
     return true;
+  }
+
+  private void addDataset (String datasetName, int screenType, List<Field> rowFields)
+  {
+    Dataset dataset = new Dataset (datasetName);
+    datasets.add (dataset);
+
+    switch (screenType)
+    {
+      case 1:
+        if (rowFields.size () == 2)
+          setSpace (dataset, rowFields.get (1).getText (), 6, 11, 15);
+        break;
+
+      case 2:
+        if (rowFields.size () == 2)
+          setDisposition (dataset, rowFields.get (1).getText (), 5, 11, 18);
+        break;
+
+      case 3:
+        if (rowFields.size () == 3)
+          dataset.setVolume (rowFields.get (2).getText ().trim ());
+        break;
+
+      case 4:
+        if (rowFields.size () == 7)
+        {
+          dataset.setVolume (rowFields.get (2).getText ().trim ());
+          setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
+          setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
+          setDates (dataset, rowFields.get (5).getText ());
+
+          String catalog = rowFields.get (6).getText ().trim ();
+          Matcher matcher = datasetNamePattern.matcher (catalog);
+          if (matcher.matches ())
+            dataset.setCatalog (catalog);
+        }
+        break;
+
+      case 5:
+        if (rowFields.size () >= 3)
+        {
+          dataset.setVolume (rowFields.get (2).getText ().trim ());
+          if (rowFields.size () >= 6)
+          {
+            setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
+            setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
+            setDates (dataset, rowFields.get (5).getText ());
+          }
+        }
+        break;
+    }
   }
 
   private void setSpace (Dataset dataset, String details, int t1, int t2, int t3)

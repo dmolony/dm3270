@@ -26,6 +26,11 @@ public class WriteControlCharacter
     return value;
   }
 
+  boolean isResetModified ()
+  {
+    return resetModified;
+  }
+
   void process (Screen screen)
   {
     screen.resetInsertMode ();
