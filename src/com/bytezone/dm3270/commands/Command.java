@@ -130,7 +130,6 @@ public abstract class Command extends AbstractTN3270Command
   {
     switch (buffer[offset])
     {
-      //      case READ_STRUCTURED_FIELD_88:
       case AIDCommand.AID_STRUCTURED_FIELD:
         return new ReadStructuredFieldCommand (buffer, offset, length);
 

@@ -1,10 +1,5 @@
 package com.bytezone.dm3270.telnet;
 
-import java.io.UnsupportedEncodingException;
-
-import com.bytezone.dm3270.streams.TelnetState;
-import com.bytezone.dm3270.utilities.Utility;
-
 public class TelnetProcessor
 {
   // command prefix
@@ -135,138 +130,138 @@ public class TelnetProcessor
     weirdData = false;
   }
 
-  public static void main (String[] args)
-  {
-    TelnetProcessor tester = new TelnetProcessor (new Processor ());
-    String line = "-------------------------------------------------";
+  //  public static void main (String[] args)
+  //  {
+  //    TelnetProcessor tester = new TelnetProcessor (new Processor ());
+  //    String line = "-------------------------------------------------";
+  //
+  //    tester.test (dataInTelnetFormat ());
+  //    //    tester.flush ();
+  //
+  //    System.out.println (line);
+  //    tester.test (spy01 ());
+  //
+  //    System.out.println (line);
+  //    tester.test (helloWorld ());
+  //
+  //    System.out.println (line);
+  //    tester.test (spy05 ());
+  //  }
 
-    tester.test (dataInTelnetFormat ());
-    //    tester.flush ();
+  //  static byte[] helloWorld ()
+  //  {
+  //    try
+  //    {
+  //      String terminalType = "Hello, World!";
+  //      return terminalType.getBytes ("ASCII");
+  //    }
+  //    catch (UnsupportedEncodingException e)
+  //    {
+  //      e.printStackTrace ();
+  //    }
+  //    return null;
+  //  }
 
-    System.out.println (line);
-    tester.test (spy01 ());
+  //  static byte[] spy01 ()
+  //  {
+  //    return new byte[] { IAC, DO, 0x18, IAC, WILL, 0x18, IAC, SB, 0x18, 0x01, IAC, SE, IAC,
+  //                        SB, 0x18, 0x00, 0x49, 0x42, 0x4D, 0x2D, 0x33, 0x32, 0x37, 0x38,
+  //                        0x2D, 0x32, 0x2D, 0x45, IAC, SE, IAC, DO, 0x19, IAC, WILL, 0x19,
+  //                        IAC, WILL, 0x19, IAC, DO, 0x19, IAC, DO, 0x00, IAC, WILL, 0x00,
+  //                        IAC, WILL, 0x00, IAC, DO, 0x00 };
+  //
+  //  }
+  //
+  //  static byte[] spy05 ()
+  //  {
+  //    return new byte[] { IAC, DO, SB_TN3270E, IAC, WILL, SB_TN3270E, IAC, SB, SB_TN3270E,
+  //                        0x08, 0x02, IAC, SE, IAC, SB, SB_TN3270E, 0x02, 0x07, 0x49, 0x42,
+  //                        0x4D, 0x2D, 0x33, 0x32, 0x37, 0x38, 0x2D, 0x32, 0x2D, 0x45, IAC,
+  //                        SE, IAC, SB, SB_TN3270E, 0x02, 0x04, 0x49, 0x42, 0x4D, 0x2D, 0x33,
+  //                        0x32, 0x37, 0x38, 0x2D, 0x32, 0x2D, 0x45, 0x01, 0x54, 0x43, 0x50,
+  //                        0x41, 0x30, 0x39, 0x32, 0x36, IAC, SE, IAC, SB, SB_TN3270E, 0x03,
+  //                        0x07, 0x00, 0x02, 0x04, IAC, SE, IAC, SB, SB_TN3270E, 0x03, 0x04,
+  //                        0x00, 0x02, 0x04, IAC, SE, 0x03, 0x00, 0x00, 0x00, 0x00, 0x31,
+  //                        0x01, 0x03, IAC, EOR, IAC, NOP, 0x03, 0x00, 0x00, 0x00, 0x00,
+  //                        0x31, 0x01, 0x03, IAC, EOR };
+  //  }
 
-    System.out.println (line);
-    tester.test (helloWorld ());
-
-    System.out.println (line);
-    tester.test (spy05 ());
-  }
-
-  static byte[] helloWorld ()
-  {
-    try
-    {
-      String terminalType = "Hello, World!";
-      return terminalType.getBytes ("ASCII");
-    }
-    catch (UnsupportedEncodingException e)
-    {
-      e.printStackTrace ();
-    }
-    return null;
-  }
-
-  static byte[] spy01 ()
-  {
-    return new byte[] { IAC, DO, 0x18, IAC, WILL, 0x18, IAC, SB, 0x18, 0x01, IAC, SE, IAC,
-                        SB, 0x18, 0x00, 0x49, 0x42, 0x4D, 0x2D, 0x33, 0x32, 0x37, 0x38,
-                        0x2D, 0x32, 0x2D, 0x45, IAC, SE, IAC, DO, 0x19, IAC, WILL, 0x19,
-                        IAC, WILL, 0x19, IAC, DO, 0x19, IAC, DO, 0x00, IAC, WILL, 0x00,
-                        IAC, WILL, 0x00, IAC, DO, 0x00 };
-
-  }
-
-  static byte[] spy05 ()
-  {
-    return new byte[] { IAC, DO, SB_TN3270E, IAC, WILL, SB_TN3270E, IAC, SB, SB_TN3270E,
-                        0x08, 0x02, IAC, SE, IAC, SB, SB_TN3270E, 0x02, 0x07, 0x49, 0x42,
-                        0x4D, 0x2D, 0x33, 0x32, 0x37, 0x38, 0x2D, 0x32, 0x2D, 0x45, IAC,
-                        SE, IAC, SB, SB_TN3270E, 0x02, 0x04, 0x49, 0x42, 0x4D, 0x2D, 0x33,
-                        0x32, 0x37, 0x38, 0x2D, 0x32, 0x2D, 0x45, 0x01, 0x54, 0x43, 0x50,
-                        0x41, 0x30, 0x39, 0x32, 0x36, IAC, SE, IAC, SB, SB_TN3270E, 0x03,
-                        0x07, 0x00, 0x02, 0x04, IAC, SE, IAC, SB, SB_TN3270E, 0x03, 0x04,
-                        0x00, 0x02, 0x04, IAC, SE, 0x03, 0x00, 0x00, 0x00, 0x00, 0x31,
-                        0x01, 0x03, IAC, EOR, IAC, NOP, 0x03, 0x00, 0x00, 0x00, 0x00,
-                        0x31, 0x01, 0x03, IAC, EOR };
-  }
-
-  static byte[] dataInTelnetFormat ()
-  {
-    return new byte[] { IAC, IAC, DO, EOR };
-  }
+  //  static byte[] dataInTelnetFormat ()
+  //  {
+  //    return new byte[] { IAC, IAC, DO, EOR };
+  //  }
 }
 
-class Processor implements TelnetCommandProcessor
-{
-  TelnetState telnetState = new TelnetState ();
-
-  @Override
-  public void processData (byte[] data, int length)
-  {
-    System.out.println ("Data");
-    System.out.println (Utility.toHex (data, 0, length, false));
-    System.out.println ();
-  }
-
-  @Override
-  public void processRecord (byte[] data, int length)
-  {
-    assert data[length - 2] == TelnetProcessor.IAC;
-    assert data[length - 1] == TelnetProcessor.EOR;
-
-    System.out.println ("Record");
-    System.out.println (Utility.toHex (data, 0, length - 2));
-    System.out.println ();
-  }
-
-  @Override
-  public void processTelnetCommand (byte[] data, int length)
-  {
-    assert data[0] == TelnetProcessor.IAC;
-
-    TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, length);
-
-    System.out.println ("Command ");
-    System.out.println (telnetCommand);
-
-    System.out.println (Utility.toHex (data, 0, length, false));
-    System.out.println ();
-  }
-
-  @Override
-  public void processTelnetSubcommand (byte[] data, int length)
-  {
-    assert data[0] == TelnetProcessor.IAC;
-    assert data[1] == TelnetProcessor.SB;
-    assert data[length - 2] == TelnetProcessor.IAC;
-    assert data[length - 1] == TelnetProcessor.SE;
-
-    byte subCommand = data[2];
-    String text;
-    TelnetSubcommand telnetSubcommand;
-
-    if (subCommand == TelnetProcessor.SB_TERMINAL_TYPE)
-    {
-      text = "TERMINAL_TYPE";
-      telnetSubcommand = new TerminalTypeSubcommand (data, 0, length, telnetState);
-    }
-    else if (subCommand == TelnetProcessor.SB_TN3270E)
-    {
-      text = "TN3270-E";
-      telnetSubcommand = new TN3270ExtendedSubcommand (data, 0, length, telnetState);
-    }
-    else
-    {
-      text = "??";
-      telnetSubcommand = null;
-    }
-
-    System.out.println ("Subcommand " + text);
-    System.out.println (telnetSubcommand);
-
-    System.out.println (Utility.toHex (data, 0, length, false));
-    System.out.println ();
-
-  }
-}
+//class Processor implements TelnetCommandProcessor
+//{
+//  TelnetState telnetState = new TelnetState ();
+//
+//  @Override
+//  public void processData (byte[] data, int length)
+//  {
+//    System.out.println ("Data");
+//    System.out.println (Utility.toHex (data, 0, length, false));
+//    System.out.println ();
+//  }
+//
+//  @Override
+//  public void processRecord (byte[] data, int length)
+//  {
+//    assert data[length - 2] == TelnetProcessor.IAC;
+//    assert data[length - 1] == TelnetProcessor.EOR;
+//
+//    System.out.println ("Record");
+//    System.out.println (Utility.toHex (data, 0, length - 2));
+//    System.out.println ();
+//  }
+//
+//  @Override
+//  public void processTelnetCommand (byte[] data, int length)
+//  {
+//    assert data[0] == TelnetProcessor.IAC;
+//
+//    TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, length);
+//
+//    System.out.println ("Command ");
+//    System.out.println (telnetCommand);
+//
+//    System.out.println (Utility.toHex (data, 0, length, false));
+//    System.out.println ();
+//  }
+//
+//  @Override
+//  public void processTelnetSubcommand (byte[] data, int length)
+//  {
+//    assert data[0] == TelnetProcessor.IAC;
+//    assert data[1] == TelnetProcessor.SB;
+//    assert data[length - 2] == TelnetProcessor.IAC;
+//    assert data[length - 1] == TelnetProcessor.SE;
+//
+//    byte subCommand = data[2];
+//    String text;
+//    TelnetSubcommand telnetSubcommand;
+//
+//    if (subCommand == TelnetProcessor.SB_TERMINAL_TYPE)
+//    {
+//      text = "TERMINAL_TYPE";
+//      telnetSubcommand = new TerminalTypeSubcommand (data, 0, length, telnetState);
+//    }
+//    else if (subCommand == TelnetProcessor.SB_TN3270E)
+//    {
+//      text = "TN3270-E";
+//      telnetSubcommand = new TN3270ExtendedSubcommand (data, 0, length, telnetState);
+//    }
+//    else
+//    {
+//      text = "??";
+//      telnetSubcommand = null;
+//    }
+//
+//    System.out.println ("Subcommand " + text);
+//    System.out.println (telnetSubcommand);
+//
+//    System.out.println (Utility.toHex (data, 0, length, false));
+//    System.out.println ();
+//
+//  }
+//}
