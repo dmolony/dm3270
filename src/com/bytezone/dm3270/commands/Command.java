@@ -27,9 +27,6 @@ public abstract class Command extends AbstractTN3270Command
   public final static byte READ_MODIFIED_06 = 0x06;
   public final static byte READ_MODIFIED_ALL_0E = 0x0E;
 
-  // Reply code
-  //  public final static byte READ_STRUCTURED_FIELD_88 = (byte) 0x88;
-
   /*
    * Command Description
    * 
@@ -50,31 +47,36 @@ public abstract class Command extends AbstractTN3270Command
    * Command Types
    * 
    * 1) Write, Erase Write, Erase Write Alternate
-   *    process()   : draws on the screen
-   *    getReply () : null
    * 
-   * 2) Read Buffer, Read Modifed, Read Modified All
-   *    Sent when the application wants to know about the screen fields.
-   *    process()   : creates a Reply
+   *    process ()  : draws on the screen
+   *    getReply () : null
+   *    
+   * 2) Erase All Unprotected
+   * 
+   *    process ()  : draws on the screen
+   *    getReply () : null 
+   * 
+   * 3) Read Buffer, Read Modifed, Read Modified All
+   *    Sent when the application wants to know about the screen fields
+   *    
+   *    process ()  : creates a Reply
    *    getReply () : AID command
    * 
-   * 3) Write Structured Field
-   *    Contains one or more commands, including W/EW/EWA and RB/RM/RMA embedded
-   *    as an Outbound3270DS command. This command starts with 0x40 and the
-   *    Partition ID, followed by the command in its usual format.
-   *    process() : calls process () on each command
+   * 4) Write Structured Field
+   *    Contains one or more structured fields.
+   *    1) Outbound3270DS  - one of W/EW/EWA/EAU
+   *    2) ReadPartitionSF - one of RB/RM/RMA, or a Query command
+   *    3) SetReplyModeSF  - field/extended field/character mode
+   *    4) EraseResetSF
+   *    5) FileTransferOutbound - IND$FILE
    *    
-   *    Other commands are Read Partition (Query) which expects a Read Structured 
-   *    Field (0x88) containing several Query Reply records as the response.
+   *    process ()  : calls process () on each command
+   *    getReply () : calls getReply () on each command
    * 
-   * 4) AID (User command)    (AID ENTR/PFxx/PAx/CLR)
+   * Reply Types
    * 
-   * 5) Read Partition        (AID 0x61)
-   * 
-   * 6) Read Structured Field (AID 0x88)
-   *    Used to send a reply consisting of several QueryReply records (in 
-   *    response to QueryReply (List)). Used to tell the MF what features
-   *    the terminal supports.
+   * 1) RB/RM/RMA returns an AID
+   * 2) Query command returns an 88 (list of replies)
    *   
    */
 
