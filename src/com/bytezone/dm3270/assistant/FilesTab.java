@@ -167,11 +167,16 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       return;
     }
 
+    String prefix = screenDetails == null ? "" : screenDetails.getPrefix () + ".";
     String fileName = currentFileNode.toString ().toUpperCase ();
     if (fileName.endsWith (".TXT"))
       fileName = fileName.substring (0, fileName.length () - 4);
 
+    if (!prefix.isEmpty () && fileName.startsWith (prefix))
+      fileName = fileName.substring (prefix.length ());
+
     String command = "IND$FILE PUT " + fileName;
+
     if (currentFileNode.isAscii ())
       command += " ASCII CRLF";
 
