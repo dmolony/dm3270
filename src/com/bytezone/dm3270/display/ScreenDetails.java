@@ -17,6 +17,7 @@ public class ScreenDetails
       { "Menu", "Functions", "Utilities", "Help" };
   private static final String SPLIT_LINE = ".  .  .  .  .  .  .  .  .  .  .  .  .  "
       + ".  .  .  .  .  .  .  .  .  .  .  .  .  .";
+  private static final String EXCLUDE_LINE = "-  -  -  -  -  -  -  -  -  -  -  -";
   private static final String segment = "[A-Z@#$][-A-Z0-9@#$]{0,7}";
   private static final Pattern datasetNamePattern =
       Pattern.compile (segment + "(\\." + segment + "){0,21}");
@@ -263,6 +264,7 @@ public class ScreenDetails
       datasetsMatching = locationText.substring (9);
     else
     {
+      // Could be: Matched in list REFLIST
       System.out.println ("Unexpected text: " + locationText);
       return false;
     }
@@ -355,7 +357,7 @@ public class ScreenDetails
       else
       {
         // check for excluded datasets
-        if (!datasetName.equals ("-  -  -  -  -  -  -  -  -  -  -  -"))
+        if (!EXCLUDE_LINE.equals (datasetName))
           System.out.printf ("Invalid dataset name: %s%n", datasetName);
 
         // what about GDGs?
