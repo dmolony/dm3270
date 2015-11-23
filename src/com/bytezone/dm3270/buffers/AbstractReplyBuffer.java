@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.buffers;
 
+import java.util.Optional;
+
 public abstract class AbstractReplyBuffer extends AbstractBuffer implements ReplyBuffer
 {
   private Buffer reply;
@@ -21,8 +23,8 @@ public abstract class AbstractReplyBuffer extends AbstractBuffer implements Repl
   }
 
   @Override
-  public Buffer getReply ()
+  public Optional<Buffer> getReply ()
   {
-    return reply;
+    return reply == null ? Optional.empty () : Optional.of (reply);
   }
 }

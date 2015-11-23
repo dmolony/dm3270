@@ -18,7 +18,7 @@ public class ReadPartitionQuery extends Command
   @Override
   public void process (Screen screen)
   {
-    if (getReply () != null)
+    if (getReply ().isPresent ())
       return;
 
     switch (data[2])

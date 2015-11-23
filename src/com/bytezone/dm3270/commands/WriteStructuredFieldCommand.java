@@ -2,6 +2,7 @@ package com.bytezone.dm3270.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
@@ -20,7 +21,8 @@ public class WriteStructuredFieldCommand extends Command
   private static final String line =
       "\n-------------------------------------------------------------------------";
 
-  private final List<StructuredField> structuredFields = new ArrayList<StructuredField> ();
+  private final List<StructuredField> structuredFields =
+      new ArrayList<StructuredField> ();
   private final List<Buffer> replies = new ArrayList<> ();
 
   public WriteStructuredFieldCommand (byte[] buffer, int offset, int length)
@@ -89,32 +91,33 @@ public class WriteStructuredFieldCommand extends Command
     for (StructuredField structuredField : structuredFields)
     {
       structuredField.process (screen);
-      Buffer reply = structuredField.getReply ();
-      if (reply != null)
-        replies.add (reply);
+      Optional<Buffer> reply = structuredField.getReply ();
+      if (reply.isPresent ())
+        replies.add (reply.get ());
     }
   }
 
   @Override
-  public Buffer getReply ()
+  public Optional<Buffer> getReply ()
   {
     if (replies.size () == 0)
-      return null;
+      return Optional.empty ();
 
     if (replies.size () == 1)
-      return replies.get (0);
+      return Optional.of (replies.get (0));
 
     MultiBuffer multiBuffer = new MultiBuffer ();
     for (Buffer reply : replies)
       multiBuffer.addBuffer (reply);
 
-    return multiBuffer;
+    return Optional.of (multiBuffer);
   }
 
   @Override
   public String brief ()
   {
-    StringBuilder text = new StringBuilder (String.format ("WSF (%d):", structuredFields.size ()));
+    StringBuilder text =
+        new StringBuilder (String.format ("WSF (%d):", structuredFields.size ()));
 
     for (StructuredField sf : structuredFields)
       text.append ("\n       : " + sf.brief ());
@@ -131,7 +134,8 @@ public class WriteStructuredFieldCommand extends Command
   @Override
   public String toString ()
   {
-    StringBuilder text = new StringBuilder (String.format ("WSF (%d):", structuredFields.size ()));
+    StringBuilder text =
+        new StringBuilder (String.format ("WSF (%d):", structuredFields.size ()));
 
     for (StructuredField sf : structuredFields)
     {

@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.application;
 
+import java.util.Optional;
+
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -84,7 +86,8 @@ class CommandPane extends TabPane
     if (process == ProcessInstruction.DoProcess)
       message.process (screen);       // only process the message when in Replay mode
 
-    Buffer reply = message.getReply ();
+    Optional<Buffer> opt = message.getReply ();
+    Buffer reply = opt.isPresent () ? opt.get () : null;    // defeats the purpose
 
     commandTextArea.setText ("");
 

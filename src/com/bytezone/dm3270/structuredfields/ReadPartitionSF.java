@@ -1,5 +1,8 @@
 package com.bytezone.dm3270.structuredfields;
 
+import java.util.Optional;
+
+import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadPartitionQuery;
 import com.bytezone.dm3270.display.Screen;
@@ -36,25 +39,33 @@ public class ReadPartitionSF extends StructuredField
 
       // can only be RB/RM/RMA (i.e. one of the read commands)
       command = Command.getCommand (buffer, offset + 2, length - 2);
-      System.out.println (command);
+      System.out.println ("RB/RM/RMA: " + command);
     }
   }
 
   @Override
   public void process (Screen screen)
   {
-    if (getReply () != null)                // replay mode
+    if (getReply ().isPresent ())                // replay mode
       return;
 
     if (partitionID == (byte) 0xFF)
     {
       command.process (screen);
-      setReply (command.getReply ());
+      Optional<Buffer> opt = command.getReply ();
+      if (opt.isPresent ())
+        setReply (opt.get ());
+      else
+        setReply (null);
     }
     else
     {
       command.process (screen);
-      setReply (command.getReply ());
+      Optional<Buffer> opt = command.getReply ();
+      if (opt.isPresent ())
+        setReply (opt.get ());
+      else
+        setReply (null);
       System.out.println ("testing read command reply");
     }
   }
@@ -62,7 +73,8 @@ public class ReadPartitionSF extends StructuredField
   @Override
   public String brief ()
   {
-    return String.format ("ReadPT: %s", getReply ());
+    Optional<Buffer> opt = getReply ();
+    return String.format ("ReadPT: %s", opt.get ());
   }
 
   @Override

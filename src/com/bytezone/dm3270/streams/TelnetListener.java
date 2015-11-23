@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.streams;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
@@ -115,9 +116,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   private void processMessage (ReplyBuffer message)
   {
     message.process (screen);
-    Buffer reply = message.getReply ();
-    if (reply != null)
-      telnetState.write (reply.getTelnetData ());
+    Optional<Buffer> reply = message.getReply ();
+    if (reply.isPresent ())
+      telnetState.write (reply.get ().getTelnetData ());
   }
 
   @Override

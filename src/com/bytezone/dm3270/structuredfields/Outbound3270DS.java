@@ -25,11 +25,11 @@ public class Outbound3270DS extends StructuredField
   public void process (Screen screen)
   {
     command.process (screen);
-    if (command.getReply () != null)
+    if (command.getReply ().isPresent ())
     {
+      System.out.println ("Non-null reply:");
       System.out.println (command);
-      System.out.println (command.getReply ());     // should always be null
-      // but the logon plugin causes an AID to appear
+      System.out.println (command.getReply ().get ());     // should always be null
     }
   }
 
