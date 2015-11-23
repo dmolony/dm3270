@@ -11,7 +11,7 @@ import com.bytezone.dm3270.utilities.Utility;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-final class ScreenPosition
+public final class ScreenPosition
 {
   // screen display characters
   private static final String[] charString = new String[256];

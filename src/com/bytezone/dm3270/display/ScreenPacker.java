@@ -13,7 +13,7 @@ import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
-public class ScreenPacker implements ScreenChangeListener
+class ScreenPacker implements ScreenChangeListener
 {
   private final byte[] buffer = new byte[4096];
   private final List<String> tsoCommands = new ArrayList<> ();

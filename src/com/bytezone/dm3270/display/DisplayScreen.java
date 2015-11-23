@@ -2,13 +2,13 @@ package com.bytezone.dm3270.display;
 
 public interface DisplayScreen
 {
-  public Pen getPen ();
+  Pen getPen ();
 
-  public ScreenPosition getScreenPosition (int position);
+  ScreenPosition getScreenPosition (int position);
 
-  public int validate (int position);
+  int validate (int position);
 
-  public void clearScreen ();
+  void clearScreen ();
 
-  public void insertCursor (int position);
+  void insertCursor (int position);
 }

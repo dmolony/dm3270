@@ -45,24 +45,12 @@ public class Session implements Iterable<SessionRecord>
   private boolean safeFlag;
   private final Label headerLabel = new Label ();
 
-  /**
-   * Creates a new, empty session in either Spy or Terminal mode.
-   * 
-   * @param mode
-   */
   public Session (Screen screen, TelnetState telnetState)
   {
     this.screen = screen;
     this.function = screen.getFunction ();
   }
 
-  /**
-   * Recreates a previous session from a file. Mode will be Replay.
-   * Each buffer is passed to a TelnetListener which converts it to a Message
-   * and passes it back here via the Session.add (DataRecord) function.
-   * 
-   * @param filename
-   */
   public Session (Screen screen, List<String> lines) throws Exception
   {
     if (screen == null)
@@ -148,12 +136,6 @@ public class Session implements Iterable<SessionRecord>
     return headerLabel;
   }
 
-  /**
-   * Called by the TelnetListener after it has converted the command into
-   * a DataRecord. Traffic could be from either source (Client or Server).
-   * 
-   * @param sessionRecord
-   */
   public synchronized void add (SessionRecord sessionRecord)
   {
     if (sessionRecord == null)
@@ -236,12 +218,6 @@ public class Session implements Iterable<SessionRecord>
     return null;
   }
 
-  /**
-   * Save the session to a file, for later use as a Replay session.
-   * 
-   * @param file
-   */
-
   public void save (File file)
   {
     try
@@ -282,10 +258,6 @@ public class Session implements Iterable<SessionRecord>
     save (file);
     safeFlag = false;
   }
-
-  /**
-   * Provides the Iterable<DataRecord> interface.
-   */
 
   @Override
   public Iterator<SessionRecord> iterator ()
