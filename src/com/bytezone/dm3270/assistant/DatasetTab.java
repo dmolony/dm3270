@@ -129,6 +129,19 @@ public class DatasetTab extends AbstractTransferTab
   }
 
   // ---------------------------------------------------------------------------------//
+  // ISPF Dataset Commands
+  // ---------------------------------------------------------------------------------//
+
+  // B - Browse data set        C - Catalog data set        F - Free unused space
+  // E - Edit data set          U - Uncatalog data set      = - Repeat last command
+  // D - Delete data set        P - Print entire data set
+  // R - Rename data set        X - Exclude dataset
+  // I - Data set information   M - Display member list
+  // S - Information (short)    Z - Compress data set       TSO command or CLIST
+
+  // SAVE LIST --> HLQ.LIST.DATASETS or HLQ.LIST.MEMEBERS
+
+  // ---------------------------------------------------------------------------------//
   // DatasetSelectionListener
   // ---------------------------------------------------------------------------------//
 

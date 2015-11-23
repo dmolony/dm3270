@@ -51,7 +51,7 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
 
         telnetState.setTerminal (terminalType);
 
-        this.reply = new TerminalTypeSubcommand (reply, 0, reply.length, telnetState);
+        setReply (new TerminalTypeSubcommand (reply, 0, reply.length, telnetState));
       }
       catch (UnsupportedEncodingException e)
       {

@@ -63,11 +63,11 @@ public class ReadCommand extends Command
   {
     // Create an AID command
     if (type == CommandType.READ_BUFFER)
-      reply = screen.readBuffer ();
+      setReply (screen.readBuffer ());
     else if (type == CommandType.READ_MODIFIED)
-      reply = screen.readModifiedFields (READ_MODIFIED_F6);
+      setReply (screen.readModifiedFields (READ_MODIFIED_F6));
     else if (type == CommandType.READ_MODIFIED_ALL)
-      reply = screen.readModifiedFields (READ_MODIFIED_ALL_6E);
+      setReply (screen.readModifiedFields (READ_MODIFIED_ALL_6E));
     else
       System.out.printf ("Unknown READ command: %02X%n", data[0]);
   }

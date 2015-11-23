@@ -140,7 +140,7 @@ public class CommandHeader extends AbstractReplyBuffer
       CommandHeader commandHeader = new CommandHeader (header);
       byte[] value = { 0x00 };
 
-      reply = new ResponseCommand (commandHeader, value, 0, value.length);
+      setReply (new ResponseCommand (commandHeader, value, 0, value.length));
     }
   }
 

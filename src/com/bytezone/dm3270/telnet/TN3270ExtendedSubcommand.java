@@ -149,7 +149,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
 
         telnetState.setTerminal (terminalType);
 
-        this.reply = new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState);
+        setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
       }
       catch (UnsupportedEncodingException e)
       {
@@ -162,7 +162,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       byte[] reply =
           { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_FUNCTIONS, EXT_REQUEST,
             0x00, 0x02, 0x04, TelnetCommand.IAC, TelnetCommand.SE };
-      this.reply = new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState);
+      setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
     }
   }
 

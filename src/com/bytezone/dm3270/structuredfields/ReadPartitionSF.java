@@ -43,18 +43,18 @@ public class ReadPartitionSF extends StructuredField
   @Override
   public void process (Screen screen)
   {
-    if (reply != null)                // replay mode
+    if (getReply () != null)                // replay mode
       return;
 
     if (partitionID == (byte) 0xFF)
     {
       command.process (screen);
-      reply = command.getReply ();
+      setReply (command.getReply ());
     }
     else
     {
       command.process (screen);
-      reply = command.getReply ();
+      setReply (command.getReply ());
       System.out.println ("testing read command reply");
     }
   }
@@ -62,7 +62,7 @@ public class ReadPartitionSF extends StructuredField
   @Override
   public String brief ()
   {
-    return String.format ("ReadPT: %s", reply);
+    return String.format ("ReadPT: %s", getReply ());
   }
 
   @Override

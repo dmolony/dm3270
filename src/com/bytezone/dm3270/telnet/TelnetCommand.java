@@ -142,7 +142,7 @@ public class TelnetCommand extends AbstractTelnetCommand
         telnetState.setDoesBinary (preference);                 // set actual
       }
 
-      this.reply = new TelnetCommand (telnetState, reply);
+      setReply (new TelnetCommand (telnetState, reply));
     }
     else if (commandName == CommandName.WILL)       // the actual reply (REPLAY)
     {
@@ -174,7 +174,7 @@ public class TelnetCommand extends AbstractTelnetCommand
       }
 
       reply[2] = data[2];
-      this.reply = new TelnetCommand (telnetState, reply);
+      setReply (new TelnetCommand (telnetState, reply));
     }
     else if (commandName == CommandName.DONT || commandName == CommandName.WONT)
     {

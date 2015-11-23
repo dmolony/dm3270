@@ -113,7 +113,7 @@ public class WriteCommand extends Command
     {
       if (orders.size () > 0 || !writeControlCharacter.isResetModified ())
         // should check for suppressDisplay
-        reply = screen.getPluginsStage ().processPluginAuto ();
+        setReply (screen.getPluginsStage ().processPluginAuto ());
     }
 
     if (screenDrawRequired)

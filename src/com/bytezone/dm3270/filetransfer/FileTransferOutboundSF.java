@@ -103,7 +103,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     assistantStage.openTransfer (transfer);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
-    reply = new ReadStructuredFieldCommand (buffer);
+    setReply (new ReadStructuredFieldCommand (buffer));
 
     if (transfer.getTransferContents () == TransferContents.DATA)
     {
@@ -130,7 +130,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     {
       //      Transfer transfer = optionalTransfer.get ();
       byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
-      reply = new ReadStructuredFieldCommand (buffer);
+      setReply (new ReadStructuredFieldCommand (buffer));
       screen.setStatusText ("Closing...");
     }
   }
@@ -181,7 +181,7 @@ public class FileTransferOutboundSF extends FileTransferSF
       ptr = errorRecord.pack (replyBuffer, ptr);
     }
 
-    reply = new ReadStructuredFieldCommand (replyBuffer);
+    setReply (new ReadStructuredFieldCommand (replyBuffer));
   }
 
   private void processReceive (Screen screen)
@@ -221,7 +221,7 @@ public class FileTransferOutboundSF extends FileTransferSF
           screen.setStatusText (String.format ("Bytes received: %,d%n",
                                                transfer.dataLength));
       }
-      reply = new ReadStructuredFieldCommand (buffer);
+      setReply (new ReadStructuredFieldCommand (buffer));
 
       // message transfers don't close
       if (transfer.getTransferContents () == TransferContents.MSG)

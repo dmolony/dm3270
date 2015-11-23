@@ -18,13 +18,13 @@ public class ReadPartitionQuery extends Command
   @Override
   public void process (Screen screen)
   {
-    if (reply != null)
+    if (getReply () != null)
       return;
 
     switch (data[2])
     {
       case (byte) 0x02:
-        reply = new ReadStructuredFieldCommand ();      // build a QueryReply
+        setReply (new ReadStructuredFieldCommand ());      // build a QueryReply
         typeName = "Read Partition (Query)";
         break;
 
@@ -40,7 +40,7 @@ public class ReadPartitionQuery extends Command
             break;
 
           case 2:
-            reply = new ReadStructuredFieldCommand ();      // build a QueryReply
+            setReply (new ReadStructuredFieldCommand ());      // build a QueryReply
             typeName = "Read Partition (QueryList)";
             break;
 
