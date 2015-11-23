@@ -17,7 +17,9 @@ import javafx.scene.control.TreeItem;
 
 public class DatasetTab extends AbstractTransferTab
 {
-  private static final Pattern pattern = Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
+  private static final Pattern jclPattern = Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
+  private static final Pattern procPattern =
+      Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
   private Dataset selectedDataset;
 
   private final boolean useTable = false;
@@ -100,8 +102,9 @@ public class DatasetTab extends AbstractTransferTab
     String datasetName = selectedDataset.getDatasetName ();
     String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
 
-    Matcher matcher = pattern.matcher (datasetName);
-    boolean jclMember = matcher.matches ();
+    Matcher matcher1 = jclPattern.matcher (datasetName);
+    Matcher matcher2 = procPattern.matcher (datasetName);
+    boolean useCrlf = matcher1.matches () || matcher2.matches ();
 
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
     {
@@ -117,7 +120,7 @@ public class DatasetTab extends AbstractTransferTab
       datasetName = "'" + datasetName + "'";
 
     String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
-    String options = jclMember ? " ASCII CRLF" : "";
+    String options = useCrlf ? " ASCII CRLF" : "";
 
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
