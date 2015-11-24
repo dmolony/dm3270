@@ -4,8 +4,8 @@ import com.bytezone.dm3270.display.Pen;
 
 public class ExtendedHighlight extends Attribute
 {
-  private static String[] highlights = { "xx", "Blink", "Reverse video", "bb",
-                                        "Underscore" };
+  private static String[] highlights =
+      { "xx", "Blink", "Reverse video", "bb", "Underscore" };
 
   public ExtendedHighlight (byte value)
   {

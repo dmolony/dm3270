@@ -76,7 +76,7 @@ public class Screen extends Canvas implements DisplayScreen
     screenSize = rows * columns;
     this.function = function;
 
-    pen = new Pen (this);
+    pen = new PenType1 (this);
     fieldManager = new FieldManager (this);
     assistantStage = new AssistantStage (this, site);
 

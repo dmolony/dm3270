@@ -25,7 +25,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   UserScreen (AIDCommand command)
   {
     this.command = command;
-    this.pen = new Pen (this);
+    this.pen = new PenType1 (this);
   }
 
   public boolean matches (AIDCommand command)
