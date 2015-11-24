@@ -65,7 +65,7 @@ public class Pen
       {
         System.out.printf ("Unapplied attributes at %d%n", currentPosition);
         for (Attribute attribute : pendingAttributes)
-          System.out.println (attribute);
+          System.out.println ("  " + attribute);
       }
       pendingAttributes.clear ();
     }
@@ -76,6 +76,8 @@ public class Pen
   public void addAttribute (Attribute attribute)
   {
     pendingAttributes.add (attribute);
+    if (false)
+      System.out.printf ("Pending attribute at %4d : %s%n", currentPosition, attribute);
   }
 
   // called from InsertCursorOrder.process()
@@ -131,6 +133,7 @@ public class Pen
   }
 
   // called from ResetAttribute.process()
+  // called from startField()
   public void reset (byte value)
   {
     overrideContext = null;
@@ -181,6 +184,9 @@ public class Pen
 
   // called from StartFieldOrder.process()
   // called from StartFieldExtendedOrder.process()
+  // called from write()
+  // called from writeGraphics()
+  // called from eraseEOF()
   public void moveRight ()
   {
     if (pendingAttributes.size () > 0)
@@ -197,6 +203,7 @@ public class Pen
       System.out.println ("No fields to erase");
       return;
     }
+
     while (true)
     {
       ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
@@ -238,7 +245,6 @@ public class Pen
   // called from SetBufferAddressOrder.process()
   public void moveTo (int position)
   {
-    // assert pendingAttributes.size () == 0;
     if (pendingAttributes.size () > 0)
     {
       if (false)
