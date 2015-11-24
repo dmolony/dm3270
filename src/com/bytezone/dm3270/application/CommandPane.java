@@ -86,9 +86,6 @@ class CommandPane extends TabPane
     if (process == ProcessInstruction.DoProcess)
       message.process (screen);       // only process the message when in Replay mode
 
-    Optional<Buffer> opt = message.getReply ();
-    Buffer reply = opt.isPresent () ? opt.get () : null;    // defeats the purpose
-
     commandTextArea.setText ("");
 
     if (commandHeader != null)
@@ -118,9 +115,13 @@ class CommandPane extends TabPane
     }
 
     replyTextArea.setText ("");
-    if (reply != null && reply.size () > 0)
+    replyBufferTextArea.setText ("");
+
+    Optional<Buffer> opt = message.getReply ();
+    if (opt.isPresent ())
     {
-      replyTextArea.setText ("");
+      Buffer reply = opt.get ();
+      assert reply.size () > 0;
 
       if (reply instanceof MultiBuffer)
       {
@@ -137,12 +138,7 @@ class CommandPane extends TabPane
         appendCommand (replyTextArea, reply);
 
       replyTextArea.positionCaret (0);
-    }
 
-    if (reply == null || reply.size () == 0)
-      replyBufferTextArea.setText ("");
-    else
-    {
       replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
       replyBufferTextArea.positionCaret (0);
     }

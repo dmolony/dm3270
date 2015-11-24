@@ -180,7 +180,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     if (currentFileNode.isAscii ())
       command += " ASCII CRLF";
 
-    if (!screenDetails.isTSOCommandScreen ())
+    if (screenDetails != null && !screenDetails.isTSOCommandScreen ())
       command = "TSO " + command;
 
     txtCommand.setText (command);
