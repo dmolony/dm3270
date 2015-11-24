@@ -52,7 +52,6 @@ public class ConsolePane extends BorderPane
   private final Parameters parameters = new Parameters ();
 
   private final Screen screen;
-  //  private final Site server;
   private final Label status = new Label ();
   private final Label insertMode = new Label ();
   private final Label cursorLocation = new Label ();
@@ -79,7 +78,6 @@ public class ConsolePane extends BorderPane
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
-    //    this.server = server;
 
     this.fontManager = screen.getFontManager ();
     pluginsStage.setConsolePane (this);
