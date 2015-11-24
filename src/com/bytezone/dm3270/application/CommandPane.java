@@ -23,14 +23,14 @@ class CommandPane extends TabPane
 {
   private static final int TEXT_WIDTH = 20;
 
-  private final TextArea commandTextArea = getTextArea (TEXT_WIDTH);
-  private final TextArea replyTextArea = getTextArea (TEXT_WIDTH);
-  private final TextArea screenTextArea = getTextArea (TEXT_WIDTH);
-  private final TextArea fieldsTextArea = getTextArea (TEXT_WIDTH);
-  private final TextArea bufferTextArea = getTextArea (TEXT_WIDTH);
-  private final TextArea replyBufferTextArea = getTextArea (TEXT_WIDTH);
+  private final TextArea commandTextArea = getTextArea ();
+  private final TextArea replyTextArea = getTextArea ();
+  private final TextArea screenTextArea = getTextArea ();
+  private final TextArea fieldsTextArea = getTextArea ();
+  private final TextArea bufferTextArea = getTextArea ();
+  private final TextArea replyBufferTextArea = getTextArea ();
 
-  private final ProcessInstruction process;
+  private final ProcessInstruction processInstruction;
   private Screen screen;
 
   enum ProcessInstruction
@@ -38,7 +38,7 @@ class CommandPane extends TabPane
     DoProcess, DontProcess
   }
 
-  public CommandPane (SessionTable table, ProcessInstruction process)
+  public CommandPane (SessionTable table, ProcessInstruction processInstruction)
   {
     setSide (Side.TOP);
     setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
@@ -50,7 +50,7 @@ class CommandPane extends TabPane
     final Tab tabBuffer = getTab ("Buffer", bufferTextArea);
     final Tab tabReplyBuffer = getTab ("Reply Buffer", replyBufferTextArea);
 
-    this.process = process;
+    this.processInstruction = processInstruction;
 
     getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
                        tabReplyBuffer);
@@ -82,7 +82,7 @@ class CommandPane extends TabPane
 
     ReplyBuffer message = sessionRecord.getMessage ();
 
-    if (process == ProcessInstruction.DoProcess)
+    if (processInstruction == ProcessInstruction.DoProcess)
       message.process (screen);       // only process the message when in Replay mode
 
     commandTextArea.setText ("");
@@ -175,12 +175,12 @@ class CommandPane extends TabPane
     return tab;
   }
 
-  private TextArea getTextArea (int width)
+  private TextArea getTextArea ()
   {
     TextArea textArea = new TextArea ();
     textArea.setEditable (false);
     textArea.setFont (Font.font ("Monospaced", 12));
-    //    textArea.setPrefWidth (width);
+    textArea.setPrefWidth (TEXT_WIDTH);
     return textArea;
   }
 }
