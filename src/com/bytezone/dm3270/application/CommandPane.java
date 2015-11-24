@@ -3,7 +3,6 @@ package com.bytezone.dm3270.application;
 import java.util.Optional;
 
 import com.bytezone.dm3270.buffers.Buffer;
-import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.extended.AbstractExtendedCommand;
@@ -123,20 +122,30 @@ class CommandPane extends TabPane
       Buffer reply = opt.get ();
       assert reply.size () > 0;
 
-      if (reply instanceof MultiBuffer)
+      //      if (reply instanceof MultiBuffer)
+      //      {
+      //        int buffers = ((MultiBuffer) reply).totalBuffers ();
+      //        for (int i = 0; i < buffers; i++)
+      //        {
+      //          appendCommand (replyTextArea, ((MultiBuffer) reply).getBuffer (i));
+      //          replyTextArea.appendText ("\n\n");
+      //        }
+      //        replyTextArea.deleteText (replyTextArea.getLength () - 2,
+      //                                  replyTextArea.getLength ());
+      //      }
+      //      else
+      //      appendCommand (replyTextArea, reply);
+      if (reply instanceof AbstractExtendedCommand)
       {
-        int buffers = ((MultiBuffer) reply).totalBuffers ();
-        for (int i = 0; i < buffers; i++)
+        CommandHeader header = ((AbstractExtendedCommand) reply).getCommandHeader ();
+        if (header != null)
         {
-          appendCommand (replyTextArea, ((MultiBuffer) reply).getBuffer (i));
+          replyTextArea.appendText (header.toString ());
           replyTextArea.appendText ("\n\n");
         }
-        replyTextArea.deleteText (replyTextArea.getLength () - 2,
-                                  replyTextArea.getLength ());
       }
-      else
-        appendCommand (replyTextArea, reply);
 
+      replyTextArea.appendText (reply.toString ());
       replyTextArea.positionCaret (0);
 
       replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
@@ -144,19 +153,19 @@ class CommandPane extends TabPane
     }
   }
 
-  private void appendCommand (TextArea textArea, Buffer buffer)
-  {
-    if (buffer instanceof AbstractExtendedCommand)
-    {
-      CommandHeader header = ((AbstractExtendedCommand) buffer).getCommandHeader ();
-      if (header != null)
-      {
-        textArea.appendText (header.toString ());
-        textArea.appendText ("\n\n");
-      }
-    }
-    textArea.appendText (buffer.toString ());
-  }
+  //  private void appendCommand (TextArea textArea, Buffer buffer)
+  //  {
+  //    if (buffer instanceof AbstractExtendedCommand)
+  //    {
+  //      CommandHeader header = ((AbstractExtendedCommand) buffer).getCommandHeader ();
+  //      if (header != null)
+  //      {
+  //        textArea.appendText (header.toString ());
+  //        textArea.appendText ("\n\n");
+  //      }
+  //    }
+  //    textArea.appendText (buffer.toString ());
+  //  }
 
   private Tab getTab (String name, TextArea textArea)
   {
