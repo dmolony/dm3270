@@ -295,9 +295,9 @@ public class PenType1 implements Pen
     while (true)
     {
       pos = validate (pos - 1);
-      ScreenPosition sp = screenPositions[pos];
+      ScreenPosition screenPosition = screenPositions[pos];
 
-      if (sp.isStartField ())
+      if (screenPosition.isStartField ())
         return pos;
 
       if (pos == position)
@@ -314,9 +314,9 @@ public class PenType1 implements Pen
     while (true)
     {
       pos = validate (pos + 1);
-      ScreenPosition sp = screenPositions[pos];
+      ScreenPosition screenPosition = screenPositions[pos];
 
-      if (sp.isStartField ())
+      if (screenPosition.isStartField ())
         return pos;
 
       if (pos == position)
@@ -332,6 +332,7 @@ public class PenType1 implements Pen
   {
     while (position < 0)
       position += screenPositions.length;
+
     while (position >= screenPositions.length)
       position -= screenPositions.length;
 
@@ -363,7 +364,7 @@ public class PenType1 implements Pen
 
   private void dumpScreenPositions ()
   {
-    dumpScreenPositions (0, 1920);
+    dumpScreenPositions (0, screenPositions.length);
   }
 
   private void dumpScreenPositions (int from, int to)
