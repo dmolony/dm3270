@@ -34,8 +34,6 @@ public final class ScreenPosition
   private ScreenContext screenContext;
   private final ScreenContext baseContext;
 
-  private final GraphicsContext gc;
-
   static
   {
     // build strings to use in the screen-drawing routine
@@ -49,7 +47,6 @@ public final class ScreenPosition
   public ScreenPosition (int position, GraphicsContext gc, ScreenContext base)
   {
     this.position = position;
-    this.gc = gc;
     baseContext = base;
     reset ();
   }
@@ -220,8 +217,8 @@ public final class ScreenPosition
     return ptr;
   }
 
-  void draw (int x, int y, boolean hasCursor, int charHeight, int charWidth, int ascent,
-      int descent)
+  void draw (GraphicsContext gc, int x, int y, boolean hasCursor, int charHeight,
+      int charWidth, int ascent, int descent)
   {
     Color foregroundColor = null;
     Color backgroundColor = null;
@@ -276,7 +273,7 @@ public final class ScreenPosition
     // Draw foreground
     if (isVisible)
       if (isGraphics)
-        doGraphics (foregroundColor, backgroundColor, hasCursor, x, y, charWidth,
+        doGraphics (gc, foregroundColor, backgroundColor, hasCursor, x, y, charWidth,
                     charHeight, ascent, descent);
       else
       {
@@ -293,8 +290,9 @@ public final class ScreenPosition
     gc.translate (-0.5, -0.5);            // restore coordinate grid
   }
 
-  private void doGraphics (Color foregroundColor, Color backgroundColor,
-      boolean hasCursor, int x, int y, int width, int height, int ascent, int descent)
+  private void doGraphics (GraphicsContext gc, Color foregroundColor,
+      Color backgroundColor, boolean hasCursor, int x, int y, int width, int height,
+      int ascent, int descent)
   {
     int dx = width / 2;
     int dy = height / 2;

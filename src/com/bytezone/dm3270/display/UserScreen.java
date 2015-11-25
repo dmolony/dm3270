@@ -67,6 +67,7 @@ public class UserScreen extends Canvas implements DisplayScreen
     int height = fontData.getHeight ();
     int ascent = fontData.getAscent ();
     int descent = fontData.getDescent ();
+    GraphicsContext gc = getGraphicsContext2D ();
 
     int pos = 0;
     for (int row = 0; row < rows; row++)
@@ -77,7 +78,7 @@ public class UserScreen extends Canvas implements DisplayScreen
 
         ScreenPosition screenPosition = screenPositions[pos++];
         if (screenPosition.getScreenContext () != null)
-          screenPosition.draw (x, y, false, height, width, ascent, descent);
+          screenPosition.draw (gc, x, y, false, height, width, ascent, descent);
       }
   }
 

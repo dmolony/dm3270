@@ -295,11 +295,12 @@ public class Screen extends Canvas implements DisplayScreen
     int charWidth = fontData.getWidth ();
     int ascent = fontData.getAscent ();
     int descent = fontData.getDescent ();
+    GraphicsContext gc = getGraphicsContext2D ();
     int pos = 0;
 
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
-        drawPosition (screenPositions[pos++], row, col, false, charHeight, charWidth,
+        drawPosition (gc, screenPositions[pos++], row, col, false, charHeight, charWidth,
                       ascent, descent);
 
     if (insertedCursorPosition >= 0)
@@ -336,20 +337,21 @@ public class Screen extends Canvas implements DisplayScreen
     int charHeight = fontData.getHeight ();
     int ascent = fontData.getAscent ();
     int descent = fontData.getDescent ();
+    GraphicsContext gc = getGraphicsContext2D ();
 
     int x = xOffset + col * charWidth;
     int y = yOffset + row * charHeight;
 
-    screenPosition.draw (x, y, hasCursor, charHeight, charWidth, ascent, descent);
+    screenPosition.draw (gc, x, y, hasCursor, charHeight, charWidth, ascent, descent);
   }
 
-  private void drawPosition (ScreenPosition screenPosition, int row, int col,
-      boolean hasCursor, int charHeight, int charWidth, int ascent, int descent)
+  private void drawPosition (GraphicsContext gc, ScreenPosition screenPosition, int row,
+      int col, boolean hasCursor, int charHeight, int charWidth, int ascent, int descent)
   {
     int x = xOffset + col * charWidth;
     int y = yOffset + row * charHeight;
 
-    screenPosition.draw (x, y, hasCursor, charHeight, charWidth, ascent, descent);
+    screenPosition.draw (gc, x, y, hasCursor, charHeight, charWidth, ascent, descent);
   }
 
   void characterSizeChanged (FontData fontData)
