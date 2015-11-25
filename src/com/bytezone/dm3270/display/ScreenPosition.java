@@ -34,7 +34,6 @@ public final class ScreenPosition
   private ScreenContext screenContext;
   private final ScreenContext baseContext;
 
-  private final FontData fontData;
   private final GraphicsContext gc;
 
   static
@@ -47,12 +46,10 @@ public final class ScreenPosition
       charString[i] = (char) i + "";
   }
 
-  public ScreenPosition (int position, GraphicsContext gc, FontData fontData,
-      ScreenContext base)
+  public ScreenPosition (int position, GraphicsContext gc, ScreenContext base)
   {
     this.position = position;
     this.gc = gc;
-    this.fontData = fontData;
     baseContext = base;
     reset ();
   }
@@ -223,13 +220,9 @@ public final class ScreenPosition
     return ptr;
   }
 
-  void draw (int x, int y, boolean hasCursor)
+  void draw (int x, int y, boolean hasCursor, int charHeight, int charWidth, int ascent,
+      int descent)
   {
-    int charWidth = fontData.getWidth ();
-    int charHeight = fontData.getHeight ();
-    int ascent = fontData.getAscent ();
-    int descent = fontData.getDescent ();
-
     Color foregroundColor = null;
     Color backgroundColor = null;
 
@@ -283,7 +276,8 @@ public final class ScreenPosition
     // Draw foreground
     if (isVisible)
       if (isGraphics)
-        doGraphics (foregroundColor, backgroundColor, hasCursor, x, y);
+        doGraphics (foregroundColor, backgroundColor, hasCursor, x, y, charWidth,
+                    charHeight, ascent, descent);
       else
       {
         gc.setFill (foregroundColor);
@@ -300,10 +294,8 @@ public final class ScreenPosition
   }
 
   private void doGraphics (Color foregroundColor, Color backgroundColor,
-      boolean hasCursor, int x, int y)
+      boolean hasCursor, int x, int y, int width, int height, int ascent, int descent)
   {
-    int width = fontData.getWidth ();
-    int height = fontData.getHeight ();
     int dx = width / 2;
     int dy = height / 2;
 
@@ -341,14 +333,14 @@ public final class ScreenPosition
 
       default:
         gc.setFill (foregroundColor);
-        gc.fillText (".", x, y + fontData.getAscent ());
+        gc.fillText (".", x, y + ascent);
     }
 
     if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
     {
       // extend the vertical line through the leading
       gc.setStroke (backgroundColor);
-      dy = y + fontData.getAscent () + fontData.getDescent () + 1;
+      dy = y + ascent + descent + 1;
       gc.strokeLine (x + dx, dy, x + dx, y + height);
     }
   }

@@ -90,11 +90,12 @@ public class Screen extends Canvas implements DisplayScreen
 
     screenPositions = new ScreenPosition[screenSize];
     pen = new PenType1 (this, screenPositions);
+
     ScreenContext baseContext = pen.getDefaultScreenContext ();
     GraphicsContext graphicsContext = getGraphicsContext2D ();
 
     for (int i = 0; i < screenSize; i++)
-      screenPositions[i] = new ScreenPosition (i, graphicsContext, fontData, baseContext);
+      screenPositions[i] = new ScreenPosition (i, graphicsContext, baseContext);
 
     fieldManager.addScreenChangeListener (assistantStage);
     fieldManager.addScreenChangeListener (screenPacker);
@@ -289,14 +290,17 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void draw ()
   {
-    FontData characterSize = fontManager.getFontData ();
-    int charHeight = characterSize.getHeight ();
-    int charWidth = characterSize.getWidth ();
+    FontData fontData = fontManager.getFontData ();
+    int charHeight = fontData.getHeight ();
+    int charWidth = fontData.getWidth ();
+    int ascent = fontData.getAscent ();
+    int descent = fontData.getDescent ();
     int pos = 0;
 
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
-        drawPosition (screenPositions[pos++], row, col, false, charHeight, charWidth);
+        drawPosition (screenPositions[pos++], row, col, false, charHeight, charWidth,
+                      ascent, descent);
 
     if (insertedCursorPosition >= 0)
     {
@@ -326,20 +330,26 @@ public class Screen extends Canvas implements DisplayScreen
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
       boolean hasCursor)
   {
-    FontData characterSize = fontManager.getFontData ();
-    int x = xOffset + col * characterSize.getWidth ();
-    int y = yOffset + row * characterSize.getHeight ();
+    FontData fontData = fontManager.getFontData ();
 
-    screenPosition.draw (x, y, hasCursor);
+    int charWidth = fontData.getWidth ();
+    int charHeight = fontData.getHeight ();
+    int ascent = fontData.getAscent ();
+    int descent = fontData.getDescent ();
+
+    int x = xOffset + col * charWidth;
+    int y = yOffset + row * charHeight;
+
+    screenPosition.draw (x, y, hasCursor, charHeight, charWidth, ascent, descent);
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
-      boolean hasCursor, int charHeight, int charWidth)
+      boolean hasCursor, int charHeight, int charWidth, int ascent, int descent)
   {
     int x = xOffset + col * charWidth;
     int y = yOffset + row * charHeight;
 
-    screenPosition.draw (x, y, hasCursor);
+    screenPosition.draw (x, y, hasCursor, charHeight, charWidth, ascent, descent);
   }
 
   void characterSizeChanged (FontData fontData)
