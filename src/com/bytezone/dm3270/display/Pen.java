@@ -38,4 +38,6 @@ public interface Pen
   void tab ();
 
   void moveTo (int position);
+
+  String getScreenText (int columns);     // remove columns later
 }

@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 
 public class PenType1 implements Pen
 {
+  private final ScreenPosition[] screenPositions;
   private final DisplayScreen screen;
   private final ContextManager contextManager;
 
@@ -23,9 +24,10 @@ public class PenType1 implements Pen
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
   // created by Screen and UserScreen
-  PenType1 (DisplayScreen screen)
+  PenType1 (DisplayScreen screen, ScreenPosition[] screenPositions)
   {
     this.screen = screen;
+    this.screenPositions = screenPositions;
     contextManager = new ContextManager ();
   }
 
@@ -320,5 +322,39 @@ public class PenType1 implements Pen
 
     System.out.printf ("No next start field found: %d%n", totalFields);
     return -1;
+  }
+
+  @Override
+  public String getScreenText (int columns)
+  {
+    StringBuilder text = new StringBuilder ();
+
+    int pos = 0;
+    for (ScreenPosition sp : screenPositions)
+    {
+      if (sp.isStartField ())
+        text.append ("%");
+      else
+        text.append (sp.getCharString ());
+      if (++pos % columns == 0)
+        text.append ("\n");
+    }
+
+    return text.toString ();
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Debugging
+  // ---------------------------------------------------------------------------------//
+
+  private void dumpScreenPositions ()
+  {
+    dumpScreenPositions (0, 1920);
+  }
+
+  private void dumpScreenPositions (int from, int to)
+  {
+    while (from < to)
+      System.out.println (screenPositions[from++]);
   }
 }

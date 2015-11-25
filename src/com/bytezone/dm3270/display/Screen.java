@@ -88,9 +88,9 @@ public class Screen extends Canvas implements DisplayScreen
     fontManager = new FontManager (this, prefs);
     FontData fontData = fontManager.getFontData ();
 
-    pen = new PenType1 (this);
-    ScreenContext baseContext = pen.getDefaultScreenContext ();
     screenPositions = new ScreenPosition[screenSize];
+    pen = new PenType1 (this, screenPositions);
+    ScreenContext baseContext = pen.getDefaultScreenContext ();
     GraphicsContext graphicsContext = getGraphicsContext2D ();
 
     for (int i = 0; i < screenSize; i++)
@@ -550,35 +550,11 @@ public class Screen extends Canvas implements DisplayScreen
     keyboardLocked = screenHistory.resume ();
   }
 
-  // ---------------------------------------------------------------------------------//
-  // Debugging
-  // ---------------------------------------------------------------------------------//
-
-  private void dumpScreenPositions ()
-  {
-    dumpScreenPositions (0, 1920);
-  }
-
-  private void dumpScreenPositions (int from, int to)
-  {
-    while (from < to)
-      System.out.println (screenPositions[from++]);
-  }
-
   public String getScreenText ()
   {
     StringBuilder text = new StringBuilder ();
-    int pos = 0;
-    for (ScreenPosition sp : screenPositions)
-    {
-      if (sp.isStartField ())
-        text.append ("%");
-      else
-        text.append (sp.getCharString ());
-      if (++pos % columns == 0)
-        text.append ("\n");
-    }
 
+    text.append (pen.getScreenText (80));
     text.append ("\n");
     text.append (fieldManager.getTotalsText ());
 
