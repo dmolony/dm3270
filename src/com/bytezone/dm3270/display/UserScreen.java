@@ -45,7 +45,7 @@ public class UserScreen extends Canvas implements DisplayScreen
     characterSizeChanged (fontData);
 
     screenPositions = new ScreenPosition[screenSize];
-    pen = new PenType1 (this, screenPositions);
+    pen = new PenType1 (screenPositions);
 
     clearScreen ();
     for (Order order : command)
@@ -91,11 +91,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   @Override
   public int validate (int position)
   {
-    while (position < 0)
-      position += screenSize;
-    while (position >= screenSize)
-      position -= screenSize;
-    return position;
+    return pen.validate (position);
   }
 
   @Override

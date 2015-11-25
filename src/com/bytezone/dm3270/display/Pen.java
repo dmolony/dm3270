@@ -40,4 +40,6 @@ public interface Pen
   void moveTo (int position);
 
   String getScreenText (int columns);     // remove columns later
+
+  public int validate (int position);
 }

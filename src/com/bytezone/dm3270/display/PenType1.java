@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 public class PenType1 implements Pen
 {
   private final ScreenPosition[] screenPositions;
-  private final DisplayScreen screen;
   private final ContextManager contextManager;
 
   private ScreenContext currentContext;
@@ -24,9 +23,8 @@ public class PenType1 implements Pen
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
   // created by Screen and UserScreen
-  PenType1 (DisplayScreen screen, ScreenPosition[] screenPositions)
+  PenType1 (ScreenPosition[] screenPositions)
   {
-    this.screen = screen;
     this.screenPositions = screenPositions;
     contextManager = new ContextManager ();
 
@@ -57,7 +55,7 @@ public class PenType1 implements Pen
     currentContext = contextManager.getDefaultScreenContect ();
     totalFields++;
 
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    ScreenPosition screenPosition = screenPositions[currentPosition];
 
     screenPosition.reset ();
     screenPosition.setStartField (startFieldAttribute);
@@ -157,7 +155,7 @@ public class PenType1 implements Pen
 
   private void storeCurrentContext ()
   {
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    ScreenPosition screenPosition = screenPositions[currentPosition];
     storeContext (screenPosition);
   }
 
@@ -173,7 +171,7 @@ public class PenType1 implements Pen
   @Override
   public void writeGraphics (byte b)
   {
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    ScreenPosition screenPosition = screenPositions[currentPosition];
     screenPosition.reset ();
     storeContext (screenPosition);
     screenPosition.setGraphicsChar (b);
@@ -186,7 +184,7 @@ public class PenType1 implements Pen
   @Override
   public void write (byte b)
   {
-    ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+    ScreenPosition screenPosition = screenPositions[currentPosition];
     screenPosition.reset ();
     storeContext (screenPosition);
     screenPosition.setChar (b);
@@ -209,9 +207,9 @@ public class PenType1 implements Pen
   public void moveRight ()
   {
     if (pendingAttributes.size () > 0)
-      applyAttributes (screen.getScreenPosition (currentPosition));
+      applyAttributes (screenPositions[currentPosition]);
 
-    currentPosition = screen.validate (currentPosition + 1);
+    currentPosition = validate (currentPosition + 1);
   }
 
   // called from ProgramTabOrder.process()
@@ -226,7 +224,7 @@ public class PenType1 implements Pen
 
     while (true)
     {
-      ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);
+      ScreenPosition screenPosition = screenPositions[currentPosition];
       if (screenPosition.isStartField ())
         break;
       screenPosition.setChar ((byte) 0);
@@ -239,10 +237,11 @@ public class PenType1 implements Pen
   @Override
   public void tab ()
   {
-    ScreenPosition sp = screen.getScreenPosition (currentPosition);
-    if (sp.isStartField () && !sp.getStartFieldAttribute ().isProtected ())
+    ScreenPosition screenPosition = screenPositions[currentPosition];
+    if (screenPosition.isStartField ()
+        && !screenPosition.getStartFieldAttribute ().isProtected ())
     {
-      currentPosition = screen.validate (currentPosition + 1);
+      currentPosition = validate (currentPosition + 1);
       return;
     }
     int next = currentPosition;
@@ -254,10 +253,10 @@ public class PenType1 implements Pen
         currentPosition = 0;
         break;
       }
-      sp = screen.getScreenPosition (next);
-      if (!sp.getStartFieldAttribute ().isProtected ())
+      screenPosition = screenPositions[next];
+      if (!screenPosition.getStartFieldAttribute ().isProtected ())
       {
-        currentPosition = screen.validate (next + 1);
+        currentPosition = validate (next + 1);
         break;
       }
     }
@@ -277,7 +276,7 @@ public class PenType1 implements Pen
       }
       pendingAttributes.clear ();
     }
-    currentPosition = screen.validate (position);
+    currentPosition = validate (position);
 
     if (totalFields > 0)
     {
@@ -285,7 +284,7 @@ public class PenType1 implements Pen
       if (pos >= 0)
       {
         startFieldPosition = pos;
-        currentContext = screen.getScreenPosition (pos).getScreenContext ();
+        currentContext = screenPositions[pos].getScreenContext ();
       }
     }
   }
@@ -295,8 +294,8 @@ public class PenType1 implements Pen
     int pos = position;
     while (true)
     {
-      pos = screen.validate (pos - 1);
-      ScreenPosition sp = screen.getScreenPosition (pos);
+      pos = validate (pos - 1);
+      ScreenPosition sp = screenPositions[pos];
 
       if (sp.isStartField ())
         return pos;
@@ -314,8 +313,8 @@ public class PenType1 implements Pen
     int pos = position;
     while (true)
     {
-      pos = screen.validate (pos + 1);
-      ScreenPosition sp = screen.getScreenPosition (pos);
+      pos = validate (pos + 1);
+      ScreenPosition sp = screenPositions[pos];
 
       if (sp.isStartField ())
         return pos;
@@ -326,6 +325,17 @@ public class PenType1 implements Pen
 
     System.out.printf ("No next start field found: %d%n", totalFields);
     return -1;
+  }
+
+  @Override
+  public int validate (int position)
+  {
+    while (position < 0)
+      position += screenPositions.length;
+    while (position >= screenPositions.length)
+      position -= screenPositions.length;
+
+    return position;
   }
 
   @Override

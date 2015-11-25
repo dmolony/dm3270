@@ -88,7 +88,7 @@ public class Screen extends Canvas implements DisplayScreen
     pluginsStage.setScreen (this);
 
     screenPositions = new ScreenPosition[screenSize];
-    pen = new PenType1 (this, screenPositions);
+    pen = new PenType1 (screenPositions);
 
     fieldManager.addScreenChangeListener (assistantStage);
     fieldManager.addScreenChangeListener (screenPacker);
@@ -191,25 +191,9 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   @Override
-  public int validate (int position)
-  {
-    while (position < 0)
-      position += screenSize;
-    while (position >= screenSize)
-      position -= screenSize;
-
-    return position;
-  }
-
-  @Override
   public Pen getPen ()
   {
     return pen;
-  }
-
-  public Cursor getScreenCursor ()
-  {
-    return cursor;
   }
 
   @Override
@@ -218,9 +202,15 @@ public class Screen extends Canvas implements DisplayScreen
     return screenPositions[position];
   }
 
-  public ScreenPosition[] getScreenPositions ()
+  @Override
+  public int validate (int position)
   {
-    return screenPositions;
+    return pen.validate (position);
+  }
+
+  public Cursor getScreenCursor ()
+  {
+    return cursor;
   }
 
   public void resetInsertMode ()
