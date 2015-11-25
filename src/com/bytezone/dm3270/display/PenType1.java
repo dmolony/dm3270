@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.bytezone.dm3270.attributes.Attribute;
@@ -371,5 +372,32 @@ public class PenType1 implements Pen
   {
     while (from < to)
       System.out.println (screenPositions[from++]);
+  }
+
+  @Override
+  public Iterator<ScreenPosition> iterator ()
+  {
+    return new Iterator<ScreenPosition> ()
+    {
+      private int pos = 0;
+
+      @Override
+      public boolean hasNext ()
+      {
+        return screenPositions.length > pos;
+      }
+
+      @Override
+      public ScreenPosition next ()
+      {
+        return screenPositions[pos++];
+      }
+
+      @Override
+      public void remove ()
+      {
+        throw new UnsupportedOperationException ("Cannot remove an element of an array.");
+      }
+    };
   }
 }

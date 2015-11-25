@@ -5,7 +5,7 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 import javafx.scene.paint.Color;
 
-public interface Pen
+public interface Pen extends Iterable<ScreenPosition>
 {
   ScreenContext getDefaultScreenContext ();
 

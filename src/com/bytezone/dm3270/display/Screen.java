@@ -80,15 +80,15 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager = new FieldManager (this);
     assistantStage = new AssistantStage (this, site);
 
-    screenPacker = new ScreenPacker ();
+    screenPositions = new ScreenPosition[screenSize];
+    pen = new PenType1 (screenPositions);
+
+    screenPacker = new ScreenPacker (pen, fieldManager);
     screenPacker.addTSOCommandListener (assistantStage);
     addKeyboardStatusChangeListener (assistantStage);
 
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
-
-    screenPositions = new ScreenPosition[screenSize];
-    pen = new PenType1 (screenPositions);
 
     fieldManager.addScreenChangeListener (assistantStage);
     fieldManager.addScreenChangeListener (screenPacker);
@@ -415,7 +415,7 @@ public class Screen extends Canvas implements DisplayScreen
   public AIDCommand readModifiedFields ()
   {
     return screenPacker.readModifiedFields (currentAID, getScreenCursor ().getLocation (),
-                                            fieldManager, readModifiedAll);
+                                            readModifiedAll);
   }
 
   // Called from:
@@ -424,8 +424,8 @@ public class Screen extends Canvas implements DisplayScreen
   //      ScreenHistory.requestScreen()
   public AIDCommand readBuffer ()
   {
-    return screenPacker.readBuffer (screenPositions, getScreenCursor ().getLocation (),
-                                    currentAID, replyMode, replyTypes);
+    return screenPacker.readBuffer (currentAID, getScreenCursor ().getLocation (),
+                                    replyMode, replyTypes);
   }
 
   // Called from ReadCommand.process() in response to a ReadModified (F6)

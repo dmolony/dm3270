@@ -19,9 +19,17 @@ class ScreenPacker implements ScreenChangeListener
   private final List<String> tsoCommands = new ArrayList<> ();
 
   private ScreenDetails screenDetails;
+  private final Pen pen;
+  private final FieldManager fieldManager;
+
+  public ScreenPacker (Pen pen, FieldManager fieldManager)
+  {
+    this.pen = pen;
+    this.fieldManager = fieldManager;
+  }
 
   public AIDCommand readModifiedFields (byte currentAID, int cursorLocation,
-      FieldManager fieldManager, boolean readModifiedAll)
+      boolean readModifiedAll)
   {
     // pack the AID
     int ptr = 0;
@@ -81,8 +89,8 @@ class ScreenPacker implements ScreenChangeListener
     return ptr;
   }
 
-  public AIDCommand readBuffer (ScreenPosition[] screenPositions, int cursorLocation,
-      byte currentAID, byte replyMode, byte[] replyTypes)
+  public AIDCommand readBuffer (byte currentAID, int cursorLocation, byte replyMode,
+      byte[] replyTypes)
   {
     // pack the AID
     int ptr = 0;
@@ -93,7 +101,7 @@ class ScreenPacker implements ScreenChangeListener
     ptr = ba.packAddress (buffer, ptr);
 
     // pack every screen location
-    for (ScreenPosition sp : screenPositions)
+    for (ScreenPosition sp : pen)
       if (sp.isStartField ())
         ptr = packStartPosition (sp, buffer, ptr, replyMode);
       else
