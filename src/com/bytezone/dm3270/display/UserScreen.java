@@ -47,12 +47,6 @@ public class UserScreen extends Canvas implements DisplayScreen
     screenPositions = new ScreenPosition[screenSize];
     pen = new PenType1 (this, screenPositions);
 
-    ScreenContext base = pen.getDefaultScreenContext ();
-    GraphicsContext gc = getGraphicsContext2D ();
-
-    for (int i = 0; i < screenSize; i++)
-      screenPositions[i] = new ScreenPosition (i, gc, base);
-
     clearScreen ();
     for (Order order : command)
       order.process (this);

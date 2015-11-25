@@ -44,7 +44,7 @@ public final class ScreenPosition
       charString[i] = (char) i + "";
   }
 
-  public ScreenPosition (int position, GraphicsContext gc, ScreenContext base)
+  public ScreenPosition (int position, ScreenContext base)
   {
     this.position = position;
     baseContext = base;

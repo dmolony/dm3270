@@ -29,6 +29,10 @@ public class PenType1 implements Pen
     this.screen = screen;
     this.screenPositions = screenPositions;
     contextManager = new ContextManager ();
+
+    ScreenContext baseContext = contextManager.getDefaultScreenContect ();
+    for (int i = 0; i < screenPositions.length; i++)
+      screenPositions[i] = new ScreenPosition (i, baseContext);
   }
 
   @Override

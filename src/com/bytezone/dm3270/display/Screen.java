@@ -37,6 +37,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final ScreenPosition[] screenPositions;
   private final FieldManager fieldManager;
   private final FontManager fontManager;
+
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
   private ConsolePane consolePane;
@@ -75,6 +76,7 @@ public class Screen extends Canvas implements DisplayScreen
     screenSize = rows * columns;
     this.function = function;
 
+    fontManager = new FontManager (this, prefs);
     fieldManager = new FieldManager (this);
     assistantStage = new AssistantStage (this, site);
 
@@ -85,17 +87,8 @@ public class Screen extends Canvas implements DisplayScreen
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
 
-    fontManager = new FontManager (this, prefs);
-    FontData fontData = fontManager.getFontData ();
-
     screenPositions = new ScreenPosition[screenSize];
     pen = new PenType1 (this, screenPositions);
-
-    ScreenContext baseContext = pen.getDefaultScreenContext ();
-    GraphicsContext graphicsContext = getGraphicsContext2D ();
-
-    for (int i = 0; i < screenSize; i++)
-      screenPositions[i] = new ScreenPosition (i, graphicsContext, baseContext);
 
     fieldManager.addScreenChangeListener (assistantStage);
     fieldManager.addScreenChangeListener (screenPacker);
