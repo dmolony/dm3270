@@ -75,7 +75,6 @@ public class Screen extends Canvas implements DisplayScreen
     screenSize = rows * columns;
     this.function = function;
 
-    pen = new PenType1 (this);
     fieldManager = new FieldManager (this);
     assistantStage = new AssistantStage (this, site);
 
@@ -89,6 +88,7 @@ public class Screen extends Canvas implements DisplayScreen
     fontManager = new FontManager (this, prefs);
     FontData fontData = fontManager.getFontData ();
 
+    pen = new PenType1 (this);
     ScreenContext baseContext = pen.getDefaultScreenContext ();
     screenPositions = new ScreenPosition[screenSize];
     GraphicsContext graphicsContext = getGraphicsContext2D ();

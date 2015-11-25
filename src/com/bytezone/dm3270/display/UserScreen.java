@@ -18,14 +18,12 @@ public class UserScreen extends Canvas implements DisplayScreen
   private final int yOffset = 4;      // padding top and bottom
 
   private final AIDCommand command;
-  private final Pen pen;
-  GraphicsContext gc = getGraphicsContext2D ();
+  private Pen pen;
 
   // created by ScreenHistory.add()
   UserScreen (AIDCommand command)
   {
     this.command = command;
-    this.pen = new PenType1 (this);
   }
 
   public boolean matches (AIDCommand command)
@@ -38,14 +36,18 @@ public class UserScreen extends Canvas implements DisplayScreen
     setWidth (characterSize.getWidth () * columns + xOffset * 2);
     setHeight (characterSize.getHeight () * rows + yOffset * 2);
 
+    GraphicsContext gc = getGraphicsContext2D ();
     gc.setFont (characterSize.getFont ());
   }
 
   private void createScreen (FontData fontData)
   {
     characterSizeChanged (fontData);
+
+    pen = new PenType1 (this);
     screenPositions = new ScreenPosition[screenSize];
     ScreenContext base = pen.getDefaultScreenContext ();
+    GraphicsContext gc = getGraphicsContext2D ();
 
     for (int i = 0; i < screenSize; i++)
       screenPositions[i] = new ScreenPosition (i, gc, fontData, base);
@@ -111,6 +113,7 @@ public class UserScreen extends Canvas implements DisplayScreen
 
   private void eraseScreen ()
   {
+    GraphicsContext gc = getGraphicsContext2D ();
     gc.setFill (ColorAttribute.colors[8]);                // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
   }

@@ -2,6 +2,7 @@ package com.bytezone.dm3270.orders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.Attribute.AttributeType;
@@ -29,7 +30,9 @@ public class StartFieldExtendedOrder extends Order
 
     while (totalAttributePairs-- > 0)
     {
-      Attribute attribute = Attribute.getAttribute (buffer[ptr], buffer[ptr + 1]);
+      Optional<Attribute> opt = Attribute.getAttribute (buffer[ptr], buffer[ptr + 1]);
+      assert opt.isPresent ();
+      Attribute attribute = opt.get ();
 
       // There has to be a StartFieldAttribute, but it could be anywhere in the list
       if (attribute.getAttributeType () == AttributeType.START_FIELD)

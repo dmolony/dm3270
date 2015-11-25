@@ -2,6 +2,7 @@ package com.bytezone.dm3270.orders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.DisplayScreen;
@@ -24,11 +25,15 @@ public class ModifyFieldOrder extends Order
     int bptr = 2;
     for (int i = 0; i < totalAttributePairs; i++)
     {
-      Attribute attribute = Attribute.getAttribute (buffer[ptr], buffer[ptr + 1]);
-      attributes.add (attribute);
-
-      this.buffer[bptr++] = buffer[ptr++];
-      this.buffer[bptr++] = buffer[ptr++];
+      Optional<Attribute> attribute =
+          Attribute.getAttribute (buffer[ptr], buffer[ptr + 1]);
+      assert attribute.isPresent ();
+      if (attribute.isPresent ())
+      {
+        attributes.add (attribute.get ());
+        this.buffer[bptr++] = buffer[ptr++];
+        this.buffer[bptr++] = buffer[ptr++];
+      }
     }
   }
 

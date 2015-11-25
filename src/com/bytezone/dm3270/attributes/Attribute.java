@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.attributes;
 
+import java.util.Optional;
+
 import com.bytezone.dm3270.display.Pen;
 
 public abstract class Attribute
@@ -30,11 +32,8 @@ public abstract class Attribute
     this.attributeValue = attributeValue;
   }
 
-  public String name ()
-  {
-    return getTypeName (attributeCode);
-  }
-
+  // called from ScreenPacker.packDataPosition()
+  // called from ScreenPosition.pack()
   public boolean matches (byte... types)
   {
     for (byte type : types)
@@ -43,6 +42,64 @@ public abstract class Attribute
     return false;
   }
 
+  public int pack (byte[] buffer, int offset)
+  {
+    buffer[offset++] = attributeCode;
+    buffer[offset++] = attributeValue;
+    return offset;
+  }
+
+  public abstract void process (Pen pen);
+
+  public byte getAttributeValue ()
+  {
+    return attributeValue;
+  }
+
+  public AttributeType getAttributeType ()
+  {
+    return attributeType;
+  }
+
+  public static Optional<Attribute> getAttribute (byte attributeCode, byte attributeValue)
+  {
+    switch (attributeCode)
+    {
+      case 0:
+        return Optional.of (new ResetAttribute (attributeValue));
+      case XA_START_FIELD:
+        return Optional.of (new StartFieldAttribute (attributeValue));
+      case XA_HIGHLIGHTING:
+        return Optional.of (new ExtendedHighlight (attributeValue));
+      case XA_BGCOLOR:
+        return Optional.of (new BackgroundColor (attributeValue));
+      case XA_FGCOLOR:
+        return Optional.of (new ForegroundColor (attributeValue));
+      case XA_CHARSET:
+        System.out.println ("Charset not written");
+        return Optional.empty ();
+      case XA_VALIDATION:
+        System.out.println ("Validation not written");
+        return Optional.empty ();
+      case XA_OUTLINING:
+        System.out.println ("Outlining not written");
+        return Optional.empty ();
+      case XA_TRANSPARENCY:
+        System.out.println ("Transparency not written");
+        return Optional.empty ();
+      default:
+        System.out.printf ("Unknown attribute: %02X%n", attributeCode);
+        return Optional.empty ();
+    }
+  }
+
+  protected String name ()
+  {
+    return getTypeName (attributeCode);
+  }
+
+  // called by SetReplyModeSF.toString()
+  // called by name()
   public static String getTypeName (byte type)
   {
     switch (type)
@@ -67,57 +124,6 @@ public abstract class Attribute
         return "Charset";
       default:
         return "Unknown";
-    }
-  }
-
-  public int pack (byte[] buffer, int offset)
-  {
-    buffer[offset++] = attributeCode;
-    buffer[offset++] = attributeValue;
-    return offset;
-  }
-
-  public abstract void process (Pen pen);
-
-  public byte getAttributeValue ()
-  {
-    return attributeValue;
-  }
-
-  public AttributeType getAttributeType ()
-  {
-    return attributeType;
-  }
-
-  public static Attribute getAttribute (byte attributeCode, byte attributeValue)
-  {
-    switch (attributeCode)
-    {
-      case 0:
-        return new ResetAttribute (attributeValue);
-      case XA_START_FIELD:
-        return new StartFieldAttribute (attributeValue);
-      case XA_HIGHLIGHTING:
-        return new ExtendedHighlight (attributeValue);
-      case XA_BGCOLOR:
-        return new BackgroundColor (attributeValue);
-      case XA_FGCOLOR:
-        return new ForegroundColor (attributeValue);
-      case XA_CHARSET:
-        System.out.println ("Charset not written");
-        return null;
-      case XA_VALIDATION:
-        System.out.println ("Validation not written");
-        return null;
-      case XA_OUTLINING:
-        System.out.println ("Outlining not written");
-        return null;
-      case XA_TRANSPARENCY:
-        System.out.println ("Transparency not written");
-        return null;
-      default:
-        System.out.printf ("Unknown attribute: %02X%n", attributeCode);
-        return null;
     }
   }
 

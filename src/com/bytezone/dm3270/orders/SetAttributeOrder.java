@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.orders;
 
+import java.util.Optional;
+
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
@@ -12,7 +14,10 @@ public class SetAttributeOrder extends Order
   {
     assert buffer[offset] == Order.SET_ATTRIBUTE;
 
-    attribute = Attribute.getAttribute (buffer[offset + 1], buffer[offset + 2]);
+    Optional<Attribute> opt =
+        Attribute.getAttribute (buffer[offset + 1], buffer[offset + 2]);
+    assert opt.isPresent ();
+    attribute = opt.get ();
 
     this.buffer = new byte[3];
     System.arraycopy (buffer, offset, this.buffer, 0, this.buffer.length);
