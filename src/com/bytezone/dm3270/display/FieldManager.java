@@ -92,7 +92,7 @@ public class FieldManager
 
     // build screen contexts for every position and link uprotected fields
     Field previousUnprotectedField = null;
-    ScreenContext baseContext = screen.getPen ().getBase ();
+    ScreenContext baseContext = screen.getPen ().getDefaultScreenContext ();
     for (Field field : fields)
     {
       field.setScreenContexts (baseContext);

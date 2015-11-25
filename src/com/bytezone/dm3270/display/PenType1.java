@@ -30,9 +30,9 @@ public class PenType1 implements Pen
   }
 
   @Override
-  public ScreenContext getBase ()
+  public ScreenContext getDefaultScreenContext ()
   {
-    return contextManager.getBase ();
+    return contextManager.getDefaultScreenContect ();
   }
 
   // called from Screen.clearScreen()
@@ -48,7 +48,7 @@ public class PenType1 implements Pen
   @Override
   public void startField (StartFieldAttribute startFieldAttribute)
   {
-    currentContext = contextManager.getBase ();
+    currentContext = contextManager.getDefaultScreenContect ();
     totalFields++;
 
     ScreenPosition screenPosition = screen.getScreenPosition (currentPosition);

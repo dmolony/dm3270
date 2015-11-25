@@ -43,7 +43,6 @@ public class Screen extends Canvas implements DisplayScreen
 
   private final Pen pen;
   private final Cursor cursor = new Cursor (this);
-  private final GraphicsContext graphicsContext;
 
   private final int xOffset = 4;              // padding left and right
   private final int yOffset = 4;              // padding top and bottom
@@ -87,13 +86,13 @@ public class Screen extends Canvas implements DisplayScreen
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
 
-    graphicsContext = getGraphicsContext2D ();
     fontManager = new FontManager (this, prefs);
-
     FontData fontData = fontManager.getFontData ();
 
-    ScreenContext baseContext = pen.getBase ();
+    ScreenContext baseContext = pen.getDefaultScreenContext ();
     screenPositions = new ScreenPosition[screenSize];
+    GraphicsContext graphicsContext = getGraphicsContext2D ();
+
     for (int i = 0; i < screenSize; i++)
       screenPositions[i] = new ScreenPosition (i, graphicsContext, fontData, baseContext);
 
@@ -180,6 +179,7 @@ public class Screen extends Canvas implements DisplayScreen
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {
+    GraphicsContext graphicsContext = getGraphicsContext2D ();
     graphicsContext.setFill (ColorAttribute.colors[8]);// black
     graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
     graphicsContext.setFill (ColorAttribute.colors[5]);// turquoise
@@ -347,6 +347,7 @@ public class Screen extends Canvas implements DisplayScreen
     setWidth (fontData.getWidth () * columns + xOffset * 2);
     setHeight (fontData.getHeight () * rows + yOffset * 2);
 
+    GraphicsContext graphicsContext = getGraphicsContext2D ();
     graphicsContext.setFont (fontData.getFont ());
     if (consolePane != null)
       consolePane.setFontData (fontData);
@@ -366,6 +367,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   void eraseScreen ()
   {
+    GraphicsContext graphicsContext = getGraphicsContext2D ();
     graphicsContext.setFill (ColorAttribute.colors[8]);             // black
     graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
   }

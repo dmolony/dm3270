@@ -18,7 +18,7 @@ public class ContextManager
     contextPool.add (base);
   }
 
-  public ScreenContext getBase ()
+  public ScreenContext getDefaultScreenContect ()
   {
     return contextPool.get (0);
   }

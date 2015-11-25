@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 
 public interface Pen
 {
-  ScreenContext getBase ();
+  ScreenContext getDefaultScreenContext ();
 
   void reset ();
 

@@ -45,7 +45,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   {
     characterSizeChanged (fontData);
     screenPositions = new ScreenPosition[screenSize];
-    ScreenContext base = pen.getBase ();
+    ScreenContext base = pen.getDefaultScreenContext ();
 
     for (int i = 0; i < screenSize; i++)
       screenPositions[i] = new ScreenPosition (i, gc, fontData, base);
