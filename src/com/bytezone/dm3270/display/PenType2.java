@@ -23,7 +23,7 @@ public class PenType2 implements Pen
   }
 
   @Override
-  public void reset ()
+  public void clearScreen ()
   {
   }
 

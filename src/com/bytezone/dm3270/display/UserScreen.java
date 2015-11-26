@@ -72,7 +72,7 @@ public class UserScreen extends Canvas implements DisplayScreen
 
         ScreenPosition screenPosition = screenPositions[pos++];
         if (screenPosition.getScreenContext () != null)
-          screenPosition.draw (gc, x, y, false, height, width, ascent, descent);
+          screenPosition.draw (gc, x, y, false, width, height, ascent, descent);
       }
   }
 
@@ -98,11 +98,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   public void clearScreen ()
   {
     eraseScreen ();
-
-    for (ScreenPosition sp : screenPositions)
-      sp.reset ();
-
-    pen.reset ();
+    pen.clearScreen ();
   }
 
   private void eraseScreen ()

@@ -322,19 +322,25 @@ public class Screen extends Canvas implements DisplayScreen
     int descent = fontData.getDescent ();
     GraphicsContext gc = getGraphicsContext2D ();
 
-    int x = xOffset + col * charWidth;
-    int y = yOffset + row * charHeight;
-
-    screenPosition.draw (gc, x, y, hasCursor, charHeight, charWidth, ascent, descent);
+    screenPosition.draw (gc, getX (col, charWidth), getY (row, charHeight), hasCursor,
+                         charWidth, charHeight, ascent, descent);
   }
 
   private void drawPosition (GraphicsContext gc, ScreenPosition screenPosition, int row,
       int col, boolean hasCursor, int charHeight, int charWidth, int ascent, int descent)
   {
-    int x = xOffset + col * charWidth;
-    int y = yOffset + row * charHeight;
+    screenPosition.draw (gc, getX (col, charWidth), getY (row, charHeight), hasCursor,
+                         charWidth, charHeight, ascent, descent);
+  }
 
-    screenPosition.draw (gc, x, y, hasCursor, charHeight, charWidth, ascent, descent);
+  private int getX (int col, int charWidth)
+  {
+    return xOffset + col * charWidth;
+  }
+
+  private int getY (int row, int charHeight)
+  {
+    return yOffset + row * charHeight;
   }
 
   void characterSizeChanged (FontData fontData)
@@ -353,11 +359,8 @@ public class Screen extends Canvas implements DisplayScreen
   {
     eraseScreen ();
 
-    for (ScreenPosition sp : screenPositions)
-      sp.reset ();
-
     cursor.moveTo (0);
-    pen.reset ();
+    pen.clearScreen ();
   }
 
   void eraseScreen ()

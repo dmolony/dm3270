@@ -43,10 +43,12 @@ public class PenType1 implements Pen
   // called from Screen.clearScreen()
   // called from UserScreen.clearScreen()
   @Override
-  public void reset ()
+  public void clearScreen ()
   {
+    for (ScreenPosition screenPosition : screenPositions)
+      screenPosition.reset ();
+
     totalFields = 0;
-    //    currentPosition = 0;
   }
 
   // called from StartFieldAttribute.process()

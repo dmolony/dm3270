@@ -218,8 +218,8 @@ public final class ScreenPosition
     return ptr;
   }
 
-  void draw (GraphicsContext gc, int x, int y, boolean hasCursor, int charHeight,
-      int charWidth, int ascent, int descent)
+  void draw (GraphicsContext gc, int x, int y, boolean hasCursor, int charWidth,
+      int charHeight, int ascent, int descent)
   {
     Color foregroundColor = null;
     Color backgroundColor = null;

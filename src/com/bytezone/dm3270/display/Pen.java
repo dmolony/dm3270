@@ -9,7 +9,7 @@ public interface Pen extends Iterable<ScreenPosition>
 {
   ScreenContext getDefaultScreenContext ();
 
-  void reset ();
+  void clearScreen ();
 
   void startField (StartFieldAttribute startFieldAttribute);
 
