@@ -56,7 +56,9 @@ public class Field implements Iterable<ScreenPosition>
   // link two unprotected fields to each other
   void linkToNext (Field nextField)
   {
-    assert !isProtected ();
+    assert isUnprotected ();
+    assert nextField.isUnprotected ();
+
     this.next = nextField;
     nextField.previous = this;
   }
@@ -229,16 +231,12 @@ public class Field implements Iterable<ScreenPosition>
       return "";
 
     char[] buffer = new char[getDisplayLength ()];
-    int position = screen.validate (startPosition + 1);
     int ptr = 0;
 
-    while (true)
-    {
-      buffer[ptr++] = screen.getScreenPosition (position).getChar ();
-      if (position == endPosition)
-        break;
-      position = screen.validate (position + 1);
-    }
+    for (ScreenPosition screenPosition : screenPositions)
+      if (!screenPosition.isStartField ())           // skip the start field attribute
+        buffer[ptr++] = screenPosition.getChar ();
+
     return new String (buffer);
   }
 
@@ -246,7 +244,7 @@ public class Field implements Iterable<ScreenPosition>
   {
     try
     {
-      erase ();                                 // sets the field to modified
+      erase ();                                     // sets the field to modified
       setText (text.getBytes ("CP1047"));
       draw ();
     }
@@ -259,16 +257,20 @@ public class Field implements Iterable<ScreenPosition>
   public void setText (byte[] buffer)
   {
     assert startPosition != endPosition;
-    int position = screen.validate (startPosition + 1);
+    assert buffer.length >= getDisplayLength ();
+    //    int position = screen.validate (startPosition + 1);
     int ptr = 0;
 
-    while (true)
-    {
-      screen.getScreenPosition (position).setChar (buffer[ptr++]);
-      if (position == endPosition || ptr == buffer.length)
-        break;
-      position = screen.validate (position + 1);
-    }
+    //    while (true)
+    //    {
+    //      screen.getScreenPosition (position).setChar (buffer[ptr++]);
+    //      if (position == endPosition || ptr == buffer.length)
+    //        break;
+    //      position = screen.validate (position + 1);
+    //    }
+    for (ScreenPosition screenPosition : screenPositions)
+      if (!screenPosition.isStartField ())           // skip the start field attribute
+        screenPosition.setChar (buffer[ptr++]);
   }
 
   // called by FieldManager.getPluginScreen()

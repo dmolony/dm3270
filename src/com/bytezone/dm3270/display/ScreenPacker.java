@@ -45,7 +45,6 @@ class ScreenPacker implements ScreenChangeListener
     BufferAddress ba = new BufferAddress (cursorLocation);
     ptr = ba.packAddress (buffer, ptr);
 
-    //    ScreenDetails screenDetails = screen.getScreenDetails ();
     Field tsoCommandField = screenDetails.getTSOCommandField ();
     boolean isTSOScreen = screenDetails.isTSOCommandScreen ();
     boolean tsoFieldSent = false;

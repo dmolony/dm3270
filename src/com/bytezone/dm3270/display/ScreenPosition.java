@@ -31,6 +31,7 @@ public final class ScreenPosition
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
+
   private ScreenContext screenContext;
   private final ScreenContext baseContext;
 
