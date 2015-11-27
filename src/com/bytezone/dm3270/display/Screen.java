@@ -270,6 +270,14 @@ public class Screen extends Canvas implements DisplayScreen
     setReplyMode (savedReplyMode, savedReplyTypes);
   }
 
+  // called from FontManager when a new font is selected
+  public void redraw ()
+  {
+    ((Stage) getScene ().getWindow ()).sizeToScene ();
+    eraseScreen ();
+    draw ();
+  }
+
   public void draw ()
   {
     FontData fontData = fontManager.getFontData ();
@@ -295,19 +303,21 @@ public class Screen extends Canvas implements DisplayScreen
     drawPosition (cursor.getLocation (), true);             // draw the cursor
   }
 
+  // called from draw()
+  private void drawPosition (GraphicsContext gc, ScreenPosition screenPosition, int row,
+      int col, boolean hasCursor, int charHeight, int charWidth, int ascent, int descent)
+  {
+    screenPosition.draw (gc, getX (col, charWidth), getY (row, charHeight), hasCursor,
+                         charWidth, charHeight, ascent, descent);
+  }
+
+  // called from draw()
+  // called from Field.draw()
   void drawPosition (int position, boolean hasCursor)
   {
     int row = position / columns;
     int col = position % columns;
     drawPosition (screenPositions[position], row, col, hasCursor);
-  }
-
-  // called from FontManager when a new font is selected
-  public void redraw ()
-  {
-    ((Stage) getScene ().getWindow ()).sizeToScene ();
-    eraseScreen ();
-    draw ();
   }
 
   private void drawPosition (ScreenPosition screenPosition, int row, int col,
@@ -321,13 +331,6 @@ public class Screen extends Canvas implements DisplayScreen
     int descent = fontData.getDescent ();
     GraphicsContext gc = getGraphicsContext2D ();
 
-    screenPosition.draw (gc, getX (col, charWidth), getY (row, charHeight), hasCursor,
-                         charWidth, charHeight, ascent, descent);
-  }
-
-  private void drawPosition (GraphicsContext gc, ScreenPosition screenPosition, int row,
-      int col, boolean hasCursor, int charHeight, int charWidth, int ascent, int descent)
-  {
     screenPosition.draw (gc, getX (col, charWidth), getY (row, charHeight), hasCursor,
                          charWidth, charHeight, ascent, descent);
   }
@@ -401,7 +404,7 @@ public class Screen extends Canvas implements DisplayScreen
     {
       field.setText (text.getBytes ("CP1047"));
       field.setModified (true);
-      field.draw ();// draws the field without a cursor
+      field.draw ();                      // draws the field without a cursor
     }
     catch (UnsupportedEncodingException e)
     {

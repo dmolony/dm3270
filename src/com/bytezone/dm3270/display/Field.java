@@ -153,6 +153,11 @@ public class Field implements Iterable<ScreenPosition>
     return position >= startPosition || position <= endPosition;
   }
 
+  // called from Screen.setFieldText()
+  // called from Cursor.typeChar()
+  // called from Cursor.backspace()
+  // called from Cursor.delete()
+  // called from Cursor.eraseEOL()
   public void draw ()
   {
     int position = startPosition;
@@ -174,6 +179,8 @@ public class Field implements Iterable<ScreenPosition>
     setModified (true);
   }
 
+  // called from FieldManager.eraseAllUnprotected()
+  // called from AIDCommand.process()
   public void clearData (boolean alterModifiedFlag)
   {
     if (alterModifiedFlag)                  // don't reset any already set flags
@@ -183,6 +190,8 @@ public class Field implements Iterable<ScreenPosition>
       screenPositions.get (i).setChar ((byte) 0);         // leave screenContext
   }
 
+  // called from AIDCommand.process()
+  // called from Cursor.eraseEOL()
   public void clearData (int first, int last)
   {
     for (int i = first; i <= last; i++)
