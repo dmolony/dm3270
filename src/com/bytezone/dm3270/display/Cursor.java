@@ -102,9 +102,9 @@ public class Cursor
 
   public void home ()
   {
-    Field field = screen.getHomeField ();
-    if (field != null)
-      moveTo (field.getFirstLocation ());
+    Optional<Field> field = screen.getHomeField ();
+    if (field.isPresent ())
+      moveTo (field.get ().getFirstLocation ());
   }
 
   public void backspace ()

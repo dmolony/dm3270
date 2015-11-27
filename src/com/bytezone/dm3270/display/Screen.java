@@ -173,19 +173,19 @@ public class Screen extends Canvas implements DisplayScreen
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {
-    GraphicsContext graphicsContext = getGraphicsContext2D ();
-    graphicsContext.setFill (ColorAttribute.colors[8]);// black
-    graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
-    graphicsContext.setFill (ColorAttribute.colors[5]);// turquoise
+    GraphicsContext gc = getGraphicsContext2D ();
+
+    gc.setFill (ColorAttribute.colors[8]);                // black
+    gc.fillRect (0, 0, getWidth (), getHeight ());
+    gc.setFill (ColorAttribute.colors[5]);                // turquoise
 
     int x = 120;
     int y = 100;
     int height = 20;
 
-    String[] lines = text.split ("\n");
-    for (String line : lines)
+    for (String line : text.split ("\n"))
     {
-      graphicsContext.fillText (line, x, y);
+      gc.fillText (line, x, y);
       y += height;
     }
   }
@@ -248,7 +248,6 @@ public class Screen extends Canvas implements DisplayScreen
 
     restoreKeyboard ();         // resets the AID to NO_AID_SPECIFIED
     resetModified ();
-    //    setAID (AIDCommand.NO_AID_SPECIFIED);
     draw ();
 
     if (firstUnprotectedField.isPresent ())
@@ -370,12 +369,13 @@ public class Screen extends Canvas implements DisplayScreen
     graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
   }
 
-  public Field getHomeField ()
+  // called from Cursor.home()
+  Optional<Field> getHomeField ()
   {
     List<Field> fields = fieldManager.getUnprotectedFields ();
     if (fields != null && fields.size () > 0)
-      return fields.get (0);
-    return null;
+      return Optional.of (fields.get (0));
+    return Optional.empty ();
   }
 
   public void setAID (byte aid)
