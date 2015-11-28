@@ -106,8 +106,7 @@ public class Screen extends Canvas implements DisplayScreen
     consolePane.setStatusText (text);
   }
 
-  // this is called from the ConsolePane constructor
-  // ConsolePane is needed to send an AID command
+  // called from the ConsolePane constructor
   public void setConsolePane (ConsolePane consolePane)
   {
     this.consolePane = consolePane;
@@ -180,8 +179,6 @@ public class Screen extends Canvas implements DisplayScreen
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {
-    //    GraphicsContext gc = getGraphicsContext2D ();
-
     gc.setFill (ColorAttribute.colors[8]);                // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
     gc.setFill (ColorAttribute.colors[5]);                // turquoise
@@ -197,55 +194,36 @@ public class Screen extends Canvas implements DisplayScreen
     }
   }
 
-  @Override
-  public Pen getPen ()
-  {
-    return pen;
-  }
-
-  @Override
-  public ScreenPosition getScreenPosition (int position)
-  {
-    return screenPositions[position];
-  }
-
-  @Override
-  public int validate (int position)
-  {
-    return pen.validate (position);
-  }
-
+  // called from AIDCommand.process()
+  // called from ConsolePane constructor
+  // called from PluginsStage.processPluginAuto()
+  // called from PluginsStage.processPluginRequest()
+  // called from PluginsStage.processReply()
   public Cursor getScreenCursor ()
   {
     return cursor;
   }
 
+  // called from WriteControlCharacter.process()
   public void resetInsertMode ()
   {
     if (insertMode)
       toggleInsertMode ();
   }
 
+  // called from ConsoleKeyPress.handle()
+  // called from ConsolePane.sendAID()
   public void toggleInsertMode ()
   {
     insertMode = !insertMode;
     fireKeyboardStatusChange ("");
   }
 
+  // called from Cursor.typeChar()
+  // called from ConsolePane.sendAID()
   public boolean isInsertMode ()
   {
     return insertMode;
-  }
-
-  public void insertCursor ()
-  {
-    insertedCursorPosition = cursor.getLocation ();   // move it here later
-  }
-
-  @Override
-  public void insertCursor (int position)
-  {
-    insertedCursorPosition = position;                // move it here later
   }
 
   // called from EraseAllUnprotectedCommand.process()
@@ -318,7 +296,7 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   // called from Field.draw()
-  // called from Cursor.moveTo() - when moving the cursor around the scree
+  // called from Cursor.moveTo() - when moving the cursor around the screen
   // called from Cursor.setVisible()
   // called from Cursor.backspace()
   // called from Cursor.delete()
@@ -358,15 +336,6 @@ public class Screen extends Canvas implements DisplayScreen
     gc.setFont (fontData.getFont ());
     if (consolePane != null)
       consolePane.setFontData (fontData);
-  }
-
-  @Override
-  public void clearScreen ()
-  {
-    eraseScreen ();
-
-    cursor.moveTo (0);
-    pen.clearScreen ();
   }
 
   void eraseScreen ()
@@ -413,6 +382,43 @@ public class Screen extends Canvas implements DisplayScreen
     {
       e.printStackTrace ();
     }
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // DisplayScreen interface methods
+  // ---------------------------------------------------------------------------------//
+
+  @Override
+  public Pen getPen ()
+  {
+    return pen;
+  }
+
+  @Override
+  public ScreenPosition getScreenPosition (int position)
+  {
+    return screenPositions[position];
+  }
+
+  @Override
+  public int validate (int position)
+  {
+    return pen.validate (position);
+  }
+
+  @Override
+  public void clearScreen ()
+  {
+    eraseScreen ();
+
+    cursor.moveTo (0);
+    pen.clearScreen ();
+  }
+
+  @Override
+  public void insertCursor (int position)
+  {
+    insertedCursorPosition = position;                // move it here later
   }
 
   // ---------------------------------------------------------------------------------//
