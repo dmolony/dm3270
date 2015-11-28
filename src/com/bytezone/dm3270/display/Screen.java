@@ -30,6 +30,8 @@ import javafx.stage.Stage;
 public class Screen extends Canvas implements DisplayScreen
 {
   private final static Toolkit defaultToolkit = Toolkit.getDefaultToolkit ();
+  private final static boolean SHOW_CURSOR = true;
+  private final static boolean HIDE_CURSOR = false;
 
   private final ScreenPacker screenPacker;
   private final Function function;
@@ -275,8 +277,8 @@ public class Screen extends Canvas implements DisplayScreen
     setReplyMode (savedReplyMode, savedReplyTypes);
   }
 
-  // called from FontManager when a new font is selected
-  public void redraw ()
+  // called from FontManager.selectFont()
+  void resize ()
   {
     ((Stage) getScene ().getWindow ()).sizeToScene ();
     eraseScreen ();
@@ -284,7 +286,7 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   // called from this.eraseAllUnprotected()
-  // called from this.redraw()
+  // called from this.resize()
   // called from Write.process()
   public void draw ()
   {
@@ -297,7 +299,7 @@ public class Screen extends Canvas implements DisplayScreen
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
         screenPositions[pos++].draw (gc, getX (col, charWidth), getY (row, charHeight),
-                                     false, charWidth, charHeight, ascent, descent);
+                                     HIDE_CURSOR, charWidth, charHeight, ascent, descent);
 
     if (insertedCursorPosition >= 0)
     {
@@ -306,10 +308,15 @@ public class Screen extends Canvas implements DisplayScreen
       cursor.setVisible (true);
     }
 
-    drawPosition (cursor.getLocation (), true);             // draw the cursor
+    //    drawPosition (cursor.getLocation (), true);             // draw the cursor
+
+    pos = cursor.getLocation ();
+    int row = pos / columns;
+    int col = pos % columns;
+    screenPositions[pos].draw (gc, getX (col, charWidth), getY (row, charHeight),
+                               SHOW_CURSOR, charWidth, charHeight, ascent, descent);
   }
 
-  // called from this.draw()
   // called from Field.draw()
   // called from Cursor.moveTo() - when moving the cursor around the scree
   // called from Cursor.setVisible()

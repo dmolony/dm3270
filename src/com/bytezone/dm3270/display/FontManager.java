@@ -166,7 +166,7 @@ public class FontManager
       return;
 
     setFont (name, size);
-    screen.redraw ();
+    screen.resize ();
   }
 
   private void setFont (String name, int size)
