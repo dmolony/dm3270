@@ -313,6 +313,8 @@ public class Screen extends Canvas implements DisplayScreen
 
   // called from draw()
   // called from Field.draw()
+  // called from Cursor.moveTo() - when moving the cursor around the scree
+  // called from Cursor.draw()
   void drawPosition (int position, boolean hasCursor)
   {
     int row = position / columns;

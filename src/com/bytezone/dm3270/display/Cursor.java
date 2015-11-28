@@ -25,7 +25,7 @@ public class Cursor
     this.screen = screen;
   }
 
-  public void draw ()
+  private void draw ()
   {
     screen.drawPosition (currentPosition, visible);
   }

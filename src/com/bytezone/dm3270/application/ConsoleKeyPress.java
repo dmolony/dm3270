@@ -11,7 +11,7 @@ import javafx.scene.input.KeyEvent;
 
 class ConsoleKeyPress implements EventHandler<KeyEvent>
 {
-  private static final KeyCode[] PFKeyCodes = //
+  private static final KeyCode[] PFKeyCodes =
       { KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6,
         KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12 };
 
@@ -62,7 +62,7 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
           keyEvent.consume ();
           break;
 
-        case H:// OSX ctrl-h conflicts with Hide Windows command
+        case H:                   // OSX ctrl-h conflicts with Hide Windows command
           cursor.home ();
           keyEvent.consume ();
           break;
