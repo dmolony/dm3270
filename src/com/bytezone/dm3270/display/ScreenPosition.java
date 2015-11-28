@@ -218,6 +218,9 @@ public final class ScreenPosition
     return ptr;
   }
 
+  // called by Screen.draw()
+  // called by Screen.drawPosition()
+  // called by UserScreen.drawScreen()
   void draw (GraphicsContext gc, int x, int y, boolean hasCursor, int charWidth,
       int charHeight, int ascent, int descent)
   {

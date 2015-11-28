@@ -52,6 +52,7 @@ public class UserScreen extends Canvas implements DisplayScreen
       order.process (this);
   }
 
+  // called by ConsolePane.changeScreen()
   public void drawScreen (FontData fontData)
   {
     if (screenPositions == null)

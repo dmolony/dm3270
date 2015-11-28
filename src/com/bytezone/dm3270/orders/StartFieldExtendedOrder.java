@@ -43,6 +43,7 @@ public class StartFieldExtendedOrder extends Order
       this.buffer[bptr++] = buffer[ptr++];
       this.buffer[bptr++] = buffer[ptr++];
     }
+
     assert startFieldAttribute != null;
     startFieldAttribute.setExtended ();
   }
@@ -55,8 +56,10 @@ public class StartFieldExtendedOrder extends Order
 
     buffer = new byte[4 + attributes.size () * 2];
     int ptr = 0;
+
     buffer[ptr++] = Order.START_FIELD_EXTENDED;
     buffer[ptr++] = (byte) (attributes.size () + 1);      // sfa + other attributes
+
     ptr = startFieldAttribute.pack (buffer, ptr);
     for (Attribute attribute : attributes)
       ptr = attribute.pack (buffer, ptr);
