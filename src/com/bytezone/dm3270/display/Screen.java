@@ -42,6 +42,9 @@ public class Screen extends Canvas implements DisplayScreen
   private final AssistantStage assistantStage;
   private ConsolePane consolePane;
 
+  private final GraphicsContext gc;
+  private FontData fontData;
+
   private final Pen pen;
   private final Cursor cursor = new Cursor (this);
 
@@ -75,6 +78,8 @@ public class Screen extends Canvas implements DisplayScreen
     this.columns = columns;
     screenSize = rows * columns;
     this.function = function;
+
+    gc = getGraphicsContext2D ();
 
     fontManager = new FontManager (this, prefs);
     fieldManager = new FieldManager (this);
@@ -173,7 +178,7 @@ public class Screen extends Canvas implements DisplayScreen
   // display a message on the screen - only used when logging off
   public void displayText (String text)
   {
-    GraphicsContext gc = getGraphicsContext2D ();
+    //    GraphicsContext gc = getGraphicsContext2D ();
 
     gc.setFill (ColorAttribute.colors[8]);                // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
@@ -278,20 +283,21 @@ public class Screen extends Canvas implements DisplayScreen
     draw ();
   }
 
+  // called from this.eraseAllUnprotected()
+  // called from this.redraw()
+  // called from Write.process()
   public void draw ()
   {
-    FontData fontData = fontManager.getFontData ();
+    int pos = 0;
     int charHeight = fontData.getHeight ();
     int charWidth = fontData.getWidth ();
     int ascent = fontData.getAscent ();
     int descent = fontData.getDescent ();
-    GraphicsContext gc = getGraphicsContext2D ();
-    int pos = 0;
 
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
-        drawPosition (gc, screenPositions[pos++], row, col, false, charHeight, charWidth,
-                      ascent, descent);
+        screenPositions[pos++].draw (gc, getX (col, charWidth), getY (row, charHeight),
+                                     false, charWidth, charHeight, ascent, descent);
 
     if (insertedCursorPosition >= 0)
     {
@@ -303,38 +309,26 @@ public class Screen extends Canvas implements DisplayScreen
     drawPosition (cursor.getLocation (), true);             // draw the cursor
   }
 
-  // called from draw()
-  private void drawPosition (GraphicsContext gc, ScreenPosition screenPosition, int row,
-      int col, boolean hasCursor, int charHeight, int charWidth, int ascent, int descent)
-  {
-    screenPosition.draw (gc, getX (col, charWidth), getY (row, charHeight), hasCursor,
-                         charWidth, charHeight, ascent, descent);
-  }
-
-  // called from draw()
+  // called from this.draw()
   // called from Field.draw()
   // called from Cursor.moveTo() - when moving the cursor around the scree
-  // called from Cursor.draw()
+  // called from Cursor.setVisible()
+  // called from Cursor.backspace()
+  // called from Cursor.delete()
+  // called from Cursor.eraseEOL()
+  // called from Cursor.moveTo()
   void drawPosition (int position, boolean hasCursor)
   {
     int row = position / columns;
     int col = position % columns;
-    drawPosition (screenPositions[position], row, col, hasCursor);
-  }
-
-  private void drawPosition (ScreenPosition screenPosition, int row, int col,
-      boolean hasCursor)
-  {
-    FontData fontData = fontManager.getFontData ();
 
     int charWidth = fontData.getWidth ();
     int charHeight = fontData.getHeight ();
     int ascent = fontData.getAscent ();
     int descent = fontData.getDescent ();
-    GraphicsContext gc = getGraphicsContext2D ();
 
-    screenPosition.draw (gc, getX (col, charWidth), getY (row, charHeight), hasCursor,
-                         charWidth, charHeight, ascent, descent);
+    screenPositions[position].draw (gc, getX (col, charWidth), getY (row, charHeight),
+                                    hasCursor, charWidth, charHeight, ascent, descent);
   }
 
   private int getX (int col, int charWidth)
@@ -347,13 +341,14 @@ public class Screen extends Canvas implements DisplayScreen
     return yOffset + row * charHeight;
   }
 
+  // called from FontManager.setFont()
   void characterSizeChanged (FontData fontData)
   {
+    this.fontData = fontData;
     setWidth (fontData.getWidth () * columns + xOffset * 2);
     setHeight (fontData.getHeight () * rows + yOffset * 2);
 
-    GraphicsContext graphicsContext = getGraphicsContext2D ();
-    graphicsContext.setFont (fontData.getFont ());
+    gc.setFont (fontData.getFont ());
     if (consolePane != null)
       consolePane.setFontData (fontData);
   }
@@ -369,9 +364,8 @@ public class Screen extends Canvas implements DisplayScreen
 
   void eraseScreen ()
   {
-    GraphicsContext graphicsContext = getGraphicsContext2D ();
-    graphicsContext.setFill (ColorAttribute.colors[8]);             // black
-    graphicsContext.fillRect (0, 0, getWidth (), getHeight ());
+    gc.setFill (ColorAttribute.colors[8]);             // black
+    gc.fillRect (0, 0, getWidth (), getHeight ());
   }
 
   // called from Cursor.home()

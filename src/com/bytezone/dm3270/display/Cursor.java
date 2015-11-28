@@ -25,11 +25,6 @@ public class Cursor
     this.screen = screen;
   }
 
-  private void draw ()
-  {
-    screen.drawPosition (currentPosition, visible);
-  }
-
   public void setVisible (boolean visible)
   {
     this.visible = visible;
@@ -40,7 +35,8 @@ public class Cursor
     }
     else
       resetCurrentField ();
-    draw ();
+
+    screen.drawPosition (currentPosition, visible);
   }
 
   public boolean isVisible ()
@@ -120,8 +116,9 @@ public class Cursor
         currentField.setModified (true);
         notifyFieldChange (currentField, currentField);
       }
-      currentField.draw ();     // draws the field without the cursor
-      draw ();                  // redraw the cursor
+
+      currentField.draw ();                     // draws the field without the cursor
+      screen.drawPosition (currentPosition, visible);    // redraw the cursor
     }
   }
 
@@ -137,8 +134,8 @@ public class Cursor
         currentField.setModified (true);
         notifyFieldChange (currentField, currentField);
       }
-      currentField.draw ();     // draws the field without the cursor
-      draw ();                  // redraw the cursor
+      currentField.draw ();                      // draws the field without the cursor
+      screen.drawPosition (currentPosition, visible);     // redraw the cursor
     }
   }
 
@@ -154,8 +151,8 @@ public class Cursor
         currentField.setModified (true);
         notifyFieldChange (currentField, currentField);
       }
-      currentField.draw ();     // draws the field without the cursor
-      draw ();                  // redraw the cursor
+      currentField.draw ();                     // draws the field without the cursor
+      screen.drawPosition (currentPosition, visible);     // redraw the cursor
     }
   }
 
