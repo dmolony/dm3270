@@ -199,6 +199,8 @@ public class Field implements Iterable<ScreenPosition>
   }
 
   // overwrites each position with the position to its right (delete)
+  // called from Cursor.backspace()
+  // called from Cursor.delete()
   void pull (int first, int last)
   {
     ScreenPosition spFirst = screenPositions.get (first);
@@ -217,6 +219,7 @@ public class Field implements Iterable<ScreenPosition>
   }
 
   // overwrites each position with the position to its left (insert)
+  // called from Cursor.typeChar()
   void push (int first, int last)
   {
     ScreenPosition spLast = screenPositions.get (last);
@@ -229,11 +232,15 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
+  // called from Cursor.typeChar()
   byte getByteAt (int position)
   {
     return screenPositions.get (position).getByte ();
   }
 
+  // called from FieldManager.*()
+  // called from Screen.*()
+  // called from ScreenPacker.readModifiedFields()
   public String getText ()
   {
     if (startPosition == endPosition)
@@ -249,6 +256,7 @@ public class Field implements Iterable<ScreenPosition>
     return new String (buffer);
   }
 
+  // called from TSOCommand.execute()
   public void setText (String text)
   {
     try
@@ -263,23 +271,20 @@ public class Field implements Iterable<ScreenPosition>
     }
   }
 
+  // called from Screen.setFieldText()
+  // called from PluginsStage.processReply()
+  // called from AIDCommand.process()
   public void setText (byte[] buffer)
   {
-    assert startPosition != endPosition;
-    assert buffer.length >= getDisplayLength ();
-    //    int position = screen.validate (startPosition + 1);
-    int ptr = 0;
-
-    //    while (true)
-    //    {
-    //      screen.getScreenPosition (position).setChar (buffer[ptr++]);
-    //      if (position == endPosition || ptr == buffer.length)
-    //        break;
-    //      position = screen.validate (position + 1);
-    //    }
-    for (ScreenPosition screenPosition : screenPositions)
-      if (!screenPosition.isStartField ())           // skip the start field attribute
-        screenPosition.setChar (buffer[ptr++]);
+    int ptr = 1;
+    for (byte b : buffer)
+      if (ptr < screenPositions.size ())
+        screenPositions.get (ptr++).setChar (b);
+      else
+      {
+        System.out.println ("Buffer overrun");
+        break;
+      }
   }
 
   // called by FieldManager.getPluginScreen()
