@@ -286,8 +286,6 @@ public class Screen extends Canvas implements DisplayScreen
       cursor.setVisible (true);
     }
 
-    //    drawPosition (cursor.getLocation (), true);             // draw the cursor
-
     pos = cursor.getLocation ();
     int row = pos / columns;
     int col = pos % columns;
