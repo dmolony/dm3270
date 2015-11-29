@@ -35,16 +35,6 @@ public class Field implements Iterable<ScreenPosition>
 
     if (startFieldAttribute.isHidden ())
       positions.forEach (sp -> sp.setVisible (false));
-    //    else if (!startFieldAttribute.isExtended ())
-    //    {
-    //      // remove any extended attributes (see spy115.txt)
-    //      ScreenContext defaultContext = firstScreenPosition.getScreenContext ();
-    //      for (ScreenPosition screenPosition : positions)
-    //      {
-    //        screenPosition.clearAttributes ();
-    //        screenPosition.setScreenContext (defaultContext);
-    //      }
-    //    }
   }
 
   // test: spy060 - highlight full line at bottom
@@ -82,15 +72,6 @@ public class Field implements Iterable<ScreenPosition>
         screenPosition.setScreenContext (defaultContext);
     }
   }
-
-  // called from FieldManager.buildFields()
-  //  void setScreenContexts (ScreenContext base)
-  //  {
-  //    ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
-  //    for (ScreenPosition screenPosition : screenPositions)
-  //      if (screenPosition.getScreenContext () == base)
-  //        screenPosition.setScreenContext (defaultContext);
-  //  }
 
   // link two unprotected fields to each other
   void linkToNext (Field nextField)

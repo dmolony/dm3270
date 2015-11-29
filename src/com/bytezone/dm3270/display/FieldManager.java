@@ -36,12 +36,17 @@ public class FieldManager
     return screenDetails;
   }
 
-  // this is called after the pen and screen positions have been modified
-  public void buildFields ()
+  void reset ()
   {
     fields.clear ();
     unprotectedFields.clear ();
     emptyFields.clear ();
+  }
+
+  // this is called after the pen and screen positions have been modified
+  public void buildFields ()
+  {
+    reset ();
 
     dataPositions = 0;
     inputPositions = 0;

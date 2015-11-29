@@ -92,7 +92,6 @@ public final class ScreenPosition
     isGraphics = false;
     startFieldAttribute = null;
     attributes.clear ();
-    //    screenContext = baseContext;
   }
 
   // Password fields etc

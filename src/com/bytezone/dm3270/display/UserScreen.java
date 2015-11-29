@@ -20,6 +20,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   private final AIDCommand command;
   private Pen pen;
   private final GraphicsContext gc;
+  //  private final FieldManager fieldManager = new FieldManager ();
 
   // created by ScreenHistory.add()
   UserScreen (AIDCommand command)
@@ -51,6 +52,8 @@ public class UserScreen extends Canvas implements DisplayScreen
     clearScreen ();
     for (Order order : command)
       order.process (this);
+
+    // build the screen fields...
   }
 
   // called by ConsolePane.changeScreen()

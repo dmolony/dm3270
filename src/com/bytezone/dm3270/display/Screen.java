@@ -408,9 +408,9 @@ public class Screen extends Canvas implements DisplayScreen
   public void clearScreen ()
   {
     eraseScreen ();
-
     cursor.moveTo (0);
     pen.clearScreen ();
+    fieldManager.reset ();
   }
 
   @Override
