@@ -61,7 +61,6 @@ public class FieldManager
       if (screenPosition.isStartField ())   // check for the start of a new field
       {
         if (start >= 0)                     // if there is a field to add
-
         {
           addField (new Field (screen, positions));
           positions.clear ();
@@ -90,12 +89,12 @@ public class FieldManager
 
     assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
 
-    // build screen contexts for every position and link uprotected fields
+    // link uprotected fields
     Field previousUnprotectedField = null;
-    ScreenContext baseContext = screen.getPen ().getDefaultScreenContext ();
+    //    ScreenContext baseContext = screen.getPen ().getDefaultScreenContext ();
     for (Field field : fields)
     {
-      field.setScreenContexts (baseContext);
+      //      field.setScreenContexts (baseContext);
       if (field.isUnprotected ())
       {
         unprotectedFields.add (field);

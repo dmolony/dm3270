@@ -7,19 +7,18 @@ import java.util.List;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
-import javafx.scene.paint.Color;
-
 public class PenType1 implements Pen
 {
   private final ScreenPosition[] screenPositions;
-  private final ContextManager contextManager;
+  //  private final ContextManager contextManager;
 
-  private ScreenContext currentContext;
-  private ScreenContext overrideContext;
+  //  private ScreenContext currentContext;
+  //  private ScreenContext overrideContext;
 
   private int currentPosition;
-  private int startFieldPosition;
-  private int totalFields;          // used to indicate at least one SFA exists
+  //  private int startFieldPosition;
+  //  private int totalFields;          // used to indicate at least one SFA exists
+  private boolean formattedScreen;
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
@@ -27,18 +26,19 @@ public class PenType1 implements Pen
   PenType1 (ScreenPosition[] screenPositions)
   {
     this.screenPositions = screenPositions;
-    contextManager = new ContextManager ();
+    //    contextManager = new ContextManager ();
 
-    ScreenContext baseContext = contextManager.getDefaultScreenContect ();
+    //    ScreenContext baseContext = contextManager.getDefaultScreenContect ();
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (i, baseContext);
+      //      screenPositions[i] = new ScreenPosition (i, baseContext);
+      screenPositions[i] = new ScreenPosition (i);
   }
 
-  @Override
-  public ScreenContext getDefaultScreenContext ()
-  {
-    return contextManager.getDefaultScreenContect ();
-  }
+  //  @Override
+  //  public ScreenContext getDefaultScreenContext ()
+  //  {
+  //    return contextManager.getDefaultScreenContect ();
+  //  }
 
   // called from Screen.clearScreen()
   // called from UserScreen.clearScreen()
@@ -48,15 +48,17 @@ public class PenType1 implements Pen
     for (ScreenPosition screenPosition : screenPositions)
       screenPosition.reset ();
 
-    totalFields = 0;
+    //    totalFields = 0;
+    formattedScreen = false;
   }
 
   // called from StartFieldAttribute.process()
   @Override
   public void startField (StartFieldAttribute startFieldAttribute)
   {
-    currentContext = contextManager.getDefaultScreenContect ();
-    totalFields++;
+    //    currentContext = contextManager.getDefaultScreenContect ();
+    //    totalFields++;
+    formattedScreen = true;
 
     ScreenPosition screenPosition = screenPositions[currentPosition];
 
@@ -64,9 +66,9 @@ public class PenType1 implements Pen
     screenPosition.setStartField (startFieldAttribute);
     screenPosition.setVisible (false);
 
-    startFieldPosition = currentPosition;
-    reset ((byte) 0);
-    storeCurrentContext ();
+    //    startFieldPosition = currentPosition;
+    //    reset ((byte) 0);
+    //    storeCurrentContext ();
 
     // sometimes a reset attribute is overwritten by a new SFA
     if (pendingAttributes.size () > 0)
@@ -86,9 +88,10 @@ public class PenType1 implements Pen
   @Override
   public void addAttribute (Attribute attribute)
   {
+    //    screenPositions[currentPosition].addAttribute (attribute);
     pendingAttributes.add (attribute);
-    if (false)
-      System.out.printf ("Pending attribute at %4d : %s%n", currentPosition, attribute);
+    //    if (false)
+    //      System.out.printf ("Pending attribute at %4d : %s%n", currentPosition, attribute);
   }
 
   // called from InsertCursorOrder.process()
@@ -103,72 +106,72 @@ public class PenType1 implements Pen
 
   // called from ForegroundColor.process()
   // called from StartFieldAttribute.process()
-  @Override
-  public void setForeground (Color color)
-  {
-    if (currentPosition == startFieldPosition)
-      currentContext = contextManager.setForeground (currentContext, color);
-    else
-      overrideContext = contextManager.setForeground (currentContext, color);
-    storeCurrentContext ();
-  }
+  //  @Override
+  //  public void setForeground (Color color)
+  //  {
+  //    if (currentPosition == startFieldPosition)
+  //      currentContext = contextManager.setForeground (currentContext, color);
+  //    else
+  //      overrideContext = contextManager.setForeground (currentContext, color);
+  //    storeCurrentContext ();
+  //  }
 
   // called from BackgroundColor.process()
   // called from StartFieldAttribute.process()
-  @Override
-  public void setBackground (Color color)
-  {
-    if (currentPosition == startFieldPosition)
-      currentContext = contextManager.setBackground (currentContext, color);
-    else
-      overrideContext = contextManager.setBackground (currentContext, color);
-    storeCurrentContext ();
-  }
+  //  @Override
+  //  public void setBackground (Color color)
+  //  {
+  //    if (currentPosition == startFieldPosition)
+  //      currentContext = contextManager.setBackground (currentContext, color);
+  //    else
+  //      overrideContext = contextManager.setBackground (currentContext, color);
+  //    storeCurrentContext ();
+  //  }
 
   // called from ExtendedHighlight.process()
   // called from StartFieldAttribute.process()
-  @Override
-  public void setHighlight (byte value)
-  {
-    if (currentPosition == startFieldPosition)
-      currentContext = contextManager.setHighlight (currentContext, value);
-    else
-      overrideContext = contextManager.setHighlight (currentContext, value);
-    storeCurrentContext ();
-  }
+  //  @Override
+  //  public void setHighlight (byte value)
+  //  {
+  //    if (currentPosition == startFieldPosition)
+  //      currentContext = contextManager.setHighlight (currentContext, value);
+  //    else
+  //      overrideContext = contextManager.setHighlight (currentContext, value);
+  //    storeCurrentContext ();
+  //  }
 
   // called from StartFieldAttribute.process()
-  @Override
-  public void setHighIntensity (boolean value)
-  {
-    if (currentPosition == startFieldPosition)
-      currentContext = contextManager.setHighIntensity (currentContext, value);
-    else
-      overrideContext = contextManager.setHighIntensity (currentContext, value);
-    storeCurrentContext ();
-  }
+  //  @Override
+  //  public void setHighIntensity (boolean value)
+  //  {
+  //    if (currentPosition == startFieldPosition)
+  //      currentContext = contextManager.setHighIntensity (currentContext, value);
+  //    else
+  //      overrideContext = contextManager.setHighIntensity (currentContext, value);
+  //    storeCurrentContext ();
+  //  }
 
   // called from ResetAttribute.process()
   // called from startField()
-  @Override
-  public void reset (byte value)
-  {
-    overrideContext = null;
-  }
+  //  @Override
+  //  public void reset (byte value)
+  //  {
+  //    overrideContext = null;
+  //  }
 
-  private void storeCurrentContext ()
-  {
-    ScreenPosition screenPosition = screenPositions[currentPosition];
-    storeContext (screenPosition);
-  }
+  //  private void storeCurrentContext ()
+  //  {
+  //    ScreenPosition screenPosition = screenPositions[currentPosition];
+  //    storeContext (screenPosition);
+  //  }
 
-  private void storeContext (ScreenPosition screenPosition)
-  {
-    if (overrideContext != null)
-      screenPosition.setScreenContext (overrideContext);
-    else
-      screenPosition.setScreenContext (currentContext);
-  }
+  //  private void storeContext (ScreenPosition screenPosition)
+  //  {
+  //    if (overrideContext != null)
+  //      screenPosition.setScreenContext (overrideContext);
+  //    else
+  //      screenPosition.setScreenContext (currentContext);
+  //  }
 
   // called from GraphicsEscapeOrder.process()
   @Override
@@ -176,8 +179,9 @@ public class PenType1 implements Pen
   {
     ScreenPosition screenPosition = screenPositions[currentPosition];
     screenPosition.reset ();
-    storeContext (screenPosition);
+    //    storeContext (screenPosition);
     screenPosition.setGraphicsChar (b);
+    //    screenPosition.setStartField (null);
     moveRight ();
   }
 
@@ -189,8 +193,9 @@ public class PenType1 implements Pen
   {
     ScreenPosition screenPosition = screenPositions[currentPosition];
     screenPosition.reset ();
-    storeContext (screenPosition);
+    //    storeContext (screenPosition);
     screenPosition.setChar (b);
+    //    screenPosition.setStartField (null);
     moveRight ();
   }
 
@@ -219,7 +224,8 @@ public class PenType1 implements Pen
   @Override
   public void eraseEOF ()
   {
-    if (totalFields == 0)
+    //    if (totalFields == 0)
+    if (!formattedScreen)
     {
       System.out.println ("No fields to erase");
       return;
@@ -231,7 +237,7 @@ public class PenType1 implements Pen
       if (screenPosition.isStartField ())
         break;
       screenPosition.setChar ((byte) 0);
-      screenPosition.clearAttributes ();
+      //      screenPosition.clearAttributes ();
       moveRight ();
     }
   }
@@ -281,13 +287,14 @@ public class PenType1 implements Pen
     }
     currentPosition = validate (position);
 
-    if (totalFields > 0)
+    //    if (totalFields > 0)
+    if (formattedScreen)
     {
       int pos = findPreviousStartPosition (currentPosition);
       if (pos >= 0)
       {
-        startFieldPosition = pos;
-        currentContext = screenPositions[pos].getScreenContext ();
+        //        startFieldPosition = pos;
+        //        currentContext = screenPositions[pos].getScreenContext ();
       }
     }
   }
@@ -307,7 +314,7 @@ public class PenType1 implements Pen
         break;
     }
 
-    System.out.printf ("No previous start field found: %d%n", totalFields);
+    System.out.printf ("No previous start field found: %d%n", position);
     return -1;
   }
 
@@ -326,7 +333,7 @@ public class PenType1 implements Pen
         break;
     }
 
-    System.out.printf ("No next start field found: %d%n", totalFields);
+    System.out.printf ("No next start field found: %d%n", position);
     return -1;
   }
 

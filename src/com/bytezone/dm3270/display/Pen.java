@@ -3,11 +3,9 @@ package com.bytezone.dm3270.display;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
-import javafx.scene.paint.Color;
-
 public interface Pen extends Iterable<ScreenPosition>
 {
-  ScreenContext getDefaultScreenContext ();
+  //  ScreenContext getDefaultScreenContext ();
 
   void clearScreen ();
 
@@ -17,15 +15,15 @@ public interface Pen extends Iterable<ScreenPosition>
 
   int getPosition ();
 
-  void setForeground (Color color);
-
-  void setBackground (Color color);
-
-  void setHighlight (byte value);
-
-  void setHighIntensity (boolean value);
-
-  void reset (byte value);
+  //  void setForeground (Color color);
+  //
+  //  void setBackground (Color color);
+  //
+  //  void setHighlight (byte value);
+  //
+  //  void setHighIntensity (boolean value);
+  //
+  //  void reset (byte value);
 
   void writeGraphics (byte b);
 

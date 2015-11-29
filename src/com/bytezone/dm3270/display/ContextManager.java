@@ -3,19 +3,16 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.attributes.ColorAttribute;
-
 import javafx.scene.paint.Color;
 
 public class ContextManager
 {
-  private final List<ScreenContext> contextPool = new ArrayList<> ();
+  private static final List<ScreenContext> contextPool = new ArrayList<> ();
 
   public ContextManager ()
   {
-    ScreenContext base = new ScreenContext (ColorAttribute.colors[8],
-        ColorAttribute.colors[8], (byte) 0, true);
-    contextPool.add (base);
+    ScreenContext base = new ScreenContext (Color.GREEN, Color.YELLOW, (byte) 0, true);
+    contextPool.add (base);         // obviously garish and noticeable
   }
 
   public ScreenContext getDefaultScreenContect ()

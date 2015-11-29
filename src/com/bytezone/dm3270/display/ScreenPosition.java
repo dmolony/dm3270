@@ -33,7 +33,7 @@ public final class ScreenPosition
   private boolean isVisible = true;
 
   private ScreenContext screenContext;
-  private final ScreenContext baseContext;
+  //  private final ScreenContext baseContext;
 
   static
   {
@@ -45,10 +45,11 @@ public final class ScreenPosition
       charString[i] = (char) i + "";
   }
 
-  public ScreenPosition (int position, ScreenContext base)
+  //  public ScreenPosition (int position, ScreenContext base)
+  public ScreenPosition (int position)
   {
     this.position = position;
-    baseContext = base;
+    //    baseContext = base;
     reset ();
   }
 
@@ -59,6 +60,12 @@ public final class ScreenPosition
 
   void setStartField (StartFieldAttribute startFieldAttribute)
   {
+    if (startFieldAttribute == null)
+    {
+      isVisible = true;
+      if (this.startFieldAttribute != null)
+        attributes.clear ();
+    }
     this.startFieldAttribute = startFieldAttribute;
   }
 
@@ -85,10 +92,12 @@ public final class ScreenPosition
     isGraphics = false;
     startFieldAttribute = null;
     attributes.clear ();
-    screenContext = baseContext;
+    //    screenContext = baseContext;
   }
 
   // Password fields etc
+  // called from PenType1.startField()
+  // called from Field constructor
   void setVisible (boolean visible)
   {
     this.isVisible = visible;
@@ -352,10 +361,10 @@ public final class ScreenPosition
   {
     StringBuilder text = new StringBuilder ();
     if (isStartField ())
-      text.append ("  " + startFieldAttribute);
+      text.append (".." + startFieldAttribute);
     else
       for (Attribute attribute : attributes)
-        text.append ("  " + attribute);
+        text.append ("--" + attribute);
 
     text.append (", byte: " + getCharString ());
 

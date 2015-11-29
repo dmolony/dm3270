@@ -5,8 +5,6 @@ import java.util.Iterator;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
-import javafx.scene.paint.Color;
-
 public class PenType2 implements Pen
 {
 
@@ -16,11 +14,11 @@ public class PenType2 implements Pen
     return null;
   }
 
-  @Override
-  public ScreenContext getDefaultScreenContext ()
-  {
-    return null;
-  }
+  //  @Override
+  //  public ScreenContext getDefaultScreenContext ()
+  //  {
+  //    return null;
+  //  }
 
   @Override
   public void clearScreen ()
@@ -43,30 +41,30 @@ public class PenType2 implements Pen
     return 0;
   }
 
-  @Override
-  public void setForeground (Color color)
-  {
-  }
-
-  @Override
-  public void setBackground (Color color)
-  {
-  }
-
-  @Override
-  public void setHighlight (byte value)
-  {
-  }
-
-  @Override
-  public void setHighIntensity (boolean value)
-  {
-  }
-
-  @Override
-  public void reset (byte value)
-  {
-  }
+  //  @Override
+  //  public void setForeground (Color color)
+  //  {
+  //  }
+  //
+  //  @Override
+  //  public void setBackground (Color color)
+  //  {
+  //  }
+  //
+  //  @Override
+  //  public void setHighlight (byte value)
+  //  {
+  //  }
+  //
+  //  @Override
+  //  public void setHighIntensity (boolean value)
+  //  {
+  //  }
+  //
+  //  @Override
+  //  public void reset (byte value)
+  //  {
+  //  }
 
   @Override
   public void writeGraphics (byte b)

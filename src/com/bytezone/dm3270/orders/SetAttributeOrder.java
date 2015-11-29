@@ -32,7 +32,6 @@ public class SetAttributeOrder extends Order
   public void process (DisplayScreen screen)
   {
     Pen pen = screen.getPen ();
-    attribute.process (pen);
     pen.addAttribute (attribute);
   }
 

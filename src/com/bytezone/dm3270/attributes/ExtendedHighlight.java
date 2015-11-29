@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.attributes;
 
-import com.bytezone.dm3270.display.Pen;
+import com.bytezone.dm3270.display.ScreenContext;
 
 public class ExtendedHighlight extends Attribute
 {
@@ -12,10 +12,17 @@ public class ExtendedHighlight extends Attribute
     super (AttributeType.HIGHLIGHT, Attribute.XA_HIGHLIGHTING, value);
   }
 
+  //  @Override
+  //  public void process (Pen pen)
+  //  {
+  //    pen.setHighlight (attributeValue);
+  //  }
+
   @Override
-  public void process (Pen pen)
+  public ScreenContext process (ScreenContext defaultContext,
+      ScreenContext currentContext)
   {
-    pen.setHighlight (attributeValue);
+    return contextManager.setHighlight (currentContext, attributeValue);
   }
 
   @Override

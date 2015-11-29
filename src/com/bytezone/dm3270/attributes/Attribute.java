@@ -2,7 +2,8 @@ package com.bytezone.dm3270.attributes;
 
 import java.util.Optional;
 
-import com.bytezone.dm3270.display.Pen;
+import com.bytezone.dm3270.display.ContextManager;
+import com.bytezone.dm3270.display.ScreenContext;
 
 public abstract class Attribute
 {
@@ -15,6 +16,8 @@ public abstract class Attribute
   public final static byte XA_START_FIELD = (byte) 0xC0;
   public final static byte XA_VALIDATION = (byte) 0xC1;
   public final static byte XA_OUTLINING = (byte) 0xC2;
+
+  protected static final ContextManager contextManager = new ContextManager ();
 
   protected final AttributeType attributeType;
   protected final byte attributeCode;
@@ -49,7 +52,10 @@ public abstract class Attribute
     return offset;
   }
 
-  public abstract void process (Pen pen);
+  //  public abstract void process (Pen pen);
+
+  public abstract ScreenContext process (ScreenContext defaultContext,
+      ScreenContext currentContext);
 
   public byte getAttributeValue ()
   {

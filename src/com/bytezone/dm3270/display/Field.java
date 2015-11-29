@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.PluginField;
 
@@ -30,28 +31,66 @@ public class Field implements Iterable<ScreenPosition>
     startPosition = firstScreenPosition.position;
     endPosition = lastScreenPosition.position;
 
+    setContexts ();
+
     if (startFieldAttribute.isHidden ())
       positions.forEach (sp -> sp.setVisible (false));
-    else if (!startFieldAttribute.isExtended ())
+    //    else if (!startFieldAttribute.isExtended ())
+    //    {
+    //      // remove any extended attributes (see spy115.txt)
+    //      ScreenContext defaultContext = firstScreenPosition.getScreenContext ();
+    //      for (ScreenPosition screenPosition : positions)
+    //      {
+    //        screenPosition.clearAttributes ();
+    //        screenPosition.setScreenContext (defaultContext);
+    //      }
+    //    }
+  }
+
+  // test: spy060 - highlight full line at bottom
+  // test: spy115 - ?
+  private void setContexts ()
+  {
+    ScreenContext defaultContext = startFieldAttribute.process (null, null);
+
+    if (startFieldAttribute.isExtended ())
     {
-      // remove any extended attributes (see spy115.txt)
-      ScreenContext defaultContext = firstScreenPosition.getScreenContext ();
-      for (ScreenPosition screenPosition : positions)
+      boolean first = true;
+      ScreenContext currentContext = defaultContext;
+
+      for (ScreenPosition screenPosition : screenPositions)
       {
-        screenPosition.clearAttributes ();
-        screenPosition.setScreenContext (defaultContext);
+        if (first)
+        {
+          first = false;
+          for (Attribute attribute : screenPosition.getAttributes ())
+            defaultContext = attribute.process (defaultContext, defaultContext);
+
+          currentContext = defaultContext;
+        }
+        else
+        {
+          for (Attribute attribute : screenPosition.getAttributes ())
+            currentContext = attribute.process (defaultContext, currentContext);
+        }
+        screenPosition.setScreenContext (currentContext);
       }
+    }
+    else
+    {
+      for (ScreenPosition screenPosition : screenPositions)
+        screenPosition.setScreenContext (defaultContext);
     }
   }
 
   // called from FieldManager.buildFields()
-  void setScreenContexts (ScreenContext base)
-  {
-    ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
-    for (ScreenPosition screenPosition : screenPositions)
-      if (screenPosition.getScreenContext () == base)
-        screenPosition.setScreenContext (defaultContext);
-  }
+  //  void setScreenContexts (ScreenContext base)
+  //  {
+  //    ScreenContext defaultContext = screenPositions.get (0).getScreenContext ();
+  //    for (ScreenPosition screenPosition : screenPositions)
+  //      if (screenPosition.getScreenContext () == base)
+  //        screenPosition.setScreenContext (defaultContext);
+  //  }
 
   // link two unprotected fields to each other
   void linkToNext (Field nextField)

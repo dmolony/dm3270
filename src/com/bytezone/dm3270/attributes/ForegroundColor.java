@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.attributes;
 
-import com.bytezone.dm3270.display.Pen;
+import com.bytezone.dm3270.display.ScreenContext;
 
 public class ForegroundColor extends ColorAttribute
 {
@@ -9,9 +9,16 @@ public class ForegroundColor extends ColorAttribute
     super (AttributeType.FOREGROUND_COLOR, Attribute.XA_FGCOLOR, value);
   }
 
+  //  @Override
+  //  public void process (Pen pen)
+  //  {
+  //    pen.setForeground (color);
+  //  }
+
   @Override
-  public void process (Pen pen)
+  public ScreenContext process (ScreenContext defaultContext,
+      ScreenContext currentContext)
   {
-    pen.setForeground (color);
+    return contextManager.setForeground (currentContext, color);
   }
 }

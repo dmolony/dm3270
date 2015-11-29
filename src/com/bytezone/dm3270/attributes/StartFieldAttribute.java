@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.attributes;
 
-import com.bytezone.dm3270.display.Pen;
+import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.BufferAddress;
 
 import javafx.scene.paint.Color;
@@ -129,19 +129,36 @@ public class StartFieldAttribute extends Attribute
    * on a terminal.)
    */
 
+  //  @Override
+  //  public void process (Pen pen)
+  //  {
+  //    Color color = isHighIntensity ? //
+  //        isProtected ? WHITE : RED : //
+  //        isProtected ? BLUE : GREEN;
+  //
+  //    pen.startField (this);
+  //
+  //    pen.setForeground (color);
+  //    pen.setBackground (Color.BLACK);
+  //    pen.setHighIntensity (isHighIntensity);
+  //    pen.setHighlight ((byte) 0);
+  //  }
+
   @Override
-  public void process (Pen pen)
+  public ScreenContext process (ScreenContext defaultContext,
+      ScreenContext currentContext)
   {
     Color color = isHighIntensity ? //
         isProtected ? WHITE : RED : //
         isProtected ? BLUE : GREEN;
 
-    pen.startField (this);
+    ScreenContext screenContext = contextManager.getDefaultScreenContect ();
+    screenContext = contextManager.setForeground (screenContext, color);
+    screenContext = contextManager.setBackground (screenContext, Color.BLACK);
+    screenContext = contextManager.setHighIntensity (screenContext, isHighIntensity);
+    screenContext = contextManager.setHighlight (screenContext, (byte) 0);
 
-    pen.setForeground (color);
-    pen.setBackground (Color.BLACK);
-    pen.setHighIntensity (isHighIntensity);
-    pen.setHighlight ((byte) 0);
+    return screenContext;
   }
 
   private String getColorName ()
