@@ -17,11 +17,13 @@ import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
 import com.bytezone.dm3270.plugins.PluginsStage;
+import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -32,6 +34,10 @@ public class Screen extends Canvas implements DisplayScreen
   private final static Toolkit defaultToolkit = Toolkit.getDefaultToolkit ();
   private final static boolean SHOW_CURSOR = true;
   private final static boolean HIDE_CURSOR = false;
+
+  private static final byte[] saveScreenReplyTypes =
+      { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
+        Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
 
   private final ScreenPacker screenPacker;
   private final Function function;
@@ -250,7 +256,8 @@ public class Screen extends Canvas implements DisplayScreen
     byte savedReplyMode = replyMode;
     byte[] savedReplyTypes = replyTypes;
 
-    screenHistory.requestScreen (this);     // calls setReplyMode() and readBuffer()
+    setReplyMode (SetReplyModeSF.RM_CHARACTER, saveScreenReplyTypes);
+    screenHistory.requestScreen (readBuffer ());
 
     setReplyMode (savedReplyMode, savedReplyTypes);
   }
@@ -362,6 +369,7 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   // called from SetReplyModeSF
+  // called from this.checkRecording()
   public void setReplyMode (byte replyMode, byte[] replyTypes)
   {
     this.replyMode = replyMode;

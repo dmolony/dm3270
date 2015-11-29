@@ -3,16 +3,11 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
 public class ScreenHistory
 {
   private static final int MAX_SCREENS = 20;
-  private static final byte[] replyTypes =
-      { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
-        Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
 
   private final List<UserScreen> screens = new ArrayList<> (MAX_SCREENS);
 
@@ -20,12 +15,9 @@ public class ScreenHistory
   private boolean paused;
   private int currentScreen = -1;       // never been set
 
-  void requestScreen (Screen screen)
+  // called from Screen.checkRecording()
+  void requestScreen (AIDCommand command)
   {
-    screen.setReplyMode (SetReplyModeSF.RM_CHARACTER, replyTypes);
-
-    AIDCommand command = screen.readBuffer ();
-
     // check for duplicates
     if (screens.size () > 0)
     {
@@ -35,7 +27,9 @@ public class ScreenHistory
     }
 
     // check that the screen contains displayable data
-    if (command.countTextOrders () <= 3)
+    if (command.countTextOrders () > 3)
+      add (command);
+    else
     {
       boolean display = false;
       for (int i = 0; i < command.countTextOrders (); i++)
@@ -51,11 +45,9 @@ public class ScreenHistory
       if (display)
         add (command);
     }
-    else
-      add (command);
   }
 
-  void add (AIDCommand command)
+  private void add (AIDCommand command)
   {
     if (screens.size () == MAX_SCREENS)
     {
