@@ -34,17 +34,12 @@ public class UserScreen extends Canvas implements DisplayScreen
     return this.command.matches (command);
   }
 
-  void characterSizeChanged (FontData characterSize)
-  {
-    setWidth (characterSize.getWidth () * columns + xOffset * 2);
-    setHeight (characterSize.getHeight () * rows + yOffset * 2);
-
-    gc.setFont (characterSize.getFont ());
-  }
-
   private void createScreen (FontData fontData)
   {
-    characterSizeChanged (fontData);
+    setWidth (fontData.getWidth () * columns + xOffset * 2);
+    setHeight (fontData.getHeight () * rows + yOffset * 2);
+
+    gc.setFont (fontData.getFont ());
 
     screenPositions = new ScreenPosition[screenSize];
     pen = new PenType1 (screenPositions);

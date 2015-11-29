@@ -118,6 +118,11 @@ public class Field implements Iterable<ScreenPosition>
     return screen.validate (startPosition + 1);
   }
 
+  // called from Cursor.typeChar()
+  // called from Cursor.backspace()
+  // called from Cursor.delete()
+  // called from Cursor.eraseEOL()
+  // called from ConsolePane.fieldChanged()
   public int getCursorOffset ()
   {
     int cursorLocation = screen.getScreenCursor ().getLocation ();
