@@ -13,7 +13,7 @@ import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.FontData;
 import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenHistory;
+import com.bytezone.dm3270.display.HistoryManager;
 import com.bytezone.dm3270.display.HistoryScreen;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
@@ -65,7 +65,7 @@ public class ConsolePane extends BorderPane
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
 
-  private ScreenHistory screenHistory;    // null unless showing screen history 
+  private HistoryManager screenHistory;    // null unless showing screen history 
 
   private HBox historyBox;
   private final Label historyLabel = new Label ();
@@ -228,7 +228,7 @@ public class ConsolePane extends BorderPane
   {
     if (screenHistory == null)                  // in normal screen mode
     {
-      Optional<ScreenHistory> opt = screen.pause ();
+      Optional<HistoryManager> opt = screen.pause ();
       if (opt.isPresent ())
       {
         screenHistory = opt.get ();

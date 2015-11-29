@@ -72,7 +72,7 @@ public class Screen extends Canvas implements DisplayScreen
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final ScreenHistory screenHistory = new ScreenHistory ();
+  private final HistoryManager screenHistory = new HistoryManager ();
 
   public enum BuildInstruction
   {
@@ -550,7 +550,7 @@ public class Screen extends Canvas implements DisplayScreen
   // Screen history
   // ---------------------------------------------------------------------------------//
 
-  public Optional<ScreenHistory> pause ()             // triggered by cmd-s
+  public Optional<HistoryManager> pause ()             // triggered by cmd-s
   {
     if (screenHistory.size () == 0)
       return Optional.empty ();

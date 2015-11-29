@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bytezone.dm3270.commands.AIDCommand;
 
-public class ScreenHistory
+public class HistoryManager
 {
   private static final int MAX_SCREENS = 20;
 
