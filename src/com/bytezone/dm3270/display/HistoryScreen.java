@@ -7,7 +7,7 @@ import com.bytezone.dm3270.orders.Order;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
-public class UserScreen extends Canvas implements DisplayScreen
+public class HistoryScreen extends Canvas implements DisplayScreen
 {
   private ScreenPosition[] screenPositions;
   private final int rows = 24;
@@ -23,7 +23,7 @@ public class UserScreen extends Canvas implements DisplayScreen
   //  private final FieldManager fieldManager = new FieldManager ();
 
   // created by ScreenHistory.add()
-  UserScreen (AIDCommand command)
+  HistoryScreen (AIDCommand command)
   {
     this.command = command;
     gc = getGraphicsContext2D ();

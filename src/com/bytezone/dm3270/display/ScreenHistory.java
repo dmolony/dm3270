@@ -9,7 +9,7 @@ public class ScreenHistory
 {
   private static final int MAX_SCREENS = 20;
 
-  private final List<UserScreen> screens = new ArrayList<> (MAX_SCREENS);
+  private final List<HistoryScreen> screens = new ArrayList<> (MAX_SCREENS);
 
   private boolean keyboardLocked;       // save previous setting
   private boolean paused;
@@ -21,7 +21,7 @@ public class ScreenHistory
     // check for duplicates
     if (screens.size () > 0)
     {
-      UserScreen previousScreen = screens.get (screens.size () - 1);
+      HistoryScreen previousScreen = screens.get (screens.size () - 1);
       if (previousScreen.matches (command))
         return;
     }
@@ -55,7 +55,7 @@ public class ScreenHistory
       if (currentScreen > 0)
         --currentScreen;
     }
-    screens.add (new UserScreen (command));
+    screens.add (new HistoryScreen (command));
   }
 
   public int size ()
@@ -101,18 +101,18 @@ public class ScreenHistory
     return currentScreen > 0;
   }
 
-  public UserScreen next ()
+  public HistoryScreen next ()
   {
     return hasNext () ? screens.get (++currentScreen) : null;
   }
 
-  public UserScreen current ()
+  public HistoryScreen current ()
   {
     assert paused;
     return screens.get (currentScreen);
   }
 
-  public UserScreen previous ()
+  public HistoryScreen previous ()
   {
     if (hasPrevious ())
       return screens.get (--currentScreen);

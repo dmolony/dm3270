@@ -14,7 +14,7 @@ import com.bytezone.dm3270.display.FontData;
 import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenHistory;
-import com.bytezone.dm3270.display.UserScreen;
+import com.bytezone.dm3270.display.HistoryScreen;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -258,7 +258,7 @@ public class ConsolePane extends BorderPane
       changeScreen (screenHistory.next ());
   }
 
-  private void changeScreen (UserScreen userScreen)
+  private void changeScreen (HistoryScreen userScreen)
   {
     userScreen.drawScreen (screen.getFontManager ().getFontData ());
     setCenter (userScreen);
