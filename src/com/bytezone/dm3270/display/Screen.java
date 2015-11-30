@@ -521,10 +521,6 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void resetModified ()
   {
-    //    for (Field field : fieldManager.getUnprotectedFields ())
-    //      if (field.isModified ())
-    //        field.setModified (false);
-
     fieldManager.getUnprotectedFields ().forEach (f -> f.setModified (false));
   }
 

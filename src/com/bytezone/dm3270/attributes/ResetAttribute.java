@@ -13,6 +13,7 @@ public class ResetAttribute extends Attribute
   public ScreenContext process (ScreenContext defaultContext,
       ScreenContext currentContext)
   {
-    return contextManager.setHighlight (currentContext, defaultContext.highlight);
+    //    return contextManager.setHighlight (currentContext, defaultContext.highlight);
+    return defaultContext;
   }
 }

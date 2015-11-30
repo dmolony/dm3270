@@ -24,8 +24,6 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   private Pen pen;
   private final GraphicsContext gc;
 
-  private final List<Field> fields = new ArrayList<> ();
-
   // created by HistoryManager.add()
   HistoryScreen (AIDCommand command)
   {
@@ -80,12 +78,11 @@ public class HistoryScreen extends Canvas implements DisplayScreen
         start = ptr;                        // beginning of the current field
       }
 
-      // add ScreenPosition to the current field
       if (start >= 0)                       // if we are in a field...
         positions.add (screenPosition);     // collect next field's positions
 
       // increment ptr and wrap around
-      if (++ptr == screenPositions.length)       // faster than validate()
+      if (++ptr == screenPositions.length)  // faster than validate()
       {
         ptr = 0;
         if (first == -1)
