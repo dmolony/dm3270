@@ -73,9 +73,9 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     for (Order order : command)
       order.process (this);
 
-    List<List<ScreenPosition>> protoFields = Screen.divide (screenPositions);
+    List<List<ScreenPosition>> protoFields = FieldManager.divide (screenPositions);
     for (List<ScreenPosition> protoField : protoFields)
-      Screen.setContexts (protoField);
+      FieldManager.setContexts (protoField);
   }
 
   @Override
