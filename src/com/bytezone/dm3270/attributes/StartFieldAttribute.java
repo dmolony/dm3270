@@ -138,7 +138,7 @@ public class StartFieldAttribute extends Attribute
         isProtected ? WHITE : RED : //
         isProtected ? BLUE : GREEN;
 
-    ScreenContext screenContext = contextManager.getDefaultScreenContect ();
+    ScreenContext screenContext = contextManager.getDefaultScreenContext ();
     screenContext = contextManager.setForeground (screenContext, color);
     screenContext = contextManager.setBackground (screenContext, Color.BLACK);
     screenContext = contextManager.setHighIntensity (screenContext, isHighIntensity);

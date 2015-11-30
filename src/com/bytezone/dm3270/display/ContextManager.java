@@ -15,7 +15,7 @@ public class ContextManager
     contextPool.add (base);         // obviously garish and noticeable
   }
 
-  public ScreenContext getDefaultScreenContect ()
+  public ScreenContext getDefaultScreenContext ()
   {
     return contextPool.get (0);
   }
