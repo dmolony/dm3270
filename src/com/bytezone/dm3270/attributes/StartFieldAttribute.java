@@ -129,25 +129,11 @@ public class StartFieldAttribute extends Attribute
    * on a terminal.)
    */
 
-  //  @Override
-  //  public void process (Pen pen)
-  //  {
-  //    Color color = isHighIntensity ? //
-  //        isProtected ? WHITE : RED : //
-  //        isProtected ? BLUE : GREEN;
-  //
-  //    pen.startField (this);
-  //
-  //    pen.setForeground (color);
-  //    pen.setBackground (Color.BLACK);
-  //    pen.setHighIntensity (isHighIntensity);
-  //    pen.setHighlight ((byte) 0);
-  //  }
-
   @Override
-  public ScreenContext process (ScreenContext defaultContext,
-      ScreenContext currentContext)
+  public ScreenContext process (ScreenContext unused1, ScreenContext unused2)
   {
+    assert unused1 == null && unused2 == null;
+
     Color color = isHighIntensity ? //
         isProtected ? WHITE : RED : //
         isProtected ? BLUE : GREEN;

@@ -12,12 +12,6 @@ public class ExtendedHighlight extends Attribute
     super (AttributeType.HIGHLIGHT, Attribute.XA_HIGHLIGHTING, value);
   }
 
-  //  @Override
-  //  public void process (Pen pen)
-  //  {
-  //    pen.setHighlight (attributeValue);
-  //  }
-
   @Override
   public ScreenContext process (ScreenContext defaultContext,
       ScreenContext currentContext)

@@ -1,6 +1,11 @@
 package com.bytezone.dm3270.display;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
+import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.Order;
 
@@ -20,7 +25,8 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   private final AIDCommand command;
   private Pen pen;
   private final GraphicsContext gc;
-  //  private final FieldManager fieldManager = new FieldManager ();
+
+  private final List<Field> fields = new ArrayList<> ();
 
   // created by ScreenHistory.add()
   HistoryScreen (AIDCommand command)
@@ -48,7 +54,50 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     for (Order order : command)
       order.process (this);
 
-    // build the screen fields...
+    buildFields ();
+    //    fields.forEach (System.out::println);
+  }
+
+  private void buildFields ()
+  {
+    List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
+
+    int start = -1;
+    int first = -1;
+    int ptr = 0;
+
+    while (ptr != first)            // not wrapped around to the first field yet
+    {
+      ScreenPosition screenPosition = screenPositions[ptr];
+
+      if (screenPosition.isStartField ())   // check for the start of a new field
+      {
+        if (start >= 0)                     // if there is a field to add
+        {
+          fields.add (new Field (positions));
+          positions.clear ();
+        }
+        else
+          first = ptr;                      // this is the first field on the screen
+
+        start = ptr;                        // beginning of the current field
+      }
+
+      // add ScreenPosition to the current field
+      if (start >= 0)                       // if we are in a field...
+        positions.add (screenPosition);     // collect next field's positions
+
+      // increment ptr and wrap around
+      if (++ptr == screenPositions.length)       // faster than validate()
+      {
+        ptr = 0;
+        if (first == -1)
+          break;                            // wrapped around and still no fields
+      }
+    }
+
+    if (start >= 0 && positions.size () > 0)
+      fields.add (new Field (positions));
   }
 
   // called by ConsolePane.changeScreen()
@@ -96,14 +145,9 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   @Override
   public void clearScreen ()
   {
-    eraseScreen ();
-    pen.clearScreen ();
-  }
-
-  private void eraseScreen ()
-  {
     gc.setFill (ColorAttribute.colors[8]);                // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
+    pen.clearScreen ();
   }
 
   @Override
@@ -122,5 +166,64 @@ public class HistoryScreen extends Canvas implements DisplayScreen
       text.append ("\n");
     }
     return text.toString ();
+  }
+
+  class Field
+  {
+    private final StartFieldAttribute startFieldAttribute;
+    private final List<ScreenPosition> positions;
+
+    public Field (List<ScreenPosition> positions)
+    {
+      startFieldAttribute = positions.get (0).getStartFieldAttribute ();
+      this.positions = new ArrayList<> (positions);
+      setContexts ();
+    }
+
+    private void setContexts ()
+    {
+      ScreenContext defaultContext = startFieldAttribute.process (null, null);
+
+      if (startFieldAttribute.isExtended ())
+      {
+        boolean first = true;
+        ScreenContext currentContext = defaultContext;
+
+        for (ScreenPosition screenPosition : positions)
+        {
+          if (first)
+          {
+            first = false;
+            for (Attribute attribute : screenPosition.getAttributes ())
+              defaultContext = attribute.process (defaultContext, defaultContext);
+
+            currentContext = defaultContext;
+          }
+          else
+          {
+            for (Attribute attribute : screenPosition.getAttributes ())
+              currentContext = attribute.process (defaultContext, currentContext);
+          }
+          screenPosition.setScreenContext (currentContext);
+        }
+      }
+      else
+      {
+        for (ScreenPosition screenPosition : positions)
+          screenPosition.setScreenContext (defaultContext);
+      }
+    }
+
+    @Override
+    public String toString ()
+    {
+      StringBuilder text = new StringBuilder ();
+
+      int start = positions.get (0).position;
+      int end = positions.get (positions.size () - 1).position;
+      text.append (String.format ("%4d  %4d  %4d", start, end, end - start + 1));
+
+      return text.toString ();
+    }
   }
 }

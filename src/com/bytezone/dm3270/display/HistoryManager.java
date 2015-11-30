@@ -16,7 +16,7 @@ public class HistoryManager
   private int currentScreen = -1;       // never been set
 
   // called from Screen.checkRecording()
-  void requestScreen (AIDCommand command)
+  void saveScreen (AIDCommand command)
   {
     // check for duplicates
     if (screens.size () > 0)

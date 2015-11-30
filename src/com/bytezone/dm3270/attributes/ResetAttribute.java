@@ -9,12 +9,6 @@ public class ResetAttribute extends Attribute
     super (AttributeType.RESET, XA_RESET, value);
   }
 
-  //  @Override
-  //  public void process (Pen pen)
-  //  {
-  //    pen.reset (attributeValue);
-  //  }
-
   @Override
   public ScreenContext process (ScreenContext defaultContext,
       ScreenContext currentContext)

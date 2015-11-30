@@ -72,7 +72,7 @@ public class Screen extends Canvas implements DisplayScreen
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final HistoryManager screenHistory = new HistoryManager ();
+  private final HistoryManager historyManager = new HistoryManager ();
 
   public enum BuildInstruction
   {
@@ -257,7 +257,7 @@ public class Screen extends Canvas implements DisplayScreen
     byte[] savedReplyTypes = replyTypes;
 
     setReplyMode (SetReplyModeSF.RM_CHARACTER, saveScreenReplyTypes);
-    screenHistory.requestScreen (readBuffer ());
+    historyManager.saveScreen (readBuffer ());
 
     setReplyMode (savedReplyMode, savedReplyTypes);
   }
@@ -388,6 +388,17 @@ public class Screen extends Canvas implements DisplayScreen
     {
       e.printStackTrace ();
     }
+  }
+
+  public String getScreenText ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append (pen.getScreenText (80));
+    text.append ("\n");
+    text.append (fieldManager.getTotalsText ());
+
+    return text.toString ();
   }
 
   // ---------------------------------------------------------------------------------//
@@ -552,28 +563,17 @@ public class Screen extends Canvas implements DisplayScreen
 
   public Optional<HistoryManager> pause ()             // triggered by cmd-s
   {
-    if (screenHistory.size () == 0)
+    if (historyManager.size () == 0)
       return Optional.empty ();
 
-    screenHistory.pause (keyboardLocked);
+    historyManager.pause (keyboardLocked);
     keyboardLocked = true;
 
-    return Optional.of (screenHistory);
+    return Optional.of (historyManager);
   }
 
   public void resume ()                     // also triggered by cmd-s
   {
-    keyboardLocked = screenHistory.resume ();
-  }
-
-  public String getScreenText ()
-  {
-    StringBuilder text = new StringBuilder ();
-
-    text.append (pen.getScreenText (80));
-    text.append ("\n");
-    text.append (fieldManager.getTotalsText ());
-
-    return text.toString ();
+    keyboardLocked = historyManager.resume ();
   }
 }
