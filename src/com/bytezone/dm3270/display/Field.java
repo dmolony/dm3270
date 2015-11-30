@@ -11,6 +11,7 @@ import com.bytezone.dm3270.plugins.PluginField;
 public class Field implements Iterable<ScreenPosition>
 {
   private final Screen screen;
+
   private final int startPosition;        // position of StartFieldAttribute
   private final int endPosition;          // last data position of this field
   private Field next, previous;           // unprotected fields
@@ -21,6 +22,7 @@ public class Field implements Iterable<ScreenPosition>
   public Field (Screen screen, List<ScreenPosition> positions)
   {
     this.screen = screen;
+
     ScreenPosition firstScreenPosition = positions.get (0);
     ScreenPosition lastScreenPosition = positions.get (positions.size () - 1);
 
@@ -71,6 +73,16 @@ public class Field implements Iterable<ScreenPosition>
     return screenPositions.size () - 1;
   }
 
+  // called from Cursor.tab()
+  // called from Cursor.home()
+  // called from Cursor.typeChar()
+  // called from FieldManager.getFieldsInRange()
+  // called from FieldManager.textMatches()
+  // called from FieldManager.textMatchesTrim()
+  // called from FieldManager.getMenus()
+  // called from Screen.eraseAllUnprotected()
+  // called from ScreenDetails.*()
+  // called from ScreenPacker.packField()
   public int getFirstLocation ()
   {
     return screen.validate (startPosition + 1);
