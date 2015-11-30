@@ -68,7 +68,6 @@ public class FieldManager
     Field previousUnprotectedField = null;
 
     for (Field field : fields)
-    {
       if (field.isUnprotected ())
       {
         unprotectedFields.add (field);
@@ -76,7 +75,6 @@ public class FieldManager
           previousUnprotectedField.linkToNext (field);
         previousUnprotectedField = field;
       }
-    }
 
     if (unprotectedFields.size () > 0)
     {
@@ -337,8 +335,7 @@ public class FieldManager
     if (startFieldAttribute.isExtended ())
       setExtendedContext (defaultContext, positions);
     else
-      for (ScreenPosition screenPosition : positions)
-        screenPosition.setScreenContext (defaultContext);
+      positions.forEach (sp -> sp.setScreenContext (defaultContext));
 
     if (startFieldAttribute.isHidden ())
       positions.forEach (sp -> sp.setVisible (false));
