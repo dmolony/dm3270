@@ -157,6 +157,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       }
     }
 
+    // after the server assigns our device type, request these three functions
     if (type == SubcommandType.DEVICE_TYPE && subType == SubType.IS)
     {
       byte[] reply =
@@ -165,14 +166,21 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
     }
 
+    // the server disagrees with our request and is making a counter-request
     if (type == SubcommandType.FUNCTIONS && subType == SubType.REQUEST)
     {
+      // should probably reply to any REQUEST that doesn't match our REQUEST
       if (functions.size () == 0)
       {
         byte[] reply = { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_FUNCTIONS,
                          EXT_IS, TelnetCommand.IAC, TelnetCommand.SE };
         setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
       }
+    }
+
+    // presumably the server agrees to our request
+    if (type == SubcommandType.FUNCTIONS && subType == SubType.IS)
+    {
     }
   }
 
