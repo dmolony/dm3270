@@ -572,6 +572,9 @@ public class Screen extends Canvas implements DisplayScreen
     else
       for (ScreenPosition screenPosition : positions)
         screenPosition.setScreenContext (defaultContext);
+
+    if (startFieldAttribute.isHidden ())
+      positions.forEach (sp -> sp.setVisible (false));
   }
 
   private static void setExtendedContext (ScreenContext defaultContext,

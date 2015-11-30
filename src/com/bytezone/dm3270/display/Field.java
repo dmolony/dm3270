@@ -31,9 +31,6 @@ public class Field implements Iterable<ScreenPosition>
     endPosition = lastScreenPosition.position;
 
     Screen.setContexts (screenPositions);
-
-    if (startFieldAttribute.isHidden ())
-      positions.forEach (sp -> sp.setVisible (false));
   }
 
   // link two unprotected fields to each other
