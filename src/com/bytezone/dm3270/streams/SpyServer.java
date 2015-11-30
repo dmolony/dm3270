@@ -41,7 +41,7 @@ public class SpyServer implements Runnable
     this.session = session;
   }
 
-  public void prevent3270E (boolean value)
+  private void prevent3270E (boolean value)
   {
     prevent3270E = value;
   }
@@ -74,6 +74,7 @@ public class SpyServer implements Runnable
       serverTelnetSocket.link (clientTelnetSocket);
 
       // stop the session from using tn3270E mode
+      System.out.printf ("Prevent 3270E: %s%n", prevent3270E);
       serverTelnetSocket.prevent3270E (prevent3270E);
 
       // start up the two listeners, each in its own thread 

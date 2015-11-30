@@ -72,7 +72,8 @@ public class TelnetSocket implements Runnable
     partner.partner = this;
   }
 
-  public void prevent3270E (boolean value)
+  // called from SpyServer.run()
+  void prevent3270E (boolean value)
   {
     if (source != Source.SERVER)
       throw new IllegalStateException ("Only a SERVER listener can do that");
