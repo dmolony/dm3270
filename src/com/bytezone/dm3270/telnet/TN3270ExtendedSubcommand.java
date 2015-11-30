@@ -164,6 +164,16 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
             0x00, 0x02, 0x04, TelnetCommand.IAC, TelnetCommand.SE };
       setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
     }
+
+    if (type == SubcommandType.FUNCTIONS && subType == SubType.REQUEST)
+    {
+      if (functions.size () == 0)
+      {
+        byte[] reply = { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_FUNCTIONS,
+                         EXT_IS, TelnetCommand.IAC, TelnetCommand.SE };
+        setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
+      }
+    }
   }
 
   public boolean doesFunction (Function function)
