@@ -12,9 +12,9 @@ import javafx.scene.canvas.GraphicsContext;
 public class HistoryScreen extends Canvas implements DisplayScreen
 {
   private ScreenPosition[] screenPositions;
-  private final int rows = 24;
-  private final int columns = 80;
-  private final int screenSize = rows * columns;
+  private final int rows;
+  private final int columns;
+  private final int screenSize;
 
   private final int xOffset = 4;      // padding left and right
   private final int yOffset = 4;      // padding top and bottom
@@ -24,9 +24,13 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   private final GraphicsContext gc;
 
   // created by HistoryManager.add()
-  HistoryScreen (AIDCommand command)
+  HistoryScreen (int rows, int columns, AIDCommand command)
   {
     this.command = command;
+    this.rows = rows;
+    this.columns = columns;
+    screenSize = rows * columns;
+
     gc = getGraphicsContext2D ();
   }
 

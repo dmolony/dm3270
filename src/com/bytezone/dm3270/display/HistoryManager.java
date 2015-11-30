@@ -14,6 +14,14 @@ public class HistoryManager
   private boolean keyboardLocked;       // save previous setting
   private boolean paused;
   private int currentScreen = -1;       // never been set
+  private final int rows;
+  private final int columns;
+
+  public HistoryManager (int rows, int columns)
+  {
+    this.rows = rows;
+    this.columns = columns;
+  }
 
   // called from Screen.checkRecording()
   void saveScreen (AIDCommand command)
@@ -55,7 +63,7 @@ public class HistoryManager
       if (currentScreen > 0)
         --currentScreen;
     }
-    screens.add (new HistoryScreen (command));
+    screens.add (new HistoryScreen (rows, columns, command));
   }
 
   public int size ()

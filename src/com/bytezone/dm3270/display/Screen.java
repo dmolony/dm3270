@@ -72,7 +72,7 @@ public class Screen extends Canvas implements DisplayScreen
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final HistoryManager historyManager = new HistoryManager ();
+  private final HistoryManager historyManager;
 
   public enum BuildInstruction
   {
@@ -89,6 +89,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     gc = getGraphicsContext2D ();
 
+    historyManager = new HistoryManager (rows, columns);
     fontManager = new FontManager (this, prefs);
     fieldManager = new FieldManager (this);
     assistantStage = new AssistantStage (this, site);
