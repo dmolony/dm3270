@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.PluginField;
 
@@ -31,46 +30,10 @@ public class Field implements Iterable<ScreenPosition>
     startPosition = firstScreenPosition.position;
     endPosition = lastScreenPosition.position;
 
-    setContexts ();
+    Screen.setContexts (screenPositions);
 
     if (startFieldAttribute.isHidden ())
       positions.forEach (sp -> sp.setVisible (false));
-  }
-
-  // test: spy060 - highlight full line at bottom
-  // test: spy115 - ?
-  private void setContexts ()
-  {
-    ScreenContext defaultContext = startFieldAttribute.process (null, null);
-
-    if (startFieldAttribute.isExtended ())
-    {
-      boolean first = true;
-      ScreenContext currentContext = defaultContext;
-
-      for (ScreenPosition screenPosition : screenPositions)
-      {
-        if (first)
-        {
-          first = false;
-          for (Attribute attribute : screenPosition.getAttributes ())
-            defaultContext = attribute.process (defaultContext, defaultContext);
-
-          currentContext = defaultContext;
-        }
-        else
-        {
-          for (Attribute attribute : screenPosition.getAttributes ())
-            currentContext = attribute.process (defaultContext, currentContext);
-        }
-        screenPosition.setScreenContext (currentContext);
-      }
-    }
-    else
-    {
-      for (ScreenPosition screenPosition : screenPositions)
-        screenPosition.setScreenContext (defaultContext);
-    }
   }
 
   // link two unprotected fields to each other

@@ -19,6 +19,7 @@ import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
+import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
@@ -555,6 +556,42 @@ public class Screen extends Canvas implements DisplayScreen
   {
     if (keyboardChangeListeners.contains (listener))
       keyboardChangeListeners.remove (listener);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Process a field's ScreenPositions
+  // ---------------------------------------------------------------------------------//
+
+  static void setContexts (List<ScreenPosition> positions)
+  {
+    StartFieldAttribute startFieldAttribute = positions.get (0).getStartFieldAttribute ();
+    ScreenContext defaultContext = startFieldAttribute.process (null, null);
+
+    if (startFieldAttribute.isExtended ())
+      setExtendedContext (defaultContext, positions);
+    else
+      for (ScreenPosition screenPosition : positions)
+        screenPosition.setScreenContext (defaultContext);
+  }
+
+  private static void setExtendedContext (ScreenContext defaultContext,
+      List<ScreenPosition> positions)
+  {
+    boolean first = true;
+    ScreenContext currentContext = defaultContext;
+
+    for (ScreenPosition screenPosition : positions)
+    {
+      for (Attribute attribute : screenPosition.getAttributes ())
+        currentContext = attribute.process (defaultContext, currentContext);
+
+      if (first)
+      {
+        first = false;
+        defaultContext = currentContext;
+      }
+      screenPosition.setScreenContext (currentContext);
+    }
   }
 
   // ---------------------------------------------------------------------------------//

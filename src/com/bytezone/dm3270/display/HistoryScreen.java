@@ -3,9 +3,7 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
-import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.orders.Order;
 
@@ -28,7 +26,7 @@ public class HistoryScreen extends Canvas implements DisplayScreen
 
   private final List<Field> fields = new ArrayList<> ();
 
-  // created by ScreenHistory.add()
+  // created by HistoryManager.add()
   HistoryScreen (AIDCommand command)
   {
     this.command = command;
@@ -55,7 +53,6 @@ public class HistoryScreen extends Canvas implements DisplayScreen
       order.process (this);
 
     buildFields ();
-    //    fields.forEach (System.out::println);
   }
 
   private void buildFields ()
@@ -170,48 +167,12 @@ public class HistoryScreen extends Canvas implements DisplayScreen
 
   class Field
   {
-    private final StartFieldAttribute startFieldAttribute;
     private final List<ScreenPosition> positions;
 
     public Field (List<ScreenPosition> positions)
     {
-      startFieldAttribute = positions.get (0).getStartFieldAttribute ();
       this.positions = new ArrayList<> (positions);
-      setContexts ();
-    }
-
-    private void setContexts ()
-    {
-      ScreenContext defaultContext = startFieldAttribute.process (null, null);
-
-      if (startFieldAttribute.isExtended ())
-      {
-        boolean first = true;
-        ScreenContext currentContext = defaultContext;
-
-        for (ScreenPosition screenPosition : positions)
-        {
-          if (first)
-          {
-            first = false;
-            for (Attribute attribute : screenPosition.getAttributes ())
-              defaultContext = attribute.process (defaultContext, defaultContext);
-
-            currentContext = defaultContext;
-          }
-          else
-          {
-            for (Attribute attribute : screenPosition.getAttributes ())
-              currentContext = attribute.process (defaultContext, currentContext);
-          }
-          screenPosition.setScreenContext (currentContext);
-        }
-      }
-      else
-      {
-        for (ScreenPosition screenPosition : positions)
-          screenPosition.setScreenContext (defaultContext);
-      }
+      Screen.setContexts (positions);
     }
 
     @Override
