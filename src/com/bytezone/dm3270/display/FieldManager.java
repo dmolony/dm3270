@@ -56,8 +56,7 @@ public class FieldManager
     hiddenProtectedFields = 0;
     hiddenUnprotectedFields = 0;
 
-    List<List<ScreenPosition>> protoFields = divide (screenPositions);
-    for (List<ScreenPosition> protoField : protoFields)
+    for (List<ScreenPosition> protoField : divide (screenPositions))
     {
       addField (new Field (screen, protoField));
       setContexts (protoField);
