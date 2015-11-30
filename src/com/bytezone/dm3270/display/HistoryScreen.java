@@ -52,10 +52,10 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     for (Order order : command)
       order.process (this);
 
-    buildFields ();
+    setScreenContexts ();
   }
 
-  private void buildFields ()
+  private void setScreenContexts ()
   {
     List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
 
@@ -71,7 +71,7 @@ public class HistoryScreen extends Canvas implements DisplayScreen
       {
         if (start >= 0)                     // if there is a field to add
         {
-          fields.add (new Field (positions));
+          Screen.setContexts (positions);
           positions.clear ();
         }
         else
@@ -94,7 +94,7 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     }
 
     if (start >= 0 && positions.size () > 0)
-      fields.add (new Field (positions));
+      Screen.setContexts (positions);
   }
 
   // called by ConsolePane.changeScreen()
@@ -163,28 +163,5 @@ public class HistoryScreen extends Canvas implements DisplayScreen
       text.append ("\n");
     }
     return text.toString ();
-  }
-
-  class Field
-  {
-    private final List<ScreenPosition> positions;
-
-    public Field (List<ScreenPosition> positions)
-    {
-      this.positions = new ArrayList<> (positions);
-      Screen.setContexts (positions);
-    }
-
-    @Override
-    public String toString ()
-    {
-      StringBuilder text = new StringBuilder ();
-
-      int start = positions.get (0).position;
-      int end = positions.get (positions.size () - 1).position;
-      text.append (String.format ("%4d  %4d  %4d", start, end, end - start + 1));
-
-      return text.toString ();
-    }
   }
 }
