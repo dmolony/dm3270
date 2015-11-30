@@ -29,8 +29,6 @@ public class Field implements Iterable<ScreenPosition>
 
     startPosition = firstScreenPosition.position;
     endPosition = lastScreenPosition.position;
-
-    FieldManager.setContexts (screenPositions);
   }
 
   // link two unprotected fields to each other

@@ -38,6 +38,7 @@ public class FieldManager
     return screenDetails;
   }
 
+  // called by Screen.clearScreen()
   void reset ()
   {
     fields.clear ();
@@ -46,7 +47,7 @@ public class FieldManager
   }
 
   // this is called after the pen and screen positions have been modified
-  public void buildFields ()
+  void buildFields (ScreenPosition[] screenPositions)
   {
     reset ();
 
@@ -55,9 +56,12 @@ public class FieldManager
     hiddenProtectedFields = 0;
     hiddenUnprotectedFields = 0;
 
-    List<List<ScreenPosition>> protoFields = divide (screen.getScreenPositions ());
+    List<List<ScreenPosition>> protoFields = divide (screenPositions);
     for (List<ScreenPosition> protoField : protoFields)
+    {
       addField (new Field (screen, protoField));
+      setContexts (protoField);
+    }
 
     assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
 

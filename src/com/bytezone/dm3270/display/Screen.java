@@ -247,7 +247,7 @@ public class Screen extends Canvas implements DisplayScreen
 
   public void buildFields (WriteControlCharacter wcc)
   {
-    fieldManager.buildFields ();              // what about resetModified?
+    fieldManager.buildFields (screenPositions);        // what about resetModified?
   }
 
   // called from WriteCommand.process()
@@ -558,93 +558,6 @@ public class Screen extends Canvas implements DisplayScreen
     if (keyboardChangeListeners.contains (listener))
       keyboardChangeListeners.remove (listener);
   }
-
-  // ---------------------------------------------------------------------------------//
-  // Divide the ScreenPositions into fields
-  // ---------------------------------------------------------------------------------//
-
-  //  static List<List<ScreenPosition>> divide (ScreenPosition[] screenPositions)
-  //  {
-  //    List<List<ScreenPosition>> components = new ArrayList<> ();
-  //    List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
-  //
-  //    int start = -1;
-  //    int first = -1;
-  //    int ptr = 0;
-  //
-  //    while (ptr != first)                    // not wrapped around to the first field yet
-  //    {
-  //      ScreenPosition screenPosition = screenPositions[ptr];
-  //
-  //      if (screenPosition.isStartField ())   // check for the start of a new field
-  //      {
-  //        if (start >= 0)                     // if there is a field to add
-  //        {
-  //          components.add (new ArrayList<> (positions));
-  //          positions.clear ();
-  //        }
-  //        else
-  //          first = ptr;                      // this is the first field on the screen
-  //
-  //        start = ptr;                        // beginning of the current field
-  //      }
-  //
-  //      if (start >= 0)                       // if we are in a field...
-  //        positions.add (screenPosition);     // collect next field's positions
-  //
-  //      // increment ptr and wrap around
-  //      if (++ptr == screenPositions.length)  // faster than validate()
-  //      {
-  //        ptr = 0;
-  //        if (first == -1)
-  //          break;                            // wrapped around and still no fields
-  //      }
-  //    }
-  //
-  //    if (start >= 0 && positions.size () > 0)
-  //      components.add (new ArrayList<> (positions));
-  //
-  //    return components;
-  //  }
-
-  // ---------------------------------------------------------------------------------//
-  // Process a field's ScreenPositions
-  // ---------------------------------------------------------------------------------//
-
-  //  static void setContexts (List<ScreenPosition> positions)
-  //  {
-  //    StartFieldAttribute startFieldAttribute = positions.get (0).getStartFieldAttribute ();
-  //    ScreenContext defaultContext = startFieldAttribute.process (null, null);
-  //
-  //    if (startFieldAttribute.isExtended ())
-  //      setExtendedContext (defaultContext, positions);
-  //    else
-  //      for (ScreenPosition screenPosition : positions)
-  //        screenPosition.setScreenContext (defaultContext);
-  //
-  //    if (startFieldAttribute.isHidden ())
-  //      positions.forEach (sp -> sp.setVisible (false));
-  //  }
-  //
-  //  private static void setExtendedContext (ScreenContext defaultContext,
-  //      List<ScreenPosition> positions)
-  //  {
-  //    boolean first = true;
-  //    ScreenContext currentContext = defaultContext;
-  //
-  //    for (ScreenPosition screenPosition : positions)
-  //    {
-  //      for (Attribute attribute : screenPosition.getAttributes ())
-  //        currentContext = attribute.process (defaultContext, currentContext);
-  //
-  //      if (first)
-  //      {
-  //        first = false;
-  //        defaultContext = currentContext;
-  //      }
-  //      screenPosition.setScreenContext (currentContext);
-  //    }
-  //  }
 
   // ---------------------------------------------------------------------------------//
   // Screen history
