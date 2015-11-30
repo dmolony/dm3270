@@ -53,53 +53,18 @@ public class FieldManager
     hiddenProtectedFields = 0;
     hiddenUnprotectedFields = 0;
 
-    List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
-
-    int start = -1;
-    int first = -1;
-    int ptr = 0;
-
-    while (ptr != first)            // not wrapped around to the first field yet
-    {
-      ScreenPosition screenPosition = screen.getScreenPosition (ptr);
-
-      if (screenPosition.isStartField ())   // check for the start of a new field
-      {
-        if (start >= 0)                     // if there is a field to add
-        {
-          addField (new Field (screen, positions));
-          positions.clear ();
-        }
-        else
-          first = ptr;                      // this is the first field on the screen
-
-        start = ptr;                        // beginning of the current field
-      }
-
-      // add ScreenPosition to the current field
-      if (start >= 0)                       // if we are in a field...
-        positions.add (screenPosition);     // collect next field's positions
-
-      // increment ptr and wrap around
-      if (++ptr == screen.screenSize)       // faster than validate()
-      {
-        ptr = 0;
-        if (first == -1)
-          break;                            // wrapped around and still no fields
-      }
-    }
-
-    if (start >= 0 && positions.size () > 0)
-      addField (new Field (screen, positions));
+    List<List<ScreenPosition>> protoFields =
+        Screen.divide (screen.getScreenPositions ());
+    for (List<ScreenPosition> protoField : protoFields)
+      addField (new Field (screen, protoField));
 
     assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
 
     // link uprotected fields
     Field previousUnprotectedField = null;
-    //    ScreenContext baseContext = screen.getPen ().getDefaultScreenContext ();
+
     for (Field field : fields)
     {
-      //      field.setScreenContexts (baseContext);
       if (field.isUnprotected ())
       {
         unprotectedFields.add (field);

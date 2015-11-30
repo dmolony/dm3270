@@ -6,6 +6,8 @@ public interface DisplayScreen
 
   ScreenPosition getScreenPosition (int position);
 
+  ScreenPosition[] getScreenPositions ();
+
   int validate (int position);
 
   void clearScreen ();

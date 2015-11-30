@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.display;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.attributes.ColorAttribute;
@@ -36,64 +35,6 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     return this.command.matches (command);
   }
 
-  private void createScreen (FontData fontData)
-  {
-    setWidth (fontData.getWidth () * columns + xOffset * 2);
-    setHeight (fontData.getHeight () * rows + yOffset * 2);
-
-    gc.setFont (fontData.getFont ());
-
-    screenPositions = new ScreenPosition[screenSize];
-    pen = new PenType1 (screenPositions);
-
-    clearScreen ();
-    for (Order order : command)
-      order.process (this);
-
-    setScreenContexts ();
-  }
-
-  private void setScreenContexts ()
-  {
-    List<ScreenPosition> positions = new ArrayList<ScreenPosition> ();
-
-    int start = -1;
-    int first = -1;
-    int ptr = 0;
-
-    while (ptr != first)            // not wrapped around to the first field yet
-    {
-      ScreenPosition screenPosition = screenPositions[ptr];
-
-      if (screenPosition.isStartField ())   // check for the start of a new field
-      {
-        if (start >= 0)                     // if there is a field to add
-        {
-          Screen.setContexts (positions);
-          positions.clear ();
-        }
-        else
-          first = ptr;                      // this is the first field on the screen
-
-        start = ptr;                        // beginning of the current field
-      }
-
-      if (start >= 0)                       // if we are in a field...
-        positions.add (screenPosition);     // collect next field's positions
-
-      // increment ptr and wrap around
-      if (++ptr == screenPositions.length)  // faster than validate()
-      {
-        ptr = 0;
-        if (first == -1)
-          break;                            // wrapped around and still no fields
-      }
-    }
-
-    if (start >= 0 && positions.size () > 0)
-      Screen.setContexts (positions);
-  }
-
   // called by ConsolePane.changeScreen()
   public void drawScreen (FontData fontData)
   {
@@ -118,6 +59,25 @@ public class HistoryScreen extends Canvas implements DisplayScreen
       }
   }
 
+  private void createScreen (FontData fontData)
+  {
+    setWidth (fontData.getWidth () * columns + xOffset * 2);
+    setHeight (fontData.getHeight () * rows + yOffset * 2);
+
+    gc.setFont (fontData.getFont ());
+
+    screenPositions = new ScreenPosition[screenSize];
+    pen = new PenType1 (screenPositions);
+
+    clearScreen ();
+    for (Order order : command)
+      order.process (this);
+
+    List<List<ScreenPosition>> protoFields = Screen.divide (screenPositions);
+    for (List<ScreenPosition> protoField : protoFields)
+      Screen.setContexts (protoField);
+  }
+
   @Override
   public Pen getPen ()
   {
@@ -128,6 +88,12 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   public ScreenPosition getScreenPosition (int position)
   {
     return screenPositions[position];
+  }
+
+  @Override
+  public ScreenPosition[] getScreenPositions ()
+  {
+    return screenPositions;
   }
 
   @Override
