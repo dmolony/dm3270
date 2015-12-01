@@ -169,16 +169,14 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     // the server disagrees with our request and is making a counter-request
     if (type == SubcommandType.FUNCTIONS && subType == SubType.REQUEST)
     {
-      // should probably reply to any REQUEST that doesn't match our REQUEST
-      if (functions.size () == 0)
-      {
-        byte[] reply = { TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_FUNCTIONS,
-                         EXT_IS, TelnetCommand.IAC, TelnetCommand.SE };
-        setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
-      }
+      // copy the server's proposal and accept it
+      byte[] reply = new byte[data.length];
+      System.arraycopy (data, 0, reply, 0, data.length);
+      reply[4] = EXT_IS;        // replace REQUEST with IS
+      setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
     }
 
-    // presumably the server agrees to our request
+    // presumably the server agrees to our request, so do nothing
     if (type == SubcommandType.FUNCTIONS && subType == SubType.IS)
     {
     }
