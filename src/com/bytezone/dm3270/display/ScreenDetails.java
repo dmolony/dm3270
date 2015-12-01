@@ -627,7 +627,7 @@ public class ScreenDetails
     String vvmm = details.substring (tabs[2], tabs[3]);
     String id = details.substring (tabs[3]);
 
-    member.setCatalog (id);
+    member.setCatalog (id.trim ());
     member.setExtents (getInteger ("Ext:", size.trim ()));
   }
 
