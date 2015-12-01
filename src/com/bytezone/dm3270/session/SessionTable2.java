@@ -2,25 +2,14 @@ package com.bytezone.dm3270.session;
 
 import com.bytezone.dm3270.assistant.DefaultTable;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 public class SessionTable2 extends DefaultTable<SessionRecord>
 {
-  private final ObservableList<SessionRecord> sessionRecords =
-      FXCollections.observableArrayList ();
-
   public SessionTable2 ()
   {
-    addColumnString ("mm:ss", 42, Justification.LEFT, "time");
+    addColumnString ("mm:ss", 45, Justification.LEFT, "time");
     addColumnString ("Source", 55, Justification.LEFT, "sourceName");
-    addColumnString ("Type", 60, Justification.LEFT, "commandType");
-    addColumnString ("Command", 70, Justification.LEFT, "commandName");
-    addColumnNumber ("Size", 60, "bufferSize");
-  }
-
-  public void addSessionRecord (SessionRecord sessionRecord)
-  {
-    sessionRecords.add (sessionRecord);
+    addColumnString ("Type", 70, Justification.LEFT, "commandType");
+    addColumnString ("Command", 80, Justification.LEFT, "commandName");
+    addColumnNumber ("Size", 55, "bufferSize");
   }
 }

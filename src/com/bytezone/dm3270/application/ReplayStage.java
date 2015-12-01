@@ -6,7 +6,7 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
-import com.bytezone.dm3270.session.SessionTable;
+import com.bytezone.dm3270.session.SessionTable2;
 import com.bytezone.dm3270.utilities.WindowSaver;
 
 import javafx.application.Platform;
@@ -49,8 +49,7 @@ class ReplayStage extends Stage
     checkBoxes.setPadding (new Insets (10, 10, 10, 10));            // trbl
     checkBoxes.getChildren ().addAll (showTelnetCB, show3270ECB);
 
-    SessionTable sessionTable = new SessionTable ();
-    //    SessionTable2 sessionTable = new SessionTable2 ();
+    SessionTable2 sessionTable = new SessionTable2 ();
     CommandPane commandPane =
         new CommandPane (sessionTable, CommandPane.ProcessInstruction.DoProcess);
 
@@ -104,7 +103,7 @@ class ReplayStage extends Stage
     setScene (scene);
   }
 
-  private void displayFirstScreen (Session session, SessionTable table)
+  private void displayFirstScreen (Session session, SessionTable2 table)
   {
     // look for the first useful screen
     int[] screenSizes = { 2306, 2301, 2206, 1957, 2309, 3194 };
@@ -132,7 +131,7 @@ class ReplayStage extends Stage
     table.scrollTo (index);
   }
 
-  private void change (SessionTable table, FilteredList<SessionRecord> filteredData)
+  private void change (SessionTable2 table, FilteredList<SessionRecord> filteredData)
   {
     // get the previously selected line
     SessionRecord selectedRecord = table.getSelectionModel ().getSelectedItem ();
