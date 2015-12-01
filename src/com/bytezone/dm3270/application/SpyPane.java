@@ -28,7 +28,7 @@ public class SpyPane extends BorderPane
 
   public SpyPane (Screen screen, Site serverSite, Site clientSite)
   {
-    SessionTable table = new SessionTable ();
+    SessionTable sessionTable = new SessionTable ();
     Session session = new Session (screen, new TelnetState ());
 
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
@@ -38,7 +38,7 @@ public class SpyPane extends BorderPane
     label.setPadding (new Insets (10, 10, 10, 10));         // trbl
 
     CommandPane commandPane =
-        new CommandPane (table, CommandPane.ProcessInstruction.DontProcess);
+        new CommandPane (sessionTable, CommandPane.ProcessInstruction.DontProcess);
 
     Button btnSave = new Button ("Full Save");
     Button btnScramble = new Button ("Redacted");
@@ -54,7 +54,7 @@ public class SpyPane extends BorderPane
     SplitPane splitPane = new SplitPane ();
     splitPane.setOrientation (Orientation.HORIZONTAL);
 
-    splitPane.getItems ().addAll (table, commandPane);
+    splitPane.getItems ().addAll (sessionTable, commandPane);
     splitPane.setDividerPositions (0.37f);
 
     setCenter (splitPane);
@@ -68,8 +68,8 @@ public class SpyPane extends BorderPane
                        clientSite.getPort (), serverSite.getURL (),
                        serverSite.getPort ());
 
-    table.setPlaceholder (new Label (message));
-    table.setItems (session.getDataRecords ());
+    sessionTable.setPlaceholder (new Label (message));
+    sessionTable.setItems (session.getDataRecords ());
 
     btnSave.setOnAction ( (e) -> {
       FileChooser fileChooser = new FileChooser ();

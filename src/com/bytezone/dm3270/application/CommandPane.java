@@ -38,7 +38,7 @@ class CommandPane extends TabPane
     DoProcess, DontProcess
   }
 
-  public CommandPane (SessionTable table, ProcessInstruction processInstruction)
+  public CommandPane (SessionTable sessionTable, ProcessInstruction processInstruction)
   {
     setSide (Side.TOP);
     setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);
@@ -55,7 +55,7 @@ class CommandPane extends TabPane
     getTabs ().addAll (tabCommand, tabBuffer, tabFields, tabScreen, tabReply,
                        tabReplyBuffer);
 
-    table.getSelectionModel ().selectedItemProperty ()
+    sessionTable.getSelectionModel ().selectedItemProperty ()
         .addListener ( (observable, oldValue, newValue) -> replay (newValue));
   }
 

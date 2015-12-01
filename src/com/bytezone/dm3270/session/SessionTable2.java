@@ -13,10 +13,10 @@ public class SessionTable2 extends DefaultTable<SessionRecord>
   public SessionTable2 ()
   {
     addColumnString ("mm:ss", 42, Justification.LEFT, "time");
-    addColumnString ("Source", 55, Justification.LEFT, "source");
-    addColumnString ("Type", 60, Justification.LEFT, "type");
-    addColumnString ("Command", 70, Justification.LEFT, "command");
-    addColumnNumber ("Size", 60, "size");
+    addColumnString ("Source", 55, Justification.LEFT, "sourceName");
+    addColumnString ("Type", 60, Justification.LEFT, "commandType");
+    addColumnString ("Command", 70, Justification.LEFT, "commandName");
+    addColumnNumber ("Size", 60, "bufferSize");
   }
 
   public void addSessionRecord (SessionRecord sessionRecord)

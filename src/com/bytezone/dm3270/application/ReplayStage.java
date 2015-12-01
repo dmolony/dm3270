@@ -49,14 +49,15 @@ class ReplayStage extends Stage
     checkBoxes.setPadding (new Insets (10, 10, 10, 10));            // trbl
     checkBoxes.getChildren ().addAll (showTelnetCB, show3270ECB);
 
-    SessionTable table = new SessionTable ();
+    SessionTable sessionTable = new SessionTable ();
+    //    SessionTable2 sessionTable = new SessionTable2 ();
     CommandPane commandPane =
-        new CommandPane (table, CommandPane.ProcessInstruction.DoProcess);
+        new CommandPane (sessionTable, CommandPane.ProcessInstruction.DoProcess);
 
     commandPane.setScreen (session.getScreen ());
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setLeft (table);
+    borderPane.setLeft (sessionTable);
     borderPane.setCenter (commandPane);
     borderPane.setTop (label);
     borderPane.setBottom (checkBoxes);
@@ -67,7 +68,7 @@ class ReplayStage extends Stage
     FilteredList<SessionRecord> filteredData = new FilteredList<> (masterData, p -> true);
 
     ChangeListener<? super Boolean> changeListener =
-        (observable, oldValue, newValue) -> change (table, filteredData);
+        (observable, oldValue, newValue) -> change (sessionTable, filteredData);
 
     showTelnetCB.selectedProperty ().addListener (changeListener);
     show3270ECB.selectedProperty ().addListener (changeListener);
@@ -82,10 +83,10 @@ class ReplayStage extends Stage
     show3270ECB.setSelected (showExtended);
 
     SortedList<SessionRecord> sortedData = new SortedList<> (filteredData);
-    sortedData.comparatorProperty ().bind (table.comparatorProperty ());
-    table.setItems (sortedData);
+    sortedData.comparatorProperty ().bind (sessionTable.comparatorProperty ());
+    sessionTable.setItems (sortedData);
 
-    displayFirstScreen (session, table);
+    displayFirstScreen (session, sessionTable);
 
     setOnCloseRequest (e -> Platform.exit ());
 

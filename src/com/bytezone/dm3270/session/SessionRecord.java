@@ -148,83 +148,9 @@ public class SessionRecord
     return source;
   }
 
-  // SourceName
-
-  public void setSourceName (String value)
-  {
-    sourceNameProperty ().set (value);
-  }
-
-  public String getSourceName ()
-  {
-    return sourceNameProperty ().get ();
-  }
-
-  public StringProperty sourceNameProperty ()
-  {
-    if (sourceName == null)
-      sourceName = new SimpleStringProperty (this, "sourceName");
-    return sourceName;
-  }
-
-  // CommandType
-
-  public void setCommandType (String value)
-  {
-    commandTypeProperty ().set (value);
-  }
-
-  public String getCommandType ()
-  {
-    return commandTypeProperty ().get ();
-  }
-
-  public StringProperty commandTypeProperty ()
-  {
-    if (commandType == null)
-      commandType = new SimpleStringProperty (this, "commandType");
-    return commandType;
-  }
-
-  // CommandName
-
-  public void setCommandName (String value)
-  {
-    commandNameProperty ().set (value);
-  }
-
-  public String getCommandName ()
-  {
-    return commandNameProperty ().get ();
-  }
-
-  public StringProperty commandNameProperty ()
-  {
-    if (commandName == null)
-      commandName = new SimpleStringProperty (this, "commandName");
-    return commandName;
-  }
-
-  // BufferSize
-
-  public void setBufferSize (int value)
-  {
-    bufferSizeProperty ().set (value);
-  }
-
-  public int getBufferSize ()
-  {
-    return bufferSizeProperty ().get ();
-  }
-
-  public IntegerProperty bufferSizeProperty ()
-  {
-    if (bufferSize == null)
-      bufferSize = new SimpleIntegerProperty (this, "bufferSize");
-    return bufferSize;
-  }
-
+  // ---------------------------------------------------------------------------------//
   // Time
+  // ---------------------------------------------------------------------------------//
 
   public void setTime (String value)
   {
@@ -239,8 +165,92 @@ public class SessionRecord
   public StringProperty timeProperty ()
   {
     if (time == null)
-      time = new SimpleStringProperty (this, "time");
+      time = new SimpleStringProperty ();
     return time;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // SourceName
+  // ---------------------------------------------------------------------------------//
+
+  public void setSourceName (String value)
+  {
+    sourceNameProperty ().set (value);
+  }
+
+  public String getSourceName ()
+  {
+    return sourceNameProperty ().get ();
+  }
+
+  public StringProperty sourceNameProperty ()
+  {
+    if (sourceName == null)
+      sourceName = new SimpleStringProperty ();
+    return sourceName;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // CommandType
+  // ---------------------------------------------------------------------------------//
+
+  public void setCommandType (String value)
+  {
+    commandTypeProperty ().set (value);
+  }
+
+  public String getCommandType ()
+  {
+    return commandTypeProperty ().get ();
+  }
+
+  public StringProperty commandTypeProperty ()
+  {
+    if (commandType == null)
+      commandType = new SimpleStringProperty ();
+    return commandType;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // CommandName
+  // ---------------------------------------------------------------------------------//
+
+  public void setCommandName (String value)
+  {
+    commandNameProperty ().set (value);
+  }
+
+  public String getCommandName ()
+  {
+    return commandNameProperty ().get ();
+  }
+
+  public StringProperty commandNameProperty ()
+  {
+    if (commandName == null)
+      commandName = new SimpleStringProperty ();
+    return commandName;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // BufferSize
+  // ---------------------------------------------------------------------------------//
+
+  public void setBufferSize (int value)
+  {
+    bufferSizeProperty ().set (value);
+  }
+
+  public int getBufferSize ()
+  {
+    return bufferSizeProperty ().get ();
+  }
+
+  public IntegerProperty bufferSizeProperty ()
+  {
+    if (bufferSize == null)
+      bufferSize = new SimpleIntegerProperty ();
+    return bufferSize;
   }
 
   @Override
