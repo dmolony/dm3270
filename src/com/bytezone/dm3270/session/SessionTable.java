@@ -13,11 +13,14 @@ public class SessionTable extends TableView<SessionRecord>
     setStyle ("-fx-font-size: 11;");
     setFixedCellSize (20.0);
 
+    TableColumn<SessionRecord, String> timeCol = new TableColumn<> ("mm:ss");
     TableColumn<SessionRecord, String> sourceCol = new TableColumn<> ("Source");
     TableColumn<SessionRecord, String> commandTypeCol = new TableColumn<> ("Type");
     TableColumn<SessionRecord, String> commandCol = new TableColumn<> ("Command");
     TableColumn<SessionRecord, Integer> sizeCol = new TableColumn<> ("Size");
-    TableColumn<SessionRecord, String> timeCol = new TableColumn<> ("mm:ss");
+
+    timeCol.setPrefWidth (42);
+    timeCol.setCellValueFactory (new PropertyValueFactory<> ("time"));
 
     sourceCol.setPrefWidth (55);
     sourceCol.setCellValueFactory (new PropertyValueFactory<> ("sourceName"));
@@ -30,9 +33,6 @@ public class SessionTable extends TableView<SessionRecord>
 
     sizeCol.setPrefWidth (60);
     sizeCol.setCellValueFactory (new PropertyValueFactory<> ("bufferSize"));
-
-    timeCol.setPrefWidth (42);
-    timeCol.setCellValueFactory (new PropertyValueFactory<> ("time"));
 
     getColumns ().add (timeCol);
     getColumns ().add (sourceCol);

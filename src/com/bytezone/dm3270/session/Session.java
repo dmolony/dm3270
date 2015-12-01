@@ -185,6 +185,11 @@ public class Session implements Iterable<SessionRecord>
           serverName = "Nissan";
           break;
         }
+        else if (text.startsWith ("[InterSession ---"))
+        {
+          serverName = "InterSession";
+          break;
+        }
       }
 
     if (serverName != null)
