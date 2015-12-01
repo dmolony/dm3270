@@ -6,7 +6,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public abstract class DefaultTable<T> extends TableView<T>
 {
-  enum Justification
+  public enum Justification
   {
     LEFT, CENTER, RIGHT
   }

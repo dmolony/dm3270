@@ -33,7 +33,7 @@ import javafx.scene.control.Label;
 
 public class Session implements Iterable<SessionRecord>
 {
-  private final ObservableList<SessionRecord> dataRecords =
+  private final ObservableList<SessionRecord> sessionRecords =
       FXCollections.observableArrayList ();
   private final Function function;
   private final Screen screen;
@@ -118,7 +118,7 @@ public class Session implements Iterable<SessionRecord>
 
   public int size ()
   {
-    return dataRecords.size ();
+    return sessionRecords.size ();
   }
 
   private String getClientName ()
@@ -141,7 +141,7 @@ public class Session implements Iterable<SessionRecord>
     if (sessionRecord == null)
       throw new IllegalArgumentException ("DataRecord is null");
 
-    dataRecords.add (sessionRecord);       // should this be concurrent?
+    sessionRecords.add (sessionRecord);       // should this be concurrent?
 
     // this code checks to see whether it can identify the client and/or server
     if (function != Function.TERMINAL && sessionRecord.isCommand ())
@@ -204,12 +204,12 @@ public class Session implements Iterable<SessionRecord>
 
   public ObservableList<SessionRecord> getDataRecords ()
   {
-    return dataRecords;
+    return sessionRecords;
   }
 
   public SessionRecord getNext (SessionRecordType dataRecordType)
   {
-    for (SessionRecord dataRecord : dataRecords)
+    for (SessionRecord dataRecord : sessionRecords)
       if (dataRecord.getDataRecordType () == dataRecordType)
         return dataRecord;
     return null;
@@ -217,7 +217,7 @@ public class Session implements Iterable<SessionRecord>
 
   public SessionRecord getBySize (int size)
   {
-    for (SessionRecord dataRecord : dataRecords)
+    for (SessionRecord dataRecord : sessionRecords)
       if (dataRecord.size () == size)
         return dataRecord;
     return null;
@@ -228,7 +228,7 @@ public class Session implements Iterable<SessionRecord>
     try
     {
       PrintWriter writer = new PrintWriter (file, "UTF-8");
-      for (SessionRecord dataRecord : dataRecords)
+      for (SessionRecord dataRecord : sessionRecords)
       {
         writer.printf ("%s %s %s%n",
                        dataRecord.getSource () == Source.CLIENT ? "Client" : "Server",
@@ -267,7 +267,7 @@ public class Session implements Iterable<SessionRecord>
   @Override
   public Iterator<SessionRecord> iterator ()
   {
-    return dataRecords.iterator ();
+    return sessionRecords.iterator ();
   }
 
   @Override
@@ -275,7 +275,7 @@ public class Session implements Iterable<SessionRecord>
   {
     StringBuilder text = new StringBuilder ();
 
-    for (SessionRecord record : dataRecords)
+    for (SessionRecord record : sessionRecords)
     {
       text.append (record);
       text.append ("\n");
