@@ -9,7 +9,7 @@ import com.bytezone.dm3270.extended.AbstractExtendedCommand;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
-import com.bytezone.dm3270.session.SessionTable2;
+import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.utilities.Utility;
 
@@ -38,7 +38,7 @@ class CommandPane extends TabPane
     DoProcess, DontProcess
   }
 
-  public CommandPane (SessionTable2 sessionTable, ProcessInstruction processInstruction)
+  public CommandPane (SessionTable sessionTable, ProcessInstruction processInstruction)
   {
     setSide (Side.TOP);
     setTabClosingPolicy (TabClosingPolicy.UNAVAILABLE);

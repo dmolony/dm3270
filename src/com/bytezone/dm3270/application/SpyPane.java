@@ -4,7 +4,7 @@ import java.io.File;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
-import com.bytezone.dm3270.session.SessionTable2;
+import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
 import com.bytezone.dm3270.streams.TelnetState;
 
@@ -28,7 +28,7 @@ public class SpyPane extends BorderPane
 
   public SpyPane (Screen screen, Site serverSite, Site clientSite)
   {
-    SessionTable2 sessionTable = new SessionTable2 ();
+    SessionTable sessionTable = new SessionTable ();
     Session session = new Session (screen, new TelnetState ());
 
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
