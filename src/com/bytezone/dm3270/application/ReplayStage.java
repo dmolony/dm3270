@@ -55,12 +55,6 @@ class ReplayStage extends Stage
 
     commandPane.setScreen (session.getScreen ());
 
-    BorderPane borderPane = new BorderPane ();
-    borderPane.setLeft (sessionTable);
-    borderPane.setCenter (commandPane);
-    borderPane.setTop (label);
-    borderPane.setBottom (checkBoxes);
-
     setTitle ("Replay Commands - " + path.getFileName ());
 
     ObservableList<SessionRecord> masterData = session.getDataRecords ();
@@ -98,6 +92,12 @@ class ReplayStage extends Stage
       double height = primaryScreenBounds.getHeight ();
       setHeight (Math.min (height, 1200));
     }
+
+    BorderPane borderPane = new BorderPane ();
+    borderPane.setLeft (sessionTable);
+    borderPane.setRight (commandPane);
+    borderPane.setTop (label);
+    borderPane.setBottom (checkBoxes);
 
     Scene scene = new Scene (borderPane);
     setScene (scene);

@@ -61,12 +61,9 @@ public class SpyPane extends BorderPane
     setTop (label);
     setBottom (hbox);
 
-    String message =
-        String.format (
-                       "Connect a terminal to localhost:%d%n%n"
-                           + "Will connect to mainframe at %s:%d",
-                       clientSite.getPort (), serverSite.getURL (),
-                       serverSite.getPort ());
+    String message = String
+        .format ("Connect a terminal to localhost:%d%n%nWill connect to %s:%d",
+                 clientSite.getPort (), serverSite.getURL (), serverSite.getPort ());
 
     sessionTable.setPlaceholder (new Label (message));
     sessionTable.setItems (session.getDataRecords ());

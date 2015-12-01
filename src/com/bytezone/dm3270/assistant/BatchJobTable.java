@@ -2,6 +2,8 @@ package com.bytezone.dm3270.assistant;
 
 import java.util.Optional;
 
+import com.bytezone.dm3270.utilities.DefaultTable;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;

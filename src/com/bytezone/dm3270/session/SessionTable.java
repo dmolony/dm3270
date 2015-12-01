@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.session;
 
-import com.bytezone.dm3270.assistant.DefaultTable;
+import com.bytezone.dm3270.utilities.DefaultTable;
 
 public class SessionTable extends DefaultTable<SessionRecord>
 {
@@ -11,5 +11,7 @@ public class SessionTable extends DefaultTable<SessionRecord>
     addColumnString ("Type", 70, Justification.LEFT, "commandType");
     addColumnString ("Command", 80, Justification.LEFT, "commandName");
     addColumnNumber ("Size", 55, "bufferSize");
+
+    setPrefWidth (337);
   }
 }
