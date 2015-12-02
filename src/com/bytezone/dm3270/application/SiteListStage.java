@@ -172,6 +172,14 @@ public class SiteListStage extends PreferencesStage
     return Optional.empty ();
   }
 
+  Optional<Site> getSelectedSite (String siteName)
+  {
+    for (Site site : sites)
+      if (siteName.equals (site.getName ()))
+        return Optional.of (site);
+    return Optional.empty ();
+  }
+
   String getSelectedName ()
   {
     return comboBox.getSelectionModel ().getSelectedItem ();

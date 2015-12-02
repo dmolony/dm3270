@@ -22,15 +22,20 @@ public class Terminal extends Application
   private PluginsStage pluginsStage;
   private Screen screen;
 
+  private String requestedSite = "";
+
   @Override
   public void init () throws Exception
   {
     super.init ();
 
     prefs = Preferences.userNodeForPackage (this.getClass ());
+
     for (String raw : getParameters ().getRaw ())
-      if (raw.equalsIgnoreCase ("-reset"))
+      if ("-reset".equalsIgnoreCase (raw))
         prefs.clear ();
+      else if (raw.startsWith ("-site="))
+        requestedSite = raw.substring (6);
 
     if (true)
     {
@@ -48,8 +53,21 @@ public class Terminal extends Application
     serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
     pluginsStage = new PluginsStage (prefs);
 
-    Optional<Site> optionalServerSite = serverSitesListStage.getSelectedSite ();
-    Site serverSite = optionalServerSite.get ();
+    Site serverSite = null;
+    requestedSite = true ? "FanDeZhi" : "Intersession";
+    if (!requestedSite.isEmpty ())
+    {
+      Optional<Site> optionalServerSite =
+          serverSitesListStage.getSelectedSite (requestedSite);
+      if (optionalServerSite.isPresent ())
+        serverSite = optionalServerSite.get ();
+    }
+
+    if (serverSite == null)
+    {
+      // show request dialog
+      System.out.println ("Site not found: " + requestedSite);
+    }
 
     screen = new Screen (24, 80, prefs, Function.TERMINAL, pluginsStage, serverSite);
 
