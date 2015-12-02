@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.application;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
@@ -14,12 +15,32 @@ import javafx.stage.Stage;
 
 public class Terminal extends Application
 {
-  private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
+  private Preferences prefs;
   private ConsolePane consolePane;
   private WindowSaver windowSaver;
   private SiteListStage serverSitesListStage;
   private PluginsStage pluginsStage;
   private Screen screen;
+
+  @Override
+  public void init () throws Exception
+  {
+    super.init ();
+
+    prefs = Preferences.userNodeForPackage (this.getClass ());
+    for (String raw : getParameters ().getRaw ())
+      if (raw.equalsIgnoreCase ("-reset"))
+        prefs.clear ();
+
+    if (true)
+    {
+      String[] keys = prefs.keys ();
+      Arrays.sort (keys);
+      for (String key : keys)
+        if (key.matches ("Server.*Name"))
+          System.out.printf ("%-18s : %s%n", key, prefs.get (key, ""));
+    }
+  }
 
   @Override
   public void start (Stage primaryStage) throws Exception

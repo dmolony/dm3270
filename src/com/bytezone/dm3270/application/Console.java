@@ -62,7 +62,7 @@ public class Console extends Application
       String[] keys = prefs.keys ();
       Arrays.sort (keys);
       for (String key : keys)
-        System.out.printf ("%-14s : %s%n", key, prefs.get (key, ""));
+        System.out.printf ("%-18s : %s%n", key, prefs.get (key, ""));
     }
   }
 
