@@ -105,6 +105,8 @@ public final class ScreenPosition
   // All the colour and highlight options
   void setScreenContext (ScreenContext screenContext)
   {
+    if (screenContext == null)
+      throw new IllegalArgumentException ("ScreenContext cannot be null");
     this.screenContext = screenContext;
   }
 
@@ -138,7 +140,8 @@ public final class ScreenPosition
   // used by Field.getText()
   char getChar ()
   {
-    if (isStartField () || (value <= 32 && value >= 0))
+    if ((value & 0xC0) == 0)
+      //    if (isStartField () || (value <= 32 && value >= 0))
       return ' ';
 
     if (isGraphics)
