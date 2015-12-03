@@ -45,14 +45,15 @@ public abstract class Attribute
     return false;
   }
 
+  // called from ScreenPacker.readBuffer()
+  // called from ScreenPosition.pack() x2
+  // called from StartFieldExtendedOrder constructor x2
   public int pack (byte[] buffer, int offset)
   {
     buffer[offset++] = attributeCode;
     buffer[offset++] = attributeValue;
     return offset;
   }
-
-  //  public abstract void process (Pen pen);
 
   public abstract ScreenContext process (ScreenContext defaultContext,
       ScreenContext currentContext);
