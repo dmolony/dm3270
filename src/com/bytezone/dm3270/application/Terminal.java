@@ -21,7 +21,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class Terminal extends Application
 {
@@ -77,9 +76,8 @@ public class Terminal extends Application
     pluginsStage = new PluginsStage (prefs);
 
     Site serverSite = null;
-    //    requestedSite = true ? "FanDeZhi" : "Intersession";
 
-    if (!requestedSite.isEmpty ())
+    if (!requestedSite.isEmpty ())        // using a command line argument
     {
       Optional<Site> optionalServerSite =
           serverSitesListStage.getSelectedSite (requestedSite);
@@ -87,18 +85,29 @@ public class Terminal extends Application
         serverSite = optionalServerSite.get ();
     }
 
-    if (serverSite == null)
+    while (serverSite == null)
     {
       // show request dialog
       Optional<String> result = build ();
       if (result.isPresent ())
       {
         String name = result.get ();
-        if (!name.startsWith (":"))
+        if (name.equals (":EDIT:"))
+        {
+          System.out.println ("Edit....");
+        }
+        else if (name.equals (":CANCEL:"))
+        {
+          break;
+        }
+        else
         {
           Optional<Site> optionalServerSite = serverSitesListStage.getSelectedSite (name);
           if (optionalServerSite.isPresent ())
+          {
             serverSite = optionalServerSite.get ();
+            break;
+          }
         }
       }
     }
@@ -129,7 +138,7 @@ public class Terminal extends Application
   private Optional<String> build ()
   {
     String serverSelected = prefs.get ("ServerName", "");
-    Optional<Site> site = serverSitesListStage.getSelectedSite (serverSelected);
+    //    Optional<Site> site = serverSitesListStage.getSelectedSite (serverSelected);
 
     ComboBox<String> siteList = serverSitesListStage.getComboBox ();
     siteList.getSelectionModel ().select (serverSelected);
@@ -147,17 +156,13 @@ public class Terminal extends Application
     ButtonType btnTypeEdit = new ButtonType ("Edit", ButtonData.OTHER);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel,
                                                       btnTypeEdit);
-    dialog.setResultConverter (new Callback<ButtonType, String> ()
+    dialog.setResultConverter (btnType ->
     {
-      @Override
-      public String call (ButtonType btnType)
-      {
-        if (btnType == btnTypeOK)
-          return siteList.getSelectionModel ().getSelectedItem ();
-        if (btnType == btnTypeCancel)
-          return ":Cancel:";
-        return ":Edit:";
-      }
+      if (btnType == btnTypeOK)
+        return siteList.getSelectionModel ().getSelectedItem ();
+      if (btnType == btnTypeCancel)
+        return ":CANCEL:";
+      return ":EDIT:";
     });
 
     return dialog.showAndWait ();
