@@ -180,6 +180,11 @@ public class SiteListStage extends PreferencesStage
     return Optional.empty ();
   }
 
+  List<Site> getSites ()
+  {
+    return sites;
+  }
+
   String getSelectedName ()
   {
     return comboBox.getSelectionModel ().getSelectedItem ();
