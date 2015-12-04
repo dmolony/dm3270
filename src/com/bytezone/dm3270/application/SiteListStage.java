@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.utilities.PreferencesStage;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;

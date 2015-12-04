@@ -26,6 +26,7 @@ public class Terminal extends Application
 {
   private static final int COMBO_BOX_WIDTH = 150;
   private static final int EDIT_BUTTON_WIDTH = 50;
+  private static final String EDIT_BUTTON_FONT_SIZE = "-fx-font-size: 10;";
 
   private Preferences prefs;
   private ConsolePane consolePane;
@@ -141,28 +142,36 @@ public class Terminal extends Application
     //    Optional<Site> site = serverSitesListStage.getSelectedSite (serverSelected);
 
     ComboBox<String> siteList = serverSitesListStage.getComboBox ();
+    //    serverComboBox.setPrefWidth (COMBO_BOX_WIDTH);
+    //    serverComboBox.setVisibleRowCount (5);
     siteList.getSelectionModel ().select (serverSelected);
     Label label = new Label ("Select a server ");
+
+    editServersButton = serverSitesListStage.getEditButton ();
+    editServersButton.setStyle (EDIT_BUTTON_FONT_SIZE);
+    editServersButton.setMinWidth (EDIT_BUTTON_WIDTH);
 
     Dialog<String> dialog = new Dialog<> ();
 
     GridPane grid = new GridPane ();
     grid.add (label, 1, 1);
     grid.add (siteList, 2, 1);
+    grid.add (editServersButton, 3, 1);
+    grid.setHgap (10);
+    grid.setVgap (10);
     dialog.getDialogPane ().setContent (grid);
 
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
     ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
-    ButtonType btnTypeEdit = new ButtonType ("Edit", ButtonData.OTHER);
-    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel,
-                                                      btnTypeEdit);
+    //    ButtonType btnTypeEdit = new ButtonType ("Edit", ButtonData.OTHER);
+    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
     dialog.setResultConverter (btnType ->
     {
       if (btnType == btnTypeOK)
         return siteList.getSelectionModel ().getSelectedItem ();
       if (btnType == btnTypeCancel)
         return ":CANCEL:";
-      return ":EDIT:";
+      return ":UNKNOWN:";
     });
 
     return dialog.showAndWait ();
