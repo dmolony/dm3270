@@ -34,8 +34,6 @@ public class Terminal extends Application
   private SiteListStage serverSitesListStage;
   private PluginsStage pluginsStage;
   private Screen screen;
-  private ComboBox<String> serverComboBox;
-  private Button editServersButton;
 
   private String requestedSite = "";
 
@@ -86,31 +84,12 @@ public class Terminal extends Application
         serverSite = optionalServerSite.get ();
     }
 
-    while (serverSite == null)
+    if (serverSite == null)
     {
       // show request dialog
-      Optional<String> result = build ();
-      if (result.isPresent ())
-      {
-        String name = result.get ();
-        if (name.equals (":EDIT:"))
-        {
-          System.out.println ("Edit....");
-        }
-        else if (name.equals (":CANCEL:"))
-        {
-          break;
-        }
-        else
-        {
-          Optional<Site> optionalServerSite = serverSitesListStage.getSelectedSite (name);
-          if (optionalServerSite.isPresent ())
-          {
-            serverSite = optionalServerSite.get ();
-            break;
-          }
-        }
-      }
+      Optional<Site> optionalServerSite = getServer ();
+      if (optionalServerSite.isPresent ())
+        serverSite = optionalServerSite.get ();
     }
 
     if (serverSite != null)
@@ -134,28 +113,30 @@ public class Terminal extends Application
       primaryStage.sizeToScene ();
       primaryStage.show ();
     }
+    else
+      System.out.println ("No valid site specified");
   }
 
-  private Optional<String> build ()
+  private Optional<Site> getServer ()
   {
     String serverSelected = prefs.get ("ServerName", "");
-    //    Optional<Site> site = serverSitesListStage.getSelectedSite (serverSelected);
 
-    ComboBox<String> siteList = serverSitesListStage.getComboBox ();
-    //    serverComboBox.setPrefWidth (COMBO_BOX_WIDTH);
-    //    serverComboBox.setVisibleRowCount (5);
-    siteList.getSelectionModel ().select (serverSelected);
-    Label label = new Label ("Select a server ");
+    ComboBox<String> serverComboBox = serverSitesListStage.getComboBox ();
+    serverComboBox.setPrefWidth (COMBO_BOX_WIDTH);
+    serverComboBox.setVisibleRowCount (5);
+    serverComboBox.getSelectionModel ().select (serverSelected);
 
-    editServersButton = serverSitesListStage.getEditButton ();
+    Button editServersButton = serverSitesListStage.getEditButton ();
     editServersButton.setStyle (EDIT_BUTTON_FONT_SIZE);
     editServersButton.setMinWidth (EDIT_BUTTON_WIDTH);
 
-    Dialog<String> dialog = new Dialog<> ();
+    Label label = new Label ("Select a server ");
+
+    Dialog<Site> dialog = new Dialog<> ();
 
     GridPane grid = new GridPane ();
     grid.add (label, 1, 1);
-    grid.add (siteList, 2, 1);
+    grid.add (serverComboBox, 2, 1);
     grid.add (editServersButton, 3, 1);
     grid.setHgap (10);
     grid.setVgap (10);
@@ -163,15 +144,13 @@ public class Terminal extends Application
 
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
     ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
-    //    ButtonType btnTypeEdit = new ButtonType ("Edit", ButtonData.OTHER);
+
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
     dialog.setResultConverter (btnType ->
     {
       if (btnType == btnTypeOK)
-        return siteList.getSelectionModel ().getSelectedItem ();
-      if (btnType == btnTypeCancel)
-        return ":CANCEL:";
-      return ":UNKNOWN:";
+        return serverSitesListStage.getSelectedSite ().get ();
+      return null;
     });
 
     return dialog.showAndWait ();
