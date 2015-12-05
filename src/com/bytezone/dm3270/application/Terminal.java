@@ -82,6 +82,8 @@ public class Terminal extends Application
           serverSitesListStage.getSelectedSite (requestedSite);
       if (optionalServerSite.isPresent ())
         serverSite = optionalServerSite.get ();
+      else
+        System.out.printf ("Site not found: %s%n", requestedSite);
     }
 
     if (serverSite == null)

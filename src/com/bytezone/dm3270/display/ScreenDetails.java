@@ -94,6 +94,7 @@ public class ScreenDetails
     }
     else
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
+    //        System.out.println ("TSO command field: " + tsoCommandField);
   }
 
   public Field getTSOCommandField ()
@@ -154,13 +155,14 @@ public class ScreenDetails
 
   private boolean hasPromptField ()
   {
-    List<Field> rowFields = fieldManager.getRowFields (2, 2);
+    List<Field> rowFields = fieldManager.getRowFields (1, 3);
     for (int i = 0; i < rowFields.size (); i++)
     {
       Field field = rowFields.get (i);
       String text = field.getText ();
       int column = field.getFirstLocation () % screenColumns;
       int nextFieldNo = i + 1;
+      //      System.out.println (text);
       if (nextFieldNo < rowFields.size () && column == 1
           && ("Command ===>".equals (text) || "Option ===>".equals (text)))
       {

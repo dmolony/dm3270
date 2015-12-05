@@ -10,8 +10,8 @@ import com.bytezone.dm3270.utilities.Utility;
 
 class SystemMessage
 {
-  private static final Pattern jobSubmittedPattern =
-      Pattern.compile ("^JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
+  private static final Pattern jobSubmittedPattern = Pattern
+      .compile ("^(?:[A-Z0-9]{1,9} )?JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
 
   private static final Pattern jobCompletedPattern =
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
@@ -19,7 +19,7 @@ class SystemMessage
 
   private static final Pattern jobFailedPattern =
       Pattern.compile ("(^\\d\\d(?:\\.\\d\\d){2}) JOB(\\d{5})"
-          + " \\$HASP\\d+ ([A-Z0-9]+) .* JCL ERROR.*");
+          + " \\$HASP\\d+ ([A-Z0-9]+) .* (JCL ERROR|ABENDED).*");
 
   private static final Pattern timePattern =
       Pattern.compile ("^TIME-(\\d{2}:\\d{2}:\\d{2}) (AM|PM).*");
