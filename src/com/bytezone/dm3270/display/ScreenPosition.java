@@ -295,6 +295,14 @@ public final class ScreenPosition
         gc.setFill (foregroundColor);
         gc.fillText (getCharString (), x, y + ascent);
 
+        // extend the underscore character by a pixel to avoid gaps
+        if (value == 0x6D)
+        {
+          gc.translate (1, 0);
+          gc.fillText (getCharString (), x, y + ascent);
+          gc.translate (-1, 0);
+        }
+
         if (screenContext.underscore)
         {
           gc.setStroke (screenContext.foregroundColor);
