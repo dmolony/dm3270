@@ -23,6 +23,7 @@ public class FontData
     return font;
   }
 
+  // called from ConsolePane.setFontData()
   public Font getFont (int sizeChange)
   {
     return Font.font (name, size + sizeChange);

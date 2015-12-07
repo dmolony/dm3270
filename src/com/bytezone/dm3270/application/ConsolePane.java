@@ -12,9 +12,9 @@ import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
 import com.bytezone.dm3270.display.FontData;
 import com.bytezone.dm3270.display.FontManager;
-import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.HistoryManager;
 import com.bytezone.dm3270.display.HistoryScreen;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -202,9 +202,10 @@ public class ConsolePane extends BorderPane
     fieldLocation.setFont (font);
   }
 
+  // called from Screen.characterSizeChanged()
   public void setFontData (FontData fontData)
   {
-    setStatusFont (fontData.getFont (-2));
+    setStatusFont (fontData.getFont (-2));    // relative to, but smaller
   }
 
   private void setHistoryBar ()

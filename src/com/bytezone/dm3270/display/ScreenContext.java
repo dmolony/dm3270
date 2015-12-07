@@ -14,7 +14,7 @@ public class ScreenContext
   final public boolean underscore;
   final public boolean reverseVideo;
   final public boolean blink;
-  final public boolean normalHighlight;
+  //  final public boolean normalHighlight;
 
   public ScreenContext (Color foregroundColor, Color backgroundColor, byte highlight,
       boolean highIntensity)
@@ -27,7 +27,7 @@ public class ScreenContext
     this.underscore = highlight == (byte) 0xF4;
     this.reverseVideo = highlight == (byte) 0xF2;
     this.blink = highlight == (byte) 0xF1;
-    this.normalHighlight = highlight == (byte) 0xF0;
+    //    this.normalHighlight = highlight == (byte) 0xF0;
   }
 
   public boolean matches (ScreenContext other)
