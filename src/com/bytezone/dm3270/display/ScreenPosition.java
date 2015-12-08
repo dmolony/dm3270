@@ -235,92 +235,115 @@ public final class ScreenPosition
   void draw (GraphicsContext gc, int x, int y, boolean hasCursor, int charWidth,
       int charHeight, int ascent, int descent)
   {
-    Color foregroundColor = null;
-    Color backgroundColor = null;
+    //    Color foregroundColor = null;
+    //    Color backgroundColor = null;
 
-    gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
+    //    gc.translate (0.5, 0.5);      // move coordinate grid to use the center of pixels
 
     // Draw background
-    if (isVisible)
-    {
-      if (hasCursor)
-        if (screenContext.reverseVideo)
-        {
-          backgroundColor = screenContext.backgroundColor;
-          foregroundColor = screenContext.foregroundColor;
-        }
-        else
-        {
-          backgroundColor = screenContext.foregroundColor;
-          foregroundColor = screenContext.backgroundColor;
-        }
-      else if (screenContext.reverseVideo)
-      {
-        backgroundColor = screenContext.foregroundColor;
-        foregroundColor = screenContext.backgroundColor;
-      }
-      else
-      {
-        backgroundColor = screenContext.backgroundColor;
-        foregroundColor = screenContext.foregroundColor;
-      }
-    }
-    else if (hasCursor)
-      backgroundColor = screenContext.foregroundColor;
-    else
-      backgroundColor = screenContext.backgroundColor;
+    //    if (isVisible)
+    //    {
+    //      if (hasCursor)
+    //        if (screenContext.reverseVideo)
+    //        {
+    //          backgroundColor = screenContext.backgroundColor;
+    //          foregroundColor = screenContext.foregroundColor;
+    //        }
+    //        else
+    //        {
+    //          backgroundColor = screenContext.foregroundColor;
+    //          foregroundColor = screenContext.backgroundColor;
+    //        }
+    //      else if (screenContext.reverseVideo)
+    //      {
+    //        backgroundColor = screenContext.foregroundColor;
+    //        foregroundColor = screenContext.backgroundColor;
+    //      }
+    //      else
+    //      {
+    //        backgroundColor = screenContext.backgroundColor;
+    //        foregroundColor = screenContext.foregroundColor;
+    //      }
+    //    }
+    //    else if (hasCursor)
+    //      backgroundColor = screenContext.foregroundColor;
+    //    else
+    //      backgroundColor = screenContext.backgroundColor;
 
-    gc.setFill (backgroundColor);
+    if (isVisible)
+      gc.setFill (hasCursor ^ screenContext.reverseVideo ? screenContext.foregroundColor
+          : screenContext.backgroundColor);
+    else
+      gc.setFill (hasCursor ? screenContext.foregroundColor
+          : screenContext.backgroundColor);
+
+    //    gc.setFill (background);
+
+    //    gc.setFill (backgroundColor);
 
     // without the offset Windows will leave ghosting behind (even though we have
     // translated the screen coordinates)
-    if (hasCursor)
-      gc.fillRect (x + 0.5, y + 0.5, charWidth, ascent + descent);
-    else
-      gc.fillRect (x + 0.5, y + 0.5, charWidth, charHeight);
+    //    if (hasCursor)
+    //      gc.fillRect (x + 0.5, y + 0.5, charWidth, ascent + descent);
+    //    else
+    //      gc.fillRect (x + 0.5, y + 0.5, charWidth, charHeight);
+    gc.fillRect (x, y, charWidth, charHeight);
 
-    if (screenContext.highIntensity)
-    {
-      if (foregroundColor == Color.WHITESMOKE)
-        foregroundColor = Color.WHITE;
-    }
+    //    if (screenContext.highIntensity)
+    //    {
+    //      if (foregroundColor == Color.WHITESMOKE)
+    //        foregroundColor = Color.WHITE;
+    //    }
+    Color foreground = hasCursor ^ screenContext.reverseVideo
+        ? screenContext.backgroundColor : screenContext.foregroundColor;
 
     // Draw foreground
     if (isVisible)
       if (isGraphics)
-        doGraphics (gc, foregroundColor, backgroundColor, hasCursor, x, y, charWidth,
-                    charHeight, ascent, descent);
-      else
+
       {
-        gc.setFill (foregroundColor);
+        gc.setStroke (foreground);
+        doGraphics (gc, hasCursor, x, y, charWidth, charHeight, ascent, descent);
+      }
+      else
+
+      {
+        //      gc.setFill (foregroundColor);
+        gc.setFill (foreground);
         gc.fillText (getCharString (), x, y + ascent);
 
         // extend the underscore character by a pixel to avoid gaps
-        if (value == 0x6D)
-        {
-          gc.translate (1, 0);
-          gc.fillText (getCharString (), x, y + ascent);
-          gc.translate (-1, 0);
-        }
+        //        if (value == 0x6D)
+        //        {
+        //          gc.translate (1, 0);
+        //          gc.fillText (getCharString (), x, y + ascent);
+        //          gc.translate (-1, 0);
+        //        }
 
         if (screenContext.underscore)
         {
-          gc.setStroke (screenContext.foregroundColor);
-          double y2 = y + ascent + descent + 1;
-          gc.strokeLine (x + 1, y2, x + charWidth, y2);
+          //          gc.setStroke (screenContext.foregroundColor);
+          gc.setStroke (foreground);
+          x += 0.5;
+          y += 0.5;
+          double y2 = y + ascent + descent;
+          //          gc.strokeLine (x + 1, y2, x + charWidth, y2);
+          gc.strokeLine (x, y2, x + charWidth, y2);
         }
       }
-    gc.translate (-0.5, -0.5);            // restore coordinate grid
+
+    //    gc.translate (-0.5, -0.5);            // restore coordinate grid
   }
 
-  private void doGraphics (GraphicsContext gc, Color foregroundColor,
-      Color backgroundColor, boolean hasCursor, int x, int y, int width, int height,
-      int ascent, int descent)
+  private void doGraphics (GraphicsContext gc, boolean hasCursor, int x, int y, int width,
+      int height, int ascent, int descent)
   {
+    x += 0.5;
+    y += 0.5;
     int dx = width / 2;
     int dy = height / 2;
 
-    gc.setStroke (foregroundColor);
+    //    gc.setStroke (foregroundColor);
 
     switch (value)
     {
@@ -353,17 +376,17 @@ public final class ScreenPosition
         break;
 
       default:
-        gc.setFill (foregroundColor);
+        //        gc.setFill (foregroundColor);
         gc.fillText (".", x, y + ascent);
     }
 
-    if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
-    {
-      // extend the vertical line through the leading
-      gc.setStroke (backgroundColor);
-      dy = y + ascent + descent + 1;
-      gc.strokeLine (x + dx, dy, x + dx, y + height);
-    }
+    //    if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
+    //    {
+    //      // extend the vertical line through the leading
+    //      gc.setStroke (backgroundColor);
+    //      dy = y + ascent + descent + 1;
+    //      gc.strokeLine (x + dx, dy, x + dx, y + height);
+    //    }
   }
 
   @Override
