@@ -106,11 +106,21 @@ public class Field implements Iterable<ScreenPosition>
     return startFieldAttribute.isHidden ();
   }
 
+  // called from ScreenDetails.check()
+  // called from FieldManager.buildFields()
+  // called from FieldManager.getMenus()
   public boolean isProtected ()
   {
     return startFieldAttribute.isProtected ();
   }
 
+  // called from Cursor.typeChar()
+  // called from Cursor.backspace()
+  // called from Cursor.delete()
+  // called from Cursor.eraseEOL()
+  // called from Cursor.tab()
+  // called from FieldManager.buildFields()
+  // called from ScreenDetails.check()
   public boolean isUnprotected ()
   {
     return !startFieldAttribute.isProtected ();

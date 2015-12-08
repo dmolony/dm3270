@@ -69,7 +69,8 @@ public class Cursor
   // called from AIDCommand.checkForPrettyMove()
   public void typeChar (byte value)
   {
-    if (currentField != null && currentField.isUnprotected ())
+    if (currentField != null && currentField.isUnprotected ()
+        && currentField.getCursorOffset () > 0)
     {
       if (screen.isInsertMode ())
       {
@@ -105,7 +106,8 @@ public class Cursor
 
   public void backspace ()
   {
-    if (currentField != null && currentField.isUnprotected ())
+    if (currentField != null && currentField.isUnprotected ()
+        && currentField.getCursorOffset () > 0)
     {
       int start = currentField.getCursorOffset ();
       if (start > 1)
@@ -124,7 +126,8 @@ public class Cursor
 
   public void delete ()
   {
-    if (currentField != null && currentField.isUnprotected ())
+    if (currentField != null && currentField.isUnprotected ()
+        && currentField.getCursorOffset () > 0)
     {
       int start = currentField.getCursorOffset ();
       if (start > 0)
@@ -141,7 +144,8 @@ public class Cursor
 
   public void eraseEOL ()
   {
-    if (currentField != null && currentField.isUnprotected ())
+    if (currentField != null && currentField.isUnprotected ()
+        && currentField.getCursorOffset () > 0)
     {
       int start = currentField.getCursorOffset ();
       if (start > 0)
