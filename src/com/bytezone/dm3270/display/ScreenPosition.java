@@ -263,7 +263,7 @@ public final class ScreenPosition
         if (screenContext.underscore)
         {
           gc.setStroke (foreground);
-          x += 0.5;
+          x += 0.5;     // stroke commands need to be offset for Windows
           y += 0.5;
           double y2 = y + ascent + descent;
           gc.strokeLine (x, y2, x + charWidth, y2);
@@ -274,12 +274,10 @@ public final class ScreenPosition
   private void doGraphics (GraphicsContext gc, boolean hasCursor, double x, double y,
       int width, int height, int ascent, int descent)
   {
-    x += 0.5;
+    x += 0.5;     // stroke commands need to be offset for Windows
     y += 0.5;
     int dx = width / 2;
     int dy = height / 2;
-
-    //    gc.setStroke (foregroundColor);
 
     switch (value)
     {
@@ -312,17 +310,8 @@ public final class ScreenPosition
         break;
 
       default:
-        //        gc.setFill (foregroundColor);
         gc.fillText (".", x, y + ascent);
     }
-
-    //    if (hasCursor && (value == VERTICAL_LINE || value == TOP_LEFT || value == TOP_RIGHT))
-    //    {
-    //      // extend the vertical line through the leading
-    //      gc.setStroke (backgroundColor);
-    //      dy = y + ascent + descent + 1;
-    //      gc.strokeLine (x + dx, dy, x + dx, y + height);
-    //    }
   }
 
   @Override
