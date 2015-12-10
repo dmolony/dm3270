@@ -27,10 +27,9 @@ public class FontManagerType1 implements FontManager
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
-  private Font defaultFont;
+  private Font statusBarFont;
   private final Screen screen;
   private final RadioMenuItem[] fontSizeItems = new RadioMenuItem[fontSizes.length];
-  //  private final FontData fontData = new FontData ();
   private FontDetails fontDetails;
   private final Menu menuFont;
 
@@ -45,17 +44,13 @@ public class FontManagerType1 implements FontManager
     menuFont = getMenu ();        // sets defaultFont
   }
 
+  // called from ConsolePane.setHistoryBar()
+  // called from ConsolePane.getStatusBar()
   @Override
-  public Font getDefaultFont ()
+  public Font getStatusBarFont ()
   {
-    return defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
+    return statusBarFont == null ? Font.font ("Monospaced", 14) : statusBarFont;
   }
-
-  //  @Override
-  //  public FontData getFontData ()
-  //  {
-  //    return fontData;
-  //  }
 
   @Override
   public FontDetails getFontDetails ()
@@ -66,14 +61,12 @@ public class FontManagerType1 implements FontManager
   @Override
   public String getFontName ()
   {
-    //    return fontData.getName ();
     return fontDetails.name;
   }
 
   @Override
   public int getFontSize ()
   {
-    //    return fontData.getSize ();
     return fontDetails.size;
   }
 
@@ -101,7 +94,7 @@ public class FontManagerType1 implements FontManager
     }
 
     if (!fontSelected.isEmpty ())
-      defaultFont = Font.font (fontSelected, getFontSize () - 2);
+      statusBarFont = Font.font (fontSelected, getFontSize () - 2);
 
     // select Monospaced if there is still no font selected
     if (fontGroup.getSelectedToggle () == null)
@@ -196,8 +189,6 @@ public class FontManagerType1 implements FontManager
   {
     String name = getSelectedFont ();
     int size = getSelectedSize ();
-    //    if (fontData.matches (name, size))
-    //      return;
     if (name.equals (fontDetails.name) && size == fontDetails.size)
       return;
 
@@ -207,9 +198,9 @@ public class FontManagerType1 implements FontManager
 
   private void setFont (String name, int size)
   {
-    //    fontData.changeFont (name, size);
     Font font = Font.font (name, size);
     fontDetails = new FontDetails (name, size, font);
-    screen.characterSizeChanged (fontDetails);
+    statusBarFont = Font.font (name, size - 2);
+    screen.fontChanged (fontDetails);
   }
 }

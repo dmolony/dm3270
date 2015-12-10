@@ -308,7 +308,7 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   // called from FontManager.setFont()
-  void characterSizeChanged (FontDetails fontDetails)
+  void fontChanged (FontDetails fontDetails)
   {
     contextManager.setFontDetails (fontDetails);
     setWidth (fontDetails.width * columns + xOffset * 2);
@@ -316,7 +316,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     gc.setFont (fontDetails.font);
     if (consolePane != null)
-      consolePane.setFontDetails (fontDetails);
+      consolePane.setStatusFont ();
   }
 
   void eraseScreen ()

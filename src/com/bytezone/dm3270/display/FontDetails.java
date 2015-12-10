@@ -31,12 +31,6 @@ public class FontDetails
     height = ascent + descent;
   }
 
-  // called from ConsolePane.setFontData()
-  public Font getFont (int sizeChange)
-  {
-    return Font.font (font.getName (), font.getSize () + sizeChange);
-  }
-
   @Override
   public String toString ()
   {

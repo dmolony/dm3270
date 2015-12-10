@@ -10,7 +10,6 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
-import com.bytezone.dm3270.display.FontDetails;
 import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.HistoryManager;
 import com.bytezone.dm3270.display.HistoryScreen;
@@ -183,7 +182,7 @@ public class ConsolePane extends BorderPane
     HBox rightBox = getHBox (new Insets (2, 0, 2, GAP), Pos.CENTER_RIGHT);
     rightBox.getChildren ().addAll (div[3], fieldType, div[4], cursorLocation, div[5]);
 
-    setStatusFont (fontManager.getDefaultFont ());
+    setStatusFont ();
 
     BorderPane statusPane = new BorderPane ();
     statusPane.setLeft (leftBox);
@@ -193,8 +192,11 @@ public class ConsolePane extends BorderPane
     return statusPane;
   }
 
-  private void setStatusFont (Font font)
+  // called from this.getStatusBar()
+  // called from Screen.fontChanged()
+  public void setStatusFont ()
   {
+    Font font = fontManager.getStatusBarFont ();
     status.setFont (font);
     insertMode.setFont (font);
     cursorLocation.setFont (font);
@@ -203,22 +205,16 @@ public class ConsolePane extends BorderPane
   }
 
   // called from Screen.characterSizeChanged()
-  //  public void setFontData (FontData fontData)
+  //  public void setFontDetails (FontDetails fontDetails)
   //  {
-  //    setStatusFont (fontData.getFont (-2));    // relative to, but smaller
+  //    setStatusFont ();
   //  }
-
-  // called from Screen.characterSizeChanged()
-  public void setFontDetails (FontDetails fontDetails)
-  {
-    setStatusFont (fontDetails.getFont (-2));    // relative to, but smaller
-  }
 
   private void setHistoryBar ()
   {
     historyBox = getHBox (new Insets (2, GAP, 2, GAP), Pos.CENTER);
     historyBox.getChildren ().add (historyLabel);
-    Font statusBarFont = fontManager.getDefaultFont ();
+    Font statusBarFont = fontManager.getStatusBarFont ();
     historyLabel.setFont (statusBarFont);
   }
 

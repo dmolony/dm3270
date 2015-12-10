@@ -15,7 +15,7 @@ public interface FontManager
 
   public int getFontSize ();
 
-  public Font getDefaultFont ();
+  public Font getStatusBarFont ();
 
   public FontDetails getFontDetails ();
 }
