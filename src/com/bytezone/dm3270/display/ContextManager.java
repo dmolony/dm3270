@@ -3,22 +3,35 @@ package com.bytezone.dm3270.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bytezone.dm3270.attributes.ColorAttribute;
+
 import javafx.scene.paint.Color;
 
 public class ContextManager
 {
   private static final List<ScreenContext> contextPool = new ArrayList<> ();
+  private FontDetails fontDetails;
+  private final ScreenDimensions screenDimensions;
 
-  public ContextManager (ScreenDimensions screenDimensions, FontDetails fontDetails)
+  public ContextManager (ScreenDimensions screenDimensions)
   {
-    ScreenContext base = new ScreenContext (Color.GREEN, Color.YELLOW, (byte) 0, true,
-        fontDetails, screenDimensions);
-    contextPool.add (base);                 // obviously garish and noticeable
+    this.screenDimensions = screenDimensions;
+
+    ScreenContext base = new ScreenContext (ColorAttribute.colors[0],
+        ColorAttribute.colors[8], (byte) 0, false, null, screenDimensions);
+    contextPool.add (base);
   }
 
   public ScreenContext getDefaultScreenContext ()
   {
     return contextPool.get (0);
+  }
+
+  void setFontDetails (FontDetails fontDetails)
+  {
+    this.fontDetails = fontDetails;
+    contextPool.forEach (sc -> sc.setFontDetails (fontDetails));
+    dump ();
   }
 
   public void dump ()
@@ -37,8 +50,7 @@ public class ContextManager
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext = new ScreenContext (color, oldContext.backgroundColor,
-        oldContext.highlight, oldContext.highIntensity, oldContext.fontDetails,
-        oldContext.screenDimensions);
+        oldContext.highlight, oldContext.highIntensity, fontDetails, screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }
@@ -52,8 +64,7 @@ public class ContextManager
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext = new ScreenContext (oldContext.foregroundColor, color,
-        oldContext.highlight, oldContext.highIntensity, oldContext.fontDetails,
-        oldContext.screenDimensions);
+        oldContext.highlight, oldContext.highIntensity, fontDetails, screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }
@@ -66,9 +77,9 @@ public class ContextManager
           && sc.highlight == highlight //
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
-    ScreenContext newContext = new ScreenContext (oldContext.foregroundColor,
-        oldContext.backgroundColor, highlight, oldContext.highIntensity,
-        oldContext.fontDetails, oldContext.screenDimensions);
+    ScreenContext newContext =
+        new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
+            highlight, oldContext.highIntensity, fontDetails, screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }
@@ -81,9 +92,9 @@ public class ContextManager
           && sc.highlight == oldContext.highlight //
           && sc.highIntensity == highIntensity)
         return sc;
-    ScreenContext newContext = new ScreenContext (oldContext.foregroundColor,
-        oldContext.backgroundColor, oldContext.highlight, highIntensity,
-        oldContext.fontDetails, oldContext.screenDimensions);
+    ScreenContext newContext =
+        new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
+            oldContext.highlight, highIntensity, fontDetails, screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }

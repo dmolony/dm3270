@@ -21,29 +21,29 @@ public abstract class ColorAttribute extends Attribute
   public static final byte COLOR_GREY = (byte) 0xFE;
   public static final byte COLOR_WHITE = (byte) 0xFF;
 
-  static String[] colorNames = {     //
-      "Neutral1", "Blue", "Red", "Pink", "Green", "Turquoise", "Yellow", "Neutral2",
-          "Black", "Deep blue", "Orange", "Purple", "Pale green", "Pale turquoise",
-          "Grey", "White" };
+  static String[] colorNames =
+      { "Neutral1", "Blue", "Red", "Pink", "Green", "Turquoise", "Yellow", "Neutral2",
+        "Black", "Deep blue", "Orange", "Purple", "Pale green", "Pale turquoise", "Grey",
+        "White" };
 
-  public static final Color[] colors = { //
-      Color.WHITESMOKE,              //
-          Color.DODGERBLUE,     // or DEEPSKYBLUE, SKYBLUE, LIGHTSKYBLUE
-          Color.RED,            //
-          Color.PINK,           //
-          Color.LIME,           //
-          Color.TURQUOISE,      //
-          Color.YELLOW,         //
-          Color.WHITESMOKE,     //
-          Color.BLACK,          //
-          Color.DARKBLUE,       //
-          Color.ORANGE,         //
-          Color.PURPLE,         //
-          Color.PALEGREEN,      //
-          Color.PALETURQUOISE,  //
-          Color.GREY,           //
-          Color.WHITESMOKE      //
-      };
+  public static final Color[] colors = //
+      { Color.WHITESMOKE,     //
+        Color.DODGERBLUE,     // or DEEPSKYBLUE, SKYBLUE, LIGHTSKYBLUE
+        Color.RED,            //
+        Color.PINK,           //
+        Color.LIME,           //
+        Color.TURQUOISE,      //
+        Color.YELLOW,         //
+        Color.WHITESMOKE,     //
+        Color.BLACK,          //
+        Color.DARKBLUE,       //
+        Color.ORANGE,         //
+        Color.PURPLE,         //
+        Color.PALEGREEN,      //
+        Color.PALETURQUOISE,  //
+        Color.GREY,           //
+        Color.WHITESMOKE      //
+  };
 
   protected final Color color;
 
@@ -56,7 +56,7 @@ public abstract class ColorAttribute extends Attribute
         return colorNames[count];
       ++count;
     }
-    return "???";
+    return searchColor.toString ();
   }
 
   public ColorAttribute (AttributeType type, byte byteType, byte value)

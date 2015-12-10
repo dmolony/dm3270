@@ -49,6 +49,11 @@ public class ScreenContext
     return screenDimensions;
   }
 
+  public void setFontDetails (FontDetails fontDetails)
+  {
+    this.fontDetails = fontDetails;
+  }
+
   public FontDetails getFontDetails ()
   {
     return fontDetails;
@@ -62,9 +67,10 @@ public class ScreenContext
   @Override
   public String toString ()
   {
-    return String.format ("[Fg:%-10s Bg:%-10s In:%s  Hl:%02X]",
+    return String.format ("[Fg:%-10s Bg:%-10s In:%s  Hl:%02X, f:%s]",
                           ColorAttribute.getName (foregroundColor),
                           ColorAttribute.getName (backgroundColor),
-                          (highIntensity ? 'x' : ' '), highlight);
+                          (highIntensity ? 'x' : ' '), highlight,
+                          fontDetails.font.getName ());
   }
 }

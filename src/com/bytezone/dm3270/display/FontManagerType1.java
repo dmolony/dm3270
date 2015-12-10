@@ -30,22 +30,19 @@ public class FontManagerType1 implements FontManager
   private Font defaultFont;
   private final Screen screen;
   private final RadioMenuItem[] fontSizeItems = new RadioMenuItem[fontSizes.length];
-  private final FontData fontData;
-  private final FontDetails fontDetails;
+  private final FontData fontData = new FontData ();
+  private FontDetails fontDetails;
   private final Menu menuFont;
 
   public FontManagerType1 (Screen screen, Preferences prefs)
   {
     this.screen = screen;
 
-    fontData = new FontData ();
-
     String fontSelected = prefs.get ("FontName", "Monospaced");
     String sizeSelected = prefs.get ("FontSize", "16");
     setFont (fontSelected, Integer.parseInt (sizeSelected));
 
     menuFont = getMenu ();        // sets defaultFont
-    fontDetails = new FontDetails (getDefaultFont ());
   }
 
   @Override
@@ -192,6 +189,7 @@ public class FontManagerType1 implements FontManager
     return (String) fontGroup.getSelectedToggle ().getUserData ();
   }
 
+  // called when the user selects a font or size from the menu
   private void selectFont ()
   {
     String name = getSelectedFont ();
@@ -206,6 +204,7 @@ public class FontManagerType1 implements FontManager
   private void setFont (String name, int size)
   {
     fontData.changeFont (name, size);
-    screen.characterSizeChanged (fontData);
+    fontDetails = new FontDetails (fontData.getFont ());
+    screen.characterSizeChanged (fontData, fontDetails);
   }
 }

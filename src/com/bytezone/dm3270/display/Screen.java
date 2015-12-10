@@ -92,8 +92,8 @@ public class Screen extends Canvas implements DisplayScreen
     gc = getGraphicsContext2D ();
     screenDimensions = new ScreenDimensions (rows, columns);
 
+    contextManager = new ContextManager (screenDimensions);
     fontManager = new FontManagerType1 (this, prefs);
-    contextManager = new ContextManager (screenDimensions, fontManager.getFontDetails ());
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (rows, columns, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
@@ -337,9 +337,10 @@ public class Screen extends Canvas implements DisplayScreen
   }
 
   // called from FontManager.setFont()
-  void characterSizeChanged (FontData fontData)
+  void characterSizeChanged (FontData fontData, FontDetails fontDetails)
   {
     this.fontData = fontData;
+    contextManager.setFontDetails (fontDetails);
     setWidth (fontData.getWidth () * columns + xOffset * 2);
     setHeight (fontData.getHeight () * rows + yOffset * 2);
 
