@@ -92,9 +92,8 @@ public class Screen extends Canvas implements DisplayScreen
     gc = getGraphicsContext2D ();
     screenDimensions = new ScreenDimensions (rows, columns);
 
-    fontManager = new FontManager (this, prefs);
-    FontDetails fontDetails = new FontDetails (fontManager.getDefaultFont ());
-    contextManager = new ContextManager (screenDimensions, fontDetails);
+    fontManager = new FontManagerType1 (this, prefs);
+    contextManager = new ContextManager (screenDimensions, fontManager.getFontDetails ());
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (rows, columns, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);

@@ -8,17 +8,12 @@ import javafx.scene.paint.Color;
 public class ContextManager
 {
   private static final List<ScreenContext> contextPool = new ArrayList<> ();
-  //  private final FontDetails fontDetails;
-  //  private final ScreenDimensions screenDimensions;
 
   public ContextManager (ScreenDimensions screenDimensions, FontDetails fontDetails)
   {
-    //    this.fontDetails = fontDetails;
-    //    this.screenDimensions = screenDimensions;
-
     ScreenContext base = new ScreenContext (Color.GREEN, Color.YELLOW, (byte) 0, true,
         fontDetails, screenDimensions);
-    contextPool.add (base);         // obviously garish and noticeable
+    contextPool.add (base);                 // obviously garish and noticeable
   }
 
   public ScreenContext getDefaultScreenContext ()
