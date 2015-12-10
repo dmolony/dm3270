@@ -50,22 +50,8 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     if (screenPositions == null)
       createScreen (fontDetails);
 
-    //    int width = fontData.getWidth ();
-    //    int height = fontData.getHeight ();
-    //    int ascent = fontData.getAscent ();
-    //    int descent = fontData.getDescent ();
-
-    int pos = 0;
-    for (int row = 0; row < rows; row++)
-      for (int col = 0; col < columns; col++)
-      {
-        //        int x = xOffset + col * width;
-        //        int y = yOffset + row * height;
-
-        ScreenPosition screenPosition = screenPositions[pos++];
-        if (screenPosition.getScreenContext () != null)
-          screenPosition.draw (gc, false);
-      }
+    for (ScreenPosition screenPosition : screenPositions)
+      screenPosition.draw (false);
   }
 
   private void createScreen (FontDetails fontDetails)

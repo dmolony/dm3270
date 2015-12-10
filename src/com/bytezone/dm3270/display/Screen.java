@@ -282,7 +282,7 @@ public class Screen extends Canvas implements DisplayScreen
     int pos = 0;
 
     for (ScreenPosition screenPosition : screenPositions)
-      screenPosition.draw (gc, HIDE_CURSOR);
+      screenPosition.draw (HIDE_CURSOR);
 
     if (insertedCursorPosition >= 0)
     {
@@ -292,7 +292,7 @@ public class Screen extends Canvas implements DisplayScreen
     }
 
     pos = cursor.getLocation ();
-    screenPositions[pos].draw (gc, SHOW_CURSOR);
+    screenPositions[pos].draw (SHOW_CURSOR);
   }
 
   // called from Field.draw()
@@ -304,7 +304,7 @@ public class Screen extends Canvas implements DisplayScreen
   // called from Cursor.moveTo()
   void drawPosition (int position, boolean hasCursor)
   {
-    screenPositions[position].draw (gc, hasCursor);
+    screenPositions[position].draw (hasCursor);
   }
 
   // called from FontManager.setFont()

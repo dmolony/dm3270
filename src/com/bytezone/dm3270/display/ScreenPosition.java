@@ -13,9 +13,6 @@ import javafx.scene.paint.Color;
 
 public final class ScreenPosition
 {
-  //  private static final ScreenContext baseContext =
-  //      new ScreenContext (Color.BLACK, Color.BLACK, (byte) 0, false);
-
   // screen display characters
   private static final String[] charString = new String[256];
 
@@ -30,13 +27,13 @@ public final class ScreenPosition
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<> ();
 
-  public final int position;
+  private final GraphicsContext gc;
+  final int position;
+
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
   private ScreenContext screenContext;
-  private final GraphicsContext gc;
-  //  private ScreenContext screenContext = baseContext;
 
   static
   {
@@ -144,7 +141,6 @@ public final class ScreenPosition
   char getChar ()
   {
     if ((value & 0xC0) == 0)
-      //    if (isStartField () || (value <= 32 && value >= 0))
       return ' ';
 
     if (isGraphics)
@@ -235,13 +231,13 @@ public final class ScreenPosition
   // called by Screen.draw()
   // called by Screen.drawPosition()
   // called by UserScreen.drawScreen()
-  void draw (GraphicsContext gc, boolean hasCursor)
+  void draw (boolean hasCursor)
   {
     FontDetails fontDetails = screenContext.fontDetails;
-
     ScreenDimensions screenDimensions = screenContext.screenDimensions;
-    double y = 4 + position / screenDimensions.columns * fontDetails.height;
+
     double x = 4 + position % screenDimensions.columns * fontDetails.width;
+    double y = 4 + position / screenDimensions.columns * fontDetails.height;
 
     // Draw background
     if (isVisible)
@@ -261,7 +257,7 @@ public final class ScreenPosition
       if (isGraphics)
       {
         gc.setStroke (foreground);
-        doGraphics (gc, x, y);
+        doGraphics (x, y);
       }
       else
       {
@@ -279,12 +275,13 @@ public final class ScreenPosition
       }
   }
 
-  private void doGraphics (GraphicsContext gc, double x, double y)
+  private void doGraphics (double x, double y)
   {
-    FontDetails fontDetails = screenContext.fontDetails;
-
     x += 0.5;     // stroke commands need to be offset for Windows
     y += 0.5;
+
+    FontDetails fontDetails = screenContext.fontDetails;
+
     int dx = fontDetails.width / 2;
     int dy = fontDetails.height / 2;
 
