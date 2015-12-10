@@ -235,15 +235,9 @@ public final class ScreenPosition
   // called by Screen.draw()
   // called by Screen.drawPosition()
   // called by UserScreen.drawScreen()
-  //  void draw (GraphicsContext gc, double x, double y, boolean hasCursor, int charWidth,
-  //      int charHeight, int ascent, int descent)
   void draw (GraphicsContext gc, boolean hasCursor)
   {
     FontDetails fontDetails = screenContext.fontDetails;
-    //    int charWidth = fontDetails.width;
-    //    int charHeight = fontDetails.height;
-    //    int ascent = fontDetails.ascent;
-    //    int descent = fontDetails.descent;
 
     ScreenDimensions screenDimensions = screenContext.screenDimensions;
     double y = 4 + position / screenDimensions.columns * fontDetails.height;
@@ -267,8 +261,7 @@ public final class ScreenPosition
       if (isGraphics)
       {
         gc.setStroke (foreground);
-        doGraphics (gc, hasCursor, x, y, fontDetails.width, fontDetails.height,
-                    fontDetails.ascent, fontDetails.descent);
+        doGraphics (gc, x, y);
       }
       else
       {
@@ -286,46 +279,47 @@ public final class ScreenPosition
       }
   }
 
-  private void doGraphics (GraphicsContext gc, boolean hasCursor, double x, double y,
-      int width, int height, int ascent, int descent)
+  private void doGraphics (GraphicsContext gc, double x, double y)
   {
+    FontDetails fontDetails = screenContext.fontDetails;
+
     x += 0.5;     // stroke commands need to be offset for Windows
     y += 0.5;
-    int dx = width / 2;
-    int dy = height / 2;
+    int dx = fontDetails.width / 2;
+    int dy = fontDetails.height / 2;
 
     switch (value)
     {
       case HORIZONTAL_LINE:
-        gc.strokeLine (x, y + dy, x + width, y + dy);
+        gc.strokeLine (x, y + dy, x + fontDetails.width, y + dy);
         break;
 
       case VERTICAL_LINE:
-        gc.strokeLine (x + dx, y, x + dx, y + height);
+        gc.strokeLine (x + dx, y, x + dx, y + fontDetails.height);
         break;
 
       case TOP_LEFT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + height);   // vertical
-        gc.strokeLine (x + dx, y + dy, x + width, y + dy);    // horizontal
+        gc.strokeLine (x + dx, y + dy, x + dx, y + fontDetails.height);   // vertical
+        gc.strokeLine (x + dx, y + dy, x + fontDetails.width, y + dy);    // horizontal
         break;
 
       case TOP_RIGHT:
-        gc.strokeLine (x + dx, y + dy, x + dx, y + height);   // vertical
-        gc.strokeLine (x, y + dy, x + dx, y + dy);            // horizontal
+        gc.strokeLine (x + dx, y + dy, x + dx, y + fontDetails.height);   // vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);                        // horizontal
         break;
 
       case BOTTOM_LEFT:
-        gc.strokeLine (x + dx, y, x + dx, y + dy);            // vertical
-        gc.strokeLine (x + dx, y + dy, x + width, y + dy);    // horizontal
+        gc.strokeLine (x + dx, y, x + dx, y + dy);                        // vertical
+        gc.strokeLine (x + dx, y + dy, x + fontDetails.width, y + dy);    // horizontal
         break;
 
       case BOTTOM_RIGHT:
-        gc.strokeLine (x + dx, y, x + dx, y + dy);            // vertical
-        gc.strokeLine (x, y + dy, x + dx, y + dy);            // horizontal
+        gc.strokeLine (x + dx, y, x + dx, y + dy);                        // vertical
+        gc.strokeLine (x, y + dy, x + dx, y + dy);                        // horizontal
         break;
 
       default:
-        gc.fillText (".", x, y + ascent);
+        gc.fillText (".", x, y + fontDetails.ascent);
     }
   }
 
