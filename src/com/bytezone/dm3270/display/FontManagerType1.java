@@ -30,7 +30,7 @@ public class FontManagerType1 implements FontManager
   private Font defaultFont;
   private final Screen screen;
   private final RadioMenuItem[] fontSizeItems = new RadioMenuItem[fontSizes.length];
-  private final FontData fontData = new FontData ();
+  //  private final FontData fontData = new FontData ();
   private FontDetails fontDetails;
   private final Menu menuFont;
 
@@ -51,11 +51,11 @@ public class FontManagerType1 implements FontManager
     return defaultFont == null ? Font.font ("Monospaced", 14) : defaultFont;
   }
 
-  @Override
-  public FontData getFontData ()
-  {
-    return fontData;
-  }
+  //  @Override
+  //  public FontData getFontData ()
+  //  {
+  //    return fontData;
+  //  }
 
   @Override
   public FontDetails getFontDetails ()
@@ -66,13 +66,15 @@ public class FontManagerType1 implements FontManager
   @Override
   public String getFontName ()
   {
-    return fontData.getName ();
+    //    return fontData.getName ();
+    return fontDetails.name;
   }
 
   @Override
   public int getFontSize ()
   {
-    return fontData.getSize ();
+    //    return fontData.getSize ();
+    return fontDetails.size;
   }
 
   @Override
@@ -194,7 +196,9 @@ public class FontManagerType1 implements FontManager
   {
     String name = getSelectedFont ();
     int size = getSelectedSize ();
-    if (fontData.matches (name, size))
+    //    if (fontData.matches (name, size))
+    //      return;
+    if (name.equals (fontDetails.name) && size == fontDetails.size)
       return;
 
     setFont (name, size);
@@ -203,8 +207,9 @@ public class FontManagerType1 implements FontManager
 
   private void setFont (String name, int size)
   {
-    fontData.changeFont (name, size);
-    fontDetails = new FontDetails (fontData.getFont ());
-    screen.characterSizeChanged (fontData, fontDetails);
+    //    fontData.changeFont (name, size);
+    Font font = Font.font (name, size);
+    fontDetails = new FontDetails (name, size, font);
+    screen.characterSizeChanged (fontDetails);
   }
 }

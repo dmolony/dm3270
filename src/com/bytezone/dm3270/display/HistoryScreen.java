@@ -45,35 +45,35 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   }
 
   // called by ConsolePane.changeScreen()
-  public void drawScreen (FontData fontData)
+  public void drawScreen (FontDetails fontDetails)
   {
     if (screenPositions == null)
-      createScreen (fontData);
+      createScreen (fontDetails);
 
-    int width = fontData.getWidth ();
-    int height = fontData.getHeight ();
-    int ascent = fontData.getAscent ();
-    int descent = fontData.getDescent ();
+    //    int width = fontData.getWidth ();
+    //    int height = fontData.getHeight ();
+    //    int ascent = fontData.getAscent ();
+    //    int descent = fontData.getDescent ();
 
     int pos = 0;
     for (int row = 0; row < rows; row++)
       for (int col = 0; col < columns; col++)
       {
-        int x = xOffset + col * width;
-        int y = yOffset + row * height;
+        //        int x = xOffset + col * width;
+        //        int y = yOffset + row * height;
 
         ScreenPosition screenPosition = screenPositions[pos++];
         if (screenPosition.getScreenContext () != null)
-          screenPosition.draw (gc, x, y, false, width, height, ascent, descent);
+          screenPosition.draw (gc, false);
       }
   }
 
-  private void createScreen (FontData fontData)
+  private void createScreen (FontDetails fontDetails)
   {
-    setWidth (fontData.getWidth () * columns + xOffset * 2);
-    setHeight (fontData.getHeight () * rows + yOffset * 2);
+    setWidth (fontDetails.width * columns + xOffset * 2);
+    setHeight (fontDetails.height * rows + yOffset * 2);
 
-    gc.setFont (fontData.getFont ());
+    gc.setFont (fontDetails.font);
 
     screenPositions = new ScreenPosition[screenSize];
     pen = new PenType1 (screenPositions, gc, contextManager);

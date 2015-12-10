@@ -17,7 +17,5 @@ public interface FontManager
 
   public Font getDefaultFont ();
 
-  public FontData getFontData ();
-
   public FontDetails getFontDetails ();
 }

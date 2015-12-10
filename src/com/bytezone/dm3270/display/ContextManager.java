@@ -31,7 +31,6 @@ public class ContextManager
   {
     this.fontDetails = fontDetails;
     contextPool.forEach (sc -> sc.setFontDetails (fontDetails));
-    dump ();
   }
 
   public void dump ()
@@ -39,6 +38,21 @@ public class ContextManager
     System.out.println ();
     for (ScreenContext screenContext : contextPool)
       System.out.println (screenContext);
+  }
+
+  public ScreenContext getScreenContext (Color foreground, Color background,
+      byte highlight, boolean highIntensity)
+  {
+    for (ScreenContext sc : contextPool)
+      if (sc.foregroundColor == foreground //
+          && sc.backgroundColor == background && sc.highlight == highlight
+          && sc.highIntensity == highIntensity)
+        return sc;
+
+    ScreenContext newContext = new ScreenContext (foreground, background, highlight,
+        highIntensity, fontDetails, screenDimensions);
+    contextPool.add (newContext);
+    return newContext;
   }
 
   public ScreenContext setForeground (ScreenContext oldContext, Color color)

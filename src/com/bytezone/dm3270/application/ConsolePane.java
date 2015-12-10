@@ -10,7 +10,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
-import com.bytezone.dm3270.display.FontData;
+import com.bytezone.dm3270.display.FontDetails;
 import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.HistoryManager;
 import com.bytezone.dm3270.display.HistoryScreen;
@@ -203,9 +203,15 @@ public class ConsolePane extends BorderPane
   }
 
   // called from Screen.characterSizeChanged()
-  public void setFontData (FontData fontData)
+  //  public void setFontData (FontData fontData)
+  //  {
+  //    setStatusFont (fontData.getFont (-2));    // relative to, but smaller
+  //  }
+
+  // called from Screen.characterSizeChanged()
+  public void setFontDetails (FontDetails fontDetails)
   {
-    setStatusFont (fontData.getFont (-2));    // relative to, but smaller
+    setStatusFont (fontDetails.getFont (-2));    // relative to, but smaller
   }
 
   private void setHistoryBar ()
@@ -261,7 +267,7 @@ public class ConsolePane extends BorderPane
 
   private void changeScreen (HistoryScreen historyScreen)
   {
-    historyScreen.drawScreen (screen.getFontManager ().getFontData ());
+    historyScreen.drawScreen (screen.getFontManager ().getFontDetails ());
     setCenter (historyScreen);
     setMargin (historyScreen, new Insets (MARGIN, MARGIN, 0, MARGIN));
     setStyle ("-fx-background-color: navajowhite;");

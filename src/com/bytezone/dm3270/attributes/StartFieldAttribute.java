@@ -12,6 +12,7 @@ public class StartFieldAttribute extends Attribute
   private static final Color BLUE = ColorAttribute.colors[1];
   private static final Color RED = ColorAttribute.colors[2];
   private static final Color GREEN = ColorAttribute.colors[4];
+  private static final Color BLACK = ColorAttribute.colors[8];
 
   private final boolean isProtected;      // bit 2
   private final boolean isNumeric;        // bit 3
@@ -140,13 +141,7 @@ public class StartFieldAttribute extends Attribute
         isProtected ? WHITE : RED : //
         isProtected ? BLUE : GREEN;
 
-    ScreenContext screenContext = contextManager.getDefaultScreenContext ();
-    screenContext = contextManager.setForeground (screenContext, color);
-    screenContext = contextManager.setBackground (screenContext, Color.BLACK);
-    screenContext = contextManager.setHighIntensity (screenContext, isHighIntensity);
-    screenContext = contextManager.setHighlight (screenContext, (byte) 0);
-
-    return screenContext;
+    return contextManager.getScreenContext (color, BLACK, (byte) 0, isHighIntensity);
   }
 
   private String getColorName ()

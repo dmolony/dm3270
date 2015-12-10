@@ -13,9 +13,14 @@ public class FontDetails
   public final int descent;
   public final Font font;
 
-  public FontDetails (Font font)
+  public final String name;
+  public final int size;
+
+  public FontDetails (String name, int size, Font font)
   {
     this.font = font;
+    this.name = name;
+    this.size = size;
 
     FontMetrics fontMetrics =
         Toolkit.getToolkit ().getFontLoader ().getFontMetrics (font);

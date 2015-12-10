@@ -52,7 +52,6 @@ public class Screen extends Canvas implements DisplayScreen
   private ConsolePane consolePane;
 
   private final GraphicsContext gc;
-  private FontData fontData;
 
   private final Pen pen;
   private final Cursor cursor = new Cursor (this);
@@ -281,15 +280,9 @@ public class Screen extends Canvas implements DisplayScreen
   public void draw ()
   {
     int pos = 0;
-    int charHeight = fontData.getHeight ();
-    int charWidth = fontData.getWidth ();
-    int ascent = fontData.getAscent ();
-    int descent = fontData.getDescent ();
 
-    for (int row = 0; row < rows; row++)
-      for (int col = 0; col < columns; col++)
-        screenPositions[pos++].draw (gc, getX (col, charWidth), getY (row, charHeight),
-                                     HIDE_CURSOR, charWidth, charHeight, ascent, descent);
+    for (ScreenPosition screenPosition : screenPositions)
+      screenPosition.draw (gc, HIDE_CURSOR);
 
     if (insertedCursorPosition >= 0)
     {
@@ -299,10 +292,7 @@ public class Screen extends Canvas implements DisplayScreen
     }
 
     pos = cursor.getLocation ();
-    int row = pos / columns;
-    int col = pos % columns;
-    screenPositions[pos].draw (gc, getX (col, charWidth), getY (row, charHeight),
-                               SHOW_CURSOR, charWidth, charHeight, ascent, descent);
+    screenPositions[pos].draw (gc, SHOW_CURSOR);
   }
 
   // called from Field.draw()
@@ -314,39 +304,19 @@ public class Screen extends Canvas implements DisplayScreen
   // called from Cursor.moveTo()
   void drawPosition (int position, boolean hasCursor)
   {
-    int row = position / columns;
-    int col = position % columns;
-
-    int charWidth = fontData.getWidth ();
-    int charHeight = fontData.getHeight ();
-    int ascent = fontData.getAscent ();
-    int descent = fontData.getDescent ();
-
-    screenPositions[position].draw (gc, getX (col, charWidth), getY (row, charHeight),
-                                    hasCursor, charWidth, charHeight, ascent, descent);
-  }
-
-  private int getX (int col, int charWidth)
-  {
-    return xOffset + col * charWidth;
-  }
-
-  private int getY (int row, int charHeight)
-  {
-    return yOffset + row * charHeight;
+    screenPositions[position].draw (gc, hasCursor);
   }
 
   // called from FontManager.setFont()
-  void characterSizeChanged (FontData fontData, FontDetails fontDetails)
+  void characterSizeChanged (FontDetails fontDetails)
   {
-    this.fontData = fontData;
     contextManager.setFontDetails (fontDetails);
-    setWidth (fontData.getWidth () * columns + xOffset * 2);
-    setHeight (fontData.getHeight () * rows + yOffset * 2);
+    setWidth (fontDetails.width * columns + xOffset * 2);
+    setHeight (fontDetails.height * rows + yOffset * 2);
 
-    gc.setFont (fontData.getFont ());
+    gc.setFont (fontDetails.font);
     if (consolePane != null)
-      consolePane.setFontData (fontData);
+      consolePane.setFontDetails (fontDetails);
   }
 
   void eraseScreen ()

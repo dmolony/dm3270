@@ -235,9 +235,20 @@ public final class ScreenPosition
   // called by Screen.draw()
   // called by Screen.drawPosition()
   // called by UserScreen.drawScreen()
-  void draw (GraphicsContext gc, double x, double y, boolean hasCursor, int charWidth,
-      int charHeight, int ascent, int descent)
+  //  void draw (GraphicsContext gc, double x, double y, boolean hasCursor, int charWidth,
+  //      int charHeight, int ascent, int descent)
+  void draw (GraphicsContext gc, boolean hasCursor)
   {
+    FontDetails fontDetails = screenContext.fontDetails;
+    //    int charWidth = fontDetails.width;
+    //    int charHeight = fontDetails.height;
+    //    int ascent = fontDetails.ascent;
+    //    int descent = fontDetails.descent;
+
+    ScreenDimensions screenDimensions = screenContext.screenDimensions;
+    double y = 4 + position / screenDimensions.columns * fontDetails.height;
+    double x = 4 + position % screenDimensions.columns * fontDetails.width;
+
     // Draw background
     if (isVisible)
       gc.setFill (hasCursor ^ screenContext.reverseVideo ? screenContext.foregroundColor
@@ -246,7 +257,7 @@ public final class ScreenPosition
       gc.setFill (hasCursor ? screenContext.foregroundColor
           : screenContext.backgroundColor);
 
-    gc.fillRect (x, y, charWidth, charHeight);
+    gc.fillRect (x, y, fontDetails.width, fontDetails.height);
 
     Color foreground = hasCursor ^ screenContext.reverseVideo
         ? screenContext.backgroundColor : screenContext.foregroundColor;
@@ -256,20 +267,21 @@ public final class ScreenPosition
       if (isGraphics)
       {
         gc.setStroke (foreground);
-        doGraphics (gc, hasCursor, x, y, charWidth, charHeight, ascent, descent);
+        doGraphics (gc, hasCursor, x, y, fontDetails.width, fontDetails.height,
+                    fontDetails.ascent, fontDetails.descent);
       }
       else
       {
         gc.setFill (foreground);
-        gc.fillText (getCharString (), x, y + ascent);
+        gc.fillText (getCharString (), x, y + fontDetails.ascent);
 
         if (screenContext.underscore)
         {
           gc.setStroke (foreground);
           x += 0.5;     // stroke commands need to be offset for Windows
           y += 0.5;
-          double y2 = y + ascent + descent;
-          gc.strokeLine (x, y2, x + charWidth, y2);
+          double y2 = y + fontDetails.height - 2;
+          gc.strokeLine (x, y2, x + fontDetails.width, y2);
         }
       }
   }
