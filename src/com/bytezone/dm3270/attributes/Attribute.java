@@ -17,7 +17,7 @@ public abstract class Attribute
   public final static byte XA_VALIDATION = (byte) 0xC1;
   public final static byte XA_OUTLINING = (byte) 0xC2;
 
-  protected static final ContextManager contextManager = new ContextManager ();
+  //  protected static final ContextManager contextManager = new ContextManager ();
 
   protected final AttributeType attributeType;
   protected final byte attributeCode;
@@ -55,8 +55,8 @@ public abstract class Attribute
     return offset;
   }
 
-  public abstract ScreenContext process (ScreenContext defaultContext,
-      ScreenContext currentContext);
+  public abstract ScreenContext process (ContextManager contextManager,
+      ScreenContext defaultContext, ScreenContext currentContext);
 
   public byte getAttributeValue ()
   {

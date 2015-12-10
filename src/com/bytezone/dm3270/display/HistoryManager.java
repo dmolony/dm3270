@@ -10,6 +10,8 @@ public class HistoryManager
   private static final int MAX_SCREENS = 20;
 
   private final List<HistoryScreen> screens = new ArrayList<> (MAX_SCREENS);
+  private final ContextManager contextManager;
+  private final FieldManager fieldManager;
 
   private boolean keyboardLocked;       // save previous setting
   private boolean paused;
@@ -17,10 +19,13 @@ public class HistoryManager
   private final int rows;
   private final int columns;
 
-  public HistoryManager (int rows, int columns)
+  public HistoryManager (int rows, int columns, ContextManager contextManager,
+      FieldManager fieldManager)
   {
     this.rows = rows;
     this.columns = columns;
+    this.contextManager = contextManager;
+    this.fieldManager = fieldManager;
   }
 
   // called from Screen.checkRecording()
@@ -63,7 +68,8 @@ public class HistoryManager
       if (currentScreen > 0)
         --currentScreen;
     }
-    screens.add (new HistoryScreen (rows, columns, command));
+    screens
+        .add (new HistoryScreen (rows, columns, command, contextManager, fieldManager));
   }
 
   public int size ()

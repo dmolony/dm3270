@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.attributes;
 
+import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 import com.bytezone.dm3270.orders.BufferAddress;
 
@@ -130,7 +131,8 @@ public class StartFieldAttribute extends Attribute
    */
 
   @Override
-  public ScreenContext process (ScreenContext unused1, ScreenContext unused2)
+  public ScreenContext process (ContextManager contextManager, ScreenContext unused1,
+      ScreenContext unused2)
   {
     assert unused1 == null && unused2 == null;
 

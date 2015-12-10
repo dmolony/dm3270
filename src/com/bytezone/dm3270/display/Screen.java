@@ -45,6 +45,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final ScreenPosition[] screenPositions;
   private final FieldManager fieldManager;
   private final FontManager fontManager;
+  protected final ContextManager contextManager;
 
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
@@ -73,6 +74,7 @@ public class Screen extends Canvas implements DisplayScreen
   private boolean readModifiedAll = false;
 
   private final HistoryManager historyManager;
+  private final ScreenDimensions screenDimensions;
 
   public enum BuildInstruction
   {
@@ -88,14 +90,17 @@ public class Screen extends Canvas implements DisplayScreen
     this.function = function;
 
     gc = getGraphicsContext2D ();
+    screenDimensions = new ScreenDimensions (rows, columns);
 
-    historyManager = new HistoryManager (rows, columns);
     fontManager = new FontManager (this, prefs);
-    fieldManager = new FieldManager (this);
+    FontDetails fontDetails = new FontDetails (fontManager.getDefaultFont ());
+    contextManager = new ContextManager (screenDimensions, fontDetails);
+    fieldManager = new FieldManager (this, contextManager);
+    historyManager = new HistoryManager (rows, columns, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
 
     screenPositions = new ScreenPosition[screenSize];
-    pen = new PenType1 (screenPositions);
+    pen = new PenType1 (screenPositions, gc, contextManager);
 
     screenPacker = new ScreenPacker (pen, fieldManager);
     screenPacker.addTSOCommandListener (assistantStage);

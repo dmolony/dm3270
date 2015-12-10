@@ -20,12 +20,17 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   private final int yOffset = 4;      // padding top and bottom
 
   private final AIDCommand command;
+  private final ContextManager contextManager;
+  private final FieldManager fieldManager;
   private Pen pen;
   private final GraphicsContext gc;
 
   // created by HistoryManager.add()
-  HistoryScreen (int rows, int columns, AIDCommand command)
+  HistoryScreen (int rows, int columns, AIDCommand command, ContextManager contextManager,
+      FieldManager fieldManager)
   {
+    this.contextManager = contextManager;
+    this.fieldManager = fieldManager;
     this.command = command;
     this.rows = rows;
     this.columns = columns;
@@ -71,7 +76,7 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     gc.setFont (fontData.getFont ());
 
     screenPositions = new ScreenPosition[screenSize];
-    pen = new PenType1 (screenPositions);
+    pen = new PenType1 (screenPositions, gc, contextManager);
 
     clearScreen ();
     for (Order order : command)
@@ -79,7 +84,7 @@ public class HistoryScreen extends Canvas implements DisplayScreen
 
     List<List<ScreenPosition>> protoFields = FieldManager.divide (screenPositions);
     for (List<ScreenPosition> protoField : protoFields)
-      FieldManager.setContexts (protoField);
+      fieldManager.setContexts (protoField);
   }
 
   @Override

@@ -15,6 +15,7 @@ public class FieldManager
 {
   private final Screen screen;
   private final ScreenDetails screenDetails;
+  private final ContextManager contextManager;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
@@ -25,9 +26,10 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  public FieldManager (Screen screen)
+  public FieldManager (Screen screen, ContextManager contextManager)
   {
     this.screen = screen;
+    this.contextManager = contextManager;
     screenDetails = new ScreenDetails (this, screen.rows, screen.columns);
   }
 
@@ -327,10 +329,11 @@ public class FieldManager
   // Process a field's ScreenPositions
   // ---------------------------------------------------------------------------------//
 
-  static void setContexts (List<ScreenPosition> positions)
+  void setContexts (List<ScreenPosition> positions)
   {
     StartFieldAttribute startFieldAttribute = positions.get (0).getStartFieldAttribute ();
-    ScreenContext defaultContext = startFieldAttribute.process (null, null);
+    ScreenContext defaultContext =
+        startFieldAttribute.process (contextManager, null, null);
 
     if (startFieldAttribute.isExtended ())
       setExtendedContext (defaultContext, positions);
@@ -341,7 +344,7 @@ public class FieldManager
       positions.forEach (sp -> sp.setVisible (false));
   }
 
-  private static void setExtendedContext (ScreenContext defaultContext,
+  private void setExtendedContext (ScreenContext defaultContext,
       List<ScreenPosition> positions)
   {
     boolean first = true;
@@ -350,7 +353,8 @@ public class FieldManager
     for (ScreenPosition screenPosition : positions)
     {
       for (Attribute attribute : screenPosition.getAttributes ())
-        currentContext = attribute.process (defaultContext, currentContext);
+        currentContext =
+            attribute.process (contextManager, defaultContext, currentContext);
 
       if (first)
       {

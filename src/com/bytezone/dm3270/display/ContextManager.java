@@ -8,10 +8,16 @@ import javafx.scene.paint.Color;
 public class ContextManager
 {
   private static final List<ScreenContext> contextPool = new ArrayList<> ();
+  //  private final FontDetails fontDetails;
+  //  private final ScreenDimensions screenDimensions;
 
-  public ContextManager ()
+  public ContextManager (ScreenDimensions screenDimensions, FontDetails fontDetails)
   {
-    ScreenContext base = new ScreenContext (Color.GREEN, Color.YELLOW, (byte) 0, true);
+    //    this.fontDetails = fontDetails;
+    //    this.screenDimensions = screenDimensions;
+
+    ScreenContext base = new ScreenContext (Color.GREEN, Color.YELLOW, (byte) 0, true,
+        fontDetails, screenDimensions);
     contextPool.add (base);         // obviously garish and noticeable
   }
 
@@ -36,7 +42,8 @@ public class ContextManager
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext = new ScreenContext (color, oldContext.backgroundColor,
-        oldContext.highlight, oldContext.highIntensity);
+        oldContext.highlight, oldContext.highIntensity, oldContext.fontDetails,
+        oldContext.screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }
@@ -50,7 +57,8 @@ public class ContextManager
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext = new ScreenContext (oldContext.foregroundColor, color,
-        oldContext.highlight, oldContext.highIntensity);
+        oldContext.highlight, oldContext.highIntensity, oldContext.fontDetails,
+        oldContext.screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }
@@ -64,7 +72,8 @@ public class ContextManager
           && sc.highIntensity == oldContext.highIntensity)
         return sc;
     ScreenContext newContext = new ScreenContext (oldContext.foregroundColor,
-        oldContext.backgroundColor, highlight, oldContext.highIntensity);
+        oldContext.backgroundColor, highlight, oldContext.highIntensity,
+        oldContext.fontDetails, oldContext.screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }
@@ -78,7 +87,8 @@ public class ContextManager
           && sc.highIntensity == highIntensity)
         return sc;
     ScreenContext newContext = new ScreenContext (oldContext.foregroundColor,
-        oldContext.backgroundColor, oldContext.highlight, highIntensity);
+        oldContext.backgroundColor, oldContext.highlight, highIntensity,
+        oldContext.fontDetails, oldContext.screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }

@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.attributes;
 
+import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 
 public class ResetAttribute extends Attribute
@@ -10,10 +11,9 @@ public class ResetAttribute extends Attribute
   }
 
   @Override
-  public ScreenContext process (ScreenContext defaultContext,
-      ScreenContext currentContext)
+  public ScreenContext process (ContextManager contextManager,
+      ScreenContext defaultContext, ScreenContext currentContext)
   {
-    //    return contextManager.setHighlight (currentContext, defaultContext.highlight);
     return defaultContext;
   }
 }

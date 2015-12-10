@@ -7,22 +7,29 @@ import java.util.List;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
+import javafx.scene.canvas.GraphicsContext;
+
 public class PenType1 implements Pen
 {
   private final ScreenPosition[] screenPositions;
 
   private int currentPosition;
   private boolean formattedScreen;
+  private final ContextManager contextManager;
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
-  // created by Screen and UserScreen
-  PenType1 (ScreenPosition[] screenPositions)
+  // created by Screen and HistoryScreen
+  PenType1 (ScreenPosition[] screenPositions, GraphicsContext gc,
+      ContextManager contextManager)
   {
     this.screenPositions = screenPositions;
+    this.contextManager = contextManager;
+
+    ScreenContext defaultContext = contextManager.getDefaultScreenContext ();
 
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (i);
+      screenPositions[i] = new ScreenPosition (i, gc, defaultContext);
   }
 
   // called from Screen.clearScreen()

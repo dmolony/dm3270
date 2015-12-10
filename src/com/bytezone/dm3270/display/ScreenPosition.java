@@ -13,8 +13,8 @@ import javafx.scene.paint.Color;
 
 public final class ScreenPosition
 {
-  private static final ScreenContext baseContext =
-      new ScreenContext (Color.BLACK, Color.BLACK, (byte) 0, false);
+  //  private static final ScreenContext baseContext =
+  //      new ScreenContext (Color.BLACK, Color.BLACK, (byte) 0, false);
 
   // screen display characters
   private static final String[] charString = new String[256];
@@ -34,8 +34,9 @@ public final class ScreenPosition
   private byte value;
   private boolean isGraphics;
   private boolean isVisible = true;
-
-  private ScreenContext screenContext = baseContext;
+  private ScreenContext screenContext;
+  private final GraphicsContext gc;
+  //  private ScreenContext screenContext = baseContext;
 
   static
   {
@@ -47,9 +48,11 @@ public final class ScreenPosition
       charString[i] = (char) i + "";
   }
 
-  public ScreenPosition (int position)
+  public ScreenPosition (int position, GraphicsContext gc, ScreenContext screenContext)
   {
     this.position = position;
+    this.gc = gc;
+    this.screenContext = screenContext;
     reset ();
   }
 
