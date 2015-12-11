@@ -85,8 +85,8 @@ public class ScreenDetails
       if (!isDatasetList)
       {
         checkEditOrViewDataset (screenFields);
-        if (currentDataset.isEmpty ())
-          checkBrowseDataset (screenFields);
+        //        if (currentDataset.isEmpty ())
+        //          checkBrowseDataset (screenFields);
       }
 
       if (!isDatasetList)
@@ -94,7 +94,6 @@ public class ScreenDetails
     }
     else
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
-    //        System.out.println ("TSO command field: " + tsoCommandField);
   }
 
   public Field getTSOCommandField ()
@@ -548,8 +547,7 @@ public class ScreenDetails
     String mode = field.getText ().trim ();
     if (!(mode.equals ("EDIT")      // Menu option 1 (browse mode not selected)
         || mode.equals ("BROWSE")   // Menu option 1 (browse mode selected)
-        || mode.equals ("VIEW")     // Menu option 2
-    ))
+        || mode.equals ("VIEW")))   // Menu option 2
     {
       System.out.printf ("Unexpected mode2: [%s]%n", mode);
       return false;
@@ -654,40 +652,88 @@ public class ScreenDetails
     if (fields.size () < 13)
       return;
 
-    Field field = fields.get (11);
-    if (field.getFirstLocation () != 161)
+    //    if (false)
+    //    {
+    //      Field field = fields.get (11);
+    //      if (field.getFirstLocation () != 161)
+    //        return;
+    //
+    //      String text = field.getText ().trim ();
+    //      if (!text.equals ("EDIT") && !text.equals ("VIEW"))
+    //        return;
+    //
+    //      field = fields.get (12);
+    //      if (field.getFirstLocation () != 172)
+    //        return;
+    //
+    //      text = field.getText ().trim ();
+    //      int pos = text.indexOf (' ');
+    //      if (pos > 0)
+    //      {
+    //        currentDataset = text.substring (0, pos);
+    //        System.out.println ("Current dataset1: " + currentDataset);
+    //      }
+    //    }
+
+    List<Field> rowFields = fieldManager.getRowFields (0, 3);
+    if (rowFields.size () == 0)
       return;
 
-    String text = field.getText ().trim ();
-    if (!text.equals ("EDIT") && !text.equals ("VIEW"))
-      return;
-
-    field = fields.get (12);
-    if (field.getFirstLocation () != 172)
-      return;
-
-    text = field.getText ().trim ();
-    int pos = text.indexOf (' ');
-    if (pos > 0)
-      currentDataset = text.substring (0, pos);
+    int fldNo = 0;
+    for (Field field : rowFields)
+    {
+      if (field.getFirstLocation () % 80 == 1
+          && (field.getDisplayLength () == 10 || field.getDisplayLength () == 9)
+          && fldNo + 2 < rowFields.size ())
+      {
+        String text1 = field.getText ().trim ();
+        String text2 = rowFields.get (fldNo + 1).getText ().trim ();
+        String text3 = rowFields.get (fldNo + 2).getText ();
+        //          System.out.println (text1);
+        //          System.out.println (text2);
+        //          System.out.println (text3);
+        if ((text1.equals ("EDIT") || text1.equals ("VIEW") || text1.equals ("BROWSE"))
+            && (text3.equals ("Columns") || text3.equals ("Line")))
+        {
+          int pos = text2.indexOf (' ');
+          String datasetName = pos < 0 ? text2 : text2.substring (0, pos);
+          String memberName = "";
+          int pos1 = datasetName.indexOf ('(');
+          if (pos1 > 0 && datasetName.endsWith (")"))
+          {
+            memberName = datasetName.substring (pos1 + 1, datasetName.length () - 1);
+            datasetName = datasetName.substring (0, pos1);
+          }
+          System.out.println (text1);
+          Matcher matcher = datasetNamePattern.matcher (datasetName);
+          if (matcher.matches ())
+            System.out.printf ("Found dataset: %s%n", datasetName);
+          matcher = memberNamePattern.matcher (memberName);
+          if (matcher.matches ())
+            System.out.printf ("Found member : %s%n", memberName);
+        }
+      }
+      fldNo++;
+    }
   }
 
-  private void checkBrowseDataset (List<Field> fields)
-  {
-    if (fields.size () < 9)
-      return;
-
-    if (!fieldManager.textMatches (fields.get (7), "BROWSE   ", 161))
-      return;
-
-    Field field = fields.get (8);
-    if (field.getFirstLocation () != 171)
-      return;
-
-    String text = field.getText ().trim ();
-    int pos = text.indexOf (' ');
-    currentDataset = pos > 0 ? text.substring (0, pos) : text;
-  }
+  //  private void checkBrowseDataset (List<Field> fields)
+  //  {
+  //    if (fields.size () < 9)
+  //      return;
+  //
+  //    if (!fieldManager.textMatches (fields.get (7), "BROWSE   ", 161))
+  //      return;
+  //
+  //    Field field = fields.get (8);
+  //    if (field.getFirstLocation () != 171)
+  //      return;
+  //
+  //    String text = field.getText ().trim ();
+  //    int pos = text.indexOf (' ');
+  //    currentDataset = pos > 0 ? text.substring (0, pos) : text;
+  //    System.out.println ("Current dataset2: " + currentDataset);
+  //  }
 
   private boolean listMatchesArray (List<String> list, String[] array)
   {
