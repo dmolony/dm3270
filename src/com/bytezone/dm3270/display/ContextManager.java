@@ -39,8 +39,7 @@ public class ContextManager
   public void dump ()
   {
     System.out.println ();
-    for (ScreenContext screenContext : contextPool)
-      System.out.println (screenContext);
+    contextPool.forEach (System.out::println);
   }
 
   public ScreenContext getScreenContext (Color foregroundColor, Color backgroundColor,

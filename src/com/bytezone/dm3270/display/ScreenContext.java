@@ -75,10 +75,10 @@ public class ScreenContext
   @Override
   public String toString ()
   {
+    String name = fontDetails == null ? "" : fontDetails.font.getName ();
     return String.format ("[Fg:%-10s Bg:%-10s In:%s  Hl:%02X, f:%s]",
                           ColorAttribute.getName (foregroundColor),
                           ColorAttribute.getName (backgroundColor),
-                          (highIntensity ? 'x' : ' '), highlight,
-                          fontDetails.font.getName ());
+                          (highIntensity ? 'x' : ' '), highlight, name);
   }
 }
