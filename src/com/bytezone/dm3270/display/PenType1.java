@@ -15,7 +15,6 @@ public class PenType1 implements Pen
 
   private int currentPosition;
   private boolean formattedScreen;
-  private final ContextManager contextManager;
   private final int columns;
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
@@ -25,7 +24,6 @@ public class PenType1 implements Pen
       ContextManager contextManager)
   {
     this.screenPositions = screenPositions;
-    this.contextManager = contextManager;
     columns = contextManager.getScreenDimensions ().columns;
 
     ScreenContext defaultContext = contextManager.getDefaultScreenContext ();
@@ -193,39 +191,9 @@ public class PenType1 implements Pen
           System.out.println (attribute);
       }
       applyAttributes (screenPositions[currentPosition]);
-      //      pendingAttributes.clear ();
     }
     currentPosition = validate (position);
-
-    //    if (formattedScreen)
-    //    {
-    //      int pos = findPreviousStartPosition (currentPosition);
-    //      if (pos >= 0)
-    //      {
-    //        //        startFieldPosition = pos;
-    //        //        currentContext = screenPositions[pos].getScreenContext ();
-    //      }
-    //    }
   }
-
-  //  private int findPreviousStartPosition (int position)
-  //  {
-  //    int pos = position;
-  //    while (true)
-  //    {
-  //      pos = validate (pos - 1);
-  //      ScreenPosition screenPosition = screenPositions[pos];
-  //
-  //      if (screenPosition.isStartField ())
-  //        return pos;
-  //
-  //      if (pos == position)
-  //        break;
-  //    }
-  //
-  //    System.out.printf ("No previous start field found: %d%n", position);
-  //    return -1;
-  //  }
 
   private int findNextStartPosition (int position)
   {

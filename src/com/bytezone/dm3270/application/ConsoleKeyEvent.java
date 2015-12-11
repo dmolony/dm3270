@@ -1,37 +1,45 @@
 package com.bytezone.dm3270.application;
 
+import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.utilities.Utility;
 
 import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class ConsoleKeyEvent implements EventHandler<KeyEvent>
 {
   private final Screen screen;
+  private final Cursor cursor;
 
   public ConsoleKeyEvent (Screen screen)
   {
     this.screen = screen;
+    this.cursor = screen.getScreenCursor ();
   }
 
   @Override
   public void handle (KeyEvent e)                     // onKeyTyped
   {
+    if (e.getEventType () != KeyEvent.KEY_TYPED)
+      return;
+    String c = e.getCharacter ();
+    if (c.isEmpty ())
+      return;
+    char ch = c.charAt (0);
+
     if (screen.isKeyboardLocked () || e.isMetaDown () || e.isControlDown ()
         || e.isAltDown ())
     {
       // seems to be a bug in java
-      String key = e.getCharacter ();
-      if (e.isMetaDown () && !key.isEmpty ())
+      if (e.isMetaDown ())
       {
-        if (key.charAt (0) == '-')                    // osx fix
+        if (ch == '-')                    // osx fix
         {
           screen.getFontManager ().smaller ();
           e.consume ();
         }
-        else if (key.charAt (0) == '=')               // osx fix
+        else if (ch == '=')               // osx fix
         {
           screen.getFontManager ().bigger ();
           e.consume ();
@@ -41,18 +49,10 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
       return;
     }
 
-    if (e.getCode () == KeyCode.UNDEFINED)
+    if (ch >= 32 && ch < 0x7F)
     {
-      String c = e.getCharacter ();
-      if (!c.isEmpty ())
-      {
-        char ch = c.charAt (0);
-        if (ch >= 32 && ch < 0x7F)
-        {
-          screen.getScreenCursor ().typeChar ((byte) Utility.asc2ebc[ch]);
-          e.consume ();
-        }
-      }
+      cursor.typeChar ((byte) Utility.asc2ebc[ch]);
+      e.consume ();
     }
   }
 }

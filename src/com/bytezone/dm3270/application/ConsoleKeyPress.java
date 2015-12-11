@@ -29,6 +29,9 @@ class ConsoleKeyPress implements EventHandler<KeyEvent>
   @Override
   public void handle (KeyEvent keyEvent)
   {
+    if (keyEvent.getEventType () != KeyEvent.KEY_PRESSED)
+      return;
+
     KeyCode keyCodePressed = keyEvent.getCode ();
 
     if (screen.isKeyboardLocked ())           // could be in screen history mode
