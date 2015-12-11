@@ -43,6 +43,15 @@ public class ScreenContext
         && highIntensity == other.highIntensity;
   }
 
+  public boolean matches (Color foregroundColor, Color backgroundColor, byte highlight,
+      boolean highIntensity)
+  {
+    return this.foregroundColor == foregroundColor
+        && this.backgroundColor == backgroundColor     //
+        && this.highlight == highlight                 //
+        && this.highIntensity == highIntensity;
+  }
+
   public ScreenDimensions getScreenDimensions ()
   {
     return screenDimensions;

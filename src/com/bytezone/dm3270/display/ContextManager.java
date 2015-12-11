@@ -2,6 +2,7 @@ package com.bytezone.dm3270.display;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.bytezone.dm3270.attributes.ColorAttribute;
 
@@ -16,10 +17,7 @@ public class ContextManager
   public ContextManager (ScreenDimensions screenDimensions)
   {
     this.screenDimensions = screenDimensions;
-
-    ScreenContext base = new ScreenContext (ColorAttribute.colors[0],
-        ColorAttribute.colors[8], (byte) 0, false, null, screenDimensions);
-    contextPool.add (base);
+    addNewContext (ColorAttribute.colors[0], ColorAttribute.colors[8], (byte) 0, false);
   }
 
   public ScreenContext getDefaultScreenContext ()
@@ -45,75 +43,74 @@ public class ContextManager
       System.out.println (screenContext);
   }
 
-  public ScreenContext getScreenContext (Color foreground, Color background,
+  public ScreenContext getScreenContext (Color foregroundColor, Color backgroundColor,
       byte highlight, boolean highIntensity)
   {
-    for (ScreenContext sc : contextPool)
-      if (sc.foregroundColor == foreground //
-          && sc.backgroundColor == background && sc.highlight == highlight
-          && sc.highIntensity == highIntensity)
-        return sc;
+    Optional<ScreenContext> opt = contextPool.stream ().filter (sc -> sc
+        .matches (foregroundColor, backgroundColor, highlight, highIntensity))
+        .findFirst ();
 
-    ScreenContext newContext = new ScreenContext (foreground, background, highlight,
-        highIntensity, fontDetails, screenDimensions);
-    contextPool.add (newContext);
-    return newContext;
+    return opt.isPresent () ? opt.get ()
+        : addNewContext (foregroundColor, backgroundColor, highlight, highIntensity);
   }
 
-  public ScreenContext setForeground (ScreenContext oldContext, Color color)
+  public ScreenContext setForeground (ScreenContext oldContext, Color foregroundColor)
   {
-    for (ScreenContext sc : contextPool)
-      if (sc.foregroundColor == color //
-          && sc.backgroundColor == oldContext.backgroundColor
-          && sc.highlight == oldContext.highlight
-          && sc.highIntensity == oldContext.highIntensity)
-        return sc;
-    ScreenContext newContext = new ScreenContext (color, oldContext.backgroundColor,
-        oldContext.highlight, oldContext.highIntensity, fontDetails, screenDimensions);
-    contextPool.add (newContext);
-    return newContext;
+    Optional<ScreenContext> opt = contextPool.stream ()
+        .filter (sc -> sc.matches (foregroundColor, oldContext.backgroundColor,
+                                   oldContext.highlight, oldContext.highIntensity))
+        .findFirst ();
+
+    return opt.isPresent () ? opt.get ()
+        : addNewContext (foregroundColor, oldContext.backgroundColor,
+                         oldContext.highlight, oldContext.highIntensity);
   }
 
-  public ScreenContext setBackground (ScreenContext oldContext, Color color)
+  public ScreenContext setBackground (ScreenContext oldContext, Color backgroundColor)
   {
-    for (ScreenContext sc : contextPool)
-      if (sc.backgroundColor == color //
-          && sc.foregroundColor == oldContext.foregroundColor
-          && sc.highlight == oldContext.highlight
-          && sc.highIntensity == oldContext.highIntensity)
-        return sc;
-    ScreenContext newContext = new ScreenContext (oldContext.foregroundColor, color,
-        oldContext.highlight, oldContext.highIntensity, fontDetails, screenDimensions);
-    contextPool.add (newContext);
-    return newContext;
+    Optional<ScreenContext> opt = contextPool.stream ()
+        .filter (sc -> sc.matches (oldContext.foregroundColor, backgroundColor,
+                                   oldContext.highlight, oldContext.highIntensity))
+        .findFirst ();
+
+    return opt.isPresent () ? opt.get ()
+        : addNewContext (oldContext.foregroundColor, backgroundColor,
+                         oldContext.highlight, oldContext.highIntensity);
   }
 
   public ScreenContext setHighlight (ScreenContext oldContext, byte highlight)
   {
-    for (ScreenContext sc : contextPool)
-      if (sc.backgroundColor == oldContext.backgroundColor
-          && sc.foregroundColor == oldContext.foregroundColor //
-          && sc.highlight == highlight //
-          && sc.highIntensity == oldContext.highIntensity)
-        return sc;
-    ScreenContext newContext =
-        new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
-            highlight, oldContext.highIntensity, fontDetails, screenDimensions);
-    contextPool.add (newContext);
-    return newContext;
+    Optional<ScreenContext> opt =
+        contextPool.stream ()
+            .filter (sc -> sc.matches (oldContext.foregroundColor,
+                                       oldContext.backgroundColor, highlight,
+                                       oldContext.highIntensity))
+            .findFirst ();
+
+    return opt.isPresent () ? opt.get ()
+        : addNewContext (oldContext.foregroundColor, oldContext.backgroundColor,
+                         highlight, oldContext.highIntensity);
   }
 
   public ScreenContext setHighIntensity (ScreenContext oldContext, boolean highIntensity)
   {
-    for (ScreenContext sc : contextPool)
-      if (sc.backgroundColor == oldContext.backgroundColor
-          && sc.foregroundColor == oldContext.foregroundColor
-          && sc.highlight == oldContext.highlight //
-          && sc.highIntensity == highIntensity)
-        return sc;
-    ScreenContext newContext =
-        new ScreenContext (oldContext.foregroundColor, oldContext.backgroundColor,
-            oldContext.highlight, highIntensity, fontDetails, screenDimensions);
+    Optional<ScreenContext> opt =
+        contextPool.stream ()
+            .filter (sc -> sc.matches (oldContext.foregroundColor,
+                                       oldContext.backgroundColor, oldContext.highlight,
+                                       highIntensity))
+            .findFirst ();
+
+    return opt.isPresent () ? opt.get ()
+        : addNewContext (oldContext.foregroundColor, oldContext.backgroundColor,
+                         oldContext.highlight, highIntensity);
+  }
+
+  private ScreenContext addNewContext (Color foregroundColor, Color backgroundColor,
+      byte highlight, boolean highIntensity)
+  {
+    ScreenContext newContext = new ScreenContext (foregroundColor, backgroundColor,
+        highlight, highIntensity, fontDetails, screenDimensions);
     contextPool.add (newContext);
     return newContext;
   }
