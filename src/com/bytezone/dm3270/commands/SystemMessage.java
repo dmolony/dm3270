@@ -185,7 +185,7 @@ class SystemMessage
     if (matcher.matches ())
     {
       System.out.print ("Date is: " + matcher.group (1));     // mm/dd/yyyy
-      System.out.println ("Time is: " + matcher.group (3));   // hh:mm:ss
+      System.out.println (" Time is: " + matcher.group (3));  // hh:mm:ss
       return;
     }
   }

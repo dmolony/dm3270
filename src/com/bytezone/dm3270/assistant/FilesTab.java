@@ -73,8 +73,8 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     if (!transfer.hasTLQ ())
     {
       String tlq = screen.getPrefix ();
-      System.out.printf ("Name: %s, hasTLQ: %s, TLQ: %s%n", name, transfer.hasTLQ (),
-                         tlq);
+      //      System.out.printf ("Name: %s, hasTLQ: %s, TLQ: %s%n", name, transfer.hasTLQ (),
+      //                         tlq);
       if (!tlq.isEmpty ())
         name = tlq + "." + name;
     }
@@ -93,8 +93,8 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       else
         System.out.println ("No folder specified in site record");
     }
-    else
-      System.out.println ("Current site unknown");
+    //    else
+    //      System.out.println ("Current site unknown");
 
     if (siteFolderName.isEmpty ())
       reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
