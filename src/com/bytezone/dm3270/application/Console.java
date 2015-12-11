@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.utilities.WindowSaver;
@@ -281,7 +282,8 @@ public class Console extends Application
 
   private Screen createScreen (Function function, Site site)
   {
-    screen = new Screen (24, 80, prefs, function, pluginsStage, site);
+    screen =
+        new Screen (new ScreenDimensions (24, 80), prefs, function, pluginsStage, site);
     return screen;
   }
 }

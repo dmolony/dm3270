@@ -13,6 +13,7 @@ import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.utilities.PreferencesStage;
 
 import javafx.collections.ObservableList;
@@ -46,6 +47,7 @@ public class PluginsStage extends PreferencesStage
   private int requestMenus;
   private int baseMenuSize;
   private Screen screen;
+  private ScreenDimensions screenDimensions;
   private int sequence;
   private ConsolePane consolePane;
 
@@ -99,7 +101,8 @@ public class PluginsStage extends PreferencesStage
     Scene scene = new Scene (borderPane);
     setScene (scene);
 
-    saveButton.setOnAction (e -> {
+    saveButton.setOnAction (e ->
+    {
       savePrefs ();
       this.hide ();
     });
@@ -110,6 +113,7 @@ public class PluginsStage extends PreferencesStage
   public void setScreen (Screen screen)
   {
     this.screen = screen;
+    this.screenDimensions = screen.getScreenDimensions ();
   }
 
   public void setConsolePane (ConsolePane consolePane)
@@ -266,9 +270,9 @@ public class PluginsStage extends PreferencesStage
     if (activePlugins () > 0)
     {
       int cursorPosition = cursor.getLocation ();
-      PluginData pluginData =
-          fieldManager.getPluginScreen (sequence++, cursorPosition / screen.columns,
-                                        cursorPosition % screen.columns);
+      PluginData pluginData = fieldManager
+          .getPluginScreen (sequence++, cursorPosition / screenDimensions.columns,
+                            cursorPosition % screenDimensions.columns);
 
       if (false)
       {
@@ -295,9 +299,9 @@ public class PluginsStage extends PreferencesStage
     Cursor cursor = screen.getScreenCursor ();
 
     int cursorPosition = cursor.getLocation ();
-    PluginData pluginData =
-        fieldManager.getPluginScreen (sequence++, cursorPosition / screen.columns,
-                                      cursorPosition % screen.columns);
+    PluginData pluginData = fieldManager
+        .getPluginScreen (sequence++, cursorPosition / screenDimensions.columns,
+                          cursorPosition % screenDimensions.columns);
     plugin.processRequest (pluginData);
     AIDCommand command = processReply (pluginData);
     if (command != null)

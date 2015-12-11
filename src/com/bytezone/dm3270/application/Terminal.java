@@ -8,6 +8,7 @@ import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.utilities.WindowSaver;
 
@@ -96,7 +97,9 @@ public class Terminal extends Application
 
     if (serverSite != null)
     {
-      screen = new Screen (24, 80, prefs, Function.TERMINAL, pluginsStage, serverSite);
+      ScreenDimensions screenDimensions = new ScreenDimensions (24, 80);
+      screen = new Screen (screenDimensions, prefs, Function.TERMINAL, pluginsStage,
+          serverSite);
 
       consolePane = new ConsolePane (screen, serverSite, pluginsStage);
       consolePane.connect (serverSite);

@@ -18,10 +18,12 @@ public class Field implements Iterable<ScreenPosition>
 
   private final StartFieldAttribute startFieldAttribute;
   private final List<ScreenPosition> screenPositions;
+  private final ScreenDimensions screenDimensions;
 
   public Field (Screen screen, List<ScreenPosition> positions)
   {
     this.screen = screen;
+    this.screenDimensions = screen.getScreenDimensions ();
 
     ScreenPosition firstScreenPosition = positions.get (0);
     ScreenPosition lastScreenPosition = positions.get (positions.size () - 1);
@@ -299,8 +301,8 @@ public class Field implements Iterable<ScreenPosition>
   PluginField getPluginField (int screenSequence, int fieldSequence)
   {
     int firstLocation = getFirstLocation ();
-    int row = firstLocation / screen.columns;
-    int column = firstLocation % screen.columns;
+    int row = firstLocation / screenDimensions.columns;
+    int column = firstLocation % screenDimensions.columns;
     int length = getDisplayLength ();
 
     return new PluginField (fieldSequence, firstLocation, row, column, length,

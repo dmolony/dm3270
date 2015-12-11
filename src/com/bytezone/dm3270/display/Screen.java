@@ -59,8 +59,8 @@ public class Screen extends Canvas implements DisplayScreen
   private final int xOffset = 4;              // padding left and right
   private final int yOffset = 4;              // padding top and bottom
 
-  public final int rows;
-  public final int columns;
+  //  public final int rows;
+  //  public final int columns;
   public final int screenSize;
 
   private byte currentAID;
@@ -80,21 +80,19 @@ public class Screen extends Canvas implements DisplayScreen
     BUILD_FIELDS, DONT_BUILD_FIELDS
   }
 
-  public Screen (int rows, int columns, Preferences prefs, Function function,
+  public Screen (ScreenDimensions screenDimensions, Preferences prefs, Function function,
       PluginsStage pluginsStage, Site site)
   {
-    this.rows = rows;
-    this.columns = columns;
-    screenSize = rows * columns;
+    this.screenDimensions = screenDimensions;
+    screenSize = screenDimensions.rows * screenDimensions.columns;
     this.function = function;
 
     gc = getGraphicsContext2D ();
-    screenDimensions = new ScreenDimensions (rows, columns);
 
     contextManager = new ContextManager (screenDimensions);
     fontManager = new FontManagerType1 (this, prefs);
     fieldManager = new FieldManager (this, contextManager);
-    historyManager = new HistoryManager (rows, columns, contextManager, fieldManager);
+    historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
 
     screenPositions = new ScreenPosition[screenSize];
@@ -127,6 +125,11 @@ public class Screen extends Canvas implements DisplayScreen
   public FieldManager getFieldManager ()
   {
     return fieldManager;
+  }
+
+  public ScreenDimensions getScreenDimensions ()
+  {
+    return screenDimensions;
   }
 
   public boolean isTSOCommandScreen ()
@@ -311,8 +314,8 @@ public class Screen extends Canvas implements DisplayScreen
   void fontChanged (FontDetails fontDetails)
   {
     contextManager.setFontDetails (fontDetails);
-    setWidth (fontDetails.width * columns + xOffset * 2);
-    setHeight (fontDetails.height * rows + yOffset * 2);
+    setWidth (fontDetails.width * screenDimensions.columns + xOffset * 2);
+    setHeight (fontDetails.height * screenDimensions.rows + yOffset * 2);
 
     gc.setFont (fontDetails.font);
     if (consolePane != null)

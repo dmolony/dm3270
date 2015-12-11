@@ -16,6 +16,7 @@ public class FieldManager
   private final Screen screen;
   private final ScreenDetails screenDetails;
   private final ContextManager contextManager;
+  private final ScreenDimensions screenDimensions;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
@@ -30,7 +31,8 @@ public class FieldManager
   {
     this.screen = screen;
     this.contextManager = contextManager;
-    screenDetails = new ScreenDetails (this, screen.rows, screen.columns);
+    this.screenDimensions = screen.getScreenDimensions ();
+    screenDetails = new ScreenDetails (this, screenDimensions);
   }
 
   // a new ScreenDetails should be sent to ScreenChangeListeners
@@ -159,15 +161,15 @@ public class FieldManager
 
   List<Field> getRowFields (int requestedRow)
   {
-    int firstLocation = requestedRow * screen.columns;
-    int lastLocation = firstLocation + screen.columns - 1;
+    int firstLocation = requestedRow * screenDimensions.columns;
+    int lastLocation = firstLocation + screenDimensions.columns - 1;
     return getFieldsInRange (firstLocation, lastLocation);
   }
 
   List<Field> getRowFields (int requestedRowFrom, int rows)
   {
-    int firstLocation = requestedRowFrom * screen.columns;
-    int lastLocation = (requestedRowFrom + rows) * screen.columns - 1;
+    int firstLocation = requestedRowFrom * screenDimensions.columns;
+    int lastLocation = (requestedRowFrom + rows) * screenDimensions.columns - 1;
     return getFieldsInRange (firstLocation, lastLocation);
   }
 
@@ -225,7 +227,7 @@ public class FieldManager
 
     for (Field field : fields)
     {
-      if (field.getFirstLocation () >= screen.columns)
+      if (field.getFirstLocation () >= screenDimensions.columns)
         break;
 
       if (field.isProtected () && field.isVisible () && field.getDisplayLength () > 1)

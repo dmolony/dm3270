@@ -28,8 +28,9 @@ public class ScreenDetails
   private static final String ispfShell = "ISPF Command Shell";
 
   private final FieldManager fieldManager;
-  private final int screenColumns;
-  private final int screenRows;
+  private final ScreenDimensions screenDimensions;
+  //  private final int screenColumns;
+  //  private final int screenRows;
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -42,16 +43,18 @@ public class ScreenDetails
   private boolean isDatasetList;
   private boolean isMemberList;
   private boolean isSplitScreen;
+  private int promptFieldLine;
 
   private String currentDataset = "";
   private String userid = "";
   private String prefix = "";
 
-  public ScreenDetails (FieldManager fieldManager, int rows, int columns)
+  public ScreenDetails (FieldManager fieldManager, ScreenDimensions screenDimensions)
   {
     this.fieldManager = fieldManager;
-    screenRows = rows;
-    screenColumns = columns;
+    this.screenDimensions = screenDimensions;
+    //    screenRows = rows;
+    //    screenColumns = columns;
   }
 
   // called by FieldManager after building a new screen
@@ -65,6 +68,7 @@ public class ScreenDetails
     datasets.clear ();
     members.clear ();
     currentDataset = "";
+    promptFieldLine = -1;
 
     List<Field> screenFields = fieldManager.getFields ();
     if (screenFields.size () <= 2)
@@ -149,7 +153,7 @@ public class ScreenDetails
   {
     return fieldManager.getFields ().parallelStream ()
         .filter (f -> f.isProtected () && f.getDisplayLength () == 79
-            && f.getFirstLocation () % screenColumns == 1
+            && f.getFirstLocation () % screenDimensions.columns == 1
             && SPLIT_LINE.equals (f.getText ()))
         .findAny ().isPresent ();
   }
@@ -161,9 +165,9 @@ public class ScreenDetails
     {
       Field field = rowFields.get (i);
       String text = field.getText ();
-      int column = field.getFirstLocation () % screenColumns;
+      int column = field.getFirstLocation () % screenDimensions.columns;
       int nextFieldNo = i + 1;
-      //      System.out.println (text);
+
       if (nextFieldNo < rowFields.size () && column == 1
           && ("Command ===>".equals (text) || "Option ===>".equals (text)))
       {
@@ -175,6 +179,8 @@ public class ScreenDetails
         if ((length == 66 || length == 48) && visible && modifiable)
         {
           tsoCommandField = nextField;
+          promptFieldLine = field.getFirstLocation () / 80;
+          //          System.out.printf ("Prompt line: %d%n", promptFieldLine);
           return true;
         }
       }
@@ -338,7 +344,7 @@ public class ScreenDetails
       return false;
     }
 
-    while (nextLine < screenRows)
+    while (nextLine < screenDimensions.rows)
     {
       rowFields = fieldManager.getRowFields (nextLine, linesPerDataset);
       if (rowFields.size () <= 1)
@@ -511,7 +517,7 @@ public class ScreenDetails
 
     List<Field> headings = fieldManager.getRowFields (4);
 
-    for (int row = 5; row < screenRows; row++)
+    for (int row = 5; row < screenDimensions.rows; row++)
     {
       List<Field> rowFields = fieldManager.getRowFields (row);
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))
@@ -581,7 +587,7 @@ public class ScreenDetails
     if (screenType == 0)
       return false;
 
-    for (int row = 5; row < screenRows; row++)
+    for (int row = 5; row < screenDimensions.rows; row++)
     {
       List<Field> rowFields = fieldManager.getRowFields (row);
       if (rowFields.size () != 4 || rowFields.get (1).getText ().equals ("**End** "))

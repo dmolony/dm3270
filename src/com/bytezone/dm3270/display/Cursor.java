@@ -10,6 +10,7 @@ public class Cursor
   private static final boolean WITHOUT_CURSOR = false;
 
   private final Screen screen;
+  private final ScreenDimensions screenDimensions;
 
   private int currentPosition;
   private Field currentField;
@@ -23,6 +24,7 @@ public class Cursor
   public Cursor (Screen screen)
   {
     this.screen = screen;
+    this.screenDimensions = screen.getScreenDimensions ();
   }
 
   public void setVisible (boolean visible)
@@ -208,7 +210,7 @@ public class Cursor
     if (currentField == null)
       return;
 
-    int oldRow = currentPosition / screen.columns;
+    int oldRow = currentPosition / screenDimensions.columns;
     int oldPosition = currentPosition;
 
     while (true)
@@ -216,7 +218,7 @@ public class Cursor
       tab (false);
       if (currentPosition <= oldPosition)     // backwards or didn't move
         break;
-      int newRow = currentPosition / screen.columns;
+      int newRow = currentPosition / screenDimensions.columns;
       if (newRow != oldRow)
         break;
     }
@@ -235,11 +237,11 @@ public class Cursor
         break;
 
       case UP:
-        moveTo (currentPosition - screen.columns);
+        moveTo (currentPosition - screenDimensions.columns);
         break;
 
       case DOWN:
-        moveTo (currentPosition + screen.columns);
+        moveTo (currentPosition + screenDimensions.columns);
         break;
     }
   }
