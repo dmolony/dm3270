@@ -16,6 +16,7 @@ public class PenType1 implements Pen
   private int currentPosition;
   private boolean formattedScreen;
   private final ContextManager contextManager;
+  private final int columns;
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
@@ -25,6 +26,7 @@ public class PenType1 implements Pen
   {
     this.screenPositions = screenPositions;
     this.contextManager = contextManager;
+    columns = contextManager.getScreenDimensions ().columns;
 
     ScreenContext defaultContext = contextManager.getDefaultScreenContext ();
 
@@ -257,7 +259,7 @@ public class PenType1 implements Pen
   }
 
   @Override
-  public String getScreenText (int columns)
+  public String getScreenText ()
   {
     StringBuilder text = new StringBuilder ();
 

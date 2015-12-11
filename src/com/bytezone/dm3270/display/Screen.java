@@ -370,7 +370,7 @@ public class Screen extends Canvas implements DisplayScreen
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (pen.getScreenText (80));
+    text.append (pen.getScreenText ());
     text.append ("\n");
     text.append (fieldManager.getTotalsText ());
 

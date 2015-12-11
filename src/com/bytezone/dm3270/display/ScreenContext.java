@@ -14,7 +14,6 @@ public class ScreenContext
   final public boolean underscore;
   final public boolean reverseVideo;
   final public boolean blink;
-  //  final public boolean normalHighlight;
 
   final ScreenDimensions screenDimensions;
   FontDetails fontDetails;

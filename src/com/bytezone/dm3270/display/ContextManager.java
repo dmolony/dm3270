@@ -27,6 +27,11 @@ public class ContextManager
     return contextPool.get (0);
   }
 
+  ScreenDimensions getScreenDimensions ()
+  {
+    return screenDimensions;
+  }
+
   void setFontDetails (FontDetails fontDetails)
   {
     this.fontDetails = fontDetails;

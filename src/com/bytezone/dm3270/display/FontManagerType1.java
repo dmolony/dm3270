@@ -93,8 +93,8 @@ public class FontManagerType1 implements FontManager
       setMenuItem (menuFont, fontGroup, fontName, fontSelected, !fontExists);
     }
 
-    if (!fontSelected.isEmpty ())
-      statusBarFont = Font.font (fontSelected, getFontSize () - 2);
+    //    if (!fontSelected.isEmpty ())
+    //      statusBarFont = Font.font (fontSelected, getFontSize () - 2);
 
     // select Monospaced if there is still no font selected
     if (fontGroup.getSelectedToggle () == null)

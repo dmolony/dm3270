@@ -269,7 +269,7 @@ public final class ScreenPosition
           gc.setStroke (foreground);
           x += 0.5;     // stroke commands need to be offset for Windows
           y += 0.5;
-          double y2 = y + fontDetails.height - 2;
+          double y2 = y + fontDetails.height - 1;
           gc.strokeLine (x, y2, x + fontDetails.width, y2);
         }
       }
