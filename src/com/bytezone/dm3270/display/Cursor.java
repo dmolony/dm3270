@@ -21,10 +21,10 @@ public class Cursor
     LEFT, RIGHT, UP, DOWN
   }
 
-  public Cursor (Screen screen)
+  public Cursor (Screen screen, ScreenDimensions screenDimensions)
   {
     this.screen = screen;
-    this.screenDimensions = screen.getScreenDimensions ();
+    this.screenDimensions = screenDimensions;
   }
 
   public void setVisible (boolean visible)

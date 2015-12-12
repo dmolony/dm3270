@@ -31,30 +31,31 @@ import javafx.stage.Stage;
 
 public class Screen extends Canvas implements DisplayScreen
 {
-  private final static Toolkit defaultToolkit = Toolkit.getDefaultToolkit ();
-  private final static boolean SHOW_CURSOR = true;
-  private final static boolean HIDE_CURSOR = false;
-
+  private static final Toolkit defaultToolkit = Toolkit.getDefaultToolkit ();
+  private static final boolean SHOW_CURSOR = true;
+  private static final boolean HIDE_CURSOR = false;
   private static final byte[] saveScreenReplyTypes =
       { Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
         Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY };
 
-  private final ScreenPacker screenPacker;
   private final Function function;
 
   private final ScreenPosition[] screenPositions;
   private final FieldManager fieldManager;
   private final FontManager fontManager;
-  protected final ContextManager contextManager;
+  private final ContextManager contextManager;
+  private final HistoryManager historyManager;
+  private final ScreenPacker screenPacker;
 
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
   private ConsolePane consolePane;
 
   private final GraphicsContext gc;
+  private final ScreenDimensions screenDimensions;
 
   private final Pen pen;
-  private final Cursor cursor = new Cursor (this);
+  private final Cursor cursor;
 
   private byte currentAID;
   private byte replyMode;
@@ -64,9 +65,6 @@ public class Screen extends Canvas implements DisplayScreen
   private boolean keyboardLocked;
   private boolean insertMode;
   private boolean readModifiedAll = false;
-
-  private final HistoryManager historyManager;
-  private final ScreenDimensions screenDimensions;
 
   public enum BuildInstruction
   {
@@ -78,6 +76,7 @@ public class Screen extends Canvas implements DisplayScreen
   {
     this.screenDimensions = screenDimensions;
     this.function = function;
+    cursor = new Cursor (this, screenDimensions);
 
     gc = getGraphicsContext2D ();
 
@@ -156,7 +155,7 @@ public class Screen extends Canvas implements DisplayScreen
     return assistantStage;
   }
 
-  public void closeAssistantStage ()
+  public void close ()
   {
     assistantStage.closeWindow ();
   }

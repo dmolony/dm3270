@@ -244,6 +244,15 @@ public class Console extends Application
       replayStage.disconnect ();
 
     savePreferences ();
+
+    if (consoleWindowSaver != null)
+      consoleWindowSaver.saveWindow ();
+
+    if (spyWindowSaver != null)
+      spyWindowSaver.saveWindow ();
+
+    if (screen != null)
+      screen.close ();
   }
 
   private void savePreferences ()
@@ -269,15 +278,6 @@ public class Console extends Application
                optionStage.serverComboBox.getSelectionModel ().getSelectedItem ());
     prefs.put ("ClientName",
                optionStage.clientComboBox.getSelectionModel ().getSelectedItem ());
-
-    if (consoleWindowSaver != null)
-      consoleWindowSaver.saveWindow ();
-
-    if (spyWindowSaver != null)
-      spyWindowSaver.saveWindow ();
-
-    if (screen != null)
-      screen.closeAssistantStage ();
   }
 
   private Screen createScreen (Function function, Site site)

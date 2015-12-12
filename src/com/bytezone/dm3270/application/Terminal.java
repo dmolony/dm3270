@@ -171,7 +171,7 @@ public class Terminal extends Application
       windowSaver.saveWindow ();
 
     if (screen != null)
-      screen.closeAssistantStage ();
+      screen.close ();
   }
 
   public static void main (String[] args)
