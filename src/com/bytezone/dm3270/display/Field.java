@@ -100,7 +100,7 @@ public class Field implements Iterable<ScreenPosition>
     int cursorLocation = screen.getScreenCursor ().getLocation ();
     if (cursorLocation >= startPosition)
       return cursorLocation - startPosition;
-    return screen.screenSize - startPosition + cursorLocation;
+    return screenDimensions.size - startPosition + cursorLocation;
   }
 
   public boolean isHidden ()

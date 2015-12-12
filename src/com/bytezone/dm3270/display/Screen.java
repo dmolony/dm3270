@@ -59,10 +59,6 @@ public class Screen extends Canvas implements DisplayScreen
   private final int xOffset = 4;              // padding left and right
   private final int yOffset = 4;              // padding top and bottom
 
-  //  public final int rows;
-  //  public final int columns;
-  public final int screenSize;
-
   private byte currentAID;
   private byte replyMode;
   private byte[] replyTypes = new byte[0];
@@ -84,7 +80,6 @@ public class Screen extends Canvas implements DisplayScreen
       PluginsStage pluginsStage, Site site)
   {
     this.screenDimensions = screenDimensions;
-    screenSize = screenDimensions.rows * screenDimensions.columns;
     this.function = function;
 
     gc = getGraphicsContext2D ();
@@ -95,7 +90,7 @@ public class Screen extends Canvas implements DisplayScreen
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
 
-    screenPositions = new ScreenPosition[screenSize];
+    screenPositions = new ScreenPosition[screenDimensions.size];
     pen = new PenType1 (screenPositions, gc, contextManager);
 
     screenPacker = new ScreenPacker (pen, fieldManager);
