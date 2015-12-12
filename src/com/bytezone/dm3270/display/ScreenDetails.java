@@ -29,8 +29,6 @@ public class ScreenDetails
 
   private final FieldManager fieldManager;
   private final ScreenDimensions screenDimensions;
-  //  private final int screenColumns;
-  //  private final int screenRows;
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -53,8 +51,6 @@ public class ScreenDetails
   {
     this.fieldManager = fieldManager;
     this.screenDimensions = screenDimensions;
-    //    screenRows = rows;
-    //    screenColumns = columns;
   }
 
   // called by FieldManager after building a new screen
@@ -725,14 +721,16 @@ public class ScreenDetails
     StringBuilder text = new StringBuilder ();
 
     text.append ("Screen details:\n");
-    text.append (String.format ("TSO screen ..... %s%n", isTSOCommandScreen));
-    text.append (String.format ("Prompt field ... %s%n", tsoCommandField));
-    text.append (String.format ("Dataset list ... %s%n", isDatasetList));
-    text.append (String.format ("Members list ... %s%n", isMemberList));
-    text.append (String.format ("Userid/prefix .. %s / %s%n", userid, prefix));
-    text.append (String.format ("Datasets for ... %s%n", datasetsMatching));
-    text.append (String.format ("Volume ......... %s%n", datasetsOnVolume));
-    text.append (String.format ("Datasets ....... %s%n",
+    text.append (String.format ("TSO screen ........ %s%n", isTSOCommandScreen));
+    text.append (String.format ("Prompt field ...... %s%n", tsoCommandField));
+    text.append (String.format ("Dataset list ...... %s%n", isDatasetList));
+    text.append (String.format ("Members list ...... %s%n", isMemberList));
+    text.append (String.format ("Prompt line ....... %d%n", promptFieldLine));
+    text.append (String.format ("Current dataset ... %s%n", currentDataset));
+    text.append (String.format ("Userid/prefix ..... %s / %s%n", userid, prefix));
+    text.append (String.format ("Datasets for ...... %s%n", datasetsMatching));
+    text.append (String.format ("Volume ............ %s%n", datasetsOnVolume));
+    text.append (String.format ("Datasets .......... %s%n",
                                 datasets == null ? "" : datasets.size ()));
 
     return text.toString ();
