@@ -261,14 +261,6 @@ public class Screen extends Canvas implements DisplayScreen
     setReplyMode (savedReplyMode, savedReplyTypes);
   }
 
-  // called from FontManager.selectFont()
-  void resize ()
-  {
-    ((Stage) getScene ().getWindow ()).sizeToScene ();
-    eraseScreen ();
-    draw ();
-  }
-
   // called from this.eraseAllUnprotected()
   // called from this.resize()
   // called from Write.process()
@@ -302,6 +294,15 @@ public class Screen extends Canvas implements DisplayScreen
     screenPositions[position].draw (hasCursor);
   }
 
+  // called from FontManager.selectFont()
+  //  void resize ()
+  //  {
+  //    ((Stage) getScene ().getWindow ()).sizeToScene ();
+  //    eraseScreen ();
+  //    draw ();
+  //  }
+
+  // called from FontManager()
   // called from FontManager.setFont()
   void fontChanged (FontDetails fontDetails)
   {
@@ -313,6 +314,13 @@ public class Screen extends Canvas implements DisplayScreen
     gc.setFont (fontDetails.font);
     if (consolePane != null)
       consolePane.setStatusFont ();
+
+    if (screenPositions != null)
+    {
+      ((Stage) getScene ().getWindow ()).sizeToScene ();
+      eraseScreen ();
+      draw ();
+    }
   }
 
   void eraseScreen ()

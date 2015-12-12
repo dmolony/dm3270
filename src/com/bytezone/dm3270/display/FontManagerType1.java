@@ -38,9 +38,9 @@ public class FontManagerType1 implements FontManager
   {
     this.screen = screen;
 
-    String fontSelected = prefs.get ("FontName", "Monospaced");
+    String nameSelected = prefs.get ("FontName", "Monospaced");
     String sizeSelected = prefs.get ("FontSize", "16");
-    setFont (fontSelected, Integer.parseInt (sizeSelected));
+    setFont (nameSelected, Integer.parseInt (sizeSelected));
 
     menuFont = getMenu ();
   }
@@ -191,13 +191,11 @@ public class FontManagerType1 implements FontManager
       return;
 
     setFont (name, size);
-    screen.resize ();
   }
 
   private void setFont (String name, int size)
   {
-    Font font = Font.font (name, size);
-    fontDetails = new FontDetails (name, size, font);
+    fontDetails = new FontDetails (name, size, Font.font (name, size));
     statusBarFont = Font.font (name, size - 2);
     screen.fontChanged (fontDetails);
   }
