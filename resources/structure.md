@@ -1,11 +1,11 @@
 ```
-http://cloc.sourceforge.net v 1.64  T=0.41 s (392.9 files/s, 46406.7 lines/s)
+http://cloc.sourceforge.net v 1.64  T=0.53 s (302.0 files/s, 35844.1 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Java                           161           3167            827          15021
+Java                           159           3190            868          14814
 -------------------------------------------------------------------------------
-SUM:                           161           3167            827          15021
+SUM:                           159           3190            868          14814
 -------------------------------------------------------------------------------
 .
 └── dm3270
@@ -16,20 +16,17 @@ SUM:                           161           3167            827          15021
     │   ├── ConsoleKeyEvent.java
     │   ├── ConsoleKeyPress.java
     │   ├── ConsolePane.java
-    │   ├── GuiFactory.java
     │   ├── KeyboardStatusChangedEvent.java
     │   ├── KeyboardStatusListener.java
     │   ├── Mainframe.java
     │   ├── MainframeStage.java
     │   ├── OptionStage.java
     │   ├── Parameters.java
-    │   ├── PreferencesStage.java
     │   ├── ReplayStage.java
     │   ├── Site.java
     │   ├── SiteListStage.java
     │   ├── SpyPane.java
-    │   ├── Utility.java
-    │   ├── WindowSaver.java
+    │   ├── Terminal.java
     │   └── mf.txt
     ├── assistant
     │   ├── AbstractTransferTab.java
@@ -45,6 +42,7 @@ SUM:                           161           3167            827          15021
     │   ├── DatasetTab.java
     │   ├── DatasetTable.java
     │   ├── DatasetTreeTable.java
+    │   ├── DefaultTreeTable.java
     │   ├── FileSelectionListener.java
     │   ├── FilesTab.java
     │   ├── TSOCommand.java
@@ -71,7 +69,9 @@ SUM:                           161           3167            827          15021
     │   ├── Command.java
     │   ├── EraseAllUnprotectedCommand.java
     │   ├── ReadCommand.java
+    │   ├── ReadPartitionQuery.java
     │   ├── ReadStructuredFieldCommand.java
+    │   ├── SystemMessage.java
     │   ├── WriteCommand.java
     │   ├── WriteControlCharacter.java
     │   └── WriteStructuredFieldCommand.java
@@ -83,18 +83,21 @@ SUM:                           161           3167            827          15021
     │   ├── Field.java
     │   ├── FieldChangeListener.java
     │   ├── FieldManager.java
-    │   ├── FontData.java
+    │   ├── FontDetails.java
     │   ├── FontManager.java
+    │   ├── FontManagerType1.java
+    │   ├── HistoryManager.java
+    │   ├── HistoryScreen.java
     │   ├── Pen.java
+    │   ├── PenType1.java
     │   ├── Screen.java
     │   ├── ScreenChangeListener.java
     │   ├── ScreenContext.java
     │   ├── ScreenDetails.java
-    │   ├── ScreenHistory.java
+    │   ├── ScreenDimensions.java
     │   ├── ScreenPacker.java
     │   ├── ScreenPosition.java
-    │   ├── TSOCommandListener.java
-    │   └── UserScreen.java
+    │   └── TSOCommandListener.java
     ├── extended
     │   ├── AbstractExtendedCommand.java
     │   ├── BindCommand.java
@@ -106,21 +109,18 @@ SUM:                           161           3167            827          15021
     │   ├── ContentsRecord.java
     │   ├── DataRecord.java
     │   ├── ErrorRecord.java
-    │   ├── FileStructure.java
     │   ├── FileTransferInboundSF.java
     │   ├── FileTransferOutboundSF.java
     │   ├── FileTransferSF.java
-    │   ├── LinePrinter.java
     │   ├── RecordNumber.java
     │   ├── RecordSize.java
-    │   ├── Report.java
     │   ├── Transfer.java
-    │   ├── TransferRecord.java
-    │   └── TransferStage.java
+    │   └── TransferRecord.java
     ├── orders
     │   ├── BufferAddress.java
     │   ├── BufferAddressSource.java
     │   ├── EraseUnprotectedToAddressOrder.java
+    │   ├── FormatControlOrder.java
     │   ├── GraphicsEscapeOrder.java
     │   ├── InsertCursorOrder.java
     │   ├── ModifyFieldOrder.java
@@ -156,8 +156,6 @@ SUM:                           161           3167            827          15021
     │   ├── Summary.java
     │   ├── Transparency.java
     │   └── UsableArea.java
-    ├── screens
-    │   └── ScreenData.java
     ├── session
     │   ├── Session.java
     │   ├── SessionReader.java
@@ -174,11 +172,10 @@ SUM:                           161           3167            827          15021
     ├── structuredfields
     │   ├── DefaultStructuredField.java
     │   ├── EraseResetSF.java
-    │   ├── Inbound3270DS.java
     │   ├── Outbound3270DS.java
     │   ├── QueryReplySF.java
     │   ├── ReadPartitionSF.java
-    │   ├── SetReplyMode.java
+    │   ├── SetReplyModeSF.java
     │   └── StructuredField.java
     └── telnet
         ├── TN3270ExtendedSubcommand.java
@@ -188,5 +185,5 @@ SUM:                           161           3167            827          15021
         ├── TelnetSubcommand.java
         └── TerminalTypeSubcommand.java
 
-17 directories, 162 files
+16 directories, 160 files
 ```

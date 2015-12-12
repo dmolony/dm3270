@@ -176,7 +176,6 @@ public class ScreenDetails
         {
           tsoCommandField = nextField;
           promptFieldLine = field.getFirstLocation () / 80;
-          //          System.out.printf ("Prompt line: %d%n", promptFieldLine);
           return true;
         }
       }
