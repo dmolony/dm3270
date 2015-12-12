@@ -27,11 +27,12 @@ public class FontManagerType1 implements FontManager
 
   private final ToggleGroup fontGroup = new ToggleGroup ();
   private final ToggleGroup sizeGroup = new ToggleGroup ();
-  private Font statusBarFont;
-  private final Screen screen;
   private final RadioMenuItem[] fontSizeItems = new RadioMenuItem[fontSizes.length];
-  private FontDetails fontDetails;
   private final Menu menuFont;
+
+  private final Screen screen;
+  private FontDetails fontDetails;
+  private Font statusBarFont;
 
   public FontManagerType1 (Screen screen, Preferences prefs)
   {
@@ -41,7 +42,7 @@ public class FontManagerType1 implements FontManager
     String sizeSelected = prefs.get ("FontSize", "16");
     setFont (fontSelected, Integer.parseInt (sizeSelected));
 
-    menuFont = getMenu ();        // sets defaultFont
+    menuFont = getMenu ();
   }
 
   // called from ConsolePane.setHistoryBar()
