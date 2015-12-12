@@ -56,9 +56,6 @@ public class Screen extends Canvas implements DisplayScreen
   private final Pen pen;
   private final Cursor cursor = new Cursor (this);
 
-  private final int xOffset = 4;              // padding left and right
-  private final int yOffset = 4;              // padding top and bottom
-
   private byte currentAID;
   private byte replyMode;
   private byte[] replyTypes = new byte[0];
@@ -122,6 +119,7 @@ public class Screen extends Canvas implements DisplayScreen
     return fieldManager;
   }
 
+  @Override
   public ScreenDimensions getScreenDimensions ()
   {
     return screenDimensions;
@@ -309,8 +307,9 @@ public class Screen extends Canvas implements DisplayScreen
   void fontChanged (FontDetails fontDetails)
   {
     contextManager.setFontDetails (fontDetails);
-    setWidth (fontDetails.width * screenDimensions.columns + xOffset * 2);
-    setHeight (fontDetails.height * screenDimensions.rows + yOffset * 2);
+    setWidth (fontDetails.width * screenDimensions.columns
+        + screenDimensions.xOffset * 2);
+    setHeight (fontDetails.height * screenDimensions.rows + screenDimensions.yOffset * 2);
 
     gc.setFont (fontDetails.font);
     if (consolePane != null)

@@ -17,14 +17,10 @@ public class HistoryManager
   private boolean keyboardLocked;       // save previous setting
   private boolean paused;
   private int currentScreen = -1;       // never been set
-  //  private final int rows;
-  //  private final int columns;
 
   public HistoryManager (ScreenDimensions screenDimensions, ContextManager contextManager,
       FieldManager fieldManager)
   {
-    //    this.rows = rows;
-    //    this.columns = columns;
     this.screenDimensions = screenDimensions;
     this.contextManager = contextManager;
     this.fieldManager = fieldManager;
@@ -70,8 +66,8 @@ public class HistoryManager
       if (currentScreen > 0)
         --currentScreen;
     }
-    screens.add (new HistoryScreen (screenDimensions.rows, screenDimensions.columns,
-        command, contextManager, fieldManager));
+    screens.add (new HistoryScreen (screenDimensions, command, contextManager,
+        fieldManager));
   }
 
   public int size ()

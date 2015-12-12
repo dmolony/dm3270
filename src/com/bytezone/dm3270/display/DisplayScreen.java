@@ -4,6 +4,8 @@ public interface DisplayScreen
 {
   Pen getPen ();
 
+  ScreenDimensions getScreenDimensions ();
+
   ScreenPosition getScreenPosition (int position);
 
   ScreenPosition[] getScreenPositions ();

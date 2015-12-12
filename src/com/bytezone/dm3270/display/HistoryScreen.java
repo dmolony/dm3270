@@ -12,12 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class HistoryScreen extends Canvas implements DisplayScreen
 {
   private ScreenPosition[] screenPositions;
-  private final int rows;
-  private final int columns;
-  private final int screenSize;
-
-  private final int xOffset = 4;      // padding left and right
-  private final int yOffset = 4;      // padding top and bottom
+  private final ScreenDimensions screenDimensions;
 
   private final AIDCommand command;
   private final ContextManager contextManager;
@@ -26,17 +21,21 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   private final GraphicsContext gc;
 
   // created by HistoryManager.add()
-  HistoryScreen (int rows, int columns, AIDCommand command, ContextManager contextManager,
-      FieldManager fieldManager)
+  HistoryScreen (ScreenDimensions screenDimensions, AIDCommand command,
+      ContextManager contextManager, FieldManager fieldManager)
   {
+    this.screenDimensions = screenDimensions;
     this.contextManager = contextManager;
     this.fieldManager = fieldManager;
     this.command = command;
-    this.rows = rows;
-    this.columns = columns;
-    screenSize = rows * columns;
 
     gc = getGraphicsContext2D ();
+  }
+
+  @Override
+  public ScreenDimensions getScreenDimensions ()
+  {
+    return screenDimensions;
   }
 
   public boolean matches (AIDCommand command)
@@ -56,12 +55,13 @@ public class HistoryScreen extends Canvas implements DisplayScreen
 
   private void createScreen (FontDetails fontDetails)
   {
-    setWidth (fontDetails.width * columns + xOffset * 2);
-    setHeight (fontDetails.height * rows + yOffset * 2);
+    setWidth (fontDetails.width * screenDimensions.columns
+        + screenDimensions.xOffset * 2);
+    setHeight (fontDetails.height * screenDimensions.rows + screenDimensions.yOffset * 2);
 
     gc.setFont (fontDetails.font);
 
-    screenPositions = new ScreenPosition[screenSize];
+    screenPositions = new ScreenPosition[screenDimensions.size];
     pen = new PenType1 (screenPositions, gc, contextManager);
 
     clearScreen ();
@@ -114,7 +114,8 @@ public class HistoryScreen extends Canvas implements DisplayScreen
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
-    text.append (String.format ("Rows %d, Columns %d%n", rows, columns));
+    text.append (String.format ("Rows %d, Columns %d%n", screenDimensions.rows,
+                                screenDimensions.columns));
     for (ScreenPosition sp : screenPositions)
     {
       text.append (sp);
