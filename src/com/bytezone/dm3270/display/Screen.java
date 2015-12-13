@@ -294,15 +294,7 @@ public class Screen extends Canvas implements DisplayScreen
     screenPositions[position].draw (hasCursor);
   }
 
-  // called from FontManager.selectFont()
-  //  void resize ()
-  //  {
-  //    ((Stage) getScene ().getWindow ()).sizeToScene ();
-  //    eraseScreen ();
-  //    draw ();
-  //  }
-
-  // called from FontManager()
+  // called from FontManager() before we are fully initialised
   // called from FontManager.setFont()
   void fontChanged (FontDetails fontDetails)
   {
