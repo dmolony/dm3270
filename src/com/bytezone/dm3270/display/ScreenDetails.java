@@ -44,6 +44,7 @@ public class ScreenDetails
   private int promptFieldLine;
 
   private String currentDataset = "";
+  private String singleDataset = "";
   private String userid = "";
   private String prefix = "";
 
@@ -64,6 +65,7 @@ public class ScreenDetails
     datasets.clear ();
     members.clear ();
     currentDataset = "";
+    singleDataset = "";
     promptFieldLine = -1;
 
     List<Field> screenFields = fieldManager.getFields ();
@@ -126,6 +128,16 @@ public class ScreenDetails
   public List<Dataset> getMembers ()
   {
     return members;
+  }
+
+  public String getCurrentDataset ()
+  {
+    return currentDataset;
+  }
+
+  public String getSingleDataset ()
+  {
+    return singleDataset;
   }
 
   private void checkMenu ()
@@ -689,7 +701,12 @@ public class ScreenDetails
           }
           Matcher matcher = datasetNamePattern.matcher (datasetName);
           if (matcher.matches ())
+          {
             System.out.printf ("%-11s %-20s %s%n", text1, datasetName, memberName);
+            singleDataset = datasetName;
+            if (!memberName.isEmpty ())
+              singleDataset += "(" + memberName + ")";
+          }
         }
       }
       fldNo++;

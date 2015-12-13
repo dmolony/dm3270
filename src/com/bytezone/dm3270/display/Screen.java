@@ -111,6 +111,7 @@ public class Screen extends Canvas implements DisplayScreen
     this.consolePane = consolePane;
     assistantStage.setConsolePane (consolePane);
     addKeyboardStatusChangeListener (consolePane);
+    fieldManager.addScreenChangeListener (consolePane);
   }
 
   public FieldManager getFieldManager ()

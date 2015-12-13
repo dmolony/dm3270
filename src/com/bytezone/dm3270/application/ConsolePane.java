@@ -14,6 +14,8 @@ import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.HistoryManager;
 import com.bytezone.dm3270.display.HistoryScreen;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
@@ -42,8 +44,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
-public class ConsolePane extends BorderPane
-    implements FieldChangeListener, CursorMoveListener, KeyboardStatusListener
+public class ConsolePane extends BorderPane implements FieldChangeListener,
+    CursorMoveListener, KeyboardStatusListener, ScreenChangeListener
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;
@@ -65,14 +67,16 @@ public class ConsolePane extends BorderPane
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
 
-  private HistoryManager screenHistory;    // null unless showing screen history 
+  private HistoryManager screenHistory;             // null unless showing screen history 
 
-  private HBox historyBox;
-  private final Label historyLabel = new Label ();
-
+  private HBox historyBox;                          // status display area
+  private final Label historyLabel = new Label ();  // status text
   private final BorderPane statusPane;
 
   private final MenuBar menuBar = new MenuBar ();
+  private MenuItem menuItemUpload;
+  private MenuItem menuItemDownload;
+
   private final FontManager fontManager;
   private final ScreenDimensions screenDimensions;
 
@@ -141,9 +145,13 @@ public class ConsolePane extends BorderPane
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
     MenuItem menuItemAssistant =
-        getMenuItem ("TSO Commands", e -> screen.getAssistantStage ().show (), KeyCode.T);
+        getMenuItem ("Transfers", e -> screen.getAssistantStage ().show (), KeyCode.T);
+    menuItemUpload = getMenuItem ("Upload", e -> upload (), KeyCode.U);
+    menuItemDownload = getMenuItem ("Download", e -> download (), KeyCode.D);
 
-    menuCommands.getItems ().addAll (menuItemToggleScreens, menuItemAssistant);
+    menuCommands.getItems ().addAll (menuItemToggleScreens, menuItemAssistant,
+                                     new SeparatorMenuItem (), menuItemUpload,
+                                     menuItemDownload);
 
     if (!SYSTEM_MENUBAR)
     {
@@ -165,6 +173,16 @@ public class ConsolePane extends BorderPane
     menuItem
         .setAccelerator (new KeyCodeCombination (keyCode, KeyCombination.SHORTCUT_DOWN));
     return menuItem;
+  }
+
+  private void upload ()
+  {
+    System.out.println ("upload " + menuItemUpload.getUserData ());
+  }
+
+  private void download ()
+  {
+    System.out.println ("download " + menuItemDownload.getUserData ());
   }
 
   private BorderPane getStatusBar ()
@@ -206,12 +224,6 @@ public class ConsolePane extends BorderPane
     fieldType.setFont (font);
     fieldLocation.setFont (font);
   }
-
-  // called from Screen.characterSizeChanged()
-  //  public void setFontDetails (FontDetails fontDetails)
-  //  {
-  //    setStatusFont ();
-  //  }
 
   private void setHistoryBar ()
   {
@@ -376,5 +388,25 @@ public class ConsolePane extends BorderPane
   {
     setStatusText (evt.keyboardLocked ? evt.keyName : "       ");
     insertMode.setText (evt.insertMode ? "Insert" : "      ");
+  }
+
+  @Override
+  public void screenChanged (ScreenDetails screenDetails)
+  {
+    String datasetName = screenDetails.getSingleDataset ();
+    if (datasetName.isEmpty ())
+    {
+      menuItemDownload.setUserData (null);
+      menuItemUpload.setUserData (null);
+      menuItemDownload.setDisable (true);
+      menuItemUpload.setDisable (true);
+    }
+    else
+    {
+      menuItemDownload.setUserData (datasetName);
+      menuItemUpload.setUserData (datasetName);
+      menuItemDownload.setDisable (false);
+      menuItemUpload.setDisable (false);
+    }
   }
 }
