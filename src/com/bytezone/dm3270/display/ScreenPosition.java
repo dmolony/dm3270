@@ -24,12 +24,12 @@ public final class ScreenPosition
   public static final byte HORIZONTAL_LINE = (byte) 0xA2;
   public static final byte VERTICAL_LINE = (byte) 0x85;
 
-  private StartFieldAttribute startFieldAttribute;
-  private final List<Attribute> attributes = new ArrayList<> ();
-
   private final GraphicsContext gc;
   private final ScreenDimensions screenDimensions;
-  final int position;
+  private final int position;
+
+  private StartFieldAttribute startFieldAttribute;
+  private final List<Attribute> attributes = new ArrayList<> ();
 
   private byte value;
   private boolean isGraphics;
@@ -50,10 +50,45 @@ public final class ScreenPosition
       ScreenDimensions screenDimensions, ScreenContext screenContext)
   {
     this.position = position;
-    this.gc = gc;
-    this.screenContext = screenContext;
     this.screenDimensions = screenDimensions;
+    this.gc = gc;
+
+    this.screenContext = screenContext;
     reset ();
+  }
+
+  // called from this()
+  // called from Pen.clearScreen()
+  // called from Pen.startField()
+  // called from Pen.write()
+  // called from Pen.writeGraphics()
+  void reset ()
+  {
+    isVisible = true;
+    value = 0;
+    isGraphics = false;
+    startFieldAttribute = null;
+    attributes.clear ();
+  }
+
+  // called from Pen.write()
+  // called from Pen.eraseEOF()
+  // called from Cursor.typeChar()
+  // called from Field.erase()
+  // called from Field.clearData()
+  // called from Field.pull()
+  // called from Field.push()
+  // called from Field.setText()
+  void setChar (byte value)
+  {
+    this.value = value;
+    isGraphics = false;
+  }
+
+  void setGraphicsChar (byte value)
+  {
+    this.value = value;
+    isGraphics = true;
   }
 
   StartFieldAttribute getStartFieldAttribute ()
@@ -82,18 +117,14 @@ public final class ScreenPosition
     return attributes;
   }
 
+  int getPosition ()
+  {
+    return position;
+  }
+
   // called by Field when deleting a character
   void clearAttributes ()
   {
-    attributes.clear ();
-  }
-
-  void reset ()
-  {
-    isVisible = true;
-    value = 0;
-    isGraphics = false;
-    startFieldAttribute = null;
     attributes.clear ();
   }
 
@@ -126,18 +157,6 @@ public final class ScreenPosition
   boolean isGraphicsChar ()
   {
     return isGraphics;
-  }
-
-  public void setChar (byte value)
-  {
-    this.value = value;
-    isGraphics = false;
-  }
-
-  void setGraphicsChar (byte value)
-  {
-    this.value = value;
-    isGraphics = true;
   }
 
   // used by Field.getText()

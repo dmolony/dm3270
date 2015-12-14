@@ -31,8 +31,8 @@ public class Field implements Iterable<ScreenPosition>
     screenPositions = new ArrayList<> (positions);
     startFieldAttribute = firstScreenPosition.getStartFieldAttribute ();
 
-    startPosition = firstScreenPosition.position;
-    endPosition = lastScreenPosition.position;
+    startPosition = firstScreenPosition.getPosition ();
+    endPosition = lastScreenPosition.getPosition ();
   }
 
   // link two unprotected fields to each other
