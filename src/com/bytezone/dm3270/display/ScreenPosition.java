@@ -28,6 +28,7 @@ public final class ScreenPosition
   private final List<Attribute> attributes = new ArrayList<> ();
 
   private final GraphicsContext gc;
+  private final ScreenDimensions screenDimensions;
   final int position;
 
   private byte value;
@@ -45,11 +46,13 @@ public final class ScreenPosition
       charString[i] = (char) i + "";
   }
 
-  public ScreenPosition (int position, GraphicsContext gc, ScreenContext screenContext)
+  public ScreenPosition (int position, GraphicsContext gc,
+      ScreenDimensions screenDimensions, ScreenContext screenContext)
   {
     this.position = position;
     this.gc = gc;
     this.screenContext = screenContext;
+    this.screenDimensions = screenDimensions;
     reset ();
   }
 
@@ -234,7 +237,7 @@ public final class ScreenPosition
   void draw (boolean hasCursor)
   {
     FontDetails fontDetails = screenContext.fontDetails;
-    ScreenDimensions screenDimensions = screenContext.screenDimensions;
+    //    ScreenDimensions screenDimensions = screenContext.screenDimensions;
 
     double x = 4 + position % screenDimensions.columns * fontDetails.width;
     double y = 4 + position / screenDimensions.columns * fontDetails.height;

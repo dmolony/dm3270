@@ -80,14 +80,14 @@ public class Screen extends Canvas implements DisplayScreen
 
     gc = getGraphicsContext2D ();
 
-    contextManager = new ContextManager (screenDimensions);
+    contextManager = new ContextManager ();
     fontManager = new FontManagerType1 (this, prefs);
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
-    pen = new PenType1 (screenPositions, gc, contextManager);
+    pen = new PenType1 (screenPositions, gc, contextManager, screenDimensions);
 
     screenPacker = new ScreenPacker (pen, fieldManager);
     screenPacker.addTSOCommandListener (assistantStage);

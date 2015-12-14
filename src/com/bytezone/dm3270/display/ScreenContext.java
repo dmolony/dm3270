@@ -15,11 +15,10 @@ public class ScreenContext
   final public boolean reverseVideo;
   final public boolean blink;
 
-  final ScreenDimensions screenDimensions;
   FontDetails fontDetails;
 
   public ScreenContext (Color foregroundColor, Color backgroundColor, byte highlight,
-      boolean highIntensity, FontDetails fontDetails, ScreenDimensions screenDimensions)
+      boolean highIntensity, FontDetails fontDetails)
   {
     this.foregroundColor = foregroundColor;
     this.backgroundColor = backgroundColor;
@@ -27,7 +26,6 @@ public class ScreenContext
     this.highIntensity = highIntensity;
 
     this.fontDetails = fontDetails;
-    this.screenDimensions = screenDimensions;
 
     this.underscore = highlight == (byte) 0xF4;
     this.reverseVideo = highlight == (byte) 0xF2;
@@ -50,11 +48,6 @@ public class ScreenContext
         && this.backgroundColor == backgroundColor     //
         && this.highlight == highlight                 //
         && this.highIntensity == highIntensity;
-  }
-
-  public ScreenDimensions getScreenDimensions ()
-  {
-    return screenDimensions;
   }
 
   public void setFontDetails (FontDetails fontDetails)

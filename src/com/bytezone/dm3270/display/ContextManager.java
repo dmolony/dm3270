@@ -12,22 +12,15 @@ public class ContextManager
 {
   private static final List<ScreenContext> contextPool = new ArrayList<> ();
   private FontDetails fontDetails;
-  private final ScreenDimensions screenDimensions;
 
-  public ContextManager (ScreenDimensions screenDimensions)
+  public ContextManager ()
   {
-    this.screenDimensions = screenDimensions;
     addNewContext (ColorAttribute.colors[0], ColorAttribute.colors[8], (byte) 0, false);
   }
 
   public ScreenContext getDefaultScreenContext ()
   {
     return contextPool.get (0);
-  }
-
-  ScreenDimensions getScreenDimensions ()
-  {
-    return screenDimensions;
   }
 
   void setFontDetails (FontDetails fontDetails)
@@ -109,7 +102,7 @@ public class ContextManager
       byte highlight, boolean highIntensity)
   {
     ScreenContext newContext = new ScreenContext (foregroundColor, backgroundColor,
-        highlight, highIntensity, fontDetails, screenDimensions);
+        highlight, highIntensity, fontDetails);
     contextPool.add (newContext);
     return newContext;
   }

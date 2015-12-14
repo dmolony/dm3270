@@ -62,7 +62,7 @@ public class HistoryScreen extends Canvas implements DisplayScreen
     gc.setFont (fontDetails.font);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
-    pen = new PenType1 (screenPositions, gc, contextManager);
+    pen = new PenType1 (screenPositions, gc, contextManager, screenDimensions);
 
     clearScreen ();
     for (Order order : command)

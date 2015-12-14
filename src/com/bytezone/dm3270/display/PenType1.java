@@ -21,15 +21,15 @@ public class PenType1 implements Pen
 
   // created by Screen and HistoryScreen
   PenType1 (ScreenPosition[] screenPositions, GraphicsContext gc,
-      ContextManager contextManager)
+      ContextManager contextManager, ScreenDimensions screenDimensions)
   {
     this.screenPositions = screenPositions;
-    columns = contextManager.getScreenDimensions ().columns;
+    columns = screenDimensions.columns;
 
     ScreenContext defaultContext = contextManager.getDefaultScreenContext ();
 
     for (int i = 0; i < screenPositions.length; i++)
-      screenPositions[i] = new ScreenPosition (i, gc, defaultContext);
+      screenPositions[i] = new ScreenPosition (i, gc, screenDimensions, defaultContext);
   }
 
   // called from Screen.clearScreen()
