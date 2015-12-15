@@ -1,5 +1,8 @@
 package com.bytezone.dm3270.application;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -63,6 +66,8 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private TelnetListener telnetListener;
   private final TelnetState telnetState = new TelnetState ();
   private int commandHeaderCount;
+  private final Site server;
+  private Site replaySite;
 
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
@@ -84,6 +89,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   {
     this.screen = screen;
     this.screenDimensions = screen.getScreenDimensions ();
+    this.server = server;
 
     this.fontManager = screen.getFontManager ();
     pluginsStage.setConsolePane (this);
@@ -137,6 +143,11 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     status.setText (text);
   }
 
+  void setReplayServer (Site serverSite)
+  {
+    replaySite = serverSite;
+  }
+
   private Menu getCommandsMenu ()
   {
     Menu menuCommands = new Menu ("Commands");
@@ -183,6 +194,40 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private void download ()
   {
     System.out.println ("download " + menuItemDownload.getUserData ());
+    String fileName = (String) menuItemDownload.getUserData ();
+    Site site = server != null ? server : replaySite != null ? replaySite : null;
+    String folderName = site != null ? site.getFolder () : "";
+
+    Path filePath =
+        Paths.get (System.getProperty ("user.home"), "dm3270", "files", folderName);
+    if (Files.notExists (filePath))
+    {
+      System.out.println ("Path does not exist: " + filePath);
+      return;
+    }
+
+    String buildPath = filePath.toString ();
+
+    String[] segments = fileName.split ("\\.");         // split into segments
+    int last = segments.length - 1;
+    if (last >= 0 && segments[last].endsWith (")"))     // is last segment a pds member?
+    {
+      int pos = segments[last].indexOf ('(');
+      segments[last] = segments[last].substring (0, pos);     // remove '(member name)'
+    }
+
+    int nextSegment = 0;
+
+    while (Files.notExists (Paths.get (buildPath, fileName)))
+    {
+      if (nextSegment >= segments.length)
+        break;
+      Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
+      if (Files.notExists (nextPath))
+        break;
+      buildPath = nextPath.toString ();
+    }
+    System.out.println ("Use: " + Paths.get (buildPath, fileName));
   }
 
   private BorderPane getStatusBar ()
@@ -318,7 +363,9 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
       telnetState.write (command.getTelnetData ());
   }
 
-  public void connect (Site server)
+  // called from Console.startSelectedFunction()
+  // called from Terminal.start()
+  void connect ()
   {
     if (server == null)
       throw new IllegalArgumentException ("Server must not be null");

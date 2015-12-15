@@ -121,12 +121,12 @@ public class Session implements Iterable<SessionRecord>
     return sessionRecords.size ();
   }
 
-  private String getClientName ()
+  public String getClientName ()
   {
     return clientName == null ? "Unknown" : clientName;
   }
 
-  private String getServerName ()
+  public String getServerName ()
   {
     return serverName == null ? "Unknown" : serverName;
   }

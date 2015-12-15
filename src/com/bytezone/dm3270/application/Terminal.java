@@ -102,7 +102,7 @@ public class Terminal extends Application
           serverSite);
 
       consolePane = new ConsolePane (screen, serverSite, pluginsStage);
-      consolePane.connect (serverSite);
+      consolePane.connect ();
       Scene scene = new Scene (consolePane);
 
       windowSaver = new WindowSaver (prefs, primaryStage, "Terminal");

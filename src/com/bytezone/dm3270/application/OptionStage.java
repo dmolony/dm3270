@@ -122,7 +122,8 @@ public class OptionStage extends Stage
     outerPane.setBottom (buttonsBox);
     setMode (release ? Mode.RELEASE : Mode.DEBUG);
 
-    functionsGroup.selectedToggleProperty ().addListener ( (ov, oldToggle, newToggle) -> {
+    functionsGroup.selectedToggleProperty ().addListener ( (ov, oldToggle, newToggle) ->
+    {
       if (newToggle != null)
         disableButtons ((String) newToggle.getUserData ());
     });
@@ -140,7 +141,7 @@ public class OptionStage extends Stage
       }
 
     if (!found)
-      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));// Terminal
+      functionsGroup.selectToggle (functionsGroup.getToggles ().get (2));   // Terminal
     disableButtons (optionSelected);
 
     editLocationButton.setOnAction (e -> editLocation ());

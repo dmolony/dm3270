@@ -99,7 +99,6 @@ public class ScreenDetails
     }
     else
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
-    System.out.println (this);
   }
 
   public Field getTSOCommandField ()

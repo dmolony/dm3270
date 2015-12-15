@@ -128,11 +128,6 @@ public class ReadStructuredFieldCommand extends Command
     return clientName;
   }
 
-  //  private List<StructuredField> getFieldList ()
-  //  {
-  //    return structuredFields;
-  //  }
-
   private static byte[] buildReply (int version)
   {
     Highlight highlight = new Highlight ();

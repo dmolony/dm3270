@@ -108,9 +108,10 @@ public class Console extends Application
         else
           try
           {
-            createScreen (Function.REPLAY, null);               // 124ms
-            Session session = new Session (screen, path);       // can throw Exception
-            setConsolePane (screen, null);                      // reassigns primaryStage
+            createScreen (Function.REPLAY, null);             // serverSite is null
+            Session session = new Session (screen, path);     // can throw Exception
+            setConsolePane (screen, null);                    // reassigns primaryStage
+            findSite (session.getServerName ());
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
@@ -128,7 +129,7 @@ public class Console extends Application
         {
           Site serverSite = optionalServerSite.get ();
           setConsolePane (createScreen (Function.TERMINAL, serverSite), serverSite);
-          consolePane.connect (serverSite);
+          consolePane.connect ();
         }
         else
           errorMessage = "No server selected";
@@ -166,6 +167,14 @@ public class Console extends Application
 
     if (!errorMessage.isEmpty () && showAlert (errorMessage))
       optionStage.show ();
+  }
+
+  private void findSite (String serverName)
+  {
+    Optional<Site> optionalServerSite =
+        optionStage.serverSitesListStage.getSelectedSite (serverName);
+    if (optionalServerSite.isPresent ())
+      consolePane.setReplayServer (optionalServerSite.get ());
   }
 
   private void setConsolePane (Screen screen, Site serverSite)
