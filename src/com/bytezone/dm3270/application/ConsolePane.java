@@ -34,6 +34,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -44,6 +47,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
@@ -193,20 +197,21 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
 
   private void download ()
   {
-    System.out.println ("download " + menuItemDownload.getUserData ());
     String fileName = (String) menuItemDownload.getUserData ();
     Site site = server != null ? server : replaySite != null ? replaySite : null;
     String folderName = site != null ? site.getFolder () : "";
 
-    Path filePath =
-        Paths.get (System.getProperty ("user.home"), "dm3270", "files", folderName);
+    String userHome = System.getProperty ("user.home");
+    Path filePath = Paths.get (userHome, "dm3270", "files", folderName);
     if (Files.notExists (filePath))
     {
+      // show dialog
       System.out.println ("Path does not exist: " + filePath);
       return;
     }
 
     String buildPath = filePath.toString ();
+    int baseLength = userHome.length () + 1;
 
     String[] segments = fileName.split ("\\.");         // split into segments
     int last = segments.length - 1;
@@ -227,7 +232,47 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
         break;
       buildPath = nextPath.toString ();
     }
-    System.out.println ("Use: " + Paths.get (buildPath, fileName));
+
+    String cmd = showDialog (buildPath, baseLength, fileName);
+    if ("OK".equals (cmd))
+      System.out.println ("Download: " + fileName);
+  }
+
+  private String showDialog (String buildPath, int baseLength, String fileName)
+  {
+    Path path = Paths.get (buildPath, fileName);
+
+    Label label1 = new Label ("Download: ");
+    Label label2 = new Label (fileName);
+    Label label3 = new Label ("To folder: ");
+    Label label4 = new Label (buildPath.substring (baseLength));
+    Label label5 = new Label ("Exists: ");
+    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
+
+    Dialog<String> dialog = new Dialog<> ();
+
+    GridPane grid = new GridPane ();
+    grid.add (label1, 1, 1);
+    grid.add (label2, 2, 1);
+    grid.add (label3, 1, 2);
+    grid.add (label4, 2, 2);
+    grid.add (label5, 1, 3);
+    grid.add (label6, 2, 3);
+    grid.setHgap (10);
+    grid.setVgap (10);
+    dialog.getDialogPane ().setContent (grid);
+
+    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
+    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
+    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+    dialog.setResultConverter (btnType ->
+    {
+      if (btnType == btnTypeOK)
+        return "OK";
+      return "";
+    });
+
+    return dialog.showAndWait ().get ();
   }
 
   private BorderPane getStatusBar ()
