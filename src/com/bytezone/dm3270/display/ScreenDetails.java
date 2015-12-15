@@ -32,6 +32,7 @@ public class ScreenDetails
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
+  private final List<String> recentDatasets = new ArrayList<> ();
 
   private String datasetsMatching;
   private String datasetsOnVolume;
@@ -64,8 +65,8 @@ public class ScreenDetails
     isSplitScreen = false;
     datasets.clear ();
     members.clear ();
-    currentDataset = "";
-    singleDataset = "";
+    //    currentDataset = "";
+    //    singleDataset = "";
     promptFieldLine = -1;
 
     List<Field> screenFields = fieldManager.getFields ();
@@ -98,6 +99,7 @@ public class ScreenDetails
     }
     else
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
+    System.out.println (this);
   }
 
   public Field getTSOCommandField ()
@@ -706,6 +708,9 @@ public class ScreenDetails
             singleDataset = datasetName;
             if (!memberName.isEmpty ())
               singleDataset += "(" + memberName + ")";
+            //            Dataset dataset = new Dataset (singleDataset);
+            if (!recentDatasets.contains (singleDataset))
+              recentDatasets.add (singleDataset);
           }
         }
       }
@@ -739,15 +744,21 @@ public class ScreenDetails
     text.append ("Screen details:\n");
     text.append (String.format ("TSO screen ........ %s%n", isTSOCommandScreen));
     text.append (String.format ("Prompt field ...... %s%n", tsoCommandField));
+    text.append (String.format ("Prompt line ....... %d%n", promptFieldLine));
     text.append (String.format ("Dataset list ...... %s%n", isDatasetList));
     text.append (String.format ("Members list ...... %s%n", isMemberList));
-    text.append (String.format ("Prompt line ....... %d%n", promptFieldLine));
     text.append (String.format ("Current dataset ... %s%n", currentDataset));
+    text.append (String.format ("Single dataset .... %s%n", singleDataset));
     text.append (String.format ("Userid/prefix ..... %s / %s%n", userid, prefix));
     text.append (String.format ("Datasets for ...... %s%n", datasetsMatching));
     text.append (String.format ("Volume ............ %s%n", datasetsOnVolume));
     text.append (String.format ("Datasets .......... %s%n",
                                 datasets == null ? "" : datasets.size ()));
+    text.append (String.format ("Recent datasets ... %s%n",
+                                datasets == null ? "" : recentDatasets.size ()));
+    int i = 0;
+    for (String datasetName : recentDatasets)
+      text.append (String.format ("            %3d ... %s%n", ++i, datasetName));
 
     return text.toString ();
   }

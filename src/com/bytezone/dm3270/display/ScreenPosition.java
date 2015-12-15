@@ -85,6 +85,7 @@ public final class ScreenPosition
     isGraphics = false;
   }
 
+  // called from Pen.writeGraphics()
   void setGraphicsChar (byte value)
   {
     this.value = value;
