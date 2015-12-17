@@ -68,6 +68,7 @@ public class ScreenWatcher
 
   private final MenuItem menuItemUpload;
   private final MenuItem menuItemDownload;
+  private Site replaySite;
 
   public ScreenWatcher (FieldManager fieldManager, ScreenDimensions screenDimensions,
       Site server)
@@ -75,10 +76,14 @@ public class ScreenWatcher
     this.fieldManager = fieldManager;
     this.screenDimensions = screenDimensions;
     this.server = server;
-    System.out.println (server);
 
     menuItemUpload = getMenuItem ("Upload", e -> upload (), KeyCode.U);
     menuItemDownload = getMenuItem ("Download", e -> download (), KeyCode.D);
+  }
+
+  public void setReplayServer (Site serverSite)
+  {
+    replaySite = serverSite;
   }
 
   public MenuItem getMenuItemUpload ()
@@ -113,7 +118,8 @@ public class ScreenWatcher
   private void download ()
   {
     //    String fileName = (String) menuItemDownload.getUserData ();
-    Site site = server != null ? server : null;
+    Site site = server != null ? server : replaySite != null ? replaySite : null;
+    //    Site site = server != null ? server : null;
     String folderName = site != null ? site.getFolder () : "";
 
     String userHome = System.getProperty ("user.home");

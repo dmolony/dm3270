@@ -101,6 +101,7 @@ public class Session implements Iterable<SessionRecord>
         }
   }
 
+  // this should be removed
   public Screen getScreen ()
   {
     return screen;

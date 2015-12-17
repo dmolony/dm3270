@@ -113,6 +113,8 @@ public class Console extends Application
 
             Optional<Site> serverSite = findSite (session.getServerName ());
             setConsolePane (screen, serverSite.get ());       // reassigns primaryStage
+            if (serverSite.isPresent ())
+              consolePane.setReplayServer (serverSite.get ());
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
@@ -174,8 +176,6 @@ public class Console extends Application
   {
     Optional<Site> optionalServerSite =
         optionStage.serverSitesListStage.getSelectedSite (serverName);
-    if (optionalServerSite.isPresent ())
-      consolePane.setReplayServer (optionalServerSite.get ());
     return optionalServerSite;
   }
 

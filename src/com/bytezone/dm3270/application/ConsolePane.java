@@ -63,7 +63,7 @@ public class ConsolePane extends BorderPane
   private final TelnetState telnetState = new TelnetState ();
   private int commandHeaderCount;
   private final Site server;
-  private Site replaySite;
+  //  private Site replaySite;
 
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
@@ -143,7 +143,8 @@ public class ConsolePane extends BorderPane
 
   void setReplayServer (Site serverSite)
   {
-    replaySite = serverSite;
+    //    replaySite = serverSite;
+    screen.getScreenWatcher ().setReplayServer (serverSite);
   }
 
   private Menu getCommandsMenu ()
