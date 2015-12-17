@@ -110,8 +110,9 @@ public class Console extends Application
           {
             createScreen (Function.REPLAY, null);             // serverSite is null
             Session session = new Session (screen, path);     // can throw Exception
-            setConsolePane (screen, null);                    // reassigns primaryStage
-            findSite (session.getServerName ());
+
+            Optional<Site> serverSite = findSite (session.getServerName ());
+            setConsolePane (screen, serverSite.get ());       // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
@@ -169,12 +170,13 @@ public class Console extends Application
       optionStage.show ();
   }
 
-  private void findSite (String serverName)
+  private Optional<Site> findSite (String serverName)
   {
     Optional<Site> optionalServerSite =
         optionStage.serverSitesListStage.getSelectedSite (serverName);
     if (optionalServerSite.isPresent ())
       consolePane.setReplayServer (optionalServerSite.get ());
+    return optionalServerSite;
   }
 
   private void setConsolePane (Screen screen, Site serverSite)

@@ -1,13 +1,29 @@
 package com.bytezone.dm3270.display;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
 
-public class ScreenDetails
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.GridPane;
+
+public class ScreenWatcher
 {
   private static final String[] tsoMenus =
       { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
@@ -29,6 +45,7 @@ public class ScreenDetails
 
   private final FieldManager fieldManager;
   private final ScreenDimensions screenDimensions;
+  private final Site server;
 
   private final List<Dataset> datasets = new ArrayList<> ();
   private final List<Dataset> members = new ArrayList<> ();
@@ -49,10 +66,165 @@ public class ScreenDetails
   private String userid = "";
   private String prefix = "";
 
-  public ScreenDetails (FieldManager fieldManager, ScreenDimensions screenDimensions)
+  private final MenuItem menuItemUpload;
+  private final MenuItem menuItemDownload;
+
+  public ScreenWatcher (FieldManager fieldManager, ScreenDimensions screenDimensions,
+      Site server)
   {
     this.fieldManager = fieldManager;
     this.screenDimensions = screenDimensions;
+    this.server = server;
+    System.out.println (server);
+
+    menuItemUpload = getMenuItem ("Upload", e -> upload (), KeyCode.U);
+    menuItemDownload = getMenuItem ("Download", e -> download (), KeyCode.D);
+  }
+
+  public MenuItem getMenuItemUpload ()
+  {
+    return menuItemUpload;
+  }
+
+  public MenuItem getMenuItemDownload ()
+  {
+    return menuItemDownload;
+  }
+
+  private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
+      KeyCode keyCode)
+  {
+    MenuItem menuItem = new MenuItem (text);
+    menuItem.setOnAction (eventHandler);
+    menuItem
+        .setAccelerator (new KeyCodeCombination (keyCode, KeyCombination.SHORTCUT_DOWN));
+    return menuItem;
+  }
+
+  private void upload ()
+  {
+    String fileName = (String) menuItemDownload.getUserData ();
+
+    String cmd = showUploadDialog (fileName);
+    if ("OK".equals (cmd))
+      System.out.println ("upload " + menuItemUpload.getUserData ());
+  }
+
+  private void download ()
+  {
+    //    String fileName = (String) menuItemDownload.getUserData ();
+    Site site = server != null ? server : null;
+    String folderName = site != null ? site.getFolder () : "";
+
+    String userHome = System.getProperty ("user.home");
+    Path filePath = Paths.get (userHome, "dm3270", "files", folderName);
+    if (Files.notExists (filePath))
+    {
+      // show dialog
+      System.out.println ("Path does not exist: " + filePath);
+      return;
+    }
+
+    String buildPath = filePath.toString ();
+    int baseLength = userHome.length () + 1;
+
+    String[] segments = singleDataset.split ("\\.");         // split into segments
+    int last = segments.length - 1;
+    if (last >= 0 && segments[last].endsWith (")"))     // is last segment a pds member?
+    {
+      int pos = segments[last].indexOf ('(');
+      segments[last] = segments[last].substring (0, pos);     // remove '(member name)'
+    }
+
+    int nextSegment = 0;
+
+    while (Files.notExists (Paths.get (buildPath, singleDataset)))
+    {
+      if (nextSegment >= segments.length)
+        break;
+      Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
+      if (Files.notExists (nextPath))
+        break;
+      buildPath = nextPath.toString ();
+    }
+
+    String cmd = showDownloadDialog (buildPath, baseLength, singleDataset);
+    if ("OK".equals (cmd))
+      System.out.println ("Download: " + singleDataset);
+  }
+
+  private String showDownloadDialog (String buildPath, int baseLength, String fileName)
+  {
+    Path path = Paths.get (buildPath, fileName);
+
+    Label label1 = new Label ("Download: ");
+    Label label2 = new Label (fileName);
+    Label label3 = new Label ("To folder: ");
+    Label label4 = new Label (buildPath.substring (baseLength));
+    Label label5 = new Label ("Exists: ");
+    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
+
+    Dialog<String> dialog = new Dialog<> ();
+
+    GridPane grid = new GridPane ();
+    grid.add (label1, 1, 1);
+    grid.add (label2, 2, 1);
+    grid.add (label3, 1, 2);
+    grid.add (label4, 2, 2);
+    grid.add (label5, 1, 3);
+    grid.add (label6, 2, 3);
+    grid.setHgap (10);
+    grid.setVgap (10);
+    dialog.getDialogPane ().setContent (grid);
+
+    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
+    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
+    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+    dialog.setResultConverter (btnType ->
+    {
+      if (btnType == btnTypeOK)
+        return "OK";
+      return "";
+    });
+
+    return dialog.showAndWait ().get ();
+  }
+
+  private String showUploadDialog (String fileName)
+  {
+    //    Path path = Paths.get (buildPath, fileName);
+
+    Label label1 = new Label ("Upload: ");
+    Label label2 = new Label (fileName);
+    Label label3 = new Label ("From folder: ");
+    Label label4 = new Label ("??");
+    //    Label label5 = new Label ("Exists: ");
+    //    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
+
+    Dialog<String> dialog = new Dialog<> ();
+
+    GridPane grid = new GridPane ();
+    grid.add (label1, 1, 1);
+    grid.add (label2, 2, 1);
+    grid.add (label3, 1, 2);
+    grid.add (label4, 2, 2);
+    //    grid.add (label5, 1, 3);
+    //    grid.add (label6, 2, 3);
+    grid.setHgap (10);
+    grid.setVgap (10);
+    dialog.getDialogPane ().setContent (grid);
+
+    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
+    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
+    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+    dialog.setResultConverter (btnType ->
+    {
+      if (btnType == btnTypeOK)
+        return "OK";
+      return "";
+    });
+
+    return dialog.showAndWait ().get ();
   }
 
   // called by FieldManager after building a new screen

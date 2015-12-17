@@ -4,7 +4,7 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenChangeListener;
-import com.bytezone.dm3270.display.ScreenDetails;
+import com.bytezone.dm3270.display.ScreenWatcher;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -22,7 +22,7 @@ public class TSOCommand implements ScreenChangeListener
   final Button btnExecute = new Button ("Execute");
 
   private ConsolePane consolePane;
-  private ScreenDetails screenDetails;
+  private ScreenWatcher screenDetails;
 
   public TSOCommand ()
   {
@@ -76,7 +76,7 @@ public class TSOCommand implements ScreenChangeListener
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged (ScreenWatcher screenDetails)
   {
     this.screenDetails = screenDetails;
   }

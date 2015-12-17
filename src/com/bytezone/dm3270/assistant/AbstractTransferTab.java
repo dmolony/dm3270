@@ -5,7 +5,7 @@ import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
-import com.bytezone.dm3270.display.ScreenDetails;
+import com.bytezone.dm3270.display.ScreenWatcher;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -18,7 +18,7 @@ public abstract class AbstractTransferTab extends Tab
   protected final Site site;
   protected final Button btnExecute;
   protected final TextField txtCommand;
-  protected ScreenDetails screenDetails;
+  protected ScreenWatcher screenDetails;
 
   public AbstractTransferTab (String name, Screen screen, Site site, TextField text,
       Button execute)
@@ -49,7 +49,7 @@ public abstract class AbstractTransferTab extends Tab
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged (ScreenWatcher screenDetails)
   {
     this.screenDetails = screenDetails;
     if (isSelected () && screenDetails != null)

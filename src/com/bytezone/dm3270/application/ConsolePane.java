@@ -1,8 +1,5 @@
 package com.bytezone.dm3270.application;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -17,9 +14,8 @@ import com.bytezone.dm3270.display.FontManager;
 import com.bytezone.dm3270.display.HistoryManager;
 import com.bytezone.dm3270.display.HistoryScreen;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenChangeListener;
-import com.bytezone.dm3270.display.ScreenDetails;
 import com.bytezone.dm3270.display.ScreenDimensions;
+import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -34,9 +30,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -47,12 +40,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
-public class ConsolePane extends BorderPane implements FieldChangeListener,
-    CursorMoveListener, KeyboardStatusListener, ScreenChangeListener
+public class ConsolePane extends BorderPane
+    implements FieldChangeListener, CursorMoveListener, KeyboardStatusListener
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;
@@ -83,11 +75,12 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
   private final BorderPane statusPane;
 
   private final MenuBar menuBar = new MenuBar ();
-  private MenuItem menuItemUpload;
-  private MenuItem menuItemDownload;
+  //  private MenuItem menuItemUpload;
+  //  private MenuItem menuItemDownload;
 
   private final FontManager fontManager;
   private final ScreenDimensions screenDimensions;
+  private final ScreenWatcher screenWatcher;
 
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
@@ -101,6 +94,7 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     screen.setConsolePane (this);
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
+    this.screenWatcher = screen.getScreenWatcher ();
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
@@ -161,8 +155,10 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
 
     MenuItem menuItemAssistant =
         getMenuItem ("Transfers", e -> screen.getAssistantStage ().show (), KeyCode.T);
-    menuItemUpload = getMenuItem ("Upload", e -> upload (), KeyCode.U);
-    menuItemDownload = getMenuItem ("Download", e -> download (), KeyCode.D);
+    //    menuItemUpload = getMenuItem ("Upload", e -> upload (), KeyCode.U);
+    //    menuItemDownload = getMenuItem ("Download", e -> download (), KeyCode.D);
+    MenuItem menuItemUpload = screenWatcher.getMenuItemUpload ();
+    MenuItem menuItemDownload = screenWatcher.getMenuItemDownload ();
 
     menuCommands.getItems ().addAll (menuItemToggleScreens, menuItemAssistant,
                                      new SeparatorMenuItem (), menuItemUpload,
@@ -188,91 +184,6 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     menuItem
         .setAccelerator (new KeyCodeCombination (keyCode, KeyCombination.SHORTCUT_DOWN));
     return menuItem;
-  }
-
-  private void upload ()
-  {
-    System.out.println ("upload " + menuItemUpload.getUserData ());
-  }
-
-  private void download ()
-  {
-    String fileName = (String) menuItemDownload.getUserData ();
-    Site site = server != null ? server : replaySite != null ? replaySite : null;
-    String folderName = site != null ? site.getFolder () : "";
-
-    String userHome = System.getProperty ("user.home");
-    Path filePath = Paths.get (userHome, "dm3270", "files", folderName);
-    if (Files.notExists (filePath))
-    {
-      // show dialog
-      System.out.println ("Path does not exist: " + filePath);
-      return;
-    }
-
-    String buildPath = filePath.toString ();
-    int baseLength = userHome.length () + 1;
-
-    String[] segments = fileName.split ("\\.");         // split into segments
-    int last = segments.length - 1;
-    if (last >= 0 && segments[last].endsWith (")"))     // is last segment a pds member?
-    {
-      int pos = segments[last].indexOf ('(');
-      segments[last] = segments[last].substring (0, pos);     // remove '(member name)'
-    }
-
-    int nextSegment = 0;
-
-    while (Files.notExists (Paths.get (buildPath, fileName)))
-    {
-      if (nextSegment >= segments.length)
-        break;
-      Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
-      if (Files.notExists (nextPath))
-        break;
-      buildPath = nextPath.toString ();
-    }
-
-    String cmd = showDialog (buildPath, baseLength, fileName);
-    if ("OK".equals (cmd))
-      System.out.println ("Download: " + fileName);
-  }
-
-  private String showDialog (String buildPath, int baseLength, String fileName)
-  {
-    Path path = Paths.get (buildPath, fileName);
-
-    Label label1 = new Label ("Download: ");
-    Label label2 = new Label (fileName);
-    Label label3 = new Label ("To folder: ");
-    Label label4 = new Label (buildPath.substring (baseLength));
-    Label label5 = new Label ("Exists: ");
-    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
-
-    Dialog<String> dialog = new Dialog<> ();
-
-    GridPane grid = new GridPane ();
-    grid.add (label1, 1, 1);
-    grid.add (label2, 2, 1);
-    grid.add (label3, 1, 2);
-    grid.add (label4, 2, 2);
-    grid.add (label5, 1, 3);
-    grid.add (label6, 2, 3);
-    grid.setHgap (10);
-    grid.setVgap (10);
-    dialog.getDialogPane ().setContent (grid);
-
-    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
-    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
-    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
-    dialog.setResultConverter (btnType ->
-    {
-      if (btnType == btnTypeOK)
-        return "OK";
-      return "";
-    });
-
-    return dialog.showAndWait ().get ();
   }
 
   private BorderPane getStatusBar ()
@@ -482,23 +393,23 @@ public class ConsolePane extends BorderPane implements FieldChangeListener,
     insertMode.setText (evt.insertMode ? "Insert" : "      ");
   }
 
-  @Override
-  public void screenChanged (ScreenDetails screenDetails)
-  {
-    String datasetName = screenDetails.getSingleDataset ();
-    if (datasetName.isEmpty ())
-    {
-      menuItemDownload.setUserData (null);
-      menuItemUpload.setUserData (null);
-      menuItemDownload.setDisable (true);
-      menuItemUpload.setDisable (true);
-    }
-    else
-    {
-      menuItemDownload.setUserData (datasetName);
-      menuItemUpload.setUserData (datasetName);
-      menuItemDownload.setDisable (false);
-      menuItemUpload.setDisable (false);
-    }
-  }
+  //  @Override
+  //  public void screenChanged (ScreenWatcher screenDetails)
+  //  {
+  //    String datasetName = screenDetails.getSingleDataset ();
+  //    if (datasetName.isEmpty ())
+  //    {
+  //      menuItemDownload.setUserData (null);
+  //      menuItemUpload.setUserData (null);
+  //      menuItemDownload.setDisable (true);
+  //      menuItemUpload.setDisable (true);
+  //    }
+  //    else
+  //    {
+  //      menuItemDownload.setUserData (datasetName);
+  //      menuItemUpload.setUserData (datasetName);
+  //      menuItemDownload.setDisable (false);
+  //      menuItemUpload.setDisable (false);
+  //    }
+  //  }
 }

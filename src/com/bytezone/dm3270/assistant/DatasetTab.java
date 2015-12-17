@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDetails;
+import com.bytezone.dm3270.display.ScreenWatcher;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.control.Button;
@@ -65,7 +65,7 @@ public class DatasetTab extends AbstractTransferTab
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged (ScreenWatcher screenDetails)
   {
     List<Dataset> datasets = screenDetails.getDatasets ();
     if (datasets != null)

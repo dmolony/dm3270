@@ -18,7 +18,7 @@ class ScreenPacker implements ScreenChangeListener
   private final byte[] buffer = new byte[4096];
   private final List<String> tsoCommands = new ArrayList<> ();
 
-  private ScreenDetails screenDetails;
+  private ScreenWatcher screenDetails;
   private final Pen pen;
   private final FieldManager fieldManager;
 
@@ -212,7 +212,7 @@ class ScreenPacker implements ScreenChangeListener
   }
 
   @Override
-  public void screenChanged (ScreenDetails screenDetails)
+  public void screenChanged (ScreenWatcher screenDetails)
   {
     this.screenDetails = screenDetails;
   }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.PluginData;
@@ -14,7 +15,7 @@ import com.bytezone.dm3270.plugins.PluginField;
 public class FieldManager
 {
   private final Screen screen;
-  private final ScreenDetails screenDetails;
+  private final ScreenWatcher screenWatcher;
   private final ContextManager contextManager;
   private final ScreenDimensions screenDimensions;
 
@@ -27,19 +28,18 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  public FieldManager (Screen screen, ContextManager contextManager)
+  FieldManager (Screen screen, ContextManager contextManager, Site site)
   {
     this.screen = screen;
     this.contextManager = contextManager;
     this.screenDimensions = screen.getScreenDimensions ();
-    screenDetails = new ScreenDetails (this, screenDimensions);
+    screenWatcher = new ScreenWatcher (this, screenDimensions, site);
   }
 
-  // a new ScreenDetails should be sent to ScreenChangeListeners
-  // ScreenDetails is never deleted, but most (not all) of its fields are refreshed
-  public ScreenDetails getScreenDetails ()
+  // ScreenWatcher is never deleted, but most (not all) of its fields are refreshed
+  public ScreenWatcher getScreenWatcher ()
   {
-    return screenDetails;
+    return screenWatcher;
   }
 
   // called by Screen.clearScreen()
@@ -104,8 +104,8 @@ public class FieldManager
         }
     }
 
-    screenDetails.check ();
-    fireScreenChanged (screenDetails);
+    screenWatcher.check ();
+    fireScreenChanged (screenWatcher);
   }
 
   private void addField (Field field)
@@ -262,7 +262,7 @@ public class FieldManager
 
   private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
 
-  private void fireScreenChanged (ScreenDetails screenDetails)
+  private void fireScreenChanged (ScreenWatcher screenDetails)
   {
     screenChangeListeners.forEach (l -> l.screenChanged (screenDetails));
   }

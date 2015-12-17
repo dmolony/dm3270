@@ -82,7 +82,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     contextManager = new ContextManager ();
     fontManager = new FontManagerType1 (this, prefs);
-    fieldManager = new FieldManager (this, contextManager);
+    fieldManager = new FieldManager (this, contextManager, site);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
 
@@ -100,6 +100,11 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager.addScreenChangeListener (screenPacker);
   }
 
+  public ScreenWatcher getScreenWatcher ()
+  {
+    return fieldManager.getScreenWatcher ();
+  }
+
   public void setStatusText (String text)
   {
     consolePane.setStatusText (text);
@@ -111,7 +116,7 @@ public class Screen extends Canvas implements DisplayScreen
     this.consolePane = consolePane;
     assistantStage.setConsolePane (consolePane);
     addKeyboardStatusChangeListener (consolePane);
-    fieldManager.addScreenChangeListener (consolePane);
+    //    fieldManager.addScreenChangeListener (consolePane);
   }
 
   public FieldManager getFieldManager ()
@@ -127,17 +132,17 @@ public class Screen extends Canvas implements DisplayScreen
 
   public boolean isTSOCommandScreen ()
   {
-    return fieldManager.getScreenDetails ().isTSOCommandScreen ();
+    return fieldManager.getScreenWatcher ().isTSOCommandScreen ();
   }
 
   public Field getTSOCommandField ()
   {
-    return fieldManager.getScreenDetails ().getTSOCommandField ();
+    return fieldManager.getScreenWatcher ().getTSOCommandField ();
   }
 
   public String getPrefix ()
   {
-    return fieldManager.getScreenDetails ().getPrefix ();
+    return fieldManager.getScreenWatcher ().getPrefix ();
   }
 
   public FontManager getFontManager ()
