@@ -11,10 +11,13 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -170,11 +173,16 @@ public class ScreenWatcher
     Label label5 = new Label ("Exists: ");
     Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
 
+    ChoiceBox<String> box = new ChoiceBox<> ();
+    ObservableList<String> data = FXCollections.observableList (recentDatasets);
+    box.setItems (data);
+    box.getSelectionModel ().select (0);
+
     Dialog<String> dialog = new Dialog<> ();
 
     GridPane grid = new GridPane ();
     grid.add (label1, 1, 1);
-    grid.add (label2, 2, 1);
+    grid.add (box, 2, 1);
     grid.add (label3, 1, 2);
     grid.add (label4, 2, 2);
     grid.add (label5, 1, 3);
