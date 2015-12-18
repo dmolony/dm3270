@@ -15,9 +15,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -166,21 +167,23 @@ public class ScreenWatcher
   {
     Path path = Paths.get (buildPath, fileName);
 
-    Label label1 = new Label ("Download: ");
+    Label label1 = new Label ("Download");
     Label label2 = new Label (fileName);
-    Label label3 = new Label ("To folder: ");
+    Label label3 = new Label ("To folder");
     Label label4 = new Label (buildPath.substring (baseLength));
-    Label label5 = new Label ("Exists: ");
+    Label label5 = new Label ("Exists");
     Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
 
-    ChoiceBox<String> box = new ChoiceBox<> ();
+    ComboBox<String> box = new ComboBox<> ();
     ObservableList<String> data = FXCollections.observableList (recentDatasets);
     box.setItems (data);
-    box.getSelectionModel ().select (0);
+    box.getSelectionModel ().select (singleDataset);
+    box.setOnAction (event -> System.out.println (box.getValue ()));
 
     Dialog<String> dialog = new Dialog<> ();
 
     GridPane grid = new GridPane ();
+    grid.setPadding (new Insets (10, 35, 10, 20));
     grid.add (label1, 1, 1);
     grid.add (box, 2, 1);
     grid.add (label3, 1, 2);
@@ -188,7 +191,7 @@ public class ScreenWatcher
     grid.add (label5, 1, 3);
     grid.add (label6, 2, 3);
     grid.setHgap (10);
-    grid.setVgap (10);
+    grid.setVgap (15);
     dialog.getDialogPane ().setContent (grid);
 
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
