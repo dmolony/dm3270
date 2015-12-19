@@ -1,8 +1,12 @@
 package com.bytezone.dm3270.display;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,6 +45,7 @@ public class ScreenWatcher
   private static final Pattern datasetNamePattern =
       Pattern.compile (segment + "(\\." + segment + "){0,21}");
   private static final Pattern memberNamePattern = Pattern.compile (segment);
+  private static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm.ss");
 
   private static final String ispfScreen = "ISPF Primary Option Menu";
   private static final String zosScreen = "z/OS Primary Option Menu";
@@ -133,9 +138,11 @@ public class ScreenWatcher
     }
 
     int baseLength = userHome.length () + 1;
-    String cmd = showDownloadDialog (homePath, baseLength);
-    if ("OK".equals (cmd))
-      System.out.println ("Download: " + singleDataset);
+    String datasetName = showDownloadDialog (homePath, baseLength);
+    if (datasetName.isEmpty ())
+      System.out.println ("Cancelled");
+    else
+      System.out.println ("Download: " + datasetName);
   }
 
   // Determine the path of the folder in which the dataset should be stored
@@ -172,12 +179,15 @@ public class ScreenWatcher
     Label label4 = new Label ();
     Label label5 = new Label ("Action");
     Label label6 = new Label ();
+    Label label7 = new Label ("File date");
+    Label label8 = new Label ();
 
     ComboBox<String> box = new ComboBox<> ();
     box.setItems (FXCollections.observableList (recentDatasets));
-    box.setOnAction (event -> refresh (box, homePath, label4, label6, baseLength));
+    box.setOnAction (event -> refresh (box, homePath, label4, label6, label8,
+                                       baseLength));
     box.getSelectionModel ().select (singleDataset);
-    refresh (box, homePath, label4, label6, baseLength);
+    refresh (box, homePath, label4, label6, label8, baseLength);
 
     Dialog<String> dialog = new Dialog<> ();
 
@@ -189,6 +199,8 @@ public class ScreenWatcher
     grid.add (label4, 2, 2);
     grid.add (label5, 1, 3);
     grid.add (label6, 2, 3);
+    grid.add (label7, 1, 4);
+    grid.add (label8, 2, 4);
     grid.setHgap (10);
     grid.setVgap (15);
     dialog.getDialogPane ().setContent (grid);
@@ -199,7 +211,7 @@ public class ScreenWatcher
     dialog.setResultConverter (btnType ->
     {
       if (btnType == btnTypeOK)
-        return "OK";
+        return box.getSelectionModel ().getSelectedItem ();
       return "";
     });
 
@@ -207,21 +219,37 @@ public class ScreenWatcher
   }
 
   private void refresh (ComboBox<String> box, Path homePath, Label folderLabel,
-      Label actionLabel, int baseLength)
+      Label actionLabel, Label dateLabel, int baseLength)
   {
     String datasetSelected = box.getSelectionModel ().getSelectedItem ();
     String saveFolderName = getSaveFolderName (homePath, datasetSelected);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 
     folderLabel.setText (saveFolderName.substring (baseLength));
-    actionLabel.setText (Files.exists (saveFile) ? "Overwrite existing file"
-        : "Create new file");
+
+    if (Files.exists (saveFile))
+    {
+      try
+      {
+        BasicFileAttributes attr =
+            Files.readAttributes (saveFile, BasicFileAttributes.class);
+        dateLabel.setText (df.format (attr.lastModifiedTime ().toMillis ()));
+      }
+      catch (IOException e)
+      {
+        dateLabel.setText ("IOException");
+      }
+      actionLabel.setText ("Overwrite existing file");
+    }
+    else
+    {
+      actionLabel.setText ("Create new file");
+      dateLabel.setText ("");
+    }
   }
 
   private String showUploadDialog (String fileName)
   {
-    //    Path path = Paths.get (buildPath, fileName);
-
     Label label1 = new Label ("Upload: ");
     Label label2 = new Label (fileName);
     Label label3 = new Label ("From folder: ");
