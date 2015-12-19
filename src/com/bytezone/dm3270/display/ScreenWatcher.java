@@ -12,7 +12,6 @@ import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -121,64 +120,64 @@ public class ScreenWatcher
 
   private void download ()
   {
-    //    String fileName = (String) menuItemDownload.getUserData ();
     Site site = server != null ? server : replaySite != null ? replaySite : null;
-    //    Site site = server != null ? server : null;
-    String folderName = site != null ? site.getFolder () : "";
+    String folderName = site != null ? site.getFolder () : "<no site>";
 
     String userHome = System.getProperty ("user.home");
-    Path filePath = Paths.get (userHome, "dm3270", "files", folderName);
-    if (Files.notExists (filePath))
+    Path homePath = Paths.get (userHome, "dm3270", "files", folderName);
+    if (Files.notExists (homePath))
     {
-      // show dialog
-      System.out.println ("Path does not exist: " + filePath);
+      // show dialog here
+      System.out.println ("Path does not exist: " + homePath);
       return;
     }
 
-    String buildPath = filePath.toString ();
     int baseLength = userHome.length () + 1;
-
-    String[] segments = singleDataset.split ("\\.");         // split into segments
-    int last = segments.length - 1;
-    if (last >= 0 && segments[last].endsWith (")"))     // is last segment a pds member?
-    {
-      int pos = segments[last].indexOf ('(');
-      segments[last] = segments[last].substring (0, pos);     // remove '(member name)'
-    }
-
-    int nextSegment = 0;
-
-    while (Files.notExists (Paths.get (buildPath, singleDataset)))
-    {
-      if (nextSegment >= segments.length)
-        break;
-      Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
-      if (Files.notExists (nextPath))
-        break;
-      buildPath = nextPath.toString ();
-    }
-
-    String cmd = showDownloadDialog (buildPath, baseLength, singleDataset);
+    String cmd = showDownloadDialog (homePath, baseLength);
     if ("OK".equals (cmd))
       System.out.println ("Download: " + singleDataset);
   }
 
-  private String showDownloadDialog (String buildPath, int baseLength, String fileName)
+  // Determine the path of the folder in which the dataset should be stored
+  private String getSaveFolderName (Path homePath, String datasetName)
   {
-    Path path = Paths.get (buildPath, fileName);
+    // convert the dataset name into a potential path of folder names
+    String[] segments = datasetName.split ("\\.");      // split into segments
+    int last = segments.length - 1;
 
+    // if the last segment contains a pds member name, remove it
+    if (last >= 0 && segments[last].endsWith (")"))
+    {
+      int pos = segments[last].indexOf ('(');
+      segments[last] = segments[last].substring (0, pos);
+    }
+
+    int nextSegment = 0;
+    String buildPath = homePath.toString ();
+
+    while (nextSegment < segments.length)
+    {
+      Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
+      if (Files.notExists (nextPath) || !Files.isDirectory (nextPath))
+        break;
+      buildPath = nextPath.toString ();
+    }
+    return buildPath;
+  }
+
+  private String showDownloadDialog (Path homePath, int baseLength)
+  {
     Label label1 = new Label ("Download");
-    Label label2 = new Label (fileName);
     Label label3 = new Label ("To folder");
-    Label label4 = new Label (buildPath.substring (baseLength));
-    Label label5 = new Label ("Exists");
-    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
+    Label label4 = new Label ();
+    Label label5 = new Label ("Action");
+    Label label6 = new Label ();
 
     ComboBox<String> box = new ComboBox<> ();
-    ObservableList<String> data = FXCollections.observableList (recentDatasets);
-    box.setItems (data);
+    box.setItems (FXCollections.observableList (recentDatasets));
+    box.setOnAction (event -> refresh (box, homePath, label4, label6, baseLength));
     box.getSelectionModel ().select (singleDataset);
-    box.setOnAction (event -> System.out.println (box.getValue ()));
+    refresh (box, homePath, label4, label6, baseLength);
 
     Dialog<String> dialog = new Dialog<> ();
 
@@ -205,6 +204,18 @@ public class ScreenWatcher
     });
 
     return dialog.showAndWait ().get ();
+  }
+
+  private void refresh (ComboBox<String> box, Path homePath, Label folderLabel,
+      Label actionLabel, int baseLength)
+  {
+    String datasetSelected = box.getSelectionModel ().getSelectedItem ();
+    String saveFolderName = getSaveFolderName (homePath, datasetSelected);
+    Path saveFile = Paths.get (saveFolderName, datasetSelected);
+
+    folderLabel.setText (saveFolderName.substring (baseLength));
+    actionLabel.setText (Files.exists (saveFile) ? "Overwrite existing file"
+        : "Create new file");
   }
 
   private String showUploadDialog (String fileName)
