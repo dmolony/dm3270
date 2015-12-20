@@ -168,6 +168,11 @@ public class ScreenWatcher
       if (Files.notExists (nextPath) || !Files.isDirectory (nextPath))
         break;
       buildPath = nextPath.toString ();
+
+      Path filePath = Paths.get (buildPath, datasetName);
+      System.out.println (filePath);
+      if (Files.exists (filePath))
+        System.out.println ("File exists at: " + filePath);
     }
     return buildPath;
   }
