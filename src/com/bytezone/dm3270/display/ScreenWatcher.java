@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -166,14 +167,22 @@ public class ScreenWatcher
     {
       Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
       if (Files.notExists (nextPath) || !Files.isDirectory (nextPath))
-        break;
+      {
+        System.out.println ("Best path is: " + buildPath);
+        return buildPath;
+      }
+
       buildPath = nextPath.toString ();
 
       Path filePath = Paths.get (buildPath, datasetName);
-      System.out.println (filePath);
+      //      System.out.println (filePath);
       if (Files.exists (filePath))
-        System.out.println ("File exists at: " + filePath);
+      {
+        System.out.println ("File exists at: " + buildPath);
+        return buildPath;
+      }
     }
+    System.out.println ("Not found, using: " + buildPath);
     return buildPath;
   }
 
@@ -231,6 +240,11 @@ public class ScreenWatcher
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 
     folderLabel.setText (saveFolderName.substring (baseLength));
+    Optional<Dataset> opt = findDataset (datasetSelected);
+    if (opt.isPresent ())
+      System.out.println (opt.get ().getReferred ());
+    else
+      System.out.println ("not found");
 
     if (Files.exists (saveFile))
     {
@@ -286,6 +300,21 @@ public class ScreenWatcher
     });
 
     return dialog.showAndWait ().get ();
+  }
+
+  private Optional<Dataset> findDataset (String datasetName)
+  {
+    System.out.println (datasets);
+    System.out.println (members);
+    System.out.printf ("Searching for: %s%n", datasetName);
+    List<Dataset> searchDatasets = datasetName.endsWith (")") ? members : datasets;
+    for (Dataset dataset : searchDatasets)
+    {
+      System.out.printf ("  checking %s%n", dataset.getDatasetName ());
+      if (dataset.getDatasetName ().equals (datasetName))
+        return Optional.of (dataset);
+    }
+    return Optional.empty ();
   }
 
   // called by FieldManager after building a new screen
