@@ -61,8 +61,6 @@ public class DatasetTreeTable extends DefaultTreeTable<Dataset>
       else
         root.getChildren ().add (datasetEntry.treeItem);                  // 1st level
     }
-    //    else
-    //      datasetEntry.dataset.merge (dataset);
   }
 
   class DatasetEntry
