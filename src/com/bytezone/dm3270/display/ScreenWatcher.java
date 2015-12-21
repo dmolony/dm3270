@@ -9,7 +9,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,8 +57,9 @@ public class ScreenWatcher
   private final ScreenDimensions screenDimensions;
   private final Site server;
 
-  private final List<Dataset> datasets = new ArrayList<> ();
-  private final List<Dataset> members = new ArrayList<> ();
+  private final Map<String, Dataset> siteDatasets = new TreeMap<> ();
+  private final List<Dataset> screenDatasets = new ArrayList<> ();
+  private final List<Dataset> screenMembers = new ArrayList<> ();
   private final List<String> recentDatasets = new ArrayList<> ();
 
   private String datasetsMatching;
@@ -240,9 +242,9 @@ public class ScreenWatcher
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 
     folderLabel.setText (saveFolderName.substring (baseLength));
-    Optional<Dataset> opt = findDataset (datasetSelected);
-    if (opt.isPresent ())
-      System.out.println (opt.get ().getReferred ());
+    Dataset dataset = siteDatasets.get (datasetSelected);
+    if (dataset != null)
+      System.out.println (dataset.getReferred ());
     else
       System.out.println ("not found");
 
@@ -302,20 +304,20 @@ public class ScreenWatcher
     return dialog.showAndWait ().get ();
   }
 
-  private Optional<Dataset> findDataset (String datasetName)
-  {
-    System.out.println (datasets);
-    System.out.println (members);
-    System.out.printf ("Searching for: %s%n", datasetName);
-    List<Dataset> searchDatasets = datasetName.endsWith (")") ? members : datasets;
-    for (Dataset dataset : searchDatasets)
-    {
-      System.out.printf ("  checking %s%n", dataset.getDatasetName ());
-      if (dataset.getDatasetName ().equals (datasetName))
-        return Optional.of (dataset);
-    }
-    return Optional.empty ();
-  }
+  //  private Optional<Dataset> findDataset (String datasetName)
+  //  {
+  //    System.out.println (siteDatasets);
+  //    System.out.printf ("Searching for: %s%n", datasetName);
+  //    //    List<Dataset> searchDatasets =
+  //    //        datasetName.endsWith (")") ? screenMembers : screenDatasets;
+  //    for (Dataset dataset : siteDatasets)
+  //    {
+  //      System.out.printf ("  checking %s%n", dataset.getDatasetName ());
+  //      if (dataset.getDatasetName ().equals (datasetName))
+  //        return Optional.of (dataset);
+  //    }
+  //    return Optional.empty ();
+  //  }
 
   // called by FieldManager after building a new screen
   void check ()
@@ -325,8 +327,8 @@ public class ScreenWatcher
     isDatasetList = false;
     isMemberList = false;
     isSplitScreen = false;
-    datasets.clear ();
-    members.clear ();
+    screenDatasets.clear ();
+    screenMembers.clear ();
     //    currentDataset = "";
     //    singleDataset = "";
     promptFieldLine = -1;
@@ -385,12 +387,12 @@ public class ScreenWatcher
 
   public List<Dataset> getDatasets ()
   {
-    return datasets;
+    return screenDatasets;
   }
 
   public List<Dataset> getMembers ()
   {
-    return members;
+    return screenMembers;
   }
 
   public String getCurrentDataset ()
@@ -653,7 +655,11 @@ public class ScreenWatcher
   private void addDataset (String datasetName, int screenType, List<Field> rowFields)
   {
     Dataset dataset = new Dataset (datasetName);
-    datasets.add (dataset);
+    screenDatasets.add (dataset);
+    if (siteDatasets.containsKey (datasetName))
+      siteDatasets.get (datasetName).merge (dataset);
+    else
+      siteDatasets.put (datasetName, dataset);
 
     switch (screenType)
     {
@@ -802,8 +808,9 @@ public class ScreenWatcher
       }
       String details = rowFields.get (3).getText ();
 
-      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
-      members.add (member);
+      //      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
+      //      screenMembers.add (member);
+      Dataset member = addMember (datasetName, memberName);
 
       if (headings.size () == 7 || headings.size () == 10)
         screenType1 (member, details, tabs1);
@@ -872,8 +879,9 @@ public class ScreenWatcher
       }
       String details = rowFields.get (3).getText ();
 
-      Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
-      members.add (member);
+      //      Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
+      //      screenMembers.add (member);
+      Dataset member = addMember (datasetName, memberName);
 
       if (screenType == 1)
         screenType1 (member, details, tabs1);
@@ -884,6 +892,20 @@ public class ScreenWatcher
     }
 
     return true;
+  }
+
+  private Dataset addMember (String pdsName, String memberName)
+  {
+    String datasetName = pdsName + "(" + memberName.trim () + ")";
+    Dataset member = new Dataset (datasetName);
+    screenMembers.add (member);
+
+    if (siteDatasets.containsKey (datasetName))
+      siteDatasets.get (datasetName).merge (member);
+    else
+      siteDatasets.put (datasetName, member);
+
+    return member;
   }
 
   private void screenType1 (Dataset member, String details, int[] tabs)
@@ -1014,9 +1036,9 @@ public class ScreenWatcher
     text.append (String.format ("Datasets for ...... %s%n", datasetsMatching));
     text.append (String.format ("Volume ............ %s%n", datasetsOnVolume));
     text.append (String.format ("Datasets .......... %s%n",
-                                datasets == null ? "" : datasets.size ()));
+                                screenDatasets == null ? "" : screenDatasets.size ()));
     text.append (String.format ("Recent datasets ... %s%n",
-                                datasets == null ? "" : recentDatasets.size ()));
+                                screenDatasets == null ? "" : recentDatasets.size ()));
     int i = 0;
     for (String datasetName : recentDatasets)
       text.append (String.format ("            %3d ... %s%n", ++i, datasetName));

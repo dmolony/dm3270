@@ -60,7 +60,7 @@ public class DatasetTable extends DefaultTable<Dataset>
 
     if (foundDataset == null)
       datasets.add (member);
-    else
-      foundDataset.merge (member);
+    //    else
+    //      foundDataset.merge (member);
   }
 }
