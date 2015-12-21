@@ -97,6 +97,46 @@ public class ScreenWatcher
     replaySite = serverSite;
   }
 
+  public Field getTSOCommandField ()
+  {
+    return tsoCommandField;
+  }
+
+  public boolean isTSOCommandScreen ()
+  {
+    return isTSOCommandScreen;
+  }
+
+  public String getUserid ()
+  {
+    return userid;
+  }
+
+  public String getPrefix ()
+  {
+    return prefix;
+  }
+
+  public List<Dataset> getDatasets ()
+  {
+    return screenDatasets;
+  }
+
+  public List<Dataset> getMembers ()
+  {
+    return screenMembers;
+  }
+
+  public String getCurrentDataset ()
+  {
+    return currentDataset;
+  }
+
+  public String getSingleDataset ()
+  {
+    return singleDataset;
+  }
+
   public MenuItem getMenuItemUpload ()
   {
     return menuItemUpload;
@@ -197,13 +237,15 @@ public class ScreenWatcher
     Label label6 = new Label ();
     Label label7 = new Label ("File date");
     Label label8 = new Label ();
+    Label label9 = new Label ("Dataset date");
+    Label label10 = new Label ();
 
     ComboBox<String> box = new ComboBox<> ();
     box.setItems (FXCollections.observableList (recentDatasets));
-    box.setOnAction (event -> refresh (box, homePath, label4, label6, label8,
+    box.setOnAction (event -> refresh (box, homePath, label4, label6, label8, label10,
                                        baseLength));
     box.getSelectionModel ().select (singleDataset);
-    refresh (box, homePath, label4, label6, label8, baseLength);
+    refresh (box, homePath, label4, label6, label8, label10, baseLength);
 
     Dialog<String> dialog = new Dialog<> ();
 
@@ -217,6 +259,8 @@ public class ScreenWatcher
     grid.add (label6, 2, 3);
     grid.add (label7, 1, 4);
     grid.add (label8, 2, 4);
+    grid.add (label9, 1, 5);
+    grid.add (label10, 2, 5);
     grid.setHgap (10);
     grid.setVgap (15);
     dialog.getDialogPane ().setContent (grid);
@@ -235,7 +279,7 @@ public class ScreenWatcher
   }
 
   private void refresh (ComboBox<String> box, Path homePath, Label folderLabel,
-      Label actionLabel, Label dateLabel, int baseLength)
+      Label actionLabel, Label dateLabel, Label dateLabel2, int baseLength)
   {
     String datasetSelected = box.getSelectionModel ().getSelectedItem ();
     String saveFolderName = getSaveFolderName (homePath, datasetSelected);
@@ -244,7 +288,8 @@ public class ScreenWatcher
     folderLabel.setText (saveFolderName.substring (baseLength));
     Dataset dataset = siteDatasets.get (datasetSelected);
     if (dataset != null)
-      System.out.println (dataset.getReferred ());
+      //      System.out.println (dataset.getReferred ());
+      dateLabel2.setText (dataset.getReferred ());
     else
       System.out.println ("not found");
 
@@ -304,21 +349,6 @@ public class ScreenWatcher
     return dialog.showAndWait ().get ();
   }
 
-  //  private Optional<Dataset> findDataset (String datasetName)
-  //  {
-  //    System.out.println (siteDatasets);
-  //    System.out.printf ("Searching for: %s%n", datasetName);
-  //    //    List<Dataset> searchDatasets =
-  //    //        datasetName.endsWith (")") ? screenMembers : screenDatasets;
-  //    for (Dataset dataset : siteDatasets)
-  //    {
-  //      System.out.printf ("  checking %s%n", dataset.getDatasetName ());
-  //      if (dataset.getDatasetName ().equals (datasetName))
-  //        return Optional.of (dataset);
-  //    }
-  //    return Optional.empty ();
-  //  }
-
   // called by FieldManager after building a new screen
   void check ()
   {
@@ -363,46 +393,6 @@ public class ScreenWatcher
     }
     else
       isTSOCommandScreen = checkTSOCommandScreen (screenFields);
-  }
-
-  public Field getTSOCommandField ()
-  {
-    return tsoCommandField;
-  }
-
-  public boolean isTSOCommandScreen ()
-  {
-    return isTSOCommandScreen;
-  }
-
-  public String getUserid ()
-  {
-    return userid;
-  }
-
-  public String getPrefix ()
-  {
-    return prefix;
-  }
-
-  public List<Dataset> getDatasets ()
-  {
-    return screenDatasets;
-  }
-
-  public List<Dataset> getMembers ()
-  {
-    return screenMembers;
-  }
-
-  public String getCurrentDataset ()
-  {
-    return currentDataset;
-  }
-
-  public String getSingleDataset ()
-  {
-    return singleDataset;
   }
 
   private void checkMenu ()

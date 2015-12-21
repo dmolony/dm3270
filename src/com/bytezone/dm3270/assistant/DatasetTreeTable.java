@@ -50,16 +50,16 @@ public class DatasetTreeTable extends DefaultTreeTable<Dataset>
         {
           parentEntry = new DatasetEntry (datasetEntry.parentName);
           entries.put (datasetEntry.parentName, parentEntry);
-          root.getChildren ().add (parentEntry.treeItem);
+          root.getChildren ().add (parentEntry.treeItem);                 // 1st level
         }
 
         parentEntry.add (dataset);
-        parentEntry.treeItem.getChildren ().add (datasetEntry.treeItem);
+        parentEntry.treeItem.getChildren ().add (datasetEntry.treeItem);  // 2nd level
 
         // would be good to open the parent
       }
       else
-        root.getChildren ().add (datasetEntry.treeItem);
+        root.getChildren ().add (datasetEntry.treeItem);                  // 1st level
     }
     //    else
     //      datasetEntry.dataset.merge (dataset);
