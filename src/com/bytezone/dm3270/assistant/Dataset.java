@@ -16,7 +16,8 @@ public class Dataset
   private StringProperty catalogProperty;
   private StringProperty createdProperty;
   private StringProperty expiresProperty;
-  private StringProperty referredProperty;
+  private StringProperty referredDateProperty;
+  private StringProperty referredTimeProperty;
 
   private IntegerProperty tracksProperty;
   private IntegerProperty cylindersProperty;
@@ -199,24 +200,45 @@ public class Dataset
   }
 
   // ---------------------------------------------------------------------------------//
-  // Referred
+  // Referred date
   // ---------------------------------------------------------------------------------//
 
-  public final void setReferred (String value)
+  public final void setReferredDate (String value)
   {
-    referredProperty ().set (value);
+    referredDateProperty ().set (value);
   }
 
-  public final String getReferred ()
+  public final String getReferredDate ()
   {
-    return referredProperty ().get ();
+    return referredDateProperty ().get ();
   }
 
-  public final StringProperty referredProperty ()
+  public final StringProperty referredDateProperty ()
   {
-    if (referredProperty == null)
-      referredProperty = new SimpleStringProperty ();
-    return referredProperty;
+    if (referredDateProperty == null)
+      referredDateProperty = new SimpleStringProperty ();
+    return referredDateProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Referred time
+  // ---------------------------------------------------------------------------------//
+
+  public final void setReferredTime (String value)
+  {
+    referredTimeProperty ().set (value);
+  }
+
+  public final String getReferredTime ()
+  {
+    return referredTimeProperty ().get ();
+  }
+
+  public final StringProperty referredTimeProperty ()
+  {
+    if (referredTimeProperty == null)
+      referredTimeProperty = new SimpleStringProperty ();
+    return referredTimeProperty;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -359,7 +381,7 @@ public class Dataset
     text.append (String.format ("Catalog ......... %s%n", getCatalog ()));
     text.append (String.format ("Created ......... %s%n", getCreated ()));
     text.append (String.format ("Expires ......... %s%n", getExpires ()));
-    text.append (String.format ("Referred ........ %s%n", getReferred ()));
+    text.append (String.format ("Referred ........ %s%n", getReferredDate ()));
 
     text.append (String.format ("Tracks .......... %s%n", getTracks ()));
     text.append (String.format ("Cylinders ....... %s%n", getCylinders ()));

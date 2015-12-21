@@ -47,7 +47,7 @@ public class ScreenWatcher
   private static final Pattern datasetNamePattern =
       Pattern.compile (segment + "(\\." + segment + "){0,21}");
   private static final Pattern memberNamePattern = Pattern.compile (segment);
-  private static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm.ss");
+  private static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm:ss");
 
   private static final String ispfScreen = "ISPF Primary Option Menu";
   private static final String zosScreen = "z/OS Primary Option Menu";
@@ -295,8 +295,12 @@ public class ScreenWatcher
     folderLabel.setText (saveFolderName.substring (baseLength));
     Dataset dataset = siteDatasets.get (datasetSelected);
     if (dataset != null)
-      //      System.out.println (dataset.getReferred ());
-      dateLabel2.setText (dataset.getReferred ());
+    {
+      String date = dataset.getReferredDate ();
+      String reformattedDate =
+          date.substring (8) + "/" + date.substring (5, 7) + "/" + date.substring (0, 4);
+      dateLabel2.setText (reformattedDate + " " + dataset.getReferredTime ());
+    }
     else
       System.out.println ("not found");
 
@@ -746,7 +750,7 @@ public class ScreenWatcher
 
     dataset.setCreated (details.substring (0, 11).trim ());
     dataset.setExpires (details.substring (11, 22).trim ());
-    dataset.setReferred (details.substring (22).trim ());
+    dataset.setReferredDate (details.substring (22).trim ());
   }
 
   private boolean checkMemberList (List<Field> screenFields)
@@ -915,16 +919,11 @@ public class ScreenWatcher
 
   private void screenType1 (Dataset member, String details, int[] tabs)
   {
-    String size = details.substring (0, tabs[0]);
-    String created = details.substring (tabs[0], tabs[1]);
-    String modified = details.substring (tabs[1], tabs[2]);
-    String time = details.substring (tabs[2], tabs[3]);
-    String id = details.substring (tabs[3]);
-
-    member.setCreated (created.trim ());
-    member.setReferred (modified.trim ());
-    member.setCatalog (id.trim ());
-    member.setExtents (getInteger ("Ext:", size.trim ()));
+    member.setCreated (details.substring (tabs[0], tabs[1]).trim ());
+    member.setReferredDate (details.substring (tabs[1], tabs[2]).trim ());
+    member.setReferredTime (details.substring (tabs[2], tabs[3]).trim ());
+    member.setCatalog (details.substring (tabs[3]).trim ());
+    member.setExtents (getInteger ("Ext:", details.substring (0, tabs[0]).trim ()));
   }
 
   private void screenType2 (Dataset member, String details, int[] tabs)
