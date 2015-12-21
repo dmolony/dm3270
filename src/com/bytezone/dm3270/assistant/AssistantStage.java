@@ -112,11 +112,6 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tabPane.getSelectionModel ().select (datasetTab);
   }
 
-  //  public void setSite (Site serverSite)
-  //  {
-  //    this.currentSite = serverSite;
-  //  }
-
   private void select (Tab tabSelected)
   {
     if (tabSelected != null)
@@ -153,26 +148,32 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     jobTab.batchJobFailed (jobNumber, jobName, time);
   }
 
+  // called from FileTransferOutboundSF.processOpen()
   public void openTransfer (Transfer transfer)
   {
     filesTab.openTransfer (transfer);
   }
 
+  // called from FileTransferOutboundSF.processSend0x46()
+  // called from FileTransferOutboundSF.processReceive()
   public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
   {
     return filesTab.getTransfer (transferRecord);
   }
 
+  // called from FileTransferOutboundSF.processReceive()
   public void closeTransfer ()
   {
     filesTab.closeTransfer ();
   }
 
+  // called from FileTransferOutboundSF.processClose()
   public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
   {
     return filesTab.closeTransfer (transferRecord);
   }
 
+  // called from FileTransferOutboundSF.processOpen()
   public Optional<byte[]> getCurrentFileBuffer ()
   {
     return filesTab.getCurrentFileBuffer ();

@@ -68,7 +68,7 @@ public class TSOCommand implements ScreenChangeListener
       return;
     }
 
-    if (tsoCommandField != null && !command.isEmpty ())
+    if (!command.isEmpty ())
     {
       tsoCommandField.setText (command);
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
