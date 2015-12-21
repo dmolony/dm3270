@@ -180,6 +180,13 @@ public class ScreenWatcher
       return;
     }
 
+    if (recentDatasets.size () == 0)
+    {
+      // show dialog here
+      System.out.println ("No datasets to download");
+      return;
+    }
+
     int baseLength = userHome.length () + 1;
     String datasetName = showDownloadDialog (homePath, baseLength);
     if (datasetName.isEmpty ())
@@ -644,12 +651,16 @@ public class ScreenWatcher
 
   private void addDataset (String datasetName, int screenType, List<Field> rowFields)
   {
-    Dataset dataset = new Dataset (datasetName);
-    screenDatasets.add (dataset);
+    Dataset dataset;
     if (siteDatasets.containsKey (datasetName))
-      siteDatasets.get (datasetName).merge (dataset);
+      dataset = siteDatasets.get (datasetName);
     else
+    {
+      dataset = new Dataset (datasetName);
       siteDatasets.put (datasetName, dataset);
+    }
+
+    screenDatasets.add (dataset);
 
     switch (screenType)
     {
@@ -887,13 +898,17 @@ public class ScreenWatcher
   private Dataset addMember (String pdsName, String memberName)
   {
     String datasetName = pdsName + "(" + memberName.trim () + ")";
-    Dataset member = new Dataset (datasetName);
-    screenMembers.add (member);
+    Dataset member;
 
     if (siteDatasets.containsKey (datasetName))
-      siteDatasets.get (datasetName).merge (member);
+      member = siteDatasets.get (datasetName);
     else
+    {
+      member = new Dataset (datasetName);
       siteDatasets.put (datasetName, member);
+    }
+
+    screenMembers.add (member);
 
     return member;
   }

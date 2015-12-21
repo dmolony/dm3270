@@ -40,10 +40,10 @@ public class DatasetTable extends DefaultTable<Dataset>
 
     Optional<Dataset> dataset2 = datasets.stream ()
         .filter (d -> d.getDatasetName ().equals (datasetName)).findAny ();
-    if (dataset2.isPresent ())
-      dataset2.get ().merge (dataset);
-    else
+    if (!dataset2.isPresent ())
       datasets.add (dataset);
+    //    else
+    //      dataset2.get ().merge (dataset);
   }
 
   public void addMember (Dataset member)

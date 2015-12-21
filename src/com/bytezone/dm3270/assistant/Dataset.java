@@ -30,40 +30,41 @@ public class Dataset
     datasetNameProperty ().set (name);
   }
 
-  public void merge (Dataset other)
-  {
-    // StringProperty
-    if (other.getVolume () != null)
-      setVolume (other.getVolume ());
-    if (other.getDevice () != null)
-      setDevice (other.getDevice ());
-    if (other.getDsorg () != null)
-      setDsorg (other.getDsorg ());
-    if (other.getRecfm () != null)
-      setRecfm (other.getRecfm ());
-    if (other.getCatalog () != null)
-      setCatalog (other.getCatalog ());
-    if (other.getCreated () != null)
-      setCreated (other.getCreated ());
-    if (other.getExpires () != null)
-      setExpires (other.getExpires ());
-    if (other.getReferred () != null)
-      setReferred (other.getReferred ());
-
-    // IntegerProperty
-    if (other.getTracks () > 0)
-      setTracks (other.getTracks ());
-    if (other.getCylinders () > 0)
-      setCylinders (other.getCylinders ());
-    if (other.getExtents () > 0)
-      setExtents (other.getExtents ());
-    if (other.getPercentUsed () > 0)
-      setPercentUsed (other.getPercentUsed ());
-    if (other.getLrecl () > 0)
-      setLrecl (other.getLrecl ());
-    if (other.getBlksize () > 0)
-      setBlksize (other.getBlksize ());
-  }
+  //  private void merge (Dataset other)
+  //  {
+  //    assert false;
+  //    // StringProperty
+  //    if (other.getVolume () != null)
+  //      setVolume (other.getVolume ());
+  //    if (other.getDevice () != null)
+  //      setDevice (other.getDevice ());
+  //    if (other.getDsorg () != null)
+  //      setDsorg (other.getDsorg ());
+  //    if (other.getRecfm () != null)
+  //      setRecfm (other.getRecfm ());
+  //    if (other.getCatalog () != null)
+  //      setCatalog (other.getCatalog ());
+  //    if (other.getCreated () != null)
+  //      setCreated (other.getCreated ());
+  //    if (other.getExpires () != null)
+  //      setExpires (other.getExpires ());
+  //    if (other.getReferred () != null)
+  //      setReferred (other.getReferred ());
+  //
+  //    // IntegerProperty
+  //    if (other.getTracks () > 0)
+  //      setTracks (other.getTracks ());
+  //    if (other.getCylinders () > 0)
+  //      setCylinders (other.getCylinders ());
+  //    if (other.getExtents () > 0)
+  //      setExtents (other.getExtents ());
+  //    if (other.getPercentUsed () > 0)
+  //      setPercentUsed (other.getPercentUsed ());
+  //    if (other.getLrecl () > 0)
+  //      setLrecl (other.getLrecl ());
+  //    if (other.getBlksize () > 0)
+  //      setBlksize (other.getBlksize ());
+  //  }
 
   // ---------------------------------------------------------------------------------//
   // DatasetName
