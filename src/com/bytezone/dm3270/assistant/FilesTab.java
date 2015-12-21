@@ -69,12 +69,10 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
 
   private void addBuffer (Transfer transfer)
   {
-    String name = transfer.getFileName ();
+    String name = transfer.getFileName ().toUpperCase ();
     if (!transfer.hasTLQ ())
     {
       String tlq = screen.getPrefix ();
-      //      System.out.printf ("Name: %s, hasTLQ: %s, TLQ: %s%n", name, transfer.hasTLQ (),
-      //                         tlq);
       if (!tlq.isEmpty ())
         name = tlq + "." + name;
     }
@@ -93,14 +91,13 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       else
         System.out.println ("No folder specified in site record");
     }
-    //    else
-    //      System.out.println ("Current site unknown");
+
+    byte[] buffer = transfer.combineDataBuffers ();
 
     if (siteFolderName.isEmpty ())
-      reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers ());
+      reporterNode.addBuffer (name, buffer);
     else
-      reporterNode.addBuffer (name.toUpperCase (), transfer.combineDataBuffers (),
-                              siteFolderName);
+      reporterNode.addBuffer (name, buffer, siteFolderName);
   }
 
   // called from AssistantStage.getCurrentFileBuffer()
