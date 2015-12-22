@@ -11,13 +11,13 @@ public class Transfer
 {
   private static int INBOUND_MAX_BUFFER_SIZE = 2048;
 
-  private TransferContents transferContents;
-  private TransferType transferType;
-  private IndFileCommand indFileCommand;
+  private TransferContents transferContents;          // MSG or DATA
+  private TransferType transferType;                  // UPLOAD or DOWNLOAD
+  private IndFileCommand indFileCommand;              // user's TSO command
 
   List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
   List<DataRecord> dataRecords = new ArrayList<> ();
-  int dataLength;
+  private int dataLength;
 
   byte[] inboundBuffer;
   int inboundBufferPtr;
@@ -47,7 +47,7 @@ public class Transfer
     if (transferContents == null)
       transferContents = outboundRecord.transferContents;   // MSG or DATA
     if (transferType == null)
-      transferType = outboundRecord.transferType;           // DOWNLOAD or UPLOAD
+      transferType = outboundRecord.transferType;           // UPLOAD or DOWNLOAD
   }
 
   // called from FileTransferOutboundSF.processReceive() - upload
@@ -107,6 +107,11 @@ public class Transfer
   int size ()
   {
     return dataRecords.size ();
+  }
+
+  int getDataLength ()
+  {
+    return dataLength;      // used to display buffer length on the console
   }
 
   public TransferContents getTransferContents ()

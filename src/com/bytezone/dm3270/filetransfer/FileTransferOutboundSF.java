@@ -33,7 +33,7 @@ public class FileTransferOutboundSF extends FileTransferSF
           transferRecord = new TransferRecord (data, ptr);
           break;
 
-        case 0x03:
+        case 0x03:                                          // MSG or DATA
           transferRecord = new ContentsRecord (data, ptr);
           transferContents = ((ContentsRecord) transferRecord).transferContents;
           break;
@@ -164,7 +164,8 @@ public class FileTransferOutboundSF extends FileTransferSF
       RecordNumber recordNumber = new RecordNumber (transfer.size ());
       ptr = recordNumber.pack (replyBuffer, ptr);
       ptr = dataHeader.pack (replyBuffer, ptr);
-      screen.setStatusText (String.format ("Bytes sent: %,d%n", transfer.dataLength));
+      screen
+          .setStatusText (String.format ("Bytes sent: %,d%n", transfer.getDataLength ()));
 
       // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
     }
@@ -216,7 +217,7 @@ public class FileTransferOutboundSF extends FileTransferSF
         ptr = recordNumber.pack (buffer, ptr);
         if (transfer.getTransferContents () == TransferContents.DATA)
           screen.setStatusText (String.format ("Bytes received: %,d%n",
-                                               transfer.dataLength));
+                                               transfer.getDataLength ()));
       }
       setReply (new ReadStructuredFieldCommand (buffer));
 
