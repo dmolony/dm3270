@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.assistant;
+package com.bytezone.dm3270.filetransfer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bytezone.dm3270.application.Site;
+import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.TSOCommandListener;
-import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
-import com.bytezone.dm3270.filetransfer.IndFileCommand;
-import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.reporter.application.FileNode;
 import com.bytezone.reporter.application.ReporterNode;
 
@@ -37,7 +35,7 @@ public class TransferManager implements TSOCommandListener
   }
 
   // called from FileTransferOutboundSF.processOpen()
-  public Optional<byte[]> getCurrentFileBuffer ()
+  Optional<byte[]> getCurrentFileBuffer ()
   {
     // whoever instigated the transfer should have told us about it already
     ReporterNode reporterNode = assistantStage.getReporterNode ();
@@ -52,7 +50,7 @@ public class TransferManager implements TSOCommandListener
   }
 
   // called from FileTransferOutboundSF.processOpen()
-  public void openTransfer (Transfer transfer)
+  void openTransfer (Transfer transfer)
   {
     currentTransfer = transfer;     // save it for subsequent calls
     transfer.setTransferCommand (indFileCommand);
@@ -60,7 +58,7 @@ public class TransferManager implements TSOCommandListener
 
   // called from FileTransferOutboundSF.processSend0x46()
   // called from FileTransferOutboundSF.processReceive()
-  public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
+  Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
   {
     if (currentTransfer == null)
     {
@@ -73,7 +71,7 @@ public class TransferManager implements TSOCommandListener
   }
 
   // called from FileTransferOutboundSF.processClose()
-  public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
+  Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
   {
     if (currentTransfer == null)
     {
@@ -96,7 +94,7 @@ public class TransferManager implements TSOCommandListener
   }
 
   // called from FileTransferOutboundSF.processDownload()
-  public void closeTransfer ()
+  void closeTransfer ()
   {
     currentTransfer = null;
   }

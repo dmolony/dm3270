@@ -2,7 +2,6 @@ package com.bytezone.dm3270.filetransfer;
 
 import java.util.Optional;
 
-import com.bytezone.dm3270.assistant.TransferManager;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;

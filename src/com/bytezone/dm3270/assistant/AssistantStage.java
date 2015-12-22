@@ -12,6 +12,7 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.display.TSOCommandListener;
+import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.WindowSaver;
 import com.bytezone.reporter.application.ReporterNode;
 
@@ -113,7 +114,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tabPane.getSelectionModel ().select (datasetTab);
   }
 
-  void setTransferManager (TransferManager transferManager)
+  public void setTransferManager (TransferManager transferManager)
   {
     this.transferManager = transferManager;
   }

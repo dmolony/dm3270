@@ -17,12 +17,12 @@ import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
-import com.bytezone.dm3270.assistant.TransferManager;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
+import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
