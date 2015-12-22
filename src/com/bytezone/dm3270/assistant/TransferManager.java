@@ -25,7 +25,6 @@ public class TransferManager implements TSOCommandListener
 
   private final Screen screen;
   private final Site site;
-  //  private final ReporterNode reporterNode;
   private final AssistantStage assistantStage;
   private IndFileCommand indFileCommand;
 
@@ -35,50 +34,6 @@ public class TransferManager implements TSOCommandListener
     this.site = site;
     this.assistantStage = assistantStage;
     assistantStage.setTransferManager (this);
-  }
-
-  private void addTransfer (Transfer transfer)
-  {
-    if (transfer.isDownloadData ())
-    {
-      transfers.add (transfer);
-      Platform.runLater ( () -> addBuffer (transfer));
-    }
-  }
-
-  private void addBuffer (Transfer transfer)
-  {
-    String name = transfer.getFileName ().toUpperCase ();
-    if (!transfer.hasTLQ ())
-    {
-      String tlq = screen.getPrefix ();
-      if (!tlq.isEmpty ())
-        name = tlq + "." + name;
-    }
-
-    String siteFolderName = "";
-    if (site != null)
-    {
-      siteFolderName = site.folder.getText ();
-      if (!siteFolderName.isEmpty ())
-      {
-        Path path = Paths.get (System.getProperty ("user.home"), "dm3270", "files",
-                               siteFolderName);
-        if (!Files.exists (path))
-          siteFolderName = "";
-      }
-      else
-        System.out.println ("No folder specified in site record");
-    }
-
-    byte[] buffer = transfer.combineDataBuffers ();
-
-    // this should be sent to a listener
-    ReporterNode reporterNode = assistantStage.getReporterNode ();
-    if (siteFolderName.isEmpty ())
-      reporterNode.addBuffer (name, buffer);
-    else
-      reporterNode.addBuffer (name, buffer, siteFolderName);
   }
 
   // called from FileTransferOutboundSF.processOpen()
@@ -129,13 +84,18 @@ public class TransferManager implements TSOCommandListener
     Transfer transfer = currentTransfer;
     currentTransfer.add (transferRecord);
 
-    addTransfer (currentTransfer);                // add to the file tree
+    // add to the file tree
+    if (transfer.isDownloadData ())
+    {
+      transfers.add (transfer);
+      Platform.runLater ( () -> saveFile (transfer));
+    }
     currentTransfer = null;
 
     return Optional.of (transfer);
   }
 
-  // called from FileTransferOutboundSF.processReceive()
+  // called from FileTransferOutboundSF.processDownload()
   public void closeTransfer ()
   {
     currentTransfer = null;
@@ -151,5 +111,40 @@ public class TransferManager implements TSOCommandListener
   {
     if (command.startsWith ("IND$FILE") || command.startsWith ("TSO IND$FILE"))
       indFileCommand = new IndFileCommand (command);
+  }
+
+  private void saveFile (Transfer transfer)
+  {
+    String name = transfer.getFileName ().toUpperCase ();
+    if (!transfer.hasTLQ ())
+    {
+      String tlq = screen.getPrefix ();
+      if (!tlq.isEmpty ())
+        name = tlq + "." + name;
+    }
+
+    String siteFolderName = "";
+    if (site != null)
+    {
+      siteFolderName = site.folder.getText ();
+      if (!siteFolderName.isEmpty ())
+      {
+        Path path = Paths.get (System.getProperty ("user.home"), "dm3270", "files",
+                               siteFolderName);
+        if (!Files.exists (path))
+          siteFolderName = "";
+      }
+      else
+        System.out.println ("No folder specified in site record");
+    }
+
+    byte[] buffer = transfer.combineDataBuffers ();
+
+    // this should be sent to a listener
+    ReporterNode reporterNode = assistantStage.getReporterNode ();
+    if (siteFolderName.isEmpty ())
+      reporterNode.addBuffer (name, buffer);
+    else
+      reporterNode.addBuffer (name, buffer, siteFolderName);
   }
 }

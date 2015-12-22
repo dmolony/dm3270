@@ -82,17 +82,17 @@ public class FileTransferOutboundSF extends FileTransferSF
           processClose (screen);
         break;
 
-      case 0x45:                        // something to do with DOWNLOAD
-        processDownload0x45 ();
+      case 0x45:                        // something to do with UPLOAD
+        processUpload0x45 ();
         break;
 
-      case 0x46:                        // DOWNLOAD data transfer buffer
+      case 0x46:                        // UPLOAD data transfer buffer
         if (subtype == 0x11)
-          processDownload0x46 (screen);
+          processUpload0x46 (screen);
         break;
 
-      case 0x47:                        // UPLOAD data transfer buffer
-        processUpload (screen);
+      case 0x47:                        // DOWNLOAD data transfer buffer
+        processDownload (screen);
         break;
     }
   }
@@ -132,11 +132,11 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processDownload0x45 ()
+  private void processUpload0x45 ()
   {
   }
 
-  private void processDownload0x46 (Screen screen)
+  private void processUpload0x46 (Screen screen)
   {
     Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
     if (!optionalTransfer.isPresent ())
@@ -182,7 +182,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     setReply (new ReadStructuredFieldCommand (replyBuffer));
   }
 
-  private void processUpload (Screen screen)
+  private void processDownload (Screen screen)
   {
     Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
     if (!optionalTransfer.isPresent ())
@@ -216,8 +216,8 @@ public class FileTransferOutboundSF extends FileTransferSF
         RecordNumber recordNumber = new RecordNumber (bufferNumber);
         ptr = recordNumber.pack (buffer, ptr);
         if (transfer.getTransferContents () == TransferContents.DATA)
-          screen.setStatusText (String.format ("Bytes received: %,d%n",
-                                               transfer.getDataLength ()));
+          screen.setStatusText (String.format ("%,d : Bytes received: %,d%n",
+                                               bufferNumber, transfer.getDataLength ()));
       }
       setReply (new ReadStructuredFieldCommand (buffer));
 
