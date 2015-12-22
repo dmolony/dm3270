@@ -111,14 +111,14 @@ public class FileTransferOutboundSF extends FileTransferSF
       transfer.setTransferCommand (screen.getPreviousTSOCommand ());
 
       // connect the buffer that contains the data to send
-      if (transfer.getTransferType () == TransferType.RECEIVE)
+      if (transfer.getTransferType () == TransferType.RECEIVE)    // upload
       {
         screen.setStatusText ("Sending...");
         Optional<byte[]> optionalBuffer = assistantStage.getCurrentFileBuffer ();
         if (optionalBuffer.isPresent ())
           transfer.setTransferBuffer (optionalBuffer.get ());
       }
-      else
+      else                                                        // download
         screen.setStatusText ("Receiving...");
     }
   }

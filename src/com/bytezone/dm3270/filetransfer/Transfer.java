@@ -40,7 +40,8 @@ public class Transfer
 
   public enum TransferType
   {
-    SEND, RECEIVE
+    SEND,     //    mainframe -> terminal (download)
+    RECEIVE   //    terminal -> mainframe (upload)
   }
 
   public Transfer (FileTransferOutboundSF outboundRecord)
@@ -48,14 +49,16 @@ public class Transfer
     add (outboundRecord);
   }
 
+  // called from FilesTab.getTransfer()
+  // called from FilesTab.closeTransfer()
   public void add (FileTransferOutboundSF outboundRecord)
   {
     outboundRecords.add (outboundRecord);
 
     if (transferContents == null)
-      transferContents = outboundRecord.transferContents;
+      transferContents = outboundRecord.transferContents;   // MSG or DATA
     if (transferType == null)
-      transferType = outboundRecord.transferType;
+      transferType = outboundRecord.transferType;           // SEND or RECEIVE
   }
 
   int add (DataRecord dataRecord)

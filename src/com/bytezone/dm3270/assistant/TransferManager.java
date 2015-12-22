@@ -4,58 +4,32 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.reporter.application.FileNode;
-import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 
 import javafx.application.Platform;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TextField;
 
-public class FilesTab extends AbstractTransferTab implements NodeSelectionListener
+public class TransferManager
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
 
+  private final Screen screen;
+  private final Site site;
   private final ReporterNode reporterNode;
-  private FileNode currentFileNode;
 
-  public FilesTab (Screen screen, Site site, TextField text, Button execute,
-      Preferences prefs)
+  public TransferManager (Screen screen, Site site, ReporterNode reporterNode)
   {
-    super ("Local Files", screen, site, text, execute);
-
-    reporterNode = new ReporterNode (prefs);
-    reporterNode.addNodeSelectionListener (this);
-    reporterNode.requestFocus ();
-
-    currentFileNode = reporterNode.getSelectedNode ();
-
-    setContent (reporterNode);
-  }
-
-  @Override
-  public void nodeSelected (FileNode fileNode)
-  {
-    currentFileNode = fileNode;
-    setText ();
-    fireFileSelected (currentFileNode.toString ());
-  }
-
-  MenuBar getMenuBar ()
-  {
-    return reporterNode.getMenuBar ();
+    this.screen = screen;
+    this.site = site;
+    this.reporterNode = reporterNode;
   }
 
   private void addTransfer (Transfer transfer)
@@ -153,60 +127,5 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   public void closeTransfer ()
   {
     currentTransfer = null;
-  }
-
-  @Override
-  protected void setText ()
-  {
-    if (currentFileNode == null)
-    {
-      eraseCommand ();
-      return;
-    }
-
-    String prefix = screenDetails == null ? "" : screenDetails.getPrefix () + ".";
-    String fileName = currentFileNode.toString ().toUpperCase ();
-    if (fileName.endsWith (".TXT"))
-      fileName = fileName.substring (0, fileName.length () - 4);
-
-    if (!prefix.isEmpty () && fileName.startsWith (prefix))
-      fileName = fileName.substring (prefix.length ());
-
-    String command = "IND$FILE PUT " + fileName;
-
-    if (currentFileNode.isAscii ())
-      command += " ASCII CRLF";
-
-    if (screenDetails != null && !screenDetails.isTSOCommandScreen ())
-      command = "TSO " + command;
-
-    txtCommand.setText (command);
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // fileSelected() Listener events
-  // ---------------------------------------------------------------------------------//
-
-  private final Set<FileSelectionListener> selectionListeners = new HashSet<> ();
-
-  void fireFileSelected (String filename)
-  {
-    selectionListeners.forEach (l -> l.fileSelected (filename));
-  }
-
-  void addFileSelectionListener (FileSelectionListener listener)
-  {
-    if (!selectionListeners.contains (listener))
-    {
-      selectionListeners.add (listener);
-      if (currentFileNode != null)
-        listener.fileSelected (currentFileNode.toString ());
-    }
-  }
-
-  void removeFileSelectionListener (FileSelectionListener listener)
-  {
-    if (selectionListeners.contains (listener))
-      selectionListeners.remove (listener);
   }
 }
