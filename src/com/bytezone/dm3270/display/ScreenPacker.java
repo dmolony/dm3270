@@ -167,12 +167,12 @@ class ScreenPacker implements ScreenChangeListener
   // called from the constructor above, and also from Screen in replay mode
   void addTSOCommand (String command)
   {
-    String minCommand = command.trim ();
-    if (!minCommand.isEmpty ())
-    {
-      tsoCommands.add (minCommand);
-      notifyTSOCommandListeners (minCommand);
-    }
+    String minCommand = command.trim ().toUpperCase ();
+    if (minCommand.isEmpty ())
+      return;
+
+    tsoCommands.add (minCommand);
+    notifyTSOCommandListeners (minCommand);
   }
 
   public String getPreviousTSOCommand ()

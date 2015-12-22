@@ -94,6 +94,7 @@ public class Screen extends Canvas implements DisplayScreen
 
     screenPacker = new ScreenPacker (pen, fieldManager);
     screenPacker.addTSOCommandListener (assistantStage);
+    screenPacker.addTSOCommandListener (transferManager);
     addKeyboardStatusChangeListener (assistantStage);
 
     this.pluginsStage = pluginsStage;

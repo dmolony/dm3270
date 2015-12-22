@@ -9,14 +9,16 @@ import java.util.Optional;
 
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.TSOCommandListener;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
+import com.bytezone.dm3270.filetransfer.IndFileCommand;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.reporter.application.FileNode;
 import com.bytezone.reporter.application.ReporterNode;
 
 import javafx.application.Platform;
 
-public class TransferManager
+public class TransferManager implements TSOCommandListener
 {
   private final List<Transfer> transfers = new ArrayList<> ();
   private Transfer currentTransfer;
@@ -25,6 +27,7 @@ public class TransferManager
   private final Site site;
   //  private final ReporterNode reporterNode;
   private final AssistantStage assistantStage;
+  private IndFileCommand indFileCommand;
 
   public TransferManager (Screen screen, Site site, AssistantStage assistantStage)
   {
@@ -97,6 +100,7 @@ public class TransferManager
   public void openTransfer (Transfer transfer)
   {
     currentTransfer = transfer;     // save it for subsequent calls
+    transfer.setTransferCommand (indFileCommand);
   }
 
   // called from FileTransferOutboundSF.processSend0x46()
@@ -135,5 +139,17 @@ public class TransferManager
   public void closeTransfer ()
   {
     currentTransfer = null;
+  }
+
+  public IndFileCommand getIndFileCommand ()
+  {
+    return indFileCommand;
+  }
+
+  @Override
+  public void tsoCommand (String command)
+  {
+    if (command.startsWith ("IND$FILE") || command.startsWith ("TSO IND$FILE"))
+      indFileCommand = new IndFileCommand (command);
   }
 }

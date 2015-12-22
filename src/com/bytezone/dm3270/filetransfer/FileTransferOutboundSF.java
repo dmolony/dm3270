@@ -108,15 +108,16 @@ public class FileTransferOutboundSF extends FileTransferSF
     if (transfer.getTransferContents () == TransferContents.DATA)
     {
       // get the user command that initiated the transfer
-      transfer.setTransferCommand (screen.getPreviousTSOCommand ());
+      //      transfer.setTransferCommand (screen.getPreviousTSOCommand ());
+      //      transfer.setTransferCommand (transferManager.getIndFileCommand ());
 
       // connect the buffer that contains the data to send
       if (transfer.getTransferType () == TransferType.RECEIVE)    // upload
       {
-        screen.setStatusText ("Sending...");
         Optional<byte[]> optionalBuffer = transferManager.getCurrentFileBuffer ();
         if (optionalBuffer.isPresent ())
           transfer.setTransferBuffer (optionalBuffer.get ());
+        screen.setStatusText ("Sending...");
       }
       else                                                        // download
         screen.setStatusText ("Receiving...");

@@ -14,17 +14,18 @@ public class Transfer
   private TransferContents transferContents;
   private TransferType transferType;
 
-  private String fileName;
-  private boolean hasTLQ;
-  private boolean crlf;
-  private boolean ascii;
-  private boolean append;
-  private String recfm;
-  private String lrecl;
-  private String blksize;
-  private String space;
-  private String direction;
-  private String units;
+  //  private String fileName;
+  //  private boolean hasTLQ;
+  //  private boolean crlf;
+  //  private boolean ascii;
+  //  private boolean append;
+  //  private String recfm;
+  //  private String lrecl;
+  //  private String blksize;
+  //  private String space;
+  //  private String direction;
+  //  private String units;
+  private IndFileCommand indFileCommand;
 
   List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
   List<DataRecord> dataRecords = new ArrayList<> ();
@@ -85,8 +86,8 @@ public class Transfer
     for (DataRecord dataRecord : dataRecords)
     {
       ptr = dataRecord.packBuffer (fullBuffer, ptr);
-      if (ascii)
-        dataRecord.checkAscii (crlf);
+      //      if (ascii)
+      //        dataRecord.checkAscii (crlf);
     }
 
     return fullBuffer;
@@ -144,81 +145,87 @@ public class Transfer
     return inboundBuffer.length - inboundBufferPtr;
   }
 
-  // optional step to use the TSO command that started the transfer
-  void setTransferCommand (String command)
+  public void setTransferCommand (IndFileCommand indFileCommand)
   {
-    command = command.toLowerCase ().trim ();
-    if (command.startsWith ("tso "))
-      command = command.substring (4);
-
-    String[] chunks = command.split ("\\s");
-    if (false)
-    {
-      int count = 0;
-      for (String chunk : chunks)
-        System.out.printf ("Chunk %d: %s%n", count++, chunk);
-    }
-
-    // check for a reconnection after an abort during a file transfer
-    if (!"ind$file".equals (chunks[0]))
-    {
-      System.out.printf ("Unexpected error: %s%n", chunks[0]);
-      int count = 0;
-      for (String chunk : chunks)
-        System.out.printf ("Chunk %d: %s%n", count++, chunk);
-      return;
-    }
-
-    this.direction = chunks[1];
-    this.fileName = chunks[2];
-    if (fileName.startsWith ("'") && fileName.endsWith ("'") && fileName.length () > 2)
-    {
-      fileName = fileName.substring (1, fileName.length () - 1);
-      hasTLQ = true;
-    }
-
-    int lengthMinusOne = chunks.length - 1;
-    for (int i = 3; i < chunks.length; i++)
-    {
-      if (chunks[i].equals ("crlf"))
-        crlf = true;
-      if (chunks[i].equals ("ascii"))
-        ascii = true;
-      if (chunks[i].equals ("append"))
-        append = true;
-
-      if (chunks[i].equals ("recfm") && i < lengthMinusOne)
-        recfm = chunks[i + 1];
-      if (chunks[i].equals ("lrecl") && i < lengthMinusOne)
-        lrecl = chunks[i + 1];
-      if (chunks[i].equals ("blksize") && i < lengthMinusOne)
-        blksize = chunks[i + 1];
-      if (chunks[i].equals ("space") && i < lengthMinusOne)
-        space = chunks[i + 1];
-
-      if (chunks[i].startsWith ("recfm("))
-        recfm = chunks[i].substring (5);
-      if (chunks[i].startsWith ("lrecl("))
-        lrecl = chunks[i].substring (5);
-      if (chunks[i].startsWith ("blksize("))
-        blksize = chunks[i].substring (7);
-      if (chunks[i].startsWith ("space("))
-      {
-        space = chunks[i].substring (5);
-        if (chunks[i - 1].startsWith ("cyl") || chunks[i - 1].startsWith ("track"))
-          units = chunks[i - 1];
-      }
-    }
+    this.indFileCommand = indFileCommand;
   }
+
+  // optional step to use the TSO command that started the transfer
+  //  void setTransferCommand (String command)
+  //  {
+  //    System.out.println ("this is unnecessary - Screen should have done it already");
+  //    command = command.toLowerCase ().trim ();
+  //    if (command.startsWith ("tso "))
+  //      command = command.substring (4);
+  //
+  //    String[] chunks = command.split ("\\s");
+  //    if (false)
+  //    {
+  //      int count = 0;
+  //      for (String chunk : chunks)
+  //        System.out.printf ("Chunk %d: %s%n", count++, chunk);
+  //    }
+  //
+  //    // check for a reconnection after an abort during a file transfer
+  //    if (!"ind$file".equals (chunks[0]))
+  //    {
+  //      System.out.printf ("Unexpected error: %s%n", chunks[0]);
+  //      int count = 0;
+  //      for (String chunk : chunks)
+  //        System.out.printf ("Chunk %d: %s%n", count++, chunk);
+  //      return;
+  //    }
+  //
+  //    this.direction = chunks[1];
+  //    this.fileName = chunks[2];
+  //    if (fileName.startsWith ("'") && fileName.endsWith ("'") && fileName.length () > 2)
+  //    {
+  //      fileName = fileName.substring (1, fileName.length () - 1);
+  //      hasTLQ = true;
+  //    }
+  //
+  //    int lengthMinusOne = chunks.length - 1;
+  //    for (int i = 3; i < chunks.length; i++)
+  //    {
+  //      if (chunks[i].equals ("crlf"))
+  //        crlf = true;
+  //      if (chunks[i].equals ("ascii"))
+  //        ascii = true;
+  //      if (chunks[i].equals ("append"))
+  //        append = true;
+  //
+  //      if (chunks[i].equals ("recfm") && i < lengthMinusOne)
+  //        recfm = chunks[i + 1];
+  //      if (chunks[i].equals ("lrecl") && i < lengthMinusOne)
+  //        lrecl = chunks[i + 1];
+  //      if (chunks[i].equals ("blksize") && i < lengthMinusOne)
+  //        blksize = chunks[i + 1];
+  //      if (chunks[i].equals ("space") && i < lengthMinusOne)
+  //        space = chunks[i + 1];
+  //
+  //      if (chunks[i].startsWith ("recfm("))
+  //        recfm = chunks[i].substring (5);
+  //      if (chunks[i].startsWith ("lrecl("))
+  //        lrecl = chunks[i].substring (5);
+  //      if (chunks[i].startsWith ("blksize("))
+  //        blksize = chunks[i].substring (7);
+  //      if (chunks[i].startsWith ("space("))
+  //      {
+  //        space = chunks[i].substring (5);
+  //        if (chunks[i - 1].startsWith ("cyl") || chunks[i - 1].startsWith ("track"))
+  //          units = chunks[i - 1];
+  //      }
+  //    }
+  //  }
 
   public String getFileName ()
   {
-    return fileName;
+    return indFileCommand.getFileName ();
   }
 
   public boolean hasTLQ ()
   {
-    return hasTLQ;
+    return indFileCommand.hasTLQ ();
   }
 
   @Override
@@ -235,17 +242,17 @@ public class Transfer
                                   dataRecord.getBufferLength ()));
 
     text.append (String.format ("%nLength ......... %,9d", dataLength));
-    text.append (String.format ("%nCommand ........ %s", direction));
-    text.append (String.format ("%nFile name ...... %s", fileName));
-    text.append (String.format ("%nhas TLQ ........ %s", hasTLQ));
-    text.append (String.format ("%nCRLF ........... %s", crlf));
-    text.append (String.format ("%nASCII .......... %s", ascii));
-    text.append (String.format ("%nAPPEND ......... %s", append));
-    text.append (String.format ("%nRECFM .......... %s", recfm == null ? "" : recfm));
-    text.append (String.format ("%nLRECL .......... %s", lrecl == null ? "" : lrecl));
-    text.append (String.format ("%nBLKSIZE ........ %s", blksize == null ? "" : blksize));
-    text.append (String.format ("%nUNITS .......... %s", units == null ? "" : units));
-    text.append (String.format ("%nSPACE .......... %s", space == null ? "" : space));
+    //    text.append (String.format ("%nCommand ........ %s", direction));
+    //    text.append (String.format ("%nFile name ...... %s", fileName));
+    //    text.append (String.format ("%nhas TLQ ........ %s", hasTLQ));
+    //    text.append (String.format ("%nCRLF ........... %s", crlf));
+    //    text.append (String.format ("%nASCII .......... %s", ascii));
+    //    text.append (String.format ("%nAPPEND ......... %s", append));
+    //    text.append (String.format ("%nRECFM .......... %s", recfm == null ? "" : recfm));
+    //    text.append (String.format ("%nLRECL .......... %s", lrecl == null ? "" : lrecl));
+    //    text.append (String.format ("%nBLKSIZE ........ %s", blksize == null ? "" : blksize));
+    //    text.append (String.format ("%nUNITS .......... %s", units == null ? "" : units));
+    //    text.append (String.format ("%nSPACE .......... %s", space == null ? "" : space));
     text.append (String.format ("%ninbuf length ... %d",
                                 inboundBuffer == null ? -1 : inboundBuffer.length));
     text.append (String.format ("%nin ptr ......... %d", inboundBufferPtr));
