@@ -82,17 +82,17 @@ public class FileTransferOutboundSF extends FileTransferSF
           processClose (screen);
         break;
 
-      case 0x45:                        // something to do with SEND
-        processSend0x45 ();
+      case 0x45:                        // something to do with DOWNLOAD
+        processDownload0x45 ();
         break;
 
-      case 0x46:                        // send data transfer buffer
+      case 0x46:                        // DOWNLOAD data transfer buffer
         if (subtype == 0x11)
-          processSend0x46 (screen);
+          processDownload0x46 (screen);
         break;
 
-      case 0x47:                        // receive data transfer buffer
-        processReceive (screen);
+      case 0x47:                        // UPLOAD data transfer buffer
+        processUpload (screen);
         break;
     }
   }
@@ -132,11 +132,11 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processSend0x45 ()
+  private void processDownload0x45 ()
   {
   }
 
-  private void processSend0x46 (Screen screen)
+  private void processDownload0x46 (Screen screen)
   {
     Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
     if (!optionalTransfer.isPresent ())
@@ -181,7 +181,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     setReply (new ReadStructuredFieldCommand (replyBuffer));
   }
 
-  private void processReceive (Screen screen)
+  private void processUpload (Screen screen)
   {
     Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
     if (!optionalTransfer.isPresent ())
