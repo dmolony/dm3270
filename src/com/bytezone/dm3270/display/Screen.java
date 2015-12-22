@@ -17,6 +17,7 @@ import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
+import com.bytezone.dm3270.assistant.TransferManager;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -45,6 +46,7 @@ public class Screen extends Canvas implements DisplayScreen
   private final FontManager fontManager;
   private final ContextManager contextManager;
   private final HistoryManager historyManager;
+  private final TransferManager transferManager;
   private final ScreenPacker screenPacker;
 
   private final PluginsStage pluginsStage;
@@ -85,6 +87,7 @@ public class Screen extends Canvas implements DisplayScreen
     fieldManager = new FieldManager (this, contextManager, site);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
+    transferManager = new TransferManager (this, site, assistantStage);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
     pen = new PenType1 (screenPositions, gc, contextManager, screenDimensions);

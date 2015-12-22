@@ -16,6 +16,7 @@ import com.bytezone.dm3270.display.TSOCommandListener;
 import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.utilities.WindowSaver;
+import com.bytezone.reporter.application.ReporterNode;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,6 +36,8 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final MenuBar menuBar;
+  private final Screen screen;
+  private TransferManager transferManager;
   protected Site currentSite;
 
   private final TSOCommand tsoCommand;
@@ -52,6 +55,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   public AssistantStage (Screen screen, Site site)
   {
     setTitle ("File Transfers");
+    this.screen = screen;
 
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
@@ -112,6 +116,11 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tabPane.getSelectionModel ().select (datasetTab);
   }
 
+  void setTransferManager (TransferManager transferManager)
+  {
+    this.transferManager = transferManager;
+  }
+
   private void select (Tab tabSelected)
   {
     if (tabSelected != null)
@@ -121,6 +130,11 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   public void setConsolePane (ConsolePane consolePane)
   {
     tsoCommand.setConsolePane (consolePane);
+  }
+
+  public ReporterNode getReporterNode ()
+  {
+    return filesTab.getReporterNode ();
   }
 
   public void closeWindow ()
@@ -151,26 +165,30 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   // called from FileTransferOutboundSF.processOpen()
   public void openTransfer (Transfer transfer)
   {
-    filesTab.openTransfer (transfer);
+    //    filesTab.openTransfer (transfer);
+    transferManager.openTransfer (transfer);
   }
 
   // called from FileTransferOutboundSF.processSend0x46()
   // called from FileTransferOutboundSF.processReceive()
   public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
   {
-    return filesTab.getTransfer (transferRecord);
+    //    return filesTab.getTransfer (transferRecord);
+    return transferManager.getTransfer (transferRecord);
   }
 
   // called from FileTransferOutboundSF.processReceive()
   public void closeTransfer ()
   {
-    filesTab.closeTransfer ();
+    //    filesTab.closeTransfer ();
+    transferManager.closeTransfer ();
   }
 
   // called from FileTransferOutboundSF.processClose()
   public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
   {
-    return filesTab.closeTransfer (transferRecord);
+    //    return filesTab.closeTransfer (transferRecord);
+    return transferManager.closeTransfer (transferRecord);
   }
 
   // called from FileTransferOutboundSF.processOpen()

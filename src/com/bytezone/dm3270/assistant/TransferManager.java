@@ -25,11 +25,12 @@ public class TransferManager
   private final Site site;
   private final ReporterNode reporterNode;
 
-  public TransferManager (Screen screen, Site site, ReporterNode reporterNode)
+  public TransferManager (Screen screen, Site site, AssistantStage assistantStage)
   {
     this.screen = screen;
     this.site = site;
-    this.reporterNode = reporterNode;
+    assistantStage.setTransferManager (this);
+    this.reporterNode = assistantStage.getReporterNode ();
   }
 
   private void addTransfer (Transfer transfer)
