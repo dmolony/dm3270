@@ -29,8 +29,8 @@ public class Transfer
 
   public enum TransferType
   {
-    DOWNLOAD,       //    mainframe -> terminal (send)
-    UPLOAD          //    terminal -> mainframe (receive)
+    DOWNLOAD,       // mainframe -> terminal (send)
+    UPLOAD          // terminal -> mainframe (receive)
   }
 
   public Transfer (FileTransferOutboundSF outboundRecord)
