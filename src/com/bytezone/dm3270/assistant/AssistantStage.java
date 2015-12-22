@@ -2,7 +2,6 @@ package com.bytezone.dm3270.assistant;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.application.ConsolePane;
@@ -158,37 +157,6 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   public void batchJobFailed (int jobNumber, String jobName, String time)
   {
     jobTab.batchJobFailed (jobNumber, jobName, time);
-  }
-
-  // called from FileTransferOutboundSF.processOpen()
-  //  public void openTransfer (Transfer transfer)
-  //  {
-  //    transferManager.openTransfer (transfer);
-  //  }
-
-  // called from FileTransferOutboundSF.processSend0x46()
-  // called from FileTransferOutboundSF.processReceive()
-  //  public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
-  //  {
-  //    return transferManager.getTransfer (transferRecord);
-  //  }
-
-  // called from FileTransferOutboundSF.processReceive()
-  //  public void closeTransfer ()
-  //  {
-  //    transferManager.closeTransfer ();
-  //  }
-
-  // called from FileTransferOutboundSF.processClose()
-  //  public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
-  //  {
-  //    return transferManager.closeTransfer (transferRecord);
-  //  }
-
-  // called from FileTransferOutboundSF.processOpen()
-  public Optional<byte[]> getCurrentFileBuffer ()
-  {
-    return filesTab.getCurrentFileBuffer ();
   }
 
   @Override

@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.assistant;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -50,19 +49,6 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   ReporterNode getReporterNode ()
   {
     return reporterNode;
-  }
-
-  // called from AssistantStage.getCurrentFileBuffer()
-  public Optional<byte[]> getCurrentFileBuffer ()
-  {
-    FileNode fileNode = reporterNode.getSelectedNode ();
-    if (fileNode == null)
-    {
-      System.out.println ("No fileNode selected in FilesTab.getCurrentFileBuffer()");
-      return Optional.empty ();
-    }
-    else
-      return Optional.of (fileNode.getReportData ().getBuffer ());
   }
 
   @Override
