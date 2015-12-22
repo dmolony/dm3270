@@ -51,27 +51,30 @@ public class IndFileCommand
     {
       if (chunks[i].equals ("crlf"))
         crlf = true;
-      if (chunks[i].equals ("ascii"))
+      else if (chunks[i].equals ("ascii"))
         ascii = true;
-      if (chunks[i].equals ("append"))
+      else if (chunks[i].equals ("append"))
         append = true;
 
-      if (chunks[i].equals ("recfm") && i < lengthMinusOne)
-        recfm = chunks[i + 1];
-      if (chunks[i].equals ("lrecl") && i < lengthMinusOne)
-        lrecl = chunks[i + 1];
-      if (chunks[i].equals ("blksize") && i < lengthMinusOne)
-        blksize = chunks[i + 1];
-      if (chunks[i].equals ("space") && i < lengthMinusOne)
-        space = chunks[i + 1];
+      if (i < lengthMinusOne)
+      {
+        if (chunks[i].equals ("recfm"))
+          recfm = chunks[i + 1];
+        else if (chunks[i].equals ("lrecl"))
+          lrecl = chunks[i + 1];
+        else if (chunks[i].equals ("blksize"))
+          blksize = chunks[i + 1];
+        else if (chunks[i].equals ("space"))
+          space = chunks[i + 1];
+      }
 
       if (chunks[i].startsWith ("recfm("))
         recfm = chunks[i].substring (5);
-      if (chunks[i].startsWith ("lrecl("))
+      else if (chunks[i].startsWith ("lrecl("))
         lrecl = chunks[i].substring (5);
-      if (chunks[i].startsWith ("blksize("))
+      else if (chunks[i].startsWith ("blksize("))
         blksize = chunks[i].substring (7);
-      if (chunks[i].startsWith ("space("))
+      else if (chunks[i].startsWith ("space("))
       {
         space = chunks[i].substring (5);
         if (chunks[i - 1].startsWith ("cyl") || chunks[i - 1].startsWith ("track"))
