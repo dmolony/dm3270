@@ -39,7 +39,7 @@ public class TransferManager implements TSOCommandListener
 
   private void addTransfer (Transfer transfer)
   {
-    if (transfer.isSendData ())
+    if (transfer.isDownloadData ())
     {
       transfers.add (transfer);
       Platform.runLater ( () -> addBuffer (transfer));

@@ -18,7 +18,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     super (buffer, offset, length, "Outbound");
 
     if (rectype == 0 && subtype == 0x12)
-      transferType = TransferType.SEND;
+      transferType = TransferType.DOWNLOAD;
     TransferRecord transferRecord;
 
     int ptr = 3;
@@ -40,7 +40,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
         case 0x08:
           transferRecord = new RecordSize (data, ptr);
-          transferType = TransferType.RECEIVE;
+          transferType = TransferType.UPLOAD;
           break;
 
         case (byte) 0xC0:
@@ -107,19 +107,16 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     if (transfer.getTransferContents () == TransferContents.DATA)
     {
-      // get the user command that initiated the transfer
-      //      transfer.setTransferCommand (screen.getPreviousTSOCommand ());
-      //      transfer.setTransferCommand (transferManager.getIndFileCommand ());
-
       // connect the buffer that contains the data to send
-      if (transfer.getTransferType () == TransferType.RECEIVE)    // upload
+      if (transfer.getTransferType () == TransferType.UPLOAD)
       {
+        // this should have already been set by the instigator of the upload
         Optional<byte[]> optionalBuffer = transferManager.getCurrentFileBuffer ();
         if (optionalBuffer.isPresent ())
           transfer.setTransferBuffer (optionalBuffer.get ());
         screen.setStatusText ("Sending...");
       }
-      else                                                        // download
+      else
         screen.setStatusText ("Receiving...");
     }
   }

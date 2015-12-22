@@ -29,8 +29,8 @@ public class Transfer
 
   public enum TransferType
   {
-    SEND,     //    mainframe -> terminal (download)
-    RECEIVE   //    terminal -> mainframe (upload)
+    DOWNLOAD,       //    mainframe -> terminal (send)
+    UPLOAD          //    terminal -> mainframe (receive)
   }
 
   public Transfer (FileTransferOutboundSF outboundRecord)
@@ -47,7 +47,7 @@ public class Transfer
     if (transferContents == null)
       transferContents = outboundRecord.transferContents;   // MSG or DATA
     if (transferType == null)
-      transferType = outboundRecord.transferType;           // SEND or RECEIVE
+      transferType = outboundRecord.transferType;           // DOWNLOAD or UPLOAD
   }
 
   // called from FileTransferOutboundSF.processReceive() - upload
@@ -62,9 +62,10 @@ public class Transfer
     return dataRecords.size ();
   }
 
-  public boolean isSendData ()
+  public boolean isDownloadData ()
   {
-    return transferContents == TransferContents.DATA && transferType == TransferType.SEND;
+    return transferContents == TransferContents.DATA
+        && transferType == TransferType.DOWNLOAD;
   }
 
   // called from TransferManager.closeTransfer()
