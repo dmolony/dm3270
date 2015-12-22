@@ -13,8 +13,6 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.display.TSOCommandListener;
-import com.bytezone.dm3270.filetransfer.FileTransferOutboundSF;
-import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.utilities.WindowSaver;
 import com.bytezone.reporter.application.ReporterNode;
 
@@ -163,33 +161,29 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   }
 
   // called from FileTransferOutboundSF.processOpen()
-  public void openTransfer (Transfer transfer)
-  {
-    //    filesTab.openTransfer (transfer);
-    transferManager.openTransfer (transfer);
-  }
+  //  public void openTransfer (Transfer transfer)
+  //  {
+  //    transferManager.openTransfer (transfer);
+  //  }
 
   // called from FileTransferOutboundSF.processSend0x46()
   // called from FileTransferOutboundSF.processReceive()
-  public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
-  {
-    //    return filesTab.getTransfer (transferRecord);
-    return transferManager.getTransfer (transferRecord);
-  }
+  //  public Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
+  //  {
+  //    return transferManager.getTransfer (transferRecord);
+  //  }
 
   // called from FileTransferOutboundSF.processReceive()
-  public void closeTransfer ()
-  {
-    //    filesTab.closeTransfer ();
-    transferManager.closeTransfer ();
-  }
+  //  public void closeTransfer ()
+  //  {
+  //    transferManager.closeTransfer ();
+  //  }
 
   // called from FileTransferOutboundSF.processClose()
-  public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
-  {
-    //    return filesTab.closeTransfer (transferRecord);
-    return transferManager.closeTransfer (transferRecord);
-  }
+  //  public Optional<Transfer> closeTransfer (FileTransferOutboundSF transferRecord)
+  //  {
+  //    return transferManager.closeTransfer (transferRecord);
+  //  }
 
   // called from FileTransferOutboundSF.processOpen()
   public Optional<byte[]> getCurrentFileBuffer ()

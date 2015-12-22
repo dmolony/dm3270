@@ -108,6 +108,11 @@ public class Screen extends Canvas implements DisplayScreen
     return fieldManager.getScreenWatcher ();
   }
 
+  public TransferManager getTransferManager ()
+  {
+    return transferManager;
+  }
+
   public void setStatusText (String text)
   {
     consolePane.setStatusText (text);

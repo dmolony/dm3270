@@ -3,6 +3,7 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.Optional;
 
 import com.bytezone.dm3270.assistant.AssistantStage;
+import com.bytezone.dm3270.assistant.TransferManager;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
@@ -12,6 +13,7 @@ import com.bytezone.dm3270.utilities.Utility;
 public class FileTransferOutboundSF extends FileTransferSF
 {
   private AssistantStage assistantStage;
+  private TransferManager transferManager;
 
   public FileTransferOutboundSF (byte[] buffer, int offset, int length)
   {
@@ -68,7 +70,8 @@ public class FileTransferOutboundSF extends FileTransferSF
   @Override
   public void process (Screen screen)
   {
-    assistantStage = screen.getAssistantStage ();
+    //    assistantStage = screen.getAssistantStage ();
+    transferManager = screen.getTransferManager ();
 
     switch (rectype)
     {
@@ -100,7 +103,8 @@ public class FileTransferOutboundSF extends FileTransferSF
   private void processOpen (Screen screen)
   {
     Transfer transfer = new Transfer (this);
-    assistantStage.openTransfer (transfer);
+    //    assistantStage.openTransfer (transfer);
+    transferManager.openTransfer (transfer);
 
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     setReply (new ReadStructuredFieldCommand (buffer));
@@ -125,7 +129,8 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processClose (Screen screen)
   {
-    Optional<Transfer> optionalTransfer = assistantStage.closeTransfer (this);
+    //    Optional<Transfer> optionalTransfer = assistantStage.closeTransfer (this);
+    Optional<Transfer> optionalTransfer = transferManager.closeTransfer (this);
     if (optionalTransfer.isPresent ())
     {
       //      Transfer transfer = optionalTransfer.get ();
@@ -141,7 +146,8 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processSend0x46 (Screen screen)
   {
-    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
+    //    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
+    Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
     if (!optionalTransfer.isPresent ())
     {
       System.out.println ("No active transfer");
@@ -186,7 +192,8 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processReceive (Screen screen)
   {
-    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
+    //    Optional<Transfer> optionalTransfer = assistantStage.getTransfer (this);
+    Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
     if (!optionalTransfer.isPresent ())
     {
       System.out.println ("No active transfer");
@@ -225,7 +232,8 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       // message transfers don't close
       if (transfer.getTransferContents () == TransferContents.MSG)
-        assistantStage.closeTransfer ();
+        //        assistantStage.closeTransfer ();
+        transferManager.closeTransfer ();
     }
   }
 
