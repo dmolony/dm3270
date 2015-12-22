@@ -23,8 +23,8 @@ public class TransferManager
 
   private final Screen screen;
   private final Site site;
-  private final ReporterNode reporterNode;
-  private final AssistantStage assistantStage;        // temp
+  //  private final ReporterNode reporterNode;
+  private final AssistantStage assistantStage;
 
   public TransferManager (Screen screen, Site site, AssistantStage assistantStage)
   {
@@ -32,7 +32,6 @@ public class TransferManager
     this.site = site;
     this.assistantStage = assistantStage;
     assistantStage.setTransferManager (this);
-    this.reporterNode = assistantStage.getReporterNode ();
   }
 
   private void addTransfer (Transfer transfer)
@@ -72,6 +71,7 @@ public class TransferManager
     byte[] buffer = transfer.combineDataBuffers ();
 
     // this should be sent to a listener
+    ReporterNode reporterNode = assistantStage.getReporterNode ();
     if (siteFolderName.isEmpty ())
       reporterNode.addBuffer (name, buffer);
     else
@@ -82,6 +82,7 @@ public class TransferManager
   public Optional<byte[]> getCurrentFileBuffer ()
   {
     // whoever instigated the transfer should have told us about it already
+    ReporterNode reporterNode = assistantStage.getReporterNode ();
     FileNode fileNode = reporterNode.getSelectedNode ();
     if (fileNode == null)
     {
@@ -93,11 +94,9 @@ public class TransferManager
   }
 
   // called from FileTransferOutboundSF.processOpen()
-  // Save the current transfer so it is available to subsequent FileTransferOutboundSF
-  // commands.
   public void openTransfer (Transfer transfer)
   {
-    currentTransfer = transfer;
+    currentTransfer = transfer;     // save it for subsequent calls
   }
 
   // called from FileTransferOutboundSF.processSend0x46()
