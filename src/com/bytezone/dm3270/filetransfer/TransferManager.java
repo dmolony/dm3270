@@ -42,27 +42,16 @@ public class TransferManager implements TSOCommandListener
   // called from FileTransferOutboundSF.processOpen()
   Optional<byte[]> getCurrentFileBuffer ()
   {
-    // whoever instigated the transfer should have told us about it already
-    //    ReporterNode reporterNode = assistantStage.getReporterNode ();
-    //    FileNode fileNode = reporterNode.getSelectedNode ();
-    //    if (fileNode == null)
-    //    {
-    //      System.out.println ("No fileNode selected in FilesTab.getCurrentFileBuffer()");
-    //      return Optional.empty ();
-    //    }
-    //    else
-    //      return Optional.of (fileNode.getReportData ().getBuffer ());
     if (intendedIndFileCommand == null || intendedIndFileCommand.getBuffer () == null)
       return Optional.empty ();
     return Optional.of (intendedIndFileCommand.getBuffer ());
-
   }
 
   // called from FileTransferOutboundSF.processOpen()
   void openTransfer (Transfer transfer)
   {
     currentTransfer = transfer;     // save it for subsequent calls
-    transfer.setTransferCommand (indFileCommand);
+    transfer.setTransferCommand (intendedIndFileCommand);
   }
 
   // called from FileTransferOutboundSF.processSend0x46()

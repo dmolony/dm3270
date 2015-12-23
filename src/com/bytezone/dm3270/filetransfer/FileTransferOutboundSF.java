@@ -110,9 +110,9 @@ public class FileTransferOutboundSF extends FileTransferSF
       if (transfer.getTransferType () == TransferType.UPLOAD)
       {
         // this should have already been set by the instigator of the upload
-        Optional<byte[]> optionalBuffer = transferManager.getCurrentFileBuffer ();
-        if (optionalBuffer.isPresent ())
-          transfer.setTransferBuffer (optionalBuffer.get ());
+        //        Optional<byte[]> optionalBuffer = transferManager.getCurrentFileBuffer ();
+        //        if (optionalBuffer.isPresent ())
+        //          transfer.setTransferBuffer (optionalBuffer.get ());
         screen.setStatusText ("Uploading ...");
       }
       else

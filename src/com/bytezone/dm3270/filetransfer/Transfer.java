@@ -98,11 +98,11 @@ public class Transfer
   }
 
   // called from FileTransferOutboundSF.processOpen() - upload
-  void setTransferBuffer (byte[] buffer)
-  {
-    inboundBuffer = buffer;
-    inboundBufferPtr = 0;
-  }
+  //  void setTransferBuffer (byte[] buffer)
+  //  {
+  //    inboundBuffer = buffer;
+  //    inboundBufferPtr = 0;
+  //  }
 
   DataRecord getDataHeader ()
   {
@@ -157,6 +157,7 @@ public class Transfer
   public void setTransferCommand (IndFileCommand indFileCommand)
   {
     this.indFileCommand = indFileCommand;
+    inboundBuffer = indFileCommand.getBuffer ();
   }
 
   public String getFileName ()
