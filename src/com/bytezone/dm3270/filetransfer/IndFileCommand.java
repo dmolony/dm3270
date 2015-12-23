@@ -14,6 +14,8 @@ public class IndFileCommand
   private String direction;
   private String units;
 
+  private byte[] buffer;
+
   public IndFileCommand (String command)
   {
     command = command.toLowerCase ().trim ();
@@ -93,6 +95,16 @@ public class IndFileCommand
     return hasTLQ;
   }
 
+  public byte[] getBuffer ()
+  {
+    return buffer;
+  }
+
+  public void setBuffer (byte[] buffer)
+  {
+    this.buffer = buffer;
+  }
+
   @Override
   public String toString ()
   {
@@ -100,6 +112,8 @@ public class IndFileCommand
 
     text.append (String.format ("%nCommand ........ %s", direction));
     text.append (String.format ("%nFile name ...... %s", fileName));
+    text.append (String.format ("%nBuffer length .. %,d",
+                                buffer == null ? -1 : buffer.length));
     text.append (String.format ("%nhas TLQ ........ %s", hasTLQ));
     text.append (String.format ("%nCRLF ........... %s", crlf));
     text.append (String.format ("%nASCII .......... %s", ascii));

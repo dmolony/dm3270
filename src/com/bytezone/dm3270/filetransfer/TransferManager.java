@@ -24,7 +24,8 @@ public class TransferManager implements TSOCommandListener
   private final Screen screen;
   private final Site site;
   private final AssistantStage assistantStage;
-  private IndFileCommand indFileCommand;
+  private IndFileCommand indFileCommand;            // spotted while observing
+  private IndFileCommand intendedIndFileCommand;    // set by the instigator
 
   public TransferManager (Screen screen, Site site, AssistantStage assistantStage)
   {
@@ -32,6 +33,11 @@ public class TransferManager implements TSOCommandListener
     this.site = site;
     this.assistantStage = assistantStage;
     assistantStage.setTransferManager (this);
+  }
+
+  public void setIndFileCommand (IndFileCommand indFileCommand)
+  {
+    intendedIndFileCommand = indFileCommand;    // should contain a byte[]
   }
 
   // called from FileTransferOutboundSF.processOpen()
