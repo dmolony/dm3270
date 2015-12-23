@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.nio.file.Path;
+
 public class IndFileCommand
 {
   private String fileName;
@@ -15,6 +17,7 @@ public class IndFileCommand
   private String units;
 
   private byte[] buffer;
+  private Path localFile;
 
   public IndFileCommand (String command)
   {
@@ -88,6 +91,12 @@ public class IndFileCommand
     }
   }
 
+  public void compareWith (IndFileCommand other)
+  {
+    System.out.println (this);
+    System.out.println (other);
+  }
+
   public String getFileName ()
   {
     return fileName;
@@ -123,6 +132,11 @@ public class IndFileCommand
     this.buffer = buffer;
   }
 
+  public void setLocalPath (Path path)
+  {
+    this.localFile = path;
+  }
+
   @Override
   public String toString ()
   {
@@ -130,6 +144,7 @@ public class IndFileCommand
 
     text.append (String.format ("%nCommand ........ %s", direction));
     text.append (String.format ("%nFile name ...... %s", fileName));
+    text.append (String.format ("%nPath name ...... %s", localFile));
     text.append (String.format ("%nBuffer length .. %,d",
                                 buffer == null ? -1 : buffer.length));
     text.append (String.format ("%nhas TLQ ........ %s", hasTLQ));

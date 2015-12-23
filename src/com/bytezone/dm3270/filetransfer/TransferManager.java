@@ -23,7 +23,6 @@ public class TransferManager implements TSOCommandListener
   private final Screen screen;
   private final Site site;
   private final AssistantStage assistantStage;
-  private IndFileCommand indFileCommand;            // spotted while observing
   private IndFileCommand intendedIndFileCommand;    // set by the instigator
 
   public TransferManager (Screen screen, Site site, AssistantStage assistantStage)
@@ -36,15 +35,7 @@ public class TransferManager implements TSOCommandListener
 
   public void setIndFileCommand (IndFileCommand indFileCommand)
   {
-    intendedIndFileCommand = indFileCommand;    // should contain a byte[]
-  }
-
-  // called from FileTransferOutboundSF.processOpen()
-  Optional<byte[]> getCurrentFileBuffer ()
-  {
-    if (intendedIndFileCommand == null || intendedIndFileCommand.getBuffer () == null)
-      return Optional.empty ();
-    return Optional.of (intendedIndFileCommand.getBuffer ());
+    intendedIndFileCommand = indFileCommand;    // should contain a byte[] for PUT
   }
 
   // called from FileTransferOutboundSF.processOpen()
@@ -86,7 +77,8 @@ public class TransferManager implements TSOCommandListener
       transfers.add (transfer);
       Platform.runLater ( () -> saveFile (transfer));
     }
-    currentTransfer = null;
+
+    closeTransfer ();
 
     return Optional.of (transfer);
   }
@@ -95,18 +87,17 @@ public class TransferManager implements TSOCommandListener
   void closeTransfer ()
   {
     currentTransfer = null;
-  }
-
-  public IndFileCommand getIndFileCommand ()
-  {
-    return indFileCommand;
+    intendedIndFileCommand = null;
   }
 
   @Override
   public void tsoCommand (String command)
   {
     if (command.startsWith ("IND$FILE") || command.startsWith ("TSO IND$FILE"))
-      indFileCommand = new IndFileCommand (command);
+    {
+      IndFileCommand indFileCommand = new IndFileCommand (command);
+      indFileCommand.compareWith (intendedIndFileCommand);
+    }
   }
 
   private void saveFile (Transfer transfer)
