@@ -50,7 +50,7 @@ public class Transfer
       transferType = outboundRecord.transferType;           // UPLOAD or DOWNLOAD
   }
 
-  // called from FileTransferOutboundSF.processReceive() - upload
+  // called from FileTransferOutboundSF.processDownload()
   int add (DataRecord dataRecord)
   {
     if (dataRecords.contains (dataRecord))
@@ -84,6 +84,14 @@ public class Transfer
       // check for non-ascii characters
       if (indFileCommand.ascii ())
         dataRecord.checkAscii (indFileCommand.crlf ());
+    }
+
+    if (fullBuffer.length < dataLength)
+    {
+      assert fullBuffer[fullBuffer.length - 2] == 0x0D;
+      assert fullBuffer[fullBuffer.length - 1] == 0x0A;
+      assert fullBuffer.length == dataLength - 1;
+      System.out.println ("successfully adjusted");
     }
 
     return fullBuffer;
