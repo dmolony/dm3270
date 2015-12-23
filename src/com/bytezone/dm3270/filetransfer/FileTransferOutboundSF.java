@@ -105,19 +105,10 @@ public class FileTransferOutboundSF extends FileTransferSF
     setReply (new ReadStructuredFieldCommand (buffer));
 
     if (transfer.getTransferContents () == TransferContents.DATA)
-    {
-      // connect the buffer that contains the data to send
       if (transfer.getTransferType () == TransferType.UPLOAD)
-      {
-        // this should have already been set by the instigator of the upload
-        //        Optional<byte[]> optionalBuffer = transferManager.getCurrentFileBuffer ();
-        //        if (optionalBuffer.isPresent ())
-        //          transfer.setTransferBuffer (optionalBuffer.get ());
         screen.setStatusText ("Uploading ...");
-      }
       else
         screen.setStatusText ("Downloading ...");
-    }
   }
 
   private void processClose (Screen screen)

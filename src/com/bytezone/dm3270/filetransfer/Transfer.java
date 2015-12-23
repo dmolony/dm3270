@@ -97,13 +97,6 @@ public class Transfer
     return fullBuffer;
   }
 
-  // called from FileTransferOutboundSF.processOpen() - upload
-  //  void setTransferBuffer (byte[] buffer)
-  //  {
-  //    inboundBuffer = buffer;
-  //    inboundBufferPtr = 0;
-  //  }
-
   DataRecord getDataHeader ()
   {
     assert hasMoreData ();
