@@ -98,6 +98,16 @@ public class IndFileCommand
     return hasTLQ;
   }
 
+  public boolean ascii ()
+  {
+    return ascii;
+  }
+
+  public boolean crlf ()
+  {
+    return crlf;
+  }
+
   public boolean isPut ()
   {
     return "put".equals (direction);

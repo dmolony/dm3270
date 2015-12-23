@@ -96,9 +96,10 @@ public class DataRecord extends TransferRecord
 
   public int packBuffer (byte[] buffer, int ptr)
   {
-    System.arraycopy (this.buffer, 0, buffer, ptr, this.buffer.length);
-    ptr += this.buffer.length;
-    return ptr;
+    // allow for a smaller destination buffer than the original
+    int length = Math.min (buffer.length - ptr, this.buffer.length);
+    System.arraycopy (this.buffer, 0, buffer, ptr, length);
+    return ptr + length;
   }
 
   public String getHexBuffer ()

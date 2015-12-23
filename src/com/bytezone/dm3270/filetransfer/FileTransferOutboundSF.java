@@ -156,8 +156,6 @@ public class FileTransferOutboundSF extends FileTransferSF
       int replyBufferLength = ptr + RecordNumber.RECORD_LENGTH + DataRecord.HEADER_LENGTH
           + dataHeader.getBufferLength ();
 
-      // if CRLF option add 1 to length for the ctrl-z
-
       replyBuffer = getReplyBuffer (replyBufferLength, (byte) 0x46, (byte) 0x05);
 
       RecordNumber recordNumber = new RecordNumber (transfer.size ());
@@ -165,8 +163,6 @@ public class FileTransferOutboundSF extends FileTransferSF
       ptr = dataHeader.pack (replyBuffer, ptr);
       screen
           .setStatusText (String.format ("Bytes sent: %,d%n", transfer.getDataLength ()));
-
-      // (if CR/LF 0x0D/0x0A terminate with ctrl-z 0x1A)
     }
     else      // finished sending buffers, now send an EOF
     {

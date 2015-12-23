@@ -71,14 +71,19 @@ public class Transfer
   // called from TransferManager.closeTransfer()
   public byte[] combineDataBuffers ()
   {
-    byte[] fullBuffer = new byte[dataLength];
+    int length = dataLength;
+    if (indFileCommand.ascii () && indFileCommand.crlf ())
+      --length;       // assumes the file has 0x1A on the end
+    byte[] fullBuffer = new byte[length];
 
     int ptr = 0;
     for (DataRecord dataRecord : dataRecords)
     {
       ptr = dataRecord.packBuffer (fullBuffer, ptr);
-      //      if (ascii)
-      //        dataRecord.checkAscii (crlf);
+
+      // check for non-ascii characters
+      if (indFileCommand.ascii ())
+        dataRecord.checkAscii (indFileCommand.crlf ());
     }
 
     return fullBuffer;
