@@ -113,10 +113,10 @@ public class FileTransferOutboundSF extends FileTransferSF
         Optional<byte[]> optionalBuffer = transferManager.getCurrentFileBuffer ();
         if (optionalBuffer.isPresent ())
           transfer.setTransferBuffer (optionalBuffer.get ());
-        screen.setStatusText ("Sending...");
+        screen.setStatusText ("Uploading ...");
       }
       else
-        screen.setStatusText ("Receiving...");
+        screen.setStatusText ("Downloading ...");
     }
   }
 

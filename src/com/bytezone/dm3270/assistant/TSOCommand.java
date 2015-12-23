@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
+import java.util.Optional;
+
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
@@ -7,7 +9,10 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -22,7 +27,7 @@ public class TSOCommand implements ScreenChangeListener
   final Button btnExecute = new Button ("Execute");
 
   private ConsolePane consolePane;
-  private ScreenWatcher screenDetails;
+  private ScreenWatcher screenWatcher;
 
   public TSOCommand ()
   {
@@ -49,20 +54,20 @@ public class TSOCommand implements ScreenChangeListener
 
   private void execute ()
   {
-    if (screenDetails == null || consolePane == null)
+    if (screenWatcher == null || consolePane == null)
       return;
 
-    Field tsoCommandField = screenDetails.getTSOCommandField ();
+    Field tsoCommandField = screenWatcher.getTSOCommandField ();
     if (tsoCommandField == null)
     {
-      System.out.println ("Null TSO command field");
+      showAlert ("This screen has no TSO input field");
       return;
     }
-    String command = txtCommand.getText ();
 
+    String command = txtCommand.getText ();
     if (command.length () > tsoCommandField.getDisplayLength ())
     {
-      System.out.println ("Command is too long for the input field");
+      showAlert ("Command is too long for the TSO input field");
       System.out.printf ("Field: %d, command: %d%n", tsoCommandField.getDisplayLength (),
                          command.length ());
       return;
@@ -75,9 +80,17 @@ public class TSOCommand implements ScreenChangeListener
     }
   }
 
+  private boolean showAlert (String message)
+  {
+    Alert alert = new Alert (AlertType.ERROR, message);
+    alert.getDialogPane ().setHeaderText (null);
+    Optional<ButtonType> result = alert.showAndWait ();
+    return (result.isPresent () && result.get () == ButtonType.OK);
+  }
+
   @Override
   public void screenChanged (ScreenWatcher screenDetails)
   {
-    this.screenDetails = screenDetails;
+    this.screenWatcher = screenDetails;
   }
 }

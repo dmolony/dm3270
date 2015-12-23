@@ -63,7 +63,6 @@ public class ConsolePane extends BorderPane
   private final TelnetState telnetState = new TelnetState ();
   private int commandHeaderCount;
   private final Site server;
-  //  private Site replaySite;
 
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
@@ -75,8 +74,6 @@ public class ConsolePane extends BorderPane
   private final BorderPane statusPane;
 
   private final MenuBar menuBar = new MenuBar ();
-  //  private MenuItem menuItemUpload;
-  //  private MenuItem menuItemDownload;
 
   private final FontManager fontManager;
   private final ScreenDimensions screenDimensions;
@@ -143,7 +140,6 @@ public class ConsolePane extends BorderPane
 
   void setReplayServer (Site serverSite)
   {
-    //    replaySite = serverSite;
     screen.getScreenWatcher ().setReplayServer (serverSite);
   }
 
@@ -156,8 +152,6 @@ public class ConsolePane extends BorderPane
 
     MenuItem menuItemAssistant =
         getMenuItem ("Transfers", e -> screen.getAssistantStage ().show (), KeyCode.T);
-    //    menuItemUpload = getMenuItem ("Upload", e -> upload (), KeyCode.U);
-    //    menuItemDownload = getMenuItem ("Download", e -> download (), KeyCode.D);
     MenuItem menuItemUpload = screenWatcher.getMenuItemUpload ();
     MenuItem menuItemDownload = screenWatcher.getMenuItemDownload ();
 
@@ -393,24 +387,4 @@ public class ConsolePane extends BorderPane
     setStatusText (evt.keyboardLocked ? evt.keyName : "       ");
     insertMode.setText (evt.insertMode ? "Insert" : "      ");
   }
-
-  //  @Override
-  //  public void screenChanged (ScreenWatcher screenDetails)
-  //  {
-  //    String datasetName = screenDetails.getSingleDataset ();
-  //    if (datasetName.isEmpty ())
-  //    {
-  //      menuItemDownload.setUserData (null);
-  //      menuItemUpload.setUserData (null);
-  //      menuItemDownload.setDisable (true);
-  //      menuItemUpload.setDisable (true);
-  //    }
-  //    else
-  //    {
-  //      menuItemDownload.setUserData (datasetName);
-  //      menuItemUpload.setUserData (datasetName);
-  //      menuItemDownload.setDisable (false);
-  //      menuItemUpload.setDisable (false);
-  //    }
-  //  }
 }
