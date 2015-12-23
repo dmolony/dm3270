@@ -118,7 +118,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     {
       byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
       setReply (new ReadStructuredFieldCommand (buffer));
-      screen.setStatusText ("Closing...");
+      screen.setStatusText ("Closing ...");
     }
   }
 

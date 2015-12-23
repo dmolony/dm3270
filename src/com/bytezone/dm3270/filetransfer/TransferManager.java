@@ -35,13 +35,13 @@ public class TransferManager implements TSOCommandListener
 
   public void setIndFileCommand (IndFileCommand indFileCommand)
   {
-    intendedIndFileCommand = indFileCommand;    // should contain a byte[] for PUT
+    intendedIndFileCommand = indFileCommand;          // should contain a byte[] for PUT
   }
 
   // called from FileTransferOutboundSF.processOpen()
   void openTransfer (Transfer transfer)
   {
-    currentTransfer = transfer;     // save it for subsequent calls
+    currentTransfer = transfer;                       // save it for subsequent calls
     transfer.setTransferCommand (intendedIndFileCommand);
   }
 
