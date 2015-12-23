@@ -11,7 +11,6 @@ import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.TSOCommandListener;
-import com.bytezone.reporter.application.FileNode;
 import com.bytezone.reporter.application.ReporterNode;
 
 import javafx.application.Platform;
@@ -44,15 +43,19 @@ public class TransferManager implements TSOCommandListener
   Optional<byte[]> getCurrentFileBuffer ()
   {
     // whoever instigated the transfer should have told us about it already
-    ReporterNode reporterNode = assistantStage.getReporterNode ();
-    FileNode fileNode = reporterNode.getSelectedNode ();
-    if (fileNode == null)
-    {
-      System.out.println ("No fileNode selected in FilesTab.getCurrentFileBuffer()");
+    //    ReporterNode reporterNode = assistantStage.getReporterNode ();
+    //    FileNode fileNode = reporterNode.getSelectedNode ();
+    //    if (fileNode == null)
+    //    {
+    //      System.out.println ("No fileNode selected in FilesTab.getCurrentFileBuffer()");
+    //      return Optional.empty ();
+    //    }
+    //    else
+    //      return Optional.of (fileNode.getReportData ().getBuffer ());
+    if (intendedIndFileCommand == null || intendedIndFileCommand.getBuffer () == null)
       return Optional.empty ();
-    }
-    else
-      return Optional.of (fileNode.getReportData ().getBuffer ());
+    return Optional.of (intendedIndFileCommand.getBuffer ());
+
   }
 
   // called from FileTransferOutboundSF.processOpen()

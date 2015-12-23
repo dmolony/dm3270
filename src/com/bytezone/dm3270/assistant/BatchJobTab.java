@@ -9,9 +9,6 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-
 public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
 {
   private static final Pattern outlistPattern = Pattern
@@ -20,9 +17,9 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
 
   private BatchJob selectedBatchJob;
 
-  public BatchJobTab (Screen screen, Site site, TextField text, Button execute)
+  public BatchJobTab (Screen screen, Site site, TSOCommand tsoCommand)
   {
-    super ("Batch Jobs", screen, site, text, execute);
+    super ("Batch Jobs", screen, site, tsoCommand);
 
     jobTable.getSelectionModel ().selectedItemProperty ()
         .addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
@@ -74,7 +71,7 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
         ? String.format ("%s%s", tsoPrefix, selectedBatchJob.outputCommand ())
         : String.format ("%sIND$FILE GET %s%s", tsoPrefix, report, ascii);
 
-    txtCommand.setText (command);
+    tsoCommand.txtCommand.setText (command);
     setButton ();
   }
 

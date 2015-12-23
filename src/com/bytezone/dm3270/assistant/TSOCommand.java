@@ -7,6 +7,8 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
+import com.bytezone.dm3270.filetransfer.IndFileCommand;
+import com.bytezone.dm3270.filetransfer.TransferManager;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -28,6 +30,8 @@ public class TSOCommand implements ScreenChangeListener
 
   private ConsolePane consolePane;
   private ScreenWatcher screenWatcher;
+  private TransferManager transferManager;
+  private byte[] buffer;
 
   public TSOCommand ()
   {
@@ -42,9 +46,19 @@ public class TSOCommand implements ScreenChangeListener
     hbox.setAlignment (Pos.CENTER_LEFT);
   }
 
-  public HBox getBox ()
+  void setTransferManager (TransferManager transferManager)
+  {
+    this.transferManager = transferManager;
+  }
+
+  HBox getBox ()
   {
     return hbox;
+  }
+
+  void setBuffer (byte[] buffer)
+  {
+    this.buffer = buffer;
   }
 
   public void setConsolePane (ConsolePane consolePane)
@@ -75,6 +89,11 @@ public class TSOCommand implements ScreenChangeListener
 
     if (!command.isEmpty ())
     {
+      IndFileCommand indFileCommand = new IndFileCommand (command);
+      if (indFileCommand.isPut ())
+        indFileCommand.setBuffer (buffer);
+      transferManager.setIndFileCommand (indFileCommand);
+
       tsoCommandField.setText (command);
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
     }

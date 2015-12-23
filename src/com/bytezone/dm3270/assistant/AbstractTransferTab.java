@@ -7,21 +7,20 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextField;
 
 public abstract class AbstractTransferTab extends Tab
     implements ScreenChangeListener, KeyboardStatusListener
 {
   protected final Screen screen;
   protected final Site site;
-  protected final Button btnExecute;
-  protected final TextField txtCommand;
+  //  protected final Button btnExecute;
+  //  protected final TextField txtCommand;
   protected ScreenWatcher screenDetails;
+  protected TSOCommand tsoCommand;
 
-  public AbstractTransferTab (String name, Screen screen, Site site, TextField text,
-      Button execute)
+  public AbstractTransferTab (String name, Screen screen, Site site,
+      TSOCommand tsoCommand)
   {
     super (name);
 
@@ -29,23 +28,24 @@ public abstract class AbstractTransferTab extends Tab
 
     this.screen = screen;
     this.site = site;
-    this.txtCommand = text;
-    this.btnExecute = execute;
+    this.tsoCommand = tsoCommand;
+    //    this.txtCommand = text;
+    //    this.btnExecute = execute;
   }
 
   protected void eraseCommand ()
   {
-    txtCommand.setText ("");
-    btnExecute.setDisable (true);
+    tsoCommand.txtCommand.setText ("");
+    tsoCommand.btnExecute.setDisable (true);
   }
 
   abstract protected void setText ();
 
   protected void setButton ()
   {
-    btnExecute.setDisable (screen.isKeyboardLocked () || screenDetails == null
+    tsoCommand.btnExecute.setDisable (screen.isKeyboardLocked () || screenDetails == null
         || screenDetails.getTSOCommandField () == null
-        || txtCommand.getText ().isEmpty ());
+        || tsoCommand.txtCommand.getText ().isEmpty ());
   }
 
   @Override

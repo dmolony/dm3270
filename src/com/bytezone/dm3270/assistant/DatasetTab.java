@@ -11,8 +11,6 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenWatcher;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 
 public class DatasetTab extends AbstractTransferTab
@@ -26,9 +24,9 @@ public class DatasetTab extends AbstractTransferTab
   private final DatasetTable datasetTable = new DatasetTable ();
   private final DatasetTreeTable datasetTreeTable = new DatasetTreeTable ();
 
-  public DatasetTab (Screen screen, Site site, TextField text, Button execute)
+  public DatasetTab (Screen screen, Site site, TSOCommand tsoCommand)
   {
-    super ("Datasets", screen, site, text, execute);
+    super ("Datasets", screen, site, tsoCommand);
 
     if (useTable)
     {
@@ -110,8 +108,8 @@ public class DatasetTab extends AbstractTransferTab
     {
       if (datasetName.length () == prefix.length ())
       {
-        txtCommand.setText ("");
-        btnExecute.setDisable (true);
+        tsoCommand.txtCommand.setText ("");
+        tsoCommand.btnExecute.setDisable (true);
         return;
       }
       datasetName = datasetName.substring (prefix.length () + 1);
@@ -124,7 +122,7 @@ public class DatasetTab extends AbstractTransferTab
 
     String command =
         String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
-    txtCommand.setText (command);
+    tsoCommand.txtCommand.setText (command);
     setButton ();
   }
 

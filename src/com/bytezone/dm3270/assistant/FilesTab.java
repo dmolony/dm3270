@@ -10,19 +10,16 @@ import com.bytezone.reporter.application.FileNode;
 import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.TextField;
 
 public class FilesTab extends AbstractTransferTab implements NodeSelectionListener
 {
   private final ReporterNode reporterNode;
   private FileNode currentFileNode;
 
-  public FilesTab (Screen screen, Site site, TextField text, Button execute,
-      Preferences prefs)
+  public FilesTab (Screen screen, Site site, TSOCommand tsoCommand, Preferences prefs)
   {
-    super ("Local Files", screen, site, text, execute);
+    super ("Local Files", screen, site, tsoCommand);
 
     reporterNode = new ReporterNode (prefs);
     reporterNode.addNodeSelectionListener (this);
@@ -76,7 +73,8 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     if (screenDetails != null && !screenDetails.isTSOCommandScreen ())
       command = "TSO " + command;
 
-    txtCommand.setText (command);
+    tsoCommand.txtCommand.setText (command);
+    tsoCommand.setBuffer (currentFileNode.getReportData ().getBuffer ());
   }
 
   // ---------------------------------------------------------------------------------//

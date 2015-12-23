@@ -8,9 +8,7 @@ import com.bytezone.dm3270.display.TSOCommandListener;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 
 public class CommandsTab extends AbstractTransferTab
     implements TSOCommandListener, KeyboardStatusListener, ScreenChangeListener
@@ -18,9 +16,9 @@ public class CommandsTab extends AbstractTransferTab
   ObservableList<String> commands = FXCollections.observableArrayList ();
   ListView<String> commandList = new ListView<> (commands);
 
-  public CommandsTab (Screen screen, Site site, TextField text, Button execute)
+  public CommandsTab (Screen screen, Site site, TSOCommand tsoCommand)
   {
-    super ("Commands", screen, site, text, execute);
+    super ("Commands", screen, site, tsoCommand);
 
     commandList.setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setContent (commandList);
@@ -52,7 +50,7 @@ public class CommandsTab extends AbstractTransferTab
       return;
     }
 
-    txtCommand.setText (selectedCommand);
+    tsoCommand.txtCommand.setText (selectedCommand);
     setButton ();
   }
 }

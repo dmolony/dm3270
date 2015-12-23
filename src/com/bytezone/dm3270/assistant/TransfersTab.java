@@ -4,7 +4,6 @@ import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
@@ -55,9 +54,9 @@ public class TransfersTab extends AbstractTransferTab
 
   private final Font defaultFont = Font.font ("Monospaced", 12);
 
-  public TransfersTab (Screen screen, Site site, TextField text, Button execute)
+  public TransfersTab (Screen screen, Site site, TSOCommand tsoCommand)
   {
-    super ("Transfers", screen, site, text, execute);
+    super ("Transfers", screen, site, tsoCommand);
 
     btnTracks.setSelected (true);
     btnFiles.setSelected (true);
@@ -206,7 +205,8 @@ public class TransfersTab extends AbstractTransferTab
     RadioButton selectedDispositionButton =
         (RadioButton) grpDisposition.getSelectedToggle ();
 
-    txtCommand.setText (((TextField) selectedFileButton.getUserData ()).getText ());
+    tsoCommand.txtCommand
+        .setText (((TextField) selectedFileButton.getUserData ()).getText ());
     setButton ();
   }
 

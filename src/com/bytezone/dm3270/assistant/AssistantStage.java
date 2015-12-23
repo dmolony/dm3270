@@ -61,15 +61,11 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tsoCommand = new TSOCommand ();
     screen.getFieldManager ().addScreenChangeListener (tsoCommand);
 
-    datasetTab =
-        new DatasetTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    jobTab = new BatchJobTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    filesTab =
-        new FilesTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute, prefs);
-    commandsTab =
-        new CommandsTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
-    transfersTab =
-        new TransfersTab (screen, site, tsoCommand.txtCommand, tsoCommand.btnExecute);
+    datasetTab = new DatasetTab (screen, site, tsoCommand);
+    jobTab = new BatchJobTab (screen, site, tsoCommand);
+    filesTab = new FilesTab (screen, site, tsoCommand, prefs);
+    commandsTab = new CommandsTab (screen, site, tsoCommand);
+    transfersTab = new TransfersTab (screen, site, tsoCommand);
     tabPane.getTabs ().addAll (datasetTab, jobTab, filesTab, commandsTab, transfersTab);
     tabPane.setTabMinWidth (80);
 
@@ -117,6 +113,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   public void setTransferManager (TransferManager transferManager)
   {
     this.transferManager = transferManager;
+    tsoCommand.setTransferManager (transferManager);
   }
 
   private void select (Tab tabSelected)

@@ -23,12 +23,15 @@ public class IndFileCommand
       command = command.substring (4);
 
     String[] chunks = command.split ("\\s");
+
     if (false)
     {
       int count = 0;
       for (String chunk : chunks)
         System.out.printf ("Chunk %d: %s%n", count++, chunk);
     }
+    assert chunks[0].equals ("ind$file");
+    assert chunks[1].equals ("put") || chunks[1].equals ("get");
 
     // check for a reconnection after an abort during a file transfer
     if (!"ind$file".equals (chunks[0]))
@@ -93,6 +96,11 @@ public class IndFileCommand
   public boolean hasTLQ ()
   {
     return hasTLQ;
+  }
+
+  public boolean isPut ()
+  {
+    return "put".equals (direction);
   }
 
   public byte[] getBuffer ()
