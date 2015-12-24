@@ -109,6 +109,7 @@ public class TransferManager implements TSOCommandListener
     //    indFileCommand = null;
   }
 
+  // called from ScreenPacker.addTSOCommand()
   @Override
   public void tsoCommand (String command)
   {
