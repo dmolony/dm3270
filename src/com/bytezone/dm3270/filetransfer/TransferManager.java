@@ -4,8 +4,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
@@ -127,11 +129,34 @@ public class TransferManager implements TSOCommandListener
 
     byte[] buffer = transfer.combineDataBuffers ();
 
-    // this should be sent to a listener
+    // this should be sent to a TransferListener
     ReporterNode reporterNode = assistantStage.getReporterNode ();
     if (siteFolderName.isEmpty ())
       reporterNode.addBuffer (name, buffer);
     else
       reporterNode.addBuffer (name, buffer, siteFolderName);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // TransferListener
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<TransferListener> transferListeners = new HashSet<> ();
+
+  void fireTransferFinished (IndFileCommand command)
+  {
+    transferListeners.forEach (listener -> listener.transferFinished (command));
+  }
+
+  void addTransferListener (TransferListener listener)
+  {
+    if (!transferListeners.contains (listener))
+      transferListeners.add (listener);
+  }
+
+  void removeTransferListener (TransferListener listener)
+  {
+    if (transferListeners.contains (listener))
+      transferListeners.remove (listener);
   }
 }
