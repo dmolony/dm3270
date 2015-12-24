@@ -22,7 +22,10 @@ import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
+import com.bytezone.dm3270.filetransfer.Transfer;
+import com.bytezone.dm3270.filetransfer.TransferListener;
 import com.bytezone.dm3270.filetransfer.TransferManager;
+import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
@@ -30,7 +33,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
-public class Screen extends Canvas implements DisplayScreen
+public class Screen extends Canvas implements DisplayScreen, TransferListener
 {
   private static final Toolkit defaultToolkit = Toolkit.getDefaultToolkit ();
   private static final boolean SHOW_CURSOR = true;
@@ -102,6 +105,8 @@ public class Screen extends Canvas implements DisplayScreen
 
     fieldManager.addScreenChangeListener (assistantStage);
     fieldManager.addScreenChangeListener (screenPacker);
+
+    transferManager.addTransferListener (this);
   }
 
   public ScreenWatcher getScreenWatcher ()
@@ -386,6 +391,17 @@ public class Screen extends Canvas implements DisplayScreen
     text.append (fieldManager.getTotalsText ());
 
     return text.toString ();
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // File transfer interface methods
+  // ---------------------------------------------------------------------------------//
+
+  @Override
+  public void transferStatusChanged (TransferStatus status, Transfer transfer)
+  {
+    System.out.println (status);
+    System.out.println (transfer);
   }
 
   // ---------------------------------------------------------------------------------//

@@ -4,5 +4,5 @@ import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
 
 public interface TransferListener
 {
-  public void transferStatusChanged (TransferStatus status, IndFileCommand command);
+  public void transferStatusChanged (TransferStatus status, Transfer transfer);
 }

@@ -98,12 +98,19 @@ public class FileTransferOutboundSF extends FileTransferSF
 
   private void processOpen (Screen screen)
   {
-    Transfer transfer = new Transfer (this);
-    transferManager.openTransfer (transfer);
+    Optional<Transfer> optionalTransfer = transferManager.openTransfer (this);
 
+    if (!optionalTransfer.isPresent ())
+    {
+      System.out.println ("No active transfer");
+      return;
+    }
+
+    Transfer transfer = optionalTransfer.get ();
     byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
     setReply (new ReadStructuredFieldCommand (buffer));
 
+    // move this to TransferManager
     if (transfer.getTransferContents () == TransferContents.DATA)
       if (transfer.getTransferType () == TransferType.UPLOAD)
         screen.setStatusText ("Uploading ...");

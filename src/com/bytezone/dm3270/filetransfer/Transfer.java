@@ -33,9 +33,14 @@ public class Transfer
     UPLOAD          // terminal -> mainframe (receive)
   }
 
-  public Transfer (FileTransferOutboundSF outboundRecord)
+  //  public Transfer (FileTransferOutboundSF outboundRecord)
+  //  {
+  //    add (outboundRecord);
+  //  }
+
+  public Transfer (IndFileCommand indFileCommand)
   {
-    add (outboundRecord);
+    this.indFileCommand = indFileCommand;
   }
 
   // called from TransferManager.getTransfer()
@@ -150,7 +155,7 @@ public class Transfer
   public void setTransferCommand (IndFileCommand indFileCommand)
   {
     this.indFileCommand = indFileCommand;
-    inboundBuffer = indFileCommand.getBuffer ();
+    inboundBuffer = indFileCommand == null ? null : indFileCommand.getBuffer ();
   }
 
   public String getFileName ()
