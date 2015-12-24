@@ -1,6 +1,8 @@
 package com.bytezone.dm3270.filetransfer;
 
+import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
+
 public interface TransferListener
 {
-  public void transferFinished (IndFileCommand command);
+  public void transferStatusChanged (TransferStatus status, IndFileCommand command);
 }

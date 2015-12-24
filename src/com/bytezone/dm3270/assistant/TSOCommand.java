@@ -92,7 +92,7 @@ public class TSOCommand implements ScreenChangeListener
       IndFileCommand indFileCommand = new IndFileCommand (command);
       if (indFileCommand.isPut ())
         indFileCommand.setBuffer (buffer);
-      transferManager.setIndFileCommand (indFileCommand);
+      transferManager.prepareTransfer (indFileCommand);
 
       tsoCommandField.setText (command);
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
