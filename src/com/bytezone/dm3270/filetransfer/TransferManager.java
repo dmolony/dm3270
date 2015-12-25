@@ -103,8 +103,7 @@ public class TransferManager implements TSOCommandListener
   void closeTransfer ()
   {
     fireTransferStatusChanged (TransferStatus.FINISHED, currentTransfer);
-    //    currentTransfer = null;
-    //    indFileCommand = null;
+    currentTransfer = null;
   }
 
   // called from ScreenPacker.addTSOCommand()
@@ -113,8 +112,18 @@ public class TransferManager implements TSOCommandListener
   {
     if (command.startsWith ("IND$FILE") || command.startsWith ("TSO IND$FILE"))
     {
-      IndFileCommand indFileCommand = new IndFileCommand (command);
-      indFileCommand.compareWith (indFileCommand);
+      IndFileCommand newCommand = new IndFileCommand (command);
+      //      indFileCommand.compareWith (indFileCommand);
+
+      // check for a user-initiated IND$FILE command
+      // If it is a download, we can either keep it as a temporary buffer, or ask
+      // the user for a filename. If it is an upload we will have to ask for the
+      // source filename.
+      // a program-initiated IND$FILE command will already have the filenames
+      if (currentTransfer == null)
+        currentTransfer = new Transfer (newCommand);
+      else
+        currentTransfer.compare (newCommand);
     }
   }
 
