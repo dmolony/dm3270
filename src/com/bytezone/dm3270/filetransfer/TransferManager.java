@@ -24,8 +24,7 @@ public class TransferManager implements TSOCommandListener
 
   private final Screen screen;
   private final Site site;
-  private final AssistantStage assistantStage;
-  //  private IndFileCommand indFileCommand;    // set by the instigator
+  private final AssistantStage assistantStage;      // won't be needed soon
 
   public enum TransferStatus
   {
@@ -42,9 +41,8 @@ public class TransferManager implements TSOCommandListener
 
   public void prepareTransfer (IndFileCommand indFileCommand)
   {
-    //    this.indFileCommand = indFileCommand;          // should contain a byte[] for PUT
     currentTransfer = new Transfer (indFileCommand);
-    fireTransferStatusChanged (TransferStatus.READY);
+    fireTransferStatusChanged (TransferStatus.READY, currentTransfer);
   }
 
   // called from FileTransferOutboundSF.processOpen()
@@ -55,9 +53,9 @@ public class TransferManager implements TSOCommandListener
       System.out.println ("Null current transfer");
       return Optional.empty ();
     }
-    //    currentTransfer = transfer;                  // save it for subsequent calls
+
     currentTransfer.add (transferRecord);
-    fireTransferStatusChanged (TransferStatus.PROCESSING);
+    fireTransferStatusChanged (TransferStatus.PROCESSING, currentTransfer);
 
     return Optional.of (currentTransfer);
   }
@@ -73,7 +71,7 @@ public class TransferManager implements TSOCommandListener
     }
 
     currentTransfer.add (transferRecord);
-    fireTransferStatusChanged (TransferStatus.PROCESSING);
+    fireTransferStatusChanged (TransferStatus.PROCESSING, currentTransfer);
     return Optional.of (currentTransfer);
   }
 
@@ -104,7 +102,7 @@ public class TransferManager implements TSOCommandListener
   // called from FileTransferOutboundSF.processDownload()
   void closeTransfer ()
   {
-    fireTransferStatusChanged (TransferStatus.FINISHED);
+    fireTransferStatusChanged (TransferStatus.FINISHED, currentTransfer);
     //    currentTransfer = null;
     //    indFileCommand = null;
   }
@@ -154,7 +152,7 @@ public class TransferManager implements TSOCommandListener
     else
       reporterNode.addBuffer (name, buffer, siteFolderName);
 
-    fireTransferStatusChanged (TransferStatus.FINISHED);
+    fireTransferStatusChanged (TransferStatus.FINISHED, transfer);
   }
 
   // ---------------------------------------------------------------------------------//
@@ -163,10 +161,10 @@ public class TransferManager implements TSOCommandListener
 
   private final Set<TransferListener> transferListeners = new HashSet<> ();
 
-  void fireTransferStatusChanged (TransferStatus status)
+  void fireTransferStatusChanged (TransferStatus status, Transfer transfer)
   {
     transferListeners
-        .forEach (listener -> listener.transferStatusChanged (status, currentTransfer));
+        .forEach (listener -> listener.transferStatusChanged (status, transfer));
   }
 
   public void addTransferListener (TransferListener listener)
