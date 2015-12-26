@@ -39,6 +39,7 @@ public class TransferManager implements TSOCommandListener
     assistantStage.setTransferManager (this);
   }
 
+  // called from TSOCommand.execute()
   public void prepareTransfer (IndFileCommand indFileCommand)
   {
     currentTransfer = new Transfer (indFileCommand);
@@ -103,7 +104,8 @@ public class TransferManager implements TSOCommandListener
   void closeTransfer ()
   {
     fireTransferStatusChanged (TransferStatus.FINISHED, currentTransfer);
-    currentTransfer = null;
+    if (currentTransfer.isMessage ())
+      currentTransfer = null;
   }
 
   // called from ScreenPacker.addTSOCommand()

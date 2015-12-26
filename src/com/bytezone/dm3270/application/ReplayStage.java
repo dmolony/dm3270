@@ -94,8 +94,8 @@ class ReplayStage extends Stage
     }
 
     BorderPane borderPane = new BorderPane ();
-    borderPane.setLeft (sessionTable);
-    borderPane.setRight (commandPane);
+    borderPane.setLeft (sessionTable);      // fixed size
+    borderPane.setCenter (commandPane);     // expands to fill window
     borderPane.setTop (label);
     borderPane.setBottom (checkBoxes);
 

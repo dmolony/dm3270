@@ -15,11 +15,10 @@ public class Transfer
   private TransferType transferType;                  // UPLOAD or DOWNLOAD
   private IndFileCommand indFileCommand;              // user's TSO command
 
-  List<FileTransferOutboundSF> outboundRecords = new ArrayList<> ();
-  List<DataRecord> dataRecords = new ArrayList<> ();
+  List<DataRecord> dataRecords = new ArrayList<> ();  // downloading data
   private int dataLength;
 
-  byte[] inboundBuffer;
+  byte[] inboundBuffer;       // uploading data
   int inboundBufferPtr;
 
   public enum TransferContents
@@ -44,14 +43,23 @@ public class Transfer
       this.indFileCommand.compareWith (indFileCommand);
   }
 
+  public boolean isMessage ()
+  {
+    return transferContents == TransferContents.MSG;
+  }
+
+  public boolean isData ()
+  {
+    return transferContents == TransferContents.DATA;
+  }
+
   // called from TransferManager.getTransfer()
   // called from TransferManager.closeTransfer()
   public void add (FileTransferOutboundSF outboundRecord)
   {
-    outboundRecords.add (outboundRecord);
-
-    if (transferContents == null)
+    if (outboundRecord.transferContents != null)
       transferContents = outboundRecord.transferContents;   // MSG or DATA
+
     if (transferType == null)
       transferType = outboundRecord.transferType;           // UPLOAD or DOWNLOAD
   }

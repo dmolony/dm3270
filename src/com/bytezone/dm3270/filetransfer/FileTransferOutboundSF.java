@@ -18,15 +18,18 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     if (rectype == 0 && subtype == 0x12)
       transferType = TransferType.DOWNLOAD;
+
     TransferRecord transferRecord;
+    //    System.out.printf ("%02X %02X Outbound%n", rectype, subtype);
 
     int ptr = 3;
     while (ptr < data.length)
     {
+      //      System.out.printf ("        %02X%n", data[ptr] & 0xFF);
       switch (data[ptr])
       {
         case 0x01:
-        case 0x09:
+        case 0x09:        // upload only
         case 0x0A:
         case 0x50:
           transferRecord = new TransferRecord (data, ptr);

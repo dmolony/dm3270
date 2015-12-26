@@ -402,6 +402,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   {
     System.out.println (status);
     System.out.println (transfer);
+    System.out.println ();
   }
 
   // ---------------------------------------------------------------------------------//
