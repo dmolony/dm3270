@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class DataRecord extends TransferRecord
 {
@@ -14,7 +14,7 @@ public class DataRecord extends TransferRecord
     super (HEADER_LENGTH);
 
     compressed = data[offset + 2] != (byte) 0x61;
-    int bufferLength = Utility.unsignedShort (data, offset + 3) - HEADER_LENGTH;
+    int bufferLength = Dm3270Utility.unsignedShort (data, offset + 3) - HEADER_LENGTH;
 
     System.arraycopy (data, offset, this.data, 0, HEADER_LENGTH);
 
@@ -35,7 +35,7 @@ public class DataRecord extends TransferRecord
     data[1] = (byte) 0x80;
 
     data[2] = compressed ? (byte) 0x00 : (byte) 0x61;// guess
-    Utility.packUnsignedShort (HEADER_LENGTH + this.buffer.length, data, 3);
+    Dm3270Utility.packUnsignedShort (HEADER_LENGTH + this.buffer.length, data, 3);
   }
 
   @Override
@@ -105,7 +105,7 @@ public class DataRecord extends TransferRecord
   public String getHexBuffer ()
   {
     boolean ebcdic = checkEbcdic (buffer, 0, buffer.length);
-    return Utility.toHex (buffer, ebcdic);
+    return Dm3270Utility.toHex (buffer, ebcdic);
   }
 
   protected boolean checkEbcdic (byte[] data, int offset, int length)
@@ -127,6 +127,7 @@ public class DataRecord extends TransferRecord
 
   public String getText ()
   {
+    System.out.println (Dm3270Utility.EBCDIC);
     return new String (buffer);
   }
 
@@ -136,8 +137,8 @@ public class DataRecord extends TransferRecord
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("header    : %s (%scompressed, %,d + %d)%n%n", //
-                                Utility.toHexString (data), (compressed ? "" : "un"),
-                                HEADER_LENGTH, buffer.length));
+                                Dm3270Utility.toHexString (data),
+                                (compressed ? "" : "un"), HEADER_LENGTH, buffer.length));
     text.append (getHexBuffer ());
 
     return text.toString ();

@@ -28,7 +28,7 @@ public class TransferManager implements TSOCommandListener
 
   public enum TransferStatus
   {
-    READY, PROCESSING, FINISHED
+    READY, OPEN, PROCESSING, FINISHED
   }
 
   public TransferManager (Screen screen, Site site, AssistantStage assistantStage)
@@ -56,7 +56,7 @@ public class TransferManager implements TSOCommandListener
     }
 
     currentTransfer.add (transferRecord);
-    fireTransferStatusChanged (TransferStatus.PROCESSING, currentTransfer);
+    fireTransferStatusChanged (TransferStatus.OPEN, currentTransfer);
 
     return Optional.of (currentTransfer);
   }
@@ -72,7 +72,8 @@ public class TransferManager implements TSOCommandListener
     }
 
     currentTransfer.add (transferRecord);
-    fireTransferStatusChanged (TransferStatus.PROCESSING, currentTransfer);
+    if (currentTransfer.isData ())
+      fireTransferStatusChanged (TransferStatus.PROCESSING, currentTransfer);
     return Optional.of (currentTransfer);
   }
 
@@ -84,6 +85,8 @@ public class TransferManager implements TSOCommandListener
       System.out.println ("Null current transfer");
       return Optional.empty ();
     }
+
+    assert currentTransfer.isData ();
 
     Transfer transfer = currentTransfer;
     currentTransfer.add (transferRecord);
@@ -100,7 +103,7 @@ public class TransferManager implements TSOCommandListener
     return Optional.of (transfer);
   }
 
-  // called from FileTransferOutboundSF.processDownload()
+  // called from FileTransferOutboundSF.processDownload() if MSG
   void closeTransfer ()
   {
     fireTransferStatusChanged (TransferStatus.FINISHED, currentTransfer);

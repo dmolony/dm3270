@@ -85,12 +85,11 @@ public class FileTransferOutboundSF extends FileTransferSF
         break;
 
       case 0x45:                        // something to do with UPLOAD
-        processUpload0x45 ();
         break;
 
       case 0x46:                        // UPLOAD data transfer buffer
         if (subtype == 0x11)
-          processUpload0x46 (screen);
+          processUpload (screen);
         break;
 
       case 0x47:                        // DOWNLOAD data transfer buffer
@@ -133,11 +132,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processUpload0x45 ()
-  {
-  }
-
-  private void processUpload0x46 (Screen screen)
+  private void processUpload (Screen screen)
   {
     Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
     if (!optionalTransfer.isPresent ())
