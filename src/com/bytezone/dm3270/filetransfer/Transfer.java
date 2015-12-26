@@ -43,6 +43,14 @@ public class Transfer
       this.indFileCommand.compareWith (indFileCommand);
   }
 
+  public String getMessage ()
+  {
+    if (!isMessage ())
+      return "";
+
+    return dataRecords.get (dataRecords.size () - 1).getText ();
+  }
+
   public boolean isMessage ()
   {
     return transferContents == TransferContents.MSG;

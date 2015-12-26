@@ -125,6 +125,11 @@ public class DataRecord extends TransferRecord
     return ebcdic > ascii;
   }
 
+  public String getText ()
+  {
+    return new String (buffer);
+  }
+
   @Override
   public String toString ()
   {
