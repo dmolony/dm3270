@@ -27,7 +27,7 @@ import com.bytezone.dm3270.replyfield.UsableArea;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class ReadStructuredFieldCommand extends Command
 {
@@ -77,7 +77,7 @@ public class ReadStructuredFieldCommand extends Command
 
     while (ptr < max)
     {
-      int size = Utility.unsignedShort (data, ptr) - 2;
+      int size = Dm3270Utility.unsignedShort (data, ptr) - 2;
       ptr += 2;
 
       switch (data[ptr])

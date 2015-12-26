@@ -3,7 +3,7 @@ package com.bytezone.dm3270.filetransfer;
 import java.security.InvalidParameterException;
 
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class ContentsRecord extends TransferRecord
 {
@@ -26,6 +26,7 @@ public class ContentsRecord extends TransferRecord
   @Override
   public String toString ()
   {
-    return String.format ("contents  : %s (%s)", Utility.toHexString (data), contents);
+    return String.format ("contents  : %s (%s)", Dm3270Utility.toHexString (data),
+                          contents);
   }
 }

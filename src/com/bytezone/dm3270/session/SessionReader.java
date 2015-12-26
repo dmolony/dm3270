@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class SessionReader
 {
@@ -226,7 +226,7 @@ public class SessionReader
 
   private static void print (byte[] buffer)
   {
-    System.out.println (Utility.toHex (buffer));
+    System.out.println (Dm3270Utility.toHex (buffer));
     if (buffer[buffer.length - 1] == (byte) 0xEF)
       System.out.println ();
   }

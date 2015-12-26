@@ -5,7 +5,7 @@ import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.telnet.TelnetCommand;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 class CommandFactory
 {
@@ -34,7 +34,7 @@ class CommandFactory
     byte[] buffer = new byte[8];
 
     buffer[ptr++] = Command.WRITE_STRUCTURED_FIELD_F3;
-    ptr = Utility.packUnsignedShort (buffer.length - 3, buffer, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (buffer.length - 3, buffer, ptr);
     buffer[ptr++] = StructuredField.READ_PARTITION;         // 0x01
     buffer[ptr++] = 0x00;                                   // partition 0
     buffer[ptr++] = command;                                // RB-F2/RM-F6/RMA-6E
@@ -49,7 +49,7 @@ class CommandFactory
     byte[] buffer = new byte[mode == 2 ? 13 : 8];
 
     buffer[ptr++] = Command.WRITE_STRUCTURED_FIELD_F3;
-    ptr = Utility.packUnsignedShort (buffer.length - 3, buffer, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (buffer.length - 3, buffer, ptr);
     buffer[ptr++] = StructuredField.SET_REPLY_MODE;
     buffer[ptr++] = 0x00;                                   // partition 0
     buffer[ptr++] = mode;                                   // reply mode

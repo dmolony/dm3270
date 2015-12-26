@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.orders.Order;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 class SystemMessage
 {
@@ -75,27 +75,27 @@ class SystemMessage
       {
         case 8:
           if (checkOrders (systemMessage3, orders))
-            checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+            checkSystemMessage (Dm3270Utility.getString (orders.get (4).getBuffer ()));
           return;
 
         case 11:
           if (checkOrders (systemMessage2, orders))
-            checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
+            checkSystemMessage (Dm3270Utility.getString (orders.get (4).getBuffer ()));
           return;
 
         case 15:
           if (checkOrders (systemMessage4, orders))
           {
-            checkSystemMessage (Utility.getString (orders.get (4).getBuffer ()));
-            checkSystemMessage (Utility.getString (orders.get (8).getBuffer ()));
+            checkSystemMessage (Dm3270Utility.getString (orders.get (4).getBuffer ()));
+            checkSystemMessage (Dm3270Utility.getString (orders.get (8).getBuffer ()));
           }
           return;
 
         case 17:
           if (checkOrders (profileMessage, orders))
-            checkProfileMessage (Utility.getString (orders.get (4).getBuffer ())
-                + Utility.getString (orders.get (6).getBuffer ()),
-                                 Utility.getString (orders.get (10).getBuffer ()));
+            checkProfileMessage (Dm3270Utility.getString (orders.get (4).getBuffer ())
+                + Dm3270Utility.getString (orders.get (6).getBuffer ()),
+                                 Dm3270Utility.getString (orders.get (10).getBuffer ()));
           return;
       }
     }
@@ -105,12 +105,12 @@ class SystemMessage
       {
         case 6:
           if (checkOrders (systemMessage1, orders))
-            checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
+            checkSystemMessage (Dm3270Utility.getString (orders.get (2).getBuffer ()));
           return;
 
         case 9:
           if (checkOrders (systemMessage5, orders))
-            checkSystemMessage (Utility.getString (orders.get (2).getBuffer ()));
+            checkSystemMessage (Dm3270Utility.getString (orders.get (2).getBuffer ()));
           return;
       }
     }

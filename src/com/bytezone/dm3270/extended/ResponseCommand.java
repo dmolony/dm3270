@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.extended;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class ResponseCommand extends AbstractExtendedCommand
 {
@@ -10,7 +10,7 @@ public class ResponseCommand extends AbstractExtendedCommand
     super (commandHeader, buffer, offset, length);
 
     if (length != 1)
-      System.out.println (Utility.toHex (buffer, offset, length));
+      System.out.println (Dm3270Utility.toHex (buffer, offset, length));
   }
 
   @Override

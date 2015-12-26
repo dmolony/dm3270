@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class MultiBuffer implements Buffer
 {
@@ -32,11 +32,11 @@ public class MultiBuffer implements Buffer
     int ptr = 0;
     for (Buffer buffer : buffers)
     {
-      System.out.println (Utility.toHex (buffer.getData ()));
+      System.out.println (Dm3270Utility.toHex (buffer.getData ()));
       System.arraycopy (buffer.getData (), 0, data, ptr, buffer.size ());
       ptr += buffer.size ();
     }
-    System.out.println (Utility.toHex (data));
+    System.out.println (Dm3270Utility.toHex (data));
     return data;
   }
 

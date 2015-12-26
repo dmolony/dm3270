@@ -2,7 +2,7 @@ package com.bytezone.dm3270.structuredfields;
 
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public abstract class StructuredField extends AbstractTN3270Command
 {
@@ -48,6 +48,6 @@ public abstract class StructuredField extends AbstractTN3270Command
   @Override
   public String toString ()
   {
-    return String.format ("StrF: %s", Utility.toHex (data).substring (8));
+    return String.format ("StrF: %s", Dm3270Utility.toHex (data).substring (8));
   }
 }

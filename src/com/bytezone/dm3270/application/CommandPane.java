@@ -11,7 +11,7 @@ import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.geometry.Side;
 import javafx.scene.control.Tab;
@@ -96,7 +96,7 @@ class CommandPane extends TabPane
     commandTextArea.appendText (message.toString ());
     commandTextArea.positionCaret (0);
 
-    bufferTextArea.setText (Utility.toHex (sessionRecord.getBuffer (), ebcdic));
+    bufferTextArea.setText (Dm3270Utility.toHex (sessionRecord.getBuffer (), ebcdic));
     bufferTextArea.positionCaret (0);
 
     // this needs to deal with a FieldManager - it needs the commands to be
@@ -148,7 +148,7 @@ class CommandPane extends TabPane
       replyTextArea.appendText (reply.toString ());
       replyTextArea.positionCaret (0);
 
-      replyBufferTextArea.setText (Utility.toHex (reply.getTelnetData (), ebcdic));
+      replyBufferTextArea.setText (Dm3270Utility.toHex (reply.getTelnetData (), ebcdic));
       replyBufferTextArea.positionCaret (0);
     }
   }

@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class ErrorRecord extends TransferRecord
 {
@@ -18,13 +18,13 @@ public class ErrorRecord extends TransferRecord
   {
     super (TYPE, RECORD_LENGTH);
     this.errorNumber = error;
-    Utility.packUnsignedShort (error, data, 2);
+    Dm3270Utility.packUnsignedShort (error, data, 2);
   }
 
   public ErrorRecord (byte[] data, int offset)
   {
     super (data, offset);
-    errorNumber = Utility.unsignedShort (data, offset + 2);
+    errorNumber = Dm3270Utility.unsignedShort (data, offset + 2);
     if (errorNumber == 0x0100)
       errorText = "Command failed";
     else if (errorNumber == EOF)
@@ -38,6 +38,7 @@ public class ErrorRecord extends TransferRecord
   @Override
   public String toString ()
   {
-    return String.format ("error     : %s - %s", Utility.toHexString (data), errorText);
+    return String.format ("error     : %s - %s", Dm3270Utility.toHexString (data),
+                          errorText);
   }
 }

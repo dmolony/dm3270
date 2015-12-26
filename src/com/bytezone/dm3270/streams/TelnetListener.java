@@ -25,7 +25,7 @@ import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
 import com.bytezone.dm3270.telnet.TelnetProcessor;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
 
@@ -132,7 +132,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   {
     System.out.println ("Unknown telnet data received:");
     System.out.println (new String (buffer, 0, length));
-    System.out.println (Utility.toHex (buffer, 0, length, false));
+    System.out.println (Dm3270Utility.toHex (buffer, 0, length, false));
   }
 
   @Override
@@ -191,7 +191,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
       default:
         System.out.println ("Data type not written: " + dataType);
-        System.out.println (Utility.toHex (data, offset, length));
+        System.out.println (Dm3270Utility.toHex (data, offset, length));
     }
   }
 

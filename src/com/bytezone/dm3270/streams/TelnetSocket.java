@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TelnetSocket implements Runnable
 {
@@ -105,7 +105,7 @@ public class TelnetSocket implements Runnable
         {
           System.out.println (toString ());
           System.out.println ("reading:");
-          System.out.println (Utility.toHex (buffer, 0, bytesRead));
+          System.out.println (Dm3270Utility.toHex (buffer, 0, bytesRead));
         }
 
         // take a copy of the input buffer and send it to the TelnetListener
@@ -150,7 +150,7 @@ public class TelnetSocket implements Runnable
     {
       System.out.println (toString ());
       System.out.println ("writing:");
-      System.out.println (Utility.toHex (buffer));
+      System.out.println (Dm3270Utility.toHex (buffer));
     }
   }
 

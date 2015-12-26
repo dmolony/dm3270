@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.commands;
 
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public abstract class Command extends AbstractTN3270Command
 {
@@ -119,8 +119,8 @@ public abstract class Command extends AbstractTN3270Command
       default:
         System.out
             .println ("Unknown 3270 Command: " + String.format ("%02X", buffer[offset]));
-        System.out.println (Utility.toHex (buffer, offset, length));
-        Utility.printStackTrace ();
+        System.out.println (Dm3270Utility.toHex (buffer, offset, length));
+        Dm3270Utility.printStackTrace ();
         return null;
     }
   }

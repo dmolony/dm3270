@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class RecordSize extends TransferRecord
 {
@@ -10,14 +10,14 @@ public class RecordSize extends TransferRecord
   public RecordSize (byte[] data, int offset)
   {
     super (data, offset);
-    recordSize1 = Utility.unsignedShort (data, offset + 2);
-    recordSize2 = Utility.unsignedShort (data, offset + 4);
+    recordSize1 = Dm3270Utility.unsignedShort (data, offset + 2);
+    recordSize2 = Dm3270Utility.unsignedShort (data, offset + 4);
   }
 
   @Override
   public String toString ()
   {
-    return String.format ("rec size  : %s (%,d or %,d)", Utility.toHexString (data),
+    return String.format ("rec size  : %s (%,d or %,d)", Dm3270Utility.toHexString (data),
                           recordSize1, recordSize2);
   }
 }

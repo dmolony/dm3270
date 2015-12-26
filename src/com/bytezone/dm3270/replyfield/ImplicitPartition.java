@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class ImplicitPartition extends QueryReplyField
 {
@@ -23,16 +23,16 @@ public class ImplicitPartition extends QueryReplyField
     reply[ptr++] = 0x00;
 
     /* Bytes 9-10   Width of the Implicit Partition default screen size */
-    ptr = Utility.packUnsignedShort (0x50, reply, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (0x50, reply, ptr);
 
     /* Bytes 11-12  Height of the Implicit Partition default screen size */
-    ptr = Utility.packUnsignedShort (0x18, reply, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (0x18, reply, ptr);
 
     /* Bytes 13-14  Width of the Implicit Partition alternate screen size */
-    ptr = Utility.packUnsignedShort (0x50, reply, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (0x50, reply, ptr);
 
     /* Bytes 15-16  Height of the Implicit Partition alternate screen size */
-    ptr = Utility.packUnsignedShort (0x18, reply, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (0x18, reply, ptr);
 
     checkDataLength (ptr);
   }
@@ -43,10 +43,10 @@ public class ImplicitPartition extends QueryReplyField
 
     assert data[1] == IMP_PART_QUERY_REPLY;
 
-    width = Utility.unsignedShort (data, 7);
-    height = Utility.unsignedShort (data, 9);
-    alternateWidth = Utility.unsignedShort (data, 11);
-    alternateHeight = Utility.unsignedShort (data, 13);
+    width = Dm3270Utility.unsignedShort (data, 7);
+    height = Dm3270Utility.unsignedShort (data, 9);
+    alternateWidth = Dm3270Utility.unsignedShort (data, 11);
+    alternateHeight = Dm3270Utility.unsignedShort (data, 13);
   }
 
   @Override

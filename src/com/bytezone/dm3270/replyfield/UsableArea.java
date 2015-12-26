@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class UsableArea extends QueryReplyField
 {
@@ -31,8 +31,8 @@ public class UsableArea extends QueryReplyField
       reply[ptr++] = b;
 
     // copy the screen dimensions into the reply (skipping 4 header bytes)
-    Utility.packUnsignedShort (80, reply, 6);     // columns
-    Utility.packUnsignedShort (24, reply, 8);     // rows
+    Dm3270Utility.packUnsignedShort (80, reply, 6);     // columns
+    Dm3270Utility.packUnsignedShort (24, reply, 8);     // rows
 
     checkDataLength (ptr);
   }
@@ -45,18 +45,18 @@ public class UsableArea extends QueryReplyField
 
     flags1 = data[2];
     flags2 = data[3];
-    width = Utility.unsignedShort (data, 4);
-    height = Utility.unsignedShort (data, 6);
+    width = Dm3270Utility.unsignedShort (data, 4);
+    height = Dm3270Utility.unsignedShort (data, 6);
     unitsOfMeasurement = data[8];
-    xNumerator = Utility.unsignedShort (data, 9);
-    xDenominator = Utility.unsignedShort (data, 11);
-    yNumerator = Utility.unsignedShort (data, 13);
-    yDenominator = Utility.unsignedShort (data, 15);
+    xNumerator = Dm3270Utility.unsignedShort (data, 9);
+    xDenominator = Dm3270Utility.unsignedShort (data, 11);
+    yNumerator = Dm3270Utility.unsignedShort (data, 13);
+    yDenominator = Dm3270Utility.unsignedShort (data, 15);
     xUnits = data[17] & 0xFF;
     yUnits = data[18] & 0xFF;
 
     if (data.length >= 20)
-      bufferSize = Utility.unsignedShort (data, 19);
+      bufferSize = Dm3270Utility.unsignedShort (data, 19);
 
     addressingMode = flags1 & 0x0F;
     if (addressingMode == 15)

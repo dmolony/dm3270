@@ -200,7 +200,7 @@ public class TelnetProcessor
 //  public void processData (byte[] data, int length)
 //  {
 //    System.out.println ("Data");
-//    System.out.println (Utility.toHex (data, 0, length, false));
+//    System.out.println (Dm3270Utility.toHex (data, 0, length, false));
 //    System.out.println ();
 //  }
 //
@@ -211,7 +211,7 @@ public class TelnetProcessor
 //    assert data[length - 1] == TelnetProcessor.EOR;
 //
 //    System.out.println ("Record");
-//    System.out.println (Utility.toHex (data, 0, length - 2));
+//    System.out.println (Dm3270Utility.toHex (data, 0, length - 2));
 //    System.out.println ();
 //  }
 //
@@ -225,7 +225,7 @@ public class TelnetProcessor
 //    System.out.println ("Command ");
 //    System.out.println (telnetCommand);
 //
-//    System.out.println (Utility.toHex (data, 0, length, false));
+//    System.out.println (Dm3270Utility.toHex (data, 0, length, false));
 //    System.out.println ();
 //  }
 //
@@ -260,7 +260,7 @@ public class TelnetProcessor
 //    System.out.println ("Subcommand " + text);
 //    System.out.println (telnetSubcommand);
 //
-//    System.out.println (Utility.toHex (data, 0, length, false));
+//    System.out.println (Dm3270Utility.toHex (data, 0, length, false));
 //    System.out.println ();
 //
 //  }

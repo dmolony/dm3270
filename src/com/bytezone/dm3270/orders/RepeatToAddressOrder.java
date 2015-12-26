@@ -2,7 +2,7 @@ package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class RepeatToAddressOrder extends Order
 {
@@ -18,7 +18,7 @@ public class RepeatToAddressOrder extends Order
 
     if (buffer[offset + 3] == Order.GRAPHICS_ESCAPE)
     {
-      repeatCharacter = (char) Utility.ebc2asc[buffer[offset + 4] & 0xFF];
+      repeatCharacter = (char) Dm3270Utility.ebc2asc[buffer[offset + 4] & 0xFF];
       // offset + 5 can be used, but I haven't seen one yet
       rptChar = buffer[offset + 4];
 
@@ -26,7 +26,7 @@ public class RepeatToAddressOrder extends Order
     }
     else
     {
-      repeatCharacter = (char) Utility.ebc2asc[buffer[offset + 3] & 0xFF];
+      repeatCharacter = (char) Dm3270Utility.ebc2asc[buffer[offset + 3] & 0xFF];
       rptChar = buffer[offset + 3];
 
       this.buffer = new byte[4];

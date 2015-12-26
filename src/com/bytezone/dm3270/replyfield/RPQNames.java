@@ -2,7 +2,7 @@ package com.bytezone.dm3270.replyfield;
 
 import java.io.UnsupportedEncodingException;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class RPQNames extends QueryReplyField
 {
@@ -19,8 +19,8 @@ public class RPQNames extends QueryReplyField
       String rpqName = "dm3270";
       int ptr = createReply (9 + rpqName.length ());
 
-      ptr = Utility.packUnsignedLong (0, reply, ptr);     // deviceType
-      ptr = Utility.packUnsignedLong (0, reply, ptr);     // model
+      ptr = Dm3270Utility.packUnsignedLong (0, reply, ptr);     // deviceType
+      ptr = Dm3270Utility.packUnsignedLong (0, reply, ptr);     // model
 
       reply[ptr++] = (byte) (rpqName.length () + 1);      // name length + 1
 
@@ -43,7 +43,7 @@ public class RPQNames extends QueryReplyField
     try
     {
       deviceType = new String (data, 2, 4, "CP1047");
-      model = Utility.unsignedLong (data, 6);
+      model = Dm3270Utility.unsignedLong (data, 6);
       int len = (data[10] & 0xFF) - 1;
       if (len > 0)
         rpqName = new String (data, 11, len, "CP1047");

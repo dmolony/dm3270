@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bytezone.dm3270.structuredfields.StructuredField;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public abstract class QueryReplyField
 {
@@ -151,7 +151,7 @@ public abstract class QueryReplyField
   {
     size += 4;                              // we add 4 bytes at the beginning
     reply = new byte[size];
-    int ptr = Utility.packUnsignedShort (size, reply, 0);
+    int ptr = Dm3270Utility.packUnsignedShort (size, reply, 0);
     reply[ptr++] = (byte) 0x81;
     reply[ptr++] = replyType.type;
     return ptr;                             // next location to fill

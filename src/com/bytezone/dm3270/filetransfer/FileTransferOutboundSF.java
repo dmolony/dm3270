@@ -6,7 +6,7 @@ import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class FileTransferOutboundSF extends FileTransferSF
 {
@@ -226,7 +226,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     int ptr = 0;
 
     buffer[ptr++] = (byte) 0x88;
-    ptr = Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (buffer.length - 1, buffer, ptr);
 
     buffer[ptr++] = (byte) 0xD0;
     buffer[ptr++] = command;

@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TextOrder extends Order
 {
@@ -57,7 +57,7 @@ public class TextOrder extends Order
 
   public String getTextString ()
   {
-    return buffer.length == 0 ? "" : "[" + Utility.getString (buffer) + "]";
+    return buffer.length == 0 ? "" : "[" + Dm3270Utility.getString (buffer) + "]";
   }
 
   @Override

@@ -14,7 +14,7 @@ import com.bytezone.dm3270.structuredfields.Outbound3270DS;
 import com.bytezone.dm3270.structuredfields.ReadPartitionSF;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class WriteStructuredFieldCommand extends Command
 {
@@ -37,7 +37,7 @@ public class WriteStructuredFieldCommand extends Command
 
     while (ptr < max)
     {
-      int size = Utility.unsignedShort (buffer, ptr) - 2;
+      int size = Dm3270Utility.unsignedShort (buffer, ptr) - 2;
       ptr += 2;
 
       switch (buffer[ptr])

@@ -2,7 +2,7 @@ package com.bytezone.dm3270.application;
 
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
@@ -51,7 +51,7 @@ public class ConsoleKeyEvent implements EventHandler<KeyEvent>
 
     if (ch >= 32 && ch < 0x7F)
     {
-      cursor.typeChar ((byte) Utility.asc2ebc[ch]);
+      cursor.typeChar ((byte) Dm3270Utility.asc2ebc[ch]);
       e.consume ();
     }
   }

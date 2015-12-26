@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class DefaultReply extends QueryReplyField
 {
@@ -8,7 +8,7 @@ public class DefaultReply extends QueryReplyField
   {
     super (buffer);
     System.out.printf ("Unknown reply field: %02X%n", buffer[0]);
-    System.out.println (Utility.toHex (buffer));
+    System.out.println (Dm3270Utility.toHex (buffer));
   }
 
   @Override
@@ -16,7 +16,7 @@ public class DefaultReply extends QueryReplyField
   {
     StringBuilder text = new StringBuilder (super.toString ());
 
-    text.append (String.format ("%n%n%s", Utility.toHex (data)));
+    text.append (String.format ("%n%n%s", Dm3270Utility.toHex (data)));
 
     return text.toString ();
   }

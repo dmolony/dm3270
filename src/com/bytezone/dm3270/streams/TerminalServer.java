@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TerminalServer implements Runnable
 {
@@ -65,7 +65,7 @@ public class TerminalServer implements Runnable
         {
           System.out.println (toString ());
           System.out.println ("reading:");
-          System.out.println (Utility.toHex (buffer, 0, bytesRead));
+          System.out.println (Dm3270Utility.toHex (buffer, 0, bytesRead));
         }
 
         byte[] message = new byte[bytesRead];
@@ -106,7 +106,7 @@ public class TerminalServer implements Runnable
     {
       System.out.println (toString ());
       System.out.println ("writing:");
-      System.out.println (Utility.toHex (buffer));
+      System.out.println (Dm3270Utility.toHex (buffer));
     }
   }
 

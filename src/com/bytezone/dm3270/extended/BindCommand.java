@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.extended;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 // See SNA Programming pp 807
 
@@ -54,7 +54,7 @@ public class BindCommand extends AbstractExtendedCommand
 
       cryptographicControl = buffer[offset + 26];
       pluNameLength = buffer[offset + 27] & 0xFF;
-      pluName = Utility.getString (buffer, offset + 28, pluNameLength);
+      pluName = Dm3270Utility.getString (buffer, offset + 28, pluNameLength);
       userDataLength = buffer[offset + 28 + pluNameLength] & 0xFF;
     }
   }

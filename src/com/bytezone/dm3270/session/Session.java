@@ -24,7 +24,7 @@ import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.streams.TelnetState;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -248,7 +248,7 @@ public class Session implements Iterable<SessionRecord>
         }
 
         // write the data buffer after adding back the double-FF bytes
-        writer.println (Utility.toHex (dataRecord.getMessage ().getTelnetData ()));
+        writer.println (Dm3270Utility.toHex (dataRecord.getMessage ().getTelnetData ()));
       }
       writer.close ();
     }

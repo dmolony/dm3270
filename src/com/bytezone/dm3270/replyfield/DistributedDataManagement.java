@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 // Required for DFT data transfers. If this reply is not included, any file transfers
 // will default to CUT mode.
@@ -19,9 +19,9 @@ public class DistributedDataManagement extends QueryReplyField
 
     int ptr = createReply (8);
 
-    ptr = Utility.packUnsignedShort (0, reply, ptr);
-    ptr = Utility.packUnsignedShort (16384, reply, ptr);
-    ptr = Utility.packUnsignedShort (16384, reply, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (0, reply, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (16384, reply, ptr);
+    ptr = Dm3270Utility.packUnsignedShort (16384, reply, ptr);
     reply[ptr++] = 1;
     reply[ptr++] = 1;
 
@@ -33,9 +33,9 @@ public class DistributedDataManagement extends QueryReplyField
     super (buffer);
     assert data[1] == DISTRIBUTED_DATA_MANAGEMENT_REPLY;
 
-    flags = Utility.unsignedShort (data, 2);
-    limitIn = Utility.unsignedShort (data, 4);
-    limitOut = Utility.unsignedShort (data, 6);
+    flags = Dm3270Utility.unsignedShort (data, 2);
+    limitIn = Dm3270Utility.unsignedShort (data, 4);
+    limitOut = Dm3270Utility.unsignedShort (data, 6);
     subsets = data[8] & 0xFF;
     ddmSubset = data[9];
 

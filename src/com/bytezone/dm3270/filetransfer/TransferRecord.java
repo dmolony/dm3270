@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TransferRecord
 {
@@ -39,6 +39,6 @@ public class TransferRecord
   @Override
   public String toString ()
   {
-    return String.format ("record    : %s", Utility.toHexString (data));
+    return String.format ("record    : %s", Dm3270Utility.toHexString (data));
   }
 }

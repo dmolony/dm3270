@@ -22,7 +22,7 @@ import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -305,7 +305,7 @@ public class ConsolePane extends BorderPane
     if (telnetState.does3270Extended ())
     {
       byte[] buffer = new byte[5];
-      Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
+      Dm3270Utility.packUnsignedShort (commandHeaderCount++, buffer, 3);
       CommandHeader header = new CommandHeader (buffer);
       TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand (header, command);
       telnetState.write (extendedCommand.getTelnetData ());

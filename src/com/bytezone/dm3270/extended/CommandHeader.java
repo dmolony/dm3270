@@ -2,7 +2,7 @@ package com.bytezone.dm3270.extended;
 
 import com.bytezone.dm3270.buffers.AbstractReplyBuffer;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class CommandHeader extends AbstractReplyBuffer
 {
@@ -106,7 +106,7 @@ public class CommandHeader extends AbstractReplyBuffer
         break;
     }
 
-    commandSeq = Utility.unsignedShort (data, 3);
+    commandSeq = Dm3270Utility.unsignedShort (data, 3);
   }
 
   public DataType getDataType ()
@@ -136,7 +136,7 @@ public class CommandHeader extends AbstractReplyBuffer
     {
       byte[] header = new byte[5];
       header[0] = 0x02;
-      Utility.packUnsignedShort (commandSeq, header, 3);
+      Dm3270Utility.packUnsignedShort (commandSeq, header, 3);
       CommandHeader commandHeader = new CommandHeader (header);
       byte[] value = { 0x00 };
 

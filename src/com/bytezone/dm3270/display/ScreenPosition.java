@@ -6,7 +6,7 @@ import java.util.List;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.orders.Order;
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -177,7 +177,7 @@ public final class ScreenPosition
           return '*';
       }
 
-    return (char) Utility.ebc2asc[value & 0xFF];
+    return (char) Dm3270Utility.ebc2asc[value & 0xFF];
   }
 
   String getCharString ()
@@ -201,7 +201,7 @@ public final class ScreenPosition
           return ".";
       }
 
-    return charString[Utility.ebc2asc[value & 0xFF]];
+    return charString[Dm3270Utility.ebc2asc[value & 0xFF]];
   }
 
   byte getByte ()

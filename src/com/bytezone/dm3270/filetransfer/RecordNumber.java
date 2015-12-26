@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
-import com.bytezone.dm3270.utilities.Utility;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class RecordNumber extends TransferRecord
 {
@@ -12,18 +12,18 @@ public class RecordNumber extends TransferRecord
   public RecordNumber (int recordNumber)
   {
     super (TYPE, RECORD_LENGTH);
-    Utility.packUnsignedLong (recordNumber, data, 2);
+    Dm3270Utility.packUnsignedLong (recordNumber, data, 2);
   }
 
   public RecordNumber (byte[] data, int offset)
   {
     super (data, offset);
-    recordNumber = Utility.unsignedLong (data, 2);
+    recordNumber = Dm3270Utility.unsignedLong (data, 2);
   }
 
   @Override
   public String toString ()
   {
-    return String.format ("recnum    : %s", Utility.toHexString (data));
+    return String.format ("recnum    : %s", Dm3270Utility.toHexString (data));
   }
 }
