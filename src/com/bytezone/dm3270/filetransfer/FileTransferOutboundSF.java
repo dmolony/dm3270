@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.filetransfer.Transfer.TransferContents;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
@@ -74,12 +73,12 @@ public class FileTransferOutboundSF extends FileTransferSF
     {
       case 0x00:                        // OPEN request
         if (subtype == 0x12)
-          processOpen (screen);
+          processOpen ();
         break;
 
       case 0x41:                        // CLOSE request
         if (subtype == 0x12)
-          processClose (screen);
+          processClose ();
         break;
 
       case 0x45:                        // something to do with UPLOAD
@@ -87,12 +86,12 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       case 0x46:                        // UPLOAD data transfer buffer
         if (subtype == 0x11)
-          processUpload (screen);
+          processUpload ();
         break;
 
       case 0x47:                        // DOWNLOAD data transfer buffer
         if (subtype == 0x04)
-          processDownload (screen);
+          processDownload ();
         break;
 
       default:
@@ -100,7 +99,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processOpen (Screen screen)
+  private void processOpen ()
   {
     Optional<Transfer> optionalTransfer = transferManager.openTransfer (this);
     if (optionalTransfer.isPresent ())
@@ -110,7 +109,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processClose (Screen screen)
+  private void processClose ()
   {
     Optional<Transfer> optionalTransfer = transferManager.closeTransfer (this);
     if (optionalTransfer.isPresent ())
@@ -120,9 +119,9 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processUpload (Screen screen)
+  private void processUpload ()
   {
-    Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
+    Optional<Transfer> optionalTransfer = transferManager.getTransfer ();
     if (!optionalTransfer.isPresent ())
     {
       System.out.println ("No active transfer");
@@ -146,8 +145,6 @@ public class FileTransferOutboundSF extends FileTransferSF
       RecordNumber recordNumber = new RecordNumber (transfer.size ());
       ptr = recordNumber.pack (replyBuffer, ptr);
       ptr = dataHeader.pack (replyBuffer, ptr);
-      screen
-          .setStatusText (String.format ("Bytes sent: %,d%n", transfer.getDataLength ()));
     }
     else      // finished sending buffers, now send an EOF
     {
@@ -160,11 +157,12 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
 
     setReply (new ReadStructuredFieldCommand (replyBuffer));
+    transferManager.process (this);
   }
 
-  private void processDownload (Screen screen)
+  private void processDownload ()
   {
-    Optional<Transfer> optionalTransfer = transferManager.getTransfer (this);
+    Optional<Transfer> optionalTransfer = transferManager.getTransfer ();
     if (!optionalTransfer.isPresent ())
     {
       System.out.println ("No active transfer");
@@ -193,12 +191,10 @@ public class FileTransferOutboundSF extends FileTransferSF
       int bufferNumber = transfer.add (dataRecord);
       RecordNumber recordNumber = new RecordNumber (bufferNumber);
       ptr = recordNumber.pack (buffer, ptr);
-      if (transfer.getTransferContents () == TransferContents.DATA)
-        screen.setStatusText (String.format ("%,d : Bytes received: %,d%n", bufferNumber,
-                                             transfer.getDataLength ()));
     }
 
     setReply (new ReadStructuredFieldCommand (buffer));
+    transferManager.process (this);
 
     // message transfers don't close
     if (transfer.isMessage ())

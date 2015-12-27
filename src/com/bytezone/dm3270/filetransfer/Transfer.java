@@ -140,12 +140,12 @@ public class Transfer
     return dataHeader;
   }
 
-  int size ()
+  public int size ()
   {
     return dataRecords.size ();
   }
 
-  int getDataLength ()
+  public int getDataLength ()
   {
     return dataLength;      // used to display buffer length on the console
   }

@@ -405,14 +405,31 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     System.out.println (transfer);
     System.out.println ();
 
-    if (status == TransferStatus.OPEN && transfer.isData ())
-      if (transfer.getTransferType () == TransferType.UPLOAD)
-        setStatusText ("Uploading ...");
-      else
-        setStatusText ("Downloading ...");
+    if (transfer.isData ())
+      switch (status)
+      {
+        case READY:
+          break;
 
-    if (status == TransferStatus.FINISHED && transfer.isData ())
-      setStatusText ("Closing ...");
+        case OPEN:
+          if (transfer.getTransferType () == TransferType.UPLOAD)
+            setStatusText ("Uploading ...");
+          else
+            setStatusText ("Downloading ...");
+          break;
+
+        case PROCESSING:
+          if (transfer.getTransferType () == TransferType.DOWNLOAD)
+            setStatusText (String.format ("%,d : Bytes received: %,d", transfer.size (),
+                                          transfer.getDataLength ()));
+          else
+            setStatusText (String.format ("Bytes sent: %,d", transfer.getDataLength ()));
+          break;
+
+        case FINISHED:
+          setStatusText ("Closing ...");
+          break;
+      }
   }
 
   // ---------------------------------------------------------------------------------//

@@ -61,9 +61,9 @@ public class TransferManager implements TSOCommandListener
     return Optional.of (currentTransfer);
   }
 
-  // called from FileTransferOutboundSF.processSend0x46()
-  // called from FileTransferOutboundSF.processReceive()
-  Optional<Transfer> getTransfer (FileTransferOutboundSF transferRecord)
+  // called from FileTransferOutboundSF.processUpload()
+  // called from FileTransferOutboundSF.processDownload()
+  Optional<Transfer> getTransfer ()
   {
     if (currentTransfer == null)
     {
@@ -71,10 +71,14 @@ public class TransferManager implements TSOCommandListener
       return Optional.empty ();
     }
 
+    return Optional.of (currentTransfer);
+  }
+
+  void process (FileTransferOutboundSF transferRecord)
+  {
     currentTransfer.add (transferRecord);
     if (currentTransfer.isData ())
       fireTransferStatusChanged (TransferStatus.PROCESSING, currentTransfer);
-    return Optional.of (currentTransfer);
   }
 
   // called from FileTransferOutboundSF.processClose()
