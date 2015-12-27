@@ -7,12 +7,10 @@ public class FileTransferInboundSF extends FileTransferSF
     super (buffer, offset, length, "Inbound");
 
     TransferRecord transferRecord;
-    //    System.out.printf ("%02X %02X Inbound%n", rectype, subtype);
 
     int ptr = 3;
     while (ptr < data.length)
     {
-      //      System.out.printf ("        %02X%n", data[ptr] & 0xFF);
       switch (data[ptr])
       {
         case 0x63:

@@ -20,12 +20,10 @@ public class FileTransferOutboundSF extends FileTransferSF
       transferType = TransferType.DOWNLOAD;
 
     TransferRecord transferRecord;
-    //    System.out.printf ("%02X %02X Outbound%n", rectype, subtype);
 
     int ptr = 3;
     while (ptr < data.length)
     {
-      //      System.out.printf ("        %02X%n", data[ptr] & 0xFF);
       switch (data[ptr])
       {
         case 0x01:
@@ -96,6 +94,9 @@ public class FileTransferOutboundSF extends FileTransferSF
         if (subtype == 0x04)
           processDownload (screen);
         break;
+
+      default:
+        System.out.printf ("Unknown record type: %02X%n", rectype);
     }
   }
 
