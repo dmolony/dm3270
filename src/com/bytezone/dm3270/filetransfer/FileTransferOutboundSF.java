@@ -102,23 +102,11 @@ public class FileTransferOutboundSF extends FileTransferSF
   private void processOpen (Screen screen)
   {
     Optional<Transfer> optionalTransfer = transferManager.openTransfer (this);
-
-    if (!optionalTransfer.isPresent ())
+    if (optionalTransfer.isPresent ())
     {
-      System.out.println ("No active transfer");
-      return;
+      byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
+      setReply (new ReadStructuredFieldCommand (buffer));
     }
-
-    Transfer transfer = optionalTransfer.get ();
-    byte[] buffer = getReplyBuffer (6, (byte) 0x00, (byte) 0x09);
-    setReply (new ReadStructuredFieldCommand (buffer));
-
-    // move this to TransferManager
-    if (transfer.getTransferContents () == TransferContents.DATA)
-      if (transfer.getTransferType () == TransferType.UPLOAD)
-        screen.setStatusText ("Uploading ...");
-      else
-        screen.setStatusText ("Downloading ...");
   }
 
   private void processClose (Screen screen)
@@ -128,7 +116,6 @@ public class FileTransferOutboundSF extends FileTransferSF
     {
       byte[] buffer = getReplyBuffer (6, (byte) 0x41, (byte) 0x09);
       setReply (new ReadStructuredFieldCommand (buffer));
-      screen.setStatusText ("Closing ...");
     }
   }
 

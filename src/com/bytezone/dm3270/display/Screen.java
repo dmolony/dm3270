@@ -23,6 +23,7 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
 import com.bytezone.dm3270.filetransfer.Transfer;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.filetransfer.TransferListener;
 import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
@@ -403,6 +404,15 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     System.out.println (status);
     System.out.println (transfer);
     System.out.println ();
+
+    if (status == TransferStatus.OPEN && transfer.isData ())
+      if (transfer.getTransferType () == TransferType.UPLOAD)
+        setStatusText ("Uploading ...");
+      else
+        setStatusText ("Downloading ...");
+
+    if (status == TransferStatus.FINISHED && transfer.isData ())
+      setStatusText ("Closing ...");
   }
 
   // ---------------------------------------------------------------------------------//

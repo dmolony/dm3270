@@ -98,6 +98,8 @@ public class TransferManager implements TSOCommandListener
       Platform.runLater ( () -> saveFile (transfer));
     }
 
+    closeTransfer ();
+
     return Optional.of (transfer);
   }
 
@@ -163,8 +165,6 @@ public class TransferManager implements TSOCommandListener
       reporterNode.addBuffer (name, buffer);
     else
       reporterNode.addBuffer (name, buffer, siteFolderName);
-
-    fireTransferStatusChanged (TransferStatus.FINISHED, transfer);
   }
 
   // ---------------------------------------------------------------------------------//
