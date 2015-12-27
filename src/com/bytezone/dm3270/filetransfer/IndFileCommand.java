@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 public class IndFileCommand
 {
+  private String command;
   private String fileName;
   private boolean hasTLQ;
   private boolean crlf;
@@ -21,6 +22,7 @@ public class IndFileCommand
 
   public IndFileCommand (String command)
   {
+    this.command = command;
     command = command.toLowerCase ().trim ();
     if (command.startsWith ("tso "))
       command = command.substring (4);
@@ -95,6 +97,11 @@ public class IndFileCommand
   {
     System.out.println (this);
     System.out.println (other);
+  }
+
+  public String getCommand ()
+  {
+    return command;
   }
 
   public String getFileName ()

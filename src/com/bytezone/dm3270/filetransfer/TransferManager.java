@@ -98,8 +98,6 @@ public class TransferManager implements TSOCommandListener
       Platform.runLater ( () -> saveFile (transfer));
     }
 
-    closeTransfer ();
-
     return Optional.of (transfer);
   }
 

@@ -127,8 +127,10 @@ public class DataRecord extends TransferRecord
 
   public String getText ()
   {
-    System.out.println (Dm3270Utility.EBCDIC);
-    return new String (buffer);
+    int lastChar = buffer[buffer.length - 1] % 0xFF;
+    if (lastChar == 32 || lastChar == 36)       // ascii space or dollar sign
+      return new String (buffer);
+    return new String (Dm3270Utility.ebc2asc (buffer));
   }
 
   @Override

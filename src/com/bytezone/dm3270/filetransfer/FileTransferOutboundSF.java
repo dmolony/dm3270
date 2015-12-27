@@ -214,10 +214,7 @@ public class FileTransferOutboundSF extends FileTransferSF
 
     // message transfers don't close
     if (transfer.isMessage ())
-    {
-      System.out.println (transfer.getMessage ());
       transferManager.closeTransfer ();
-    }
   }
 
   private byte[] getReplyBuffer (int length, byte command, byte subcommand)

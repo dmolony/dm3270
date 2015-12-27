@@ -18,6 +18,8 @@ public class Transfer
   List<DataRecord> dataRecords = new ArrayList<> ();  // downloading data
   private int dataLength;
 
+  private DataRecord message;
+
   byte[] inboundBuffer;       // uploading data
   int inboundBufferPtr;
 
@@ -45,10 +47,10 @@ public class Transfer
 
   public String getMessage ()
   {
-    if (!isMessage ())
+    if (!isMessage () || message == null)
       return "";
 
-    return dataRecords.get (dataRecords.size () - 1).getText ();
+    return message.getText ();
   }
 
   public boolean isMessage ()
@@ -75,6 +77,12 @@ public class Transfer
   // called from FileTransferOutboundSF.processDownload()
   int add (DataRecord dataRecord)
   {
+    if (isMessage ())
+    {
+      message = dataRecord;
+      return 1;
+    }
+
     if (dataRecords.contains (dataRecord))
       return dataRecords.indexOf (dataRecord) + 1;
 
@@ -191,17 +199,30 @@ public class Transfer
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("Contents ....... %s%n", transferContents));
-    text.append (String.format ("Type ........... %s", transferType));
+    text.append (String.format ("Type ........... %s%n", transferType));
+    text.append (String.format ("Command ........ %s%n", indFileCommand.getCommand ()));
 
-    int bufno = 0;
-    for (DataRecord dataRecord : dataRecords)
-      text.append (String.format ("%n  Buffer %3d ...  %,8d", bufno++,
-                                  dataRecord.getBufferLength ()));
+    if (isMessage ())
+      text.append (String.format ("Message ........ %s%n", getMessage ()));
+    else
+    {
+      int bufno = 0;
+      for (DataRecord dataRecord : dataRecords)
+        text.append (String.format ("  Buffer %3d ...  %,8d%n", bufno++,
+                                    dataRecord.getBufferLength ()));
 
-    text.append (String.format ("%nLength ......... %,9d", dataLength));
-    text.append (String.format ("%ninbuf length ... %d",
-                                inboundBuffer == null ? -1 : inboundBuffer.length));
-    text.append (String.format ("%nin ptr ......... %d", inboundBufferPtr));
+      text.append (String.format ("Length ......... %,9d%n", dataLength));
+    }
+
+    if (inboundBuffer != null)
+    {
+      text.append (String.format ("inbuf length ... %d%n",
+                                  inboundBuffer == null ? -1 : inboundBuffer.length));
+      text.append (String.format ("in ptr ......... %d%n", inboundBufferPtr));
+    }
+
+    if (text.length () > 0)
+      text.deleteCharAt (text.length () - 1);
 
     return text.toString ();
   }
