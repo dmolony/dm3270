@@ -1,7 +1,13 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.bytezone.dm3270.application.Site;
 
 // CUT - Control Unit Terminal --------- Buffered
 // DFT - Distributed Function Terminal - WSF
@@ -23,6 +29,11 @@ public class Transfer
   byte[] inboundBuffer;       // uploading data
   int inboundBufferPtr;
 
+  File localFile;
+  String datasetName;
+  Site site;
+  String siteFolderName = "";
+
   public enum TransferContents
   {
     MSG, DATA
@@ -34,9 +45,33 @@ public class Transfer
     UPLOAD          // terminal -> mainframe (receive)
   }
 
-  public Transfer (IndFileCommand indFileCommand)
+  public Transfer (IndFileCommand indFileCommand, Site site, String tlq)
   {
     this.indFileCommand = indFileCommand;
+    this.site = site;
+
+    datasetName = getFileName ().toUpperCase ();
+    if (!hasTLQ ())
+    {
+      //      String tlq = screen.getPrefix ();
+      if (!tlq.isEmpty ())
+        datasetName = tlq + "." + datasetName;
+    }
+
+    //    String siteFolderName = "";
+    if (site != null)
+    {
+      siteFolderName = site.folder.getText ();
+      if (!siteFolderName.isEmpty ())
+      {
+        Path path = Paths.get (System.getProperty ("user.home"), "dm3270", "files",
+                               siteFolderName);
+        if (!Files.exists (path))
+          siteFolderName = "";
+      }
+      else
+        System.out.println ("No folder specified in site record");
+    }
   }
 
   public void compare (IndFileCommand indFileCommand)
@@ -92,7 +127,7 @@ public class Transfer
     return dataRecords.size ();
   }
 
-  public boolean isDownloadData ()
+  public boolean isDownloadAndIsData ()
   {
     return transferContents == TransferContents.DATA
         && transferType == TransferType.DOWNLOAD;
