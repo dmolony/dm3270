@@ -172,7 +172,6 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
 
     Transfer transfer = optionalTransfer.get ();
-
     int ptr = 6;
     byte[] buffer;
 
@@ -198,6 +197,7 @@ public class FileTransferOutboundSF extends FileTransferSF
         screen.setStatusText (String.format ("%,d : Bytes received: %,d%n", bufferNumber,
                                              transfer.getDataLength ()));
     }
+
     setReply (new ReadStructuredFieldCommand (buffer));
 
     // message transfers don't close
