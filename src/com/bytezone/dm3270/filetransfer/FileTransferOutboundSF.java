@@ -86,12 +86,12 @@ public class FileTransferOutboundSF extends FileTransferSF
 
       case 0x46:                        // UPLOAD data transfer buffer
         if (subtype == 0x11)
-          processUpload ();
+          process (TransferType.UPLOAD);
         break;
 
       case 0x47:                        // DOWNLOAD data transfer buffer
         if (subtype == 0x04)
-          processDownload ();
+          process (TransferType.DOWNLOAD);
         break;
 
       default:
@@ -119,7 +119,7 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
   }
 
-  private void processUpload ()
+  private void process (TransferType type)
   {
     Optional<Transfer> optionalTransfer = transferManager.getTransfer ();
     if (!optionalTransfer.isPresent ())
@@ -129,17 +129,27 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
 
     Transfer transfer = optionalTransfer.get ();
+    byte[] replyBuffer = type == TransferType.UPLOAD ? processUpload (transfer)
+        : processDownload (transfer);
+
+    setReply (new ReadStructuredFieldCommand (replyBuffer));
+    transferManager.process (this);
+
+    // message transfers don't close
+    if (transfer.isMessage ())
+      transferManager.closeTransfer ();
+  }
+
+  private byte[] processUpload (Transfer transfer)
+  {
     byte[] replyBuffer;
-    int ptr = 0;
+    int ptr = 6;
 
     if (transfer.hasMoreData () && !transfer.cancelled ())    // have data to send
     {
       DataRecord dataHeader = transfer.getDataHeader ();
-
-      ptr = 6;
       int replyBufferLength = ptr + RecordNumber.RECORD_LENGTH + DataRecord.HEADER_LENGTH
           + dataHeader.getBufferLength ();
-
       replyBuffer = getReplyBuffer (replyBufferLength, (byte) 0x46, (byte) 0x05);
 
       RecordNumber recordNumber = new RecordNumber (transfer.size ());
@@ -148,57 +158,44 @@ public class FileTransferOutboundSF extends FileTransferSF
     }
     else      // finished sending buffers, now send an EOF
     {
-      int length = 6 + ErrorRecord.RECORD_LENGTH;
-      replyBuffer = getReplyBuffer (length, (byte) 0x46, (byte) 0x08);
+      int replyBufferLength = ptr + ErrorRecord.RECORD_LENGTH;
+      replyBuffer = getReplyBuffer (replyBufferLength, (byte) 0x46, (byte) 0x08);
 
-      ptr = 6;
       ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.EOF);
       ptr = errorRecord.pack (replyBuffer, ptr);
     }
 
-    setReply (new ReadStructuredFieldCommand (replyBuffer));
-    transferManager.process (this);
+    assert ptr == replyBuffer.length;
+    return replyBuffer;
   }
 
-  private void processDownload ()
+  private byte[] processDownload (Transfer transfer)
   {
-    Optional<Transfer> optionalTransfer = transferManager.getTransfer ();
-    if (!optionalTransfer.isPresent ())
-    {
-      System.out.println ("No active transfer");
-      return;
-    }
-
-    Transfer transfer = optionalTransfer.get ();
+    byte[] replyBuffer;
     int ptr = 6;
-    byte[] buffer;
 
     if (transfer.cancelled ())
     {
-      int length = ptr + ErrorRecord.RECORD_LENGTH;
-      buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x08);
+      int replyBufferLength = ptr + ErrorRecord.RECORD_LENGTH;
+      replyBuffer = getReplyBuffer (replyBufferLength, (byte) 0x47, (byte) 0x08);
 
       ErrorRecord errorRecord = new ErrorRecord (ErrorRecord.CANCEL);
-      ptr = errorRecord.pack (buffer, ptr);
+      ptr = errorRecord.pack (replyBuffer, ptr);
     }
     else
     {
-      int length = ptr + RecordNumber.RECORD_LENGTH;
-      buffer = getReplyBuffer (length, (byte) 0x47, (byte) 0x05);
+      int replyBufferLength = ptr + RecordNumber.RECORD_LENGTH;
+      replyBuffer = getReplyBuffer (replyBufferLength, (byte) 0x47, (byte) 0x05);
 
       DataRecord dataRecord =
           (DataRecord) transferRecords.get (transferRecords.size () - 1);
       int bufferNumber = transfer.add (dataRecord);
       RecordNumber recordNumber = new RecordNumber (bufferNumber);
-      ptr = recordNumber.pack (buffer, ptr);
+      ptr = recordNumber.pack (replyBuffer, ptr);
     }
 
-    setReply (new ReadStructuredFieldCommand (buffer));
-    transferManager.process (this);
-
-    // message transfers don't close
-    if (transfer.isMessage ())
-      transferManager.closeTransfer ();
+    assert ptr == replyBuffer.length;
+    return replyBuffer;
   }
 
   private byte[] getReplyBuffer (int length, byte command, byte subcommand)

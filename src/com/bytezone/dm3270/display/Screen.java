@@ -108,6 +108,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     fieldManager.addScreenChangeListener (screenPacker);
 
     transferManager.addTransferListener (this);
+    transferManager.addTransferListener (assistantStage);
   }
 
   public ScreenWatcher getScreenWatcher ()
@@ -401,9 +402,9 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   @Override
   public void transferStatusChanged (TransferStatus status, Transfer transfer)
   {
-    System.out.println (status);
-    System.out.println (transfer);
-    System.out.println ();
+    //    System.out.println (status);
+    //    System.out.println (transfer);
+    //    System.out.println ();
 
     if (transfer.isData ())
       switch (status)

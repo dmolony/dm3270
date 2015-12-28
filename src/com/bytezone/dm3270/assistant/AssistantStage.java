@@ -12,7 +12,10 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.display.TSOCommandListener;
+import com.bytezone.dm3270.filetransfer.Transfer;
+import com.bytezone.dm3270.filetransfer.TransferListener;
 import com.bytezone.dm3270.filetransfer.TransferManager;
+import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
 import com.bytezone.dm3270.utilities.WindowSaver;
 import com.bytezone.reporter.application.ReporterNode;
 
@@ -26,7 +29,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class AssistantStage extends Stage implements ScreenChangeListener,
-    TSOCommandListener, KeyboardStatusListener, BatchJobListener
+    TSOCommandListener, KeyboardStatusListener, BatchJobListener, TransferListener
 {
   private final static String OS = System.getProperty ("os.name");
   private final static boolean SYSTEM_MENUBAR = OS != null && OS.startsWith ("Mac");
@@ -176,5 +179,25 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   {
     jobTab.tsoCommand (command);
     commandsTab.tsoCommand (command);
+  }
+
+  @Override
+  public void transferStatusChanged (TransferStatus status, Transfer transfer)
+  {
+    System.out.println (status);
+    System.out.println (transfer);
+    System.out.println ();
+
+    if (status == TransferStatus.FINISHED && transfer.isDownloadAndIsData ())
+    {
+      ReporterNode reporterNode = filesTab.getReporterNode ();
+      byte[] buffer = transfer.combineDataBuffers ();
+
+      if (transfer.getSiteFolderName ().isEmpty ())
+        reporterNode.addBuffer (transfer.getDatasetName (), buffer);
+      else
+        reporterNode.addBuffer (transfer.getDatasetName (), buffer,
+                                transfer.getSiteFolderName ());
+    }
   }
 }

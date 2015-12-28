@@ -8,7 +8,6 @@ import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.TSOCommandListener;
-import com.bytezone.reporter.application.ReporterNode;
 
 import javafx.application.Platform;
 
@@ -18,7 +17,7 @@ public class TransferManager implements TSOCommandListener
 
   private final Screen screen;
   private final Site site;
-  private final AssistantStage assistantStage;      // won't be needed soon
+  //  private final AssistantStage assistantStage;      // won't be needed soon
 
   public enum TransferStatus
   {
@@ -29,7 +28,7 @@ public class TransferManager implements TSOCommandListener
   {
     this.screen = screen;
     this.site = site;
-    this.assistantStage = assistantStage;
+    //    this.assistantStage = assistantStage;
     assistantStage.setTransferManager (this);
   }
 
@@ -101,8 +100,8 @@ public class TransferManager implements TSOCommandListener
     currentTransfer.add (transferRecord);
 
     // add to the file tree
-    if (transfer.isDownloadAndIsData ())
-      Platform.runLater ( () -> saveFile (transfer));
+    //    if (transfer.isDownloadAndIsData ())
+    //      Platform.runLater ( () -> saveFile (transfer));
 
     closeTransfer ();
 
@@ -118,17 +117,18 @@ public class TransferManager implements TSOCommandListener
   }
 
   // this is done on the EDT
-  private void saveFile (Transfer transfer)
-  {
-    byte[] buffer = transfer.combineDataBuffers ();
-
-    // ReporterNode should be a TransferListener
-    ReporterNode reporterNode = assistantStage.getReporterNode ();
-    if (transfer.siteFolderName.isEmpty ())
-      reporterNode.addBuffer (transfer.datasetName, buffer);
-    else
-      reporterNode.addBuffer (transfer.datasetName, buffer, transfer.siteFolderName);
-  }
+  //  private void saveFile (Transfer transfer)
+  //  {
+  //    byte[] buffer = transfer.combineDataBuffers ();
+  //
+  //    // ReporterNode should be a TransferListener
+  //    ReporterNode reporterNode = assistantStage.getReporterNode ();
+  //    if (transfer.getSiteFolderName ().isEmpty ())
+  //      reporterNode.addBuffer (transfer.getDatasetName (), buffer);
+  //    else
+  //      reporterNode.addBuffer (transfer.getDatasetName (), buffer,
+  //                              transfer.getSiteFolderName ());
+  //  }
 
   // ---------------------------------------------------------------------------------//
   // TransferListener
@@ -138,8 +138,8 @@ public class TransferManager implements TSOCommandListener
 
   void fireTransferStatusChanged (TransferStatus status, Transfer transfer)
   {
-    transferListeners
-        .forEach (listener -> listener.transferStatusChanged (status, transfer));
+    Platform.runLater ( () -> transferListeners
+        .forEach (listener -> listener.transferStatusChanged (status, transfer)));
   }
 
   public void addTransferListener (TransferListener listener)

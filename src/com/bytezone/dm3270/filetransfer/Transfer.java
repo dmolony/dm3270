@@ -21,18 +21,18 @@ public class Transfer
   private TransferType transferType;                  // UPLOAD or DOWNLOAD
   private IndFileCommand indFileCommand;              // user's TSO command
 
-  List<DataRecord> dataRecords = new ArrayList<> ();  // downloading data
+  private final List<DataRecord> dataRecords = new ArrayList<> ();  // downloading data
   private int dataLength;
 
   private DataRecord message;
 
-  byte[] inboundBuffer;       // uploading data
-  int inboundBufferPtr;
+  private byte[] inboundBuffer;       // uploading data
+  private int inboundBufferPtr;
 
-  File localFile;
-  String datasetName;
-  Site site;
-  String siteFolderName = "";
+  private File localFile;
+  private String datasetName;
+  private final Site site;
+  private String siteFolderName = "";
 
   public enum TransferContents
   {
@@ -78,6 +78,16 @@ public class Transfer
   {
     if (this.indFileCommand != null)
       this.indFileCommand.compareWith (indFileCommand);
+  }
+
+  public String getSiteFolderName ()
+  {
+    return siteFolderName;
+  }
+
+  public String getDatasetName ()
+  {
+    return datasetName;
   }
 
   public String getMessage ()
