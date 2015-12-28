@@ -9,6 +9,7 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.reporter.application.FileNode;
 import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
+import com.bytezone.reporter.file.ReportData;
 
 import javafx.scene.control.MenuBar;
 
@@ -74,7 +75,9 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       command = "TSO " + command;
 
     tsoCommand.txtCommand.setText (command);
-    tsoCommand.setBuffer (currentFileNode.getReportData ().getBuffer ());
+    ReportData reportData = currentFileNode.getReportData ();
+    tsoCommand.setBuffer (reportData.getBuffer (), currentFileNode.getFile ());
+    setButton ();
   }
 
   // ---------------------------------------------------------------------------------//

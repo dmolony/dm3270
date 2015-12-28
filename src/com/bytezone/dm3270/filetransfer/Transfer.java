@@ -29,9 +29,9 @@ public class Transfer
   private final byte[] inboundBuffer;       // uploading data
   private int inboundBufferPtr;
 
-  private File localFile;
   private String datasetName;
   private final Site site;
+  private File localFile;
   private String siteFolderName = "";
 
   public enum TransferContents
@@ -53,8 +53,8 @@ public class Transfer
     this.site = site;
     inboundBuffer = indFileCommand.getBuffer ();
 
-    datasetName = getFileName ().toUpperCase ();
-    if (!hasTLQ () && !tlq.isEmpty ())
+    datasetName = indFileCommand.getDatasetName ().toUpperCase ();
+    if (!indFileCommand.hasTLQ () && !tlq.isEmpty ())
       datasetName = tlq + "." + datasetName;
 
     if (site != null)
@@ -70,7 +70,6 @@ public class Transfer
       else
         System.out.println ("No folder specified in site record");
     }
-
   }
 
   public void compare (IndFileCommand indFileCommand)
@@ -221,16 +220,6 @@ public class Transfer
     if (inboundBuffer == null)
       return 0;
     return inboundBuffer.length - inboundBufferPtr;
-  }
-
-  public String getFileName ()
-  {
-    return indFileCommand.getFileName ();
-  }
-
-  public boolean hasTLQ ()
-  {
-    return indFileCommand.hasTLQ ();
   }
 
   @Override

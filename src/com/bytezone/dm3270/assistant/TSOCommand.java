@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.assistant;
 
+import java.io.File;
 import java.util.Optional;
 
 import com.bytezone.dm3270.application.ConsolePane;
@@ -32,6 +33,7 @@ public class TSOCommand implements ScreenChangeListener
   private ScreenWatcher screenWatcher;
   private TransferManager transferManager;
   private byte[] buffer;
+  private File file;
 
   public TSOCommand ()
   {
@@ -56,9 +58,10 @@ public class TSOCommand implements ScreenChangeListener
     return hbox;
   }
 
-  void setBuffer (byte[] buffer)
+  void setBuffer (byte[] buffer, File file)
   {
     this.buffer = buffer;
+    this.file = file;
   }
 
   public void setConsolePane (ConsolePane consolePane)
@@ -91,7 +94,10 @@ public class TSOCommand implements ScreenChangeListener
     {
       IndFileCommand indFileCommand = new IndFileCommand (command);
       if (indFileCommand.isPut ())
+      {
         indFileCommand.setBuffer (buffer);
+        indFileCommand.setLocalFile (file);
+      }
       transferManager.prepareTransfer (indFileCommand);
 
       tsoCommandField.setText (command);

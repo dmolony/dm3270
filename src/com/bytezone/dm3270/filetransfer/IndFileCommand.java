@@ -1,11 +1,11 @@
 package com.bytezone.dm3270.filetransfer;
 
-import java.nio.file.Path;
+import java.io.File;
 
 public class IndFileCommand
 {
   private String command;
-  private String fileName;
+  private String datasetName;
   private boolean hasTLQ;
   private boolean crlf;
   private boolean ascii;
@@ -18,7 +18,7 @@ public class IndFileCommand
   private String units;
 
   private byte[] buffer;
-  private Path localFile;
+  private File localFile;
 
   public IndFileCommand (String command)
   {
@@ -49,10 +49,12 @@ public class IndFileCommand
     }
 
     this.direction = chunks[1];
-    this.fileName = chunks[2];
-    if (fileName.startsWith ("'") && fileName.endsWith ("'") && fileName.length () > 2)
+    this.datasetName = chunks[2];
+
+    if (datasetName.startsWith ("'") && datasetName.endsWith ("'")
+        && datasetName.length () > 2)
     {
-      fileName = fileName.substring (1, fileName.length () - 1);
+      datasetName = datasetName.substring (1, datasetName.length () - 1);
       hasTLQ = true;
     }
 
@@ -104,9 +106,9 @@ public class IndFileCommand
     return command;
   }
 
-  public String getFileName ()
+  public String getDatasetName ()
   {
-    return fileName;
+    return datasetName;
   }
 
   public boolean hasTLQ ()
@@ -139,9 +141,9 @@ public class IndFileCommand
     this.buffer = buffer;
   }
 
-  public void setLocalPath (Path path)
+  public void setLocalFile (File file)
   {
-    this.localFile = path;
+    this.localFile = file;
   }
 
   @Override
@@ -150,8 +152,8 @@ public class IndFileCommand
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("%nCommand ........ %s", direction));
-    text.append (String.format ("%nFile name ...... %s", fileName));
-    text.append (String.format ("%nPath name ...... %s", localFile));
+    text.append (String.format ("%nDataset ........ %s", datasetName));
+    text.append (String.format ("%nFile name ...... %s", localFile));
     text.append (String.format ("%nBuffer length .. %,d",
                                 buffer == null ? -1 : buffer.length));
     text.append (String.format ("%nhas TLQ ........ %s", hasTLQ));
