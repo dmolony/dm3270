@@ -19,14 +19,14 @@ public class Transfer
 
   private TransferContents transferContents;          // MSG or DATA
   private TransferType transferType;                  // UPLOAD or DOWNLOAD
-  private IndFileCommand indFileCommand;              // user's TSO command
+  private final IndFileCommand indFileCommand;        // user's TSO command
 
   private final List<DataRecord> dataRecords = new ArrayList<> ();  // downloading data
   private int dataLength;
 
   private DataRecord message;
 
-  private byte[] inboundBuffer;       // uploading data
+  private final byte[] inboundBuffer;       // uploading data
   private int inboundBufferPtr;
 
   private File localFile;
@@ -49,16 +49,15 @@ public class Transfer
   {
     this.indFileCommand = indFileCommand;
     this.site = site;
+    inboundBuffer = indFileCommand.getBuffer ();
 
     datasetName = getFileName ().toUpperCase ();
     if (!hasTLQ ())
     {
-      //      String tlq = screen.getPrefix ();
       if (!tlq.isEmpty ())
         datasetName = tlq + "." + datasetName;
     }
 
-    //    String siteFolderName = "";
     if (site != null)
     {
       siteFolderName = site.folder.getText ();
@@ -220,12 +219,6 @@ public class Transfer
     if (inboundBuffer == null)
       return 0;
     return inboundBuffer.length - inboundBufferPtr;
-  }
-
-  public void setTransferCommand (IndFileCommand indFileCommand)
-  {
-    this.indFileCommand = indFileCommand;
-    inboundBuffer = indFileCommand == null ? null : indFileCommand.getBuffer ();
   }
 
   public String getFileName ()

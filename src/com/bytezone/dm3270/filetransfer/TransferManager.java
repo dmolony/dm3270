@@ -17,7 +17,6 @@ public class TransferManager implements TSOCommandListener
 
   private final Screen screen;
   private final Site site;
-  //  private final AssistantStage assistantStage;      // won't be needed soon
 
   public enum TransferStatus
   {
@@ -28,7 +27,6 @@ public class TransferManager implements TSOCommandListener
   {
     this.screen = screen;
     this.site = site;
-    //    this.assistantStage = assistantStage;
     assistantStage.setTransferManager (this);
   }
 
@@ -99,10 +97,6 @@ public class TransferManager implements TSOCommandListener
     Transfer transfer = currentTransfer;
     currentTransfer.add (transferRecord);
 
-    // add to the file tree
-    //    if (transfer.isDownloadAndIsData ())
-    //      Platform.runLater ( () -> saveFile (transfer));
-
     closeTransfer ();
 
     return Optional.of (transfer);
@@ -115,20 +109,6 @@ public class TransferManager implements TSOCommandListener
     if (currentTransfer.isMessage ())
       currentTransfer = null;
   }
-
-  // this is done on the EDT
-  //  private void saveFile (Transfer transfer)
-  //  {
-  //    byte[] buffer = transfer.combineDataBuffers ();
-  //
-  //    // ReporterNode should be a TransferListener
-  //    ReporterNode reporterNode = assistantStage.getReporterNode ();
-  //    if (transfer.getSiteFolderName ().isEmpty ())
-  //      reporterNode.addBuffer (transfer.getDatasetName (), buffer);
-  //    else
-  //      reporterNode.addBuffer (transfer.getDatasetName (), buffer,
-  //                              transfer.getSiteFolderName ());
-  //  }
 
   // ---------------------------------------------------------------------------------//
   // TransferListener
