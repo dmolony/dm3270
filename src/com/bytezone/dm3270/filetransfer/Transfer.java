@@ -107,7 +107,8 @@ public class Transfer
     return transferContents == TransferContents.DATA;
   }
 
-  // called from TransferManager.getTransfer()
+  // called from TransferManager.openTransfer()
+  // called from TransferManager.process()
   // called from TransferManager.closeTransfer()
   public void add (FileTransferOutboundSF outboundRecord)
   {
