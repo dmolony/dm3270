@@ -45,18 +45,17 @@ public class Transfer
     UPLOAD          // terminal -> mainframe (receive)
   }
 
-  public Transfer (IndFileCommand indFileCommand, Site site, String tlq)
+  // called from TransferManager.tsoCommand()
+  // called from TransferManager.prepareTransfer()
+  Transfer (IndFileCommand indFileCommand, Site site, String tlq)
   {
     this.indFileCommand = indFileCommand;
     this.site = site;
     inboundBuffer = indFileCommand.getBuffer ();
 
     datasetName = getFileName ().toUpperCase ();
-    if (!hasTLQ ())
-    {
-      if (!tlq.isEmpty ())
-        datasetName = tlq + "." + datasetName;
-    }
+    if (!hasTLQ () && !tlq.isEmpty ())
+      datasetName = tlq + "." + datasetName;
 
     if (site != null)
     {
@@ -71,6 +70,7 @@ public class Transfer
       else
         System.out.println ("No folder specified in site record");
     }
+
   }
 
   public void compare (IndFileCommand indFileCommand)
@@ -110,7 +110,7 @@ public class Transfer
   // called from TransferManager.openTransfer()
   // called from TransferManager.process()
   // called from TransferManager.closeTransfer()
-  public void add (FileTransferOutboundSF outboundRecord)
+  void add (FileTransferOutboundSF outboundRecord)
   {
     if (outboundRecord.transferContents != null)
       transferContents = outboundRecord.transferContents;   // MSG or DATA
@@ -144,6 +144,7 @@ public class Transfer
   }
 
   // called from TransferManager.closeTransfer()
+  // called from AssistantStage.transferStatusChanged()
   public byte[] combineDataBuffers ()
   {
     int length = dataLength;
