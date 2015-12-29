@@ -204,7 +204,9 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     if (transfer.getSiteFolderName ().isEmpty ())
       reporterNode.addBuffer (transfer.getDatasetName (), buffer);
     else
+    {
       reporterNode.addBuffer (transfer.getDatasetName (), buffer,
                               transfer.getSiteFolderName ());
+    }
   }
 }

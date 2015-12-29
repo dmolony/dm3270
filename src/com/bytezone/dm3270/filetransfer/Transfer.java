@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bytezone.dm3270.application.Site;
+import com.bytezone.dm3270.utilities.FileSaver;
 
 // CUT - Control Unit Terminal --------- Buffered
 // DFT - Distributed Function Terminal - WSF
@@ -31,7 +32,7 @@ public class Transfer
 
   private String datasetName;
   private final Site site;
-  private File localFile;
+  private final File localFile;
   private String siteFolderName = "";
 
   public enum TransferContents
@@ -70,6 +71,14 @@ public class Transfer
       else
         System.out.println ("No folder specified in site record");
     }
+
+    Path homePath = FileSaver.getHomePath (getSiteFolderName ());
+    //    System.out.printf ("HomePath:%s%n", homePath);
+    String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
+    //    System.out.printf ("SaveFolder:%s%n", saveFolderName);
+
+    Path filePath = Paths.get (saveFolderName, getDatasetName ());
+    localFile = filePath.toFile ();
   }
 
   public void compare (IndFileCommand indFileCommand)
@@ -230,6 +239,8 @@ public class Transfer
     text.append (String.format ("Contents ....... %s%n", transferContents));
     text.append (String.format ("Type ........... %s%n", transferType));
     text.append (String.format ("Command ........ %s%n", indFileCommand.getCommand ()));
+    text.append (String.format ("Dataset name ... %s%n", datasetName));
+    text.append (String.format ("Local file ..... %s%n", localFile));
 
     if (isMessage ())
       text.append (String.format ("Message ........ %s%n", getMessage ()));
