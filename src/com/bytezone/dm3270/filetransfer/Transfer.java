@@ -30,7 +30,6 @@ public class Transfer
   private int inboundBufferPtr;
 
   private final String datasetName;
-  private final Site site;
   private final File localFile;
   private final String siteFolderName;
 
@@ -50,7 +49,6 @@ public class Transfer
   Transfer (IndFileCommand indFileCommand, Site site, String tlq)
   {
     this.indFileCommand = indFileCommand;
-    this.site = site;
     inboundBuffer = indFileCommand.getBuffer ();
 
     String tempDatasetName = indFileCommand.getDatasetName ().toUpperCase ();
