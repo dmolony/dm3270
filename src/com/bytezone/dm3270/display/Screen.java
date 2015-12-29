@@ -30,6 +30,7 @@ import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
@@ -402,10 +403,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   @Override
   public void transferStatusChanged (TransferStatus status, Transfer transfer)
   {
-    //    System.out.println (status);
-    //    System.out.println (transfer);
-    //    System.out.println ();
-
     if (transfer.isData ())
       switch (status)
       {
@@ -414,23 +411,28 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
 
         case OPEN:
           if (transfer.getTransferType () == TransferType.UPLOAD)
-            setStatusText ("Uploading ...");
+            setText ("Uploading ...");
           else
-            setStatusText ("Downloading ...");
+            setText ("Downloading ...");
           break;
 
         case PROCESSING:
           if (transfer.getTransferType () == TransferType.DOWNLOAD)
-            setStatusText (String.format ("%,d : Bytes received: %,d", transfer.size (),
-                                          transfer.getDataLength ()));
+            setText (String.format ("%,d : Bytes received: %,d", transfer.size (),
+                                    transfer.getDataLength ()));
           else
-            setStatusText (String.format ("Bytes sent: %,d", transfer.getDataLength ()));
+            setText (String.format ("Bytes sent: %,d", transfer.getDataLength ()));
           break;
 
         case FINISHED:
-          setStatusText ("Closing ...");
+          setText ("Closing ...");
           break;
       }
+  }
+
+  private void setText (String text)
+  {
+    Platform.runLater ( () -> setStatusText (text));
   }
 
   // ---------------------------------------------------------------------------------//

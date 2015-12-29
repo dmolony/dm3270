@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
+import com.bytezone.dm3270.utilities.FileSaver;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -169,10 +170,10 @@ public class ScreenWatcher
   private void download ()
   {
     Site site = server != null ? server : replaySite != null ? replaySite : null;
-    String folderName = site != null ? site.getFolder () : "<no site>";
+    String folderName = site == null ? "" : site.getFolder ();
 
-    String userHome = System.getProperty ("user.home");
-    Path homePath = Paths.get (userHome, "dm3270", "files", folderName);
+    //    Path homePath = Paths.get (userHome, "dm3270", "files", folderName);
+    Path homePath = FileSaver.getHomePath (folderName);
     if (Files.notExists (homePath))
     {
       // show dialog here
@@ -187,6 +188,7 @@ public class ScreenWatcher
       return;
     }
 
+    String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
     String datasetName = showDownloadDialog (homePath, baseLength);
     if (datasetName.isEmpty ())
@@ -196,44 +198,44 @@ public class ScreenWatcher
   }
 
   // Determine the path of the folder in which the dataset should be stored
-  private String getSaveFolderName (Path homePath, String datasetName)
-  {
-    // convert the dataset name into a potential path of folder names
-    String[] segments = datasetName.split ("\\.");      // split into segments
-    int last = segments.length - 1;
-
-    // if the last segment contains a pds member name, remove it
-    if (last >= 0 && segments[last].endsWith (")"))
-    {
-      int pos = segments[last].indexOf ('(');
-      segments[last] = segments[last].substring (0, pos);
-    }
-
-    int nextSegment = 0;
-    String buildPath = homePath.toString ();
-
-    while (nextSegment < segments.length)
-    {
-      Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
-      if (Files.notExists (nextPath) || !Files.isDirectory (nextPath))
-      {
-        System.out.println ("Best path is: " + buildPath);
-        return buildPath;
-      }
-
-      buildPath = nextPath.toString ();
-
-      Path filePath = Paths.get (buildPath, datasetName);
-      //      System.out.println (filePath);
-      if (Files.exists (filePath))
-      {
-        System.out.println ("File exists at: " + buildPath);
-        return buildPath;
-      }
-    }
-    System.out.println ("Not found, using: " + buildPath);
-    return buildPath;
-  }
+  //  private String getSaveFolderName (Path homePath, String datasetName)
+  //  {
+  //    // convert the dataset name into a potential path of folder names
+  //    String[] segments = datasetName.split ("\\.");      // split into segments
+  //    int last = segments.length - 1;
+  //
+  //    // if the last segment contains a pds member name, remove it
+  //    if (last >= 0 && segments[last].endsWith (")"))
+  //    {
+  //      int pos = segments[last].indexOf ('(');
+  //      segments[last] = segments[last].substring (0, pos);
+  //    }
+  //
+  //    int nextSegment = 0;
+  //    String buildPath = homePath.toString ();
+  //
+  //    while (nextSegment < segments.length)
+  //    {
+  //      Path nextPath = Paths.get (buildPath, segments[nextSegment++]);
+  //      if (Files.notExists (nextPath) || !Files.isDirectory (nextPath))
+  //      {
+  //        System.out.println ("Best path is: " + buildPath);
+  //        return buildPath;
+  //      }
+  //
+  //      buildPath = nextPath.toString ();
+  //
+  //      Path filePath = Paths.get (buildPath, datasetName);
+  //      //      System.out.println (filePath);
+  //      if (Files.exists (filePath))
+  //      {
+  //        System.out.println ("File exists at: " + buildPath);
+  //        return buildPath;
+  //      }
+  //    }
+  //    System.out.println ("Not found, using: " + buildPath);
+  //    return buildPath;
+  //  }
 
   private String showDownloadDialog (Path homePath, int baseLength)
   {
@@ -289,7 +291,7 @@ public class ScreenWatcher
       Label actionLabel, Label dateLabel, Label dateLabel2, int baseLength)
   {
     String datasetSelected = box.getSelectionModel ().getSelectedItem ();
-    String saveFolderName = getSaveFolderName (homePath, datasetSelected);
+    String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 
     folderLabel.setText (saveFolderName.substring (baseLength));

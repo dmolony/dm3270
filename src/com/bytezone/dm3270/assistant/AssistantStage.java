@@ -19,6 +19,7 @@ import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
 import com.bytezone.dm3270.utilities.WindowSaver;
 import com.bytezone.reporter.application.ReporterNode;
 
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
@@ -181,23 +182,29 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     commandsTab.tsoCommand (command);
   }
 
+  // ---------------------------------------------------------------------------------//
+  // File transfer interface methods
+  // ---------------------------------------------------------------------------------//
+
   @Override
   public void transferStatusChanged (TransferStatus status, Transfer transfer)
   {
     System.out.println (status);
     System.out.println (transfer);
     System.out.println ();
-
     if (status == TransferStatus.FINISHED && transfer.isDownloadAndIsData ())
-    {
-      ReporterNode reporterNode = filesTab.getReporterNode ();
-      byte[] buffer = transfer.combineDataBuffers ();
+      Platform.runLater ( () -> update (status, transfer));
+  }
 
-      if (transfer.getSiteFolderName ().isEmpty ())
-        reporterNode.addBuffer (transfer.getDatasetName (), buffer);
-      else
-        reporterNode.addBuffer (transfer.getDatasetName (), buffer,
-                                transfer.getSiteFolderName ());
-    }
+  private void update (TransferStatus status, Transfer transfer)
+  {
+    ReporterNode reporterNode = filesTab.getReporterNode ();
+    byte[] buffer = transfer.combineDataBuffers ();
+
+    if (transfer.getSiteFolderName ().isEmpty ())
+      reporterNode.addBuffer (transfer.getDatasetName (), buffer);
+    else
+      reporterNode.addBuffer (transfer.getDatasetName (), buffer,
+                              transfer.getSiteFolderName ());
   }
 }

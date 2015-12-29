@@ -9,8 +9,6 @@ import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.TSOCommandListener;
 
-import javafx.application.Platform;
-
 public class TransferManager implements TSOCommandListener
 {
   private Transfer currentTransfer;
@@ -118,8 +116,8 @@ public class TransferManager implements TSOCommandListener
 
   void fireTransferStatusChanged (TransferStatus status, Transfer transfer)
   {
-    Platform.runLater ( () -> transferListeners
-        .forEach (listener -> listener.transferStatusChanged (status, transfer)));
+    transferListeners
+        .forEach (listener -> listener.transferStatusChanged (status, transfer));
   }
 
   public void addTransferListener (TransferListener listener)
