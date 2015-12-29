@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.filetransfer;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -30,10 +29,10 @@ public class Transfer
   private final byte[] inboundBuffer;       // uploading data
   private int inboundBufferPtr;
 
-  private String datasetName;
+  private final String datasetName;
   private final Site site;
   private final File localFile;
-  private String siteFolderName = "";
+  private final String siteFolderName;
 
   public enum TransferContents
   {
@@ -54,29 +53,16 @@ public class Transfer
     this.site = site;
     inboundBuffer = indFileCommand.getBuffer ();
 
-    datasetName = indFileCommand.getDatasetName ().toUpperCase ();
+    String tempDatasetName = indFileCommand.getDatasetName ().toUpperCase ();
     if (!indFileCommand.hasTLQ () && !tlq.isEmpty ())
-      datasetName = tlq + "." + datasetName;
+      datasetName = tlq + "." + tempDatasetName;
+    else
+      datasetName = tempDatasetName;
 
-    if (site != null)
-    {
-      siteFolderName = site.folder.getText ();
-      if (!siteFolderName.isEmpty ())
-      {
-        Path path = Paths.get (System.getProperty ("user.home"), "dm3270", "files",
-                               siteFolderName);
-        if (!Files.exists (path))
-          siteFolderName = "";
-      }
-      else
-        System.out.println ("No folder specified in site record");
-    }
+    siteFolderName = site == null ? "" : site.getFolder ();
 
-    Path homePath = FileSaver.getHomePath (getSiteFolderName ());
-    //    System.out.printf ("HomePath:%s%n", homePath);
+    Path homePath = FileSaver.getHomePath (siteFolderName);
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
-    //    System.out.printf ("SaveFolder:%s%n", saveFolderName);
-
     Path filePath = Paths.get (saveFolderName, getDatasetName ());
     localFile = filePath.toFile ();
   }
