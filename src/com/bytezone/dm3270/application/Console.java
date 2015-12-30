@@ -112,9 +112,14 @@ public class Console extends Application
             Session session = new Session (screen, path);     // can throw Exception
 
             Optional<Site> serverSite = findSite (session.getServerName ());
-            setConsolePane (screen, serverSite.get ());       // reassigns primaryStage
             if (serverSite.isPresent ())
-              screen.setReplayServer (serverSite.get ());
+            {
+              Site site = serverSite.get ();
+              screen.setReplayServer (site);
+              setConsolePane (screen, site);            // reassigns primaryStage
+            }
+            else
+              setConsolePane (screen, null);            // reassigns primaryStage
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();

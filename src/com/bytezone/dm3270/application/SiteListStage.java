@@ -179,6 +179,7 @@ public class SiteListStage extends PreferencesStage
     for (Site site : sites)
       if (siteName.equals (site.getName ()))
         return Optional.of (site);
+
     return Optional.empty ();
   }
 
