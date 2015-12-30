@@ -59,7 +59,7 @@ public class Transfer
     else
       datasetName = tempDatasetName;
 
-    System.out.println (site);
+    //    System.out.println (site);
     siteFolderName = site == null ? "" : site.getFolder ();
 
     Path homePath = FileSaver.getHomePath (siteFolderName);
@@ -149,7 +149,7 @@ public class Transfer
     try
     {
       Files.write (localFile.toPath (), buffer);
-      System.out.printf ("File written: %s%n", localFile);
+      //      System.out.printf ("File written: %s%n", localFile);
     }
     catch (IOException e)
     {
@@ -181,7 +181,7 @@ public class Transfer
       assert fullBuffer[fullBuffer.length - 2] == 0x0D;
       assert fullBuffer[fullBuffer.length - 1] == 0x0A;
       assert fullBuffer.length == dataLength - 1;
-      System.out.println ("successfully adjusted");
+      //      System.out.println ("successfully adjusted");
     }
 
     return fullBuffer;

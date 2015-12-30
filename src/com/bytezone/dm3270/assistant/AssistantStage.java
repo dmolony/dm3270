@@ -189,7 +189,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   @Override
   public void transferStatusChanged (TransferStatus status, Transfer transfer)
   {
-    System.out.println (status);
+    System.out.printf ("Status ......... %s%n", status);
     System.out.println (transfer);
     System.out.println ();
     if (status == TransferStatus.FINISHED && transfer.isDownloadAndIsData ())
@@ -202,14 +202,14 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
     if (transfer.getSiteFolderName ().isEmpty ())
     {
-      System.out.println ("No site folder");
+      //      System.out.println ("No site folder");
       reporterNode.addBuffer (transfer.getDatasetName (), transfer.combineDataBuffers ());
     }
     else
     {
       //      reporterNode.addBuffer (transfer.getDatasetName (), transfer.combineDataBuffers (),
       //                              transfer.getSiteFolderName ());
-      System.out.println ("about to link file");
+      //      System.out.println ("about to link file");
       reporterNode.addFile (transfer.getFile (), transfer.getSiteFolderName ());
     }
   }
