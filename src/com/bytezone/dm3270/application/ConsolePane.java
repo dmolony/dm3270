@@ -140,7 +140,9 @@ public class ConsolePane extends BorderPane
 
   void setReplayServer (Site serverSite)
   {
+    System.out.printf ("Replay site: %s%n", serverSite);
     screen.getScreenWatcher ().setReplayServer (serverSite);
+    screen.setReplayServer (serverSite);
   }
 
   private Menu getCommandsMenu ()

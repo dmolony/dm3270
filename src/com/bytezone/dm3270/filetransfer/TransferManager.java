@@ -14,7 +14,7 @@ public class TransferManager implements TSOCommandListener
   private Transfer currentTransfer;
 
   private final Screen screen;
-  private final Site site;
+  private Site site;
 
   public enum TransferStatus
   {
@@ -47,6 +47,11 @@ public class TransferManager implements TSOCommandListener
       else
         currentTransfer.compare (newCommand);
     }
+  }
+
+  public void setReplayServer (Site serverSite)
+  {
+    site = serverSite;
   }
 
   // called from TSOCommand.execute()
@@ -94,6 +99,8 @@ public class TransferManager implements TSOCommandListener
 
     Transfer transfer = currentTransfer;
     currentTransfer.add (transferRecord);
+    if (currentTransfer.isDownloadAndIsData ())
+      currentTransfer.write ();
 
     closeTransfer ();
 

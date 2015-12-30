@@ -1,6 +1,8 @@
 package com.bytezone.dm3270.filetransfer;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ public class Transfer
     else
       datasetName = tempDatasetName;
 
+    System.out.println (site);
     siteFolderName = site == null ? "" : site.getFolder ();
 
     Path homePath = FileSaver.getHomePath (siteFolderName);
@@ -79,6 +82,11 @@ public class Transfer
   public String getDatasetName ()
   {
     return datasetName;
+  }
+
+  public File getFile ()
+  {
+    return localFile;
   }
 
   public String getMessage ()
@@ -133,6 +141,20 @@ public class Transfer
   {
     return transferContents == TransferContents.DATA
         && transferType == TransferType.DOWNLOAD;
+  }
+
+  void write ()
+  {
+    byte[] buffer = combineDataBuffers ();
+    try
+    {
+      Files.write (localFile.toPath (), buffer);
+      System.out.printf ("File written: %s%n", localFile);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace ();
+    }
   }
 
   // called from TransferManager.closeTransfer()

@@ -122,6 +122,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferManager;
   }
 
+  public void setReplayServer (Site serverSite)
+  {
+    transferManager.setReplayServer (serverSite);
+  }
+
   public void setStatusText (String text)
   {
     consolePane.setStatusText (text);
@@ -133,7 +138,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     this.consolePane = consolePane;
     assistantStage.setConsolePane (consolePane);
     addKeyboardStatusChangeListener (consolePane);
-    //    fieldManager.addScreenChangeListener (consolePane);
   }
 
   public FieldManager getFieldManager ()

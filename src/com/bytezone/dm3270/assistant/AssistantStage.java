@@ -199,14 +199,18 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private void update (TransferStatus status, Transfer transfer)
   {
     ReporterNode reporterNode = filesTab.getReporterNode ();
-    byte[] buffer = transfer.combineDataBuffers ();
 
     if (transfer.getSiteFolderName ().isEmpty ())
-      reporterNode.addBuffer (transfer.getDatasetName (), buffer);
+    {
+      System.out.println ("No site folder");
+      reporterNode.addBuffer (transfer.getDatasetName (), transfer.combineDataBuffers ());
+    }
     else
     {
-      reporterNode.addBuffer (transfer.getDatasetName (), buffer,
-                              transfer.getSiteFolderName ());
+      //      reporterNode.addBuffer (transfer.getDatasetName (), transfer.combineDataBuffers (),
+      //                              transfer.getSiteFolderName ());
+      System.out.println ("about to link file");
+      reporterNode.addFile (transfer.getFile (), transfer.getSiteFolderName ());
     }
   }
 }
