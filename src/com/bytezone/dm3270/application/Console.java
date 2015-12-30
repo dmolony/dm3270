@@ -114,9 +114,7 @@ public class Console extends Application
             Optional<Site> serverSite = findSite (session.getServerName ());
             setConsolePane (screen, serverSite.get ());       // reassigns primaryStage
             if (serverSite.isPresent ())
-            {
-              consolePane.setReplayServer (serverSite.get ());
-            }
+              screen.setReplayServer (serverSite.get ());
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();

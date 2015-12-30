@@ -38,8 +38,8 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final MenuBar menuBar;
-  private final Screen screen;
-  private TransferManager transferManager;
+  //  private final Screen screen;
+  //  private TransferManager transferManager;
   protected Site currentSite;
 
   private final TSOCommand tsoCommand;
@@ -57,7 +57,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   public AssistantStage (Screen screen, Site site)
   {
     setTitle ("File Transfers");
-    this.screen = screen;
+    //    this.screen = screen;
 
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
@@ -116,7 +116,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
   public void setTransferManager (TransferManager transferManager)
   {
-    this.transferManager = transferManager;
+    //    this.transferManager = transferManager;
     tsoCommand.setTransferManager (transferManager);
   }
 

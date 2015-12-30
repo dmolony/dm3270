@@ -138,12 +138,12 @@ public class ConsolePane extends BorderPane
     status.setText (text);
   }
 
-  void setReplayServer (Site serverSite)
-  {
-    //    System.out.printf ("Replay site: %s%n", serverSite);
-    screen.getScreenWatcher ().setReplayServer (serverSite);
-    screen.setReplayServer (serverSite);
-  }
+  //  private void setReplayServer (Site serverSite)
+  //  {
+  //    //    System.out.printf ("Replay site: %s%n", serverSite);
+  //    //    screen.getScreenWatcher ().setReplayServer (serverSite);
+  //    screen.setReplayServer (serverSite);
+  //  }
 
   private Menu getCommandsMenu ()
   {
