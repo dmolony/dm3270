@@ -138,13 +138,6 @@ public class ConsolePane extends BorderPane
     status.setText (text);
   }
 
-  //  private void setReplayServer (Site serverSite)
-  //  {
-  //    //    System.out.printf ("Replay site: %s%n", serverSite);
-  //    //    screen.getScreenWatcher ().setReplayServer (serverSite);
-  //    screen.setReplayServer (serverSite);
-  //  }
-
   private Menu getCommandsMenu ()
   {
     Menu menuCommands = new Menu ("Commands");
@@ -286,7 +279,7 @@ public class ConsolePane extends BorderPane
   }
 
   // called from ConsoleKeyPress.handle (KeyEvent e)
-  // called from TransferStage.doStuff()
+  // called from TSOCommand.execute()
   public void sendAID (byte aid, String name)
   {
     if (screen.isInsertMode ())

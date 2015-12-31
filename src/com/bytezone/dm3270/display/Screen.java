@@ -139,6 +139,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     this.consolePane = consolePane;
     assistantStage.setConsolePane (consolePane);
     addKeyboardStatusChangeListener (consolePane);
+
+    // allow ScreenWatcher to do file transfers
+    ScreenWatcher screenWatcher = fieldManager.getScreenWatcher ();
+    screenWatcher.setConsolePane (consolePane);
+    screenWatcher.setTransferManager (transferManager);
   }
 
   public FieldManager getFieldManager ()

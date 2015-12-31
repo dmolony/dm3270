@@ -38,8 +38,6 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final Preferences prefs = Preferences.userNodeForPackage (this.getClass ());
   private final WindowSaver windowSaver;
   private final MenuBar menuBar;
-  //  private final Screen screen;
-  //  private TransferManager transferManager;
   protected Site currentSite;
 
   private final TSOCommand tsoCommand;
@@ -57,7 +55,6 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   public AssistantStage (Screen screen, Site site)
   {
     setTitle ("File Transfers");
-    //    this.screen = screen;
 
     setOnCloseRequest (e -> closeWindow ());
     btnHide.setOnAction (e -> closeWindow ());
@@ -81,7 +78,6 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     datasetTab.addDatasetSelectionListener (transfersTab);
     filesTab.addFileSelectionListener (transfersTab);
     jobTab.addJobSelectionListener (transfersTab);
-    //    fileTab.getCurrentFileBuffer ();
 
     AnchorPane anchorPane = new AnchorPane ();
     AnchorPane.setLeftAnchor (tsoCommand.getBox (), 10.0);
@@ -116,19 +112,18 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
   public void setTransferManager (TransferManager transferManager)
   {
-    //    this.transferManager = transferManager;
     tsoCommand.setTransferManager (transferManager);
+  }
+
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    tsoCommand.setConsolePane (consolePane);
   }
 
   private void select (Tab tabSelected)
   {
     if (tabSelected != null)
       ((AbstractTransferTab) tabSelected).setText ();
-  }
-
-  public void setConsolePane (ConsolePane consolePane)
-  {
-    tsoCommand.setConsolePane (consolePane);
   }
 
   public ReporterNode getReporterNode ()

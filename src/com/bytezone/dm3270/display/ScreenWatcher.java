@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.display;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,8 +15,12 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
+import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.filetransfer.IndFileCommand;
+import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.FileSaver;
 
 import javafx.collections.FXCollections;
@@ -82,6 +87,9 @@ public class ScreenWatcher
   private final MenuItem menuItemDownload;
   private Site replaySite;
 
+  private TransferManager transferManager;
+  private ConsolePane consolePane;
+
   public ScreenWatcher (FieldManager fieldManager, ScreenDimensions screenDimensions,
       Site server)
   {
@@ -96,6 +104,16 @@ public class ScreenWatcher
   public void setReplayServer (Site serverSite)
   {
     replaySite = serverSite;
+  }
+
+  public void setTransferManager (TransferManager transferManager)
+  {
+    this.transferManager = transferManager;
+  }
+
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    this.consolePane = consolePane;
   }
 
   public Field getTSOCommandField ()
@@ -193,7 +211,23 @@ public class ScreenWatcher
     if (datasetName.isEmpty ())
       System.out.println ("Cancelled");
     else
+    {
       System.out.println ("Download: " + datasetName);
+    }
+  }
+
+  private void createTransfer (String command, File file)
+  {
+    assert !command.isEmpty ();
+    assert consolePane != null;
+    assert transferManager != null;
+
+    IndFileCommand indFileCommand = new IndFileCommand (command);
+    indFileCommand.setLocalFile (file);
+    transferManager.prepareTransfer (indFileCommand);
+
+    tsoCommandField.setText (command);
+    consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
   }
 
   private String showDownloadDialog (Path homePath, int baseLength)
