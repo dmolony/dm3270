@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
+import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.filetransfer.IndFileCommand;
 import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.FileSaver;
@@ -242,9 +243,9 @@ public class ScreenWatcher
     System.out.println (indFileCommand);
     System.out.println ();
 
-    //    transferManager.prepareTransfer (indFileCommand);
-    //    tsoCommandField.setText (indFileCommand.getCommand ());
-    //    consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
+    transferManager.prepareTransfer (indFileCommand);
+    tsoCommandField.setText (indFileCommand.getCommand ());
+    consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
   }
 
   private String getCommandText (String datasetName)
