@@ -16,7 +16,7 @@ public abstract class AbstractTransferTab extends Tab
   protected final Site site;
   //  protected final Button btnExecute;
   //  protected final TextField txtCommand;
-  protected ScreenWatcher screenDetails;
+  protected ScreenWatcher screenWatcher;
   protected TSOCommand tsoCommand;
 
   public AbstractTransferTab (String name, Screen screen, Site site,
@@ -43,15 +43,15 @@ public abstract class AbstractTransferTab extends Tab
 
   protected void setButton ()
   {
-    tsoCommand.btnExecute.setDisable (screen.isKeyboardLocked () || screenDetails == null
-        || screenDetails.getTSOCommandField () == null
+    tsoCommand.btnExecute.setDisable (screen.isKeyboardLocked () || screenWatcher == null
+        || screenWatcher.getTSOCommandField () == null
         || tsoCommand.txtCommand.getText ().isEmpty ());
   }
 
   @Override
   public void screenChanged (ScreenWatcher screenDetails)
   {
-    this.screenDetails = screenDetails;
+    this.screenWatcher = screenDetails;
     if (isSelected () && screenDetails != null)
       setText ();
   }

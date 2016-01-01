@@ -98,7 +98,7 @@ public class DatasetTab extends AbstractTransferTab
     }
 
     String datasetName = selectedDataset.getDatasetName ();
-    String prefix = screenDetails == null ? "" : screenDetails.getPrefix ();
+    String prefix = screenWatcher == null ? "" : screenWatcher.getPrefix ();
 
     Matcher matcher1 = jclPattern.matcher (datasetName);
     Matcher matcher2 = procPattern.matcher (datasetName);
@@ -117,7 +117,7 @@ public class DatasetTab extends AbstractTransferTab
     else
       datasetName = "'" + datasetName + "'";
 
-    String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
+    String tsoPrefix = screenWatcher.isTSOCommandScreen () ? "" : "TSO ";
     String options = useCrlf ? " ASCII CRLF" : "";
 
     String command =

@@ -93,7 +93,7 @@ public class TSOCommand implements ScreenChangeListener
     if (!command.isEmpty ())
     {
       IndFileCommand indFileCommand = new IndFileCommand (command);
-      if (indFileCommand.isPut ())
+      if (indFileCommand.isUpload ())
       {
         indFileCommand.setBuffer (buffer);
         indFileCommand.setLocalFile (file);

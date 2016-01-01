@@ -2,6 +2,8 @@ package com.bytezone.dm3270.filetransfer;
 
 import java.io.File;
 
+import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
+
 public class IndFileCommand
 {
   private String command;
@@ -14,11 +16,26 @@ public class IndFileCommand
   private String lrecl;
   private String blksize;
   private String space;
-  private String direction;
+  //  private String direction;
   private String units;
 
   private byte[] buffer;
   private File localFile;
+  private TransferType transferType;
+
+  public IndFileCommand (TransferType transferType, String datasetName, File localFile)
+  {
+    this.localFile = localFile;
+    this.datasetName = datasetName;
+    this.transferType = transferType;
+  }
+
+  public IndFileCommand (TransferType transferType, String datasetName, byte[] buffer)
+  {
+    this.buffer = buffer;
+    this.datasetName = datasetName;
+    this.transferType = transferType;
+  }
 
   public IndFileCommand (String command)
   {
@@ -37,6 +54,7 @@ public class IndFileCommand
     }
     assert chunks[0].equals ("ind$file");
     assert chunks[1].equals ("put") || chunks[1].equals ("get");
+    transferType = "put".equals (chunks[1]) ? TransferType.UPLOAD : TransferType.DOWNLOAD;
 
     // check for a reconnection after an abort during a file transfer
     if (!"ind$file".equals (chunks[0]))
@@ -48,7 +66,7 @@ public class IndFileCommand
       return;
     }
 
-    this.direction = chunks[1];
+    //    this.direction = chunks[1];
     this.datasetName = chunks[2];
 
     if (datasetName.startsWith ("'") && datasetName.endsWith ("'")
@@ -126,9 +144,14 @@ public class IndFileCommand
     return crlf;
   }
 
-  public boolean isPut ()
+  public boolean isUpload ()
   {
-    return "put".equals (direction);
+    return transferType == TransferType.UPLOAD;
+  }
+
+  public boolean isDownload ()
+  {
+    return transferType == TransferType.DOWNLOAD;
   }
 
   public byte[] getBuffer ()
@@ -151,7 +174,9 @@ public class IndFileCommand
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String.format ("%nCommand ........ %s", direction));
+    text.append (String.format ("%nCommand ........ %s", command));
+    //    text.append (String.format ("%nDirection ...... %s", direction));
+    text.append (String.format ("%nTransfer ....... %s", transferType));
     text.append (String.format ("%nDataset ........ %s", datasetName));
     text.append (String.format ("%nFile name ...... %s", localFile));
     text.append (String.format ("%nBuffer length .. %,d",

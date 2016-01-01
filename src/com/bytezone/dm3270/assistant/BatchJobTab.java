@@ -64,7 +64,7 @@ public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
     }
 
     String report = selectedBatchJob.getJobOutputFile ();
-    String tsoPrefix = screenDetails.isTSOCommandScreen () ? "" : "TSO ";
+    String tsoPrefix = screenWatcher.isTSOCommandScreen () ? "" : "TSO ";
     String ascii = " ASCII CRLF";
 
     String command = report == null

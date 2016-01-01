@@ -32,7 +32,7 @@ public class CommandsTab extends AbstractTransferTab
     if (command.startsWith ("="))
       return;
 
-    if (screenDetails.isTSOCommandScreen () || command.toUpperCase ().startsWith ("TSO "))
+    if (screenWatcher.isTSOCommandScreen () || command.toUpperCase ().startsWith ("TSO "))
       if (!commands.contains (command))
         commands.add (command);
 

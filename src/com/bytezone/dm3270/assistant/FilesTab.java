@@ -58,7 +58,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
       return;
     }
 
-    String prefix = screenDetails == null ? "" : screenDetails.getPrefix () + ".";
+    String prefix = screenWatcher == null ? "" : screenWatcher.getPrefix () + ".";
     String fileName = currentFileNode.toString ().toUpperCase ();
     if (fileName.endsWith (".TXT"))
       fileName = fileName.substring (0, fileName.length () - 4);
@@ -71,7 +71,7 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
     if (currentFileNode.isAscii ())
       command += " ASCII CRLF";
 
-    if (screenDetails != null && !screenDetails.isTSOCommandScreen ())
+    if (screenWatcher != null && !screenWatcher.isTSOCommandScreen ())
       command = "TSO " + command;
 
     tsoCommand.txtCommand.setText (command);

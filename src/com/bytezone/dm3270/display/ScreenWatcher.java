@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +28,8 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -54,6 +57,9 @@ public class ScreenWatcher
       Pattern.compile (segment + "(\\." + segment + "){0,21}");
   private static final Pattern memberNamePattern = Pattern.compile (segment);
   private static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm:ss");
+  private static final Pattern jclPattern = Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
+  private static final Pattern procPattern =
+      Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
 
   private static final String ispfScreen = "ISPF Primary Option Menu";
   private static final String zosScreen = "z/OS Primary Option Menu";
@@ -207,12 +213,14 @@ public class ScreenWatcher
 
     String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
-    String datasetName = showDownloadDialog (homePath, baseLength);
-    if (datasetName.isEmpty ())
+    IndFileCommand command = showDownloadDialog (homePath, baseLength);
+    if (command == null)
       System.out.println ("Cancelled");
     else
     {
-      System.out.println ("Download: " + datasetName);
+      //      System.out.println ("Download: " + command.getDatasetName ());
+      //      String command = setText (datasetName);
+      System.out.println (command);
     }
   }
 
@@ -222,6 +230,20 @@ public class ScreenWatcher
     assert consolePane != null;
     assert transferManager != null;
 
+    if (tsoCommandField == null)
+    {
+      showAlert ("This screen has no TSO input field");
+      return;
+    }
+
+    if (command.length () > tsoCommandField.getDisplayLength ())
+    {
+      showAlert ("Command is too long for the TSO input field");
+      System.out.printf ("Field: %d, command: %d%n", tsoCommandField.getDisplayLength (),
+                         command.length ());
+      return;
+    }
+
     IndFileCommand indFileCommand = new IndFileCommand (command);
     indFileCommand.setLocalFile (file);
     transferManager.prepareTransfer (indFileCommand);
@@ -230,7 +252,42 @@ public class ScreenWatcher
     consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
   }
 
-  private String showDownloadDialog (Path homePath, int baseLength)
+  private String getCommandText (String datasetName)
+  {
+    String prefix = getPrefix ();
+
+    Matcher matcher1 = jclPattern.matcher (datasetName);
+    Matcher matcher2 = procPattern.matcher (datasetName);
+    boolean useCrlf = matcher1.matches () || matcher2.matches ();
+
+    if (!prefix.isEmpty () && datasetName.startsWith (prefix))
+    {
+      if (datasetName.length () == prefix.length ())
+      {
+        //        tsoCommand.txtCommand.setText ("");
+        //        tsoCommand.btnExecute.setDisable (true);
+        return "";
+      }
+      datasetName = datasetName.substring (prefix.length () + 1);
+    }
+    else
+      datasetName = "'" + datasetName + "'";
+
+    String tsoPrefix = isTSOCommandScreen () ? "" : "TSO ";
+    String options = useCrlf ? " ASCII CRLF" : "";
+
+    return String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
+  }
+
+  private boolean showAlert (String message)
+  {
+    Alert alert = new Alert (AlertType.ERROR, message);
+    alert.getDialogPane ().setHeaderText (null);
+    Optional<ButtonType> result = alert.showAndWait ();
+    return (result.isPresent () && result.get () == ButtonType.OK);
+  }
+
+  private IndFileCommand showDownloadDialog (Path homePath, int baseLength)
   {
     Label label1 = new Label ("Download");
     Label label3 = new Label ("To folder");
@@ -249,7 +306,7 @@ public class ScreenWatcher
     box.getSelectionModel ().select (singleDataset);
     refresh (box, homePath, label4, label6, label8, label10, baseLength);
 
-    Dialog<String> dialog = new Dialog<> ();
+    Dialog<IndFileCommand> dialog = new Dialog<> ();
 
     GridPane grid = new GridPane ();
     grid.setPadding (new Insets (10, 35, 10, 20));
@@ -270,11 +327,19 @@ public class ScreenWatcher
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
     ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+
     dialog.setResultConverter (btnType ->
     {
       if (btnType == btnTypeOK)
-        return box.getSelectionModel ().getSelectedItem ();
-      return "";
+      {
+        String datasetName = box.getSelectionModel ().getSelectedItem ();
+        File file = new File (label4.getText (), datasetName);
+        String command = getCommandText (datasetName);
+        IndFileCommand indFileCommand = new IndFileCommand (command);
+        indFileCommand.setLocalFile (file);
+        return indFileCommand;
+      }
+      return null;
     });
 
     return dialog.showAndWait ().get ();
