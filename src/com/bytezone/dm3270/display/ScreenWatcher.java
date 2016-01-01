@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
-import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.filetransfer.IndFileCommand;
 import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.FileSaver;
@@ -217,16 +216,11 @@ public class ScreenWatcher
     if (command == null)
       System.out.println ("Cancelled");
     else
-    {
-      //      System.out.println ("Download: " + command.getDatasetName ());
-      //      String command = setText (datasetName);
-      System.out.println (command);
-    }
+      createTransfer (command);
   }
 
-  private void createTransfer (String command, File file)
+  private void createTransfer (IndFileCommand indFileCommand)
   {
-    assert !command.isEmpty ();
     assert consolePane != null;
     assert transferManager != null;
 
@@ -236,6 +230,7 @@ public class ScreenWatcher
       return;
     }
 
+    String command = indFileCommand.getCommand ();
     if (command.length () > tsoCommandField.getDisplayLength ())
     {
       showAlert ("Command is too long for the TSO input field");
@@ -244,12 +239,12 @@ public class ScreenWatcher
       return;
     }
 
-    IndFileCommand indFileCommand = new IndFileCommand (command);
-    indFileCommand.setLocalFile (file);
-    transferManager.prepareTransfer (indFileCommand);
+    System.out.println (indFileCommand);
+    System.out.println ();
 
-    tsoCommandField.setText (command);
-    consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
+    //    transferManager.prepareTransfer (indFileCommand);
+    //    tsoCommandField.setText (indFileCommand.getCommand ());
+    //    consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
   }
 
   private String getCommandText (String datasetName)
@@ -357,9 +352,14 @@ public class ScreenWatcher
     if (dataset != null)
     {
       String date = dataset.getReferredDate ();
-      String reformattedDate =
-          date.substring (8) + "/" + date.substring (5, 7) + "/" + date.substring (0, 4);
-      dateLabel2.setText (reformattedDate + " " + dataset.getReferredTime ());
+      if (date.isEmpty ())
+        dateLabel2.setText ("<no date>");
+      else
+      {
+        String reformattedDate = date.substring (8) + "/" + date.substring (5, 7) + "/"
+            + date.substring (0, 4);
+        dateLabel2.setText (reformattedDate + " " + dataset.getReferredTime ());
+      }
     }
     else
       System.out.println ("not found");
