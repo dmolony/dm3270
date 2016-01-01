@@ -112,6 +112,33 @@ public class IndFileCommand
     }
   }
 
+  //  private String getCommandText (String datasetName, String prefix)
+  //  {
+  //    String prefix = getPrefix ();
+  //
+  //    Matcher matcher1 = jclPattern.matcher (datasetName);
+  //    Matcher matcher2 = procPattern.matcher (datasetName);
+  //    boolean useCrlf = matcher1.matches () || matcher2.matches ();
+  //
+  //    if (!prefix.isEmpty () && datasetName.startsWith (prefix))
+  //    {
+  //      if (datasetName.length () == prefix.length ())
+  //      {
+  //        //        tsoCommand.txtCommand.setText ("");
+  //        //        tsoCommand.btnExecute.setDisable (true);
+  //        return "";
+  //      }
+  //      datasetName = datasetName.substring (prefix.length () + 1);
+  //    }
+  //    else
+  //      datasetName = "'" + datasetName + "'";
+  //
+  //    String tsoPrefix = isTSOCommandScreen () ? "" : "TSO ";
+  //    String options = useCrlf ? " ASCII CRLF" : "";
+  //
+  //    return String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
+  //  }
+
   public void compareWith (IndFileCommand other)
   {
     System.out.println (this);
@@ -126,6 +153,11 @@ public class IndFileCommand
   public String getDatasetName ()
   {
     return datasetName;
+  }
+
+  public void setDatasetName (String datasetName)
+  {
+    this.datasetName = datasetName;
   }
 
   public boolean hasTLQ ()

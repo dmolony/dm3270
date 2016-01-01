@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.display;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -212,6 +211,7 @@ public class ScreenWatcher
 
     String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
+
     IndFileCommand command = showDownloadDialog (homePath, baseLength);
     if (command == null)
       System.out.println ("Cancelled");
@@ -286,7 +286,7 @@ public class ScreenWatcher
   {
     Label label1 = new Label ("Download");
     Label label3 = new Label ("To folder");
-    Label label4 = new Label ();
+    Label saveFolder = new Label ();
     Label label5 = new Label ("Action");
     Label label6 = new Label ();
     Label label7 = new Label ("File date");
@@ -296,10 +296,10 @@ public class ScreenWatcher
 
     ComboBox<String> box = new ComboBox<> ();
     box.setItems (FXCollections.observableList (recentDatasets));
-    box.setOnAction (event -> refresh (box, homePath, label4, label6, label8, label10,
+    box.setOnAction (event -> refresh (box, homePath, saveFolder, label6, label8, label10,
                                        baseLength));
     box.getSelectionModel ().select (singleDataset);
-    refresh (box, homePath, label4, label6, label8, label10, baseLength);
+    refresh (box, homePath, saveFolder, label6, label8, label10, baseLength);
 
     Dialog<IndFileCommand> dialog = new Dialog<> ();
 
@@ -308,7 +308,7 @@ public class ScreenWatcher
     grid.add (label1, 1, 1);
     grid.add (box, 2, 1);
     grid.add (label3, 1, 2);
-    grid.add (label4, 2, 2);
+    grid.add (saveFolder, 2, 2);
     grid.add (label5, 1, 3);
     grid.add (label6, 2, 3);
     grid.add (label7, 1, 4);
@@ -328,10 +328,15 @@ public class ScreenWatcher
       if (btnType == btnTypeOK)
       {
         String datasetName = box.getSelectionModel ().getSelectedItem ();
-        File file = new File (label4.getText (), datasetName);
+        //        File file = new File (saveFolder.getText (), datasetName);
         String command = getCommandText (datasetName);
         IndFileCommand indFileCommand = new IndFileCommand (command);
-        indFileCommand.setLocalFile (file);
+
+        String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
+        Path saveFile = Paths.get (saveFolderName, datasetName);
+        indFileCommand.setDatasetName (datasetName);
+        indFileCommand.setLocalFile (saveFile.toFile ());
+
         return indFileCommand;
       }
       return null;
@@ -340,14 +345,18 @@ public class ScreenWatcher
     return dialog.showAndWait ().get ();
   }
 
-  private void refresh (ComboBox<String> box, Path homePath, Label folderLabel,
+  private void refresh (ComboBox<String> box, Path homePath, Label saveFolder,
       Label actionLabel, Label dateLabel, Label dateLabel2, int baseLength)
   {
     String datasetSelected = box.getSelectionModel ().getSelectedItem ();
+    System.out.printf ("Dataset selected: %s%n", datasetSelected);
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
+    System.out.printf ("Home path: %s%n", homePath);
+    System.out.printf ("Save folder name: %s%n", saveFolderName);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
+    System.out.printf ("Save folder path: %s%n", saveFile);
 
-    folderLabel.setText (saveFolderName.substring (baseLength));
+    saveFolder.setText (saveFolderName.substring (baseLength));
     Dataset dataset = siteDatasets.get (datasetSelected);
     if (dataset != null)
     {
