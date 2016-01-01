@@ -256,12 +256,12 @@ public class ScreenWatcher
     Matcher matcher2 = procPattern.matcher (datasetName);
     boolean useCrlf = matcher1.matches () || matcher2.matches ();
 
+    // remove prefix to save space on the command line
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
     {
       if (datasetName.length () == prefix.length ())
       {
-        //        tsoCommand.txtCommand.setText ("");
-        //        tsoCommand.btnExecute.setDisable (true);
+        System.out.println ("Dataset name matches prefix - do not download");
         return "";
       }
       datasetName = datasetName.substring (prefix.length () + 1);
@@ -289,18 +289,19 @@ public class ScreenWatcher
     Label label3 = new Label ("To folder");
     Label saveFolder = new Label ();
     Label label5 = new Label ("Action");
-    Label label6 = new Label ();
+    Label actionLabel = new Label ();
     Label label7 = new Label ("File date");
-    Label label8 = new Label ();
+    Label fileDateLabel = new Label ();
     Label label9 = new Label ("Dataset date");
-    Label label10 = new Label ();
+    Label datasetDateLabel = new Label ();
 
     ComboBox<String> box = new ComboBox<> ();
     box.setItems (FXCollections.observableList (recentDatasets));
-    box.setOnAction (event -> refresh (box, homePath, saveFolder, label6, label8, label10,
-                                       baseLength));
+    box.setOnAction (event -> refresh (box, homePath, saveFolder, actionLabel,
+                                       fileDateLabel, datasetDateLabel, baseLength));
     box.getSelectionModel ().select (singleDataset);
-    refresh (box, homePath, saveFolder, label6, label8, label10, baseLength);
+    refresh (box, homePath, saveFolder, actionLabel, fileDateLabel, datasetDateLabel,
+             baseLength);
 
     Dialog<IndFileCommand> dialog = new Dialog<> ();
 
@@ -311,11 +312,11 @@ public class ScreenWatcher
     grid.add (label3, 1, 2);
     grid.add (saveFolder, 2, 2);
     grid.add (label5, 1, 3);
-    grid.add (label6, 2, 3);
+    grid.add (actionLabel, 2, 3);
     grid.add (label7, 1, 4);
-    grid.add (label8, 2, 4);
+    grid.add (fileDateLabel, 2, 4);
     grid.add (label9, 1, 5);
-    grid.add (label10, 2, 5);
+    grid.add (datasetDateLabel, 2, 5);
     grid.setHgap (10);
     grid.setVgap (15);
     dialog.getDialogPane ().setContent (grid);
@@ -326,21 +327,18 @@ public class ScreenWatcher
 
     dialog.setResultConverter (btnType ->
     {
-      if (btnType == btnTypeOK)
-      {
-        String datasetName = box.getSelectionModel ().getSelectedItem ();
-        //        File file = new File (saveFolder.getText (), datasetName);
-        String command = getCommandText (datasetName);
-        IndFileCommand indFileCommand = new IndFileCommand (command);
+      if (btnType != btnTypeOK)
+        return null;
 
-        String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
-        Path saveFile = Paths.get (saveFolderName, datasetName);
-        indFileCommand.setDatasetName (datasetName);
-        indFileCommand.setLocalFile (saveFile.toFile ());
+      String datasetName = box.getSelectionModel ().getSelectedItem ();
+      IndFileCommand indFileCommand = new IndFileCommand (getCommandText (datasetName));
 
-        return indFileCommand;
-      }
-      return null;
+      String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
+      Path saveFile = Paths.get (saveFolderName, datasetName);
+      indFileCommand.setDatasetName (datasetName);
+      indFileCommand.setLocalFile (saveFile.toFile ());
+
+      return indFileCommand;
     });
 
     return dialog.showAndWait ().get ();
