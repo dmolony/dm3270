@@ -16,7 +16,6 @@ public class IndFileCommand
   private String lrecl;
   private String blksize;
   private String space;
-  //  private String direction;
   private String units;
 
   private byte[] buffer;
