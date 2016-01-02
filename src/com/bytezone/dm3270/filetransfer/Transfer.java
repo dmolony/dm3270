@@ -162,7 +162,7 @@ public class Transfer
   public byte[] combineDataBuffers ()
   {
     int length = dataLength;
-    if (indFileCommand.ascii () && indFileCommand.crlf ())
+    if (indFileCommand.getAscii () && indFileCommand.getCrlf ())
       --length;       // assumes the file has 0x1A on the end
     byte[] fullBuffer = new byte[length];
 
@@ -172,8 +172,8 @@ public class Transfer
       ptr = dataRecord.packBuffer (fullBuffer, ptr);
 
       // check for non-ascii characters
-      if (indFileCommand.ascii ())
-        dataRecord.checkAscii (indFileCommand.crlf ());
+      if (indFileCommand.getAscii ())
+        dataRecord.checkAscii (indFileCommand.getCrlf ());
     }
 
     if (fullBuffer.length < dataLength)

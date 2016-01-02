@@ -9,6 +9,7 @@ public class IndFileCommand
   private String command;
   private String datasetName;
   private boolean hasTLQ;
+  private String tlq;
   private boolean crlf;
   private boolean ascii;
   private boolean append;
@@ -73,6 +74,9 @@ public class IndFileCommand
     {
       datasetName = datasetName.substring (1, datasetName.length () - 1);
       hasTLQ = true;
+      int pos = datasetName.indexOf ('.');
+      if (pos > 0)
+        tlq = datasetName.substring (0, pos);
     }
 
     int lengthMinusOne = chunks.length - 1;
@@ -160,17 +164,32 @@ public class IndFileCommand
     this.datasetName = datasetName;
   }
 
+  public void setTlq (String tlq)
+  {
+    this.tlq = tlq;
+  }
+
   public boolean hasTLQ ()
   {
     return hasTLQ;
   }
 
-  public boolean ascii ()
+  public void setAscii (boolean value)
+  {
+    this.ascii = value;
+  }
+
+  public boolean getAscii ()
   {
     return ascii;
   }
 
-  public boolean crlf ()
+  public void setCrlf (boolean value)
+  {
+    this.crlf = value;
+  }
+
+  public boolean getCrlf ()
   {
     return crlf;
   }
@@ -209,6 +228,7 @@ public class IndFileCommand
     //    text.append (String.format ("%nDirection ...... %s", direction));
     text.append (String.format ("%nTransfer ....... %s", transferType));
     text.append (String.format ("%nDataset ........ %s", datasetName));
+    text.append (String.format ("%nTLQ ............ %s", tlq));
     text.append (String.format ("%nFile name ...... %s", localFile));
     text.append (String.format ("%nBuffer length .. %,d",
                                 buffer == null ? -1 : buffer.length));
