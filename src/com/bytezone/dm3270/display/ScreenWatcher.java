@@ -335,7 +335,7 @@ public class ScreenWatcher
 
       String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
       Path saveFile = Paths.get (saveFolderName, datasetName);
-      indFileCommand.setDatasetName (datasetName);
+      //      indFileCommand.setDatasetName (datasetName);
       indFileCommand.setLocalFile (saveFile.toFile ());
 
       return indFileCommand;
