@@ -92,13 +92,20 @@ public class TSOCommand implements ScreenChangeListener
 
     if (!command.isEmpty ())
     {
-      IndFileCommand indFileCommand = new IndFileCommand (command);
-      if (indFileCommand.isUpload ())
+      // TSO OUT DMOLONYB(JOB62856) PRINT(JOB62856)
+      // TSO IND$FILE GET JOB62856.OUTLIST ASCII CRLF
+      // TSO IND$FILE GET JCL.CNTL(JOBCARD) ASCII CRLF
+      int pos = command.indexOf ("$IND$FILE");
+      if (pos > 0)
       {
-        indFileCommand.setBuffer (buffer);
-        indFileCommand.setLocalFile (file);
+        IndFileCommand indFileCommand = new IndFileCommand (command);
+        if (indFileCommand.isUpload ())
+        {
+          indFileCommand.setBuffer (buffer);
+          indFileCommand.setLocalFile (file);
+        }
+        transferManager.prepareTransfer (indFileCommand);
       }
-      transferManager.prepareTransfer (indFileCommand);
 
       tsoCommandField.setText (command);
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
