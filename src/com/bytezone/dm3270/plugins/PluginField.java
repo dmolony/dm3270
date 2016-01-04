@@ -74,6 +74,11 @@ public class PluginField
     this.pluginData = pluginData;
   }
 
+  public ScreenLocation getLocation ()
+  {
+    return location;
+  }
+
   public boolean contains (ScreenLocation position)
   {
     if (location.location == position.location)
