@@ -52,9 +52,6 @@ public class IndFileCommand
       for (String chunk : chunks)
         System.out.printf ("Chunk %d: %s%n", count++, chunk);
     }
-    assert chunks[0].equals ("ind$file");
-    assert chunks[1].equals ("put") || chunks[1].equals ("get");
-    transferType = "put".equals (chunks[1]) ? TransferType.UPLOAD : TransferType.DOWNLOAD;
 
     // check for a reconnection after an abort during a file transfer
     if (!"ind$file".equals (chunks[0]))
@@ -66,9 +63,10 @@ public class IndFileCommand
       return;
     }
 
-    //    this.direction = chunks[1];
-    this.datasetName = chunks[2];
+    assert chunks[1].equals ("put") || chunks[1].equals ("get");
+    transferType = "put".equals (chunks[1]) ? TransferType.UPLOAD : TransferType.DOWNLOAD;
 
+    datasetName = chunks[2];
     if (datasetName.startsWith ("'") && datasetName.endsWith ("'")
         && datasetName.length () > 2)
     {
@@ -225,7 +223,6 @@ public class IndFileCommand
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("%nCommand ........ %s", command));
-    //    text.append (String.format ("%nDirection ...... %s", direction));
     text.append (String.format ("%nTransfer ....... %s", transferType));
     text.append (String.format ("%nDataset ........ %s", datasetName));
     text.append (String.format ("%nTLQ ............ %s", tlq));
