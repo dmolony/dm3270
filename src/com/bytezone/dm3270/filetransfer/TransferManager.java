@@ -44,8 +44,8 @@ public class TransferManager implements TSOCommandListener
       // a program-initiated IND$FILE command will already have the filenames
       if (currentTransfer == null)
         currentTransfer = new Transfer (newCommand, site, screen.getPrefix ());
-      else
-        currentTransfer.compare (newCommand);
+      //      else
+      //        currentTransfer.compare (newCommand);
     }
   }
 

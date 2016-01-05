@@ -68,11 +68,11 @@ public class Transfer
     localFile = filePath.toFile ();
   }
 
-  public void compare (IndFileCommand indFileCommand)
-  {
-    if (this.indFileCommand != null)
-      this.indFileCommand.compareWith (indFileCommand);
-  }
+  //  public void compare (IndFileCommand indFileCommand)
+  //  {
+  //    if (this.indFileCommand != null)
+  //      this.indFileCommand.compareWith (indFileCommand);
+  //  }
 
   public String getSiteFolderName ()
   {

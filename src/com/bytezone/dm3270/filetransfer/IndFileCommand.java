@@ -162,11 +162,11 @@ public class IndFileCommand
     command = String.format ("IND$FILE %s %s%s", type, commandDatasetName, options);
   }
 
-  public void compareWith (IndFileCommand other)
-  {
-    System.out.println (this);
-    System.out.println (other);
-  }
+  //  public void compareWith (IndFileCommand other)
+  //  {
+  //    System.out.println (this);
+  //    System.out.println (other);
+  //  }
 
   public String getCommand ()
   {

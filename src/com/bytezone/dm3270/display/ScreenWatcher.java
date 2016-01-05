@@ -250,8 +250,6 @@ public class ScreenWatcher
 
   private String getCommandText (String datasetName)
   {
-    String prefix = getPrefix ();
-
     Matcher matcher1 = jclPattern.matcher (datasetName);
     Matcher matcher2 = procPattern.matcher (datasetName);
     boolean useCrlf = matcher1.matches () || matcher2.matches ();
@@ -348,12 +346,12 @@ public class ScreenWatcher
       Label actionLabel, Label dateLabel, Label dateLabel2, int baseLength)
   {
     String datasetSelected = box.getSelectionModel ().getSelectedItem ();
-    System.out.printf ("Dataset selected: %s%n", datasetSelected);
+    //    System.out.printf ("Dataset selected: %s%n", datasetSelected);
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
-    System.out.printf ("Home path: %s%n", homePath);
-    System.out.printf ("Save folder name: %s%n", saveFolderName);
+    //    System.out.printf ("Home path: %s%n", homePath);
+    //    System.out.printf ("Save folder name: %s%n", saveFolderName);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
-    System.out.printf ("Save folder path: %s%n", saveFile);
+    //    System.out.printf ("Save folder path: %s%n", saveFile);
 
     saveFolder.setText (saveFolderName.substring (baseLength));
     Dataset dataset = siteDatasets.get (datasetSelected);
