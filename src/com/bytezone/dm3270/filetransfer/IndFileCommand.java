@@ -1,15 +1,22 @@
 package com.bytezone.dm3270.filetransfer;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 
 public class IndFileCommand
 {
+  private static final Pattern jclPattern = Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
+  private static final Pattern procPattern =
+      Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
+
   private String command;
   private String datasetName;
   private boolean hasTLQ;
   private String tlq;
+  private String prefix;
   private boolean crlf;
   private boolean ascii;
   private boolean append;
@@ -25,16 +32,20 @@ public class IndFileCommand
 
   public IndFileCommand (TransferType transferType, String datasetName, File localFile)
   {
-    this.localFile = localFile;
     this.datasetName = datasetName;
     this.transferType = transferType;
+    this.localFile = localFile;
+
+    examineDataset ();
   }
 
   public IndFileCommand (TransferType transferType, String datasetName, byte[] buffer)
   {
-    this.buffer = buffer;
     this.datasetName = datasetName;
     this.transferType = transferType;
+    this.buffer = buffer;
+
+    examineDataset ();
   }
 
   public IndFileCommand (String command)
@@ -114,32 +125,42 @@ public class IndFileCommand
     }
   }
 
-  //  private String getCommandText (String datasetName, String prefix)
-  //  {
-  //    String prefix = getPrefix ();
-  //
-  //    Matcher matcher1 = jclPattern.matcher (datasetName);
-  //    Matcher matcher2 = procPattern.matcher (datasetName);
-  //    boolean useCrlf = matcher1.matches () || matcher2.matches ();
-  //
-  //    if (!prefix.isEmpty () && datasetName.startsWith (prefix))
-  //    {
-  //      if (datasetName.length () == prefix.length ())
-  //      {
-  //        //        tsoCommand.txtCommand.setText ("");
-  //        //        tsoCommand.btnExecute.setDisable (true);
-  //        return "";
-  //      }
-  //      datasetName = datasetName.substring (prefix.length () + 1);
-  //    }
-  //    else
-  //      datasetName = "'" + datasetName + "'";
-  //
-  //    String tsoPrefix = isTSOCommandScreen () ? "" : "TSO ";
-  //    String options = useCrlf ? " ASCII CRLF" : "";
-  //
-  //    return String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
-  //  }
+  private void examineDataset ()
+  {
+    int pos = datasetName.indexOf ('.');
+    if (pos > 0)
+    {
+      hasTLQ = true;
+      tlq = datasetName.substring (0, pos);
+    }
+
+    setCommandText ();
+  }
+
+  private void setCommandText ()
+  {
+    Matcher matcher1 = jclPattern.matcher (datasetName);
+    Matcher matcher2 = procPattern.matcher (datasetName);
+    boolean useCrlf = matcher1.matches () || matcher2.matches ();
+
+    String commandDatasetName = "";
+    if (!prefix.isEmpty () && datasetName.startsWith (prefix))
+    {
+      if (datasetName.length () == prefix.length ())
+      {
+        command = "";
+        return;
+      }
+      commandDatasetName = datasetName.substring (prefix.length () + 1);
+    }
+    else
+      commandDatasetName = "'" + datasetName + "'";
+
+    String options = useCrlf ? " ASCII CRLF" : "";
+    String type = transferType == TransferType.DOWNLOAD ? "GET" : "PUT";
+
+    command = String.format ("IND$FILE %s %s%s", type, commandDatasetName, options);
+  }
 
   public void compareWith (IndFileCommand other)
   {
@@ -160,6 +181,11 @@ public class IndFileCommand
   public void setDatasetName (String datasetName)
   {
     this.datasetName = datasetName;
+  }
+
+  public void setPrefix (String prefix)
+  {
+    this.prefix = prefix;
   }
 
   public void setTlq (String tlq)
@@ -226,6 +252,7 @@ public class IndFileCommand
     text.append (String.format ("%nTransfer ....... %s", transferType));
     text.append (String.format ("%nDataset ........ %s", datasetName));
     text.append (String.format ("%nTLQ ............ %s", tlq));
+    text.append (String.format ("%nPrefix ......... %s", prefix));
     text.append (String.format ("%nFile name ...... %s", localFile));
     text.append (String.format ("%nBuffer length .. %,d",
                                 buffer == null ? -1 : buffer.length));
