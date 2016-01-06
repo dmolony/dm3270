@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.assistant;
 
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.utilities.Site;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;

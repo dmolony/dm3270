@@ -8,8 +8,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.utilities.FileSaver;
+import com.bytezone.dm3270.utilities.Site;
 
 // CUT - Control Unit Terminal --------- Buffered
 // DFT - Distributed Function Terminal - WSF

@@ -11,6 +11,7 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.session.Session;
+import com.bytezone.dm3270.utilities.Site;
 import com.bytezone.dm3270.utilities.WindowSaver;
 
 import javafx.application.Application;

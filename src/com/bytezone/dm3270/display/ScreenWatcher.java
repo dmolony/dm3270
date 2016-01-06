@@ -16,13 +16,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.application.ConsolePane;
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.filetransfer.IndFileCommand;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.FileSaver;
+import com.bytezone.dm3270.utilities.Site;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;

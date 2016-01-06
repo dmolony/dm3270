@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.utilities.Site;
 
 public class BatchJobTab extends AbstractTransferTab implements BatchJobListener
 {

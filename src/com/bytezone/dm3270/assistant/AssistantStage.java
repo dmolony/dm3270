@@ -7,7 +7,6 @@ import java.util.prefs.Preferences;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
@@ -16,6 +15,7 @@ import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.filetransfer.TransferListener;
 import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
+import com.bytezone.dm3270.utilities.Site;
 import com.bytezone.dm3270.utilities.WindowSaver;
 import com.bytezone.reporter.application.ReporterNode;
 

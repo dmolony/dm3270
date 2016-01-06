@@ -7,9 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+import com.bytezone.dm3270.utilities.Site;
 
 public class SpyServer implements Runnable
 {

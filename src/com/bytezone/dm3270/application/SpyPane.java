@@ -7,6 +7,7 @@ import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionTable;
 import com.bytezone.dm3270.streams.SpyServer;
 import com.bytezone.dm3270.streams.TelnetState;
+import com.bytezone.dm3270.utilities.Site;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;

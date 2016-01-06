@@ -15,7 +15,6 @@ import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
@@ -29,6 +28,7 @@ import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
+import com.bytezone.dm3270.utilities.Site;
 
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;

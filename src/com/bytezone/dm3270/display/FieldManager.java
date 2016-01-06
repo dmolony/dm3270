@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.PluginData;
 import com.bytezone.dm3270.plugins.PluginField;
+import com.bytezone.dm3270.utilities.Site;
 
 public class FieldManager
 {
