@@ -213,11 +213,9 @@ public class ScreenWatcher
     String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
 
-    IndFileCommand command = showDownloadDialog (homePath, baseLength);
-    if (command == null)
-      System.out.println ("Cancelled");
-    else
-      createTransfer (command);
+    Optional<IndFileCommand> command = showDownloadDialog (homePath, baseLength);
+    if (command.isPresent ())
+      createTransfer (command.get ());
   }
 
   private void createTransfer (IndFileCommand indFileCommand)
@@ -281,7 +279,7 @@ public class ScreenWatcher
     return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
-  private IndFileCommand showDownloadDialog (Path homePath, int baseLength)
+  private Optional<IndFileCommand> showDownloadDialog (Path homePath, int baseLength)
   {
     Label label1 = new Label ("Download");
     Label label3 = new Label ("To folder");
@@ -316,7 +314,7 @@ public class ScreenWatcher
     grid.add (label9, 1, 5);
     grid.add (datasetDateLabel, 2, 5);
     grid.setHgap (10);
-    grid.setVgap (15);
+    grid.setVgap (10);
     dialog.getDialogPane ().setContent (grid);
 
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
@@ -339,7 +337,7 @@ public class ScreenWatcher
       return indFileCommand;
     });
 
-    return dialog.showAndWait ().get ();
+    return dialog.showAndWait ();
   }
 
   private void refresh (ComboBox<String> box, Path homePath, Label saveFolder,
