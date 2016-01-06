@@ -89,8 +89,8 @@ public class ScreenWatcher
   private String userid = "";
   private String prefix = "";
 
-  private MenuItem menuItemUpload;
-  private MenuItem menuItemDownload;
+  private final MenuItem menuItemUpload;
+  private final MenuItem menuItemDownload;
   private Site replaySite;
 
   private TransferManager transferManager;
@@ -103,7 +103,10 @@ public class ScreenWatcher
     this.screenDimensions = screenDimensions;
     this.server = server;           // will be null if in REPLAY mode
 
-    setMenuItems ();
+    menuItemUpload =
+        getMenuItem ("Upload", e -> transfer (TransferType.UPLOAD), KeyCode.U);
+    menuItemDownload =
+        getMenuItem ("Download", e -> transfer (TransferType.DOWNLOAD), KeyCode.D);
   }
 
   public void setReplaySite (Site serverSite)
@@ -171,14 +174,6 @@ public class ScreenWatcher
     return menuItemDownload;
   }
 
-  private void setMenuItems ()
-  {
-    menuItemUpload =
-        getMenuItem ("Upload", e -> transfer (TransferType.UPLOAD), KeyCode.U);
-    menuItemDownload =
-        getMenuItem ("Download", e -> transfer (TransferType.DOWNLOAD), KeyCode.D);
-  }
-
   private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
       KeyCode keyCode)
   {
@@ -188,15 +183,6 @@ public class ScreenWatcher
         .setAccelerator (new KeyCodeCombination (keyCode, KeyCombination.SHORTCUT_DOWN));
     return menuItem;
   }
-
-  //  private void uploadMenuCommand ()
-  //  {
-  //    String fileName = (String) menuItemDownload.getUserData ();
-  //
-  //    String cmd = showUploadDialog (fileName);
-  //    if ("OK".equals (cmd))
-  //      System.out.println ("upload " + menuItemUpload.getUserData ());
-  //  }
 
   private void transfer (TransferType transferType)
   {
