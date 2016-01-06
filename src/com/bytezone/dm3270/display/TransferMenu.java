@@ -40,20 +40,19 @@ public class TransferMenu implements ScreenChangeListener
   private static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm:ss");
 
   private ScreenWatcher screenWatcher;
-  private final Site server;
-  private Site replaySite;
+  private Site server;
   private TransferManager transferManager;
   private ConsolePane consolePane;
 
-  public TransferMenu (Site site)
+  public TransferMenu (Site server)
   {
-    this.server = site;
+    this.server = server;
   }
 
   // called from Screen.setReplayServer()
-  public void setReplaySite (Site serverSite)
+  public void setReplaySite (Site server)
   {
-    replaySite = serverSite;
+    this.server = server;
   }
 
   public void setTransferManager (TransferManager transferManager)
@@ -68,11 +67,7 @@ public class TransferMenu implements ScreenChangeListener
 
   public void transfer (TransferType transferType)
   {
-    Site site = server != null ? server : replaySite != null ? replaySite : null;
-    String folderName = site == null ? "" : site.getFolder ();
-
-    // change this to getHomePath (site) - move Site to dm3270Utilities
-    Path homePath = FileSaver.getHomePath (folderName);
+    Path homePath = FileSaver.getHomePath (server);
     if (Files.notExists (homePath))
     {
       showAlert ("Path does not exist: " + homePath);
