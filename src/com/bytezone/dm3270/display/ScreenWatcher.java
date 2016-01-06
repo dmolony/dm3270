@@ -20,6 +20,7 @@ import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.filetransfer.IndFileCommand;
+import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.FileSaver;
 
@@ -88,8 +89,8 @@ public class ScreenWatcher
   private String userid = "";
   private String prefix = "";
 
-  private final MenuItem menuItemUpload;
-  private final MenuItem menuItemDownload;
+  private MenuItem menuItemUpload;
+  private MenuItem menuItemDownload;
   private Site replaySite;
 
   private TransferManager transferManager;
@@ -100,13 +101,12 @@ public class ScreenWatcher
   {
     this.fieldManager = fieldManager;
     this.screenDimensions = screenDimensions;
-    this.server = server;
+    this.server = server;           // will be null if in REPLAY mode
 
-    menuItemUpload = getMenuItem ("Upload", e -> upload (), KeyCode.U);
-    menuItemDownload = getMenuItem ("Download", e -> download (), KeyCode.D);
+    setMenuItems ();
   }
 
-  public void setReplayServer (Site serverSite)
+  public void setReplaySite (Site serverSite)
   {
     replaySite = serverSite;
   }
@@ -171,6 +171,14 @@ public class ScreenWatcher
     return menuItemDownload;
   }
 
+  private void setMenuItems ()
+  {
+    menuItemUpload =
+        getMenuItem ("Upload", e -> transfer (TransferType.UPLOAD), KeyCode.U);
+    menuItemDownload =
+        getMenuItem ("Download", e -> transfer (TransferType.DOWNLOAD), KeyCode.D);
+  }
+
   private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
       KeyCode keyCode)
   {
@@ -181,16 +189,16 @@ public class ScreenWatcher
     return menuItem;
   }
 
-  private void upload ()
-  {
-    String fileName = (String) menuItemDownload.getUserData ();
+  //  private void uploadMenuCommand ()
+  //  {
+  //    String fileName = (String) menuItemDownload.getUserData ();
+  //
+  //    String cmd = showUploadDialog (fileName);
+  //    if ("OK".equals (cmd))
+  //      System.out.println ("upload " + menuItemUpload.getUserData ());
+  //  }
 
-    String cmd = showUploadDialog (fileName);
-    if ("OK".equals (cmd))
-      System.out.println ("upload " + menuItemUpload.getUserData ());
-  }
-
-  private void download ()
+  private void transfer (TransferType transferType)
   {
     Site site = server != null ? server : replaySite != null ? replaySite : null;
     String folderName = site == null ? "" : site.getFolder ();
@@ -198,24 +206,33 @@ public class ScreenWatcher
     Path homePath = FileSaver.getHomePath (folderName);
     if (Files.notExists (homePath))
     {
-      // show dialog here
-      System.out.println ("Path does not exist: " + homePath);
+      showAlert ("Path does not exist: " + homePath);
       return;
     }
 
     if (recentDatasets.size () == 0)
     {
-      // show dialog here
-      System.out.println ("No datasets to download");
+      showAlert ("No datasets to download");
       return;
     }
 
     String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
 
-    Optional<IndFileCommand> command = showDownloadDialog (homePath, baseLength);
-    if (command.isPresent ())
-      createTransfer (command.get ());
+    switch (transferType)
+    {
+      case DOWNLOAD:
+        Optional<IndFileCommand> command = showDownloadDialog (homePath, baseLength);
+        if (command.isPresent ())
+          createTransfer (command.get ());
+        break;
+
+      case UPLOAD:
+        command = showUploadDialog (homePath, baseLength);
+        //        if ("OK".equals (cmd))
+        //          System.out.println ("upload " + menuItemUpload.getUserData ());
+        break;
+    }
   }
 
   private void createTransfer (IndFileCommand indFileCommand)
@@ -244,31 +261,6 @@ public class ScreenWatcher
     transferManager.prepareTransfer (indFileCommand);
     tsoCommandField.setText (indFileCommand.getCommand ());
     consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-  }
-
-  private String getCommandText (String datasetName)
-  {
-    Matcher matcher1 = jclPattern.matcher (datasetName);
-    Matcher matcher2 = procPattern.matcher (datasetName);
-    boolean useCrlf = matcher1.matches () || matcher2.matches ();
-
-    // remove prefix to save space on the command line
-    if (!prefix.isEmpty () && datasetName.startsWith (prefix))
-    {
-      if (datasetName.length () == prefix.length ())
-      {
-        System.out.println ("Dataset name matches prefix - do not download");
-        return "";
-      }
-      datasetName = datasetName.substring (prefix.length () + 1);
-    }
-    else
-      datasetName = "'" + datasetName + "'";
-
-    String tsoPrefix = isTSOCommandScreen () ? "" : "TSO ";
-    String options = useCrlf ? " ASCII CRLF" : "";
-
-    return String.format ("%sIND$FILE GET %s%s", tsoPrefix, datasetName, options);
   }
 
   private boolean showAlert (String message)
@@ -327,7 +319,8 @@ public class ScreenWatcher
         return null;
 
       String datasetName = box.getSelectionModel ().getSelectedItem ();
-      IndFileCommand indFileCommand = new IndFileCommand (getCommandText (datasetName));
+      IndFileCommand indFileCommand =
+          new IndFileCommand (getCommandText ("GET", datasetName));
 
       String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
       Path saveFile = Paths.get (saveFolderName, datasetName);
@@ -389,22 +382,31 @@ public class ScreenWatcher
     }
   }
 
-  private String showUploadDialog (String fileName)
+  private Optional<IndFileCommand> showUploadDialog (Path homePath, int baseLength)
   {
     Label label1 = new Label ("Upload: ");
-    Label label2 = new Label (fileName);
+    //    Label label2 = new Label (fileName);
     Label label3 = new Label ("From folder: ");
-    Label label4 = new Label ("??");
+    Label saveFolder = new Label ("??");
     //    Label label5 = new Label ("Exists: ");
     //    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
 
-    Dialog<String> dialog = new Dialog<> ();
+    ComboBox<String> box = new ComboBox<> ();
+    box.setItems (FXCollections.observableList (recentDatasets));
+    //    box.setOnAction (event -> refresh (box, homePath, saveFolder, actionLabel,
+    //                                   fileDateLabel, datasetDateLabel, baseLength));
+    //    box.getSelectionModel ().select (singleDataset);
+    //    refresh (box, homePath, saveFolder, actionLabel, fileDateLabel,
+    // datasetDateLabel,
+    //             baseLength);
+
+    Dialog<IndFileCommand> dialog = new Dialog<> ();
 
     GridPane grid = new GridPane ();
     grid.add (label1, 1, 1);
-    grid.add (label2, 2, 1);
+    grid.add (box, 2, 1);
     grid.add (label3, 1, 2);
-    grid.add (label4, 2, 2);
+    grid.add (saveFolder, 2, 2);
     //    grid.add (label5, 1, 3);
     //    grid.add (label6, 2, 3);
     grid.setHgap (10);
@@ -414,14 +416,46 @@ public class ScreenWatcher
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
     ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+
     dialog.setResultConverter (btnType ->
     {
-      if (btnType == btnTypeOK)
-        return "OK";
-      return "";
+      if (btnType != btnTypeOK)
+        return null;
+
+      String datasetName = box.getSelectionModel ().getSelectedItem ();
+      IndFileCommand indFileCommand =
+          new IndFileCommand (getCommandText ("PUT", datasetName));
+
+      return indFileCommand;
     });
 
-    return dialog.showAndWait ().get ();
+    return dialog.showAndWait ();
+  }
+
+  private String getCommandText (String direction, String datasetName)
+  {
+    Matcher matcher1 = jclPattern.matcher (datasetName);
+    Matcher matcher2 = procPattern.matcher (datasetName);
+    boolean useCrlf = matcher1.matches () || matcher2.matches ();
+
+    // remove prefix to save space on the command line
+    if (!prefix.isEmpty () && datasetName.startsWith (prefix))
+    {
+      if (datasetName.length () == prefix.length ())
+      {
+        System.out.println ("Dataset name matches prefix - do not download");
+        return "";
+      }
+      datasetName = datasetName.substring (prefix.length () + 1);
+    }
+    else
+      datasetName = "'" + datasetName + "'";
+
+    String tsoPrefix = isTSOCommandScreen () ? "" : "TSO ";
+    String options = useCrlf ? " ASCII CRLF" : "";
+
+    return String.format ("%sIND$FILE %s %s%s", tsoPrefix, direction, datasetName,
+                          options);
   }
 
   // called by FieldManager after building a new screen

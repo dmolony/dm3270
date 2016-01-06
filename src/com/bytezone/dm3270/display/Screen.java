@@ -125,7 +125,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public void setReplayServer (Site serverSite)
   {
     transferManager.setReplayServer (serverSite);
-    fieldManager.getScreenWatcher ().setReplayServer (serverSite);
+    fieldManager.getScreenWatcher ().setReplaySite (serverSite);
   }
 
   public void setStatusText (String text)
