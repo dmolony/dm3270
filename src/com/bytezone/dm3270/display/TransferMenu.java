@@ -7,15 +7,18 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.filetransfer.IndFileCommand;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
+import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.FileSaver;
 
 import javafx.collections.FXCollections;
@@ -29,18 +32,46 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
-public class TransferMenu
+public class TransferMenu implements ScreenChangeListener
 {
   private static final Pattern jclPattern = Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
   private static final Pattern procPattern =
       Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
   private static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm:ss");
 
-  private void transfer (TransferType transferType)
+  private ScreenWatcher screenWatcher;
+  private final Site server;
+  private Site replaySite;
+  private TransferManager transferManager;
+  private ConsolePane consolePane;
+
+  public TransferMenu (Site site)
+  {
+    this.server = site;
+  }
+
+  // called from Screen.setReplayServer()
+  public void setReplaySite (Site serverSite)
+  {
+    replaySite = serverSite;
+  }
+
+  public void setTransferManager (TransferManager transferManager)
+  {
+    this.transferManager = transferManager;
+  }
+
+  public void setConsolePane (ConsolePane consolePane)
+  {
+    this.consolePane = consolePane;
+  }
+
+  public void transfer (TransferType transferType)
   {
     Site site = server != null ? server : replaySite != null ? replaySite : null;
     String folderName = site == null ? "" : site.getFolder ();
 
+    // change this to getHomePath (site) - move Site to dm3270Utilities
     Path homePath = FileSaver.getHomePath (folderName);
     if (Files.notExists (homePath))
     {
@@ -48,6 +79,7 @@ public class TransferMenu
       return;
     }
 
+    List<String> recentDatasets = screenWatcher.getRecentDatasets ();
     if (recentDatasets.size () == 0)
     {
       showAlert ("No datasets to download");
@@ -78,6 +110,7 @@ public class TransferMenu
     assert consolePane != null;
     assert transferManager != null;
 
+    Field tsoCommandField = screenWatcher.getTSOCommandField ();
     if (tsoCommandField == null)
     {
       showAlert ("This screen has no TSO input field");
@@ -122,10 +155,11 @@ public class TransferMenu
     Label datasetDateLabel = new Label ();
 
     ComboBox<String> box = new ComboBox<> ();
+    List<String> recentDatasets = screenWatcher.getRecentDatasets ();
     box.setItems (FXCollections.observableList (recentDatasets));
     box.setOnAction (event -> refresh (box, homePath, saveFolder, actionLabel,
                                        fileDateLabel, datasetDateLabel, baseLength));
-    box.getSelectionModel ().select (singleDataset);
+    box.getSelectionModel ().select (screenWatcher.getSingleDataset ());
     refresh (box, homePath, saveFolder, actionLabel, fileDateLabel, datasetDateLabel,
              baseLength);
 
@@ -183,17 +217,19 @@ public class TransferMenu
     //    System.out.printf ("Save folder path: %s%n", saveFile);
 
     saveFolder.setText (saveFolderName.substring (baseLength));
-    Dataset dataset = siteDatasets.get (datasetSelected);
-    if (dataset != null)
+    //    Dataset dataset = siteDatasets.get (datasetSelected);
+    Optional<Dataset> dataset = screenWatcher.getDataset (datasetSelected);
+    //    if (dataset != null)
+    if (dataset.isPresent ())
     {
-      String date = dataset.getReferredDate ();
+      String date = dataset.get ().getReferredDate ();
       if (date.isEmpty ())
         dateLabel2.setText ("<no date>");
       else
       {
         String reformattedDate = date.substring (8) + "/" + date.substring (5, 7) + "/"
             + date.substring (0, 4);
-        dateLabel2.setText (reformattedDate + " " + dataset.getReferredTime ());
+        dateLabel2.setText (reformattedDate + " " + dataset.get ().getReferredTime ());
       }
     }
     else
@@ -230,6 +266,7 @@ public class TransferMenu
     //    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
 
     ComboBox<String> box = new ComboBox<> ();
+    List<String> recentDatasets = screenWatcher.getRecentDatasets ();
     box.setItems (FXCollections.observableList (recentDatasets));
     //    box.setOnAction (event -> refresh (box, homePath, saveFolder, actionLabel,
     //                                   fileDateLabel, datasetDateLabel, baseLength));
@@ -277,6 +314,7 @@ public class TransferMenu
     boolean useCrlf = matcher1.matches () || matcher2.matches ();
 
     // remove prefix to save space on the command line
+    String prefix = screenWatcher.getPrefix ();
     if (!prefix.isEmpty () && datasetName.startsWith (prefix))
     {
       if (datasetName.length () == prefix.length ())
@@ -289,10 +327,16 @@ public class TransferMenu
     else
       datasetName = "'" + datasetName + "'";
 
-    String tsoPrefix = isTSOCommandScreen () ? "" : "TSO ";
+    String tsoPrefix = screenWatcher.isTSOCommandScreen () ? "" : "TSO ";
     String options = useCrlf ? " ASCII CRLF" : "";
 
     return String.format ("%sIND$FILE %s %s%s", tsoPrefix, direction, datasetName,
                           options);
+  }
+
+  @Override
+  public void screenChanged (ScreenWatcher screenWatcher)
+  {
+    this.screenWatcher = screenWatcher;
   }
 }

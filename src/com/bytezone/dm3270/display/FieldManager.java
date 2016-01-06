@@ -262,9 +262,9 @@ public class FieldManager
 
   private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<> ();
 
-  private void fireScreenChanged (ScreenWatcher screenDetails)
+  private void fireScreenChanged (ScreenWatcher screenWatcher)
   {
-    screenChangeListeners.forEach (l -> l.screenChanged (screenDetails));
+    screenChangeListeners.forEach (listener -> listener.screenChanged (screenWatcher));
   }
 
   public void addScreenChangeListener (ScreenChangeListener listener)

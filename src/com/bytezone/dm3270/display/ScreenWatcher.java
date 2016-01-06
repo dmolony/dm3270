@@ -67,7 +67,9 @@ public class ScreenWatcher
 
   private final FieldManager fieldManager;
   private final ScreenDimensions screenDimensions;
+
   private final Site server;
+  private Site replaySite;
 
   private final Map<String, Dataset> siteDatasets = new TreeMap<> ();
   private final List<Dataset> screenDatasets = new ArrayList<> ();
@@ -91,7 +93,6 @@ public class ScreenWatcher
 
   private final MenuItem menuItemUpload;
   private final MenuItem menuItemDownload;
-  private Site replaySite;
 
   private TransferManager transferManager;
   private ConsolePane consolePane;
@@ -109,6 +110,7 @@ public class ScreenWatcher
         getMenuItem ("Download", e -> transfer (TransferType.DOWNLOAD), KeyCode.D);
   }
 
+  // called from Screen.setReplayServer()
   public void setReplaySite (Site serverSite)
   {
     replaySite = serverSite;
@@ -144,6 +146,13 @@ public class ScreenWatcher
     return prefix;
   }
 
+  public Optional<Dataset> getDataset (String datasetName)
+  {
+    if (siteDatasets.containsKey (datasetName))
+      return Optional.of (siteDatasets.get (datasetName));
+    return Optional.empty ();
+  }
+
   public List<Dataset> getDatasets ()
   {
     return screenDatasets;
@@ -162,6 +171,11 @@ public class ScreenWatcher
   public String getSingleDataset ()
   {
     return singleDataset;
+  }
+
+  public List<String> getRecentDatasets ()
+  {
+    return recentDatasets;
   }
 
   public MenuItem getMenuItemUpload ()
