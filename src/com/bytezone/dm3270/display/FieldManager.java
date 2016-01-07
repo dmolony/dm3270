@@ -33,7 +33,7 @@ public class FieldManager
     this.screen = screen;
     this.contextManager = contextManager;
     this.screenDimensions = screen.getScreenDimensions ();
-    screenWatcher = new ScreenWatcher (this, screenDimensions, site);
+    screenWatcher = new ScreenWatcher (this, screenDimensions);
   }
 
   // ScreenWatcher is never deleted, but most (not all) of its fields are refreshed

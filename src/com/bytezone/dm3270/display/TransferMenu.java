@@ -45,10 +45,12 @@ public class TransferMenu implements ScreenChangeListener
       Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
   private static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm:ss");
 
-  private ScreenWatcher screenWatcher;
   private Site server;
+
+  private ScreenWatcher screenWatcher;
   private TransferManager transferManager;
   private ConsolePane consolePane;
+
   private final MenuItem menuItemUpload;
   private final MenuItem menuItemDownload;
 
