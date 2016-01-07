@@ -198,6 +198,7 @@ public class TransferMenu implements ScreenChangeListener
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
     ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+    dialog.setTitle ("Download dataset");
 
     dialog.setResultConverter (btnType ->
     {
@@ -274,10 +275,10 @@ public class TransferMenu implements ScreenChangeListener
 
     GridPane grid = new GridPane ();
 
-    grid.add (new Label ("Upload: "), 1, 1);
+    grid.add (new Label ("Upload"), 1, 1);
     grid.add (datasetList, 2, 1);
 
-    grid.add (new Label ("From folder: "), 1, 2);
+    grid.add (new Label ("From folder"), 1, 2);
     grid.add (labelFromFolder, 2, 2);
 
     grid.add (new Label ("File date"), 1, 3);
@@ -295,6 +296,7 @@ public class TransferMenu implements ScreenChangeListener
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
     ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+    dialog.setTitle ("Upload dataset");
 
     dialog.setResultConverter (btnType ->
     {
