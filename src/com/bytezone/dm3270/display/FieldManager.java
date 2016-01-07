@@ -66,7 +66,7 @@ public class FieldManager
       setContexts (protoField);
     }
 
-    assert (dataPositions + fields.size () == 1920) || fields.size () == 0;
+    assert dataPositions + fields.size () == 1920 || fields.size () == 0;
 
     // link uprotected fields
     Field previousUnprotectedField = null;

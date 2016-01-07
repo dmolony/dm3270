@@ -69,13 +69,9 @@ public class TransferMenu implements ScreenChangeListener
     this.server = server;
   }
 
-  public void setTransferManager (TransferManager transferManager)
+  void setTransferHandlers (TransferManager transferManager, ConsolePane consolePane)
   {
     this.transferManager = transferManager;
-  }
-
-  public void setConsolePane (ConsolePane consolePane)
-  {
     this.consolePane = consolePane;
   }
 

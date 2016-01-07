@@ -140,7 +140,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public void setReplayServer (Site serverSite)
   {
     transferManager.setReplayServer (serverSite);
-    //    fieldManager.getScreenWatcher ().setReplaySite (serverSite);
     transferMenu.setReplayServer (serverSite);
   }
 
@@ -151,14 +150,8 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     assistantStage.setConsolePane (consolePane);
     addKeyboardStatusChangeListener (consolePane);
 
-    // allow ScreenWatcher to do file transfers - this will be removed
-    //    ScreenWatcher screenWatcher = fieldManager.getScreenWatcher ();
-    //    screenWatcher.setConsolePane (consolePane);
-    //    screenWatcher.setTransferManager (transferManager);
-
     // allow TransferMenu to do file transfers
-    transferMenu.setConsolePane (consolePane);
-    transferMenu.setTransferManager (transferManager);
+    transferMenu.setTransferHandlers (transferManager, consolePane);
   }
 
   public void setStatusText (String text)
