@@ -33,6 +33,7 @@ import com.bytezone.dm3270.utilities.Site;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 public class Screen extends Canvas implements DisplayScreen, TransferListener
@@ -53,6 +54,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private final HistoryManager historyManager;
   private final TransferManager transferManager;
   private final ScreenPacker screenPacker;
+  private final TransferMenu transferMenu;
 
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
@@ -93,6 +95,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
     transferManager = new TransferManager (this, site, assistantStage);
+    transferMenu = new TransferMenu (site);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
     pen = new PenType1 (screenPositions, gc, contextManager, screenDimensions);
@@ -107,6 +110,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
 
     fieldManager.addScreenChangeListener (assistantStage);
     fieldManager.addScreenChangeListener (screenPacker);
+    fieldManager.addScreenChangeListener (transferMenu);
 
     transferManager.addTransferListener (this);
     transferManager.addTransferListener (assistantStage);
@@ -122,16 +126,22 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferManager;
   }
 
+  public MenuItem getMenuItemUpload ()
+  {
+    return transferMenu.getMenuItemUpload ();
+  }
+
+  public MenuItem getMenuItemDownload ()
+  {
+    return transferMenu.getMenuItemDownload ();
+  }
+
+  // called from Console.startSelectedFunction() : Replay
   public void setReplayServer (Site serverSite)
   {
     transferManager.setReplayServer (serverSite);
-    fieldManager.getScreenWatcher ().setReplaySite (serverSite);
-    //    transferMenu.setReplayServer (serverSite);
-  }
-
-  public void setStatusText (String text)
-  {
-    consolePane.setStatusText (text);
+    //    fieldManager.getScreenWatcher ().setReplaySite (serverSite);
+    transferMenu.setReplayServer (serverSite);
   }
 
   // called from the ConsolePane constructor
@@ -141,10 +151,19 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     assistantStage.setConsolePane (consolePane);
     addKeyboardStatusChangeListener (consolePane);
 
-    // allow ScreenWatcher to do file transfers
-    ScreenWatcher screenWatcher = fieldManager.getScreenWatcher ();
-    screenWatcher.setConsolePane (consolePane);
-    screenWatcher.setTransferManager (transferManager);
+    // allow ScreenWatcher to do file transfers - this will be removed
+    //    ScreenWatcher screenWatcher = fieldManager.getScreenWatcher ();
+    //    screenWatcher.setConsolePane (consolePane);
+    //    screenWatcher.setTransferManager (transferManager);
+
+    // allow TransferMenu to do file transfers
+    transferMenu.setConsolePane (consolePane);
+    transferMenu.setTransferManager (transferManager);
+  }
+
+  public void setStatusText (String text)
+  {
+    consolePane.setStatusText (text);
   }
 
   public FieldManager getFieldManager ()

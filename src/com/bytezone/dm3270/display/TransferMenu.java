@@ -22,6 +22,8 @@ import com.bytezone.dm3270.utilities.FileSaver;
 import com.bytezone.dm3270.utilities.Site;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -30,6 +32,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 
 public class TransferMenu implements ScreenChangeListener
@@ -43,14 +49,20 @@ public class TransferMenu implements ScreenChangeListener
   private Site server;
   private TransferManager transferManager;
   private ConsolePane consolePane;
+  private final MenuItem menuItemUpload;
+  private final MenuItem menuItemDownload;
 
   public TransferMenu (Site server)
   {
     this.server = server;
+    menuItemUpload =
+        getMenuItem ("Upload", e -> transfer (TransferType.UPLOAD), KeyCode.U);
+    menuItemDownload =
+        getMenuItem ("Download", e -> transfer (TransferType.DOWNLOAD), KeyCode.D);
   }
 
   // called from Screen.setReplayServer()
-  public void setReplaySite (Site server)
+  public void setReplayServer (Site server)
   {
     this.server = server;
   }
@@ -65,6 +77,17 @@ public class TransferMenu implements ScreenChangeListener
     this.consolePane = consolePane;
   }
 
+  public MenuItem getMenuItemUpload ()
+  {
+    return menuItemUpload;
+  }
+
+  public MenuItem getMenuItemDownload ()
+  {
+    return menuItemDownload;
+  }
+
+  // called from the Upload and Download menu items
   public void transfer (TransferType transferType)
   {
     Path homePath = FileSaver.getHomePath (server);
@@ -81,6 +104,13 @@ public class TransferMenu implements ScreenChangeListener
       return;
     }
 
+    Field tsoCommandField = screenWatcher.getTSOCommandField ();
+    if (tsoCommandField == null)
+    {
+      showAlert ("This screen has no TSO input field");
+      return;
+    }
+
     String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
 
@@ -94,8 +124,8 @@ public class TransferMenu implements ScreenChangeListener
 
       case UPLOAD:
         command = showUploadDialog (homePath, baseLength);
-        //        if ("OK".equals (cmd))
-        //          System.out.println ("upload " + menuItemUpload.getUserData ());
+        if (command.isPresent ())
+          createTransfer (command.get ());
         break;
     }
   }
@@ -106,13 +136,8 @@ public class TransferMenu implements ScreenChangeListener
     assert transferManager != null;
 
     Field tsoCommandField = screenWatcher.getTSOCommandField ();
-    if (tsoCommandField == null)
-    {
-      showAlert ("This screen has no TSO input field");
-      return;
-    }
-
     String command = indFileCommand.getCommand ();
+
     if (command.length () > tsoCommandField.getDisplayLength ())
     {
       showAlert ("Command is too long for the TSO input field");
@@ -125,16 +150,8 @@ public class TransferMenu implements ScreenChangeListener
     System.out.println ();
 
     transferManager.prepareTransfer (indFileCommand);
-    tsoCommandField.setText (indFileCommand.getCommand ());
+    tsoCommandField.setText (command);
     consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
-  }
-
-  private boolean showAlert (String message)
-  {
-    Alert alert = new Alert (AlertType.ERROR, message);
-    alert.getDialogPane ().setHeaderText (null);
-    Optional<ButtonType> result = alert.showAndWait ();
-    return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
   private Optional<IndFileCommand> showDownloadDialog (Path homePath, int baseLength)
@@ -191,7 +208,6 @@ public class TransferMenu implements ScreenChangeListener
 
       String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
       Path saveFile = Paths.get (saveFolderName, datasetName);
-      //      indFileCommand.setDatasetName (datasetName);
       indFileCommand.setLocalFile (saveFile.toFile ());
 
       return indFileCommand;
@@ -204,17 +220,11 @@ public class TransferMenu implements ScreenChangeListener
       Label actionLabel, Label dateLabel, Label dateLabel2, int baseLength)
   {
     String datasetSelected = box.getSelectionModel ().getSelectedItem ();
-    //    System.out.printf ("Dataset selected: %s%n", datasetSelected);
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
-    //    System.out.printf ("Home path: %s%n", homePath);
-    //    System.out.printf ("Save folder name: %s%n", saveFolderName);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
-    //    System.out.printf ("Save folder path: %s%n", saveFile);
 
     saveFolder.setText (saveFolderName.substring (baseLength));
-    //    Dataset dataset = siteDatasets.get (datasetSelected);
     Optional<Dataset> dataset = screenWatcher.getDataset (datasetSelected);
-    //    if (dataset != null)
     if (dataset.isPresent ())
     {
       String date = dataset.get ().getReferredDate ();
@@ -254,7 +264,6 @@ public class TransferMenu implements ScreenChangeListener
   private Optional<IndFileCommand> showUploadDialog (Path homePath, int baseLength)
   {
     Label label1 = new Label ("Upload: ");
-    //    Label label2 = new Label (fileName);
     Label label3 = new Label ("From folder: ");
     Label saveFolder = new Label ("??");
     //    Label label5 = new Label ("Exists: ");
@@ -265,10 +274,9 @@ public class TransferMenu implements ScreenChangeListener
     box.setItems (FXCollections.observableList (recentDatasets));
     //    box.setOnAction (event -> refresh (box, homePath, saveFolder, actionLabel,
     //                                   fileDateLabel, datasetDateLabel, baseLength));
-    //    box.getSelectionModel ().select (singleDataset);
+    box.getSelectionModel ().select (screenWatcher.getSingleDataset ());
     //    refresh (box, homePath, saveFolder, actionLabel, fileDateLabel,
-    // datasetDateLabel,
-    //             baseLength);
+    //                 datasetDateLabel, baseLength);
 
     Dialog<IndFileCommand> dialog = new Dialog<> ();
 
@@ -327,6 +335,24 @@ public class TransferMenu implements ScreenChangeListener
 
     return String.format ("%sIND$FILE %s %s%s", tsoPrefix, direction, datasetName,
                           options);
+  }
+
+  private boolean showAlert (String message)
+  {
+    Alert alert = new Alert (AlertType.ERROR, message);
+    alert.getDialogPane ().setHeaderText (null);
+    Optional<ButtonType> result = alert.showAndWait ();
+    return (result.isPresent () && result.get () == ButtonType.OK);
+  }
+
+  private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
+      KeyCode keyCode)
+  {
+    MenuItem menuItem = new MenuItem (text);
+    menuItem.setOnAction (eventHandler);
+    menuItem
+        .setAccelerator (new KeyCodeCombination (keyCode, KeyCombination.SHORTCUT_DOWN));
+    return menuItem;
   }
 
   @Override

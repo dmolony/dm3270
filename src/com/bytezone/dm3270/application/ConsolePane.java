@@ -148,8 +148,8 @@ public class ConsolePane extends BorderPane
 
     MenuItem menuItemAssistant =
         getMenuItem ("Transfers", e -> screen.getAssistantStage ().show (), KeyCode.T);
-    MenuItem menuItemUpload = screenWatcher.getMenuItemUpload ();
-    MenuItem menuItemDownload = screenWatcher.getMenuItemDownload ();
+    MenuItem menuItemUpload = screen.getMenuItemUpload ();
+    MenuItem menuItemDownload = screen.getMenuItemDownload ();
 
     menuCommands.getItems ().addAll (menuItemToggleScreens, menuItemAssistant,
                                      new SeparatorMenuItem (), menuItemUpload,
