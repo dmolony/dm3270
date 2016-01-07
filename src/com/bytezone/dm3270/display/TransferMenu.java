@@ -69,6 +69,7 @@ public class TransferMenu implements ScreenChangeListener
     this.server = server;
   }
 
+  // called from Screen.setConsolePane()
   void setTransferHandlers (TransferManager transferManager, ConsolePane consolePane)
   {
     this.transferManager = transferManager;
@@ -154,41 +155,44 @@ public class TransferMenu implements ScreenChangeListener
 
   private Optional<IndFileCommand> showDownloadDialog (Path homePath, int baseLength)
   {
-    Label label1 = new Label ("Download");
-    Label label3 = new Label ("To folder");
-    Label saveFolder = new Label ();
-    Label label5 = new Label ("Action");
-    Label actionLabel = new Label ();
-    Label label7 = new Label ("File date");
-    Label fileDateLabel = new Label ();
-    Label label9 = new Label ("Dataset date");
-    Label datasetDateLabel = new Label ();
+    Label labelToFolder = new Label ();
+    Label labelAction = new Label ();
+    Label labelFileDate = new Label ();
+    Label labelDatasetDate = new Label ();
 
-    ComboBox<String> box = new ComboBox<> ();
+    ComboBox<String> datasetList = new ComboBox<> ();
     List<String> recentDatasets = screenWatcher.getRecentDatasets ();
-    box.setItems (FXCollections.observableList (recentDatasets));
-    box.setOnAction (event -> refresh (box, homePath, saveFolder, actionLabel,
-                                       fileDateLabel, datasetDateLabel, baseLength));
-    box.getSelectionModel ().select (screenWatcher.getSingleDataset ());
-    refresh (box, homePath, saveFolder, actionLabel, fileDateLabel, datasetDateLabel,
-             baseLength);
-
-    Dialog<IndFileCommand> dialog = new Dialog<> ();
+    datasetList.setItems (FXCollections.observableList (recentDatasets));
+    datasetList
+        .setOnAction (event -> refreshDownload (datasetList, homePath, labelToFolder,
+                                                labelAction, labelFileDate,
+                                                labelDatasetDate, baseLength));
+    datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
+    refreshDownload (datasetList, homePath, labelToFolder, labelAction, labelFileDate,
+                     labelDatasetDate, baseLength);
 
     GridPane grid = new GridPane ();
     grid.setPadding (new Insets (10, 35, 10, 20));
-    grid.add (label1, 1, 1);
-    grid.add (box, 2, 1);
-    grid.add (label3, 1, 2);
-    grid.add (saveFolder, 2, 2);
-    grid.add (label5, 1, 3);
-    grid.add (actionLabel, 2, 3);
-    grid.add (label7, 1, 4);
-    grid.add (fileDateLabel, 2, 4);
-    grid.add (label9, 1, 5);
-    grid.add (datasetDateLabel, 2, 5);
+
+    grid.add (new Label ("Download"), 1, 1);
+    grid.add (datasetList, 2, 1);
+
+    grid.add (new Label ("To folder"), 1, 2);
+    grid.add (labelToFolder, 2, 2);
+
+    grid.add (new Label ("Action"), 1, 3);
+    grid.add (labelAction, 2, 3);
+
+    grid.add (new Label ("File date"), 1, 4);
+    grid.add (labelFileDate, 2, 4);
+
+    grid.add (new Label ("Dataset date"), 1, 5);
+    grid.add (labelDatasetDate, 2, 5);
+
     grid.setHgap (10);
     grid.setVgap (10);
+
+    Dialog<IndFileCommand> dialog = new Dialog<> ();
     dialog.getDialogPane ().setContent (grid);
 
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
@@ -200,7 +204,7 @@ public class TransferMenu implements ScreenChangeListener
       if (btnType != btnTypeOK)
         return null;
 
-      String datasetName = box.getSelectionModel ().getSelectedItem ();
+      String datasetName = datasetList.getSelectionModel ().getSelectedItem ();
       IndFileCommand indFileCommand =
           new IndFileCommand (getCommandText ("GET", datasetName));
 
@@ -214,25 +218,27 @@ public class TransferMenu implements ScreenChangeListener
     return dialog.showAndWait ();
   }
 
-  private void refresh (ComboBox<String> box, Path homePath, Label saveFolder,
-      Label actionLabel, Label dateLabel, Label dateLabel2, int baseLength)
+  private void refreshDownload (ComboBox<String> datasetList, Path homePath,
+      Label labelToFolder, Label labelAction, Label labelFileDate, Label labelDatasetDate,
+      int baseLength)
   {
-    String datasetSelected = box.getSelectionModel ().getSelectedItem ();
+    String datasetSelected = datasetList.getSelectionModel ().getSelectedItem ();
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 
-    saveFolder.setText (saveFolderName.substring (baseLength));
+    labelToFolder.setText (saveFolderName.substring (baseLength));
     Optional<Dataset> dataset = screenWatcher.getDataset (datasetSelected);
     if (dataset.isPresent ())
     {
       String date = dataset.get ().getReferredDate ();
       if (date.isEmpty ())
-        dateLabel2.setText ("<no date>");
+        labelDatasetDate.setText ("<no date>");
       else
       {
         String reformattedDate = date.substring (8) + "/" + date.substring (5, 7) + "/"
             + date.substring (0, 4);
-        dateLabel2.setText (reformattedDate + " " + dataset.get ().getReferredTime ());
+        labelDatasetDate
+            .setText (reformattedDate + " " + dataset.get ().getReferredTime ());
       }
     }
     else
@@ -240,53 +246,50 @@ public class TransferMenu implements ScreenChangeListener
 
     if (Files.exists (saveFile))
     {
-      try
-      {
-        BasicFileAttributes attr =
-            Files.readAttributes (saveFile, BasicFileAttributes.class);
-        dateLabel.setText (df.format (attr.lastModifiedTime ().toMillis ()));
-      }
-      catch (IOException e)
-      {
-        dateLabel.setText ("IOException");
-      }
-      actionLabel.setText ("Overwrite existing file");
+      labelFileDate.setText (formatDate (saveFile));
+      labelAction.setText ("Overwrite existing file");
     }
     else
     {
-      actionLabel.setText ("Create new file");
-      dateLabel.setText ("");
+      labelFileDate.setText ("");
+      labelAction.setText ("Create new file");
     }
   }
 
   private Optional<IndFileCommand> showUploadDialog (Path homePath, int baseLength)
   {
-    Label label1 = new Label ("Upload: ");
-    Label label3 = new Label ("From folder: ");
-    Label saveFolder = new Label ("??");
-    //    Label label5 = new Label ("Exists: ");
-    //    Label label6 = new Label (Files.exists (path) ? "Yes" : "No");
+    Label labelFromFolder = new Label ();
+    Label labelFileDate = new Label ();
+    Label labelDatasetDate = new Label ();
 
-    ComboBox<String> box = new ComboBox<> ();
+    ComboBox<String> datasetList = new ComboBox<> ();
     List<String> recentDatasets = screenWatcher.getRecentDatasets ();
-    box.setItems (FXCollections.observableList (recentDatasets));
-    //    box.setOnAction (event -> refresh (box, homePath, saveFolder, actionLabel,
-    //                                   fileDateLabel, datasetDateLabel, baseLength));
-    box.getSelectionModel ().select (screenWatcher.getSingleDataset ());
-    //    refresh (box, homePath, saveFolder, actionLabel, fileDateLabel,
-    //                 datasetDateLabel, baseLength);
-
-    Dialog<IndFileCommand> dialog = new Dialog<> ();
+    datasetList.setItems (FXCollections.observableList (recentDatasets));
+    datasetList.setOnAction (event -> refreshUpload (datasetList, homePath,
+                                                     labelFromFolder, labelFileDate,
+                                                     labelDatasetDate, baseLength));
+    datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
+    refreshUpload (datasetList, homePath, labelFromFolder, labelFileDate,
+                   labelDatasetDate, baseLength);
 
     GridPane grid = new GridPane ();
-    grid.add (label1, 1, 1);
-    grid.add (box, 2, 1);
-    grid.add (label3, 1, 2);
-    grid.add (saveFolder, 2, 2);
-    //    grid.add (label5, 1, 3);
-    //    grid.add (label6, 2, 3);
+
+    grid.add (new Label ("Upload: "), 1, 1);
+    grid.add (datasetList, 2, 1);
+
+    grid.add (new Label ("From folder: "), 1, 2);
+    grid.add (labelFromFolder, 2, 2);
+
+    grid.add (new Label ("File date"), 1, 3);
+    grid.add (labelFileDate, 2, 3);
+
+    grid.add (new Label ("Dataset date"), 1, 4);
+    grid.add (labelDatasetDate, 2, 4);
+
     grid.setHgap (10);
     grid.setVgap (10);
+
+    Dialog<IndFileCommand> dialog = new Dialog<> ();
     dialog.getDialogPane ().setContent (grid);
 
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
@@ -298,7 +301,7 @@ public class TransferMenu implements ScreenChangeListener
       if (btnType != btnTypeOK)
         return null;
 
-      String datasetName = box.getSelectionModel ().getSelectedItem ();
+      String datasetName = datasetList.getSelectionModel ().getSelectedItem ();
       IndFileCommand indFileCommand =
           new IndFileCommand (getCommandText ("PUT", datasetName));
 
@@ -306,6 +309,37 @@ public class TransferMenu implements ScreenChangeListener
     });
 
     return dialog.showAndWait ();
+  }
+
+  private void refreshUpload (ComboBox<String> datasetList, Path homePath,
+      Label labelFromFolder, Label labelFileDate, Label labelDatasetDate, int baseLength)
+  {
+    String datasetSelected = datasetList.getSelectionModel ().getSelectedItem ();
+    String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
+    Path saveFile = Paths.get (saveFolderName, datasetSelected);
+
+    labelFromFolder.setText (saveFolderName.substring (baseLength));
+    Optional<Dataset> dataset = screenWatcher.getDataset (datasetSelected);
+    if (dataset.isPresent ())
+    {
+      String date = dataset.get ().getReferredDate ();
+      if (date.isEmpty ())
+        labelDatasetDate.setText ("<no date>");
+      else
+      {
+        String reformattedDate = date.substring (8) + "/" + date.substring (5, 7) + "/"
+            + date.substring (0, 4);
+        labelDatasetDate
+            .setText (reformattedDate + " " + dataset.get ().getReferredTime ());
+      }
+    }
+    else
+      System.out.println ("not found");
+
+    if (Files.exists (saveFile))
+      labelFileDate.setText (formatDate (saveFile));
+    else
+      labelFileDate.setText ("");
   }
 
   private String getCommandText (String direction, String datasetName)
@@ -333,6 +367,20 @@ public class TransferMenu implements ScreenChangeListener
 
     return String.format ("%sIND$FILE %s %s%s", tsoPrefix, direction, datasetName,
                           options);
+  }
+
+  private String formatDate (Path saveFile)
+  {
+    try
+    {
+      BasicFileAttributes attr =
+          Files.readAttributes (saveFile, BasicFileAttributes.class);
+      return df.format (attr.lastModifiedTime ().toMillis ());
+    }
+    catch (IOException e)
+    {
+      return "IOException";
+    }
   }
 
   private boolean showAlert (String message)
