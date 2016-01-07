@@ -89,6 +89,9 @@ public class TransferMenu implements ScreenChangeListener
   // called from the Upload and Download menu items
   public void transfer (TransferType transferType)
   {
+    assert consolePane != null;
+    assert transferManager != null;
+
     Path homePath = FileSaver.getHomePath (server);
     if (Files.notExists (homePath))
     {
@@ -112,36 +115,24 @@ public class TransferMenu implements ScreenChangeListener
 
     String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
+    Optional<IndFileCommand> optCommand = null;
 
-    switch (transferType)
-    {
-      case DOWNLOAD:
-        Optional<IndFileCommand> command = showDownloadDialog (homePath, baseLength);
-        if (command.isPresent ())
-          createTransfer (command.get ());
-        break;
+    if (transferType == TransferType.DOWNLOAD)
+      optCommand = showDownloadDialog (homePath, baseLength);
+    else
+      optCommand = showUploadDialog (homePath, baseLength);
 
-      case UPLOAD:
-        command = showUploadDialog (homePath, baseLength);
-        if (command.isPresent ())
-          createTransfer (command.get ());
-        break;
-    }
-  }
+    if (!optCommand.isPresent ())
+      return;
 
-  private void createTransfer (IndFileCommand indFileCommand)
-  {
-    assert consolePane != null;
-    assert transferManager != null;
+    IndFileCommand indFileCommand = optCommand.get ();
+    String commandText = indFileCommand.getCommand ();
 
-    Field tsoCommandField = screenWatcher.getTSOCommandField ();
-    String command = indFileCommand.getCommand ();
-
-    if (command.length () > tsoCommandField.getDisplayLength ())
+    if (commandText.length () > tsoCommandField.getDisplayLength ())
     {
       showAlert ("Command is too long for the TSO input field");
       System.out.printf ("Field: %d, command: %d%n", tsoCommandField.getDisplayLength (),
-                         command.length ());
+                         commandText.length ());
       return;
     }
 
@@ -149,7 +140,7 @@ public class TransferMenu implements ScreenChangeListener
     System.out.println ();
 
     transferManager.prepareTransfer (indFileCommand);
-    tsoCommandField.setText (command);
+    tsoCommandField.setText (commandText);
     consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
   }
 
