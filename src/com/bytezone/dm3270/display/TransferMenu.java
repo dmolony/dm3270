@@ -25,6 +25,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -250,6 +251,16 @@ public class TransferMenu implements ScreenChangeListener
 
   private Optional<IndFileCommand> showUploadDialog (Path homePath, int baseLength)
   {
+    Dialog<IndFileCommand> dialog = new Dialog<> ();
+
+    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
+    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
+    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+    dialog.setTitle ("Upload dataset");
+
+    Node okButton = dialog.getDialogPane ().lookupButton (btnTypeOK);
+    okButton.setDisable (true);
+
     Label labelFromFolder = new Label ();
     Label labelFileDate = new Label ();
     Label labelDatasetDate = new Label ();
@@ -261,8 +272,6 @@ public class TransferMenu implements ScreenChangeListener
                                                      labelFromFolder, labelFileDate,
                                                      labelDatasetDate, baseLength));
     datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
-    refreshUpload (datasetList, homePath, labelFromFolder, labelFileDate,
-                   labelDatasetDate, baseLength);
 
     GridPane grid = new GridPane ();
 
@@ -281,13 +290,7 @@ public class TransferMenu implements ScreenChangeListener
     grid.setHgap (10);
     grid.setVgap (10);
 
-    Dialog<IndFileCommand> dialog = new Dialog<> ();
     dialog.getDialogPane ().setContent (grid);
-
-    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
-    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
-    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
-    dialog.setTitle ("Upload dataset");
 
     dialog.setResultConverter (btnType ->
     {
@@ -300,6 +303,12 @@ public class TransferMenu implements ScreenChangeListener
 
       return indFileCommand;
     });
+
+    labelFileDate.textProperty ().addListener ( (observable, oldValue,
+        newValue) -> okButton.setDisable (newValue.trim ().isEmpty ()));
+
+    refreshUpload (datasetList, homePath, labelFromFolder, labelFileDate,
+                   labelDatasetDate, baseLength);
 
     return dialog.showAndWait ();
   }
