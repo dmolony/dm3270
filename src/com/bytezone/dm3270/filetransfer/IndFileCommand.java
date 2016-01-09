@@ -230,6 +230,11 @@ public class IndFileCommand
     this.localFile = file;
   }
 
+  public File getLocalFile ()
+  {
+    return localFile;
+  }
+
   @Override
   public String toString ()
   {

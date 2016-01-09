@@ -246,13 +246,12 @@ public class Transfer
         text.append (String.format ("  Buffer %3d ...  %,8d%n", bufno++,
                                     dataRecord.getBufferLength ()));
 
-      text.append (String.format ("Length ......... %,9d%n", dataLength));
+      text.append (String.format ("Data length .... %,9d%n", dataLength));
     }
 
     if (inboundBuffer != null)
     {
-      text.append (String.format ("inbuf length ... %d%n",
-                                  inboundBuffer == null ? -1 : inboundBuffer.length));
+      text.append (String.format ("inbuf length ... %d%n", inboundBuffer.length));
       text.append (String.format ("in ptr ......... %d%n", inboundBufferPtr));
     }
 

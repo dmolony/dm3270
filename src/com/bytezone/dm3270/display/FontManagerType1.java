@@ -50,7 +50,9 @@ public class FontManagerType1 implements FontManager
   @Override
   public Font getStatusBarFont ()
   {
-    return statusBarFont == null ? Font.font ("Monospaced", 14) : statusBarFont;
+    if (statusBarFont == null)
+      statusBarFont = Font.font ("Monospaced", 14);
+    return statusBarFont;
   }
 
   @Override

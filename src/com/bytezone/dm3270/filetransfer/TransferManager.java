@@ -1,5 +1,8 @@
 package com.bytezone.dm3270.filetransfer;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -57,8 +60,26 @@ public class TransferManager implements TSOCommandListener
   }
 
   // called from TSOCommand.execute()
+  // called from TransferMenu.transfer()
   public void prepareTransfer (IndFileCommand indFileCommand)
   {
+    if (indFileCommand.isUpload ())
+    {
+      File localFile = indFileCommand.getLocalFile ();
+      byte[] buffer = indFileCommand.getBuffer ();
+
+      if (buffer == null)
+        try
+        {
+          buffer = Files.readAllBytes (localFile.toPath ());
+          indFileCommand.setBuffer (buffer);
+        }
+        catch (IOException e)
+        {
+          e.printStackTrace ();
+        }
+    }
+
     currentTransfer = new Transfer (indFileCommand, site, screen.getPrefix ());
     fireTransferStatusChanged (TransferStatus.READY, currentTransfer);
   }

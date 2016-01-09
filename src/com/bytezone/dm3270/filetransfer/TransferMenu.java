@@ -301,6 +301,10 @@ public class TransferMenu implements ScreenChangeListener
       IndFileCommand indFileCommand =
           new IndFileCommand (getCommandText ("PUT", datasetName));
 
+      String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
+      Path saveFile = Paths.get (saveFolderName, datasetName);
+      indFileCommand.setLocalFile (saveFile.toFile ());
+
       return indFileCommand;
     });
 
