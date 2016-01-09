@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.assistant;
 
 import java.io.File;
-import java.util.Optional;
 
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -10,12 +9,10 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.filetransfer.IndFileCommand;
 import com.bytezone.dm3270.filetransfer.TransferManager;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -77,14 +74,14 @@ public class TSOCommand implements ScreenChangeListener
     Field tsoCommandField = screenWatcher.getTSOCommandField ();
     if (tsoCommandField == null)
     {
-      showAlert ("This screen has no TSO input field");
+      Dm3270Utility.showAlert ("This screen has no TSO input field");
       return;
     }
 
     String command = txtCommand.getText ();
     if (command.length () > tsoCommandField.getDisplayLength ())
     {
-      showAlert ("Command is too long for the TSO input field");
+      Dm3270Utility.showAlert ("Command is too long for the TSO input field");
       System.out.printf ("Field: %d, command: %d%n", tsoCommandField.getDisplayLength (),
                          command.length ());
       return;
@@ -110,14 +107,6 @@ public class TSOCommand implements ScreenChangeListener
       tsoCommandField.setText (command);
       consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
     }
-  }
-
-  private boolean showAlert (String message)
-  {
-    Alert alert = new Alert (AlertType.ERROR, message);
-    alert.getDialogPane ().setHeaderText (null);
-    Optional<ButtonType> result = alert.showAndWait ();
-    return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
   @Override

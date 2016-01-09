@@ -33,7 +33,7 @@ public class TransferManager implements TSOCommandListener
   @Override
   public void tsoCommand (String command)
   {
-    // check for user-initiated IND$FILE command
+    // check for a user-initiated IND$FILE command
     if (currentTransfer == null && INDFILE_PATTERN.matcher (command).matches ())
 
       // If it is a download, we can either keep it as a temporary buffer, or ask

@@ -11,6 +11,7 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.session.Session;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 import com.bytezone.dm3270.utilities.Site;
 import com.bytezone.dm3270.utilities.WindowSaver;
 
@@ -18,9 +19,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 public class Console extends Application
@@ -174,7 +172,7 @@ public class Console extends Application
         break;
     }
 
-    if (!errorMessage.isEmpty () && showAlert (errorMessage))
+    if (!errorMessage.isEmpty () && Dm3270Utility.showAlert (errorMessage))
       optionStage.show ();
   }
 
@@ -237,13 +235,13 @@ public class Console extends Application
     spyPane.startServer ();
   }
 
-  private boolean showAlert (String message)
-  {
-    Alert alert = new Alert (AlertType.ERROR, message);
-    alert.getDialogPane ().setHeaderText (null);
-    Optional<ButtonType> result = alert.showAndWait ();
-    return (result.isPresent () && result.get () == ButtonType.OK);
-  }
+  //  private boolean showAlert (String message)
+  //  {
+  //    Alert alert = new Alert (AlertType.ERROR, message);
+  //    alert.getDialogPane ().setHeaderText (null);
+  //    Optional<ButtonType> result = alert.showAndWait ();
+  //    return (result.isPresent () && result.get () == ButtonType.OK);
+  //  }
 
   @Override
   public void stop ()

@@ -59,7 +59,6 @@ public class Transfer
     else
       datasetName = tempDatasetName;
 
-    //    System.out.println (site);
     siteFolderName = site == null ? "" : site.getFolder ();
 
     Path homePath = FileSaver.getHomePath (siteFolderName);
@@ -67,12 +66,6 @@ public class Transfer
     Path filePath = Paths.get (saveFolderName, getDatasetName ());
     localFile = filePath.toFile ();
   }
-
-  //  public void compare (IndFileCommand indFileCommand)
-  //  {
-  //    if (this.indFileCommand != null)
-  //      this.indFileCommand.compareWith (indFileCommand);
-  //  }
 
   public String getSiteFolderName ()
   {
@@ -149,7 +142,6 @@ public class Transfer
     try
     {
       Files.write (localFile.toPath (), buffer);
-      //      System.out.printf ("File written: %s%n", localFile);
     }
     catch (IOException e)
     {
@@ -181,7 +173,6 @@ public class Transfer
       assert fullBuffer[fullBuffer.length - 2] == 0x0D;
       assert fullBuffer[fullBuffer.length - 1] == 0x0A;
       assert fullBuffer.length == dataLength - 1;
-      //      System.out.println ("successfully adjusted");
     }
 
     return fullBuffer;
@@ -232,9 +223,7 @@ public class Transfer
 
   int getBytesLeft ()
   {
-    if (inboundBuffer == null)
-      return 0;
-    return inboundBuffer.length - inboundBufferPtr;
+    return inboundBuffer == null ? 0 : inboundBuffer.length - inboundBufferPtr;
   }
 
   @Override

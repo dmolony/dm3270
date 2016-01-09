@@ -19,6 +19,7 @@ import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 import com.bytezone.dm3270.utilities.FileSaver;
 import com.bytezone.dm3270.utilities.Site;
 
@@ -27,8 +28,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -97,21 +96,21 @@ public class TransferMenu implements ScreenChangeListener
     Path homePath = FileSaver.getHomePath (server);
     if (Files.notExists (homePath))
     {
-      showAlert ("Path does not exist: " + homePath);
+      Dm3270Utility.showAlert ("Path does not exist: " + homePath);
       return;
     }
 
     List<String> recentDatasets = screenWatcher.getRecentDatasets ();
     if (recentDatasets.size () == 0)
     {
-      showAlert ("No datasets to download");
+      Dm3270Utility.showAlert ("No datasets to download");
       return;
     }
 
     Field tsoCommandField = screenWatcher.getTSOCommandField ();
     if (tsoCommandField == null)
     {
-      showAlert ("This screen has no TSO input field");
+      Dm3270Utility.showAlert ("This screen has no TSO input field");
       return;
     }
 
@@ -132,7 +131,7 @@ public class TransferMenu implements ScreenChangeListener
 
     if (commandText.length () > tsoCommandField.getDisplayLength ())
     {
-      showAlert ("Command is too long for the TSO input field");
+      Dm3270Utility.showAlert ("Command is too long for the TSO input field");
       System.out.printf ("Field: %d, command: %d%n", tsoCommandField.getDisplayLength (),
                          commandText.length ());
       return;
@@ -384,14 +383,6 @@ public class TransferMenu implements ScreenChangeListener
     {
       return "IOException";
     }
-  }
-
-  private boolean showAlert (String message)
-  {
-    Alert alert = new Alert (AlertType.ERROR, message);
-    alert.getDialogPane ().setHeaderText (null);
-    Optional<ButtonType> result = alert.showAndWait ();
-    return (result.isPresent () && result.get () == ButtonType.OK);
   }
 
   private MenuItem getMenuItem (String text, EventHandler<ActionEvent> eventHandler,
