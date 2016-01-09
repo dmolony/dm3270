@@ -235,14 +235,6 @@ public class Console extends Application
     spyPane.startServer ();
   }
 
-  //  private boolean showAlert (String message)
-  //  {
-  //    Alert alert = new Alert (AlertType.ERROR, message);
-  //    alert.getDialogPane ().setHeaderText (null);
-  //    Optional<ButtonType> result = alert.showAndWait ();
-  //    return (result.isPresent () && result.get () == ButtonType.OK);
-  //  }
-
   @Override
   public void stop ()
   {

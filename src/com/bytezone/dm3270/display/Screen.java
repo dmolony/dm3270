@@ -25,8 +25,8 @@ import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.filetransfer.TransferListener;
 import com.bytezone.dm3270.filetransfer.TransferManager;
-import com.bytezone.dm3270.filetransfer.TransferMenu;
 import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
+import com.bytezone.dm3270.filetransfer.TransferMenu;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 import com.bytezone.dm3270.utilities.Site;
@@ -426,7 +426,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   }
 
   // ---------------------------------------------------------------------------------//
-  // File transfer interface methods
+  // TransferListener methods
   // ---------------------------------------------------------------------------------//
 
   @Override
