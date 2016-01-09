@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import com.bytezone.dm3270.assistant.AssistantStage;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.TSOCommandListener;
 import com.bytezone.dm3270.utilities.Site;
@@ -21,11 +20,10 @@ public class TransferManager implements TSOCommandListener
     READY, OPEN, PROCESSING, FINISHED
   }
 
-  public TransferManager (Screen screen, Site site, AssistantStage assistantStage)
+  public TransferManager (Screen screen, Site site)
   {
     this.screen = screen;
     this.site = site;
-    assistantStage.setTransferManager (this);
   }
 
   // called from ScreenPacker.addTSOCommand()

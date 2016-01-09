@@ -81,7 +81,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   }
 
   public Screen (ScreenDimensions screenDimensions, Preferences prefs, Function function,
-      PluginsStage pluginsStage, Site site)
+      PluginsStage pluginsStage, Site serverSite)
   {
     this.screenDimensions = screenDimensions;
     this.function = function;
@@ -94,8 +94,12 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this);
-    transferManager = new TransferManager (this, site, assistantStage);
-    transferMenu = new TransferMenu (site, transferManager);
+
+    // site will be null in replay mode, so it will have to be updated later
+    transferManager = new TransferManager (this, serverSite);
+    transferMenu = new TransferMenu (serverSite, transferManager);
+
+    assistantStage.setTransferManager (transferManager);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
     pen = new PenType1 (screenPositions, gc, contextManager, screenDimensions);
@@ -147,9 +151,12 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public void setConsolePane (ConsolePane consolePane)
   {
     this.consolePane = consolePane;
+
+    // allow these classes to issue TSO commands
     assistantStage.setConsolePane (consolePane);
-    addKeyboardStatusChangeListener (consolePane);
     transferMenu.setConsolePane (consolePane);
+
+    addKeyboardStatusChangeListener (consolePane);
   }
 
   public void setStatusText (String text)
