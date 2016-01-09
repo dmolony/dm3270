@@ -4,7 +4,6 @@ import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.TSOCommandListener;
-import com.bytezone.dm3270.utilities.Site;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,9 +15,9 @@ public class CommandsTab extends AbstractTransferTab
   ObservableList<String> commands = FXCollections.observableArrayList ();
   ListView<String> commandList = new ListView<> (commands);
 
-  public CommandsTab (Screen screen, Site site, TSOCommand tsoCommand)
+  public CommandsTab (Screen screen, TSOCommand tsoCommand)
   {
-    super ("Commands", screen, site, tsoCommand);
+    super ("Commands", screen, tsoCommand);
 
     commandList.setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
     setContent (commandList);

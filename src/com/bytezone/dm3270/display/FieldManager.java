@@ -10,7 +10,6 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.PluginData;
 import com.bytezone.dm3270.plugins.PluginField;
-import com.bytezone.dm3270.utilities.Site;
 
 public class FieldManager
 {
@@ -28,7 +27,7 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  FieldManager (Screen screen, ContextManager contextManager, Site site)
+  FieldManager (Screen screen, ContextManager contextManager)
   {
     this.screen = screen;
     this.contextManager = contextManager;

@@ -5,7 +5,6 @@ import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenWatcher;
-import com.bytezone.dm3270.utilities.Site;
 
 import javafx.scene.control.Tab;
 
@@ -13,24 +12,17 @@ public abstract class AbstractTransferTab extends Tab
     implements ScreenChangeListener, KeyboardStatusListener
 {
   protected final Screen screen;
-  protected final Site site;
-  //  protected final Button btnExecute;
-  //  protected final TextField txtCommand;
   protected ScreenWatcher screenWatcher;
   protected TSOCommand tsoCommand;
 
-  public AbstractTransferTab (String name, Screen screen, Site site,
-      TSOCommand tsoCommand)
+  public AbstractTransferTab (String name, Screen screen, TSOCommand tsoCommand)
   {
     super (name);
 
     setClosable (false);
 
     this.screen = screen;
-    this.site = site;
     this.tsoCommand = tsoCommand;
-    //    this.txtCommand = text;
-    //    this.btnExecute = execute;
   }
 
   protected void eraseCommand ()

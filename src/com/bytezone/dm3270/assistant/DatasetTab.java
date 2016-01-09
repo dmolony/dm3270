@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenWatcher;
-import com.bytezone.dm3270.utilities.Site;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.control.TreeItem;
@@ -24,9 +23,9 @@ public class DatasetTab extends AbstractTransferTab
   private final DatasetTable datasetTable = new DatasetTable ();
   private final DatasetTreeTable datasetTreeTable = new DatasetTreeTable ();
 
-  public DatasetTab (Screen screen, Site site, TSOCommand tsoCommand)
+  public DatasetTab (Screen screen, TSOCommand tsoCommand)
   {
-    super ("Datasets", screen, site, tsoCommand);
+    super ("Datasets", screen, tsoCommand);
 
     if (useTable)
     {

@@ -52,7 +52,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final List<ScreenChangeListener> screenChangeListeners;
   private final List<KeyboardStatusListener> keyboardStatusListeners;
 
-  public AssistantStage (Screen screen, Site site)
+  public AssistantStage (Screen screen)
   {
     setTitle ("File Transfers");
 
@@ -62,11 +62,11 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     tsoCommand = new TSOCommand ();
     screen.getFieldManager ().addScreenChangeListener (tsoCommand);
 
-    datasetTab = new DatasetTab (screen, site, tsoCommand);
-    jobTab = new BatchJobTab (screen, site, tsoCommand);
-    filesTab = new FilesTab (screen, site, tsoCommand, prefs);
-    commandsTab = new CommandsTab (screen, site, tsoCommand);
-    transfersTab = new TransfersTab (screen, site, tsoCommand);
+    datasetTab = new DatasetTab (screen, tsoCommand);
+    jobTab = new BatchJobTab (screen, tsoCommand);
+    filesTab = new FilesTab (screen, tsoCommand, prefs);
+    commandsTab = new CommandsTab (screen, tsoCommand);
+    transfersTab = new TransfersTab (screen, tsoCommand);
     tabPane.getTabs ().addAll (datasetTab, jobTab, filesTab, commandsTab, transfersTab);
     tabPane.setTabMinWidth (80);
 
@@ -196,16 +196,8 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
     ReporterNode reporterNode = filesTab.getReporterNode ();
 
     if (transfer.getSiteFolderName ().isEmpty ())
-    {
-      //      System.out.println ("No site folder");
       reporterNode.addBuffer (transfer.getDatasetName (), transfer.combineDataBuffers ());
-    }
     else
-    {
-      //      reporterNode.addBuffer (transfer.getDatasetName (), transfer.combineDataBuffers (),
-      //                              transfer.getSiteFolderName ());
-      //      System.out.println ("about to link file");
       reporterNode.addFile (transfer.getFile (), transfer.getSiteFolderName ());
-    }
   }
 }

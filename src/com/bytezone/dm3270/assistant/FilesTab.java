@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.prefs.Preferences;
 
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Site;
 import com.bytezone.reporter.application.FileNode;
 import com.bytezone.reporter.application.NodeSelectionListener;
 import com.bytezone.reporter.application.ReporterNode;
@@ -18,9 +17,9 @@ public class FilesTab extends AbstractTransferTab implements NodeSelectionListen
   private final ReporterNode reporterNode;
   private FileNode currentFileNode;
 
-  public FilesTab (Screen screen, Site site, TSOCommand tsoCommand, Preferences prefs)
+  public FilesTab (Screen screen, TSOCommand tsoCommand, Preferences prefs)
   {
-    super ("Local Files", screen, site, tsoCommand);
+    super ("Local Files", screen, tsoCommand);
 
     reporterNode = new ReporterNode (prefs);
     reporterNode.addNodeSelectionListener (this);
