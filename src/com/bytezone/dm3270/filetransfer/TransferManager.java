@@ -3,6 +3,7 @@ package com.bytezone.dm3270.filetransfer;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.TSOCommandListener;
@@ -10,6 +11,8 @@ import com.bytezone.dm3270.utilities.Site;
 
 public class TransferManager implements TSOCommandListener
 {
+  private static Pattern INDFILE_PATTERN =
+      Pattern.compile ("^(TSO )?\\s*IND[$£]FILE\\s+(GET|PUT).*");
   private Transfer currentTransfer;
 
   private final Screen screen;
@@ -30,21 +33,31 @@ public class TransferManager implements TSOCommandListener
   @Override
   public void tsoCommand (String command)
   {
-    if (command.startsWith ("IND$FILE") || command.startsWith ("TSO IND$FILE"))
+    if (INDFILE_PATTERN.matcher (command).matches ())
+    //      if (command.startsWith ("IND$FILE") || command.startsWith ("TSO IND$FILE"))
     {
-      IndFileCommand newCommand = new IndFileCommand (command);
-      //      indFileCommand.compareWith (indFileCommand);
+      try
+      {
+        IndFileCommand newCommand = new IndFileCommand (command);
+        //      indFileCommand.compareWith (indFileCommand);
 
-      // check for a user-initiated IND$FILE command
-      // If it is a download, we can either keep it as a temporary buffer, or ask
-      // the user for a filename. If it is an upload we will have to ask for the
-      // source filename.
-      // a program-initiated IND$FILE command will already have the filenames
-      if (currentTransfer == null)
-        currentTransfer = new Transfer (newCommand, site, screen.getPrefix ());
-      //      else
-      //        currentTransfer.compare (newCommand);
+        // check for a user-initiated IND$FILE command
+        // If it is a download, we can either keep it as a temporary buffer, or ask
+        // the user for a filename. If it is an upload we will have to ask for the
+        // source filename.
+        // a program-initiated IND$FILE command will already have the filenames
+        if (currentTransfer == null)
+          currentTransfer = new Transfer (newCommand, site, screen.getPrefix ());
+        //      else
+        //        currentTransfer.compare (newCommand);
+      }
+      catch (IllegalArgumentException e)
+      {
+        System.out.println (e);
+      }
     }
+    else
+      System.out.println ("TransferManager regex did not match");
   }
 
   public void setReplayServer (Site serverSite)

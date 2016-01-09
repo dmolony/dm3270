@@ -28,7 +28,7 @@ public class IndFileCommand
 
   private byte[] buffer;
   private File localFile;
-  private TransferType transferType;
+  private final TransferType transferType;
 
   public IndFileCommand (TransferType transferType, String datasetName, File localFile)
   {
@@ -53,30 +53,21 @@ public class IndFileCommand
     this.command = command;
     command = command.toLowerCase ().trim ();
     if (command.startsWith ("tso "))
-      command = command.substring (4);
+      command = command.substring (4).trim ();
 
-    String[] chunks = command.split ("\\s");
+    String[] chunks = command.split ("\\s+");
 
-    if (false)
-    {
-      int count = 0;
-      for (String chunk : chunks)
-        System.out.printf ("Chunk %d: %s%n", count++, chunk);
-    }
+    if (chunks.length == 0
+        || (!"ind$file".equals (chunks[0]) && !"ind£file".equals (chunks[0])))
+      throw new IllegalArgumentException ("No IND$FILE in that command");
 
-    // check for a reconnection after an abort during a file transfer
-    if (!"ind$file".equals (chunks[0]))
-    {
-      System.out.printf ("Unexpected error: %s%n", chunks[0]);
-      int count = 0;
-      for (String chunk : chunks)
-        System.out.printf ("Chunk %d: %s%n", count++, chunk);
-      return;
-    }
+    if (chunks.length == 1 || (!chunks[1].equals ("put") && !chunks[1].equals ("get")))
+      throw new IllegalArgumentException ("No PUT or GET in that command");
 
-    assert chunks[1].equals ("put") || chunks[1].equals ("get");
+    if (chunks.length == 2)
+      throw new IllegalArgumentException ("No dataset name in that command");
+
     transferType = "put".equals (chunks[1]) ? TransferType.UPLOAD : TransferType.DOWNLOAD;
-
     datasetName = chunks[2];
     if (datasetName.startsWith ("'") && datasetName.endsWith ("'")
         && datasetName.length () > 2)
