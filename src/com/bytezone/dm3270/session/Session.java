@@ -158,7 +158,7 @@ public class Session implements Iterable<SessionRecord>
     {
       clientName = ((ReadStructuredFieldCommand) command).getClientName ();
       if (clientName != null)
-        notifyChangeListeners ();
+        setHeaderText ();
     }
   }
 
@@ -194,10 +194,10 @@ public class Session implements Iterable<SessionRecord>
       }
 
     if (serverName != null)
-      notifyChangeListeners ();
+      setHeaderText ();
   }
 
-  private void notifyChangeListeners ()
+  private void setHeaderText ()
   {
     Platform.runLater ( () -> headerLabel
         .setText (String.format ("%s : %s", getServerName (), getClientName ())));
