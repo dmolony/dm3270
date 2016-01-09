@@ -49,15 +49,16 @@ public class TransferMenu implements ScreenChangeListener
   private Site server;
 
   private ScreenWatcher screenWatcher;
-  private TransferManager transferManager;
+  private final TransferManager transferManager;
   private ConsolePane consolePane;
 
   private final MenuItem menuItemUpload;
   private final MenuItem menuItemDownload;
 
-  public TransferMenu (Site server)
+  public TransferMenu (Site server, TransferManager transferManager)
   {
     this.server = server;
+    this.transferManager = transferManager;
     menuItemUpload =
         getMenuItem ("Upload", e -> transfer (TransferType.UPLOAD), KeyCode.U);
     menuItemDownload =
@@ -71,9 +72,8 @@ public class TransferMenu implements ScreenChangeListener
   }
 
   // called from Screen.setConsolePane()
-  void setTransferHandlers (TransferManager transferManager, ConsolePane consolePane)
+  void setConsolePane (ConsolePane consolePane)
   {
-    this.transferManager = transferManager;
     this.consolePane = consolePane;
   }
 

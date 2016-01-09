@@ -95,7 +95,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this, site);
     transferManager = new TransferManager (this, site, assistantStage);
-    transferMenu = new TransferMenu (site);
+    transferMenu = new TransferMenu (site, transferManager);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
     pen = new PenType1 (screenPositions, gc, contextManager, screenDimensions);
@@ -149,9 +149,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     this.consolePane = consolePane;
     assistantStage.setConsolePane (consolePane);
     addKeyboardStatusChangeListener (consolePane);
-
-    // allow TransferMenu to do file transfers
-    transferMenu.setTransferHandlers (transferManager, consolePane);
+    transferMenu.setConsolePane (consolePane);
   }
 
   public void setStatusText (String text)
