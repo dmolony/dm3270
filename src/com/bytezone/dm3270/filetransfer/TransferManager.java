@@ -34,12 +34,9 @@ public class TransferManager implements TSOCommandListener
   public void tsoCommand (String command)
   {
     if (INDFILE_PATTERN.matcher (command).matches ())
-    //      if (command.startsWith ("IND$FILE") || command.startsWith ("TSO IND$FILE"))
-    {
       try
       {
         IndFileCommand newCommand = new IndFileCommand (command);
-        //      indFileCommand.compareWith (indFileCommand);
 
         // check for a user-initiated IND$FILE command
         // If it is a download, we can either keep it as a temporary buffer, or ask
@@ -48,16 +45,13 @@ public class TransferManager implements TSOCommandListener
         // a program-initiated IND$FILE command will already have the filenames
         if (currentTransfer == null)
           currentTransfer = new Transfer (newCommand, site, screen.getPrefix ());
-        //      else
-        //        currentTransfer.compare (newCommand);
       }
       catch (IllegalArgumentException e)
       {
         System.out.println (e);
       }
-    }
     else
-      System.out.println ("TransferManager regex did not match");
+      System.out.println ("TransferManager regex did not match IndFileCommand");
   }
 
   public void setReplayServer (Site serverSite)
@@ -146,7 +140,6 @@ public class TransferManager implements TSOCommandListener
 
   public void removeTransferListener (TransferListener listener)
   {
-    if (transferListeners.contains (listener))
-      transferListeners.remove (listener);
+    transferListeners.remove (listener);
   }
 }

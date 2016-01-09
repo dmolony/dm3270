@@ -69,9 +69,11 @@ public class IndFileCommand
 
     transferType = "put".equals (chunks[1]) ? TransferType.UPLOAD : TransferType.DOWNLOAD;
     datasetName = chunks[2];
-    if (datasetName.startsWith ("'") && datasetName.endsWith ("'")
-        && datasetName.length () > 2)
+    if (datasetName.startsWith ("'") && datasetName.endsWith ("'"))
     {
+      if (datasetName.length () == 2)
+        throw new IllegalArgumentException ("No dataset name in that command");
+
       datasetName = datasetName.substring (1, datasetName.length () - 1);
       hasTLQ = true;
       int pos = datasetName.indexOf ('.');
@@ -152,12 +154,6 @@ public class IndFileCommand
 
     command = String.format ("IND$FILE %s %s%s", type, commandDatasetName, options);
   }
-
-  //  public void compareWith (IndFileCommand other)
-  //  {
-  //    System.out.println (this);
-  //    System.out.println (other);
-  //  }
 
   public String getCommand ()
   {
