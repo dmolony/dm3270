@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.display;
+package com.bytezone.dm3270.filetransfer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,9 +15,10 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.filetransfer.IndFileCommand;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
-import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.utilities.FileSaver;
 import com.bytezone.dm3270.utilities.Site;
 
@@ -72,7 +73,7 @@ public class TransferMenu implements ScreenChangeListener
   }
 
   // called from Screen.setConsolePane()
-  void setConsolePane (ConsolePane consolePane)
+  public void setConsolePane (ConsolePane consolePane)
   {
     this.consolePane = consolePane;
   }
@@ -88,7 +89,7 @@ public class TransferMenu implements ScreenChangeListener
   }
 
   // called from the Upload and Download menu items
-  public void transfer (TransferType transferType)
+  private void transfer (TransferType transferType)
   {
     assert consolePane != null;
     assert transferManager != null;
