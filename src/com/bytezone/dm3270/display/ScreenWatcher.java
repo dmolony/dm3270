@@ -204,7 +204,7 @@ public class ScreenWatcher
         if ((length == 66 || length == 48) && visible && modifiable)
         {
           tsoCommandField = nextField;
-          promptFieldLine = field.getFirstLocation () / 80;
+          promptFieldLine = field.getFirstLocation () / screenDimensions.columns;
           return true;
         }
       }
