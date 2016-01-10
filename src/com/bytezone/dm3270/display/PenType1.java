@@ -9,7 +9,7 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public class PenType1 implements Pen
+class PenType1 implements Pen
 {
   private final ScreenPosition[] screenPositions;
 

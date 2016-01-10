@@ -15,7 +15,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
 
-public class FontManagerType1 implements FontManager
+class FontManagerType1 implements FontManager
 {
   private static final String[] fontNames =
       { "Andale Mono", "Anonymous Pro", "Consolas", "Courier New", "DejaVu Sans Mono",
