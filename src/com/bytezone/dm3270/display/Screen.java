@@ -91,7 +91,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     gc = getGraphicsContext2D ();
 
     contextManager = new ContextManager ();
-    fontManager = new FontManagerType1 (this, prefs);
+    fontManager = FontManager.getInstance (this, prefs);
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this);

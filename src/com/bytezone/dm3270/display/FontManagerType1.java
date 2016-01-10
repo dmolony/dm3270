@@ -34,7 +34,7 @@ class FontManagerType1 implements FontManager
   private FontDetails fontDetails;
   private Font statusBarFont;
 
-  public FontManagerType1 (Screen screen, Preferences prefs)
+  FontManagerType1 (Screen screen, Preferences prefs)
   {
     this.screen = screen;
 
