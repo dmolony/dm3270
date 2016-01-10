@@ -14,8 +14,8 @@ public class IndFileCommand
 
   private String command;
   private String datasetName;
-  private boolean hasTLQ;
-  private String tlq;
+  private boolean hasHLQ;
+  private String hlq;
   private String prefix;
   private boolean crlf;
   private boolean ascii;
@@ -75,10 +75,10 @@ public class IndFileCommand
         throw new IllegalArgumentException ("No dataset name in that command");
 
       datasetName = datasetName.substring (1, datasetName.length () - 1);
-      hasTLQ = true;
+      hasHLQ = true;
       int pos = datasetName.indexOf ('.');
       if (pos > 0)
-        tlq = datasetName.substring (0, pos);
+        hlq = datasetName.substring (0, pos);
     }
 
     int lengthMinusOne = chunks.length - 1;
@@ -123,8 +123,8 @@ public class IndFileCommand
     int pos = datasetName.indexOf ('.');
     if (pos > 0)
     {
-      hasTLQ = true;
-      tlq = datasetName.substring (0, pos);
+      hasHLQ = true;
+      hlq = datasetName.substring (0, pos);
     }
 
     setCommandText ();
@@ -177,12 +177,12 @@ public class IndFileCommand
 
   public void setTlq (String tlq)
   {
-    this.tlq = tlq;
+    this.hlq = tlq;
   }
 
-  public boolean hasTLQ ()
+  public boolean hasHLQ ()
   {
-    return hasTLQ;
+    return hasHLQ;
   }
 
   public void setAscii (boolean value)
@@ -243,12 +243,12 @@ public class IndFileCommand
     text.append (String.format ("%nCommand ........ %s", command));
     text.append (String.format ("%nTransfer ....... %s", transferType));
     text.append (String.format ("%nDataset ........ %s", datasetName));
-    text.append (String.format ("%nTLQ ............ %s", tlq));
+    text.append (String.format ("%nhas HLQ ........ %s", hasHLQ));
+    text.append (String.format ("%nHLQ ............ %s", hlq));
     text.append (String.format ("%nPrefix ......... %s", prefix));
     text.append (String.format ("%nFile name ...... %s", localFile));
     text.append (String.format ("%nBuffer length .. %,d",
                                 buffer == null ? -1 : buffer.length));
-    text.append (String.format ("%nhas TLQ ........ %s", hasTLQ));
     text.append (String.format ("%nCRLF ........... %s", crlf));
     text.append (String.format ("%nASCII .......... %s", ascii));
     text.append (String.format ("%nAPPEND ......... %s", append));

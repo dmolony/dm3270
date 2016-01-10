@@ -54,7 +54,7 @@ public class Transfer
     inboundBuffer = indFileCommand.getBuffer ();
 
     String tempDatasetName = indFileCommand.getDatasetName ().toUpperCase ();
-    if (!indFileCommand.hasTLQ () && !tlq.isEmpty ())
+    if (!indFileCommand.hasHLQ () && !tlq.isEmpty ())
       datasetName = tlq + "." + tempDatasetName;
     else
       datasetName = tempDatasetName;

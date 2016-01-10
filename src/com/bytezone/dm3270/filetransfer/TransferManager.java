@@ -69,6 +69,12 @@ public class TransferManager implements TSOCommandListener
       byte[] buffer = indFileCommand.getBuffer ();
 
       if (buffer == null)
+      {
+        if (localFile == null || !localFile.exists () || !localFile.isFile ())
+        {
+          System.out.println ("******** No file to read ********");
+          return;
+        }
         try
         {
           buffer = Files.readAllBytes (localFile.toPath ());
@@ -78,6 +84,7 @@ public class TransferManager implements TSOCommandListener
         {
           e.printStackTrace ();
         }
+      }
     }
 
     currentTransfer = new Transfer (indFileCommand, site, screen.getPrefix ());
