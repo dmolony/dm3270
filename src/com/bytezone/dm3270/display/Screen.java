@@ -103,7 +103,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     assistantStage.setTransferManager (transferManager);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
-    pen = new PenType1 (screenPositions, gc, contextManager, screenDimensions);
+    pen = Pen.getInstance (screenPositions, gc, contextManager, screenDimensions);
 
     screenPacker = new ScreenPacker (pen, fieldManager);
     screenPacker.addTSOCommandListener (assistantStage);
