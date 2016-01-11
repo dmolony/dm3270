@@ -26,6 +26,11 @@ public class TransferManager implements TSOCommandListener
     READY, OPEN, PROCESSING, FINISHED
   }
 
+  public static boolean isIndfileCommand (String command)
+  {
+    return INDFILE_PATTERN.matcher (command).matches ();
+  }
+
   public TransferManager (Screen screen, Site site)
   {
     this.screen = screen;
@@ -37,7 +42,7 @@ public class TransferManager implements TSOCommandListener
   public void tsoCommand (String command)
   {
     // check for a user-initiated IND$FILE command
-    if (currentTransfer == null && INDFILE_PATTERN.matcher (command).matches ())
+    if (currentTransfer == null && isIndfileCommand (command))
 
       // If it is a download, we can either keep it as a temporary buffer, or ask
       // the user for a filename. If it is an upload we will have to ask for the
