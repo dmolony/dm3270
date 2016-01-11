@@ -73,7 +73,7 @@ public class Terminal extends Application
   @Override
   public void start (Stage primaryStage) throws Exception
   {
-    serverSitesListStage = new SiteListStage (prefs, "Server", 5, true);
+    serverSitesListStage = new SiteListStage (prefs, "Server", 6, true);
     pluginsStage = new PluginsStage (prefs);
 
     Site serverSite = null;
