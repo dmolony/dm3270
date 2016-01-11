@@ -93,6 +93,12 @@ public class TransferMenu implements ScreenChangeListener
     assert consolePane != null;
     assert transferManager != null;
 
+    if (server == null)
+    {
+      Dm3270Utility.showAlert ("Null server");
+      return;
+    }
+
     Path homePath = FileSaver.getHomePath (server);
     if (Files.notExists (homePath))
     {

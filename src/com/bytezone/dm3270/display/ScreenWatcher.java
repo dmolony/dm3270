@@ -48,7 +48,7 @@ public class ScreenWatcher
   private boolean isSplitScreen;
   private int promptFieldLine;
 
-  private String currentDataset = "";
+  private String currentPDS = "";
   private String singleDataset = "";
   private String userid = "";
   private String prefix = "";
@@ -96,9 +96,9 @@ public class ScreenWatcher
     return screenMembers;
   }
 
-  public String getCurrentDataset ()
+  public String getCurrentPDS ()
   {
-    return currentDataset;
+    return currentPDS;
   }
 
   public String getSingleDataset ()
@@ -133,15 +133,19 @@ public class ScreenWatcher
     if (isSplitScreen)
       return;
 
-    //    checkMenu ();
+    checkMenu ();
 
-    if (hasPromptField ())
+    isTSOCommandScreen = checkTSOCommandScreen (screenFields);
+    if (isTSOCommandScreen)
+    {
+
+    }
+    else if (hasPromptField ())
     {
       if (prefix.isEmpty ())
         checkPrefixScreen (screenFields);       // initial ISPF screen
 
       isDatasetList = checkDatasetList (screenFields);
-
       if (isDatasetList)
       {
         //        System.out.println ("Dataset list");
@@ -157,12 +161,13 @@ public class ScreenWatcher
           checkSingleDataset (screenFields);
       }
     }
-    else
-      isTSOCommandScreen = checkTSOCommandScreen (screenFields);
   }
 
   private void checkMenu ()
   {
+    if (true)
+      return;
+
     List<Field> rowFields = fieldManager.getRowFields (0, 1);
     dumpFields (rowFields);
 
@@ -194,6 +199,7 @@ public class ScreenWatcher
     {
       Field field = rowFields.get (i);
       String text = field.getText ();
+
       int column = field.getFirstLocation () % screenDimensions.columns;
       int nextFieldNo = i + 1;
 
@@ -512,9 +518,17 @@ public class ScreenWatcher
     if (screenFields.size () < 14)
       return false;
 
-    if (!listMatchesArray (fieldManager.getMenus (), pdsMenus))
+    if (listMatchesArray (fieldManager.getMenus (), pdsMenus))
+      return checkMemberList1 (screenFields);
+
+    if (listMatchesArray (fieldManager.getMenus (), memberMenus))
       return checkMemberList2 (screenFields);
 
+    return false;
+  }
+
+  private boolean checkMemberList1 (List<Field> screenFields)
+  {
     Field field = screenFields.get (8);
     int location = field.getFirstLocation ();
     if (location != 161)
@@ -548,7 +562,7 @@ public class ScreenWatcher
       return false;
 
     String datasetName = field.getText ().trim ();
-    currentDataset = datasetName;
+    currentPDS = datasetName;
 
     List<Field> headings = fieldManager.getRowFields (4);
 
@@ -582,8 +596,8 @@ public class ScreenWatcher
 
   private boolean checkMemberList2 (List<Field> screenFields)
   {
-    if (!listMatchesArray (fieldManager.getMenus (), memberMenus))
-      return false;
+    //    if (!listMatchesArray (fieldManager.getMenus (), memberMenus))
+    //      return false;
 
     Field field = screenFields.get (7);
     int location = field.getFirstLocation ();
@@ -606,7 +620,7 @@ public class ScreenWatcher
     if (field.getFirstLocation () != 170)
       return false;
     String datasetName = field.getText ().trim ();
-    currentDataset = datasetName;
+    currentPDS = datasetName;
 
     List<Field> headings = fieldManager.getRowFields (4);
 
@@ -786,7 +800,7 @@ public class ScreenWatcher
     text.append (String.format ("Prompt line ....... %d%n", promptFieldLine));
     text.append (String.format ("Dataset list ...... %s%n", isDatasetList));
     text.append (String.format ("Members list ...... %s%n", isMemberList));
-    text.append (String.format ("Current dataset ... %s%n", currentDataset));
+    text.append (String.format ("Current dataset ... %s%n", currentPDS));
     text.append (String.format ("Single dataset .... %s%n", singleDataset));
     text.append (String.format ("Userid/prefix ..... %s / %s%n", userid, prefix));
     text.append (String.format ("Datasets for ...... %s%n", datasetsMatching));
