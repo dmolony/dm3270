@@ -36,7 +36,7 @@ public class ScreenWatcher
   private final Map<String, Dataset> siteDatasets = new TreeMap<> ();
   private final List<Dataset> screenDatasets = new ArrayList<> ();
   private final List<Dataset> screenMembers = new ArrayList<> ();
-  private final List<String> recentDatasets = new ArrayList<> ();
+  private final List<String> recentDatasetNames = new ArrayList<> ();
 
   private String datasetsMatching;
   private String datasetsOnVolume;
@@ -108,7 +108,7 @@ public class ScreenWatcher
 
   public List<String> getRecentDatasets ()
   {
-    return recentDatasets;
+    return recentDatasetNames;
   }
 
   // called by FieldManager after building a new screen
@@ -143,12 +143,16 @@ public class ScreenWatcher
       isDatasetList = checkDatasetList (screenFields);
 
       if (isDatasetList)
-        System.out.println ("Dataset list");
+      {
+        //        System.out.println ("Dataset list");
+      }
       else
       {
         isMemberList = checkMemberList (screenFields);
         if (isMemberList)
-          System.out.println ("Member list of " + currentDataset);
+        {
+          //          System.out.println ("Member list of " + currentDataset);
+        }
         else
           checkSingleDataset (screenFields);
       }
@@ -384,8 +388,8 @@ public class ScreenWatcher
         System.out.printf ("Dataset name too long: %s%n", datasetName);
         break;
       }
-      Matcher matcher = datasetNamePattern.matcher (datasetName);
-      if (matcher.matches ())
+
+      if (datasetNamePattern.matcher (datasetName).matches ())
         addDataset (datasetName, screenType, rowFields);
       else
       {
@@ -443,8 +447,7 @@ public class ScreenWatcher
           setDates (dataset, rowFields.get (5).getText ());
 
           String catalog = rowFields.get (6).getText ().trim ();
-          Matcher matcher = datasetNamePattern.matcher (catalog);
-          if (matcher.matches ())
+          if (datasetNamePattern.matcher (catalog).matches ())
             dataset.setCatalog (catalog);
         }
         break;
@@ -700,7 +703,7 @@ public class ScreenWatcher
     }
     catch (NumberFormatException e)
     {
-      System.out.printf ("Error with %s: [%s]%n", id, value);
+      System.out.printf ("ParseInt error with %s: [%s]%n", id, value);
       return 0;
     }
   }
@@ -724,9 +727,7 @@ public class ScreenWatcher
         String text1 = field.getText ().trim ();
         String text2 = rowFields.get (fldNo + 1).getText ().trim ();
         String text3 = rowFields.get (fldNo + 2).getText ();
-        //          System.out.println (text1);
-        //          System.out.println (text2);
-        //          System.out.println (text3);
+
         if ((text1.equals ("EDIT") || text1.equals ("VIEW") || text1.equals ("BROWSE"))
             && (text3.equals ("Columns") || text3.equals ("Line")))
         {
@@ -742,13 +743,12 @@ public class ScreenWatcher
           Matcher matcher = datasetNamePattern.matcher (datasetName);
           if (matcher.matches ())
           {
-            System.out.printf ("%-11s %-20s %s%n", text1, datasetName, memberName);
+            //  System.out.printf ("%-11s %-20s %s%n", text1, datasetName, memberName);
             singleDataset = datasetName;
             if (!memberName.isEmpty ())
               singleDataset += "(" + memberName + ")";
-            //            Dataset dataset = new Dataset (singleDataset);
-            if (!recentDatasets.contains (singleDataset))
-              recentDatasets.add (singleDataset);
+            if (!recentDatasetNames.contains (singleDataset))
+              recentDatasetNames.add (singleDataset);
           }
         }
       }
@@ -769,8 +769,9 @@ public class ScreenWatcher
 
   private void dumpFields (List<Field> fields)
   {
-    for (Field field : fields)
-      System.out.println (field);
+    fields.forEach (System.out::println);
+    //    for (Field field : fields)
+    //      System.out.println (field);
     System.out.println ("-------------------------");
   }
 
@@ -792,10 +793,11 @@ public class ScreenWatcher
     text.append (String.format ("Volume ............ %s%n", datasetsOnVolume));
     text.append (String.format ("Datasets .......... %s%n",
                                 screenDatasets == null ? "" : screenDatasets.size ()));
-    text.append (String.format ("Recent datasets ... %s%n",
-                                screenDatasets == null ? "" : recentDatasets.size ()));
+    text.append (String
+        .format ("Recent datasets ... %s%n",
+                 screenDatasets == null ? "" : recentDatasetNames.size ()));
     int i = 0;
-    for (String datasetName : recentDatasets)
+    for (String datasetName : recentDatasetNames)
       text.append (String.format ("            %3d ... %s%n", ++i, datasetName));
 
     return text.toString ();
