@@ -26,13 +26,11 @@ public class DownloadDialog extends TransferDialog
   {
     super (screenWatcher, homePath, baseLength);
 
-    datasetList.setOnAction (event -> refreshDownload ());
-
     GridPane grid = new GridPane ();
     grid.setPadding (new Insets (10, 35, 10, 20));
 
     grid.add (new Label ("Dataset"), 1, 1);
-    grid.add (datasetList, 2, 1);
+    grid.add (datasetComboBox, 2, 1);
 
     grid.add (new Label ("To folder"), 1, 2);
     grid.add (labelToFolder, 2, 2);
@@ -61,7 +59,7 @@ public class DownloadDialog extends TransferDialog
       if (btnType != btnTypeOK)
         return null;
 
-      String datasetName = datasetList.getSelectionModel ().getSelectedItem ();
+      String datasetName = datasetComboBox.getSelectionModel ().getSelectedItem ();
       IndFileCommand indFileCommand =
           new IndFileCommand (getCommandText ("GET", datasetName));
 
@@ -73,11 +71,15 @@ public class DownloadDialog extends TransferDialog
     });
 
     refreshDownload ();
+    datasetComboBox.setOnAction (event -> refreshDownload ());
   }
 
   private void refreshDownload ()
   {
-    String datasetSelected = datasetList.getSelectionModel ().getSelectedItem ();
+    String datasetSelected = datasetComboBox.getSelectionModel ().getSelectedItem ();
+    if (datasetSelected == null)    // could be rebuilding the list
+      return;
+
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 

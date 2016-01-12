@@ -25,12 +25,10 @@ public class UploadDialog extends TransferDialog
   {
     super (screenWatcher, homePath, baseLength);
 
-    datasetList.setOnAction (event -> refreshUpload ());
-
     GridPane grid = new GridPane ();
 
     grid.add (new Label ("Dataset"), 1, 1);
-    grid.add (datasetList, 2, 1);
+    grid.add (datasetComboBox, 2, 1);
 
     grid.add (new Label ("From folder"), 1, 2);
     grid.add (labelFromFolder, 2, 2);
@@ -59,7 +57,7 @@ public class UploadDialog extends TransferDialog
       if (btnType != btnTypeOK)
         return null;
 
-      String datasetName = datasetList.getSelectionModel ().getSelectedItem ();
+      String datasetName = datasetComboBox.getSelectionModel ().getSelectedItem ();
       IndFileCommand indFileCommand =
           new IndFileCommand (getCommandText ("PUT", datasetName));
 
@@ -74,11 +72,15 @@ public class UploadDialog extends TransferDialog
         newValue) -> okButton.setDisable (newValue.trim ().isEmpty ()));
 
     refreshUpload ();
+    datasetComboBox.setOnAction (event -> refreshUpload ());
   }
 
   private void refreshUpload ()
   {
-    String datasetSelected = datasetList.getSelectionModel ().getSelectedItem ();
+    String datasetSelected = datasetComboBox.getSelectionModel ().getSelectedItem ();
+    if (datasetSelected == null)    // could be rebuilding the list
+      return;
+
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 

@@ -24,10 +24,12 @@ public class TransferDialog
       Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
 
   final Dialog<IndFileCommand> dialog = new Dialog<> ();
+
   protected final ScreenWatcher screenWatcher;
   protected final Path homePath;
   protected final int baseLength;
-  protected final ComboBox<String> datasetList = new ComboBox<> ();
+
+  protected final ComboBox<String> datasetComboBox = new ComboBox<> ();
 
   public TransferDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
@@ -38,11 +40,11 @@ public class TransferDialog
     refresh ();
   }
 
-  void refresh ()
+  protected void refresh ()
   {
-    datasetList
+    datasetComboBox
         .setItems (FXCollections.observableList (screenWatcher.getRecentDatasets ()));
-    datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
+    datasetComboBox.getSelectionModel ().select (screenWatcher.getSingleDataset ());
   }
 
   protected String getCommandText (String direction, String datasetName)
