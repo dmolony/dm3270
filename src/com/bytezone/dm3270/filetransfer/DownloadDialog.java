@@ -9,11 +9,7 @@ import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.utilities.FileSaver;
 
-import javafx.geometry.Insets;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 
 public class DownloadDialog extends TransferDialog
 {
@@ -24,10 +20,7 @@ public class DownloadDialog extends TransferDialog
 
   public DownloadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
-    super (screenWatcher, homePath, baseLength);
-
-    GridPane grid = new GridPane ();
-    grid.setPadding (new Insets (10, 35, 10, 20));
+    super (screenWatcher, homePath, baseLength, "Download dataset");
 
     grid.add (new Label ("Dataset"), 1, 1);
     grid.add (datasetComboBox, 2, 1);
@@ -43,16 +36,6 @@ public class DownloadDialog extends TransferDialog
 
     grid.add (new Label ("Dataset date"), 1, 5);
     grid.add (labelDatasetDate, 2, 5);
-
-    grid.setHgap (10);
-    grid.setVgap (10);
-
-    dialog.setTitle ("Download dataset");
-    dialog.getDialogPane ().setContent (grid);
-
-    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
-    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
-    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
 
     dialog.setResultConverter (btnType ->
     {

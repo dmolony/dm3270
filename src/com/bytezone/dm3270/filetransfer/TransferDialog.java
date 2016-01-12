@@ -12,8 +12,12 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.display.ScreenWatcher;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.layout.GridPane;
 
 public class TransferDialog
 {
@@ -24,6 +28,11 @@ public class TransferDialog
       Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
 
   final Dialog<IndFileCommand> dialog = new Dialog<> ();
+  protected final GridPane grid = new GridPane ();
+
+  protected final ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
+  protected final ButtonType btnTypeCancel =
+      new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
 
   protected final ScreenWatcher screenWatcher;
   protected final Path homePath;
@@ -31,11 +40,20 @@ public class TransferDialog
 
   protected final ComboBox<String> datasetComboBox = new ComboBox<> ();
 
-  public TransferDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
+  public TransferDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength,
+      String title)
   {
     this.screenWatcher = screenWatcher;
     this.homePath = homePath;
     this.baseLength = baseLength;
+
+    grid.setPadding (new Insets (10, 35, 10, 20));
+    grid.setHgap (10);
+    grid.setVgap (10);
+
+    dialog.setTitle (title);
+    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+    dialog.getDialogPane ().setContent (grid);
 
     refresh ();
   }

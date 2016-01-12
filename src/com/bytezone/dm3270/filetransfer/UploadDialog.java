@@ -10,10 +10,7 @@ import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.utilities.FileSaver;
 
 import javafx.scene.Node;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 
 public class UploadDialog extends TransferDialog
 {
@@ -23,9 +20,7 @@ public class UploadDialog extends TransferDialog
 
   public UploadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
-    super (screenWatcher, homePath, baseLength);
-
-    GridPane grid = new GridPane ();
+    super (screenWatcher, homePath, baseLength, "Upload dataset");
 
     grid.add (new Label ("Dataset"), 1, 1);
     grid.add (datasetComboBox, 2, 1);
@@ -38,16 +33,6 @@ public class UploadDialog extends TransferDialog
 
     grid.add (new Label ("Dataset date"), 1, 4);
     grid.add (labelDatasetDate, 2, 4);
-
-    grid.setHgap (10);
-    grid.setVgap (10);
-
-    dialog.setTitle ("Upload dataset");
-    dialog.getDialogPane ().setContent (grid);
-
-    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
-    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
-    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
 
     Node okButton = dialog.getDialogPane ().lookupButton (btnTypeOK);
     okButton.setDisable (true);
