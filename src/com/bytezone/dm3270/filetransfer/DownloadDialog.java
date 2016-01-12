@@ -56,25 +56,12 @@ public class DownloadDialog extends TransferDialog
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 
     labelToFolder.setText (saveFolderName.substring (baseLength));
+
     Optional<Dataset> dataset = screenWatcher.getDataset (datasetSelected);
     if (dataset.isPresent ())
-    {
-      String date = dataset.get ().getReferredDate ();
-      if (date == null || date.isEmpty ())
-        labelDatasetDate.setText ("");
-      else
-      {
-        String reformattedDate = date.substring (0, 4) + "/" + date.substring (5, 7) + "/"
-            + date.substring (8);
-        labelDatasetDate
-            .setText (reformattedDate + " " + dataset.get ().getReferredTime ());
-      }
-    }
+      labelDatasetDate.setText (formatDate (dataset.get ()));
     else
-    {
-      System.out.println ("not found");
       labelDatasetDate.setText ("");
-    }
 
     if (Files.exists (saveFile))
     {

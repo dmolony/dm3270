@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.utilities.FileSaver;
 
@@ -117,6 +118,19 @@ public class TransferDialog
 
     return String.format ("%sIND$FILE %s %s%s", tsoPrefix, direction, datasetName,
                           options);
+  }
+
+  protected String formatDate (Dataset dataset)
+  {
+    String date = dataset.getReferredDate ();
+    if (date == null || date.isEmpty ())
+      return "";
+    else
+    {
+      String reformattedDate =
+          date.substring (0, 4) + "/" + date.substring (5, 7) + "/" + date.substring (8);
+      return reformattedDate + " " + dataset.getReferredTime ();
+    }
   }
 
   protected String formatDate (Path saveFile)
