@@ -118,7 +118,11 @@ public class Console extends Application
               setConsolePane (screen, site);            // reassigns primaryStage
             }
             else
+            {
+              System.out.println ("Couldn't find the server site for "
+                  + session.getServerName ());
               setConsolePane (screen, null);            // reassigns primaryStage
+            }
 
             replayStage = new ReplayStage (session, path, prefs);
             replayStage.show ();
