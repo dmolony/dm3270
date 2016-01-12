@@ -159,20 +159,18 @@ public class TransferMenu implements ScreenChangeListener
     Label labelDatasetDate = new Label ();
 
     ComboBox<String> datasetList = new ComboBox<> ();
-    List<String> recentDatasets = screenWatcher.getRecentDatasets ();
-    datasetList.setItems (FXCollections.observableList (recentDatasets));
+    datasetList
+        .setItems (FXCollections.observableList (screenWatcher.getRecentDatasets ()));
     datasetList
         .setOnAction (event -> refreshDownload (datasetList, homePath, labelToFolder,
                                                 labelAction, labelFileDate,
                                                 labelDatasetDate, baseLength));
     datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
-    refreshDownload (datasetList, homePath, labelToFolder, labelAction, labelFileDate,
-                     labelDatasetDate, baseLength);
 
     GridPane grid = new GridPane ();
     grid.setPadding (new Insets (10, 35, 10, 20));
 
-    grid.add (new Label ("Download"), 1, 1);
+    grid.add (new Label ("Dataset"), 1, 1);
     grid.add (datasetList, 2, 1);
 
     grid.add (new Label ("To folder"), 1, 2);
@@ -191,12 +189,12 @@ public class TransferMenu implements ScreenChangeListener
     grid.setVgap (10);
 
     Dialog<IndFileCommand> dialog = new Dialog<> ();
+    dialog.setTitle ("Download dataset");
     dialog.getDialogPane ().setContent (grid);
 
     ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
     ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
-    dialog.setTitle ("Download dataset");
 
     dialog.setResultConverter (btnType ->
     {
@@ -213,6 +211,9 @@ public class TransferMenu implements ScreenChangeListener
 
       return indFileCommand;
     });
+
+    refreshDownload (datasetList, homePath, labelToFolder, labelAction, labelFileDate,
+                     labelDatasetDate, baseLength);
 
     return dialog.showAndWait ();
   }
@@ -257,23 +258,13 @@ public class TransferMenu implements ScreenChangeListener
 
   private Optional<IndFileCommand> showUploadDialog (Path homePath, int baseLength)
   {
-    Dialog<IndFileCommand> dialog = new Dialog<> ();
-
-    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
-    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
-    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
-    dialog.setTitle ("Upload dataset");
-
-    Node okButton = dialog.getDialogPane ().lookupButton (btnTypeOK);
-    okButton.setDisable (true);
-
     Label labelFromFolder = new Label ();
     Label labelFileDate = new Label ();
     Label labelDatasetDate = new Label ();
 
     ComboBox<String> datasetList = new ComboBox<> ();
-    List<String> recentDatasets = screenWatcher.getRecentDatasets ();
-    datasetList.setItems (FXCollections.observableList (recentDatasets));
+    datasetList
+        .setItems (FXCollections.observableList (screenWatcher.getRecentDatasets ()));
     datasetList.setOnAction (event -> refreshUpload (datasetList, homePath,
                                                      labelFromFolder, labelFileDate,
                                                      labelDatasetDate, baseLength));
@@ -281,7 +272,7 @@ public class TransferMenu implements ScreenChangeListener
 
     GridPane grid = new GridPane ();
 
-    grid.add (new Label ("Upload"), 1, 1);
+    grid.add (new Label ("Dataset"), 1, 1);
     grid.add (datasetList, 2, 1);
 
     grid.add (new Label ("From folder"), 1, 2);
@@ -295,6 +286,16 @@ public class TransferMenu implements ScreenChangeListener
 
     grid.setHgap (10);
     grid.setVgap (10);
+
+    Dialog<IndFileCommand> dialog = new Dialog<> ();
+    dialog.setTitle ("Upload dataset");
+
+    ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
+    ButtonType btnTypeCancel = new ButtonType ("Cancel", ButtonData.CANCEL_CLOSE);
+    dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
+
+    Node okButton = dialog.getDialogPane ().lookupButton (btnTypeOK);
+    okButton.setDisable (true);
 
     dialog.getDialogPane ().setContent (grid);
 
