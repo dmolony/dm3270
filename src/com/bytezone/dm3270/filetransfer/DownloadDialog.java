@@ -9,33 +9,24 @@ import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.utilities.FileSaver;
 
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 public class DownloadDialog extends TransferDialog
 {
+  Label labelToFolder = new Label ();
+  Label labelAction = new Label ();
+  Label labelFileDate = new Label ();
+  Label labelDatasetDate = new Label ();
+
   public DownloadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
     super (screenWatcher, homePath, baseLength);
 
-    Label labelToFolder = new Label ();
-    Label labelAction = new Label ();
-    Label labelFileDate = new Label ();
-    Label labelDatasetDate = new Label ();
-
-    ComboBox<String> datasetList = new ComboBox<> ();
-    datasetList
-        .setItems (FXCollections.observableList (screenWatcher.getRecentDatasets ()));
-    datasetList
-        .setOnAction (event -> refreshDownload (datasetList, homePath, labelToFolder,
-                                                labelAction, labelFileDate,
-                                                labelDatasetDate, baseLength));
-    datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
+    datasetList.setOnAction (event -> refreshDownload ());
 
     GridPane grid = new GridPane ();
     grid.setPadding (new Insets (10, 35, 10, 20));
@@ -81,13 +72,10 @@ public class DownloadDialog extends TransferDialog
       return indFileCommand;
     });
 
-    refreshDownload (datasetList, homePath, labelToFolder, labelAction, labelFileDate,
-                     labelDatasetDate, baseLength);
+    refreshDownload ();
   }
 
-  private void refreshDownload (ComboBox<String> datasetList, Path homePath,
-      Label labelToFolder, Label labelAction, Label labelFileDate, Label labelDatasetDate,
-      int baseLength)
+  private void refreshDownload ()
   {
     String datasetSelected = datasetList.getSelectionModel ().getSelectedItem ();
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);

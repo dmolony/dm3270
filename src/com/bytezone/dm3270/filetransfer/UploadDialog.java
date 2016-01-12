@@ -9,31 +9,23 @@ import com.bytezone.dm3270.assistant.Dataset;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.utilities.FileSaver;
 
-import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 public class UploadDialog extends TransferDialog
 {
+  Label labelFromFolder = new Label ();
+  Label labelFileDate = new Label ();
+  Label labelDatasetDate = new Label ();
+
   public UploadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
     super (screenWatcher, homePath, baseLength);
 
-    Label labelFromFolder = new Label ();
-    Label labelFileDate = new Label ();
-    Label labelDatasetDate = new Label ();
-
-    ComboBox<String> datasetList = new ComboBox<> ();
-    datasetList
-        .setItems (FXCollections.observableList (screenWatcher.getRecentDatasets ()));
-    datasetList.setOnAction (event -> refreshUpload (datasetList, homePath,
-                                                     labelFromFolder, labelFileDate,
-                                                     labelDatasetDate, baseLength));
-    datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
+    datasetList.setOnAction (event -> refreshUpload ());
 
     GridPane grid = new GridPane ();
 
@@ -81,12 +73,10 @@ public class UploadDialog extends TransferDialog
     labelFileDate.textProperty ().addListener ( (observable, oldValue,
         newValue) -> okButton.setDisable (newValue.trim ().isEmpty ()));
 
-    refreshUpload (datasetList, homePath, labelFromFolder, labelFileDate,
-                   labelDatasetDate, baseLength);
+    refreshUpload ();
   }
 
-  private void refreshUpload (ComboBox<String> datasetList, Path homePath,
-      Label labelFromFolder, Label labelFileDate, Label labelDatasetDate, int baseLength)
+  private void refreshUpload ()
   {
     String datasetSelected = datasetList.getSelectionModel ().getSelectedItem ();
     String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetSelected);

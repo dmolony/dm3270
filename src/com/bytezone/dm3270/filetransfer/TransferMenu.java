@@ -109,12 +109,16 @@ public class TransferMenu implements ScreenChangeListener
     {
       if (downloadDialog == null)
         downloadDialog = new DownloadDialog (screenWatcher, homePath, baseLength);
+      else
+        downloadDialog.refresh ();
       optCommand = downloadDialog.dialog.showAndWait ();
     }
     else
     {
       if (uploadDialog == null)
         uploadDialog = new UploadDialog (screenWatcher, homePath, baseLength);
+      else
+        uploadDialog.refresh ();
       optCommand = uploadDialog.dialog.showAndWait ();
     }
 

@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.display.ScreenWatcher;
 
+import javafx.collections.FXCollections;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 
 public class TransferDialog
@@ -23,10 +25,24 @@ public class TransferDialog
 
   final Dialog<IndFileCommand> dialog = new Dialog<> ();
   protected final ScreenWatcher screenWatcher;
+  protected final Path homePath;
+  protected final int baseLength;
+  protected final ComboBox<String> datasetList = new ComboBox<> ();
 
   public TransferDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
     this.screenWatcher = screenWatcher;
+    this.homePath = homePath;
+    this.baseLength = baseLength;
+
+    refresh ();
+  }
+
+  void refresh ()
+  {
+    datasetList
+        .setItems (FXCollections.observableList (screenWatcher.getRecentDatasets ()));
+    datasetList.getSelectionModel ().select (screenWatcher.getSingleDataset ());
   }
 
   protected String getCommandText (String direction, String datasetName)
