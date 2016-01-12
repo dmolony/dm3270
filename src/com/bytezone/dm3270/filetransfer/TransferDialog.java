@@ -77,7 +77,7 @@ public class TransferDialog
     {
       if (datasetName.length () == prefix.length ())
       {
-        System.out.println ("Dataset name matches prefix - do not download");
+        System.out.println ("Dataset name matches prefix - do not transfer");
         return "";
       }
       datasetName = datasetName.substring (prefix.length () + 1);
