@@ -20,7 +20,7 @@ public class UploadDialog extends TransferDialog
 
   public UploadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
-    super (screenWatcher, homePath, baseLength, "Upload dataset");
+    super (screenWatcher, homePath, baseLength, "Upload dataset", "PUT");
 
     labelFromFolder.setFont (labelFont);
     labelFileDate.setFont (labelFont);
@@ -40,22 +40,6 @@ public class UploadDialog extends TransferDialog
 
     Node okButton = dialog.getDialogPane ().lookupButton (btnTypeOK);
     okButton.setDisable (true);
-
-    dialog.setResultConverter (btnType ->
-    {
-      if (btnType != btnTypeOK)
-        return null;
-
-      String datasetName = datasetComboBox.getSelectionModel ().getSelectedItem ();
-      IndFileCommand indFileCommand =
-          new IndFileCommand (getCommandText ("PUT", datasetName));
-
-      String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
-      Path saveFile = Paths.get (saveFolderName, datasetName);
-      indFileCommand.setLocalFile (saveFile.toFile ());
-
-      return indFileCommand;
-    });
 
     labelFileDate.textProperty ().addListener ( (observable, oldValue,
         newValue) -> okButton.setDisable (newValue.trim ().isEmpty ()));
@@ -79,7 +63,7 @@ public class UploadDialog extends TransferDialog
     {
       String date = dataset.get ().getReferredDate ();
       if (date == null || date.isEmpty ())
-        labelDatasetDate.setText ("<no date>");
+        labelDatasetDate.setText ("");
       else
       {
         String reformattedDate = date.substring (0, 4) + "/" + date.substring (5, 7) + "/"
@@ -89,7 +73,10 @@ public class UploadDialog extends TransferDialog
       }
     }
     else
+    {
       System.out.println ("not found");
+      labelDatasetDate.setText ("");
+    }
 
     if (Files.exists (saveFile))
       labelFileDate.setText (formatDate (saveFile));

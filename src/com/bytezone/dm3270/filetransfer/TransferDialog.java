@@ -3,6 +3,7 @@ package com.bytezone.dm3270.filetransfer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.display.ScreenWatcher;
+import com.bytezone.dm3270.utilities.FileSaver;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -39,15 +41,17 @@ public class TransferDialog
   protected final ScreenWatcher screenWatcher;
   protected final Path homePath;
   protected final int baseLength;
+  protected final String commandDirection;
 
   protected final ComboBox<String> datasetComboBox = new ComboBox<> ();
 
   public TransferDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength,
-      String title)
+      String title, String commandDirection)
   {
     this.screenWatcher = screenWatcher;
     this.homePath = homePath;
     this.baseLength = baseLength;
+    this.commandDirection = commandDirection;
 
     grid.setPadding (new Insets (10, 35, 10, 20));
     grid.setHgap (10);
@@ -56,6 +60,22 @@ public class TransferDialog
     dialog.setTitle (title);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
     dialog.getDialogPane ().setContent (grid);
+
+    dialog.setResultConverter (btnType ->
+    {
+      if (btnType != btnTypeOK)
+        return null;
+
+      String datasetName = datasetComboBox.getSelectionModel ().getSelectedItem ();
+      IndFileCommand indFileCommand =
+          new IndFileCommand (getCommandText (commandDirection, datasetName));
+
+      String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
+      Path saveFile = Paths.get (saveFolderName, datasetName);
+      indFileCommand.setLocalFile (saveFile.toFile ());
+
+      return indFileCommand;
+    });
 
     datasetComboBox.setStyle ("-fx-font-size: 13; -fx-font-family: Monospaced");
 

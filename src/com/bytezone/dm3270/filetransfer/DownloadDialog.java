@@ -20,7 +20,7 @@ public class DownloadDialog extends TransferDialog
 
   public DownloadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
-    super (screenWatcher, homePath, baseLength, "Download dataset");
+    super (screenWatcher, homePath, baseLength, "Download dataset", "GET");
 
     labelToFolder.setFont (labelFont);
     labelAction.setFont (labelFont);
@@ -42,22 +42,6 @@ public class DownloadDialog extends TransferDialog
     grid.add (new Label ("Dataset date"), 1, 5);
     grid.add (labelDatasetDate, 2, 5);
 
-    dialog.setResultConverter (btnType ->
-    {
-      if (btnType != btnTypeOK)
-        return null;
-
-      String datasetName = datasetComboBox.getSelectionModel ().getSelectedItem ();
-      IndFileCommand indFileCommand =
-          new IndFileCommand (getCommandText ("GET", datasetName));
-
-      String saveFolderName = FileSaver.getSaveFolderName (homePath, datasetName);
-      Path saveFile = Paths.get (saveFolderName, datasetName);
-      indFileCommand.setLocalFile (saveFile.toFile ());
-
-      return indFileCommand;
-    });
-
     refreshDownload ();
     datasetComboBox.setOnAction (event -> refreshDownload ());
   }
@@ -77,7 +61,7 @@ public class DownloadDialog extends TransferDialog
     {
       String date = dataset.get ().getReferredDate ();
       if (date == null || date.isEmpty ())
-        labelDatasetDate.setText ("<no date>");
+        labelDatasetDate.setText ("");
       else
       {
         String reformattedDate = date.substring (0, 4) + "/" + date.substring (5, 7) + "/"
@@ -87,7 +71,10 @@ public class DownloadDialog extends TransferDialog
       }
     }
     else
+    {
       System.out.println ("not found");
+      labelDatasetDate.setText ("");
+    }
 
     if (Files.exists (saveFile))
     {
