@@ -31,8 +31,10 @@ public class TransferDialog
       Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
 
   final Dialog<IndFileCommand> dialog = new Dialog<> ();
+
   protected final GridPane grid = new GridPane ();
   protected final Font labelFont = Font.font ("Monospaced", 14);
+  protected final ComboBox<String> datasetComboBox = new ComboBox<> ();
 
   protected final ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
   protected final ButtonType btnTypeCancel =
@@ -42,8 +44,6 @@ public class TransferDialog
   protected final Path homePath;
   protected final int baseLength;
   protected final String commandDirection;
-
-  protected final ComboBox<String> datasetComboBox = new ComboBox<> ();
 
   public TransferDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength,
       String title, String commandDirection)

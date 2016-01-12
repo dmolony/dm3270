@@ -13,10 +13,10 @@ import javafx.scene.control.Label;
 
 public class DownloadDialog extends TransferDialog
 {
-  Label labelToFolder = new Label ();
-  Label labelAction = new Label ();
-  Label labelFileDate = new Label ();
-  Label labelDatasetDate = new Label ();
+  private final Label labelToFolder = new Label ();
+  private final Label labelAction = new Label ();
+  private final Label labelFileDate = new Label ();
+  private final Label labelDatasetDate = new Label ();
 
   public DownloadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {

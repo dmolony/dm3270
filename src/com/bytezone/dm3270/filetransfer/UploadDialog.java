@@ -14,9 +14,9 @@ import javafx.scene.control.Label;
 
 public class UploadDialog extends TransferDialog
 {
-  Label labelFromFolder = new Label ();
-  Label labelFileDate = new Label ();
-  Label labelDatasetDate = new Label ();
+  private final Label labelFromFolder = new Label ();
+  private final Label labelFileDate = new Label ();
+  private final Label labelDatasetDate = new Label ();
 
   public UploadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
