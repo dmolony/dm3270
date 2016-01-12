@@ -18,10 +18,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 
 public class TransferDialog
 {
-  protected static final DateFormat df = new SimpleDateFormat ("dd/MM/yyyy HH:mm:ss");
+  protected static final DateFormat df = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");
   protected static final Pattern jclPattern =
       Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
   protected static final Pattern procPattern =
@@ -29,6 +30,7 @@ public class TransferDialog
 
   final Dialog<IndFileCommand> dialog = new Dialog<> ();
   protected final GridPane grid = new GridPane ();
+  protected final Font labelFont = Font.font ("Monospaced", 14);
 
   protected final ButtonType btnTypeOK = new ButtonType ("OK", ButtonData.OK_DONE);
   protected final ButtonType btnTypeCancel =
@@ -54,6 +56,11 @@ public class TransferDialog
     dialog.setTitle (title);
     dialog.getDialogPane ().getButtonTypes ().addAll (btnTypeOK, btnTypeCancel);
     dialog.getDialogPane ().setContent (grid);
+
+    datasetComboBox.setStyle ("-fx-font-size: 13; -fx-font-family: Monospaced");
+
+    if (false)
+      dialog.getDialogPane ().setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
 
     refresh ();
   }

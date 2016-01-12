@@ -22,10 +22,14 @@ public class UploadDialog extends TransferDialog
   {
     super (screenWatcher, homePath, baseLength, "Upload dataset");
 
+    labelFromFolder.setFont (labelFont);
+    labelFileDate.setFont (labelFont);
+    labelDatasetDate.setFont (labelFont);
+
     grid.add (new Label ("Dataset"), 1, 1);
     grid.add (datasetComboBox, 2, 1);
 
-    grid.add (new Label ("From folder"), 1, 2);
+    grid.add (new Label ("Folder"), 1, 2);
     grid.add (labelFromFolder, 2, 2);
 
     grid.add (new Label ("File date"), 1, 3);
@@ -74,12 +78,12 @@ public class UploadDialog extends TransferDialog
     if (dataset.isPresent ())
     {
       String date = dataset.get ().getReferredDate ();
-      if (date.isEmpty ())
+      if (date == null || date.isEmpty ())
         labelDatasetDate.setText ("<no date>");
       else
       {
-        String reformattedDate = date.substring (8) + "/" + date.substring (5, 7) + "/"
-            + date.substring (0, 4);
+        String reformattedDate = date.substring (0, 4) + "/" + date.substring (5, 7) + "/"
+            + date.substring (8);
         labelDatasetDate
             .setText (reformattedDate + " " + dataset.get ().getReferredTime ());
       }
