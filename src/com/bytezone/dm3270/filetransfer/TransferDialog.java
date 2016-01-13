@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public class TransferDialog
   protected static final Pattern procPattern =
       Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
 
-  final Dialog<IndFileCommand> dialog = new Dialog<> ();
+  protected final Dialog<IndFileCommand> dialog = new Dialog<> ();
 
   protected final GridPane grid = new GridPane ();
   protected final Font labelFont = Font.font ("Monospaced", 14);
@@ -80,13 +81,16 @@ public class TransferDialog
 
     datasetComboBox.setStyle ("-fx-font-size: 13; -fx-font-family: Monospaced");
 
-    if (false)
-      dialog.getDialogPane ().setStyle ("-fx-font-size: 12; -fx-font-family: Monospaced");
-
-    refresh ();
+    buildDatasetList ();
   }
 
-  protected void refresh ()
+  public Optional<IndFileCommand> showAndWait ()
+  {
+    buildDatasetList ();
+    return dialog.showAndWait ();
+  }
+
+  private void buildDatasetList ()
   {
     datasetComboBox
         .setItems (FXCollections.observableList (screenWatcher.getRecentDatasets ()));

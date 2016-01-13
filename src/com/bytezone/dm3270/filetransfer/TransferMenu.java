@@ -103,25 +103,22 @@ public class TransferMenu implements ScreenChangeListener
 
     String userHome = System.getProperty ("user.home");
     int baseLength = userHome.length () + 1;
-    Optional<IndFileCommand> optCommand = null;
+    TransferDialog transferDialog = null;
 
     if (transferType == TransferType.DOWNLOAD)
     {
       if (downloadDialog == null)
         downloadDialog = new DownloadDialog (screenWatcher, homePath, baseLength);
-      else
-        downloadDialog.refresh ();
-      optCommand = downloadDialog.dialog.showAndWait ();
+      transferDialog = downloadDialog;
     }
     else
     {
       if (uploadDialog == null)
         uploadDialog = new UploadDialog (screenWatcher, homePath, baseLength);
-      else
-        uploadDialog.refresh ();
-      optCommand = uploadDialog.dialog.showAndWait ();
+      transferDialog = uploadDialog;
     }
 
+    Optional<IndFileCommand> optCommand = transferDialog.showAndWait ();
     if (!optCommand.isPresent ())
       return;
 
