@@ -133,9 +133,7 @@ public class TransferMenu implements ScreenChangeListener
       return;
     }
 
-    System.out.println (indFileCommand);
-    System.out.println ();
-
+    // this should be a single call to transferManager
     transferManager.prepareTransfer (indFileCommand);
     tsoCommandField.setText (commandText);
     consolePane.sendAID (AIDCommand.AID_ENTER, "ENTR");
