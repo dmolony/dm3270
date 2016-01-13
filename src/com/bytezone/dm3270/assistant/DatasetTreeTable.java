@@ -18,6 +18,7 @@ public class DatasetTreeTable extends DefaultTreeTable<Dataset>
     setRoot (root);
     setShowRoot (false);
 
+    // NB propertyName must have a corresponding method xxxProperty() in Dataset
     addColumnString ("Dataset name", 300, Justification.LEFT, "datasetName");
     addColumnString ("Volume", 70, Justification.LEFT, "volume");
     addColumnNumber ("Tracks", 50, "tracks");
@@ -30,7 +31,7 @@ public class DatasetTreeTable extends DefaultTreeTable<Dataset>
     addColumnNumber ("Blksize", 70, "blksize");
     addColumnString ("Created", 100, Justification.CENTER, "created");
     addColumnString ("Expires", 100, Justification.CENTER, "expires");
-    addColumnString ("Referred", 100, Justification.CENTER, "referred");
+    addColumnString ("Referred", 100, Justification.CENTER, "referredDate");
     addColumnString ("Catalog/ID", 150, Justification.LEFT, "catalog");
 
     setPlaceholder (new Label ("No datasets have been seen in this session"));

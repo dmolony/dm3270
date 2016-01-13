@@ -589,6 +589,8 @@ public class ScreenWatcher
         screenType1 (member, details, tabs1);
       else if (headings.size () == 13)
         screenType2 (member, details, tabs2);
+      else
+        System.out.printf ("Headings size: %d%n", headings.size ());
     }
 
     return true;
@@ -596,9 +598,6 @@ public class ScreenWatcher
 
   private boolean checkMemberList2 (List<Field> screenFields)
   {
-    //    if (!listMatchesArray (fieldManager.getMenus (), memberMenus))
-    //      return false;
-
     Field field = screenFields.get (7);
     int location = field.getFirstLocation ();
     if (location != 161)
@@ -652,8 +651,6 @@ public class ScreenWatcher
       }
       String details = rowFields.get (3).getText ();
 
-      //      Dataset member = new Dataset (datasetName + "(" + memberName.trim () + ")");
-      //      screenMembers.add (member);
       Dataset member = addMember (datasetName, memberName);
 
       if (screenType == 1)

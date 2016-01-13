@@ -36,7 +36,7 @@ public class TSOCommand implements ScreenChangeListener
   {
     txtCommand.setEditable (true);
     txtCommand.setPrefWidth (500);
-    txtCommand.setFont (Font.font ("Monospaced", 12));
+    txtCommand.setFont (Font.font ("Monospaced", 13));
     txtCommand.setFocusTraversable (false);
 
     btnExecute.setOnAction (e -> execute ());
