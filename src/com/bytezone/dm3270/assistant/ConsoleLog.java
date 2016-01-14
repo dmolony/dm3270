@@ -6,17 +6,61 @@ import java.util.List;
 public class ConsoleLog implements ConsoleLogListener
 {
   List<String> log = new ArrayList<> ();
+  String[] lastScreen = new String[20];
+  String[] lines = new String[20];
 
   @Override
   public void consoleMessage (String message)
   {
+    int totLines = 0;
     for (int ptr = 0; ptr < message.length (); ptr += 80)
     {
       int max = Math.min (ptr + 80, message.length ());
       String line = message.substring (ptr, max);
-      if (!line.trim ().isEmpty ())
-        System.out.println (line);
+      if (line.trim ().isEmpty ())
+        break;
+      lines[totLines++] = line;
     }
-    System.out.println ();
+
+    if (log.size () == 0)
+    {
+      for (int lineNo = 0; lineNo < totLines; lineNo++)
+      {
+        String line = lines[lineNo];
+        log.add (line);
+      }
+
+      return;
+    }
+
+    for (int lineNo = totLines - 1; lineNo >= 0; lineNo--)
+    {
+      String line = lines[lineNo];
+      String code = line.substring (0, 10);
+      if ("          ".equals (code))
+      {
+        log.add (line);
+        break;
+      }
+
+      if (code.charAt (2) == '+' && code.charAt (3) == '+')
+      {
+        log.add (line);
+        break;
+      }
+      if ((code.charAt (2) == 'I' && code.charAt (8) == 'I')
+          || code.charAt (2) == 'C' && code.charAt (9) == 'I')
+      {
+        for (int i = lineNo; i < totLines; i++)
+          log.add (lines[i]);
+        break;
+      }
+    }
+  }
+
+  public void dump ()
+  {
+    for (String line : log)
+      System.out.println (line);
   }
 }
