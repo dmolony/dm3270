@@ -9,6 +9,8 @@ import com.bytezone.dm3270.assistant.ConsoleLogListener;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+import javafx.application.Platform;
+
 class SystemMessage
 {
   private static final Pattern jobSubmittedPattern = Pattern
@@ -66,6 +68,7 @@ class SystemMessage
 
   private final BatchJobListener batchJobListener;
   private final ConsoleLogListener consoleLogListener;
+  private Profile profile;
 
   public SystemMessage (BatchJobListener batchJobListener,
       ConsoleLogListener consoleLogListener)
@@ -208,12 +211,14 @@ class SystemMessage
   private void checkProfileMessage (String profileMessageText1,
       String profileMessageText2)
   {
-    System.out.println ("Profile tokens:");
-    for (String token : profileMessageText1.split ("\\s+"))
+    int pos1 = profileMessageText1.indexOf ("CHAR(");
+    int pos2 = profileMessageText1.indexOf ("LINE(");
+    int pos3 = profileMessageText1.indexOf ("PREFIX(");
+
+    if (pos1 >= 0 && pos2 >= 0 && pos3 >= 0)
     {
-      System.out.println (token);
-      if (token.startsWith ("PREFIX(") && token.endsWith (")"))
-        System.out.printf ("Prefix=%s%n", token.substring (7, token.length () - 1));
+      profile = new Profile (profileMessageText1, profileMessageText2);
+      Platform.runLater ( () -> profile.showAndWait ());
     }
   }
 

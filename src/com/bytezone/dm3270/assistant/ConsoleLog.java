@@ -25,11 +25,7 @@ public class ConsoleLog implements ConsoleLogListener
     if (log.size () == 0)
     {
       for (int lineNo = 0; lineNo < totLines; lineNo++)
-      {
-        String line = lines[lineNo];
-        log.add (line);
-      }
-
+        log.add (lines[lineNo]);
       return;
     }
 
@@ -48,6 +44,7 @@ public class ConsoleLog implements ConsoleLogListener
         log.add (line);
         break;
       }
+
       if ((code.charAt (2) == 'I' && code.charAt (8) == 'I')
           || code.charAt (2) == 'C' && code.charAt (9) == 'I')
       {
