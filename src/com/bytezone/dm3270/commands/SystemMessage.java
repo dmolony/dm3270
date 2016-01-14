@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.BatchJobListener;
+import com.bytezone.dm3270.assistant.ConsoleLogListener;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
@@ -60,11 +61,17 @@ class SystemMessage
         Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00, Order.START_FIELD,
         Order.INSERT_CURSOR };
 
-  private final BatchJobListener batchJobListener;
+  private static final byte[] consoleMessage =
+      { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00 };
 
-  public SystemMessage (BatchJobListener batchJobListener)
+  private final BatchJobListener batchJobListener;
+  private final ConsoleLogListener consoleLogListener;
+
+  public SystemMessage (BatchJobListener batchJobListener,
+      ConsoleLogListener consoleLogListener)
   {
     this.batchJobListener = batchJobListener;
+    this.consoleLogListener = consoleLogListener;
   }
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
@@ -103,6 +110,14 @@ class SystemMessage
     {
       switch (orders.size ())
       {
+        case 2:
+          return;
+
+        case 3:
+          if (checkOrders (consoleMessage, orders))
+            checkConsoleOutput (orders);
+          return;
+
         case 6:
           if (checkOrders (systemMessage1, orders))
             checkSystemMessage (Dm3270Utility.getString (orders.get (2).getBuffer ()));
@@ -200,5 +215,11 @@ class SystemMessage
       if (token.startsWith ("PREFIX(") && token.endsWith (")"))
         System.out.printf ("Prefix=%s%n", token.substring (7, token.length () - 1));
     }
+  }
+
+  private void checkConsoleOutput (List<Order> orders)
+  {
+    String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
+    consoleLogListener.consoleMessage (text);
   }
 }

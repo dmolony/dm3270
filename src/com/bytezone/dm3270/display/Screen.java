@@ -16,6 +16,8 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.assistant.AssistantStage;
+import com.bytezone.dm3270.assistant.ConsoleLog;
+import com.bytezone.dm3270.assistant.ConsoleLogListener;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -56,6 +58,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private final TransferManager transferManager;
   private final ScreenPacker screenPacker;
   private final TransferMenu transferMenu;
+  private final ConsoleLogListener consoleLogListener;
 
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
@@ -95,6 +98,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this);
+    consoleLogListener = new ConsoleLog ();
 
     // site will be null in replay mode, so it will have to be updated later
     transferManager = new TransferManager (this, serverSite);
@@ -129,6 +133,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public TransferManager getTransferManager ()
   {
     return transferManager;
+  }
+
+  public ConsoleLogListener getConsoleLogListener ()
+  {
+    return consoleLogListener;
   }
 
   public MenuItem getMenuItemUpload ()

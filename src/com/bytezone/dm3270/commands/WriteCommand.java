@@ -84,12 +84,16 @@ public class WriteCommand extends Command
   {
     Cursor cursor = screen.getScreenCursor ();
     int cursorLocation = cursor.getLocation ();
-    screen.lockKeyboard ("Inhibit");
+    //    screen.lockKeyboard ("Inhibit");
     boolean screenDrawRequired = false;
 
     if (eraseWrite)
+    {
+      screen.lockKeyboard ("Erase Write");
       screen.clearScreen ();            // resets pen
-    //    else
+    }
+    else
+      screen.lockKeyboard ("Write");
     //      screen.getPen ().moveTo (0);
 
     if (orders.size () > 0)
@@ -122,7 +126,8 @@ public class WriteCommand extends Command
     // check screen for jobs submitted or finished
     if (systemMessage == null && orders.size () > 0)
     {
-      systemMessage = new SystemMessage (screen.getAssistantStage ());
+      systemMessage = new SystemMessage (screen.getAssistantStage (),
+          screen.getConsoleLogListener ());
       systemMessage.checkSystemMessage (eraseWrite, orders);
     }
   }
