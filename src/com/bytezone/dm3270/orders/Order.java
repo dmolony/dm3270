@@ -104,6 +104,11 @@ public abstract class Order
     return buffer[0];
   }
 
+  public boolean isText ()
+  {
+    return false;
+  }
+
   // this is so that a GraphicsEscapeOrder can override it - it is used to report
   // that there are x duplicate orders.
   public boolean matchesPreviousOrder (Order order)

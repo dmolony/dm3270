@@ -22,6 +22,7 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
+import com.bytezone.dm3270.commands.SystemMessage;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
@@ -59,6 +60,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private final ScreenPacker screenPacker;
   private final TransferMenu transferMenu;
   private final ConsoleLogListener consoleLogListener;
+  private final SystemMessage systemMessage;
 
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
@@ -99,6 +101,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this);
     consoleLogListener = new ConsoleLog ();
+    systemMessage = new SystemMessage (assistantStage, consoleLogListener);
 
     // site will be null in replay mode, so it will have to be updated later
     transferManager = new TransferManager (this, serverSite);
@@ -140,6 +143,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return consoleLogListener;
   }
 
+  public SystemMessage getSystemMessage ()
+  {
+    return systemMessage;
+  }
+
   public MenuItem getMenuItemUpload ()
   {
     return transferMenu.getMenuItemUpload ();
@@ -148,6 +156,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public MenuItem getMenuItemDownload ()
   {
     return transferMenu.getMenuItemDownload ();
+  }
+
+  public boolean isConsole ()
+  {
+    return consoleLogListener.size () > 0;
   }
 
   // called from Console.startSelectedFunction() : Replay

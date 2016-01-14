@@ -13,7 +13,7 @@ public class TextOrder extends Order
 
   public TextOrder (byte[] buffer, int ptr, int max)
   {
-    bufferOffset = ptr;// save for later scrambling
+    bufferOffset = ptr;                         // save for later scrambling
     originalBuffer = buffer;
 
     int dataLength = getDataLength (buffer, ptr, max);
@@ -57,7 +57,13 @@ public class TextOrder extends Order
 
   public String getTextString ()
   {
-    return buffer.length == 0 ? "" : "[" + Dm3270Utility.getString (buffer) + "]";
+    return Dm3270Utility.getString (buffer);
+  }
+
+  @Override
+  public boolean isText ()
+  {
+    return true;
   }
 
   @Override
@@ -71,6 +77,6 @@ public class TextOrder extends Order
   @Override
   public String toString ()
   {
-    return getTextString ();
+    return buffer.length == 0 ? "" : "Text: [" + Dm3270Utility.getString (buffer) + "]";
   }
 }

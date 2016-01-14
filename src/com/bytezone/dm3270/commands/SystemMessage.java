@@ -11,7 +11,7 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
 
-class SystemMessage
+public class SystemMessage
 {
   private static final Pattern jobSubmittedPattern = Pattern
       .compile ("^(?:[A-Z0-9]{1,9} )?JOB ([A-Z0-9]{1,9})\\(JOB(\\d{5})\\) SUBMITTED");
@@ -113,9 +113,6 @@ class SystemMessage
     {
       switch (orders.size ())
       {
-        case 2:
-          return;
-
         case 3:
           if (checkOrders (consoleMessage, orders))
             checkConsoleOutput (orders);
@@ -132,15 +129,14 @@ class SystemMessage
           return;
       }
     }
+  }
 
-    if (orders.size () < 20 && false)
-    {
-      System.out.printf ("Orders: %d%n", orders.size ());
-      System.out.printf ("Erase : %s%n", eraseWrite);
-      for (Order order : orders)
-        System.out.println (order);
-      System.out.println ("-------------------------------");
-    }
+  public void dump (List<Order> orders)
+  {
+    System.out.printf ("Orders: %d%n", orders.size ());
+    for (Order order : orders)
+      System.out.println (order);
+    System.out.println ("-------------------------------");
   }
 
   private boolean checkOrders (byte[] systemMessage, List<Order> orders)

@@ -124,11 +124,20 @@ public class WriteCommand extends Command
       screen.draw ();
 
     // check screen for jobs submitted or finished
-    if (systemMessage == null && orders.size () > 0)
-    {
-      systemMessage = new SystemMessage (screen.getAssistantStage (),
-          screen.getConsoleLogListener ());
+    systemMessage = screen.getSystemMessage ();
+    if (orders.size () > 0)
       systemMessage.checkSystemMessage (eraseWrite, orders);
+    if (screen.isConsole ())
+    {
+      for (Order order : orders)
+        if (order.isText ())
+        {
+          String text = ((TextOrder) order).getTextString ();
+          if (text.length () == 79)
+            System.out.println (text);
+        }
+      System.out.println ("---------------------------------------------------"
+          + "----------------------------");
     }
   }
 

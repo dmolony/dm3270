@@ -5,9 +5,8 @@ import java.util.List;
 
 public class ConsoleLog implements ConsoleLogListener
 {
-  List<String> log = new ArrayList<> ();
-  String[] lastScreen = new String[20];
-  String[] lines = new String[20];
+  private final List<String> log = new ArrayList<> ();
+  private final String[] lines = new String[20];
 
   @Override
   public void consoleMessage (String message)
@@ -53,6 +52,12 @@ public class ConsoleLog implements ConsoleLogListener
         break;
       }
     }
+  }
+
+  @Override
+  public int size ()
+  {
+    return log.size ();
   }
 
   public void dump ()
