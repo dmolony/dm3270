@@ -1,12 +1,15 @@
 package com.bytezone.dm3270.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.BatchJobListener;
+import com.bytezone.dm3270.assistant.ConsoleLog2;
 import com.bytezone.dm3270.assistant.ConsoleLogListener;
 import com.bytezone.dm3270.orders.Order;
+import com.bytezone.dm3270.orders.TextOrder;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
@@ -69,6 +72,8 @@ public class SystemMessage
   private final BatchJobListener batchJobListener;
   private final ConsoleLogListener consoleLogListener;
   private Profile profile;
+  private boolean isConsole;
+  private final ConsoleLog2 consoleLog2 = new ConsoleLog2 ();
 
   public SystemMessage (BatchJobListener batchJobListener,
       ConsoleLogListener consoleLogListener)
@@ -79,7 +84,23 @@ public class SystemMessage
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
   {
-    if (eraseWrite)
+    if (isConsole)
+    {
+      if (orders.size () == 3)
+      {
+        if (checkOrders (consoleMessage, orders))
+          checkConsoleOutput (orders);
+      }
+      else if (orders.size () == 2)
+      {
+        //        System.out.println ("two");
+      }
+      else
+      {
+        checkConsole2Output (orders);
+      }
+    }
+    else if (eraseWrite)
     {
       switch (orders.size ())
       {
@@ -113,9 +134,12 @@ public class SystemMessage
     {
       switch (orders.size ())
       {
-        case 3:
+        case 3:                                      // will only happen the first time
           if (checkOrders (consoleMessage, orders))
+          {
+            isConsole = true;
             checkConsoleOutput (orders);
+          }
           return;
 
         case 6:
@@ -222,5 +246,18 @@ public class SystemMessage
   {
     String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
     consoleLogListener.consoleMessage (text);
+  }
+
+  private void checkConsole2Output (List<Order> orders)
+  {
+    List<String> lines = new ArrayList<> (20);
+    for (Order order : orders)
+      if (order.isText ())
+      {
+        String text = ((TextOrder) order).getTextString ();
+        if (text.length () == 79)
+          lines.add (text);
+      }
+    consoleLog2.addLines (lines);
   }
 }

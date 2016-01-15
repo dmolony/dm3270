@@ -52,6 +52,7 @@ public class ConsoleLog implements ConsoleLogListener
         break;
       }
     }
+    dump ();
   }
 
   @Override
@@ -64,5 +65,7 @@ public class ConsoleLog implements ConsoleLogListener
   {
     for (String line : log)
       System.out.println (line);
+    System.out.println ("---------------------------------------------------"
+        + "----------------------------");
   }
 }
