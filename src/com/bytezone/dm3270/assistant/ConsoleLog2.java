@@ -36,11 +36,6 @@ public class ConsoleLog2
     for (int i = max - 1; i >= 0; i--)
     {
       String line = lines.get (i);
-      if (line.trim ().isEmpty ())
-      {
-        --max;
-        continue;
-      }
       if (messagePattern.matcher (line).matches ())
       {
         ConsoleMessage message = new ConsoleMessage ();
@@ -69,6 +64,7 @@ public class ConsoleLog2
     for (int i = messages.size () - 1; i >= last; i--)
       if (messages.get (i).matches (message))
         return;
+
     messages.add (message);
 
     if (messages.size () == 1317)

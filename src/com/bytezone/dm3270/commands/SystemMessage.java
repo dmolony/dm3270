@@ -255,14 +255,25 @@ public class SystemMessage
 
   private void checkConsole2Output (List<Order> orders)
   {
+    // collect text orders
     List<String> lines = new ArrayList<> (20);
     for (Order order : orders)
       if (order.isText ())
       {
-        String text = ((TextOrder) order).getTextString ();
-        if (text.length () == 79)
-          lines.add (text);
+        String line = ((TextOrder) order).getTextString ();
+        if (line.length () == 79)
+          lines.add (line);
       }
+
+    // remove trailing blank lines
+    for (int i = lines.size () - 1; i >= 0; i--)
+    {
+      String line = lines.get (i);
+      if (!line.trim ().isEmpty ())
+        break;
+      lines.remove (i);
+    }
+
     consoleLog2.addLines (lines);
   }
 

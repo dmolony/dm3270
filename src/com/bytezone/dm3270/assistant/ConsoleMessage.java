@@ -8,15 +8,25 @@ public class ConsoleMessage
   int hours;
   int minutes;
   int seconds;
+  String system;
+  String subsystem;
+  String prefix;
+  String prefix2;
+  String rest;
   List<String> lines = new ArrayList<> ();
 
   public void add (String line)
   {
     if (lines.size () == 0)
     {
+      prefix = line.substring (0, 5);
       hours = Integer.parseInt (line.substring (5, 7));
       minutes = Integer.parseInt (line.substring (8, 10));
       seconds = Integer.parseInt (line.substring (11, 13));
+      system = line.substring (14, 22).trim ();
+      subsystem = line.substring (22, 31).trim ();
+      prefix2 = line.substring (31, 32);
+      rest = line.substring (32).trim ();
     }
     lines.add (line);
   }
@@ -37,22 +47,24 @@ public class ConsoleMessage
     return true;
   }
 
+  public String firstLine ()
+  {
+    return String.format ("%s%02d.%02d.%02d %-7s %-8s %s%s", prefix, hours, minutes,
+                          seconds, system, subsystem, prefix2, rest);
+  }
+
   @Override
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
 
-    if (lines.size () == 2)
-    {
-      String joinedLine = lines.get (0) + lines.get (1).substring (5).trim ();
-      text.append (String.format ("%s%n", joinedLine));
-    }
-    else
-      for (String line : lines)
-        text.append (String.format ("%s%n", line));
+    text.append (String
+        .format ("%s %s%n", firstLine (),
+                 lines.size () >= 2 ? lines.get (1).substring (5).trim () : ""));
+    for (int i = 2; i < lines.size (); i++)
+      text.append (String.format ("%s%n", lines.get (i)));
 
-    if (text.length () > 0)
-      text.deleteCharAt (text.length () - 1);
+    text.deleteCharAt (text.length () - 1);
 
     return text.toString ();
   }
