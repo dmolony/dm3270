@@ -32,11 +32,6 @@ public class ConsoleLog2
   {
     List<ConsoleMessage> tempMessages = new ArrayList<> ();
 
-    for (String line : lines)
-      System.out.println (line);
-    System.out.println ("---------------------------------------------------"
-        + "----------------------------");
-
     int max = lines.size ();
     for (int i = max - 1; i >= 0; i--)
     {
@@ -66,9 +61,6 @@ public class ConsoleLog2
     Collections.reverse (tempMessages);
     for (ConsoleMessage message : tempMessages)
       add (message);
-
-    System.out.println ("===================================================="
-        + "===========================");
   }
 
   private void add (ConsoleMessage message)
@@ -78,6 +70,14 @@ public class ConsoleLog2
       if (messages.get (i).matches (message))
         return;
     messages.add (message);
-    System.out.println (message);
+
+    if (messages.size () == 1317)
+      writeMessages ();
+  }
+
+  private void writeMessages ()
+  {
+    for (ConsoleMessage message : messages)
+      System.out.println (message);
   }
 }

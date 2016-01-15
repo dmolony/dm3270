@@ -42,8 +42,14 @@ public class ConsoleMessage
   {
     StringBuilder text = new StringBuilder ();
 
-    for (String line : lines)
-      text.append (String.format ("%s%n", line));
+    if (lines.size () == 2)
+    {
+      String joinedLine = lines.get (0) + lines.get (1).substring (5).trim ();
+      text.append (String.format ("%s%n", joinedLine));
+    }
+    else
+      for (String line : lines)
+        text.append (String.format ("%s%n", line));
 
     if (text.length () > 0)
       text.deleteCharAt (text.length () - 1);
