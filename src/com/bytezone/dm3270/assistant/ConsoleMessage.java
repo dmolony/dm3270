@@ -19,7 +19,8 @@ public class ConsoleMessage
   {
     if (lines.size () == 0)
     {
-      prefix = line.substring (0, 5);
+      assert line.charAt (0) == ' ';
+      prefix = line.substring (1, 5);
       hours = Integer.parseInt (line.substring (5, 7));
       minutes = Integer.parseInt (line.substring (8, 10));
       seconds = Integer.parseInt (line.substring (11, 13));
