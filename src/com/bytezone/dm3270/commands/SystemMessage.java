@@ -8,11 +8,13 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.assistant.ConsoleLog2;
 import com.bytezone.dm3270.assistant.ConsoleLogListener;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
+import javafx.scene.control.MenuItem;
 
 public class SystemMessage
 {
@@ -69,15 +71,18 @@ public class SystemMessage
   private static final byte[] consoleMessage =
       { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00 };
 
+  private final Screen screen;
   private final BatchJobListener batchJobListener;
   private final ConsoleLogListener consoleLogListener;
   private Profile profile;
   private boolean isConsole;
   private final ConsoleLog2 consoleLog2 = new ConsoleLog2 ();
+  private MenuItem menuItem;
 
-  public SystemMessage (BatchJobListener batchJobListener,
+  public SystemMessage (Screen screen, BatchJobListener batchJobListener,
       ConsoleLogListener consoleLogListener)
   {
+    this.screen = screen;
     this.batchJobListener = batchJobListener;
     this.consoleLogListener = consoleLogListener;
   }
@@ -259,5 +264,10 @@ public class SystemMessage
           lines.add (text);
       }
     consoleLog2.addLines (lines);
+  }
+
+  public MenuItem getConsoleMenuItem ()
+  {
+    return menuItem;
   }
 }
