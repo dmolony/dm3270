@@ -75,8 +75,8 @@ public class SystemMessage
   private final BatchJobListener batchJobListener;
   private Profile profile;
   private boolean isConsole;
-  private final ConsoleLog1 consoleLog = new ConsoleLog1 ();
-  private final ConsoleLog2 consoleLog2 = new ConsoleLog2 ();
+  private ConsoleLog1 consoleLog1;
+  private ConsoleLog2 consoleLog2;
   private MenuItem menuItem;
   private int lastOrdersSize;
 
@@ -84,6 +84,16 @@ public class SystemMessage
   {
     this.screen = screen;
     this.batchJobListener = batchJobListener;
+  }
+
+  public ConsoleLog1 getConsoleLog1 ()
+  {
+    return consoleLog1;
+  }
+
+  public ConsoleLog2 getConsoleLog2 ()
+  {
+    return consoleLog2;
   }
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
@@ -94,9 +104,8 @@ public class SystemMessage
       {
         if (checkOrders (consoleMessage, orders))
         {
-          //          checkConsoleOutput (orders);
           String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-          consoleLog.addScreenText (text);
+          consoleLog1.addLines (text);
         }
       }
       else if (orders.size () == 2)
@@ -256,7 +265,9 @@ public class SystemMessage
       int pos = text.indexOf (" SELECTED FOR IPL ");
       if (pos >= 0)
       {
-        consoleLog.addScreenText (text);
+        consoleLog1 = new ConsoleLog1 ();
+        consoleLog2 = new ConsoleLog2 ();
+        consoleLog1.addLines (text);
         isConsole = true;
         screen.setIsConsole (true);
       }

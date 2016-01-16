@@ -26,6 +26,9 @@ public class ConsoleLogStage extends Stage
   private final Console1Tab console1Tab = new Console1Tab ("IPL");
   private final Console2Tab console2Tab = new Console2Tab ("Console");
 
+  private ConsoleLog1 consoleLog1;
+  private ConsoleLog2 consoleLog2;
+
   public ConsoleLogStage (Screen screen)
   {
     setTitle ("Console Logs");
@@ -48,6 +51,14 @@ public class ConsoleLogStage extends Stage
     windowSaver.restoreWindow ();
 
     tabPane.getSelectionModel ().select (console1Tab);
+  }
+
+  public void setLogs (ConsoleLog1 consoleLog1, ConsoleLog2 consoleLog2)
+  {
+    this.consoleLog1 = consoleLog1;
+    this.consoleLog2 = consoleLog2;
+
+    show ();
   }
 
   public void closeWindow ()

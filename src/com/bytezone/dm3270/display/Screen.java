@@ -58,7 +58,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private final TransferManager transferManager;
   private final ScreenPacker screenPacker;
   private final TransferMenu transferMenu;
-  //  private final ConsoleLog consoleLog;
   private final SystemMessage systemMessage;
 
   private final PluginsStage pluginsStage;
@@ -102,7 +101,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     assistantStage = new AssistantStage (this);
 
     consoleLogStage = new ConsoleLogStage (this);
-    //    consoleLog = new ConsoleLog ();
     systemMessage = new SystemMessage (this, assistantStage);
 
     // site will be null in replay mode, so it will have to be updated later
@@ -140,11 +138,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferManager;
   }
 
-  //  public ConsoleLog getConsoleLog ()
-  //  {
-  //    return consoleLog;
-  //  }
-
   public SystemMessage getSystemMessage ()
   {
     return systemMessage;
@@ -160,14 +153,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferMenu.getMenuItemDownload ();
   }
 
-  //  public boolean isConsole ()
-  //  {
-  //    return consoleLog.size () > 0;
-  //  }
-
   public void setIsConsole (boolean value)
   {
     consolePane.setIsConsole (value);
+    consoleLogStage.setLogs (systemMessage.getConsoleLog1 (),
+                             systemMessage.getConsoleLog2 ());
   }
 
   // called from Console.startSelectedFunction() : Replay

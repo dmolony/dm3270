@@ -8,7 +8,7 @@ public class ConsoleLog1
   private final List<String> log = new ArrayList<> ();
   private final String[] lines = new String[20];
 
-  public void addScreenText (String message)
+  public void addLines (String message)
   {
     int totLines = 0;
     for (int ptr = 0; ptr < message.length (); ptr += 80)
