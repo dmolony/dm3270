@@ -59,8 +59,6 @@ public class ConsolePane extends BorderPane
   private final Label fieldType = new Label ();
   private final Label fieldLocation = new Label ();
 
-  private MenuItem menuItemConsoleLog;
-
   private TelnetListener telnetListener;
   private final TelnetState telnetState = new TelnetState ();
   private int commandHeaderCount;
@@ -76,10 +74,11 @@ public class ConsolePane extends BorderPane
   private final BorderPane statusPane;
 
   private final MenuBar menuBar = new MenuBar ();
+  private MenuItem menuItemAssistant;
+  private MenuItem menuItemConsoleLog;
 
   private final FontManager fontManager;
   private final ScreenDimensions screenDimensions;
-  //  private final ScreenWatcher screenWatcher;
 
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
@@ -93,7 +92,6 @@ public class ConsolePane extends BorderPane
     screen.setConsolePane (this);
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
-    //    this.screenWatcher = screen.getScreenWatcher ();
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
@@ -147,7 +145,7 @@ public class ConsolePane extends BorderPane
     MenuItem menuItemToggleScreens =
         getMenuItem ("Screen history", e -> toggleHistory (), KeyCode.S);
 
-    MenuItem menuItemAssistant =
+    menuItemAssistant =
         getMenuItem ("Transfers", e -> screen.getAssistantStage ().show (), KeyCode.T);
 
     menuItemConsoleLog =
@@ -212,6 +210,7 @@ public class ConsolePane extends BorderPane
   public void setIsConsole (boolean value)
   {
     menuItemConsoleLog.setDisable (!value);
+    menuItemAssistant.setDisable (value);
   }
 
   // called from this.getStatusBar()

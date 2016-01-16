@@ -78,6 +78,7 @@ public class SystemMessage
   private boolean isConsole;
   private final ConsoleLog2 consoleLog2 = new ConsoleLog2 ();
   private MenuItem menuItem;
+  private int lastOrdersSize;
 
   public SystemMessage (Screen screen, BatchJobListener batchJobListener,
       ConsoleLogListener consoleLogListener)
@@ -94,7 +95,11 @@ public class SystemMessage
       if (orders.size () == 3)
       {
         if (checkOrders (consoleMessage, orders))
-          checkConsoleOutput (orders);
+        {
+          //          checkConsoleOutput (orders);
+          String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
+          consoleLogListener.addScreenText (text);
+        }
       }
       else if (orders.size () == 2)
       {
@@ -140,12 +145,8 @@ public class SystemMessage
       switch (orders.size ())
       {
         case 3:                                      // will only happen the first time
-          if (checkOrders (consoleMessage, orders))
-          {
-            isConsole = true;
-            screen.setIsConsole (true);
+          if (lastOrdersSize == 2 && checkOrders (consoleMessage, orders))
             checkConsoleOutput (orders);
-          }
           return;
 
         case 6:
@@ -159,6 +160,7 @@ public class SystemMessage
           return;
       }
     }
+    lastOrdersSize = orders.size ();
   }
 
   public void dump (List<Order> orders)
@@ -251,7 +253,12 @@ public class SystemMessage
   private void checkConsoleOutput (List<Order> orders)
   {
     String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-    consoleLogListener.addScreenText (text);
+    if (text.startsWith ("  IEA371I "))
+    {
+      consoleLogListener.addScreenText (text);
+      isConsole = true;
+      screen.setIsConsole (true);
+    }
   }
 
   private void checkConsole2Output (List<Order> orders)
