@@ -3,12 +3,11 @@ package com.bytezone.dm3270.console;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsoleLog implements ConsoleLogListener
+public class ConsoleLog1
 {
   private final List<String> log = new ArrayList<> ();
   private final String[] lines = new String[20];
 
-  @Override
   public void addScreenText (String message)
   {
     int totLines = 0;
@@ -55,7 +54,6 @@ public class ConsoleLog implements ConsoleLogListener
     }
   }
 
-  @Override
   public int size ()
   {
     return log.size ();

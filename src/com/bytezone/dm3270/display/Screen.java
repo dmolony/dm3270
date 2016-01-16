@@ -22,8 +22,6 @@ import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.SystemMessage;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
-import com.bytezone.dm3270.console.ConsoleLog;
-import com.bytezone.dm3270.console.ConsoleLogListener;
 import com.bytezone.dm3270.console.ConsoleLogStage;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
@@ -60,7 +58,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private final TransferManager transferManager;
   private final ScreenPacker screenPacker;
   private final TransferMenu transferMenu;
-  private final ConsoleLogListener consoleLogListener;
+  //  private final ConsoleLog consoleLog;
   private final SystemMessage systemMessage;
 
   private final PluginsStage pluginsStage;
@@ -104,8 +102,8 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     assistantStage = new AssistantStage (this);
 
     consoleLogStage = new ConsoleLogStage (this);
-    consoleLogListener = new ConsoleLog ();
-    systemMessage = new SystemMessage (this, assistantStage, consoleLogListener);
+    //    consoleLog = new ConsoleLog ();
+    systemMessage = new SystemMessage (this, assistantStage);
 
     // site will be null in replay mode, so it will have to be updated later
     transferManager = new TransferManager (this, serverSite);
@@ -142,10 +140,10 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferManager;
   }
 
-  public ConsoleLogListener getConsoleLogListener ()
-  {
-    return consoleLogListener;
-  }
+  //  public ConsoleLog getConsoleLog ()
+  //  {
+  //    return consoleLog;
+  //  }
 
   public SystemMessage getSystemMessage ()
   {
@@ -162,10 +160,10 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferMenu.getMenuItemDownload ();
   }
 
-  public boolean isConsole ()
-  {
-    return consoleLogListener.size () > 0;
-  }
+  //  public boolean isConsole ()
+  //  {
+  //    return consoleLog.size () > 0;
+  //  }
 
   public void setIsConsole (boolean value)
   {

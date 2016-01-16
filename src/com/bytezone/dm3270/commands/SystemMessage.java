@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.BatchJobListener;
+import com.bytezone.dm3270.console.ConsoleLog1;
 import com.bytezone.dm3270.console.ConsoleLog2;
-import com.bytezone.dm3270.console.ConsoleLogListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
@@ -73,19 +73,17 @@ public class SystemMessage
 
   private final Screen screen;
   private final BatchJobListener batchJobListener;
-  private final ConsoleLogListener consoleLogListener;
   private Profile profile;
   private boolean isConsole;
+  private final ConsoleLog1 consoleLog = new ConsoleLog1 ();
   private final ConsoleLog2 consoleLog2 = new ConsoleLog2 ();
   private MenuItem menuItem;
   private int lastOrdersSize;
 
-  public SystemMessage (Screen screen, BatchJobListener batchJobListener,
-      ConsoleLogListener consoleLogListener)
+  public SystemMessage (Screen screen, BatchJobListener batchJobListener)
   {
     this.screen = screen;
     this.batchJobListener = batchJobListener;
-    this.consoleLogListener = consoleLogListener;
   }
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders)
@@ -98,7 +96,7 @@ public class SystemMessage
         {
           //          checkConsoleOutput (orders);
           String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-          consoleLogListener.addScreenText (text);
+          consoleLog.addScreenText (text);
         }
       }
       else if (orders.size () == 2)
@@ -253,11 +251,20 @@ public class SystemMessage
   private void checkConsoleOutput (List<Order> orders)
   {
     String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-    if (text.startsWith ("  IEA371I "))
+    if (text.length () == 1600 && text.startsWith ("  IEA371I "))
     {
-      consoleLogListener.addScreenText (text);
-      isConsole = true;
-      screen.setIsConsole (true);
+      int pos = text.indexOf (" SELECTED FOR IPL ");
+      if (pos >= 0)
+      {
+        consoleLog.addScreenText (text);
+        isConsole = true;
+        screen.setIsConsole (true);
+      }
+      else
+      {
+        System.out.println ("Couldn't find IPL string");
+        System.out.println (text);
+      }
     }
   }
 
