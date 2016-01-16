@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javafx.scene.control.TextArea;
+
 /*
  * https://www-01.ibm.com/support/knowledgecenter/SSLTBW_2.2.0/com.ibm.zos.v2r2.ieag100/
  * toc.htm
@@ -27,6 +29,7 @@ public class ConsoleLog2
   private static final Pattern messagePattern =
       Pattern.compile ("^...[-| ][* ]\\d\\d(\\.\\d\\d){2} .*");
   private final List<ConsoleMessage> messages = new ArrayList<> ();
+  private final TextArea text = new TextArea ();
 
   public void addLines (List<String> lines)
   {
@@ -50,7 +53,10 @@ public class ConsoleLog2
     {
       ConsoleMessage lastMessage = messages.get (messages.size () - 1);
       for (int j = 0; j < max; j++)
+      {
         lastMessage.add (lines.get (j));
+        text.appendText ("\n" + lines.get (j));
+      }
     }
 
     Collections.reverse (tempMessages);
@@ -65,10 +71,15 @@ public class ConsoleLog2
       if (messages.get (i).matches (message))
         return;
 
+    if (messages.size () > 0)
+      text.appendText ("\n");
+    text.appendText (message.toString ());
     messages.add (message);
+  }
 
-    if (messages.size () == 1317)
-      writeMessages ();
+  TextArea getTextArea ()
+  {
+    return text;
   }
 
   private void writeMessages ()

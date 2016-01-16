@@ -103,7 +103,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     consoleLogStage = new ConsoleLogStage (this);
     systemMessage = new SystemMessage (this, assistantStage);
 
-    // site will be null in replay mode, so it will have to be updated later
+    // serverSite will be null in replay mode, so it will have to be updated later
     transferManager = new TransferManager (this, serverSite);
     transferMenu = new TransferMenu (serverSite, transferManager);
 

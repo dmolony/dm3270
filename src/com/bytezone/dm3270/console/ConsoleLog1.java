@@ -3,10 +3,13 @@ package com.bytezone.dm3270.console;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.control.TextArea;
+
 public class ConsoleLog1
 {
   private final List<String> log = new ArrayList<> ();
   private final String[] lines = new String[20];
+  private final TextArea text = new TextArea ();
 
   public void addLines (String message)
   {
@@ -22,8 +25,13 @@ public class ConsoleLog1
 
     if (log.size () == 0)
     {
-      for (int lineNo = 0; lineNo < totLines; lineNo++)
+      log.add (lines[0]);
+      text.appendText (lines[0]);
+      for (int lineNo = 1; lineNo < totLines; lineNo++)
+      {
         log.add (lines[lineNo]);
+        text.appendText ("\n" + lines[lineNo]);
+      }
       return;
     }
 
@@ -34,12 +42,14 @@ public class ConsoleLog1
       if ("          ".equals (code))
       {
         log.add (line);
+        text.appendText ("\n" + line);
         break;
       }
 
       if (code.charAt (2) == '+' && code.charAt (3) == '+')
       {
         log.add (line);
+        text.appendText ("\n" + line);
         break;
       }
 
@@ -48,15 +58,18 @@ public class ConsoleLog1
           || (code.charAt (2) == 'C' && code.charAt (9) == 'I'))
       {
         for (int i = lineNo; i < totLines; i++)
+        {
           log.add (lines[i]);
+          text.appendText ("\n" + lines[i]);
+        }
         break;
       }
     }
   }
 
-  public int size ()
+  TextArea getTextArea ()
   {
-    return log.size ();
+    return text;
   }
 
   public void dump ()

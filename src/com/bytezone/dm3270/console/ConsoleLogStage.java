@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class ConsoleLogStage extends Stage
@@ -28,6 +29,8 @@ public class ConsoleLogStage extends Stage
 
   private ConsoleLog1 consoleLog1;
   private ConsoleLog2 consoleLog2;
+
+  private final Font displayFont = Font.font ("Monospaced", 13);
 
   public ConsoleLogStage (Screen screen)
   {
@@ -57,6 +60,12 @@ public class ConsoleLogStage extends Stage
   {
     this.consoleLog1 = consoleLog1;
     this.consoleLog2 = consoleLog2;
+
+    console1Tab.setContent (consoleLog1.getTextArea ());
+    consoleLog1.getTextArea ().setFont (displayFont);
+
+    console2Tab.setContent (consoleLog2.getTextArea ());
+    consoleLog2.getTextArea ().setFont (displayFont);
 
     show ();
   }
