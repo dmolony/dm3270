@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.assistant;
+package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public class ConsoleLog implements ConsoleLogListener
   private final String[] lines = new String[20];
 
   @Override
-  public void consoleMessage (String message)
+  public void addScreenText (String message)
   {
     int totLines = 0;
     for (int ptr = 0; ptr < message.length (); ptr += 80)
@@ -52,7 +52,6 @@ public class ConsoleLog implements ConsoleLogListener
         break;
       }
     }
-    dump ();
   }
 
   @Override

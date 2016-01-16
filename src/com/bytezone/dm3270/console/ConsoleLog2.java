@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.assistant;
+package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -154,7 +154,7 @@ public class WriteCommand extends Command
 
     for (Order order : orders)
     {
-      String fmt = (order instanceof TextOrder) ? "%s" : "%n%-40s";
+      String fmt = (order.isText ()) ? "%s" : "%n%-40s";
       text.append (String.format (fmt, order));
     }
 

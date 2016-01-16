@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.assistant;
+package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class ConsoleMessage
   int seconds;
   String system;
   String subsystem;
-  String prefix;
+  String prefix1;
   String prefix2;
   String rest;
   List<String> lines = new ArrayList<> ();
@@ -20,7 +20,7 @@ public class ConsoleMessage
     if (lines.size () == 0)
     {
       assert line.charAt (0) == ' ';
-      prefix = line.substring (1, 5);
+      prefix1 = line.substring (1, 5);
       hours = Integer.parseInt (line.substring (5, 7));
       minutes = Integer.parseInt (line.substring (8, 10));
       seconds = Integer.parseInt (line.substring (11, 13));
@@ -50,7 +50,7 @@ public class ConsoleMessage
 
   public String firstLine ()
   {
-    return String.format ("%s%02d.%02d.%02d %-7s %-8s %s%s", prefix, hours, minutes,
+    return String.format ("%s%02d.%02d.%02d %-7s %-8s %s%s", prefix1, hours, minutes,
                           seconds, system, subsystem, prefix2, rest);
   }
 

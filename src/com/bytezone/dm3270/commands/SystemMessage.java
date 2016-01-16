@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.BatchJobListener;
-import com.bytezone.dm3270.assistant.ConsoleLog2;
-import com.bytezone.dm3270.assistant.ConsoleLogListener;
+import com.bytezone.dm3270.console.ConsoleLog2;
+import com.bytezone.dm3270.console.ConsoleLogListener;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
@@ -250,7 +250,7 @@ public class SystemMessage
   private void checkConsoleOutput (List<Order> orders)
   {
     String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-    consoleLogListener.consoleMessage (text);
+    consoleLogListener.addScreenText (text);
   }
 
   private void checkConsole2Output (List<Order> orders)
