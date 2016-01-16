@@ -15,7 +15,6 @@ import com.bytezone.dm3270.display.HistoryManager;
 import com.bytezone.dm3270.display.HistoryScreen;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
-import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -60,6 +59,8 @@ public class ConsolePane extends BorderPane
   private final Label fieldType = new Label ();
   private final Label fieldLocation = new Label ();
 
+  private MenuItem menuItemConsoleLog;
+
   private TelnetListener telnetListener;
   private final TelnetState telnetState = new TelnetState ();
   private int commandHeaderCount;
@@ -78,7 +79,7 @@ public class ConsolePane extends BorderPane
 
   private final FontManager fontManager;
   private final ScreenDimensions screenDimensions;
-  private final ScreenWatcher screenWatcher;
+  //  private final ScreenWatcher screenWatcher;
 
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
@@ -92,7 +93,7 @@ public class ConsolePane extends BorderPane
     screen.setConsolePane (this);
     screen.getScreenCursor ().addFieldChangeListener (this);
     screen.getScreenCursor ().addCursorMoveListener (this);
-    this.screenWatcher = screen.getScreenWatcher ();
+    //    this.screenWatcher = screen.getScreenWatcher ();
 
     setMargin (screen, new Insets (MARGIN, MARGIN, 0, MARGIN));
 
@@ -149,9 +150,14 @@ public class ConsolePane extends BorderPane
     MenuItem menuItemAssistant =
         getMenuItem ("Transfers", e -> screen.getAssistantStage ().show (), KeyCode.T);
 
-    menuCommands.getItems ()
-        .addAll (menuItemToggleScreens, menuItemAssistant, new SeparatorMenuItem (),
-                 screen.getMenuItemUpload (), screen.getMenuItemDownload ());
+    menuItemConsoleLog =
+        getMenuItem ("Console log", e -> screen.getConsoleLogStage ().show (), KeyCode.L);
+    setIsConsole (false);
+
+    menuCommands.getItems ().addAll (menuItemToggleScreens, menuItemAssistant,
+                                     menuItemConsoleLog, new SeparatorMenuItem (),
+                                     screen.getMenuItemUpload (),
+                                     screen.getMenuItemDownload ());
 
     if (!SYSTEM_MENUBAR)
     {
@@ -201,6 +207,11 @@ public class ConsolePane extends BorderPane
     statusPane.setRight (rightBox);
 
     return statusPane;
+  }
+
+  public void setIsConsole (boolean value)
+  {
+    menuItemConsoleLog.setDisable (!value);
   }
 
   // called from this.getStatusBar()

@@ -24,6 +24,7 @@ import com.bytezone.dm3270.commands.SystemMessage;
 import com.bytezone.dm3270.commands.WriteControlCharacter;
 import com.bytezone.dm3270.console.ConsoleLog;
 import com.bytezone.dm3270.console.ConsoleLogListener;
+import com.bytezone.dm3270.console.ConsoleLogStage;
 import com.bytezone.dm3270.filetransfer.Transfer;
 import com.bytezone.dm3270.filetransfer.Transfer.TransferType;
 import com.bytezone.dm3270.filetransfer.TransferListener;
@@ -64,6 +65,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
 
   private final PluginsStage pluginsStage;
   private final AssistantStage assistantStage;
+  private final ConsoleLogStage consoleLogStage;
   private ConsolePane consolePane;
 
   private final GraphicsContext gc;
@@ -91,8 +93,8 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   {
     this.screenDimensions = screenDimensions;
     this.function = function;
-    cursor = new Cursor (this, screenDimensions);
 
+    cursor = new Cursor (this, screenDimensions);
     gc = getGraphicsContext2D ();
 
     contextManager = new ContextManager ();
@@ -100,6 +102,8 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     assistantStage = new AssistantStage (this);
+
+    consoleLogStage = new ConsoleLogStage (this);
     consoleLogListener = new ConsoleLog ();
     systemMessage = new SystemMessage (this, assistantStage, consoleLogListener);
 
@@ -161,6 +165,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public boolean isConsole ()
   {
     return consoleLogListener.size () > 0;
+  }
+
+  public void setIsConsole (boolean value)
+  {
+    consolePane.setIsConsole (value);
   }
 
   // called from Console.startSelectedFunction() : Replay
@@ -227,6 +236,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public AssistantStage getAssistantStage ()
   {
     return assistantStage;
+  }
+
+  public ConsoleLogStage getConsoleLogStage ()
+  {
+    return consoleLogStage;
   }
 
   public void close ()

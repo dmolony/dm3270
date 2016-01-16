@@ -143,6 +143,7 @@ public class SystemMessage
           if (checkOrders (consoleMessage, orders))
           {
             isConsole = true;
+            screen.setIsConsole (true);
             checkConsoleOutput (orders);
           }
           return;

@@ -23,8 +23,8 @@ public class ConsoleLogStage extends Stage
   private final MenuBar menuBar = new MenuBar ();
 
   private final TabPane tabPane = new TabPane ();
-  private final Console1Tab console1Tab = new Console1Tab ();
-  private final Console2Tab console2Tab = new Console2Tab ();
+  private final Console1Tab console1Tab = new Console1Tab ("IPL");
+  private final Console2Tab console2Tab = new Console2Tab ("Console");
 
   public ConsoleLogStage (Screen screen)
   {
