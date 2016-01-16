@@ -44,8 +44,9 @@ public class ConsoleLog implements ConsoleLogListener
         break;
       }
 
+      // this should use a regex
       if ((code.charAt (2) == 'I' && code.charAt (8) == 'I')
-          || code.charAt (2) == 'C' && code.charAt (9) == 'I')
+          || (code.charAt (2) == 'C' && code.charAt (9) == 'I'))
       {
         for (int i = lineNo; i < totLines; i++)
           log.add (lines[i]);

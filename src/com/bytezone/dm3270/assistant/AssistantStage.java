@@ -96,10 +96,8 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
 
     menuBar.setUseSystemMenuBar (SYSTEM_MENUBAR);
 
-    Scene scene = new Scene (borderPane, 800, 500);// width/height
+    Scene scene = new Scene (borderPane, 800, 500);             // width/height
     setScene (scene);
-
-    setOnCloseRequest (e -> closeWindow ());
 
     windowSaver = new WindowSaver (prefs, this, "DatasetStage");
     windowSaver.restoreWindow ();
