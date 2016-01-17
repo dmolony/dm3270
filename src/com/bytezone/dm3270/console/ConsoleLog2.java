@@ -34,8 +34,10 @@ public class ConsoleLog2
   public void addLines (List<String> lines)
   {
     List<ConsoleMessage> tempMessages = new ArrayList<> ();
-
     int max = lines.size ();
+    System.out.println ("------------------------------------------------------------");
+    System.out.printf ("%d lines to check%n", max);
+
     for (int i = max - 1; i >= 0; i--)
     {
       String line = lines.get (i);
@@ -47,18 +49,56 @@ public class ConsoleLog2
         max = i;
         tempMessages.add (message);
       }
+      else
+        System.out.printf ("  rejected: %s%n", line);
     }
 
+    System.out.println ("------------------------------------------------------------");
+    for (ConsoleMessage message : tempMessages)
+      System.out.println (message);
+    System.out.println ("------------------------------------------------------------");
+    System.out.printf ("%d lines left over%n", max);
     if (max > 0)
     {
-      ConsoleMessage lastMessage = messages.get (messages.size () - 1);
-      for (int j = 0; j < max; j++)
+      ConsoleMessage lastMessage = null;
+
+      if (tempMessages.size () > 0)
       {
-        lastMessage.add (lines.get (j));
-        text.appendText ("\n" + lines.get (j));
+        ConsoleMessage firstMessage = tempMessages.get (tempMessages.size () - 1);
+        int index = getIndex (firstMessage);
+        if (index >= 0)
+        {
+          lastMessage = messages.get (index - 1);
+          System.out.println ("found, so check previous");
+        }
+        else
+        {
+          lastMessage = messages.get (messages.size () - 1);
+          System.out.println ("not found, so check last");
+        }
       }
+      else
+      {
+        lastMessage = messages.get (messages.size () - 1);
+        System.out.println ("screen has no messages");
+      }
+
+      if (lastMessage != null)
+        for (int j = 0; j < max; j++)
+        {
+          String line = lines.get (j);
+          // check if this line is contained in the previous message
+          if (!lastMessage.contains (line))
+          {
+            lastMessage.add (lines.get (j));
+            text.appendText ("\n" + lines.get (j));
+            System.out.println (lines.get (j));
+          }
+        }
     }
 
+    System.out.println ("------------------------------------------------------------");
+    System.out.printf ("%d messages to check%n", tempMessages.size ());
     Collections.reverse (tempMessages);
     for (ConsoleMessage message : tempMessages)
       add (message);
@@ -66,15 +106,30 @@ public class ConsoleLog2
 
   private void add (ConsoleMessage message)
   {
+    System.out.println ("checking:");
+    System.out.println (message);
     int last = Math.max (0, messages.size () - 20);
     for (int i = messages.size () - 1; i >= last; i--)
       if (messages.get (i).matches (message))
+      {
+        System.out.println ("  --> already there");
         return;
+      }
 
     if (messages.size () > 0)
       text.appendText ("\n");
     text.appendText (message.toString ());
     messages.add (message);
+    System.out.println ("  --> adding");
+  }
+
+  private int getIndex (ConsoleMessage message)
+  {
+    int last = Math.max (0, messages.size () - 20);
+    for (int i = messages.size () - 1; i >= last; i--)
+      if (messages.get (i).matches (message))
+        return i;
+    return -1;
   }
 
   TextArea getTextArea ()

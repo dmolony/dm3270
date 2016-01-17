@@ -40,11 +40,36 @@ public class ConsoleMessage
         || seconds != message.seconds)
       return false;
 
-    for (int i = 0; i < lines.size (); i++)
-      if (!lines.get (i).equals (message.lines.get (i)))
+    if (!system.equals (message.system))
+      return false;
+
+    if (!subsystem.equals (message.subsystem))
+      return false;
+
+    if (!rest.equals (message.rest))
+      return false;
+
+    for (int i = 1; i < lines.size (); i++)
+    {
+      String line1 = lines.get (i);
+      String line2 = message.lines.get (i);
+      if (line1.length () != line2.length ())
         return false;
+      if (!line1.substring (5).equals (line2.substring (5)))
+        return false;
+      //      if (!lines.get (i).equals (message.lines.get (i)))
+      //        return false;
+    }
 
     return true;
+  }
+
+  public boolean contains (String searchLine)
+  {
+    for (String line : lines)
+      if (line.equals (searchLine))
+        return true;
+    return false;
   }
 
   public String firstLine ()

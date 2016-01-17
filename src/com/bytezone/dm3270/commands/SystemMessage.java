@@ -287,20 +287,33 @@ public class SystemMessage
       if (order.isText ())
       {
         String line = ((TextOrder) order).getTextString ();
-        if (line.length () == 79)
+        if (line.length () == 79 || line.length () == 75)
+        {
           lines.add (line);
+          System.out.printf ("adding %02d: %s%n", lines.size (), line);
+        }
       }
 
-    // remove trailing blank lines
-    for (int i = lines.size () - 1; i >= 0; i--)
+    if (lines.size () == 20)
     {
-      String line = lines.get (i);
-      if (!line.trim ().isEmpty ())
-        break;
-      lines.remove (i);
-    }
+      //      assert lines.size () == 20;
+      // remove trailing blank lines
+      for (int i = lines.size () - 1; i >= 0; i--)
+      {
+        String line = lines.get (i);
+        if (!line.trim ().isEmpty ())
+          break;
+        lines.remove (i);
+      }
 
-    consoleLog2.addLines (lines);
+      consoleLog2.addLines (lines);
+    }
+    else
+    {
+      System.out.println ("skipping:");
+      for (int i = 0; i < lines.size (); i++)
+        System.out.printf ("%02d : %s%n", i, lines.get (i));
+    }
   }
 
   public MenuItem getConsoleMenuItem ()
