@@ -100,27 +100,34 @@ public class ConsoleLog2
     System.out.println ("------------------------------------------------------------");
     System.out.printf ("%d messages to check%n", tempMessages.size ());
     Collections.reverse (tempMessages);
+
+    boolean duplicateCheck = true;
     for (ConsoleMessage message : tempMessages)
-      add (message);
+      duplicateCheck = !add (message, duplicateCheck);
   }
 
-  private void add (ConsoleMessage message)
+  private boolean add (ConsoleMessage message, boolean duplicateCheck)
   {
-    System.out.println ("checking:");
+    System.out.printf ("checking (%s):", duplicateCheck);
     System.out.println (message);
-    int last = Math.max (0, messages.size () - 20);
-    for (int i = messages.size () - 1; i >= last; i--)
-      if (messages.get (i).matches (message))
-      {
-        System.out.println ("  --> already there");
-        return;
-      }
+
+    if (duplicateCheck)
+    {
+      int last = Math.max (0, messages.size () - 20);
+      for (int i = messages.size () - 1; i >= last; i--)
+        if (messages.get (i).matches (message))
+        {
+          System.out.println ("  --> already there");
+          return false;
+        }
+    }
 
     if (messages.size () > 0)
       text.appendText ("\n");
     text.appendText (message.toString ());
     messages.add (message);
     System.out.println ("  --> adding");
+    return true;
   }
 
   private int getIndex (ConsoleMessage message)

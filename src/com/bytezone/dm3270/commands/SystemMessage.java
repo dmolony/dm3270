@@ -106,16 +106,17 @@ public class SystemMessage
         {
           String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
           consoleLog1.addLines (text);
+          return;
         }
       }
-      else if (orders.size () == 2)
-      {
-        //        System.out.println ("two");
-      }
-      else
-      {
-        checkConsole2Output (orders);
-      }
+      //      else if (orders.size () == 2)
+      //      {
+      //        //        System.out.println ("two");
+      //      }
+      //      else
+      //      {
+      checkConsole2Output (orders);
+      //      }
     }
     else if (eraseWrite)
     {
