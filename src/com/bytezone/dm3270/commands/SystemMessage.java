@@ -82,6 +82,9 @@ public class SystemMessage
   private MenuItem menuItem;
   private int lastOrdersSize;
 
+  private final List<String> lines = new ArrayList<> (20);
+  private final List<String> newLines = new ArrayList<> (20);
+
   public SystemMessage (Screen screen, BatchJobListener batchJobListener)
   {
     this.screen = screen;
@@ -288,7 +291,7 @@ public class SystemMessage
     boolean display = false;
 
     // collect text orders
-    List<String> lines = new ArrayList<> (20);
+    lines.clear ();
     int skipLines = 0;
 
     if (display)
@@ -296,6 +299,7 @@ public class SystemMessage
       System.out.print ("-------------------------------------------");
       System.out.println ("----------------------------------------");
     }
+
     for (Order order : orders)
       if (order.isText ())
       {
@@ -306,6 +310,7 @@ public class SystemMessage
           if (twoDigits.matcher (prefix).matches ())
             skipLines = lines.size ();
           lines.add (line);
+
           if (display)
             System.out.printf ("%02d: %s %s%n", lines.size (), line,
                                line.length () != 79 ? " C" : "");
@@ -314,6 +319,7 @@ public class SystemMessage
 
     if (debug)
       System.out.printf ("skiplines: %d%n", skipLines);
+
     if (lines.size () == 20)
     {
       // remove trailing blank lines
@@ -330,7 +336,7 @@ public class SystemMessage
           consoleLog2.addLines (lines);
         else
         {
-          List<String> newLines = new ArrayList<> (20 - skipLines);
+          newLines.clear ();
           for (int i = skipLines; i < lines.size (); i++)
             newLines.add (lines.get (i));
           consoleLog2.addLines (newLines);
