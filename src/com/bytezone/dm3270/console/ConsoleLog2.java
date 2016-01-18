@@ -32,13 +32,17 @@ public class ConsoleLog2
 
   private final List<ConsoleMessage> messages = new ArrayList<> ();
   private final TextArea text = new TextArea ();
+  private final boolean debug = false;
 
   public void addLines (List<String> lines)
   {
     List<ConsoleMessage> tempMessages = new ArrayList<> ();
     int max = lines.size ();
-    System.out.println ("--------1---------------------------------------------------");
-    System.out.printf ("%d lines to check%n", max);
+    if (debug)
+    {
+      System.out.println ("--------1---------------------------------------------------");
+      System.out.printf ("%d lines to check%n", max);
+    }
 
     for (int i = max - 1; i >= 0; i--)
     {
@@ -55,11 +59,14 @@ public class ConsoleLog2
       //        System.out.printf ("  rejected: %s%n", line);
     }
 
-    System.out.println ("--------2---------------------------------------------------");
-    for (ConsoleMessage message : tempMessages)
-      System.out.println (message);
-    System.out.println ("--------3---------------------------------------------------");
-    System.out.printf ("%d lines left over%n", max);
+    if (debug)
+    {
+      System.out.println ("--------2---------------------------------------------------");
+      for (ConsoleMessage message : tempMessages)
+        System.out.println (message);
+      System.out.println ("--------3---------------------------------------------------");
+      System.out.printf ("%d lines left over%n", max);
+    }
     if (max > 0)
     {
       ConsoleMessage checkMessage = null;
@@ -71,18 +78,21 @@ public class ConsoleLog2
         if (index >= 0)
         {
           checkMessage = messages.get (index - 1);
-          System.out.println ("found, so check previous");
+          if (debug)
+            System.out.println ("found, so check previous");
         }
         else
         {
           checkMessage = messages.get (messages.size () - 1);
-          System.out.println ("not found, so check last");
+          if (debug)
+            System.out.println ("not found, so check last");
         }
       }
       else
       {
         checkMessage = messages.get (messages.size () - 1);
-        System.out.println ("screen has no messages");
+        if (debug)
+          System.out.println ("screen has no messages");
       }
 
       if (checkMessage != null)
@@ -94,27 +104,33 @@ public class ConsoleLog2
           {
             checkMessage.add (lines.get (j));
             text.appendText ("\n" + lines.get (j));
-            System.out.println (lines.get (j));
+            if (debug)
+              System.out.println (lines.get (j));
           }
         }
     }
 
-    System.out.println ("-------4----------------------------------------------------");
-    System.out.printf ("%d messages to check%n", tempMessages.size ());
+    if (debug)
+    {
+      System.out.println ("-------4----------------------------------------------------");
+      System.out.printf ("%d messages to check%n", tempMessages.size ());
+    }
     Collections.reverse (tempMessages);
 
+    // only check for duplicate lines if there is no two-digit flag
     String prefix = lines.get (0).substring (1, 3);
-    //    boolean duplicateCheck = false;
     boolean duplicateCheck = !twoDigits.matcher (prefix).matches ();
     for (ConsoleMessage message : tempMessages)
       duplicateCheck = !add (message, duplicateCheck);
-    //      add (message, duplicateCheck);
   }
 
   private boolean add (ConsoleMessage message, boolean duplicateCheck)
   {
-    System.out.printf ("checking (%s):", duplicateCheck);
-    System.out.println (message);
+    if (debug)
+    {
+      System.out.printf ("checking (%s):", duplicateCheck);
+      System.out.println (message);
+    }
 
     if (duplicateCheck)
     {
@@ -122,7 +138,8 @@ public class ConsoleLog2
       for (int i = messages.size () - 1; i >= last; i--)
         if (messages.get (i).matches (message))
         {
-          System.out.println ("  --> already there");
+          if (debug)
+            System.out.println ("  --> already there");
           return false;
         }
     }
@@ -131,7 +148,8 @@ public class ConsoleLog2
       text.appendText ("\n");
     text.appendText (message.toString ());
     messages.add (message);
-    System.out.println ("  --> adding");
+    if (debug)
+      System.out.println ("  --> adding");
     return true;
   }
 
@@ -149,9 +167,9 @@ public class ConsoleLog2
     return text;
   }
 
-  private void writeMessages ()
-  {
-    for (ConsoleMessage message : messages)
-      System.out.println (message);
-  }
+  //  private void writeMessages ()
+  //  {
+  //    for (ConsoleMessage message : messages)
+  //      System.out.println (message);
+  //  }
 }

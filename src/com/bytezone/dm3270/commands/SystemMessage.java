@@ -284,10 +284,18 @@ public class SystemMessage
 
   private void checkConsole2Output (List<Order> orders)
   {
+    boolean debug = false;
+    boolean display = false;
+
     // collect text orders
     List<String> lines = new ArrayList<> (20);
     int skipLines = 0;
 
+    if (display)
+    {
+      System.out.print ("-------------------------------------------");
+      System.out.println ("----------------------------------------");
+    }
     for (Order order : orders)
       if (order.isText ())
       {
@@ -298,11 +306,14 @@ public class SystemMessage
           if (twoDigits.matcher (prefix).matches ())
             skipLines = lines.size ();
           lines.add (line);
-          System.out.printf ("adding %02d: %s%n", lines.size (), line);
+          if (display)
+            System.out.printf ("%02d: %s %s%n", lines.size (), line,
+                               line.length () != 79 ? " C" : "");
         }
       }
 
-    System.out.printf ("skiplines: %d%n", skipLines);
+    if (debug)
+      System.out.printf ("skiplines: %d%n", skipLines);
     if (lines.size () == 20)
     {
       // remove trailing blank lines
