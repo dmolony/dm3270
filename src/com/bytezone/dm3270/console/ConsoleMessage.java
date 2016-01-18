@@ -14,6 +14,7 @@ public class ConsoleMessage
   String prefix2;
   String rest;
   List<String> lines = new ArrayList<> ();
+  boolean flag;         // indent ?
 
   public void add (String line)
   {
@@ -27,8 +28,15 @@ public class ConsoleMessage
       subsystem = line.substring (22, 31).trim ();
       prefix2 = line.substring (31, 32);
       rest = line.substring (32).trim ();
+      if (line.length () != 79)
+        flag = true;
     }
     lines.add (line);
+  }
+
+  boolean getFlag ()
+  {
+    return flag;
   }
 
   public boolean matches (ConsoleMessage message)
@@ -57,8 +65,6 @@ public class ConsoleMessage
         return false;
       if (!line1.substring (5).equals (line2.substring (5)))
         return false;
-      //      if (!lines.get (i).equals (message.lines.get (i)))
-      //        return false;
     }
 
     return true;
@@ -83,11 +89,20 @@ public class ConsoleMessage
   {
     StringBuilder text = new StringBuilder ();
 
-    text.append (String
-        .format ("%s %s%n", firstLine (),
-                 lines.size () >= 2 ? lines.get (1).substring (5).trim () : ""));
-    for (int i = 2; i < lines.size (); i++)
-      text.append (String.format ("%s%n", lines.get (i)));
+    if (flag)
+    {
+      text.append (String.format ("%s%n", firstLine ()));
+      for (int i = 1; i < lines.size (); i++)
+        text.append (String.format ("                           %s%n", lines.get (i)));
+    }
+    else
+    {
+      text.append (String
+          .format ("%s %s%n", firstLine (),
+                   lines.size () >= 2 ? lines.get (1).substring (5).trim () : ""));
+      for (int i = 2; i < lines.size (); i++)
+        text.append (String.format ("%s%n", lines.get (i)));
+    }
 
     text.deleteCharAt (text.length () - 1);
 

@@ -307,7 +307,7 @@ public class SystemMessage
         if (line.length () == 79 || line.length () == 75)
         {
           String prefix = line.substring (1, 3);
-          if (twoDigits.matcher (prefix).matches ())
+          if (twoDigits.matcher (prefix).matches ())      // new data starts here
             skipLines = lines.size ();
           lines.add (line);
 

@@ -38,12 +38,14 @@ public class ConsoleLog2
   {
     List<ConsoleMessage> tempMessages = new ArrayList<> ();
     int max = lines.size ();
+
     if (debug)
     {
       System.out.println ("--------1---------------------------------------------------");
       System.out.printf ("%d lines to check%n", max);
     }
 
+    // messages are stored in reverse order
     for (int i = max - 1; i >= 0; i--)
     {
       String line = lines.get (i);
@@ -55,8 +57,6 @@ public class ConsoleLog2
         max = i;
         tempMessages.add (message);
       }
-      //      else
-      //        System.out.printf ("  rejected: %s%n", line);
     }
 
     if (debug)
@@ -103,7 +103,11 @@ public class ConsoleLog2
           if (!checkMessage.contains (line))
           {
             checkMessage.add (lines.get (j));
-            text.appendText ("\n" + lines.get (j));
+            if (checkMessage.getFlag ())
+              text.appendText ("\n                           " + lines.get (j));
+            else
+              text.appendText ("\n" + lines.get (j));
+
             if (debug)
               System.out.println (lines.get (j));
           }
@@ -146,10 +150,13 @@ public class ConsoleLog2
 
     if (messages.size () > 0)
       text.appendText ("\n");
+
     text.appendText (message.toString ());
     messages.add (message);
+
     if (debug)
       System.out.println ("  --> adding");
+
     return true;
   }
 
