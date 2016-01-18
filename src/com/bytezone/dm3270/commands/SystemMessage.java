@@ -71,6 +71,8 @@ public class SystemMessage
   private static final byte[] consoleMessage =
       { Order.SET_BUFFER_ADDRESS, Order.START_FIELD, 0x00 };
 
+  private static final Pattern twoDigits = Pattern.compile ("\\d\\d");
+
   private final Screen screen;
   private final BatchJobListener batchJobListener;
   private Profile profile;
@@ -284,20 +286,25 @@ public class SystemMessage
   {
     // collect text orders
     List<String> lines = new ArrayList<> (20);
+    int skipLines = 0;
+
     for (Order order : orders)
       if (order.isText ())
       {
         String line = ((TextOrder) order).getTextString ();
         if (line.length () == 79 || line.length () == 75)
         {
+          String prefix = line.substring (1, 3);
+          if (twoDigits.matcher (prefix).matches ())
+            skipLines = lines.size ();
           lines.add (line);
           System.out.printf ("adding %02d: %s%n", lines.size (), line);
         }
       }
 
+    System.out.printf ("skiplines: %d%n", skipLines);
     if (lines.size () == 20)
     {
-      //      assert lines.size () == 20;
       // remove trailing blank lines
       for (int i = lines.size () - 1; i >= 0; i--)
       {
@@ -307,9 +314,18 @@ public class SystemMessage
         lines.remove (i);
       }
 
-      consoleLog2.addLines (lines);
+      if (lines.size () > 0)
+        if (skipLines == 0)
+          consoleLog2.addLines (lines);
+        else
+        {
+          List<String> newLines = new ArrayList<> (20 - skipLines);
+          for (int i = skipLines; i < lines.size (); i++)
+            newLines.add (lines.get (i));
+          consoleLog2.addLines (newLines);
+        }
     }
-    else
+    else if (lines.size () > 0)
     {
       System.out.println ("skipping:");
       for (int i = 0; i < lines.size (); i++)
