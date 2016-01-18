@@ -45,7 +45,7 @@ public class ConsoleLog2
       System.out.printf ("%d lines to check%n", max);
     }
 
-    // messages are stored in reverse order
+    // work backwards from the bottom of the screen to the top
     for (int i = max - 1; i >= 0; i--)
     {
       String line = lines.get (i);
@@ -67,51 +67,22 @@ public class ConsoleLog2
       System.out.println ("--------3---------------------------------------------------");
       System.out.printf ("%d lines left over%n", max);
     }
-    if (max > 0)
+
+    // check for lines left over that have no message header
+    if (max > 0 && messages.size () > 0)
     {
-      ConsoleMessage checkMessage = null;
-
-      if (tempMessages.size () > 0)
+      ConsoleMessage checkMessage = messages.get (messages.size () - 1);
+      for (int j = 0; j < max; j++)
       {
-        ConsoleMessage firstMessage = tempMessages.get (tempMessages.size () - 1);
-        int index = getIndex (firstMessage);
-        if (index >= 0)
-        {
-          checkMessage = messages.get (index - 1);
-          if (debug)
-            System.out.println ("found, so check previous");
-        }
+        checkMessage.add (lines.get (j));
+        if (checkMessage.getFlag ())
+          text.appendText ("\n                           " + lines.get (j));
         else
-        {
-          checkMessage = messages.get (messages.size () - 1);
-          if (debug)
-            System.out.println ("not found, so check last");
-        }
-      }
-      else
-      {
-        checkMessage = messages.get (messages.size () - 1);
+          text.appendText ("\n" + lines.get (j));
+
         if (debug)
-          System.out.println ("screen has no messages");
+          System.out.println (lines.get (j));
       }
-
-      if (checkMessage != null)
-        for (int j = 0; j < max; j++)
-        {
-          String line = lines.get (j);
-          // check if this line is contained in the previous message
-          if (!checkMessage.contains (line))
-          {
-            checkMessage.add (lines.get (j));
-            if (checkMessage.getFlag ())
-              text.appendText ("\n                           " + lines.get (j));
-            else
-              text.appendText ("\n" + lines.get (j));
-
-            if (debug)
-              System.out.println (lines.get (j));
-          }
-        }
     }
 
     if (debug)

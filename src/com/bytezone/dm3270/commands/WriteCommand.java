@@ -126,7 +126,7 @@ public class WriteCommand extends Command
     // check screen for jobs submitted or finished
     systemMessage = screen.getSystemMessage ();
     if (orders.size () > 0)
-      systemMessage.checkSystemMessage (eraseWrite, orders);
+      systemMessage.checkSystemMessage (eraseWrite, orders, data.length);
   }
 
   // Used by Session.checkServerName() when searching for the server's name

@@ -101,7 +101,7 @@ public class SystemMessage
     return consoleLog2;
   }
 
-  void checkSystemMessage (boolean eraseWrite, List<Order> orders)
+  void checkSystemMessage (boolean eraseWrite, List<Order> orders, int length)
   {
     if (isConsole)
     {
@@ -114,14 +114,8 @@ public class SystemMessage
           return;
         }
       }
-      //      else if (orders.size () == 2)
-      //      {
-      //        //        System.out.println ("two");
-      //      }
-      //      else
-      //      {
-      checkConsole2Output (orders);
-      //      }
+      if (length == 1766)
+        checkConsole2Output (orders);
     }
     else if (eraseWrite)
     {
@@ -287,7 +281,7 @@ public class SystemMessage
 
   private void checkConsole2Output (List<Order> orders)
   {
-    boolean debug = false;
+    boolean debug = true;
     boolean display = false;
 
     // collect text orders
