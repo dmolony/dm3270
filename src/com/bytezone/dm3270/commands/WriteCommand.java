@@ -125,7 +125,6 @@ public class WriteCommand extends Command
 
     // check screen for jobs submitted or finished
     systemMessage = screen.getSystemMessage ();
-    //    if (orders.size () > 0)
     systemMessage.checkSystemMessage (eraseWrite, orders, data.length);
   }
 

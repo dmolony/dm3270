@@ -108,7 +108,7 @@ public class ConsoleMessage
       {
         text.append (String.format ("%n                           %s",
                                     joining ? trimmedLine : line));
-        length = line.length () + 27;
+        length = trimmedLine.length () + 27;
       }
       if (joining && trimmedLine.endsWith (":"))
         joining = false;
