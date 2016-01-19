@@ -75,10 +75,12 @@ public class ConsoleLog2
       for (int j = 0; j < max; j++)
       {
         checkMessage.add (lines.get (j));
-        if (checkMessage.getFlag ())
-          text.appendText ("\n                           " + lines.get (j));
-        else
-          text.appendText ("\n" + lines.get (j));
+        //        if (checkMessage.getFlag ())
+        //          text.appendText ("\n                           " + lines.get (j).substring (5));
+        //        else
+        //          text.appendText ("\n" + lines.get (j).substring (5));
+        text.appendText (String.format ("%n                           %s",
+                                        lines.get (j).substring (5)));
 
         if (debug)
           System.out.println (lines.get (j));
@@ -131,14 +133,14 @@ public class ConsoleLog2
     return true;
   }
 
-  private int getIndex (ConsoleMessage message)
-  {
-    int last = Math.max (0, messages.size () - 20);
-    for (int i = messages.size () - 1; i >= last; i--)
-      if (messages.get (i).matches (message))
-        return i;
-    return -1;
-  }
+  //  private int getIndex (ConsoleMessage message)
+  //  {
+  //    int last = Math.max (0, messages.size () - 20);
+  //    for (int i = messages.size () - 1; i >= last; i--)
+  //      if (messages.get (i).matches (message))
+  //        return i;
+  //    return -1;
+  //  }
 
   TextArea getTextArea ()
   {

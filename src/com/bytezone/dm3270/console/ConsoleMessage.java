@@ -80,8 +80,8 @@ public class ConsoleMessage
 
   public String firstLine ()
   {
-    return String.format ("%s%02d.%02d.%02d %-7s %-8s %s%s", prefix1, hours, minutes,
-                          seconds, system, subsystem, prefix2, rest);
+    return String.format ("%02d.%02d.%02d %-7s %-8s %s%s", hours, minutes, seconds,
+                          system, subsystem, prefix2, rest);
   }
 
   @Override
@@ -89,22 +89,30 @@ public class ConsoleMessage
   {
     StringBuilder text = new StringBuilder ();
 
-    if (flag)
-    {
-      text.append (String.format ("%s%n", firstLine ()));
-      for (int i = 1; i < lines.size (); i++)
-        text.append (String.format ("                           %s%n", lines.get (i)));
-    }
-    else
-    {
-      text.append (String
-          .format ("%s %s%n", firstLine (),
-                   lines.size () >= 2 ? lines.get (1).substring (5).trim () : ""));
-      for (int i = 2; i < lines.size (); i++)
-        text.append (String.format ("%s%n", lines.get (i)));
-    }
+    String line1 = firstLine ();
+    text.append (line1);
+    int length = line1.length ();
 
-    text.deleteCharAt (text.length () - 1);
+    boolean joining = !flag;
+    for (int i = 1; i < lines.size (); i++)
+    {
+      String line = lines.get (i).substring (5);
+      String trimmedLine = line.trim ();
+      if (joining && length + trimmedLine.length () + 1 < 140)
+      {
+        text.append (" ");
+        text.append (trimmedLine);
+        length += trimmedLine.length () + 1;
+      }
+      else
+      {
+        text.append (String.format ("%n                           %s",
+                                    joining ? trimmedLine : line));
+        length = line.length () + 27;
+      }
+      if (joining && trimmedLine.endsWith (":"))
+        joining = false;
+    }
 
     return text.toString ();
   }

@@ -85,6 +85,13 @@ public class SystemMessage
   private final List<String> lines = new ArrayList<> (20);
   private final List<String> newLines = new ArrayList<> (20);
 
+  private ConsoleMode consoleMode;
+
+  enum ConsoleMode
+  {
+    IPL, CONSOLE
+  }
+
   public SystemMessage (Screen screen, BatchJobListener batchJobListener)
   {
     this.screen = screen;
@@ -103,19 +110,31 @@ public class SystemMessage
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders, int length)
   {
+    if (orders.size () == 0)
+    {
+      if (consoleMode == ConsoleMode.IPL)
+        consoleMode = ConsoleMode.CONSOLE;
+      return;
+    }
+
     if (isConsole)
     {
-      if (orders.size () == 3)
+      switch (consoleMode)
       {
-        if (checkOrders (consoleMessage, orders))
-        {
-          String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-          consoleLog1.addLines (text);
-          return;
-        }
+        case IPL:
+          if (orders.size () == 3 && checkOrders (consoleMessage, orders))
+          {
+            String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
+            consoleLog1.addLines (text);
+            return;
+          }
+          break;
+
+        case CONSOLE:
+          if (length == 1766)
+            checkConsole2Output (orders);
+          break;
       }
-      if (length == 1766)
-        checkConsole2Output (orders);
     }
     else if (eraseWrite)
     {
@@ -269,6 +288,7 @@ public class SystemMessage
         consoleLog2 = new ConsoleLog2 ();
         consoleLog1.addLines (text);
         isConsole = true;
+        consoleMode = ConsoleMode.IPL;
         screen.setIsConsole (true);
       }
       else
@@ -281,7 +301,7 @@ public class SystemMessage
 
   private void checkConsole2Output (List<Order> orders)
   {
-    boolean debug = true;
+    boolean debug = false;
     boolean display = false;
 
     // collect text orders
