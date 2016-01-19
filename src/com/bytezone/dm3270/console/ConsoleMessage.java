@@ -5,16 +5,16 @@ import java.util.List;
 
 public class ConsoleMessage
 {
-  int hours;
-  int minutes;
-  int seconds;
-  String system;
-  String subsystem;
-  String prefix1;
-  String prefix2;
-  String rest;
-  List<String> lines = new ArrayList<> ();
-  boolean flag;         // indent ?
+  private int hours;
+  private int minutes;
+  private int seconds;
+  private String system;
+  private String subsystem;
+  private String prefix1;
+  private String prefix2;
+  private String rest;
+  private final List<String> lines = new ArrayList<> ();
+  private boolean flag;         // indent ?
 
   public void add (String line)
   {
