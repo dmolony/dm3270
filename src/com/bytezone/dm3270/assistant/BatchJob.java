@@ -62,6 +62,7 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobNumber
   // ---------------------------------------------------------------------------------//
+
   public final void setJobNumber (String value)
   {
     jobNumberProperty ().set (value);
@@ -82,6 +83,7 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobName
   // ---------------------------------------------------------------------------------//
+
   public final void setJobName (String value)
   {
     jobNameProperty ().set (value);
@@ -102,6 +104,7 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobCompleted
   // ---------------------------------------------------------------------------------//
+
   public final void setJobCompleted (String value)
   {
     jobCompletedProperty ().set (value);
@@ -122,6 +125,7 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobConditionCode
   // ---------------------------------------------------------------------------------//
+
   public final void setJobConditionCode (String value)
   {
     jobConditionCodeProperty ().set (value);
@@ -142,6 +146,7 @@ public class BatchJob
   // ---------------------------------------------------------------------------------//
   // JobOutputFile
   // ---------------------------------------------------------------------------------//
+
   public final void setJobOutputFile (String value)
   {
     jobOutputFileProperty ().set (value);

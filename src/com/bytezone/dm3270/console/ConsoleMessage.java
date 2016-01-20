@@ -3,16 +3,22 @@ package com.bytezone.dm3270.console;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class ConsoleMessage
 {
+  private String prefix1;
   private int hours;
   private int minutes;
   private int seconds;
-  private String system;
-  private String subsystem;
-  private String prefix1;
-  private String prefix2;
-  private String rest;
+
+  private StringProperty timeProperty;
+  private StringProperty systemProperty;
+  private StringProperty subsystemProperty;
+  private StringProperty respondProperty;
+  private StringProperty firstLineProperty;
+
   private final List<String> lines = new ArrayList<> ();
   private boolean flag;         // indent ?
 
@@ -21,13 +27,17 @@ public class ConsoleMessage
     if (lines.size () == 0)
     {
       prefix1 = line.substring (0, 5);
+
       hours = Integer.parseInt (line.substring (5, 7));
       minutes = Integer.parseInt (line.substring (8, 10));
       seconds = Integer.parseInt (line.substring (11, 13));
-      system = line.substring (14, 22).trim ();
-      subsystem = line.substring (22, 31).trim ();
-      prefix2 = line.substring (31, 32);
-      rest = line.substring (32).trim ();
+
+      setTime (String.format ("%02d.%02d.%02d", hours, minutes, seconds));
+      setSystem (line.substring (14, 22).trim ());
+      setSubsystem (line.substring (22, 31).trim ());
+      setRespond (line.substring (31, 32));
+      setFirstLine (line.substring (32).trim ());
+
       if (line.length () != 79)
         flag = true;
     }
@@ -44,17 +54,16 @@ public class ConsoleMessage
     if (lines.size () != message.lines.size ())
       return false;
 
-    if (hours != message.hours || minutes != message.minutes
-        || seconds != message.seconds)
+    if (!getTime ().equals (message.getTime ()))
       return false;
 
-    if (!system.equals (message.system))
+    if (!getSystem ().equals (message.getSystem ()))
       return false;
 
-    if (!subsystem.equals (message.subsystem))
+    if (!getSubsystem ().equals (message.getSubsystem ()))
       return false;
 
-    if (!rest.equals (message.rest))
+    if (!getFirstLine ().equals (message.getFirstLine ()))
       return false;
 
     for (int i = 1; i < lines.size (); i++)
@@ -80,8 +89,113 @@ public class ConsoleMessage
 
   public String firstLine ()
   {
-    return String.format ("%02d.%02d.%02d %-7s %-8s %s%s", hours, minutes, seconds,
-                          system, subsystem, prefix2, rest);
+    return String.format ("%s %-7s %-8s %s%s", getTime (), getSystem (), getSubsystem (),
+                          getRespond (), getFirstLine ());
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Time
+  // ---------------------------------------------------------------------------------//
+
+  public final void setTime (String value)
+  {
+    timeProperty ().set (value);
+  }
+
+  public final String getTime ()
+  {
+    return timeProperty ().get ();
+  }
+
+  public final StringProperty timeProperty ()
+  {
+    if (timeProperty == null)
+      timeProperty = new SimpleStringProperty ();
+    return timeProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // System
+  // ---------------------------------------------------------------------------------//
+
+  public final void setSystem (String value)
+  {
+    systemProperty ().set (value);
+  }
+
+  public final String getSystem ()
+  {
+    return systemProperty ().get ();
+  }
+
+  public final StringProperty systemProperty ()
+  {
+    if (systemProperty == null)
+      systemProperty = new SimpleStringProperty ();
+    return systemProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Subsystem
+  // ---------------------------------------------------------------------------------//
+
+  public final void setSubsystem (String value)
+  {
+    subsystemProperty ().set (value);
+  }
+
+  public final String getSubsystem ()
+  {
+    return subsystemProperty ().get ();
+  }
+
+  public final StringProperty subsystemProperty ()
+  {
+    if (subsystemProperty == null)
+      subsystemProperty = new SimpleStringProperty ();
+    return subsystemProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // FirstLine
+  // ---------------------------------------------------------------------------------//
+
+  public final void setRespond (String value)
+  {
+    respondProperty ().set (value);
+  }
+
+  public final String getRespond ()
+  {
+    return respondProperty ().get ();
+  }
+
+  public final StringProperty respondProperty ()
+  {
+    if (respondProperty == null)
+      respondProperty = new SimpleStringProperty ();
+    return respondProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Respond
+  // ---------------------------------------------------------------------------------//
+
+  public final void setFirstLine (String value)
+  {
+    firstLineProperty ().set (value);
+  }
+
+  public final String getFirstLine ()
+  {
+    return firstLineProperty ().get ();
+  }
+
+  public final StringProperty firstLineProperty ()
+  {
+    if (firstLineProperty == null)
+      firstLineProperty = new SimpleStringProperty ();
+    return firstLineProperty;
   }
 
   @Override
