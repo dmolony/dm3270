@@ -2,7 +2,9 @@ package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javafx.scene.control.TextArea;
@@ -122,6 +124,7 @@ public class ConsoleLog2
 
     text.appendText (message.toString ());
     messages.add (message);
+    fireConsoleMessage (message);
 
     if (debug)
       System.out.println ("  --> adding");
@@ -132,5 +135,28 @@ public class ConsoleLog2
   TextArea getTextArea ()
   {
     return text;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Listener events
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<ConsoleMessageListener> consoleMessageListeners = new HashSet<> ();
+
+  private void fireConsoleMessage (ConsoleMessage consoleMessage)
+  {
+    consoleMessageListeners.forEach (l -> l.consoleMessage (consoleMessage));
+  }
+
+  public void addConsoleMessageListener (ConsoleMessageListener listener)
+  {
+    if (!consoleMessageListeners.contains (listener))
+      consoleMessageListeners.add (listener);
+  }
+
+  public void removeConsoleMessageListener (ConsoleMessageListener listener)
+  {
+    if (consoleMessageListeners.contains (listener))
+      consoleMessageListeners.remove (listener);
   }
 }

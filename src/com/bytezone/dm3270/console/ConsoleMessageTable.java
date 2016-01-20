@@ -13,13 +13,19 @@ public class ConsoleMessageTable extends DefaultTable<ConsoleMessage>
 
   public ConsoleMessageTable ()
   {
-    addColumnString ("Time", 100, Justification.CENTER, "jobNumber");
-    addColumnString ("System", 100, Justification.LEFT, "jobNumber");
-    addColumnString ("Subsystem", 100, Justification.LEFT, "jobNumber");
-    addColumnString ("Message", 100, Justification.LEFT, "jobNumber");
+    addColumnString ("Time", 100, Justification.CENTER, "time");
+    addColumnString ("System", 100, Justification.LEFT, "system");
+    addColumnString ("Subsystem", 100, Justification.LEFT, "subsystem");
+    addColumnString ("Message", 500, Justification.LEFT, "firstLine");
 
     setItems (messages);
 
     setPlaceholder (new Label ("No messages have been logged"));
+  }
+
+  public void addConsoleMessage (ConsoleMessage consoleMessage)
+  {
+    //    if (messages.stream ().noneMatch (b -> b.matches (consoleMessage)))
+    messages.add (consoleMessage);
   }
 }

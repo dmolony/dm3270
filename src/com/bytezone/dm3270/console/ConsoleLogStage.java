@@ -26,6 +26,7 @@ public class ConsoleLogStage extends Stage
   private final TabPane tabPane = new TabPane ();
   private final Console1Tab console1Tab = new Console1Tab ("IPL");
   private final Console2Tab console2Tab = new Console2Tab ("Console");
+  private final ConsoleMessageTab consoleMessageTab = new ConsoleMessageTab ();
 
   private ConsoleLog1 consoleLog1;
   private ConsoleLog2 consoleLog2;
@@ -44,7 +45,7 @@ public class ConsoleLogStage extends Stage
     borderPane.setCenter (tabPane);
 
     menuBar.setUseSystemMenuBar (SYSTEM_MENUBAR);
-    tabPane.getTabs ().addAll (console1Tab, console2Tab);
+    tabPane.getTabs ().addAll (console1Tab, console2Tab, consoleMessageTab);
     tabPane.setTabMinWidth (80);
 
     Scene scene = new Scene (borderPane, 800, 500);             // width/height
@@ -66,6 +67,8 @@ public class ConsoleLogStage extends Stage
 
     console2Tab.setContent (consoleLog2.getTextArea ());
     consoleLog2.getTextArea ().setFont (displayFont);
+
+    consoleLog2.addConsoleMessageListener (consoleMessageTab);
 
     show ();
   }
