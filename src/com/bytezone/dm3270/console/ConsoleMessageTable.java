@@ -8,24 +8,21 @@ import javafx.scene.control.Label;
 
 public class ConsoleMessageTable extends DefaultTable<ConsoleMessage>
 {
-  private final ObservableList<ConsoleMessage> messages =
-      FXCollections.observableArrayList ();
+  final ObservableList<ConsoleMessage> messages = FXCollections.observableArrayList ();
 
   public ConsoleMessageTable ()
   {
     addColumnString ("Time", 100, Justification.CENTER, "time");
     addColumnString ("System", 80, Justification.LEFT, "system");
     addColumnString ("Subsystem", 80, Justification.LEFT, "subsystem");
+    addColumnString ("Code", 80, Justification.LEFT, "messageCode");
     addColumnString ("Message", 1000, Justification.LEFT, "firstLine");
-
-    setItems (messages);
 
     setPlaceholder (new Label ("No messages have been logged"));
   }
 
   public void addConsoleMessage (ConsoleMessage consoleMessage)
   {
-    //    if (messages.stream ().noneMatch (b -> b.matches (consoleMessage)))
     messages.add (consoleMessage);
   }
 }

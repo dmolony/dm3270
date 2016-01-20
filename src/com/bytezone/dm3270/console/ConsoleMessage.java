@@ -2,12 +2,15 @@ package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ConsoleMessage
 {
+  private static final Pattern codePattern =
+      Pattern.compile ("[A-Z]{3,4}[0-9]{3,5}[A-Z]? .*");
   private String prefix1;
   private int hours;
   private int minutes;
@@ -16,6 +19,7 @@ public class ConsoleMessage
   private StringProperty timeProperty;
   private StringProperty systemProperty;
   private StringProperty subsystemProperty;
+  private StringProperty messageCodeProperty;
   private StringProperty respondProperty;
   private StringProperty firstLineProperty;
 
@@ -38,7 +42,23 @@ public class ConsoleMessage
       setSystem (line.substring (14, 22).trim ());
       setSubsystem (line.substring (22, 31).trim ());
       setRespond (line.substring (31, 32));
-      setFirstLine (line.substring (32).trim ());
+
+      String text = line.substring (32).trim ();
+
+      //      int pos = text.indexOf (' ');
+      //      if (pos > 0)
+      if (codePattern.matcher (text).matches ())
+      {
+        int pos = text.indexOf (' ');
+        setMessageCode (text.substring (0, pos));
+        //        setFirstLine (text.substring (pos + 1));
+        setFirstLine (text);
+      }
+      else
+      {
+        setMessageCode ("");
+        setFirstLine (text);
+      }
 
       if (line.length () != 79)
         flag = true;
@@ -181,6 +201,27 @@ public class ConsoleMessage
     if (respondProperty == null)
       respondProperty = new SimpleStringProperty ();
     return respondProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // MessageCode
+  // ---------------------------------------------------------------------------------//
+
+  public final void setMessageCode (String value)
+  {
+    messageCodeProperty ().set (value);
+  }
+
+  public final String getMessageCode ()
+  {
+    return messageCodeProperty ().get ();
+  }
+
+  public final StringProperty messageCodeProperty ()
+  {
+    if (messageCodeProperty == null)
+      messageCodeProperty = new SimpleStringProperty ();
+    return messageCodeProperty;
   }
 
   // ---------------------------------------------------------------------------------//
