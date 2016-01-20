@@ -14,9 +14,9 @@ public class ConsoleMessageTable extends DefaultTable<ConsoleMessage>
   public ConsoleMessageTable ()
   {
     addColumnString ("Time", 100, Justification.CENTER, "time");
-    addColumnString ("System", 100, Justification.LEFT, "system");
-    addColumnString ("Subsystem", 100, Justification.LEFT, "subsystem");
-    addColumnString ("Message", 500, Justification.LEFT, "firstLine");
+    addColumnString ("System", 80, Justification.LEFT, "system");
+    addColumnString ("Subsystem", 80, Justification.LEFT, "subsystem");
+    addColumnString ("Message", 1000, Justification.LEFT, "firstLine");
 
     setItems (messages);
 

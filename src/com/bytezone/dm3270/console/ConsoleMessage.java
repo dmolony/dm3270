@@ -24,7 +24,9 @@ public class ConsoleMessage
 
   public void add (String line)
   {
-    if (lines.size () == 0)
+    lines.add (line);
+
+    if (lines.size () == 1)
     {
       prefix1 = line.substring (0, 5);
 
@@ -41,7 +43,11 @@ public class ConsoleMessage
       if (line.length () != 79)
         flag = true;
     }
-    lines.add (line);
+    else if (lines.size () == 2)
+    {
+      if (!flag)
+        setFirstLine (getFirstLine () + " " + line.trim ());
+    }
   }
 
   boolean getFlag ()
