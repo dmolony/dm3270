@@ -22,6 +22,7 @@ public class ConsoleMessage
   private StringProperty messageCodeProperty;
   private StringProperty respondProperty;
   private StringProperty firstLineProperty;
+  private StringProperty firstLineRestProperty;
 
   private final List<String> lines = new ArrayList<> ();
   private boolean flag;         // indent ?
@@ -42,6 +43,7 @@ public class ConsoleMessage
       setSystem (line.substring (14, 22).trim ());
       setSubsystem (line.substring (22, 31).trim ());
       setRespond (line.substring (31, 32));
+      setFirstLineRest (line.substring (32).trim ());
 
       String text = line.substring (32).trim ();
 
@@ -51,8 +53,7 @@ public class ConsoleMessage
       {
         int pos = text.indexOf (' ');
         setMessageCode (text.substring (0, pos));
-        //        setFirstLine (text.substring (pos + 1));
-        setFirstLine (text);
+        setFirstLine (text.substring (pos + 1));
       }
       else
       {
@@ -116,7 +117,7 @@ public class ConsoleMessage
   public String firstLine ()
   {
     return String.format ("%s %-7s %-8s %s%s", getTime (), getSystem (), getSubsystem (),
-                          getRespond (), getFirstLine ());
+                          getRespond (), getFirstLineRest ());
   }
 
   // ---------------------------------------------------------------------------------//
@@ -183,7 +184,7 @@ public class ConsoleMessage
   }
 
   // ---------------------------------------------------------------------------------//
-  // FirstLine
+  // Respond
   // ---------------------------------------------------------------------------------//
 
   public final void setRespond (String value)
@@ -201,6 +202,27 @@ public class ConsoleMessage
     if (respondProperty == null)
       respondProperty = new SimpleStringProperty ();
     return respondProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // FirstLineRest
+  // ---------------------------------------------------------------------------------//
+
+  public final void setFirstLineRest (String value)
+  {
+    firstLineRestProperty ().set (value);
+  }
+
+  public final String getFirstLineRest ()
+  {
+    return firstLineRestProperty ().get ();
+  }
+
+  public final StringProperty firstLineRestProperty ()
+  {
+    if (firstLineRestProperty == null)
+      firstLineRestProperty = new SimpleStringProperty ();
+    return firstLineRestProperty;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -225,7 +247,7 @@ public class ConsoleMessage
   }
 
   // ---------------------------------------------------------------------------------//
-  // Respond
+  // FirstLine
   // ---------------------------------------------------------------------------------//
 
   public final void setFirstLine (String value)
