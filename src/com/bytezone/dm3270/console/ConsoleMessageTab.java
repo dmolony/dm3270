@@ -16,6 +16,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
   private final TextField txtSubsystem = new TextField ();
   private final TextField txtMessageCode = new TextField ();
   private final TextField txtMessageText = new TextField ();
+  private final TextField txtTime = new TextField ();
 
   public ConsoleMessageTab ()
   {
@@ -29,11 +30,13 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
     box.setPadding (new Insets (10, 10, 10, 10));     // trbl
     box.setAlignment (Pos.CENTER_LEFT);
 
+    Label lblTime = new Label ("Time");
     Label lblSubsytem = new Label ("Subsystem");
     Label lblMessageCode = new Label ("Code");
     Label lblMessageText = new Label ("Text");
-    box.getChildren ().addAll (lblSubsytem, txtSubsystem, lblMessageCode, txtMessageCode,
-                               lblMessageText, txtMessageText);
+    box.getChildren ().addAll (lblTime, txtTime, lblSubsytem, txtSubsystem,
+                               lblMessageCode, txtMessageCode, lblMessageText,
+                               txtMessageText);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setTop (box);
@@ -43,6 +46,8 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
 
     FilteredList<ConsoleMessage> filteredData =
         new FilteredList<> (consoleMessageTable.messages, m -> true);
+    txtTime.textProperty ()
+        .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
     txtSubsystem.textProperty ()
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
     txtMessageCode.textProperty ()
@@ -58,16 +63,18 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
 
   private void setFilter (FilteredList<ConsoleMessage> filteredData)
   {
+    String time = txtTime.getText ();
     String subsystem = txtSubsystem.getText ();
     String code = txtMessageCode.getText ();
     String text = txtMessageText.getText ();
 
     filteredData.setPredicate (message ->
     {
+      boolean p0 = message.getTime ().startsWith (time);
       boolean p1 = message.getSubsystem ().startsWith (subsystem);
       boolean p2 = message.getMessageCode ().startsWith (code);
       boolean p3 = message.getFirstLine ().indexOf (text) >= 0;
-      return p1 && p2 && p3;
+      return p0 && p1 && p2 && p3;
     });
   }
 
