@@ -28,8 +28,6 @@ public class ConsoleLogStage extends Stage
   private final Tab console2Tab = new Tab ("Console");
   private final ConsoleMessageTab consoleMessageTab = new ConsoleMessageTab ();
 
-  //  private final Font displayFont = Font.font ("Monospaced", 13);
-
   public ConsoleLogStage (Screen screen)
   {
     setTitle ("Console Logs");
@@ -60,10 +58,7 @@ public class ConsoleLogStage extends Stage
   public void setLogs (ConsoleLog1 consoleLog1, ConsoleLog2 consoleLog2)
   {
     console1Tab.setContent (consoleLog1.getTextArea ());
-    //    consoleLog1.getTextArea ().setFont (displayFont);
-
     console2Tab.setContent (consoleLog2.getTextArea ());
-    //    consoleLog2.getTextArea ().setFont (displayFont);
 
     consoleLog2.addConsoleMessageListener (consoleMessageTab);
 

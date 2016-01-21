@@ -153,9 +153,9 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferMenu.getMenuItemDownload ();
   }
 
-  public void setIsConsole (boolean value)
+  public void setIsConsole ()
   {
-    consolePane.setIsConsole (value);
+    consolePane.setIsConsole (true);
     consoleLogStage.setLogs (systemMessage.getConsoleLog1 (),
                              systemMessage.getConsoleLog2 ());
   }

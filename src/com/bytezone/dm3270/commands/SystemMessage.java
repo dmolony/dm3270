@@ -291,7 +291,7 @@ public class SystemMessage
         consoleLog1.addLines (text);
         isConsole = true;
         consoleMode = ConsoleMode.IPL;
-        screen.setIsConsole (true);
+        screen.setIsConsole ();
       }
       else
       {
