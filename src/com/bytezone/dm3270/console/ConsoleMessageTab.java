@@ -15,6 +15,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
   private final ConsoleMessageTable consoleMessageTable = new ConsoleMessageTable ();
   private final TextField txtSubsystem = new TextField ();
   private final TextField txtMessageCode = new TextField ();
+  private final TextField txtMessageText = new TextField ();
 
   public ConsoleMessageTab ()
   {
@@ -30,7 +31,9 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
 
     Label lblSubsytem = new Label ("Subsystem");
     Label lblMessageCode = new Label ("Code");
-    box.getChildren ().addAll (lblSubsytem, txtSubsystem, lblMessageCode, txtMessageCode);
+    Label lblMessageText = new Label ("Text");
+    box.getChildren ().addAll (lblSubsytem, txtSubsystem, lblMessageCode, txtMessageCode,
+                               lblMessageText, txtMessageText);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setTop (box);
@@ -44,6 +47,8 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
     txtMessageCode.textProperty ()
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
+    txtMessageText.textProperty ()
+        .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
 
     SortedList<ConsoleMessage> sortedData = new SortedList<> (filteredData);
     sortedData.comparatorProperty ().bind (consoleMessageTable.comparatorProperty ());
@@ -55,12 +60,14 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
   {
     String subsystem = txtSubsystem.getText ();
     String code = txtMessageCode.getText ();
+    String text = txtMessageText.getText ();
 
     filteredData.setPredicate (message ->
     {
       boolean p1 = message.getSubsystem ().startsWith (subsystem);
       boolean p2 = message.getMessageCode ().startsWith (code);
-      return p1 && p2;
+      boolean p3 = message.getFirstLine ().indexOf (text) >= 0;
+      return p1 && p2 && p3;
     });
   }
 
