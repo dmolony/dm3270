@@ -56,7 +56,7 @@ public class ConsoleLog1
         break;
       }
 
-      if (code.charAt (0) == '+' && code.charAt (1) == '+')
+      if (code.startsWith ("++"))
       {
         log.add (line);
         text.appendText ("\n        " + line);
@@ -65,6 +65,7 @@ public class ConsoleLog1
 
       // this should use a regex
       if ((code.charAt (0) == 'I' && code.charAt (6) == 'I')
+          || (code.charAt (0) == 'C' && code.charAt (6) == 'I')
           || (code.charAt (0) == 'C' && code.charAt (7) == 'I'))
       {
         log.add (lines[lineNo]);
@@ -77,10 +78,10 @@ public class ConsoleLog1
           log.add (lines[i]);
           tempLine = lines[i].trim ();
 
-          if (length + tempLine.length () + 1 < 140)
+          length += tempLine.length () + 1;
+          if (length < 140)
           {
             text.appendText (" " + tempLine);
-            length += tempLine.length () + 1;
           }
           else
           {
