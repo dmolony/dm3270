@@ -19,6 +19,7 @@ public class ConsoleLog1
 
   public void addLines (String message)
   {
+    // break message up into 80-character lines
     int totLines = 0;
     for (int ptr = 0; ptr < message.length (); ptr += 80)
     {
@@ -29,6 +30,7 @@ public class ConsoleLog1
       lines[totLines++] = line;
     }
 
+    // the first screen usually contains many lines, so add them all
     if (log.size () == 0)
     {
       log.add (lines[0]);
@@ -41,10 +43,12 @@ public class ConsoleLog1
       return;
     }
 
+    // look for the last message start
     for (int lineNo = totLines - 1; lineNo >= 0; lineNo--)
     {
       String line = lines[lineNo];
       String code = line.substring (0, 10);
+
       if ("          ".equals (code))
       {
         log.add (line);
@@ -55,7 +59,7 @@ public class ConsoleLog1
       if (code.charAt (2) == '+' && code.charAt (3) == '+')
       {
         log.add (line);
-        text.appendText ("\n" + line);
+        text.appendText ("\n        " + line);
         break;
       }
 
@@ -66,7 +70,10 @@ public class ConsoleLog1
         for (int i = lineNo; i < totLines; i++)
         {
           log.add (lines[i]);
-          text.appendText ("\n" + lines[i]);
+          if (i == lineNo)
+            text.appendText ("\n" + lines[i]);
+          else
+            text.appendText ("\n        " + lines[i]);
         }
         break;
       }

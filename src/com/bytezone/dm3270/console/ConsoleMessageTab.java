@@ -46,6 +46,12 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
 
     FilteredList<ConsoleMessage> filteredData =
         new FilteredList<> (consoleMessageTable.messages, m -> true);
+
+    SortedList<ConsoleMessage> sortedData = new SortedList<> (filteredData);
+    sortedData.comparatorProperty ().bind (consoleMessageTable.comparatorProperty ());
+
+    consoleMessageTable.setItems (sortedData);
+
     txtTime.textProperty ()
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
     txtSubsystem.textProperty ()
@@ -54,11 +60,6 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
     txtMessageText.textProperty ()
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
-
-    SortedList<ConsoleMessage> sortedData = new SortedList<> (filteredData);
-    sortedData.comparatorProperty ().bind (consoleMessageTable.comparatorProperty ());
-
-    consoleMessageTable.setItems (sortedData);
   }
 
   private void setFilter (FilteredList<ConsoleMessage> filteredData)
