@@ -34,11 +34,11 @@ public class ConsoleLog1
     if (log.size () == 0)
     {
       log.add (lines[0]);
-      text.appendText (lines[0]);
+      text.appendText (lines[0].substring (2));
       for (int lineNo = 1; lineNo < totLines; lineNo++)
       {
         log.add (lines[lineNo]);
-        text.appendText ("\n" + lines[lineNo]);
+        text.appendText ("\n" + lines[lineNo].substring (2));
       }
       return;
     }
@@ -46,17 +46,17 @@ public class ConsoleLog1
     // look for the last message start
     for (int lineNo = totLines - 1; lineNo >= 0; lineNo--)
     {
-      String line = lines[lineNo];
-      String code = line.substring (0, 10);
+      String line = lines[lineNo].substring (2);
+      String code = line.substring (0, 8);
 
-      if ("          ".equals (code))
+      if ("        ".equals (code))
       {
         log.add (line);
         text.appendText ("\n" + line);
         break;
       }
 
-      if (code.charAt (2) == '+' && code.charAt (3) == '+')
+      if (code.charAt (0) == '+' && code.charAt (1) == '+')
       {
         log.add (line);
         text.appendText ("\n        " + line);
@@ -64,16 +64,29 @@ public class ConsoleLog1
       }
 
       // this should use a regex
-      if ((code.charAt (2) == 'I' && code.charAt (8) == 'I')
-          || (code.charAt (2) == 'C' && code.charAt (9) == 'I'))
+      if ((code.charAt (0) == 'I' && code.charAt (6) == 'I')
+          || (code.charAt (0) == 'C' && code.charAt (7) == 'I'))
       {
-        for (int i = lineNo; i < totLines; i++)
+        log.add (lines[lineNo]);
+        String tempLine = lines[lineNo].trim ();
+        int length = tempLine.length ();
+        text.appendText ("\n" + tempLine);
+
+        for (int i = lineNo + 1; i < totLines; i++)
         {
           log.add (lines[i]);
-          if (i == lineNo)
-            text.appendText ("\n" + lines[i]);
+          tempLine = lines[i].trim ();
+
+          if (length + tempLine.length () + 1 < 140)
+          {
+            text.appendText (" " + tempLine);
+            length += tempLine.length () + 1;
+          }
           else
-            text.appendText ("\n        " + lines[i]);
+          {
+            text.appendText ("\n        " + tempLine);
+            length = tempLine.length ();
+          }
         }
         break;
       }
