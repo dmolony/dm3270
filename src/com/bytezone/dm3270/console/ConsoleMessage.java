@@ -2,6 +2,7 @@ package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -10,7 +11,7 @@ import javafx.beans.property.StringProperty;
 public class ConsoleMessage
 {
   private static final Pattern codePattern =
-      Pattern.compile ("[A-Z]{3,4}[0-9]{3,5}[A-Z]? .*");
+      Pattern.compile ("([A-Z]{3,4}[0-9]{3,5}[A-Z]?|\\$HASP[0-9]{3}) (.*)");
   private String prefix1;
   private int hours;
   private int minutes;
@@ -47,13 +48,11 @@ public class ConsoleMessage
 
       String text = line.substring (32).trim ();
 
-      //      int pos = text.indexOf (' ');
-      //      if (pos > 0)
-      if (codePattern.matcher (text).matches ())
+      Matcher matcher = codePattern.matcher (text);
+      if (matcher.matches ())
       {
-        int pos = text.indexOf (' ');
-        setMessageCode (text.substring (0, pos));
-        setFirstLine (text.substring (pos + 1));
+        setMessageCode (matcher.group (1));
+        setFirstLine (matcher.group (2));
       }
       else
       {
