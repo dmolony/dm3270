@@ -15,6 +15,7 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
+import javafx.scene.text.Font;
 
 public class SystemMessage
 {
@@ -284,8 +285,9 @@ public class SystemMessage
       int pos = text.indexOf (" SELECTED FOR IPL ");
       if (pos >= 0)
       {
-        consoleLog1 = new ConsoleLog1 ();
-        consoleLog2 = new ConsoleLog2 ();
+        Font displayFont = Font.font ("Monospaced", 13);
+        consoleLog1 = new ConsoleLog1 (displayFont);
+        consoleLog2 = new ConsoleLog2 (displayFont);
         consoleLog1.addLines (text);
         isConsole = true;
         consoleMode = ConsoleMode.IPL;

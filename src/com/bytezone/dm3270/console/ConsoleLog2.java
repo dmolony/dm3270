@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Font;
 
 /*
  * https://www-01.ibm.com/support/knowledgecenter/SSLTBW_2.2.0/com.ibm.zos.v2r2.ieag100/
@@ -35,6 +36,11 @@ public class ConsoleLog2
   private final List<ConsoleMessage> messages = new ArrayList<> ();
   private final TextArea text = new TextArea ();
   private final boolean debug = false;
+
+  public ConsoleLog2 (Font font)
+  {
+    text.setFont (font);
+  }
 
   public void addLines (List<String> lines)
   {

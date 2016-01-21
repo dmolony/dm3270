@@ -8,9 +8,9 @@ import com.bytezone.dm3270.utilities.WindowSaver;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class ConsoleLogStage extends Stage
@@ -24,14 +24,11 @@ public class ConsoleLogStage extends Stage
   private final MenuBar menuBar = new MenuBar ();
 
   private final TabPane tabPane = new TabPane ();
-  private final Console1Tab console1Tab = new Console1Tab ("IPL");
-  private final Console2Tab console2Tab = new Console2Tab ("Console");
+  private final Tab console1Tab = new Tab ("IPL");
+  private final Tab console2Tab = new Tab ("Console");
   private final ConsoleMessageTab consoleMessageTab = new ConsoleMessageTab ();
 
-  private ConsoleLog1 consoleLog1;
-  private ConsoleLog2 consoleLog2;
-
-  private final Font displayFont = Font.font ("Monospaced", 13);
+  //  private final Font displayFont = Font.font ("Monospaced", 13);
 
   public ConsoleLogStage (Screen screen)
   {
@@ -43,6 +40,9 @@ public class ConsoleLogStage extends Stage
     BorderPane borderPane = new BorderPane ();
     borderPane.setTop (menuBar);
     borderPane.setCenter (tabPane);
+
+    console1Tab.setClosable (false);
+    console2Tab.setClosable (false);
 
     menuBar.setUseSystemMenuBar (SYSTEM_MENUBAR);
     tabPane.getTabs ().addAll (console1Tab, console2Tab, consoleMessageTab);
@@ -59,14 +59,11 @@ public class ConsoleLogStage extends Stage
 
   public void setLogs (ConsoleLog1 consoleLog1, ConsoleLog2 consoleLog2)
   {
-    this.consoleLog1 = consoleLog1;
-    this.consoleLog2 = consoleLog2;
-
     console1Tab.setContent (consoleLog1.getTextArea ());
-    consoleLog1.getTextArea ().setFont (displayFont);
+    //    consoleLog1.getTextArea ().setFont (displayFont);
 
     console2Tab.setContent (consoleLog2.getTextArea ());
-    consoleLog2.getTextArea ().setFont (displayFont);
+    //    consoleLog2.getTextArea ().setFont (displayFont);
 
     consoleLog2.addConsoleMessageListener (consoleMessageTab);
 

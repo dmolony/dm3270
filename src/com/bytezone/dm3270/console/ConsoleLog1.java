@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Font;
 
 public class ConsoleLog1
 {
   private final List<String> log = new ArrayList<> ();
   private final String[] lines = new String[20];
   private final TextArea text = new TextArea ();
+
+  public ConsoleLog1 (Font font)
+  {
+    text.setFont (font);
+  }
 
   public void addLines (String message)
   {
