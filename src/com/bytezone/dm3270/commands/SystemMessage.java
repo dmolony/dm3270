@@ -86,6 +86,9 @@ public class SystemMessage
   private final List<String> lines = new ArrayList<> (20);
   private final List<String> newLines = new ArrayList<> (20);
 
+  private final String[] tempLines = new String[20];
+  private String previousMessage = "";
+
   private ConsoleMode consoleMode;
 
   enum ConsoleMode
@@ -125,8 +128,7 @@ public class SystemMessage
         case IPL:
           if (orders.size () == 3 && checkOrders (consoleMessage, orders))
           {
-            String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-            consoleLog1.addLines (text);
+            addConsoleMessage (Dm3270Utility.getString (orders.get (2).getBuffer ()));
             return;
           }
           break;
@@ -288,7 +290,7 @@ public class SystemMessage
         Font displayFont = Font.font ("Monospaced", 13);
         consoleLog1 = new ConsoleLog1 (displayFont);
         consoleLog2 = new ConsoleLog2 (displayFont);
-        consoleLog1.addLines (text);
+        addConsoleMessage (text);
         isConsole = true;
         consoleMode = ConsoleMode.IPL;
         screen.setIsConsole ();
@@ -364,6 +366,38 @@ public class SystemMessage
       for (int i = 0; i < lines.size (); i++)
         System.out.printf ("%02d : %s%n", i, lines.get (i));
     }
+  }
+
+  private void addConsoleMessage (String message)
+  {
+    // break message up into 80-character lines
+    int totLines = 0;
+    for (int ptr = 0; ptr < message.length (); ptr += 80)
+    {
+      int max = Math.min (ptr + 80, message.length ());
+      String line = message.substring (ptr, max);
+      if (line.trim ().isEmpty ())
+        break;
+      tempLines[totLines++] = line;
+    }
+
+    message = message.substring (0, totLines * 80);
+    int firstLine = 0;
+
+    if (!previousMessage.isEmpty ())
+      for (int ptr = 0; ptr < previousMessage.length (); ptr += 80)
+      {
+        String chunk = previousMessage.substring (ptr);
+        if (message.startsWith (chunk))
+        {
+          firstLine = chunk.length () / 80;
+          break;
+        }
+      }
+
+    consoleLog1.addLines (tempLines, firstLine, totLines - 1);
+
+    previousMessage = message;
   }
 
   public MenuItem getConsoleMenuItem ()
