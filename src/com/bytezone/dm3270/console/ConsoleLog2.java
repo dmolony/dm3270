@@ -33,7 +33,7 @@ public class ConsoleLog2
       Pattern.compile ("^...[-| ][* ]\\d\\d(\\.\\d\\d){2} .*");
   private static final Pattern twoDigits = Pattern.compile ("\\d\\d");
 
-  private final List<ConsoleMessage> messages = new ArrayList<> ();
+  private final List<ConsoleMessage2> messages = new ArrayList<> ();
   private final TextArea text = new TextArea ();
   private final boolean debug = false;
 
@@ -44,7 +44,7 @@ public class ConsoleLog2
 
   public void addLines (List<String> lines)
   {
-    List<ConsoleMessage> tempMessages = new ArrayList<> ();
+    List<ConsoleMessage2> tempMessages = new ArrayList<> ();
     int max = lines.size ();
 
     if (debug)
@@ -59,7 +59,7 @@ public class ConsoleLog2
       String line = lines.get (i);
       if (messagePattern.matcher (line).matches ())
       {
-        ConsoleMessage message = new ConsoleMessage ();
+        ConsoleMessage2 message = new ConsoleMessage2 ();
         for (int j = i; j < max; j++)
           message.add (lines.get (j));
         max = i;
@@ -70,7 +70,7 @@ public class ConsoleLog2
     if (debug)
     {
       System.out.println ("--------2---------------------------------------------------");
-      for (ConsoleMessage message : tempMessages)
+      for (ConsoleMessage2 message : tempMessages)
         System.out.println (message);
       System.out.println ("--------3---------------------------------------------------");
       System.out.printf ("%d lines left over%n", max);
@@ -79,7 +79,7 @@ public class ConsoleLog2
     // check for lines left over that have no message header
     if (max > 0 && messages.size () > 0)
     {
-      ConsoleMessage checkMessage = messages.get (messages.size () - 1);
+      ConsoleMessage2 checkMessage = messages.get (messages.size () - 1);
       for (int j = 0; j < max; j++)
       {
         checkMessage.add (lines.get (j));
@@ -101,11 +101,11 @@ public class ConsoleLog2
     // only check for duplicate lines if there is no two-digit flag
     String prefix = lines.get (0).substring (1, 3);
     boolean duplicateCheck = !twoDigits.matcher (prefix).matches ();
-    for (ConsoleMessage message : tempMessages)
+    for (ConsoleMessage2 message : tempMessages)
       duplicateCheck = !add (message, duplicateCheck);
   }
 
-  private boolean add (ConsoleMessage message, boolean duplicateCheck)
+  private boolean add (ConsoleMessage2 message, boolean duplicateCheck)
   {
     if (debug)
     {
@@ -149,7 +149,7 @@ public class ConsoleLog2
 
   private final Set<ConsoleMessageListener> consoleMessageListeners = new HashSet<> ();
 
-  private void fireConsoleMessage (ConsoleMessage consoleMessage)
+  private void fireConsoleMessage (ConsoleMessage2 consoleMessage)
   {
     consoleMessageListeners.forEach (l -> l.consoleMessage (consoleMessage));
   }

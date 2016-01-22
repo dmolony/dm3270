@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ConsoleMessage
+public class ConsoleMessage2
 {
   private static final Pattern codePattern =
       Pattern.compile ("([A-Z]{3,4}[0-9]{3,5}[A-Z]?|\\$HASP[0-9]{3}) (.*)");
@@ -75,7 +75,7 @@ public class ConsoleMessage
     return flag;
   }
 
-  public boolean matches (ConsoleMessage message)
+  public boolean matches (ConsoleMessage2 message)
   {
     if (lines.size () != message.lines.size ())
       return false;

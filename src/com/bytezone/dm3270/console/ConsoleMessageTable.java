@@ -6,9 +6,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 
-public class ConsoleMessageTable extends DefaultTable<ConsoleMessage>
+public class ConsoleMessageTable extends DefaultTable<ConsoleMessage2>
 {
-  final ObservableList<ConsoleMessage> messages = FXCollections.observableArrayList ();
+  final ObservableList<ConsoleMessage2> messages = FXCollections.observableArrayList ();
 
   public ConsoleMessageTable ()
   {
@@ -21,7 +21,7 @@ public class ConsoleMessageTable extends DefaultTable<ConsoleMessage>
     setPlaceholder (new Label ("No messages have been logged"));
   }
 
-  public void addConsoleMessage (ConsoleMessage consoleMessage)
+  public void addConsoleMessage (ConsoleMessage2 consoleMessage)
   {
     messages.add (consoleMessage);
   }

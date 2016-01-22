@@ -44,10 +44,10 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
 
     setContent (borderPane);
 
-    FilteredList<ConsoleMessage> filteredData =
+    FilteredList<ConsoleMessage2> filteredData =
         new FilteredList<> (consoleMessageTable.messages, m -> true);
 
-    SortedList<ConsoleMessage> sortedData = new SortedList<> (filteredData);
+    SortedList<ConsoleMessage2> sortedData = new SortedList<> (filteredData);
     sortedData.comparatorProperty ().bind (consoleMessageTable.comparatorProperty ());
 
     consoleMessageTable.setItems (sortedData);
@@ -62,7 +62,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
   }
 
-  private void setFilter (FilteredList<ConsoleMessage> filteredData)
+  private void setFilter (FilteredList<ConsoleMessage2> filteredData)
   {
     String time = txtTime.getText ();
     String subsystem = txtSubsystem.getText ();
@@ -80,12 +80,12 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
   }
 
   @Override
-  public void consoleMessage (ConsoleMessage consoleMessage)
+  public void consoleMessage (ConsoleMessage2 consoleMessage)
   {
     consoleMessageTable.addConsoleMessage (consoleMessage);
   }
 
-  private void select (ConsoleMessage consoleMessage)
+  private void select (ConsoleMessage2 consoleMessage)
   {
     if (consoleMessage == null)
       return;
