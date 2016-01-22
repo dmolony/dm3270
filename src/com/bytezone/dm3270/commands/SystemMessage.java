@@ -395,7 +395,7 @@ public class SystemMessage
         }
       }
 
-    consoleLog1.addLines (tempLines, firstLine, totLines - 1);
+    consoleLog1.addLines2 (tempLines, firstLine, totLines);
 
     previousMessage = message;
   }
