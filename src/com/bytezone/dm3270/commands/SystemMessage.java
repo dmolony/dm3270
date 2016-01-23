@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,11 +82,12 @@ public class SystemMessage
   private MenuItem menuItem;
   private int lastOrdersSize;
 
-  private final List<String> lines = new ArrayList<> (20);
-  private final List<String> newLines = new ArrayList<> (20);
+  //  private final List<String> lines = new ArrayList<> (20);
+  //  private final List<String> newLines = new ArrayList<> (20);
 
   private final String[] tempLines = new String[20];
   private String previousMessage = "";
+  private int previousTotLines = 0;
 
   private ConsoleMode consoleMode;
 
@@ -346,7 +346,7 @@ public class SystemMessage
         }
       }
 
-    // pass any new lines to the console log
+    // pass only new lines to the console log
     consoleLog1.addLines (tempLines, firstUnprocessedLine, totLines);
 
     // save processed message to compare with the next one
@@ -355,19 +355,9 @@ public class SystemMessage
 
   private void addConsole2Message (List<Order> orders)
   {
-    boolean debug = false;
-    boolean display = false;
-
-    if (display)
-    {
-      System.out.print ("-------------------------------------------");
-      System.out.println ("----------------------------------------");
-    }
-
-    // collect text orders into a List<String>
-    lines.clear ();
-    int skipLines = 0;
-    boolean markerFound = false;
+    // collect screen lines into 80-character strings
+    int skipLines = -1;
+    int totLines = 0;
 
     for (Order order : orders)
       if (order.isText ())
@@ -377,49 +367,27 @@ public class SystemMessage
         {
           String prefix = line.substring (1, 3);
           if (twoDigits.matcher (prefix).matches ())      // new data starts here
-          {
-            skipLines = lines.size ();
-            markerFound = true;
-          }
-          lines.add (line);
-
-          if (display)
-            System.out.printf ("%02d: %s %s%n", lines.size (), line,
-                               line.length () != 79 ? " C" : "");
+            skipLines = totLines;
+          tempLines[totLines++] = line;
         }
       }
 
-    if (debug)
-      System.out.printf ("skiplines: %d%n", skipLines);
+    // remove any trailing blank lines
+    while (totLines > 0)
+      if (tempLines[totLines - 1].trim ().isEmpty ())
+        --totLines;
+      else
+        break;
 
-    if (lines.size () == 20)
+    // skip any previously processed lines
+    if (skipLines < 0)
     {
-      // remove trailing blank lines
-      for (int i = lines.size () - 1; i >= 0; i--)
-      {
-        String line = lines.get (i);
-        if (!line.trim ().isEmpty ())
-          break;
-        lines.remove (i);
-      }
+      skipLines = previousTotLines;
+      previousTotLines = totLines;
+    }
 
-      if (lines.size () > 0)
-        if (skipLines == 0)
-          consoleLog2.addLines (lines);
-        else
-        {
-          newLines.clear ();
-          for (int i = skipLines; i < lines.size (); i++)
-            newLines.add (lines.get (i));
-          consoleLog2.addLines (newLines);
-        }
-    }
-    else if (lines.size () > 0)
-    {
-      System.out.println ("skipping:");
-      for (int i = 0; i < lines.size (); i++)
-        System.out.printf ("%02d : %s%n", i, lines.get (i));
-    }
+    // pass only new lines to the console log
+    consoleLog2.addLines (tempLines, skipLines, totLines);
   }
 
   public MenuItem getConsoleMenuItem ()

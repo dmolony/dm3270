@@ -1,10 +1,10 @@
 package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javafx.scene.control.TextArea;
@@ -31,117 +31,133 @@ public class ConsoleLog2
 {
   private static final Pattern messagePattern =
       Pattern.compile ("^...[-| ][* ]\\d\\d(\\.\\d\\d){2} .*");
-  private static final Pattern twoDigits = Pattern.compile ("\\d\\d");
+  //  private static final Pattern twoDigits = Pattern.compile ("\\d\\d");
 
   private final List<ConsoleMessage2> messages = new ArrayList<> ();
   private final TextArea text = new TextArea ();
-  private final boolean debug = false;
+  //  private final boolean debug = false;
+  private ConsoleMessage2 currentMessage;
 
   public ConsoleLog2 (Font font)
   {
     text.setFont (font);
   }
 
-  public void addLines2 (List<String> lines)
+  public void addLines (String[] lines, int firstLine, int lastLine)
   {
-
-  }
-
-  public void addLines (List<String> lines)
-  {
-    List<ConsoleMessage2> tempMessages = new ArrayList<> ();
-    int max = lines.size ();
-
-    if (debug)
+    for (int i = firstLine; i < lastLine; i++)
     {
-      System.out.println ("--------1---------------------------------------------------");
-      System.out.printf ("%d lines to check%n", max);
-    }
-
-    // work backwards from the bottom of the screen to the top
-    for (int i = max - 1; i >= 0; i--)
-    {
-      String line = lines.get (i);
-      if (messagePattern.matcher (line).matches ())
+      String line = lines[i];
+      Matcher m = messagePattern.matcher (line);
+      if (m.matches ())
       {
-        ConsoleMessage2 message = new ConsoleMessage2 ();
-        for (int j = i; j < max; j++)
-          message.add (lines.get (j));
-        max = i;
-        tempMessages.add (message);
+        currentMessage = new ConsoleMessage2 ();
+        currentMessage.add (line);
+        messages.add (currentMessage);
+        fireConsoleMessage (currentMessage);
+      }
+      else
+      {
+        currentMessage.add (line);
       }
     }
-
-    if (debug)
-    {
-      System.out.println ("--------2---------------------------------------------------");
-      for (ConsoleMessage2 message : tempMessages)
-        System.out.println (message);
-      System.out.println ("--------3---------------------------------------------------");
-      System.out.printf ("%d lines left over%n", max);
-    }
-
-    // check for lines left over that have no message header
-    if (max > 0 && messages.size () > 0)
-    {
-      ConsoleMessage2 checkMessage = messages.get (messages.size () - 1);
-      for (int j = 0; j < max; j++)
-      {
-        checkMessage.add (lines.get (j));
-        text.appendText (String.format ("%n                           %s",
-                                        lines.get (j).substring (5)));
-
-        if (debug)
-          System.out.println (lines.get (j));
-      }
-    }
-
-    if (debug)
-    {
-      System.out.println ("-------4----------------------------------------------------");
-      System.out.printf ("%d messages to check%n", tempMessages.size ());
-    }
-    Collections.reverse (tempMessages);
-
-    // only check for duplicate lines if there is no two-digit flag
-    String prefix = lines.get (0).substring (1, 3);
-    boolean duplicateCheck = !twoDigits.matcher (prefix).matches ();
-    for (ConsoleMessage2 message : tempMessages)
-      duplicateCheck = !add (message, duplicateCheck);
   }
 
-  private boolean add (ConsoleMessage2 message, boolean duplicateCheck)
-  {
-    if (debug)
-    {
-      System.out.printf ("checking (%s):", duplicateCheck);
-      System.out.println (message);
-    }
+  //  public void addLines (List<String> lines)
+  //  {
+  //    List<ConsoleMessage2> tempMessages = new ArrayList<> ();
+  //    int max = lines.size ();
+  //
+  //    if (debug)
+  //    {
+  //      System.out.println ("--------1---------------------------------------------------");
+  //      System.out.printf ("%d lines to check%n", max);
+  //    }
+  //
+  //    // work backwards from the bottom of the screen to the top
+  //    for (int i = max - 1; i >= 0; i--)
+  //    {
+  //      String line = lines.get (i);
+  //      if (messagePattern.matcher (line).matches ())
+  //      {
+  //        ConsoleMessage2 message = new ConsoleMessage2 ();
+  //        for (int j = i; j < max; j++)
+  //          message.add (lines.get (j));
+  //        max = i;
+  //        tempMessages.add (message);
+  //      }
+  //    }
+  //
+  //    if (debug)
+  //    {
+  //      System.out.println ("--------2---------------------------------------------------");
+  //      for (ConsoleMessage2 message : tempMessages)
+  //        System.out.println (message);
+  //      System.out.println ("--------3---------------------------------------------------");
+  //      System.out.printf ("%d lines left over%n", max);
+  //    }
+  //
+  //    // check for lines left over that have no message header
+  //    if (max > 0 && messages.size () > 0)
+  //    {
+  //      ConsoleMessage2 checkMessage = messages.get (messages.size () - 1);
+  //      for (int j = 0; j < max; j++)
+  //      {
+  //        checkMessage.add (lines.get (j));
+  //        text.appendText (String.format ("%n                           %s",
+  //                                        lines.get (j).substring (5)));
+  //
+  //        if (debug)
+  //          System.out.println (lines.get (j));
+  //      }
+  //    }
+  //
+  //    if (debug)
+  //    {
+  //      System.out.println ("-------4----------------------------------------------------");
+  //      System.out.printf ("%d messages to check%n", tempMessages.size ());
+  //    }
+  //    Collections.reverse (tempMessages);
+  //
+  //    // only check for duplicate lines if there is no two-digit flag
+  //    String prefix = lines.get (0).substring (1, 3);
+  //    boolean duplicateCheck = !twoDigits.matcher (prefix).matches ();
+  //    for (ConsoleMessage2 message : tempMessages)
+  //      duplicateCheck = !add (message, duplicateCheck);
+  //  }
 
-    if (duplicateCheck)
-    {
-      int last = Math.max (0, messages.size () - 20);
-      for (int i = messages.size () - 1; i >= last; i--)
-        if (messages.get (i).matches (message))
-        {
-          if (debug)
-            System.out.println ("  --> already there");
-          return false;
-        }
-    }
-
-    if (messages.size () > 0)
-      text.appendText ("\n");
-
-    text.appendText (message.toString ());
-    messages.add (message);
-    fireConsoleMessage (message);
-
-    if (debug)
-      System.out.println ("  --> adding");
-
-    return true;
-  }
+  //  private boolean add (ConsoleMessage2 message, boolean duplicateCheck)
+  //  {
+  //    if (debug)
+  //    {
+  //      System.out.printf ("checking (%s):", duplicateCheck);
+  //      System.out.println (message);
+  //    }
+  //
+  //    if (duplicateCheck)
+  //    {
+  //      int last = Math.max (0, messages.size () - 20);
+  //      for (int i = messages.size () - 1; i >= last; i--)
+  //        if (messages.get (i).matches (message))
+  //        {
+  //          if (debug)
+  //            System.out.println ("  --> already there");
+  //          return false;
+  //        }
+  //    }
+  //
+  //    if (messages.size () > 0)
+  //      text.appendText ("\n");
+  //
+  //    text.appendText (message.toString ());
+  //    messages.add (message);
+  //    fireConsoleMessage (message);
+  //
+  //    if (debug)
+  //      System.out.println ("  --> adding");
+  //
+  //    return true;
+  //  }
 
   TextArea getTextArea ()
   {
