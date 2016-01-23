@@ -311,35 +311,45 @@ public class SystemMessage
     addConsole1Message (Dm3270Utility.getString (orders.get (2).getBuffer ()));
   }
 
-  private void addConsole1Message (String message)
+  private int splitMessage (String message, int lineLength)
   {
-    // break message up into 80-character lines
     int totLines = 0;
-    for (int ptr = 0; ptr < message.length (); ptr += 80)
+    for (int ptr = 0; ptr < message.length (); ptr += lineLength)
     {
-      int max = Math.min (ptr + 80, message.length ());
+      int max = Math.min (ptr + lineLength, message.length ());
       String line = message.substring (ptr, max);
       if (line.trim ().isEmpty ())
         break;
       tempLines[totLines++] = line;
     }
+    return totLines;
+  }
 
+  private void addConsole1Message (String message)
+  {
+    // break message up into 80-character lines
+    int totLines = splitMessage (message, 80);
+
+    // remove any whole trailing blank lines from original message
     message = message.substring (0, totLines * 80);
-    int firstLine = 0;
 
+    // calculate first line that has not already been processed
+    int firstUnprocessedLine = 0;
     if (!previousMessage.isEmpty ())
       for (int ptr = 0; ptr < previousMessage.length (); ptr += 80)
       {
         String chunk = previousMessage.substring (ptr);
         if (message.startsWith (chunk))
         {
-          firstLine = chunk.length () / 80;
+          firstUnprocessedLine = chunk.length () / 80;
           break;
         }
       }
 
-    consoleLog1.addLines (tempLines, firstLine, totLines);
+    // pass any new lines to the console log
+    consoleLog1.addLines (tempLines, firstUnprocessedLine, totLines);
 
+    // save processed message to compare with the next one
     previousMessage = message;
   }
 
@@ -348,15 +358,16 @@ public class SystemMessage
     boolean debug = false;
     boolean display = false;
 
-    // collect text orders
-    lines.clear ();
-    int skipLines = 0;
-
     if (display)
     {
       System.out.print ("-------------------------------------------");
       System.out.println ("----------------------------------------");
     }
+
+    // collect text orders into a List<String>
+    lines.clear ();
+    int skipLines = 0;
+    boolean markerFound = false;
 
     for (Order order : orders)
       if (order.isText ())
@@ -366,7 +377,10 @@ public class SystemMessage
         {
           String prefix = line.substring (1, 3);
           if (twoDigits.matcher (prefix).matches ())      // new data starts here
+          {
             skipLines = lines.size ();
+            markerFound = true;
+          }
           lines.add (line);
 
           if (display)
