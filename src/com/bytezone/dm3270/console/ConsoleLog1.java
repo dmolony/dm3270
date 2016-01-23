@@ -22,7 +22,7 @@ public class ConsoleLog1
     text.setFont (font);
   }
 
-  public void addLines2 (String[] lines, int firstLine, int lastLine)
+  public void addLines (String[] lines, int firstLine, int lastLine)
   {
     for (int i = firstLine; i < lastLine; i++)
     {

@@ -42,6 +42,11 @@ public class ConsoleLog2
     text.setFont (font);
   }
 
+  public void addLines2 (List<String> lines)
+  {
+
+  }
+
   public void addLines (List<String> lines)
   {
     List<ConsoleMessage2> tempMessages = new ArrayList<> ();

@@ -128,14 +128,17 @@ public class SystemMessage
         case IPL:
           if (orders.size () == 3 && checkOrders (consoleMessage, orders))
           {
-            addConsoleMessage (Dm3270Utility.getString (orders.get (2).getBuffer ()));
+            addConsole1Message (orders);
             return;
           }
           break;
 
         case CONSOLE:
           if (length == 1766)
-            checkConsole2Output (orders);
+          {
+            addConsole2Message (orders);
+            return;
+          }
           break;
       }
     }
@@ -281,29 +284,66 @@ public class SystemMessage
 
   private void checkConsoleOutput (List<Order> orders)
   {
-    String text = Dm3270Utility.getString (orders.get (2).getBuffer ());
-    if (text.length () == 1600 && text.startsWith ("  IEA371I "))
+    String message = Dm3270Utility.getString (orders.get (2).getBuffer ());
+    if (message.length () == 1600 && message.startsWith ("  IEA371I "))
     {
-      int pos = text.indexOf (" SELECTED FOR IPL ");
+      int pos = message.indexOf (" SELECTED FOR IPL ");
       if (pos >= 0)
       {
         Font displayFont = Font.font ("Monospaced", 13);
         consoleLog1 = new ConsoleLog1 (displayFont);
         consoleLog2 = new ConsoleLog2 (displayFont);
-        addConsoleMessage (text);
+        addConsole1Message (message);
         isConsole = true;
         consoleMode = ConsoleMode.IPL;
         screen.setIsConsole ();
       }
       else
       {
-        System.out.println ("Couldn't find IPL string");
-        System.out.println (text);
+        System.out.println ("Couldn't find IPL string in:");
+        System.out.println (message);
       }
     }
   }
 
-  private void checkConsole2Output (List<Order> orders)
+  private void addConsole1Message (List<Order> orders)
+  {
+    addConsole1Message (Dm3270Utility.getString (orders.get (2).getBuffer ()));
+  }
+
+  private void addConsole1Message (String message)
+  {
+    // break message up into 80-character lines
+    int totLines = 0;
+    for (int ptr = 0; ptr < message.length (); ptr += 80)
+    {
+      int max = Math.min (ptr + 80, message.length ());
+      String line = message.substring (ptr, max);
+      if (line.trim ().isEmpty ())
+        break;
+      tempLines[totLines++] = line;
+    }
+
+    message = message.substring (0, totLines * 80);
+    int firstLine = 0;
+
+    if (!previousMessage.isEmpty ())
+      for (int ptr = 0; ptr < previousMessage.length (); ptr += 80)
+      {
+        String chunk = previousMessage.substring (ptr);
+        if (message.startsWith (chunk))
+        {
+          firstLine = chunk.length () / 80;
+          break;
+        }
+      }
+
+    consoleLog1.addLines (tempLines, firstLine, totLines);
+
+    previousMessage = message;
+  }
+
+  private void addConsole2Message (List<Order> orders)
   {
     boolean debug = false;
     boolean display = false;
@@ -366,38 +406,6 @@ public class SystemMessage
       for (int i = 0; i < lines.size (); i++)
         System.out.printf ("%02d : %s%n", i, lines.get (i));
     }
-  }
-
-  private void addConsoleMessage (String message)
-  {
-    // break message up into 80-character lines
-    int totLines = 0;
-    for (int ptr = 0; ptr < message.length (); ptr += 80)
-    {
-      int max = Math.min (ptr + 80, message.length ());
-      String line = message.substring (ptr, max);
-      if (line.trim ().isEmpty ())
-        break;
-      tempLines[totLines++] = line;
-    }
-
-    message = message.substring (0, totLines * 80);
-    int firstLine = 0;
-
-    if (!previousMessage.isEmpty ())
-      for (int ptr = 0; ptr < previousMessage.length (); ptr += 80)
-      {
-        String chunk = previousMessage.substring (ptr);
-        if (message.startsWith (chunk))
-        {
-          firstLine = chunk.length () / 80;
-          break;
-        }
-      }
-
-    consoleLog1.addLines2 (tempLines, firstLine, totLines);
-
-    previousMessage = message;
   }
 
   public MenuItem getConsoleMenuItem ()
