@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ConsoleMessage2
+public class ConsoleMessage
 {
   private static final Pattern codePattern =
       Pattern.compile ("(\\+?[A-Z]{3,5}[0-9]{2,5}[A-Z]?|\\$HASP[0-9]{3,4}) (.*)");
@@ -25,7 +25,7 @@ public class ConsoleMessage2
   private final List<String> lines = new ArrayList<> ();
   private boolean formatted;
 
-  public ConsoleMessage2 (String line)
+  public ConsoleMessage (String line)
   {
     String time = line.substring (5, 13);
     if (timePattern.matcher (time).matches ())
@@ -57,7 +57,7 @@ public class ConsoleMessage2
     lines.add (line);
   }
 
-  public ConsoleMessage2 (String code, String message)
+  public ConsoleMessage (String code, String message)
   {
     setMessageCode (code);
     setFirstLine (message);
@@ -114,7 +114,7 @@ public class ConsoleMessage2
     return formatted;
   }
 
-  public boolean matches (ConsoleMessage2 message)
+  public boolean matches (ConsoleMessage message)
   {
     if (lines.size () != message.lines.size ())
       return false;

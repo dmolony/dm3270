@@ -6,9 +6,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 
-public class ConsoleMessageTable extends DefaultTable<ConsoleMessage2>
+public class ConsoleMessageTable extends DefaultTable<ConsoleMessage>
 {
-  final ObservableList<ConsoleMessage2> messages = FXCollections.observableArrayList ();
+  final ObservableList<ConsoleMessage> messages = FXCollections.observableArrayList ();
 
   public ConsoleMessageTable ()
   {

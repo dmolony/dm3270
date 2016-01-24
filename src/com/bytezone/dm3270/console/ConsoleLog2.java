@@ -33,10 +33,10 @@ public class ConsoleLog2
       Pattern.compile ("^...[-| ][* ]\\d\\d(\\.\\d\\d){2} .*");
   //  private static final Pattern twoDigits = Pattern.compile ("\\d\\d");
 
-  private final List<ConsoleMessage2> messages = new ArrayList<> ();
+  private final List<ConsoleMessage> messages = new ArrayList<> ();
   private final TextArea text = new TextArea ();
   //  private final boolean debug = false;
-  private ConsoleMessage2 currentMessage;
+  private ConsoleMessage currentMessage;
 
   public ConsoleLog2 (Font font)
   {
@@ -51,7 +51,7 @@ public class ConsoleLog2
       Matcher m = messagePattern.matcher (line);
       if (m.matches ())
       {
-        currentMessage = new ConsoleMessage2 (line);
+        currentMessage = new ConsoleMessage (line);
         messages.add (currentMessage);
         fireConsoleMessage (currentMessage);
       }
@@ -169,7 +169,7 @@ public class ConsoleLog2
 
   private final Set<ConsoleMessageListener> consoleMessageListeners = new HashSet<> ();
 
-  private void fireConsoleMessage (ConsoleMessage2 consoleMessage)
+  private void fireConsoleMessage (ConsoleMessage consoleMessage)
   {
     consoleMessageListeners.forEach (l -> l.consoleMessage (consoleMessage));
   }

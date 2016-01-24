@@ -16,8 +16,8 @@ public class ConsoleLog1
       Pattern.compile ("  ([A-Z]{3,4}[0-9]{3,5}[A-Z]) (.*?)\\s*");
 
   private final TextArea text = new TextArea ();
-  private final List<ConsoleMessage2> messages = new ArrayList<> ();
-  private ConsoleMessage2 currentMessage;
+  private final List<ConsoleMessage> messages = new ArrayList<> ();
+  private ConsoleMessage currentMessage;
 
   public ConsoleLog1 (Font font)
   {
@@ -34,10 +34,11 @@ public class ConsoleLog1
       {
         String code = m.group (1);
         String message = m.group (2);
-        //        currentMessage = new ConsoleMessage1 (code, message);
-        currentMessage = new ConsoleMessage2 (code, message);
-        fireConsoleMessage (currentMessage);
+
+        currentMessage = new ConsoleMessage (code, message);
         messages.add (currentMessage);
+        fireConsoleMessage (currentMessage);
+
         if (messages.size () == 1)
           text.appendText (code + " " + message);
         else
@@ -58,7 +59,7 @@ public class ConsoleLog1
 
   public void dump ()
   {
-    for (ConsoleMessage2 message : messages)
+    for (ConsoleMessage message : messages)
       System.out.println (message);
     System.out.println ("---------------------------------------------------"
         + "----------------------------");
@@ -70,7 +71,7 @@ public class ConsoleLog1
 
   private final Set<ConsoleMessageListener> consoleMessageListeners = new HashSet<> ();
 
-  private void fireConsoleMessage (ConsoleMessage2 consoleMessage)
+  private void fireConsoleMessage (ConsoleMessage consoleMessage)
   {
     consoleMessageListeners.forEach (l -> l.consoleMessage (consoleMessage));
   }
