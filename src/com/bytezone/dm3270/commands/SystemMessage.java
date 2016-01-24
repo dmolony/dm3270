@@ -311,20 +311,6 @@ public class SystemMessage
     addConsole1Message (Dm3270Utility.getString (orders.get (2).getBuffer ()));
   }
 
-  private int splitMessage (String message, int lineLength)
-  {
-    int totLines = 0;
-    for (int ptr = 0; ptr < message.length (); ptr += lineLength)
-    {
-      int max = Math.min (ptr + lineLength, message.length ());
-      String line = message.substring (ptr, max);
-      if (line.trim ().isEmpty ())
-        break;
-      tempLines[totLines++] = line;
-    }
-    return totLines;
-  }
-
   private void addConsole1Message (String message)
   {
     // break message up into 80-character lines
@@ -388,6 +374,20 @@ public class SystemMessage
 
     // pass only new lines to the console log
     consoleLog2.addLines (tempLines, skipLines, totLines);
+  }
+
+  private int splitMessage (String message, int lineLength)
+  {
+    int totLines = 0;
+    for (int ptr = 0; ptr < message.length (); ptr += lineLength)
+    {
+      int max = Math.min (ptr + lineLength, message.length ());
+      String line = message.substring (ptr, max);
+      if (line.trim ().isEmpty ())
+        break;
+      tempLines[totLines++] = line;
+    }
+    return totLines;
   }
 
   public MenuItem getConsoleMenuItem ()

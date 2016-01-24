@@ -11,7 +11,7 @@ import javafx.beans.property.StringProperty;
 public class ConsoleMessage2
 {
   private static final Pattern codePattern =
-      Pattern.compile ("([A-Z]{3,4}[0-9]{3,5}[A-Z]?|\\$HASP[0-9]{3}) (.*)");
+      Pattern.compile ("(\\+?[A-Z]{3,5}[0-9]{2,5}[A-Z]?|\\$HASP[0-9]{3,4}) (.*)");
   private String prefix1;
   private int hours;
   private int minutes;
