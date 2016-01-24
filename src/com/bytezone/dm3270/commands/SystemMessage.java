@@ -120,7 +120,7 @@ public class SystemMessage
         case IPL:
           if (orders.size () == 3 && checkOrders (consoleMessage, orders))
           {
-            addConsole1Message (orders);
+            addConsoleMessage (orders);
             return;
           }
           break;
@@ -287,7 +287,7 @@ public class SystemMessage
         isConsole = true;
         consoleMode = ConsoleMode.IPL;
         screen.setIsConsole ();
-        addConsole1Message (message);
+        addConsoleMessage (message);
       }
       else
       {
@@ -297,12 +297,12 @@ public class SystemMessage
     }
   }
 
-  private void addConsole1Message (List<Order> orders)
+  private void addConsoleMessage (List<Order> orders)
   {
-    addConsole1Message (Dm3270Utility.getString (orders.get (2).getBuffer ()));
+    addConsoleMessage (Dm3270Utility.getString (orders.get (2).getBuffer ()));
   }
 
-  private void addConsole1Message (String message)
+  private void addConsoleMessage (String message)
   {
     // break message up into 80-character lines
     int totLines = splitMessage (message, 80);

@@ -76,30 +76,6 @@ public class ConsoleMessage
 
     if (lines.size () == 1)
     {
-      //      String time = line.substring (5, 13);
-      //      if (timePattern.matcher (time).matches ())
-      //        setTime (time);
-      //      setSystem (line.substring (14, 22).trim ());
-      //      setSubsystem (line.substring (22, 31).trim ());
-      //      setRespond (line.substring (31, 32));
-      //      setFirstLineRest (line.substring (32).trim ());
-      //
-      //      String text = line.substring (32).trim ();
-      //
-      //      Matcher matcher = codePattern.matcher (text);
-      //      if (matcher.matches ())
-      //      {
-      //        setMessageCode (matcher.group (1));
-      //        setFirstLine (matcher.group (2));
-      //      }
-      //      else
-      //      {
-      //        setMessageCode ("");
-      //        setFirstLine (text);
-      //      }
-      //
-      //      if (line.length () != 79)
-      //        formatted = true;
       System.out.println ("impossible");
     }
     else if (lines.size () == 2)
