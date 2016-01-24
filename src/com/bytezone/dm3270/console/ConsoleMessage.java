@@ -16,7 +16,7 @@ public class ConsoleMessage
 
   private StringProperty timeProperty;
   private StringProperty systemProperty;
-  private StringProperty subsystemProperty;
+  private StringProperty taskProperty;
   private StringProperty messageCodeProperty;
   private StringProperty respondProperty;
   private StringProperty firstLineProperty;
@@ -33,7 +33,7 @@ public class ConsoleMessage
     else
       setTime ("");
     setSystem (line.substring (14, 22).trim ());
-    setSubsystem (line.substring (22, 31).trim ());
+    setTask (line.substring (22, 31).trim ());
     setRespond (line.substring (31, 32));
     setFirstLineRest (line.substring (32).trim ());
 
@@ -63,9 +63,9 @@ public class ConsoleMessage
     setFirstLine (message);
     setFirstLineRest (code + " " + message);
     lines.add (code + " " + message);
-    setTime ("");
-    setSystem ("");
-    setSubsystem ("");
+    setTime ("--");
+    setSystem ("--");
+    setTask ("");
     setRespond ("");
     formatted = true;
   }
@@ -83,49 +83,6 @@ public class ConsoleMessage
       if (!formatted)
         setFirstLine (getFirstLine () + " " + line.trim ());
     }
-  }
-
-  boolean getFormattedFlag ()
-  {
-    return formatted;
-  }
-
-  public boolean matches (ConsoleMessage message)
-  {
-    if (lines.size () != message.lines.size ())
-      return false;
-
-    if (!getTime ().equals (message.getTime ()))
-      return false;
-
-    if (!getSystem ().equals (message.getSystem ()))
-      return false;
-
-    if (!getSubsystem ().equals (message.getSubsystem ()))
-      return false;
-
-    if (!getFirstLine ().equals (message.getFirstLine ()))
-      return false;
-
-    for (int i = 1; i < lines.size (); i++)
-    {
-      String line1 = lines.get (i);
-      String line2 = message.lines.get (i);
-      if (line1.length () != line2.length ())
-        return false;
-      if (!line1.substring (5).equals (line2.substring (5)))
-        return false;
-    }
-
-    return true;
-  }
-
-  public boolean contains (String searchLine)
-  {
-    for (String line : lines)
-      if (line.equals (searchLine))
-        return true;
-    return false;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -171,24 +128,24 @@ public class ConsoleMessage
   }
 
   // ---------------------------------------------------------------------------------//
-  // Subsystem
+  // Task
   // ---------------------------------------------------------------------------------//
 
-  public final void setSubsystem (String value)
+  public final void setTask (String value)
   {
-    subsystemProperty ().set (value);
+    taskProperty ().set (value);
   }
 
-  public final String getSubsystem ()
+  public final String getTask ()
   {
-    return subsystemProperty ().get ();
+    return taskProperty ().get ();
   }
 
-  public final StringProperty subsystemProperty ()
+  public final StringProperty taskProperty ()
   {
-    if (subsystemProperty == null)
-      subsystemProperty = new SimpleStringProperty ();
-    return subsystemProperty;
+    if (taskProperty == null)
+      taskProperty = new SimpleStringProperty ();
+    return taskProperty;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -277,8 +234,8 @@ public class ConsoleMessage
 
   public String firstLine ()
   {
-    return String.format ("%-8s %-7s %-8s %1s%s", getTime (), getSystem (),
-                          getSubsystem (), getRespond (), getFirstLineRest ());
+    return String.format ("%-8s %-7s %-8s %1s%s", getTime (), getSystem (), getTask (),
+                          getRespond (), getFirstLineRest ());
   }
 
   @Override

@@ -31,7 +31,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
     box.setAlignment (Pos.CENTER_LEFT);
 
     Label lblTime = new Label ("Time");
-    Label lblSubsytem = new Label ("Subsystem");
+    Label lblSubsytem = new Label ("Task");
     Label lblMessageCode = new Label ("Code");
     Label lblMessageText = new Label ("Text");
     box.getChildren ().addAll (lblTime, txtTime, lblSubsytem, txtSubsystem,
@@ -65,14 +65,14 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
   private void setFilter (FilteredList<ConsoleMessage> filteredData)
   {
     String time = txtTime.getText ();
-    String subsystem = txtSubsystem.getText ();
+    String task = txtSubsystem.getText ();
     String code = txtMessageCode.getText ();
     String text = txtMessageText.getText ();
 
     filteredData.setPredicate (message ->
     {
       boolean p0 = message.getTime ().startsWith (time);
-      boolean p1 = message.getSubsystem ().startsWith (subsystem);
+      boolean p1 = message.getTask ().startsWith (task);
       boolean p2 = message.getMessageCode ().startsWith (code);
       boolean p3 = message.getFirstLine ().indexOf (text) >= 0;
       return p0 && p1 && p2 && p3;
