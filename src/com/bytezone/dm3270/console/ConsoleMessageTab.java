@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
 {
   private final ConsoleMessageTable consoleMessageTable = new ConsoleMessageTable ();
-  private final TextField txtSubsystem = new TextField ();
+  private final TextField txtTask = new TextField ();
   private final TextField txtMessageCode = new TextField ();
   private final TextField txtMessageText = new TextField ();
   private final TextField txtTime = new TextField ();
@@ -34,7 +34,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
     Label lblSubsytem = new Label ("Task");
     Label lblMessageCode = new Label ("Code");
     Label lblMessageText = new Label ("Text");
-    box.getChildren ().addAll (lblTime, txtTime, lblSubsytem, txtSubsystem,
+    box.getChildren ().addAll (lblTime, txtTime, lblSubsytem, txtTask,
                                lblMessageCode, txtMessageCode, lblMessageText,
                                txtMessageText);
 
@@ -54,7 +54,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
 
     txtTime.textProperty ()
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
-    txtSubsystem.textProperty ()
+    txtTask.textProperty ()
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
     txtMessageCode.textProperty ()
         .addListener ( (observable, oldValue, newValue) -> setFilter (filteredData));
@@ -65,7 +65,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
   private void setFilter (FilteredList<ConsoleMessage> filteredData)
   {
     String time = txtTime.getText ();
-    String task = txtSubsystem.getText ();
+    String task = txtTask.getText ();
     String code = txtMessageCode.getText ();
     String text = txtMessageText.getText ();
 
@@ -74,7 +74,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
       boolean p0 = message.getTime ().startsWith (time);
       boolean p1 = message.getTask ().startsWith (task);
       boolean p2 = message.getMessageCode ().startsWith (code);
-      boolean p3 = message.getFirstLine ().indexOf (text) >= 0;
+      boolean p3 = message.getFirstLine ().contains (text);
       return p0 && p1 && p2 && p3;
     });
   }

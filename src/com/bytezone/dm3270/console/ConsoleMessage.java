@@ -20,24 +20,38 @@ public class ConsoleMessage
   private StringProperty messageCodeProperty;
   private StringProperty respondProperty;
   private StringProperty firstLineProperty;
-  private StringProperty firstLineRestProperty;
+  //  private StringProperty firstLineRestProperty;
 
   private final List<String> lines = new ArrayList<> ();
   private boolean formatted;
 
+  // IPL messages
+  public ConsoleMessage (String code, String message)
+  {
+    setTime ("--");
+    setSystem ("IPL");
+    setTask ("");
+    setRespond ("");
+
+    setMessageCode (code);
+    setFirstLine (message);
+    lines.add (code + " " + message);
+
+    formatted = true;           // don't join lines
+  }
+
+  // Console messages
   public ConsoleMessage (String line)
   {
     String time = line.substring (5, 13);
-    if (timePattern.matcher (time).matches ())
-      setTime (time);
-    else
-      setTime ("");
+    setTime (timePattern.matcher (time).matches () ? time : "");
+
     setSystem (line.substring (14, 22).trim ());
     setTask (line.substring (22, 31).trim ());
     setRespond (line.substring (31, 32));
-    setFirstLineRest (line.substring (32).trim ());
 
     String text = line.substring (32).trim ();
+    //    setFirstLineRest (text);
 
     Matcher matcher = codePattern.matcher (text);
     if (matcher.matches ())
@@ -57,32 +71,11 @@ public class ConsoleMessage
     lines.add (line);
   }
 
-  public ConsoleMessage (String code, String message)
-  {
-    setMessageCode (code);
-    setFirstLine (message);
-    setFirstLineRest (code + " " + message);
-    lines.add (code + " " + message);
-    setTime ("--");
-    setSystem ("--");
-    setTask ("");
-    setRespond ("");
-    formatted = true;
-  }
-
   public void add (String line)
   {
     lines.add (line);
-
-    if (lines.size () == 1)
-    {
-      System.out.println ("impossible");
-    }
-    else if (lines.size () == 2)
-    {
-      if (!formatted)
-        setFirstLine (getFirstLine () + " " + line.trim ());
-    }
+    if (lines.size () == 2 && !formatted)
+      setFirstLine (getFirstLine () + " " + line.trim ());
   }
 
   // ---------------------------------------------------------------------------------//
@@ -149,48 +142,6 @@ public class ConsoleMessage
   }
 
   // ---------------------------------------------------------------------------------//
-  // Respond
-  // ---------------------------------------------------------------------------------//
-
-  public final void setRespond (String value)
-  {
-    respondProperty ().set (value);
-  }
-
-  public final String getRespond ()
-  {
-    return respondProperty ().get ();
-  }
-
-  public final StringProperty respondProperty ()
-  {
-    if (respondProperty == null)
-      respondProperty = new SimpleStringProperty ();
-    return respondProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // FirstLineRest
-  // ---------------------------------------------------------------------------------//
-
-  public final void setFirstLineRest (String value)
-  {
-    firstLineRestProperty ().set (value);
-  }
-
-  public final String getFirstLineRest ()
-  {
-    return firstLineRestProperty ().get ();
-  }
-
-  public final StringProperty firstLineRestProperty ()
-  {
-    if (firstLineRestProperty == null)
-      firstLineRestProperty = new SimpleStringProperty ();
-    return firstLineRestProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
   // MessageCode
   // ---------------------------------------------------------------------------------//
 
@@ -209,6 +160,27 @@ public class ConsoleMessage
     if (messageCodeProperty == null)
       messageCodeProperty = new SimpleStringProperty ();
     return messageCodeProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Respond
+  // ---------------------------------------------------------------------------------//
+
+  public final void setRespond (String value)
+  {
+    respondProperty ().set (value);
+  }
+
+  public final String getRespond ()
+  {
+    return respondProperty ().get ();
+  }
+
+  public final StringProperty respondProperty ()
+  {
+    if (respondProperty == null)
+      respondProperty = new SimpleStringProperty ();
+    return respondProperty;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -232,18 +204,13 @@ public class ConsoleMessage
     return firstLineProperty;
   }
 
-  public String firstLine ()
-  {
-    return String.format ("%-8s %-7s %-8s %1s%s", getTime (), getSystem (), getTask (),
-                          getRespond (), getFirstLineRest ());
-  }
-
   @Override
   public String toString ()
   {
     StringBuilder text = new StringBuilder ();
 
-    String line1 = firstLine ();
+    String line1 = String.format ("%-8s %-7s %-8s %1s%s", getTime (), getSystem (),
+                                  getTask (), getRespond (), getFirstLine ());
     text.append (line1);
     int length = line1.length ();
 
