@@ -82,7 +82,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
   @Override
   public void consoleMessage (ConsoleMessage2 consoleMessage)
   {
-    consoleMessageTable.addConsoleMessage (consoleMessage);
+    consoleMessageTable.messages.add (consoleMessage);
   }
 
   private void select (ConsoleMessage2 consoleMessage)

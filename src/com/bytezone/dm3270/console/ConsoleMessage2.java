@@ -12,10 +12,7 @@ public class ConsoleMessage2
 {
   private static final Pattern codePattern =
       Pattern.compile ("(\\+?[A-Z]{3,5}[0-9]{2,5}[A-Z]?|\\$HASP[0-9]{3,4}) (.*)");
-  private String prefix1;
-  private int hours;
-  private int minutes;
-  private int seconds;
+  private static final Pattern timePattern = Pattern.compile ("\\d{2}(\\.\\d{2}){2}");
 
   private StringProperty timeProperty;
   private StringProperty systemProperty;
@@ -26,7 +23,7 @@ public class ConsoleMessage2
   private StringProperty firstLineRestProperty;
 
   private final List<String> lines = new ArrayList<> ();
-  private boolean flag;         // indent ?
+  private boolean formatted;
 
   public void add (String line)
   {
@@ -34,13 +31,9 @@ public class ConsoleMessage2
 
     if (lines.size () == 1)
     {
-      prefix1 = line.substring (0, 5);
-
-      hours = Integer.parseInt (line.substring (5, 7));
-      minutes = Integer.parseInt (line.substring (8, 10));
-      seconds = Integer.parseInt (line.substring (11, 13));
-
-      setTime (String.format ("%02d.%02d.%02d", hours, minutes, seconds));
+      String time = line.substring (5, 13);
+      if (timePattern.matcher (time).matches ())
+        setTime (time);
       setSystem (line.substring (14, 22).trim ());
       setSubsystem (line.substring (22, 31).trim ());
       setRespond (line.substring (31, 32));
@@ -61,18 +54,18 @@ public class ConsoleMessage2
       }
 
       if (line.length () != 79)
-        flag = true;
+        formatted = true;
     }
     else if (lines.size () == 2)
     {
-      if (!flag)
+      if (!formatted)
         setFirstLine (getFirstLine () + " " + line.trim ());
     }
   }
 
-  boolean getFlag ()
+  boolean getFormattedFlag ()
   {
-    return flag;
+    return formatted;
   }
 
   public boolean matches (ConsoleMessage2 message)
@@ -275,7 +268,7 @@ public class ConsoleMessage2
     text.append (line1);
     int length = line1.length ();
 
-    boolean joining = !flag;
+    boolean joining = !formatted;
     for (int i = 1; i < lines.size (); i++)
     {
       String line = lines.get (i).substring (5);
