@@ -10,21 +10,23 @@ import java.util.regex.Pattern;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 
-public class ConsoleLog1
+public class ConsoleLog
 {
   private static final Pattern codePattern =
       Pattern.compile ("  ([A-Z]{3,4}[0-9]{3,5}[A-Z]) (.*?)\\s*");
+  private static final Pattern messagePattern =
+      Pattern.compile ("^...[-| ][* ]\\d\\d(\\.\\d\\d){2} .*");
 
   private final TextArea text = new TextArea ();
   private final List<ConsoleMessage> messages = new ArrayList<> ();
   private ConsoleMessage currentMessage;
 
-  public ConsoleLog1 (Font font)
+  public ConsoleLog (Font font)
   {
     text.setFont (font);
   }
 
-  public void addLines (String[] lines, int firstLine, int lastLine)
+  public void addLines1 (String[] lines, int firstLine, int lastLine)
   {
     for (int i = firstLine; i < lastLine; i++)
     {
@@ -47,6 +49,31 @@ public class ConsoleLog1
       else
       {
         currentMessage.add (line);
+        text.appendText ("\n      " + line);
+      }
+    }
+  }
+
+  public void addLines2 (String[] lines, int firstLine, int lastLine)
+  {
+    for (int i = firstLine; i < lastLine; i++)
+    {
+      String line = lines[i];
+      Matcher m = messagePattern.matcher (line);
+      if (m.matches ())
+      {
+        currentMessage = new ConsoleMessage (line);
+        messages.add (currentMessage);
+        fireConsoleMessage (currentMessage);
+
+        if (messages.size () == 1)
+          text.appendText (line);
+        else
+          text.appendText ("\n" + line);
+      }
+      else
+      {
+        currentMessage.add (line.substring (5));
         text.appendText ("\n      " + line);
       }
     }

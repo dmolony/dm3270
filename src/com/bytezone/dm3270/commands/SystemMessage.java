@@ -5,8 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.BatchJobListener;
-import com.bytezone.dm3270.console.ConsoleLog1;
-import com.bytezone.dm3270.console.ConsoleLog2;
+import com.bytezone.dm3270.console.ConsoleLog;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
@@ -76,14 +75,12 @@ public class SystemMessage
   private final Screen screen;
   private final BatchJobListener batchJobListener;
   private Profile profile;
+
   private boolean isConsole;
-  private ConsoleLog1 consoleLog1;
-  private ConsoleLog2 consoleLog2;
+  private ConsoleLog consoleLog;
+
   private MenuItem menuItem;
   private int lastOrdersSize;
-
-  //  private final List<String> lines = new ArrayList<> (20);
-  //  private final List<String> newLines = new ArrayList<> (20);
 
   private final String[] tempLines = new String[20];
   private String previousMessage = "";
@@ -102,14 +99,9 @@ public class SystemMessage
     this.batchJobListener = batchJobListener;
   }
 
-  public ConsoleLog1 getConsoleLog1 ()
+  public ConsoleLog getConsoleLog ()
   {
-    return consoleLog1;
-  }
-
-  public ConsoleLog2 getConsoleLog2 ()
-  {
-    return consoleLog2;
+    return consoleLog;
   }
 
   void checkSystemMessage (boolean eraseWrite, List<Order> orders, int length)
@@ -291,8 +283,7 @@ public class SystemMessage
       if (pos >= 0)
       {
         Font displayFont = Font.font ("Monospaced", 13);
-        consoleLog1 = new ConsoleLog1 (displayFont);
-        consoleLog2 = new ConsoleLog2 (displayFont);
+        consoleLog = new ConsoleLog (displayFont);
         isConsole = true;
         consoleMode = ConsoleMode.IPL;
         screen.setIsConsole ();
@@ -333,7 +324,7 @@ public class SystemMessage
       }
 
     // pass only new lines to the console log
-    consoleLog1.addLines (tempLines, firstUnprocessedLine, totLines);
+    consoleLog.addLines1 (tempLines, firstUnprocessedLine, totLines);
 
     // save processed message to compare with the next one
     previousMessage = message;
@@ -373,7 +364,7 @@ public class SystemMessage
     }
 
     // pass only new lines to the console log
-    consoleLog2.addLines (tempLines, skipLines, totLines);
+    consoleLog.addLines2 (tempLines, skipLines, totLines);
   }
 
   private int splitMessage (String message, int lineLength)

@@ -156,8 +156,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public void setIsConsole ()
   {
     consolePane.setIsConsole (true);
-    consoleLogStage.setLogs (systemMessage.getConsoleLog1 (),
-                             systemMessage.getConsoleLog2 ());
+    consoleLogStage.setConsoleLog (systemMessage.getConsoleLog ());
   }
 
   // called from Console.startSelectedFunction() : Replay
