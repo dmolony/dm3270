@@ -1,7 +1,9 @@
 package com.bytezone.dm3270.console;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,11 +13,11 @@ import javafx.scene.text.Font;
 public class ConsoleLog1
 {
   private static final Pattern codePattern =
-      Pattern.compile ("  ([A-Z]{3,4}[0-9]{3,5}[A-Z]) (.*)");
+      Pattern.compile ("  ([A-Z]{3,4}[0-9]{3,5}[A-Z]) (.*?)\\s*");
 
   private final TextArea text = new TextArea ();
-  private final List<ConsoleMessage1> messages = new ArrayList<> ();
-  private ConsoleMessage1 currentMessage;
+  private final List<ConsoleMessage2> messages = new ArrayList<> ();
+  private ConsoleMessage2 currentMessage;
 
   public ConsoleLog1 (Font font)
   {
@@ -32,7 +34,9 @@ public class ConsoleLog1
       {
         String code = m.group (1);
         String message = m.group (2);
-        currentMessage = new ConsoleMessage1 (code, message);
+        //        currentMessage = new ConsoleMessage1 (code, message);
+        currentMessage = new ConsoleMessage2 (code, message);
+        fireConsoleMessage (currentMessage);
         messages.add (currentMessage);
         if (messages.size () == 1)
           text.appendText (code + " " + message);
@@ -54,9 +58,32 @@ public class ConsoleLog1
 
   public void dump ()
   {
-    for (ConsoleMessage1 message : messages)
+    for (ConsoleMessage2 message : messages)
       System.out.println (message);
     System.out.println ("---------------------------------------------------"
         + "----------------------------");
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Listener events
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<ConsoleMessageListener> consoleMessageListeners = new HashSet<> ();
+
+  private void fireConsoleMessage (ConsoleMessage2 consoleMessage)
+  {
+    consoleMessageListeners.forEach (l -> l.consoleMessage (consoleMessage));
+  }
+
+  public void addConsoleMessageListener (ConsoleMessageListener listener)
+  {
+    if (!consoleMessageListeners.contains (listener))
+      consoleMessageListeners.add (listener);
+  }
+
+  public void removeConsoleMessageListener (ConsoleMessageListener listener)
+  {
+    if (consoleMessageListeners.contains (listener))
+      consoleMessageListeners.remove (listener);
   }
 }

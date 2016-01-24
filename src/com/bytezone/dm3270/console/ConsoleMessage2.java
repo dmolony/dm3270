@@ -25,36 +25,82 @@ public class ConsoleMessage2
   private final List<String> lines = new ArrayList<> ();
   private boolean formatted;
 
+  public ConsoleMessage2 (String line)
+  {
+    String time = line.substring (5, 13);
+    if (timePattern.matcher (time).matches ())
+      setTime (time);
+    else
+      setTime ("");
+    setSystem (line.substring (14, 22).trim ());
+    setSubsystem (line.substring (22, 31).trim ());
+    setRespond (line.substring (31, 32));
+    setFirstLineRest (line.substring (32).trim ());
+
+    String text = line.substring (32).trim ();
+
+    Matcher matcher = codePattern.matcher (text);
+    if (matcher.matches ())
+    {
+      setMessageCode (matcher.group (1));
+      setFirstLine (matcher.group (2));
+    }
+    else
+    {
+      setMessageCode ("");
+      setFirstLine (text);
+    }
+
+    if (line.length () != 79)
+      formatted = true;
+
+    lines.add (line);
+  }
+
+  public ConsoleMessage2 (String code, String message)
+  {
+    setMessageCode (code);
+    setFirstLine (message);
+    setFirstLineRest (code + " " + message);
+    lines.add (code + " " + message);
+    setTime ("");
+    setSystem ("");
+    setSubsystem ("");
+    setRespond ("");
+    formatted = true;
+  }
+
   public void add (String line)
   {
     lines.add (line);
 
     if (lines.size () == 1)
     {
-      String time = line.substring (5, 13);
-      if (timePattern.matcher (time).matches ())
-        setTime (time);
-      setSystem (line.substring (14, 22).trim ());
-      setSubsystem (line.substring (22, 31).trim ());
-      setRespond (line.substring (31, 32));
-      setFirstLineRest (line.substring (32).trim ());
-
-      String text = line.substring (32).trim ();
-
-      Matcher matcher = codePattern.matcher (text);
-      if (matcher.matches ())
-      {
-        setMessageCode (matcher.group (1));
-        setFirstLine (matcher.group (2));
-      }
-      else
-      {
-        setMessageCode ("");
-        setFirstLine (text);
-      }
-
-      if (line.length () != 79)
-        formatted = true;
+      //      String time = line.substring (5, 13);
+      //      if (timePattern.matcher (time).matches ())
+      //        setTime (time);
+      //      setSystem (line.substring (14, 22).trim ());
+      //      setSubsystem (line.substring (22, 31).trim ());
+      //      setRespond (line.substring (31, 32));
+      //      setFirstLineRest (line.substring (32).trim ());
+      //
+      //      String text = line.substring (32).trim ();
+      //
+      //      Matcher matcher = codePattern.matcher (text);
+      //      if (matcher.matches ())
+      //      {
+      //        setMessageCode (matcher.group (1));
+      //        setFirstLine (matcher.group (2));
+      //      }
+      //      else
+      //      {
+      //        setMessageCode ("");
+      //        setFirstLine (text);
+      //      }
+      //
+      //      if (line.length () != 79)
+      //        formatted = true;
+      System.out.println ("impossible");
     }
     else if (lines.size () == 2)
     {
@@ -104,12 +150,6 @@ public class ConsoleMessage2
       if (line.equals (searchLine))
         return true;
     return false;
-  }
-
-  public String firstLine ()
-  {
-    return String.format ("%s %-7s %-8s %s%s", getTime (), getSystem (), getSubsystem (),
-                          getRespond (), getFirstLineRest ());
   }
 
   // ---------------------------------------------------------------------------------//
@@ -259,6 +299,12 @@ public class ConsoleMessage2
     return firstLineProperty;
   }
 
+  public String firstLine ()
+  {
+    return String.format ("%-8s %-7s %-8s %1s%s", getTime (), getSystem (),
+                          getSubsystem (), getRespond (), getFirstLineRest ());
+  }
+
   @Override
   public String toString ()
   {
@@ -271,7 +317,8 @@ public class ConsoleMessage2
     boolean joining = !formatted;
     for (int i = 1; i < lines.size (); i++)
     {
-      String line = lines.get (i).substring (5);
+      //      String line = lines.get (i).substring (5);
+      String line = lines.get (i);
       String trimmedLine = line.trim ();
       if (joining && length + trimmedLine.length () + 1 < 140)
       {

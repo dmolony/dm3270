@@ -60,6 +60,7 @@ public class ConsoleLogStage extends Stage
     console1Tab.setContent (consoleLog1.getTextArea ());
     console2Tab.setContent (consoleLog2.getTextArea ());
 
+    consoleLog1.addConsoleMessageListener (consoleMessageTab);
     consoleLog2.addConsoleMessageListener (consoleMessageTab);
 
     show ();

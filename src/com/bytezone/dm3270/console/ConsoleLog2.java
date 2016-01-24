@@ -51,14 +51,13 @@ public class ConsoleLog2
       Matcher m = messagePattern.matcher (line);
       if (m.matches ())
       {
-        currentMessage = new ConsoleMessage2 ();
-        currentMessage.add (line);
+        currentMessage = new ConsoleMessage2 (line);
         messages.add (currentMessage);
         fireConsoleMessage (currentMessage);
       }
       else
       {
-        currentMessage.add (line);
+        currentMessage.add (line.substring (5));
       }
     }
   }

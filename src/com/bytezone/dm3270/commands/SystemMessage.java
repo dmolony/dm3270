@@ -293,10 +293,10 @@ public class SystemMessage
         Font displayFont = Font.font ("Monospaced", 13);
         consoleLog1 = new ConsoleLog1 (displayFont);
         consoleLog2 = new ConsoleLog2 (displayFont);
-        addConsole1Message (message);
         isConsole = true;
         consoleMode = ConsoleMode.IPL;
         screen.setIsConsole ();
+        addConsole1Message (message);
       }
       else
       {
