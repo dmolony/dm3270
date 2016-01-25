@@ -180,7 +180,7 @@ public class ConsoleMessage
     {
       String line = lines.get (i);
       String trimmedLine = line.trim ();
-      if (joining && length + trimmedLine.length () + 1 < 140)
+      if (joining && length + trimmedLine.length () + 1 < 150)
       {
         text.append (" ");
         text.append (trimmedLine);
@@ -188,8 +188,7 @@ public class ConsoleMessage
       }
       else
       {
-        String chunk = String.format ("%n                                  %s",
-                                      joining ? trimmedLine : line);
+        String chunk = String.format ("%n%36.36s%s", " ", joining ? trimmedLine : line);
         text.append (chunk);
         length = chunk.length ();
       }

@@ -50,15 +50,20 @@ public class ConsoleLog
       }
       else
       {
-        String chunk = line.substring (0, 8);
-        if (chunk.trim ().isEmpty ())
+        String code = line.substring (2, 10);
+        if (code.trim ().isEmpty ())
         {
           currentMessage.setFormatted ();
-          currentMessage.add (line.substring (8));
+          currentMessage.add (line.substring (10));
         }
         else
-          currentMessage.add (line);
+        {
+          if (code.startsWith ("++"))
+            currentMessage.setFormatted ();
+          currentMessage.add (line.substring (2));
+        }
 
+        // remove partial message and replace with the latest version
         text.deleteText (currentTextLength, text.getLength ());
         text.appendText (currentMessage.toString ());
       }
