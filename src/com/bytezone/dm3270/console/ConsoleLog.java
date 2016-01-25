@@ -42,14 +42,14 @@ public class ConsoleLog
         fireConsoleMessage (currentMessage);
 
         if (messages.size () == 1)
-          text.appendText (code + " " + message);
+          text.appendText (currentMessage.toString ());
         else
-          text.appendText ("\n" + code + " " + message);
+          text.appendText ("\n" + currentMessage.toString ());
       }
       else
       {
         currentMessage.add (line);
-        text.appendText ("\n      " + line);
+        text.appendText ("\n                                  " + line);
       }
     }
   }

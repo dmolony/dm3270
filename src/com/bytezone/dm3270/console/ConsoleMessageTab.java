@@ -34,9 +34,8 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
     Label lblSubsytem = new Label ("Task");
     Label lblMessageCode = new Label ("Code");
     Label lblMessageText = new Label ("Text");
-    box.getChildren ().addAll (lblTime, txtTime, lblSubsytem, txtTask,
-                               lblMessageCode, txtMessageCode, lblMessageText,
-                               txtMessageText);
+    box.getChildren ().addAll (lblTime, txtTime, lblSubsytem, txtTask, lblMessageCode,
+                               txtMessageCode, lblMessageText, txtMessageText);
 
     BorderPane borderPane = new BorderPane ();
     borderPane.setTop (box);
@@ -74,7 +73,7 @@ public class ConsoleMessageTab extends Tab implements ConsoleMessageListener
       boolean p0 = message.getTime ().startsWith (time);
       boolean p1 = message.getTask ().startsWith (task);
       boolean p2 = message.getMessageCode ().startsWith (code);
-      boolean p3 = message.getFirstLine ().contains (text);
+      boolean p3 = message.getMessage ().contains (text);
       return p0 && p1 && p2 && p3;
     });
   }
