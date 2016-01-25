@@ -84,14 +84,6 @@ public class ConsoleLog
     return text;
   }
 
-  public void dump ()
-  {
-    for (ConsoleMessage message : messages)
-      System.out.println (message);
-    System.out.println ("---------------------------------------------------"
-        + "----------------------------");
-  }
-
   // ---------------------------------------------------------------------------------//
   // Listener events
   // ---------------------------------------------------------------------------------//
