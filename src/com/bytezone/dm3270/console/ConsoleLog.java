@@ -27,6 +27,7 @@ public class ConsoleLog
     text.setFont (font);
   }
 
+  // IPL lines
   public void addLines1 (String[] lines, int firstLine, int lastLine)
   {
     for (int i = firstLine; i < lastLine; i++)
@@ -64,6 +65,7 @@ public class ConsoleLog
     }
   }
 
+  // Console lines
   public void addLines2 (String[] lines, int firstLine, int lastLine)
   {
     for (int i = firstLine; i < lastLine; i++)
