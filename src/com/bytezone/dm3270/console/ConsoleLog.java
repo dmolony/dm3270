@@ -48,7 +48,14 @@ public class ConsoleLog
       }
       else
       {
-        currentMessage.add (line);
+        String chunk = line.substring (0, 8);
+        if (chunk.trim ().isEmpty ())
+        {
+          currentMessage.setFormatted ();
+          currentMessage.add (line.substring (8));
+        }
+        else
+          currentMessage.add (line);
         text.appendText ("\n                                  " + line);
       }
     }

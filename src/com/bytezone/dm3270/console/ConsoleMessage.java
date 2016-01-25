@@ -22,7 +22,7 @@ public class ConsoleMessage
   private final StringProperty message = new SimpleStringProperty ();
 
   private final List<String> lines = new ArrayList<> ();
-  private final boolean formatted;
+  private boolean formatted;
 
   // IPL messages
   public ConsoleMessage (String code, String message)
@@ -36,7 +36,7 @@ public class ConsoleMessage
     setMessage (message);
 
     lines.add (message);
-    formatted = true;           // don't join lines
+    //    formatted = true;           // don't join lines
   }
 
   // Console messages
@@ -64,7 +64,14 @@ public class ConsoleMessage
     }
 
     lines.add (getMessage ());
-    formatted = line.length () != 79;
+
+    if (line.length () != 79)
+      formatted = true;
+  }
+
+  public void setFormatted ()
+  {
+    formatted = true;
   }
 
   public void add (String line)
@@ -165,7 +172,7 @@ public class ConsoleMessage
 
     String line1 =
         String.format ("%-8s %-7s %-8s %1s%-8s %s", getTime (), getSystem (), getTask (),
-                       getRespond (), getMessageCode (), getMessage ());
+                       getRespond (), getMessageCode (), lines.get (0));
     text.append (line1);
     int length = line1.length ();
     boolean joining = !formatted;
@@ -182,9 +189,10 @@ public class ConsoleMessage
       }
       else
       {
-        text.append (String.format ("%n                           %s",
-                                    joining ? trimmedLine : line));
-        length = trimmedLine.length () + 27;
+        String chunk = String.format ("%n                                  %s",
+                                      joining ? trimmedLine : line);
+        text.append (chunk);
+        length = chunk.length ();
       }
 
       if (joining && trimmedLine.endsWith (":"))
