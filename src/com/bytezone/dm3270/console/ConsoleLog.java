@@ -20,6 +20,7 @@ public class ConsoleLog
   private final TextArea text = new TextArea ();
   private final List<ConsoleMessage> messages = new ArrayList<> ();
   private ConsoleMessage currentMessage;
+  private int currentTextLength;
 
   public ConsoleLog (Font font)
   {
@@ -38,13 +39,13 @@ public class ConsoleLog
         String message = m.group (2);
 
         currentMessage = new ConsoleMessage (code, message);
+        if (messages.size () > 0)
+          text.appendText ("\n");
+        currentTextLength = text.getLength ();
+
         messages.add (currentMessage);
         fireConsoleMessage (currentMessage);
-
-        if (messages.size () == 1)
-          text.appendText (currentMessage.toString ());
-        else
-          text.appendText ("\n" + currentMessage.toString ());
+        text.appendText (currentMessage.toString ());
       }
       else
       {
@@ -56,7 +57,9 @@ public class ConsoleLog
         }
         else
           currentMessage.add (line);
-        text.appendText ("\n                                  " + line);
+
+        text.deleteText (currentTextLength, text.getLength ());
+        text.appendText (currentMessage.toString ());
       }
     }
   }
@@ -70,18 +73,18 @@ public class ConsoleLog
       if (m.matches ())
       {
         currentMessage = new ConsoleMessage (line);
+        text.appendText ("\n");
+        currentTextLength = text.getLength ();
+
         messages.add (currentMessage);
         fireConsoleMessage (currentMessage);
-
-        if (messages.size () == 1)
-          text.appendText (line);
-        else
-          text.appendText ("\n" + line);
+        text.appendText (currentMessage.toString ());
       }
       else
       {
         currentMessage.add (line.substring (5));
-        text.appendText ("\n      " + line);
+        text.deleteText (currentTextLength, text.getLength ());
+        text.appendText (currentMessage.toString ());
       }
     }
   }

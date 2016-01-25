@@ -36,7 +36,6 @@ public class ConsoleMessage
     setMessage (message);
 
     lines.add (message);
-    //    formatted = true;           // don't join lines
   }
 
   // Console messages
