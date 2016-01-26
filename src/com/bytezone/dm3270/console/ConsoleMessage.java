@@ -11,7 +11,7 @@ import javafx.beans.property.StringProperty;
 public class ConsoleMessage
 {
   private static final Pattern codePattern =
-      Pattern.compile ("(\\+?[A-Z]{3,5}[0-9]{2,5}[A-Z]?|\\$HASP[0-9]{3,4}) (.*)");
+      Pattern.compile ("(\\+?[A-Z]{3,5}[0-9]{2,5}[A-Z]?|\\$HASP[0-9]{3,4}|------) (.*)");
   private static final Pattern timePattern = Pattern.compile ("\\d{2}(\\.\\d{2}){2}");
 
   private final StringProperty time = new SimpleStringProperty ();
@@ -78,6 +78,43 @@ public class ConsoleMessage
     lines.add (line);
     if (lines.size () == 2 && !formatted)
       setMessage (getMessage () + " " + line.trim ());
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    String line1 =
+        String.format ("%-8s %-7s %-8s %1s%-9s %s", getTime (), getSystem (), getTask (),
+                       getRespond (), getMessageCode (), lines.get (0));
+    text.append (line1);
+    int length = line1.length ();
+    boolean joining = !formatted;
+
+    for (int i = 1; i < lines.size (); i++)
+    {
+      String line = lines.get (i);
+      String trimmedLine = line.trim ();
+
+      if (joining && length + trimmedLine.length () + 1 < 150)
+      {
+        text.append (" ");
+        text.append (trimmedLine);
+        length += trimmedLine.length () + 1;
+      }
+      else
+      {
+        String chunk = String.format ("%n%37.37s%s", "", joining ? trimmedLine : line);
+        text.append (chunk);
+        length = chunk.length ();
+      }
+
+      if (joining && trimmedLine.endsWith (":"))
+        joining = false;
+    }
+
+    return text.toString ();
   }
 
   // ---------------------------------------------------------------------------------//
@@ -162,42 +199,5 @@ public class ConsoleMessage
   public final String getMessage ()
   {
     return message.get ();
-  }
-
-  @Override
-  public String toString ()
-  {
-    StringBuilder text = new StringBuilder ();
-
-    String line1 =
-        String.format ("%-8s %-7s %-8s %1s%-9s %s", getTime (), getSystem (), getTask (),
-                       getRespond (), getMessageCode (), lines.get (0));
-    text.append (line1);
-    int length = line1.length ();
-    boolean joining = !formatted;
-
-    for (int i = 1; i < lines.size (); i++)
-    {
-      String line = lines.get (i);
-      String trimmedLine = line.trim ();
-
-      if (joining && length + trimmedLine.length () + 1 < 150)
-      {
-        text.append (" ");
-        text.append (trimmedLine);
-        length += trimmedLine.length () + 1;
-      }
-      else
-      {
-        String chunk = String.format ("%n%37.37s%s", "", joining ? trimmedLine : line);
-        text.append (chunk);
-        length = chunk.length ();
-      }
-
-      if (joining && trimmedLine.endsWith (":"))
-        joining = false;
-    }
-
-    return text.toString ();
   }
 }

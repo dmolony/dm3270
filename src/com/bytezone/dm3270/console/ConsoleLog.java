@@ -15,7 +15,7 @@ public class ConsoleLog
   private static final Pattern codePattern =
       Pattern.compile ("  ([A-Z]{3,4}[0-9]{3,5}[A-Z]) (.*?)\\s*");
   private static final Pattern messagePattern =
-      Pattern.compile ("^...[-| ][* ]\\d\\d(\\.\\d\\d){2} .*");
+      Pattern.compile ("^...[-| ][* ](\\d\\d(\\.\\d\\d){2}) (.*?)\\s*");
 
   private final TextArea text = new TextArea ();
   private final List<ConsoleMessage> messages = new ArrayList<> ();
