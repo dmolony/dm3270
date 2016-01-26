@@ -3,10 +3,10 @@ package com.bytezone.dm3270.orders;
 public class BufferAddress
 {
   public static final byte[] address = new byte[64];
+  private static int columns = 80;                          // default value
 
   private int location;
   private boolean isValid;
-  private final int columns = 80;             // fix this
   private final byte b1, b2;
 
   static
@@ -25,6 +25,11 @@ public class BufferAddress
 
     address[33] &= 0x7F;             // = 0x61;             // was 0xE1
     address[48] |= (byte) 0x80;      // = (byte) 0xF0;      // was 0x70
+  }
+
+  public static void setScreenWidth (int width)
+  {
+    columns = width;
   }
 
   public BufferAddress (byte b1, byte b2)

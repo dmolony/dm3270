@@ -10,6 +10,7 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.PluginData;
 import com.bytezone.dm3270.plugins.PluginField;
+import com.bytezone.dm3270.plugins.ScreenLocation;
 
 public class FieldManager
 {
@@ -244,7 +245,7 @@ public class FieldManager
   // Convert internal Fields to ScreenFields for use by plugins
   // ---------------------------------------------------------------------------------//
 
-  public PluginData getPluginScreen (int sequence, int row, int column)
+  public PluginData getPluginScreen (int sequence, ScreenLocation screenLocation)
   {
     List<PluginField> pluginFields = new ArrayList<> ();
     int count = 0;
@@ -252,7 +253,7 @@ public class FieldManager
     for (Field field : fields)
       pluginFields.add (field.getPluginField (sequence, count++));
 
-    return new PluginData (sequence, row, column, pluginFields);
+    return new PluginData (sequence, screenLocation, pluginFields);
   }
 
   // ---------------------------------------------------------------------------------//

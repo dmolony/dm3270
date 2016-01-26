@@ -14,10 +14,12 @@ public class PluginData
   public final List<PluginField> changedFields = new ArrayList<> ();
   public boolean suppressDisplay;
 
-  public PluginData (int sequence, int row, int column, List<PluginField> fields)
+  public PluginData (int sequence, ScreenLocation screenLocation,
+      List<PluginField> fields)
   {
     this.sequence = sequence;
-    initialCursorLocation = new ScreenLocation (row, column);
+    //    initialCursorLocation = new ScreenLocation (row, column);
+    initialCursorLocation = screenLocation;
     screenFields = fields;
   }
 

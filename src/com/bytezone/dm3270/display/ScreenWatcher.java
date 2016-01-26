@@ -731,7 +731,7 @@ public class ScreenWatcher
     int fldNo = 0;
     for (Field field : rowFields)
     {
-      if (field.getFirstLocation () % 80 == 1
+      if (field.getFirstLocation () % screenDimensions.columns == 1
           && (field.getDisplayLength () == 10 || field.getDisplayLength () == 9)
           && fldNo + 2 < rowFields.size ())
       {

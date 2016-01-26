@@ -29,11 +29,12 @@ public class PluginField
 
   public String newData;
 
-  public PluginField (int sequence, int location, int row, int column, int length,
+  public PluginField (int sequence, ScreenLocation screenLocation, int length,
       boolean isProtected, boolean isAlpha, boolean isVisible, boolean isAltered,
       String data)
   {
-    this.location = new ScreenLocation (location);
+    //    this.location = new ScreenLocation (location);
+    this.location = screenLocation;
     this.sequence = sequence;
     this.isProtected = isProtected;
     this.isModifiable = !isProtected;

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.plugins.PluginField;
+import com.bytezone.dm3270.plugins.ScreenLocation;
 
 public class Field implements Iterable<ScreenPosition>
 {
@@ -305,8 +306,10 @@ public class Field implements Iterable<ScreenPosition>
     int column = firstLocation % screenDimensions.columns;
     int length = getDisplayLength ();
 
-    return new PluginField (fieldSequence, firstLocation, row, column, length,
-        isProtected (), isAlphanumeric (), isVisible (), isModified (), getText ());
+    ScreenLocation screenLocation = new ScreenLocation (firstLocation);
+
+    return new PluginField (fieldSequence, screenLocation, length, isProtected (),
+        isAlphanumeric (), isVisible (), isModified (), getText ());
   }
 
   public String toStringWithLinks ()

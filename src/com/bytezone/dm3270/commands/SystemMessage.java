@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import com.bytezone.dm3270.assistant.BatchJobListener;
 import com.bytezone.dm3270.console.ConsoleLog;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
@@ -87,6 +88,8 @@ public class SystemMessage
   private int previousTotLines = 0;
 
   private ConsoleMode consoleMode;
+  private final ScreenDimensions screenDimensions;
+  int screenWidth;
 
   enum ConsoleMode
   {
@@ -97,6 +100,8 @@ public class SystemMessage
   {
     this.screen = screen;
     this.batchJobListener = batchJobListener;
+    screenDimensions = screen.getScreenDimensions ();
+    screenWidth = screenDimensions.columns;
   }
 
   public ConsoleLog getConsoleLog ()
@@ -304,21 +309,21 @@ public class SystemMessage
 
   private void addConsoleMessage (String message)
   {
-    // break message up into 80-character lines
-    int totLines = splitMessage (message, 80);
+    // break message up into screenWidth lines
+    int totLines = splitMessage (message, screenWidth);
 
     // remove any whole trailing blank lines from original message
-    message = message.substring (0, totLines * 80);
+    message = message.substring (0, totLines * screenWidth);
 
     // calculate first line that has not already been processed
     int firstUnprocessedLine = 0;
     if (!previousMessage.isEmpty ())
-      for (int ptr = 0; ptr < previousMessage.length (); ptr += 80)
+      for (int ptr = 0; ptr < previousMessage.length (); ptr += screenWidth)
       {
         String chunk = previousMessage.substring (ptr);
         if (message.startsWith (chunk))
         {
-          firstUnprocessedLine = chunk.length () / 80;
+          firstUnprocessedLine = chunk.length () / screenWidth;
           break;
         }
       }
@@ -332,9 +337,11 @@ public class SystemMessage
 
   private void addConsole2Message (List<Order> orders)
   {
-    // collect screen lines into 80-character strings
+    // collect screen lines into screenWidth strings
     int skipLines = -1;
     int totLines = 0;
+    if (screenWidth != 80)
+      System.out.println ("fix this");
 
     for (Order order : orders)
       if (order.isText ())

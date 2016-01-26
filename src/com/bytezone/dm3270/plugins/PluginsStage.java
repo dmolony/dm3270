@@ -270,9 +270,10 @@ public class PluginsStage extends PreferencesStage
     if (activePlugins () > 0)
     {
       int cursorPosition = cursor.getLocation ();
-      PluginData pluginData = fieldManager
-          .getPluginScreen (sequence++, cursorPosition / screenDimensions.columns,
-                            cursorPosition % screenDimensions.columns);
+      ScreenLocation screenLocation =
+          new ScreenLocation (cursorPosition / screenDimensions.columns,
+              cursorPosition % screenDimensions.columns);
+      PluginData pluginData = fieldManager.getPluginScreen (sequence++, screenLocation);
 
       if (false)
       {
@@ -299,9 +300,10 @@ public class PluginsStage extends PreferencesStage
     Cursor cursor = screen.getScreenCursor ();
 
     int cursorPosition = cursor.getLocation ();
-    PluginData pluginData = fieldManager
-        .getPluginScreen (sequence++, cursorPosition / screenDimensions.columns,
-                          cursorPosition % screenDimensions.columns);
+    ScreenLocation screenLocation =
+        new ScreenLocation (cursorPosition / screenDimensions.columns,
+            cursorPosition % screenDimensions.columns);
+    PluginData pluginData = fieldManager.getPluginScreen (sequence++, screenLocation);
     plugin.processRequest (pluginData);
     AIDCommand command = processReply (pluginData);
     if (command != null)
