@@ -170,7 +170,7 @@ public class ConsoleMessage
     StringBuilder text = new StringBuilder ();
 
     String line1 =
-        String.format ("%-8s %-7s %-8s %1s%-8s %s", getTime (), getSystem (), getTask (),
+        String.format ("%-8s %-7s %-8s %1s%-9s %s", getTime (), getSystem (), getTask (),
                        getRespond (), getMessageCode (), lines.get (0));
     text.append (line1);
     int length = line1.length ();
@@ -180,6 +180,7 @@ public class ConsoleMessage
     {
       String line = lines.get (i);
       String trimmedLine = line.trim ();
+
       if (joining && length + trimmedLine.length () + 1 < 150)
       {
         text.append (" ");
@@ -188,7 +189,7 @@ public class ConsoleMessage
       }
       else
       {
-        String chunk = String.format ("%n%36.36s%s", " ", joining ? trimmedLine : line);
+        String chunk = String.format ("%n%37.37s%s", "", joining ? trimmedLine : line);
         text.append (chunk);
         length = chunk.length ();
       }
