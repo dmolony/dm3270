@@ -138,17 +138,17 @@ public class ReadStructuredFieldCommand extends Command
 
     List<QueryReplyField> replyFields = new ArrayList<> ();
 
-    // Freehost
+    // based on Freehost
     if (version == 1)
     {
       replyFields.add (color);
       replyFields.add (highlight);
       replyFields.add (partition);
     }
-    // Vista
+    // based on Vista
     else if (version == 2)
     {
-      replyFields.add (new UsableArea ());
+      replyFields.add (new UsableArea (24, 80));
       replyFields.add (new CharacterSets ());
       replyFields.add (color);
       replyFields.add (highlight);
@@ -158,10 +158,10 @@ public class ReadStructuredFieldCommand extends Command
       replyFields.add (new OEMAuxilliaryDevice ());
       replyFields.add (new DistributedDataManagement ());
     }
-    // x3270
+    // based on x3270
     else
     {
-      replyFields.add (new UsableArea ());
+      replyFields.add (new UsableArea (24, 80));
       replyFields.add (new AlphanumericPartitions ());
       replyFields.add (new CharacterSets ());
       replyFields.add (color);

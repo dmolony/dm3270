@@ -17,7 +17,7 @@ public class UsableArea extends QueryReplyField
   int yNumerator, yDenominator;
   int bufferSize;
 
-  public UsableArea ()
+  public UsableArea (int rows, int columns)
   {
     super (USABLE_AREA_REPLY);
 
@@ -31,8 +31,8 @@ public class UsableArea extends QueryReplyField
       reply[ptr++] = b;
 
     // copy the screen dimensions into the reply (skipping 4 header bytes)
-    Dm3270Utility.packUnsignedShort (80, reply, 6);     // columns
-    Dm3270Utility.packUnsignedShort (24, reply, 8);     // rows
+    Dm3270Utility.packUnsignedShort (columns, reply, 6);
+    Dm3270Utility.packUnsignedShort (rows, reply, 8);
 
     checkDataLength (ptr);
   }
