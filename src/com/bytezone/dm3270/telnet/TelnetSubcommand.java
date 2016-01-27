@@ -29,6 +29,11 @@ public abstract class TelnetSubcommand extends AbstractTelnetCommand
     return type;
   }
 
+  public String getValue ()
+  {
+    return value;
+  }
+
   public String getName ()
   {
     return toString ();

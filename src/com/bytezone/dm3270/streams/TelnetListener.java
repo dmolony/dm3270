@@ -20,10 +20,12 @@ import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand;
+import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.SubType;
 import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
 import com.bytezone.dm3270.telnet.TelnetProcessor;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
+import com.bytezone.dm3270.telnet.TelnetSubcommand.SubcommandType;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
@@ -211,7 +213,13 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     if (data[2] == TelnetSubcommand.TERMINAL_TYPE)
       subcommand = new TerminalTypeSubcommand (data, 0, dataPtr, telnetState);
     else if (data[2] == TelnetSubcommand.TN3270E)
+    {
       subcommand = new TN3270ExtendedSubcommand (data, 0, dataPtr, telnetState);
+      SubcommandType subcommandType = subcommand.getSubcommandType ();
+      SubType subType = ((TN3270ExtendedSubcommand) subcommand).getSubtype ();
+      if (subcommandType == SubcommandType.DEVICE_TYPE && subType == SubType.IS)
+        screen.setDeviceType (subcommand.getValue ());
+    }
     else
       System.out.printf ("Unknown command type : %02X%n" + data[2]);
 
