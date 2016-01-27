@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -51,6 +52,7 @@ public class ReadStructuredFieldCommand extends Command
     clientNames.put ("0BA60960D0116F016EBA4D14E610AA39", "Vista2");
     clientNames.put ("08997C53F68A969853867072174CD882", "dm3270 (old2)");
     clientNames.put ("BD47AE1B606E2DF29C7D24DD128648A8", "dm3270");
+    clientNames.put ("26ED6D641768FDF25889838F29248F07", "Vista 43x80");
   }
 
   // called from ReadPartitionSF via ReadPartitionQuery
@@ -123,9 +125,9 @@ public class ReadStructuredFieldCommand extends Command
     return "Unknown";
   }
 
-  public String getClientName ()
+  public Optional<String> getClientName ()
   {
-    return clientName;
+    return clientName.isEmpty () ? Optional.empty () : Optional.of (clientName);
   }
 
   private static byte[] buildReply (int version)

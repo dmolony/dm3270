@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
@@ -137,6 +138,8 @@ public class Session implements Iterable<SessionRecord>
     return headerLabel;
   }
 
+  // called from MainframeStage.prepareButtons()
+  // called from TelnetListener.addDataRecord()
   public synchronized void add (SessionRecord sessionRecord)
   {
     if (sessionRecord == null)
@@ -154,11 +157,15 @@ public class Session implements Iterable<SessionRecord>
 
   private void checkClientName (Command command)
   {
-    if (command instanceof ReadStructuredFieldCommand)
+    if (!(command instanceof ReadStructuredFieldCommand))
+      return;
+
+    Optional<String> optionalName =
+        ((ReadStructuredFieldCommand) command).getClientName ();
+    if (optionalName.isPresent ())
     {
-      clientName = ((ReadStructuredFieldCommand) command).getClientName ();
-      if (clientName != null)
-        setHeaderText ();
+      clientName = optionalName.get ();
+      setHeaderText ();
     }
   }
 

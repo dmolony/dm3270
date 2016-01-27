@@ -47,6 +47,10 @@ public class ImplicitPartition extends QueryReplyField
     height = Dm3270Utility.unsignedShort (data, 9);
     alternateWidth = Dm3270Utility.unsignedShort (data, 11);
     alternateHeight = Dm3270Utility.unsignedShort (data, 13);
+
+    if (alternateHeight != 24 || alternateWidth != 80)
+      System.out.printf ("Alternate screen height:%d, width:%d%n", alternateHeight,
+                         alternateWidth);
   }
 
   @Override
