@@ -29,7 +29,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     IS, REQUEST, DEVICE_TYPE
   }
 
-  enum Function
+  public enum Function
   {
     BIND_IMAGE, RESPONSES, SYSREQ
   }
@@ -168,19 +168,22 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     }
 
     // the server disagrees with our request and is making a counter-request
-    if (type == SubcommandType.FUNCTIONS && subType == SubType.REQUEST)
-    {
-      // copy the server's proposal and accept it
-      byte[] reply = new byte[data.length];
-      System.arraycopy (data, 0, reply, 0, data.length);
-      reply[4] = EXT_IS;        // replace REQUEST with IS
-      setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
-    }
+    if (subType == SubType.REQUEST)
+      if (type == SubcommandType.FUNCTIONS)
+      {
+        // copy the server's proposal and accept it
+        byte[] reply = new byte[data.length];
+        System.arraycopy (data, 0, reply, 0, data.length);
+        reply[4] = EXT_IS;        // replace REQUEST with IS
+        setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
+      }
 
-    // presumably the server agrees to our request, so do nothing
-    if (type == SubcommandType.FUNCTIONS && subType == SubType.IS)
-    {
-    }
+    // if the server agrees to our request
+    if (subType == SubType.IS)
+      if (type == SubcommandType.FUNCTIONS)
+        screen.setFunctions (functions);
+      else if (type == SubcommandType.DEVICE_TYPE)
+        screen.setDeviceType (getValue ());
   }
 
   public boolean doesFunction (Function function)
@@ -191,6 +194,11 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
   public String getConnect ()
   {
     return connect;
+  }
+
+  public String getFunctions ()
+  {
+    return functionsList;
   }
 
   @Override

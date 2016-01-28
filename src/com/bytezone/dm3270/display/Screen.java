@@ -159,6 +159,13 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     System.out.println ("Device Type : " + deviceType);
   }
 
+  // called from TelnetListener.processTelnetSubcommand()
+  public void setFunctions (
+      List<com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.Function> functions)
+  {
+    System.out.println ("Functions   : " + functions);
+  }
+
   public void setIsConsole ()
   {
     consolePane.setIsConsole (true);
