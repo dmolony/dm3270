@@ -11,6 +11,7 @@ import com.bytezone.dm3270.orders.TextOrder;
 public class WriteCommand extends Command
 {
   private final boolean eraseWrite;
+  private final boolean alternate;
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<Order> ();
 
@@ -27,6 +28,8 @@ public class WriteCommand extends Command
         || buffer[offset] == Command.ERASE_WRITE_ALTERNATE_7E;
 
     eraseWrite = buffer[offset] != Command.WRITE_F1 && buffer[offset] != Command.WRITE_01;
+    alternate = buffer[offset] == Command.ERASE_WRITE_ALTERNATE_0D
+        || buffer[offset] != Command.ERASE_WRITE_ALTERNATE_7E;
     writeControlCharacter =
         length > 1 ? new WriteControlCharacter (buffer[offset + 1]) : null;
 
@@ -54,10 +57,12 @@ public class WriteCommand extends Command
   }
 
   // Used by MainframeStage.createCommand() when building a screen
-  public WriteCommand (WriteControlCharacter wcc, boolean erase, List<Order> orders)
+  public WriteCommand (WriteControlCharacter wcc, boolean erase, boolean alternate,
+      List<Order> orders)
   {
     this.writeControlCharacter = wcc;
     this.eraseWrite = erase;
+    this.alternate = alternate;
     this.orders.addAll (orders);
 
     // create new data buffer
@@ -69,7 +74,8 @@ public class WriteCommand extends Command
     int ptr = 0;
 
     // add the command and WCC
-    data[ptr++] = erase ? ERASE_WRITE_F5 : WRITE_F1;
+    data[ptr++] =
+        erase ? alternate ? ERASE_WRITE_ALTERNATE_7E : ERASE_WRITE_F5 : WRITE_F1;
     data[ptr++] = wcc.getValue ();
 
     // add each order
@@ -137,7 +143,7 @@ public class WriteCommand extends Command
   @Override
   public String getName ()
   {
-    return eraseWrite ? "Erase Write" : "Write";
+    return eraseWrite ? alternate ? "Erase Write Alternate" : "Erase Write" : "Write";
   }
 
   @Override

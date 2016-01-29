@@ -148,7 +148,7 @@ public class MainframeStage extends Stage implements Mainframe
 
     // create an EraseWrite command
     WriteControlCharacter wcc = new WriteControlCharacter ((byte) 0x7A);
-    Command command = new WriteCommand (wcc, true, orders);
+    Command command = new WriteCommand (wcc, true, false, orders);
 
     return new SessionRecord (SessionRecordType.TN3270, command, Source.SERVER,
         LocalDateTime.now (), true);
