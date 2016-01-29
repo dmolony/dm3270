@@ -167,23 +167,36 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
     }
 
-    // the server disagrees with our request and is making a counter-request
-    if (subType == SubType.REQUEST)
-      if (type == SubcommandType.FUNCTIONS)
-      {
-        // copy the server's proposal and accept it
-        byte[] reply = new byte[data.length];
-        System.arraycopy (data, 0, reply, 0, data.length);
-        reply[4] = EXT_IS;        // replace REQUEST with IS
-        setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
-      }
+    switch (subType)
+    {
+      // the server disagrees with our request and is making a counter-request
+      case REQUEST:
+        if (type == SubcommandType.FUNCTIONS)
+        {
+          // copy the server's proposal and accept it
+          byte[] reply = new byte[data.length];
+          System.arraycopy (data, 0, reply, 0, data.length);
+          reply[4] = EXT_IS;        // replace REQUEST with IS
+          setReply (new TN3270ExtendedSubcommand (reply, 0, reply.length, telnetState));
+        }
+        break;
 
-    // if the server agrees to our request
-    if (subType == SubType.IS)
-      if (type == SubcommandType.FUNCTIONS)
-        screen.setFunctions (functions);
-      else if (type == SubcommandType.DEVICE_TYPE)
-        screen.setDeviceType (getValue ());
+      // if the server agrees to our request
+      case IS:
+        if (type == SubcommandType.FUNCTIONS)
+          screen.setFunctions (functions);
+        else if (type == SubcommandType.DEVICE_TYPE)
+          screen.setDeviceType (getValue ());
+        break;
+
+      case DEVICE_TYPE:
+        //        System.out.println (type + " device type");
+        break;
+
+      default:
+        System.out.println ("Unknown subtype: " + subType);
+        break;
+    }
   }
 
   public boolean doesFunction (Function function)
