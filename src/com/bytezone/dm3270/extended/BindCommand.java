@@ -29,12 +29,8 @@ public class BindCommand extends AbstractExtendedCommand
   private final int fmProfile;
   private final int tsProfile;
 
-  private final int[] chainingUse = new int[2];
-  private final int[] modeSelection = new int[2];
-  private final int[] responseProtocol = new int[2];
-  private final int[] commit = new int[2];
-  private final int[] scbCompression = new int[2];
-  private final int[] sendEndBracket = new int[2];
+  private final LogicalUnit primaryLU;
+  private final LogicalUnit secondaryLU;
 
   private final int wholeBIUs;
   private final int fmHeaderUsage;
@@ -79,19 +75,8 @@ public class BindCommand extends AbstractExtendedCommand
     if (fmProfile != 3 || tsProfile != 3 || psProfile != 2)
       System.out.printf ("FM:02X, TS:%02X, PS:%02X%n", fmProfile, tsProfile, psProfile);
 
-    chainingUse[0] = (data[4] & 0x80) >> 7;
-    modeSelection[0] = (data[4] & 0x40) >> 6;
-    responseProtocol[0] = (data[4] & 0x30) >> 4;
-    commit[0] = (data[4] & 0x08) >> 3;
-    scbCompression[0] = (data[4] & 0x02) >> 1;
-    sendEndBracket[0] = (data[4] & 0x01);
-
-    chainingUse[1] = (data[5] & 0x80) >> 7;
-    modeSelection[1] = (data[5] & 0x40) >> 6;
-    responseProtocol[1] = (data[5] & 0x30) >> 4;
-    commit[1] = (data[5] & 0x08) >> 3;
-    scbCompression[1] = (data[5] & 0x02) >> 1;
-    sendEndBracket[1] = (data[5] & 0x01);
+    primaryLU = new LogicalUnit (data[4]);
+    secondaryLU = new LogicalUnit (data[5]);
 
     wholeBIUs = (data[6] & 0x80) >> 7;
     fmHeaderUsage = (data[6] & 0x40) >> 6;
@@ -172,19 +157,9 @@ public class BindCommand extends AbstractExtendedCommand
     text.append (String.format ("TS profile ........... %02X%n", tsProfile));
     text.append (String.format ("PS profile ........... %02X%n", psProfile));
     text.append ("\n---- Primary LU ---------\n");
-    text.append (String.format ("Chaining use ......... %02X%n", chainingUse[0]));
-    text.append (String.format ("Mode selection ....... %02X%n", modeSelection[0]));
-    text.append (String.format ("Resonse protocol ..... %02X%n", responseProtocol[0]));
-    text.append (String.format ("Commit ............... %02X%n", commit[0]));
-    text.append (String.format ("SCB compression ...... %02X%n", scbCompression[0]));
-    text.append (String.format ("send End Bracket ..... %02X%n", sendEndBracket[0]));
+    text.append (primaryLU);
     text.append ("\n---- Secondary LU -------\n");
-    text.append (String.format ("Chaining use ......... %02X%n", chainingUse[1]));
-    text.append (String.format ("Mode selection ....... %02X%n", modeSelection[1]));
-    text.append (String.format ("Resonse protocol ..... %02X%n", responseProtocol[1]));
-    text.append (String.format ("Commit ............... %02X%n", commit[1]));
-    text.append (String.format ("SCB compression ...... %02X%n", scbCompression[1]));
-    text.append (String.format ("send End Bracket ..... %02X%n", sendEndBracket[1]));
+    text.append (secondaryLU);
     text.append ("\n---- Common LU ----------\n");
     text.append (String.format ("whole BIUs ........... %02X%n", wholeBIUs));
     text.append (String.format ("FM header usage ...... %02X%n", fmHeaderUsage));
