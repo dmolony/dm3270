@@ -61,7 +61,7 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
     }
     else if (type == SubcommandType.IS)
     {
-      System.out.println ("not written");
+      //      System.out.println ("not written");
     }
   }
 

@@ -13,6 +13,7 @@ public class ConsoleMessage
   private static final Pattern codePattern =
       Pattern.compile ("(\\+?[A-Z]{3,5}[0-9]{2,5}[A-Z]?|\\$HASP[0-9]{3,4}|------) (.*)");
   private static final Pattern timePattern = Pattern.compile ("\\d{2}(\\.\\d{2}){2}");
+  private static final Pattern actionPattern = Pattern.compile ("\\d\\d .*");
 
   private final StringProperty time = new SimpleStringProperty ();
   private final StringProperty system = new SimpleStringProperty ();
@@ -46,9 +47,15 @@ public class ConsoleMessage
 
     setSystem (line.substring (14, 22).trim ());
     setTask (line.substring (22, 31).trim ());
-    setRespond (line.substring (31, 32));
+    setRespond (line.substring (31, 32).trim ());
 
     String text = line.substring (32).trim ();
+
+    if (!getRespond ().isEmpty () && actionPattern.matcher (text).matches ())
+    {
+      setRespond (text.substring (0, 2));
+      text = text.substring (3);
+    }
 
     Matcher matcher = codePattern.matcher (text);
     if (matcher.matches ())
@@ -86,7 +93,7 @@ public class ConsoleMessage
     StringBuilder text = new StringBuilder ();
 
     String line1 =
-        String.format ("%-8s %-7s %-8s %1s%-9s %s", getTime (), getSystem (), getTask (),
+        String.format ("%-8s %-7s %-8s %2s %-9s %s", getTime (), getSystem (), getTask (),
                        getRespond (), getMessageCode (), lines.get (0));
     text.append (line1);
     int length = line1.length ();
