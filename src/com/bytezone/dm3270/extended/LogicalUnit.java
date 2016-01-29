@@ -1,5 +1,10 @@
 package com.bytezone.dm3270.extended;
 
+/*
+ * Logical units (LUs) are the ports through which users access the network. Type 1 and
+ * type 2 peripheral node architecture support dependent LUs only. Type 2.1 peripheral
+ * node architecture supports independent and dependent LUs.
+ */
 public class LogicalUnit
 {
   public final int chainingUse;
