@@ -15,7 +15,7 @@ import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
-import com.bytezone.dm3270.assistant.AssistantStage;
+import com.bytezone.dm3270.assistant.TransfersStage;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.ColorAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -61,7 +61,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private final SystemMessage systemMessage;
 
   private final PluginsStage pluginsStage;
-  private final AssistantStage assistantStage;
+  private final TransfersStage transfersStage;
   private final ConsoleLogStage consoleLogStage;
   private ConsolePane consolePane;
 
@@ -98,34 +98,35 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     fontManager = FontManager.getInstance (this, prefs);
     fieldManager = new FieldManager (this, contextManager);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
-    assistantStage = new AssistantStage (this);
+    transfersStage = new TransfersStage (this);
 
     consoleLogStage = new ConsoleLogStage (this);
-    systemMessage = new SystemMessage (this, assistantStage);
+    systemMessage = new SystemMessage (this, transfersStage);
 
-    // serverSite will be null in replay mode, so it will have to be updated later
     transferManager = new TransferManager (this, serverSite);
     transferMenu = new TransferMenu (serverSite, transferManager);
 
-    assistantStage.setTransferManager (transferManager);
+    transfersStage.setTransferManager (transferManager);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
     pen = Pen.getInstance (screenPositions, gc, contextManager, screenDimensions);
 
     screenPacker = new ScreenPacker (pen, fieldManager);
-    screenPacker.addTSOCommandListener (assistantStage);
+
+    screenPacker.addTSOCommandListener (transfersStage);
     screenPacker.addTSOCommandListener (transferManager);
-    addKeyboardStatusChangeListener (assistantStage);
 
-    this.pluginsStage = pluginsStage;
-    pluginsStage.setScreen (this);
+    addKeyboardStatusChangeListener (transfersStage);
 
-    fieldManager.addScreenChangeListener (assistantStage);
+    fieldManager.addScreenChangeListener (transfersStage);
     fieldManager.addScreenChangeListener (screenPacker);
     fieldManager.addScreenChangeListener (transferMenu);
 
     transferManager.addTransferListener (this);
-    transferManager.addTransferListener (assistantStage);
+    transferManager.addTransferListener (transfersStage);
+
+    this.pluginsStage = pluginsStage;
+    pluginsStage.setScreen (this);
   }
 
   public ScreenWatcher getScreenWatcher ()
@@ -159,20 +160,13 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     consoleLogStage.setConsoleLog (systemMessage.getConsoleLog ());
   }
 
-  // called from Console.startSelectedFunction() : Replay
-  public void setReplayServer (Site serverSite)
-  {
-    transferManager.setReplayServer (serverSite);
-    transferMenu.setReplayServer (serverSite);
-  }
-
   // called from the ConsolePane constructor
   public void setConsolePane (ConsolePane consolePane)
   {
     this.consolePane = consolePane;
 
     // allow these classes to issue TSO commands
-    assistantStage.setConsolePane (consolePane);
+    transfersStage.setConsolePane (consolePane);
     transferMenu.setConsolePane (consolePane);
 
     addKeyboardStatusChangeListener (consolePane);
@@ -220,9 +214,9 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return pluginsStage;
   }
 
-  public AssistantStage getAssistantStage ()
+  public TransfersStage getAssistantStage ()
   {
-    return assistantStage;
+    return transfersStage;
   }
 
   public ConsoleLogStage getConsoleLogStage ()
@@ -232,7 +226,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
 
   public void close ()
   {
-    assistantStage.closeWindow ();
+    transfersStage.closeWindow ();
   }
 
   public Function getFunction ()

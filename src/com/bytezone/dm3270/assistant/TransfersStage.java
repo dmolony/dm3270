@@ -29,7 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class AssistantStage extends Stage implements ScreenChangeListener,
+public class TransfersStage extends Stage implements ScreenChangeListener,
     TSOCommandListener, KeyboardStatusListener, BatchJobListener, TransferListener
 {
   private final static String OS = System.getProperty ("os.name");
@@ -52,7 +52,7 @@ public class AssistantStage extends Stage implements ScreenChangeListener,
   private final List<ScreenChangeListener> screenChangeListeners;
   private final List<KeyboardStatusListener> keyboardStatusListeners;
 
-  public AssistantStage (Screen screen)
+  public TransfersStage (Screen screen)
   {
     setTitle ("File Transfers");
 
