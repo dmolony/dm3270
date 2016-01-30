@@ -15,9 +15,9 @@ import com.bytezone.dm3270.plugins.ScreenLocation;
 public class FieldManager
 {
   private final Screen screen;
-  private final ScreenWatcher screenWatcher;
+  private ScreenWatcher screenWatcher;
   private final ContextManager contextManager;
-  private final ScreenDimensions screenDimensions;
+  private ScreenDimensions screenDimensions;
 
   private final List<Field> fields = new ArrayList<> ();
   private final List<Field> unprotectedFields = new ArrayList<> ();
@@ -40,6 +40,12 @@ public class FieldManager
   public ScreenWatcher getScreenWatcher ()
   {
     return screenWatcher;
+  }
+
+  void setScreenDimensions ()
+  {
+    this.screenDimensions = screen.getScreenDimensions ();
+    screenWatcher = new ScreenWatcher (this, screenDimensions);
   }
 
   // called by Screen.clearScreen()

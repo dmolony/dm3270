@@ -188,6 +188,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
       screenPositions = new ScreenPosition[screenDimensions.size];
       pen = Pen.getInstance (screenPositions, gc, contextManager, screenDimensions);
       screenPacker.setPen (pen);
+      fieldManager.setScreenDimensions ();
     }
   }
 

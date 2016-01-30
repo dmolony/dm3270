@@ -28,6 +28,7 @@ class ScreenPacker implements ScreenChangeListener
     this.fieldManager = fieldManager;
   }
 
+  // used when the screen changes to a different terminal model in replay mode
   void setPen (Pen pen)
   {
     this.pen = pen;
