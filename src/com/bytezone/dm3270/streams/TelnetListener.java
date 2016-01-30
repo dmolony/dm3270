@@ -112,7 +112,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
   private void processMessage (ReplyBuffer message)
   {
-    message.process (screen);                                 // not used in REPLAY mode
+    message.process (screen);
     Optional<Buffer> reply = message.getReply ();
     if (reply.isPresent ())
       telnetState.write (reply.get ().getTelnetData ());
@@ -221,7 +221,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
     if (subcommand != null)
     {
-      subcommand.process (screen);
+      //      subcommand.process (screen);
       addDataRecord (subcommand, SessionRecordType.TELNET);
     }
   }

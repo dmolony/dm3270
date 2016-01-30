@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.Function;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TelnetState implements Runnable
 {
@@ -13,12 +14,17 @@ public class TelnetState implements Runnable
       DateTimeFormatter.ofPattern ("dd MMM uuuu HH:mm:ss.S");
   private static byte[] noOp = { (byte) 0xFF, (byte) 0xF1 };
 
+  private final String terminalType2 = "IBM-3278-2-E";
+  private final String terminalType3 = "IBM-3278-3-E";
+  private final String terminalType4 = "IBM-3278-4-E";
+  private final String terminalType5 = "IBM-3278-5-E";
+
   // preferences
   private boolean do3270Extended = false;
   private boolean doBinary = true;
   private boolean doEOR = true;
   private boolean doTerminalType = true;
-  private String doDeviceType = "IBM-3278-2-E";
+  private String doDeviceType = terminalType2;
 
   // current status
   private boolean does3270Extended = false;
@@ -182,6 +188,7 @@ public class TelnetState implements Runnable
   {
     System.out.println ("Device Type : " + deviceType);
     this.deviceType = deviceType;
+    Dm3270Utility.printStackTrace ();
   }
 
   // called from TelnetListener.processTelnetSubcommand()
