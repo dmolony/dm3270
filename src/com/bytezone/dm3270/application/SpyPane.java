@@ -30,9 +30,10 @@ public class SpyPane extends BorderPane
   public SpyPane (Screen screen, Site serverSite, Site clientSite)
   {
     SessionTable sessionTable = new SessionTable ();
-    Session session = new Session (screen, new TelnetState ());
+    Session session = new Session (new TelnetState ());
 
     spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
+    spyServer.setScreen (screen);
 
     final Label label = session.getHeaderLabel ();
     label.setFont (new Font ("Arial", 20));
@@ -69,7 +70,8 @@ public class SpyPane extends BorderPane
     sessionTable.setPlaceholder (new Label (message));
     sessionTable.setItems (session.getDataRecords ());
 
-    btnSave.setOnAction ( (e) -> {
+    btnSave.setOnAction ( (e) ->
+    {
       FileChooser fileChooser = new FileChooser ();
       fileChooser.setTitle ("Save Session");
       File file = fileChooser.showSaveDialog (this.getScene ().getWindow ());
@@ -77,7 +79,8 @@ public class SpyPane extends BorderPane
         session.save (file);
     });
 
-    btnScramble.setOnAction ( (e) -> {
+    btnScramble.setOnAction ( (e) ->
+    {
       FileChooser fileChooser = new FileChooser ();
       fileChooser.setTitle ("Save Session");
       File file = fileChooser.showSaveDialog (this.getScene ().getWindow ());

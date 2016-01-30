@@ -208,7 +208,7 @@ public class MainframeStage extends Stage implements Mainframe
 
     try
     {
-      Session session = new Session (null, lines);
+      Session session = new Session (lines);
       List<String> labels = session.getLabels ();
 
       SessionRecord dr = createCommand ();

@@ -10,14 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.commands.WriteCommand;
-import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.orders.Order;
@@ -38,7 +36,6 @@ public class Session implements Iterable<SessionRecord>
   private final ObservableList<SessionRecord> sessionRecords =
       FXCollections.observableArrayList ();
   private final Function function;
-  private final Screen screen;
   private final TelnetState telnetState = new TelnetState ();
 
   private String clientName = null;
@@ -48,19 +45,16 @@ public class Session implements Iterable<SessionRecord>
   private final Label headerLabel = new Label ();
   private ScreenDimensions screenDimensions;
 
-  public Session (Screen screen, TelnetState telnetState)
+  // called by SpyPane constructor
+  public Session (TelnetState telnetState)
   {
-    this.screen = screen;
-    this.function = screen.getFunction ();
+    this.function = Function.SPY;
   }
 
-  public Session (Screen screen, List<String> lines) throws Exception
+  // called by MainframeStage constructor
+  public Session (List<String> lines) throws Exception
   {
-    if (screen == null)
-      function = Console.Function.TEST;
-    else
-      function = screen.getFunction ();
-    this.screen = screen;
+    function = Function.TEST;
 
     SessionReader server = new SessionReader (Source.SERVER, lines);
     SessionReader client = new SessionReader (Source.CLIENT, lines);
@@ -68,10 +62,10 @@ public class Session implements Iterable<SessionRecord>
     init (client, server);
   }
 
-  public Session (Screen screen, Path path) throws Exception
+  // called by Console.startSelectedFunction()
+  public Session (Path path) throws Exception
   {
-    this.function = screen.getFunction ();
-    this.screen = screen;
+    function = Function.REPLAY;
 
     SessionReader server = new SessionReader (Source.SERVER, path);
     SessionReader client = new SessionReader (Source.CLIENT, path);
@@ -84,8 +78,10 @@ public class Session implements Iterable<SessionRecord>
     telnetState.setDo3270Extended (true);
     telnetState.setDoTerminalType (true);
 
-    TelnetListener clientTelnetListener = new TelnetListener (Source.CLIENT, this);
-    TelnetListener serverTelnetListener = new TelnetListener (Source.SERVER, this);
+    TelnetListener clientTelnetListener =
+        new TelnetListener (Source.CLIENT, this, function, null);
+    TelnetListener serverTelnetListener =
+        new TelnetListener (Source.SERVER, this, function, null);
 
     while (client.nextLineNo () != server.nextLineNo ())
       if (client.nextLineNo () < server.nextLineNo ())
@@ -103,13 +99,7 @@ public class Session implements Iterable<SessionRecord>
             labels.add (server.getLabel ());
         }
 
-    screen.setScreenDimensions (screenDimensions);
-  }
-
-  // this should be removed
-  public Screen getScreen ()
-  {
-    return screen;
+    //    screen.setScreenDimensions (screenDimensions);
   }
 
   public TelnetState getTelnetState ()

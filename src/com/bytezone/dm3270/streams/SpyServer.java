@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.bytezone.dm3270.application.Console;
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.utilities.Site;
@@ -25,6 +27,7 @@ public class SpyServer implements Runnable
   private TelnetSocket clientTelnetSocket;
   private TelnetSocket serverTelnetSocket;
   private final Session session;
+  private Screen screen;
 
   public SpyServer (Site server, int clientPort, Session session)
   {
@@ -66,9 +69,9 @@ public class SpyServer implements Runnable
 
       // create two SocketListeners and link them to each other
       clientTelnetSocket = new TelnetSocket (Source.CLIENT, clientSocket,
-          new TelnetListener (Source.CLIENT, session));
+          new TelnetListener (Source.CLIENT, session, Console.Function.SPY, screen));
       serverTelnetSocket = new TelnetSocket (Source.SERVER, serverSocket,
-          new TelnetListener (Source.SERVER, session));
+          new TelnetListener (Source.SERVER, session, Console.Function.SPY, screen));
 
       // TelnetSocket.link() will connect both sockets to each other (bidirectional)
       serverTelnetSocket.link (clientTelnetSocket);
@@ -99,6 +102,11 @@ public class SpyServer implements Runnable
   public TelnetSocket getListener (Source source)
   {
     return source == Source.CLIENT ? clientTelnetSocket : serverTelnetSocket;
+  }
+
+  public void setScreen (Screen screen)
+  {
+    this.screen = screen;
   }
 
   public void close ()

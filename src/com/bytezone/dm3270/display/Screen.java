@@ -50,7 +50,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
 
   private final Function function;
 
-  private ScreenPosition[] screenPositions;
+  private final ScreenPosition[] screenPositions;
   private final FieldManager fieldManager;
   private final FontManager fontManager;
   private final ContextManager contextManager;
@@ -66,9 +66,9 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private ConsolePane consolePane;
 
   private final GraphicsContext gc;
-  private ScreenDimensions screenDimensions;
+  private final ScreenDimensions screenDimensions;
 
-  private Pen pen;
+  private final Pen pen;
   private final Cursor cursor;
 
   private byte currentAID;
@@ -176,20 +176,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     transferMenu.setConsolePane (consolePane);
 
     addKeyboardStatusChangeListener (consolePane);
-  }
-
-  // called from Session.init() when in Replay mode
-  public void setScreenDimensions (ScreenDimensions screenDimensions)
-  {
-    if (screenDimensions.size != this.screenDimensions.size)
-    {
-      System.out.println ("adjusting screen size");
-      this.screenDimensions = screenDimensions;
-      screenPositions = new ScreenPosition[screenDimensions.size];
-      pen = Pen.getInstance (screenPositions, gc, contextManager, screenDimensions);
-      screenPacker.setPen (pen);
-      fieldManager.setScreenDimensions ();
-    }
   }
 
   public void setStatusText (String text)

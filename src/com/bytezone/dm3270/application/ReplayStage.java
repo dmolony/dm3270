@@ -3,6 +3,7 @@ package com.bytezone.dm3270.application;
 import java.nio.file.Path;
 import java.util.prefs.Preferences;
 
+import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
@@ -33,7 +34,7 @@ class ReplayStage extends Stage
   private final WindowSaver windowSaver;
   private Rectangle2D primaryScreenBounds;
 
-  public ReplayStage (Session session, Path path, Preferences prefs)
+  public ReplayStage (Session session, Path path, Preferences prefs, Screen screen)
   {
     this.prefs = prefs;
 
@@ -53,7 +54,8 @@ class ReplayStage extends Stage
     CommandPane commandPane =
         new CommandPane (sessionTable, CommandPane.ProcessInstruction.DoProcess);
 
-    commandPane.setScreen (session.getScreen ());
+    //    commandPane.setScreen (session.getScreen ());
+    commandPane.setScreen (screen);
 
     setTitle ("Replay Commands - " + path.getFileName ());
 

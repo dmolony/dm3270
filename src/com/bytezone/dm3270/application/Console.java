@@ -34,6 +34,7 @@ public class Console extends Application
 
   private Preferences prefs;
   private Screen screen;
+  private ScreenDimensions screenDimensions = new ScreenDimensions (24, 80);
 
   private OptionStage optionStage;
   private SpyPane spyPane;
@@ -107,24 +108,23 @@ public class Console extends Application
         else
           try
           {
-            createScreen (Function.REPLAY, null);             // serverSite is null
-            Session session = new Session (screen, path);     // can throw Exception
+            Session session = new Session (path);            // can throw Exception
+            screenDimensions = session.getScreenDimensions ();
 
             Optional<Site> serverSite = findSite (session.getServerName ());
             if (serverSite.isPresent ())
             {
               Site site = serverSite.get ();
-              screen.setReplayServer (site);
-              setConsolePane (screen, site);            // reassigns primaryStage
+              setConsolePane (createScreen (Function.REPLAY, site), site);
             }
             else
             {
               System.out.println ("Couldn't find the server site for "
                   + session.getServerName ());
-              setConsolePane (screen, null);            // reassigns primaryStage
+              setConsolePane (createScreen (Function.REPLAY, null), null);
             }
 
-            replayStage = new ReplayStage (session, path, prefs);
+            replayStage = new ReplayStage (session, path, prefs, screen);
             replayStage.show ();
           }
           catch (Exception e)
@@ -293,8 +293,7 @@ public class Console extends Application
 
   private Screen createScreen (Function function, Site site)
   {
-    screen =
-        new Screen (new ScreenDimensions (24, 80), prefs, function, pluginsStage, site);
+    screen = new Screen (screenDimensions, prefs, function, pluginsStage, site);
     return screen;
   }
 }

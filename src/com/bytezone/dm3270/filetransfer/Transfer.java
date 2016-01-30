@@ -14,6 +14,7 @@ import com.bytezone.dm3270.utilities.Site;
 // CUT - Control Unit Terminal --------- Buffered
 // DFT - Distributed Function Terminal - WSF
 // http://publibz.boulder.ibm.com/cgi-bin/bookmgr/BOOKS/cn7a7003/2.4.1
+// http://www.hob-techtalk.com/2008/09/12/3270-a-brief-history
 
 public class Transfer
 {

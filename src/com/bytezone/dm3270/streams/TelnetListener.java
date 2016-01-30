@@ -3,7 +3,6 @@ package com.bytezone.dm3270.streams;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.application.Console.Function;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
@@ -36,8 +35,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
   // convenience variables obtained from the Session parameter
   private final TelnetState telnetState;
-  private final Screen screen;
   private final Function function;
+
+  private Screen screen;
 
   private CommandHeader currentCommandHeader;
   private LocalDateTime currentDateTime;
@@ -48,16 +48,13 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
   // Use this when recording the session in SPY mode, or replaying the session
   // in REPLAY mode.
-  public TelnetListener (Source source, Session session)
+  public TelnetListener (Source source, Session session, Function function, Screen screen)
   {
     this.session = session;       // where we store the session records
     this.source = source;         // are we listening to a SERVER or a CLIENT?
 
-    this.screen = session.getScreen ();
     this.telnetState = session.getTelnetState ();
-    function = screen != null ? screen.getFunction () : Console.Function.TEST;
-
-    assert function != Console.Function.TERMINAL;
+    this.function = function;
   }
 
   // Use this when not recording the session and running in TERMINAL mode.
@@ -115,7 +112,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
   private void processMessage (ReplyBuffer message)
   {
-    message.process (screen);
+    message.process (screen);                                 // not used in REPLAY mode
     Optional<Buffer> reply = message.getReply ();
     if (reply.isPresent ())
       telnetState.write (reply.get ().getTelnetData ());
