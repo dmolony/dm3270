@@ -2,7 +2,10 @@ package com.bytezone.dm3270.streams;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.Function;
 
 public class TelnetState implements Runnable
 {
@@ -15,12 +18,15 @@ public class TelnetState implements Runnable
   private boolean doBinary = true;
   private boolean doEOR = true;
   private boolean doTerminalType = true;
+  private String doDeviceType = "IBM-3278-2-E";
 
   // current status
   private boolean does3270Extended = false;
   private boolean doesEOR = false;
   private boolean doesBinary = false;
   private boolean doesTerminalType = false;
+  private String deviceType = "";
+  private List<Function> functions;
 
   private String terminal = "";
   private TerminalServer terminalServer;
@@ -60,6 +66,7 @@ public class TelnetState implements Runnable
 
     if (lastAccess != null)
       lastAccess.set (System.currentTimeMillis ());
+
     ++totalWrites;
     totalBytesWritten += buffer.length;
 
@@ -170,6 +177,20 @@ public class TelnetState implements Runnable
     this.terminal = terminal;
   }
 
+  // called from TelnetListener.processTelnetSubcommand()
+  public void setDeviceType (String deviceType)
+  {
+    System.out.println ("Device Type : " + deviceType);
+    this.deviceType = deviceType;
+  }
+
+  // called from TelnetListener.processTelnetSubcommand()
+  public void setFunctions (List<Function> functions)
+  {
+    System.out.println ("Functions   : " + functions);
+    this.functions = functions;
+  }
+
   // ---------------------------------------------------------------------------------//
   // Ask actual
   // ---------------------------------------------------------------------------------//
@@ -223,6 +244,11 @@ public class TelnetState implements Runnable
     return doTerminalType;
   }
 
+  public String doDeviceType ()
+  {
+    return doDeviceType;
+  }
+
   // ---------------------------------------------------------------------------------//
   // Set preferences
   // ---------------------------------------------------------------------------------//
@@ -245,5 +271,26 @@ public class TelnetState implements Runnable
   public void setDoTerminalType (boolean state)
   {
     doTerminalType = state;
+  }
+
+  public void setDoDeviceType (String value)
+  {
+    doDeviceType = value;
+  }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("3270 ext ........ %s%n", does3270Extended));
+    text.append (String.format ("binary .......... %s%n", doesBinary));
+    text.append (String.format ("EOR ............. %s%n", doesEOR));
+    text.append (String.format ("terminal type ... %s%n", doesTerminalType));
+    text.append (String.format ("terminal ........ %s%n", terminal));
+    text.append (String.format ("device type ..... %s%n", deviceType));
+    text.append (String.format ("functions ....... %s", functions));
+
+    return text.toString ();
   }
 }

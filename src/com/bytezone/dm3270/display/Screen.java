@@ -50,7 +50,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
 
   private final Function function;
 
-  private final ScreenPosition[] screenPositions;
+  private ScreenPosition[] screenPositions;
   private final FieldManager fieldManager;
   private final FontManager fontManager;
   private final ContextManager contextManager;
@@ -66,9 +66,9 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private ConsolePane consolePane;
 
   private final GraphicsContext gc;
-  private final ScreenDimensions screenDimensions;
+  private ScreenDimensions screenDimensions;
 
-  private final Pen pen;
+  private Pen pen;
   private final Cursor cursor;
 
   private byte currentAID;
@@ -153,19 +153,6 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     return transferMenu.getMenuItemDownload ();
   }
 
-  // called from TelnetListener.processTelnetSubcommand()
-  public void setDeviceType (String deviceType)
-  {
-    System.out.println ("Device Type : " + deviceType);
-  }
-
-  // called from TelnetListener.processTelnetSubcommand()
-  public void setFunctions (
-      List<com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.Function> functions)
-  {
-    System.out.println ("Functions   : " + functions);
-  }
-
   public void setIsConsole ()
   {
     consolePane.setIsConsole (true);
@@ -189,6 +176,19 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
     transferMenu.setConsolePane (consolePane);
 
     addKeyboardStatusChangeListener (consolePane);
+  }
+
+  // called from Session.init() when in Replay mode
+  public void setScreenDimensions (ScreenDimensions screenDimensions)
+  {
+    if (screenDimensions.size != this.screenDimensions.size)
+    {
+      System.out.println ("adjusting screen size");
+      this.screenDimensions = screenDimensions;
+      screenPositions = new ScreenPosition[screenDimensions.size];
+      pen = Pen.getInstance (screenPositions, gc, contextManager, screenDimensions);
+      screenPacker.setPen (pen);
+    }
   }
 
   public void setStatusText (String text)

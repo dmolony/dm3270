@@ -11,7 +11,7 @@ public class ScreenDimensions
 
   public ScreenDimensions (int rows, int columns)
   {
-    this (rows, columns, 0, 0);
+    this (rows, columns, 4, 4);
   }
 
   public ScreenDimensions (int rows, int columns, int xOffset, int yOffset)
@@ -23,5 +23,11 @@ public class ScreenDimensions
     this.yOffset = yOffset;
 
     size = rows * columns;
+  }
+
+  @Override
+  public String toString ()
+  {
+    return String.format ("[Rows:%d, Columns:%d, Size:%d]", rows, columns, size);
   }
 }

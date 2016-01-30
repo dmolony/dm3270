@@ -184,9 +184,9 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       // if the server agrees to our request
       case IS:
         if (type == SubcommandType.FUNCTIONS)
-          screen.setFunctions (functions);
+          telnetState.setFunctions (functions);
         else if (type == SubcommandType.DEVICE_TYPE)
-          screen.setDeviceType (getValue ());
+          telnetState.setDeviceType (getValue ());
         break;
 
       case DEVICE_TYPE:

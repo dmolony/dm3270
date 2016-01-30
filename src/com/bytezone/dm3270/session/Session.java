@@ -18,6 +18,7 @@ import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadStructuredFieldCommand;
 import com.bytezone.dm3270.commands.WriteCommand;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
@@ -45,6 +46,7 @@ public class Session implements Iterable<SessionRecord>
   private final List<String> labels = new ArrayList<> ();
   private boolean safeFlag;
   private final Label headerLabel = new Label ();
+  private ScreenDimensions screenDimensions;
 
   public Session (Screen screen, TelnetState telnetState)
   {
@@ -100,6 +102,8 @@ public class Session implements Iterable<SessionRecord>
               && buffer[buffer.length - 1] == (byte) 0xEF)
             labels.add (server.getLabel ());
         }
+
+    screen.setScreenDimensions (screenDimensions);
   }
 
   // this should be removed
@@ -133,6 +137,11 @@ public class Session implements Iterable<SessionRecord>
     return serverName == null ? "Unknown" : serverName;
   }
 
+  public ScreenDimensions getScreenDimensions ()
+  {
+    return screenDimensions;
+  }
+
   public Label getHeaderLabel ()
   {
     return headerLabel;
@@ -149,10 +158,27 @@ public class Session implements Iterable<SessionRecord>
 
     // this code checks to see whether it can identify the client and/or server
     if (function != Function.TERMINAL && sessionRecord.isCommand ())
-      if (clientName == null && sessionRecord.getSource () == Source.CLIENT)
-        checkClientName (sessionRecord.getCommand ());
-      else if (serverName == null && sessionRecord.getSource () == Source.SERVER)
-        checkServerName (sessionRecord.getCommand ());
+    {
+      switch (sessionRecord.getSource ())
+      {
+        case CLIENT:
+          if (clientName == null)
+            checkClientName (sessionRecord.getCommand ());
+          if (screenDimensions == null)
+            checkScreenDimensions (sessionRecord.getCommand ());
+          break;
+        case SERVER:
+          if (serverName == null)
+            checkServerName (sessionRecord.getCommand ());
+          break;
+      }
+    }
+  }
+
+  private void checkScreenDimensions (Command command)
+  {
+    if ((command instanceof ReadStructuredFieldCommand))
+      screenDimensions = ((ReadStructuredFieldCommand) command).getScreenDimensions ();
   }
 
   private void checkClientName (Command command)

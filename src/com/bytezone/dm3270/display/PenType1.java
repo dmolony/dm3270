@@ -286,4 +286,15 @@ class PenType1 implements Pen
       }
     };
   }
+
+  @Override
+  public String toString ()
+  {
+    StringBuilder text = new StringBuilder ();
+
+    text.append (String.format ("[Pos:%d, columns:%d, formatted:%s]", currentPosition,
+                                columns, formattedScreen));
+
+    return text.toString ();
+  }
 }

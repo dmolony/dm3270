@@ -293,8 +293,8 @@ public class Console extends Application
 
   private Screen createScreen (Function function, Site site)
   {
-    screen = new Screen (new ScreenDimensions (24, 80, 4, 4), prefs, function,
-        pluginsStage, site);
+    screen =
+        new Screen (new ScreenDimensions (24, 80), prefs, function, pluginsStage, site);
     return screen;
   }
 }

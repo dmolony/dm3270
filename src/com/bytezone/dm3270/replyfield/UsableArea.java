@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class UsableArea extends QueryReplyField
@@ -61,6 +62,11 @@ public class UsableArea extends QueryReplyField
     addressingMode = flags1 & 0x0F;
     if (addressingMode == 15)
       addressingMode = 4;
+  }
+
+  public ScreenDimensions getScreenDimensions ()
+  {
+    return new ScreenDimensions (height, width);
   }
 
   @Override

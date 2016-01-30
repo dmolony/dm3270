@@ -47,6 +47,7 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
 
         System.arraycopy (header, 0, reply, 0, header.length);
         System.arraycopy (terminal, 0, reply, header.length, terminal.length);
+
         reply[reply.length - 2] = TelnetCommand.IAC;
         reply[reply.length - 1] = TelnetCommand.SE;
 

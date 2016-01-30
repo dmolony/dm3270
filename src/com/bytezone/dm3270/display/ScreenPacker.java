@@ -15,17 +15,22 @@ import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
 class ScreenPacker implements ScreenChangeListener
 {
-  private final byte[] buffer = new byte[4096];
+  private final byte[] buffer = new byte[8192];
   private final List<String> tsoCommands = new ArrayList<> ();
 
   private ScreenWatcher screenDetails;
-  private final Pen pen;
+  private Pen pen;
   private final FieldManager fieldManager;
 
   public ScreenPacker (Pen pen, FieldManager fieldManager)
   {
     this.pen = pen;
     this.fieldManager = fieldManager;
+  }
+
+  void setPen (Pen pen)
+  {
+    this.pen = pen;
   }
 
   public AIDCommand readModifiedFields (byte currentAID, int cursorLocation,

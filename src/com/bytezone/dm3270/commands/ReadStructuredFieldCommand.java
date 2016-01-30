@@ -11,6 +11,7 @@ import java.util.Optional;
 import javax.xml.bind.DatatypeConverter;
 
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.filetransfer.FileTransferInboundSF;
 import com.bytezone.dm3270.replyfield.AlphanumericPartitions;
 import com.bytezone.dm3270.replyfield.AuxilliaryDevices;
@@ -41,6 +42,7 @@ public class ReadStructuredFieldCommand extends Command
   private String clientName = "";
   private String signature;
   private final List<QueryReplyField> replies = new ArrayList<> ();
+  private ScreenDimensions screenDimensions;
 
   static
   {
@@ -105,7 +107,11 @@ public class ReadStructuredFieldCommand extends Command
     {
       clientName = getClientName (data);
       for (QueryReplyField reply : replies)
+      {
         reply.addReplyFields (replies);         // allow each QRF to see all the others
+        if (screenDimensions == null && reply instanceof UsableArea)
+          screenDimensions = ((UsableArea) reply).getScreenDimensions ();
+      }
     }
   }
 
@@ -128,6 +134,11 @@ public class ReadStructuredFieldCommand extends Command
   public Optional<String> getClientName ()
   {
     return clientName.isEmpty () ? Optional.empty () : Optional.of (clientName);
+  }
+
+  public ScreenDimensions getScreenDimensions ()
+  {
+    return screenDimensions;
   }
 
   private static byte[] buildReply (int version)
