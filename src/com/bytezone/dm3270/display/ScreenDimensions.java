@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.display;
 
+import com.bytezone.dm3270.orders.BufferAddress;
+
 public class ScreenDimensions
 {
   public final int rows;
@@ -23,6 +25,8 @@ public class ScreenDimensions
     this.yOffset = yOffset;
 
     size = rows * columns;
+
+    BufferAddress.setScreenWidth (columns);
   }
 
   @Override
