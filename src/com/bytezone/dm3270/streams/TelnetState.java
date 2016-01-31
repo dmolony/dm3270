@@ -2,7 +2,9 @@ package com.bytezone.dm3270.streams;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.Function;
@@ -302,5 +304,28 @@ public class TelnetState implements Runnable
     text.append (String.format ("functions ....... %s", functions));
 
     return text.toString ();
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Listener events
+  // ---------------------------------------------------------------------------------//
+
+  private final Set<TelnetStateListener> listeners = new HashSet<> ();
+
+  private void fireTelnetStateChange (TelnetState telnetState)
+  {
+    listeners.forEach (listener -> listener.telnetStateChanged (telnetState));
+  }
+
+  public void addKeyboardStatusChangeListener (TelnetStateListener listener)
+  {
+    if (!listeners.contains (listener))
+      listeners.add (listener);
+  }
+
+  public void removeKeyboardStatusChangeListener (TelnetStateListener listener)
+  {
+    if (listeners.contains (listener))
+      listeners.remove (listener);
   }
 }

@@ -29,7 +29,7 @@ public class WriteCommand extends Command
 
     eraseWrite = buffer[offset] != Command.WRITE_F1 && buffer[offset] != Command.WRITE_01;
     alternate = buffer[offset] == Command.ERASE_WRITE_ALTERNATE_0D
-        || buffer[offset] != Command.ERASE_WRITE_ALTERNATE_7E;
+        || buffer[offset] == Command.ERASE_WRITE_ALTERNATE_7E;
     writeControlCharacter =
         length > 1 ? new WriteControlCharacter (buffer[offset + 1]) : null;
 
