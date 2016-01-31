@@ -17,6 +17,7 @@ public class SpyServer implements Runnable
 {
   private Socket clientSocket;
   private final Socket serverSocket = new Socket ();
+  private final TelnetState telnetState;
 
   private final String serverURL;
   private final int clientPort;
@@ -29,7 +30,7 @@ public class SpyServer implements Runnable
   private final Session session;
   private Screen screen;
 
-  public SpyServer (Site server, int clientPort, Session session)
+  public SpyServer (Site server, int clientPort, Session session, TelnetState telnetState)
   {
     if (server == null)
       throw new IllegalArgumentException ("Server cannot be null or empty");
@@ -42,6 +43,7 @@ public class SpyServer implements Runnable
     serverPort = server.getPort ();
     this.clientPort = clientPort;
     this.session = session;
+    this.telnetState = telnetState;
   }
 
   private void prevent3270E (boolean value)
@@ -68,10 +70,12 @@ public class SpyServer implements Runnable
       serverSocket.connect (new InetSocketAddress (serverURL, serverPort));
 
       // create two SocketListeners and link them to each other
-      clientTelnetSocket = new TelnetSocket (Source.CLIENT, clientSocket,
-          new TelnetListener (Source.CLIENT, session, Console.Function.SPY, screen));
-      serverTelnetSocket = new TelnetSocket (Source.SERVER, serverSocket,
-          new TelnetListener (Source.SERVER, session, Console.Function.SPY, screen));
+      clientTelnetSocket =
+          new TelnetSocket (Source.CLIENT, clientSocket, new TelnetListener (
+              Source.CLIENT, session, Console.Function.SPY, screen, telnetState));
+      serverTelnetSocket =
+          new TelnetSocket (Source.SERVER, serverSocket, new TelnetListener (
+              Source.SERVER, session, Console.Function.SPY, screen, telnetState));
 
       // TelnetSocket.link() will connect both sockets to each other (bidirectional)
       serverTelnetSocket.link (clientTelnetSocket);

@@ -36,7 +36,7 @@ public class Session implements Iterable<SessionRecord>
   private final ObservableList<SessionRecord> sessionRecords =
       FXCollections.observableArrayList ();
   private final Function function;
-  private final TelnetState telnetState = new TelnetState ();
+  private final TelnetState telnetState;
 
   private String clientName = null;
   private String serverName = null;
@@ -49,12 +49,14 @@ public class Session implements Iterable<SessionRecord>
   public Session (TelnetState telnetState)
   {
     this.function = Function.SPY;
+    this.telnetState = telnetState;
   }
 
   // called by MainframeStage constructor
-  public Session (List<String> lines) throws Exception
+  public Session (TelnetState telnetState, List<String> lines) throws Exception
   {
     function = Function.TEST;
+    this.telnetState = telnetState;
 
     SessionReader server = new SessionReader (Source.SERVER, lines);
     SessionReader client = new SessionReader (Source.CLIENT, lines);
@@ -63,9 +65,10 @@ public class Session implements Iterable<SessionRecord>
   }
 
   // called by Console.startSelectedFunction()
-  public Session (Path path) throws Exception
+  public Session (TelnetState telnetState, Path path) throws Exception
   {
     function = Function.REPLAY;
+    this.telnetState = telnetState;
 
     SessionReader server = new SessionReader (Source.SERVER, path);
     SessionReader client = new SessionReader (Source.CLIENT, path);
@@ -79,9 +82,9 @@ public class Session implements Iterable<SessionRecord>
     telnetState.setDoTerminalType (true);
 
     TelnetListener clientTelnetListener =
-        new TelnetListener (Source.CLIENT, this, function, null);
+        new TelnetListener (Source.CLIENT, this, function, null, telnetState);
     TelnetListener serverTelnetListener =
-        new TelnetListener (Source.SERVER, this, function, null);
+        new TelnetListener (Source.SERVER, this, function, null, telnetState);
 
     while (client.nextLineNo () != server.nextLineNo ())
       if (client.nextLineNo () < server.nextLineNo ())
@@ -102,10 +105,10 @@ public class Session implements Iterable<SessionRecord>
     //    screen.setScreenDimensions (screenDimensions);
   }
 
-  public TelnetState getTelnetState ()
-  {
-    return telnetState;
-  }
+  //  public TelnetState getTelnetState ()
+  //  {
+  //    return telnetState;
+  //  }
 
   public List<String> getLabels ()
   {
@@ -157,6 +160,7 @@ public class Session implements Iterable<SessionRecord>
           if (screenDimensions == null)
             checkScreenDimensions (sessionRecord.getCommand ());
           break;
+
         case SERVER:
           if (serverName == null)
             checkServerName (sessionRecord.getCommand ());

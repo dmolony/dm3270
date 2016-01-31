@@ -26,13 +26,17 @@ public class SpyPane extends BorderPane
 
   private SpyServer spyServer;
   private Thread serverThread;
+  private final TelnetState telnetState;
 
-  public SpyPane (Screen screen, Site serverSite, Site clientSite)
+  public SpyPane (Screen screen, Site serverSite, Site clientSite,
+      TelnetState telnetState)
   {
-    SessionTable sessionTable = new SessionTable ();
-    Session session = new Session (new TelnetState ());
+    this.telnetState = telnetState;
 
-    spyServer = new SpyServer (serverSite, clientSite.getPort (), session);
+    SessionTable sessionTable = new SessionTable ();
+    Session session = new Session (telnetState);
+
+    spyServer = new SpyServer (serverSite, clientSite.getPort (), session, telnetState);
     spyServer.setScreen (screen);
 
     final Label label = session.getHeaderLabel ();

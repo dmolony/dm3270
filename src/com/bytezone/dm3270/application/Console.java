@@ -11,6 +11,7 @@ import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.plugins.PluginsStage;
 import com.bytezone.dm3270.session.Session;
+import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 import com.bytezone.dm3270.utilities.Site;
 import com.bytezone.dm3270.utilities.WindowSaver;
@@ -35,6 +36,7 @@ public class Console extends Application
   private Preferences prefs;
   private Screen screen;
   private ScreenDimensions screenDimensions = new ScreenDimensions (24, 80);
+  private final TelnetState telnetState = new TelnetState ();
 
   private OptionStage optionStage;
   private SpyPane spyPane;
@@ -108,7 +110,7 @@ public class Console extends Application
         else
           try
           {
-            Session session = new Session (path);            // can throw Exception
+            Session session = new Session (telnetState, path);   // can throw Exception
             screenDimensions = session.getScreenDimensions ();
 
             Optional<Site> serverSite = findSite (session.getServerName ());
@@ -168,7 +170,7 @@ public class Console extends Application
         {
           Site clientSite = optionalClientSite.get ();
           setSpyPane (createScreen (Function.TEST, null), DEFAULT_MAINFRAME, clientSite);
-          mainframeStage = new MainframeStage (MAINFRAME_EMULATOR_PORT);
+          mainframeStage = new MainframeStage (telnetState, MAINFRAME_EMULATOR_PORT);
           mainframeStage.show ();
           mainframeStage.startServer ();
         }
@@ -220,7 +222,7 @@ public class Console extends Application
 
   private void setSpyPane (Screen screen, Site server, Site client)
   {
-    spyPane = new SpyPane (screen, server, client);
+    spyPane = new SpyPane (screen, server, client, telnetState);
 
     primaryStage.setScene (new Scene (spyPane));
     primaryStage.setTitle ("Terminal Spy");
@@ -293,7 +295,8 @@ public class Console extends Application
 
   private Screen createScreen (Function function, Site site)
   {
-    screen = new Screen (screenDimensions, prefs, function, pluginsStage, site);
+    screen =
+        new Screen (screenDimensions, prefs, function, pluginsStage, site, telnetState);
     return screen;
   }
 }

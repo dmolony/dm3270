@@ -30,6 +30,7 @@ import com.bytezone.dm3270.filetransfer.TransferManager;
 import com.bytezone.dm3270.filetransfer.TransferManager.TransferStatus;
 import com.bytezone.dm3270.filetransfer.TransferMenu;
 import com.bytezone.dm3270.plugins.PluginsStage;
+import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 import com.bytezone.dm3270.utilities.Site;
 
@@ -64,6 +65,7 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   private final TransfersStage transfersStage;
   private final ConsoleLogStage consoleLogStage;
   private ConsolePane consolePane;
+  private final TelnetState telnetState;
 
   private final GraphicsContext gc;
   private final ScreenDimensions screenDimensions;
@@ -86,10 +88,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   }
 
   public Screen (ScreenDimensions screenDimensions, Preferences prefs, Function function,
-      PluginsStage pluginsStage, Site serverSite)
+      PluginsStage pluginsStage, Site serverSite, TelnetState telnetState)
   {
     this.screenDimensions = screenDimensions;
     this.function = function;
+    this.telnetState = telnetState;
 
     cursor = new Cursor (this, screenDimensions);
     gc = getGraphicsContext2D ();
@@ -152,6 +155,11 @@ public class Screen extends Canvas implements DisplayScreen, TransferListener
   public MenuItem getMenuItemDownload ()
   {
     return transferMenu.getMenuItemDownload ();
+  }
+
+  public TelnetState getTelnetState ()
+  {
+    return telnetState;
   }
 
   public void setIsConsole ()

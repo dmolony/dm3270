@@ -23,7 +23,7 @@ public class TelnetState implements Runnable
   private boolean doBinary = true;
   private boolean doEOR = true;
   private boolean doTerminalType = true;
-  private String doDeviceType = terminalType2;
+  private String doDeviceType = terminalType4;
 
   // current status
   private boolean does3270Extended = false;
@@ -46,6 +46,11 @@ public class TelnetState implements Runnable
   private int totalWrites;
   private int totalBytesRead;
   private int totalBytesWritten;
+
+  //  private TelnetState ()
+  //  {
+  //
+  //  }
 
   public void setTerminalServer (TerminalServer terminalServer)
   {

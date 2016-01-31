@@ -60,7 +60,7 @@ public class ConsolePane extends BorderPane
   private final Label fieldLocation = new Label ();
 
   private TelnetListener telnetListener;
-  private final TelnetState telnetState = new TelnetState ();
+  private final TelnetState telnetState;
   private int commandHeaderCount;
   private final Site server;
 
@@ -83,6 +83,7 @@ public class ConsolePane extends BorderPane
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
+    this.telnetState = screen.getTelnetState ();
     this.screenDimensions = screen.getScreenDimensions ();
     this.server = server;
 

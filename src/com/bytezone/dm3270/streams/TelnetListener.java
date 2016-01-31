@@ -48,12 +48,14 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
   // Use this when recording the session in SPY mode, or replaying the session
   // in REPLAY mode.
-  public TelnetListener (Source source, Session session, Function function, Screen screen)
+  public TelnetListener (Source source, Session session, Function function, Screen screen,
+      TelnetState telnetState)
   {
     this.session = session;       // where we store the session records
     this.source = source;         // are we listening to a SERVER or a CLIENT?
 
-    this.telnetState = session.getTelnetState ();
+    //    this.telnetState = session.getTelnetState ();
+    this.telnetState = telnetState;
     this.function = function;
   }
 

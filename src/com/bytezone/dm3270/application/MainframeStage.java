@@ -28,6 +28,7 @@ import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.MainframeServer;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
+import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.GuiFactory;
 
 import javafx.application.Platform;
@@ -55,6 +56,7 @@ public class MainframeStage extends Stage implements Mainframe
 
   private final List<Button> buttons = new ArrayList<> ();
   private MainframeServer mainframeServer;
+  private final TelnetState telnetState;
 
   private final RadioButton btnFieldMode;
   private final RadioButton btnExtendedFieldMode;
@@ -80,8 +82,10 @@ public class MainframeStage extends Stage implements Mainframe
   private final StartFieldAttribute fldEnd = new StartFieldAttribute (
       StartFieldAttribute.compile (PROTECTED, NUMERIC, true, true, false));
 
-  public MainframeStage (int mainframePort)// usually 5555
+  public MainframeStage (TelnetState telnetState, int mainframePort)     // usually 5555
   {
+    this.telnetState = telnetState;
+
     mainframeServer = new MainframeServer (mainframePort);
     mainframeServer.setStage (this);
 
@@ -208,7 +212,7 @@ public class MainframeStage extends Stage implements Mainframe
 
     try
     {
-      Session session = new Session (lines);
+      Session session = new Session (telnetState, lines);
       List<String> labels = session.getLabels ();
 
       SessionRecord dr = createCommand ();
