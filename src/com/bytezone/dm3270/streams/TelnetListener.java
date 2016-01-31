@@ -91,33 +91,6 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
       telnetState.setLastAccess (dateTime, buffer.length);
   }
 
-  private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
-  {
-    // add the SessionRecord to the Session - is it OK to do this from a non-EDT?
-    if (session != null)
-    {
-      SessionRecord sessionRecord = new SessionRecord (sessionRecordType, message, source,
-          currentDateTime, currentGenuine);
-      session.add (sessionRecord);
-    }
-
-    if (function == Function.TERMINAL)
-    {
-      if (sessionRecordType == SessionRecordType.TELNET)      // no gui involved
-        processMessage (message);
-      else
-        Platform.runLater ( () -> processMessage (message));
-    }
-  }
-
-  private void processMessage (ReplyBuffer message)
-  {
-    message.process (screen);
-    Optional<Buffer> reply = message.getReply ();
-    if (reply.isPresent ())
-      telnetState.write (reply.get ().getTelnetData ());
-  }
-
   @Override
   public void close ()
   {
@@ -196,8 +169,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   public void processTelnetCommand (byte[] data, int dataPtr)
   {
     TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, dataPtr);
-    telnetCommand.process (screen);       // updates TelnetState
     addDataRecord (telnetCommand, SessionRecordType.TELNET);
+    telnetCommand.process (screen);       // updates TelnetState
   }
 
   @Override
@@ -219,10 +192,34 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
       System.out.println ();
     }
 
-    if (subcommand != null)
+    //            subcommand.process (screen);
+    addDataRecord (subcommand, SessionRecordType.TELNET);
+  }
+
+  private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
+  {
+    // add the SessionRecord to the Session - is it OK to do this from a non-EDT?
+    if (session != null)
     {
-      //      subcommand.process (screen);
-      addDataRecord (subcommand, SessionRecordType.TELNET);
+      SessionRecord sessionRecord = new SessionRecord (sessionRecordType, message, source,
+          currentDateTime, currentGenuine);
+      session.add (sessionRecord);
     }
+
+    if (function == Function.TERMINAL)
+    {
+      if (sessionRecordType == SessionRecordType.TELNET)      // no gui involved
+        processMessage (message);
+      else
+        Platform.runLater ( () -> processMessage (message));
+    }
+  }
+
+  private void processMessage (ReplyBuffer message)
+  {
+    message.process (screen);
+    Optional<Buffer> reply = message.getReply ();
+    if (reply.isPresent ())
+      telnetState.write (reply.get ().getTelnetData ());
   }
 }
