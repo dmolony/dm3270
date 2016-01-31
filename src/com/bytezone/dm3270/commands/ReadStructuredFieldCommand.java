@@ -47,14 +47,16 @@ public class ReadStructuredFieldCommand extends Command
   static
   {
     clientNames.put ("53952DB14CBB53CD7C1E5AB1FDFDA193", "tn3270X");
-    clientNames.put ("12F0F4557FB72796E8A4398AA694255C", "Vista");
+    clientNames.put ("12F0F4557FB72796E8A4398AA694255C", "Vista Model 2");
     clientNames.put ("19D8CA4B4B59357FBF37FB9B7F38EC21", "x3270");
     clientNames.put ("F960E103861F3920FC3B8AF00D8B8601", "FreeHost");
     clientNames.put ("C1F30DBA8306E1887C7EE2D976C6B24A", "dm3270 (old1)");
     clientNames.put ("0BA60960D0116F016EBA4D14E610AA39", "Vista2");
     clientNames.put ("08997C53F68A969853867072174CD882", "dm3270 (old2)");
     clientNames.put ("BD47AE1B606E2DF29C7D24DD128648A8", "dm3270");
-    clientNames.put ("26ED6D641768FDF25889838F29248F07", "Vista 43x80");
+    clientNames.put ("26ED6D641768FDF25889838F29248F07", "Vista Model 4");
+    clientNames.put ("8EC3FF4989C2A3B7CB5B6B464CE6C24D", "Vista Model 3");
+    clientNames.put ("93FCC5A3CC3515F167F995DE634B193F", "Vista Model 5");
   }
 
   // called from ReadPartitionSF via ReadPartitionQuery
