@@ -30,7 +30,6 @@ public class BufferAddress
   public static void setScreenWidth (int width)
   {
     columns = width;
-    System.out.println ("Changing BufferAddress: " + width);
   }
 
   public BufferAddress (byte b1, byte b2)
