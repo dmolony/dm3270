@@ -93,7 +93,7 @@ public class OptionStage extends Stage
     String runMode = prefs.get ("Mode", "Release");
     release = runMode.equals ("Release");
 
-    serverSitesListStage = new SiteListStage (prefs, "Server", 6, true);
+    serverSitesListStage = new SiteListStage (prefs, "Server", 10, true);
     clientSitesListStage = new SiteListStage (prefs, "Client", 6, false);
 
     Node row1 = options (optionList, functionsGroup, 0, 2);

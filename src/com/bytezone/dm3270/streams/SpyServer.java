@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import com.bytezone.dm3270.application.Console;
 import com.bytezone.dm3270.display.Screen;
@@ -92,6 +93,10 @@ public class SpyServer implements Runnable
       clientServerSocket.close ();
       clientServerSocket = null;
     }
+    catch (UnknownHostException e)
+    {
+      System.out.println ("Unknown host");
+    }
     catch (SocketException e)     // caused by closing the clientServerSocket
     {
       System.out.println ("tata");
@@ -99,6 +104,9 @@ public class SpyServer implements Runnable
     catch (IOException e)
     {
       e.printStackTrace ();
+    }
+    finally
+    {
       close ();
     }
   }
