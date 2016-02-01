@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.extended;
 
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 // See SNA Programming pp 807
@@ -59,6 +61,9 @@ public class BindCommand extends AbstractExtendedCommand
   private String primaryLuName;
   private int userDataLength;
 
+  private ScreenDimensions primaryScreenDimensions;
+  private ScreenDimensions alternateScreenDimensions;
+
   public BindCommand (CommandHeader commandHeader, byte[] buffer, int offset, int length)
   {
     super (commandHeader, buffer, offset, length);
@@ -98,6 +103,8 @@ public class BindCommand extends AbstractExtendedCommand
       alternateRows = data[22] & 0xFF;
       alternateColumns = data[23] & 0xFF;
       presentationSpace = data[24] & 0xFF;            // 0x7E means 'use default fields'
+      primaryScreenDimensions = new ScreenDimensions (primaryRows, primaryColumns);
+      alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
 
       // 25 is compression
 
@@ -140,6 +147,13 @@ public class BindCommand extends AbstractExtendedCommand
   }
 
   @Override
+  public void process (Screen screen)
+  {
+    screen.getTelnetState ().setScreenDimensions (primaryScreenDimensions,
+                                                  alternateScreenDimensions);
+  }
+
+  @Override
   public String getName ()
   {
     return "Bind";
@@ -175,10 +189,14 @@ public class BindCommand extends AbstractExtendedCommand
     text.append (String.format ("session options len .. %02X%n", sessionOptionsLength));
     text.append (String.format ("ns offset ............ %02X%n", nsOffset));
     text.append ("\n---- Screen sizes ------\n");
-    text.append (String.format ("Rows ................. %02X%n", primaryRows));
-    text.append (String.format ("Columns .............. %02X%n", primaryColumns));
-    text.append (String.format ("Alt Rows ............. %02X%n", alternateRows));
-    text.append (String.format ("Alt Columns .......... %02X%n", alternateColumns));
+    text.append (String.format ("Rows ................. %02X  %3d%n", primaryRows,
+                                primaryRows));
+    text.append (String.format ("Columns .............. %02X  %3d%n", primaryColumns,
+                                primaryColumns));
+    text.append (String.format ("Alt Rows ............. %02X  %3d%n", alternateRows,
+                                alternateRows));
+    text.append (String.format ("Alt Columns .......... %02X  %3d%n", alternateColumns,
+                                alternateColumns));
     text.append ("\n");
     text.append (String.format ("primary LU name len .. %02X%n", primaryLuNameLength));
     text.append (String.format ("primary LU name ...... %s%n", primaryLuName));

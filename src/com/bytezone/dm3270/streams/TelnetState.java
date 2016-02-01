@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.Function;
 
 public class TelnetState implements Runnable
@@ -25,7 +26,7 @@ public class TelnetState implements Runnable
   private boolean doBinary = true;
   private boolean doEOR = true;
   private boolean doTerminalType = true;
-  private String doDeviceType = terminalType4;
+  private String doDeviceType = terminalType2;
 
   // current status
   private boolean does3270Extended = false;
@@ -43,6 +44,9 @@ public class TelnetState implements Runnable
   private AtomicLong lastAccess;
   private volatile boolean running = false;
   private Thread thread;
+
+  private ScreenDimensions primary;
+  private ScreenDimensions secondary;
 
   private int totalReads;
   private int totalWrites;
@@ -132,6 +136,24 @@ public class TelnetState implements Runnable
       running = false;
       thread.interrupt ();
     }
+  }
+
+  public void setScreenDimensions (ScreenDimensions primary, ScreenDimensions secondary)
+  {
+    this.primary = primary;
+    this.secondary = secondary;
+
+    fireTelnetStateChange ();
+  }
+
+  public ScreenDimensions getPrimary ()
+  {
+    return primary;
+  }
+
+  public ScreenDimensions getSecondary ()
+  {
+    return secondary;
   }
 
   public String getSummary ()
@@ -312,18 +334,18 @@ public class TelnetState implements Runnable
 
   private final Set<TelnetStateListener> listeners = new HashSet<> ();
 
-  private void fireTelnetStateChange (TelnetState telnetState)
+  private void fireTelnetStateChange ()
   {
-    listeners.forEach (listener -> listener.telnetStateChanged (telnetState));
+    listeners.forEach (listener -> listener.telnetStateChanged (this));
   }
 
-  public void addKeyboardStatusChangeListener (TelnetStateListener listener)
+  public void addTelnetStateListener (TelnetStateListener listener)
   {
     if (!listeners.contains (listener))
       listeners.add (listener);
   }
 
-  public void removeKeyboardStatusChangeListener (TelnetStateListener listener)
+  public void removeTelnetStateListener (TelnetStateListener listener)
   {
     if (listeners.contains (listener))
       listeners.remove (listener);

@@ -93,6 +93,8 @@ public class WriteCommand extends Command
     //    screen.lockKeyboard ("Inhibit");
     boolean screenDrawRequired = false;
 
+    screen.setAlternateScreen (alternate);
+
     if (eraseWrite)
     {
       screen.lockKeyboard ("Erase Write");
