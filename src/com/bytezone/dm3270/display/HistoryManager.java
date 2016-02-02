@@ -12,7 +12,7 @@ public class HistoryManager
   private final List<HistoryScreen> screens = new ArrayList<> (MAX_SCREENS);
   private final ContextManager contextManager;
   private final FieldManager fieldManager;
-  private final ScreenDimensions screenDimensions;
+  private ScreenDimensions screenDimensions;
 
   private boolean keyboardLocked;       // save previous setting
   private boolean paused;
@@ -56,6 +56,11 @@ public class HistoryManager
       if (display)
         add (command);
     }
+  }
+
+  public void setScreenDimensions (ScreenDimensions screenDimensions)
+  {
+    this.screenDimensions = screenDimensions;
   }
 
   private void add (AIDCommand command)

@@ -71,10 +71,12 @@ public class Screen extends Canvas
   private final TelnetState telnetState;
 
   private final GraphicsContext gc;
-  private final ScreenDimensions screenDimensions;
+  private final ScreenDimensions defaultScreenDimensions;
+  private ScreenDimensions alternateScreenDimensions;
 
   private final Pen pen;
   private final Cursor cursor;
+  private ScreenOption currentScreen;
 
   private byte currentAID;
   private byte replyMode;
@@ -90,12 +92,22 @@ public class Screen extends Canvas
     BUILD_FIELDS, DONT_BUILD_FIELDS
   }
 
-  public Screen (ScreenDimensions screenDimensions, Preferences prefs, Function function,
+  public enum ScreenOption
+  {
+    DEFAULT, ALTERNATE
+  }
+
+  public Screen (ScreenDimensions defaultScreenDimensions,
+      ScreenDimensions alternateScreenDimensions, Preferences prefs, Function function,
       PluginsStage pluginsStage, Site serverSite, TelnetState telnetState)
   {
-    this.screenDimensions = screenDimensions;
+    this.defaultScreenDimensions = defaultScreenDimensions;
+    this.alternateScreenDimensions = alternateScreenDimensions;
     this.function = function;
     this.telnetState = telnetState;
+
+    ScreenDimensions screenDimensions = alternateScreenDimensions == null
+        ? defaultScreenDimensions : alternateScreenDimensions;
 
     cursor = new Cursor (this, screenDimensions);
     gc = getGraphicsContext2D ();
@@ -132,6 +144,7 @@ public class Screen extends Canvas
     transferManager.addTransferListener (transfersStage);
 
     telnetState.addTelnetStateListener (this);
+    setCurrentScreen (ScreenOption.DEFAULT);
 
     this.pluginsStage = pluginsStage;
     pluginsStage.setScreen (this);
@@ -167,9 +180,27 @@ public class Screen extends Canvas
     return telnetState;
   }
 
-  public void setAlternateScreen (boolean alternate)
+  public void setCurrentScreen (ScreenOption value)
   {
-    BufferAddress.setScreenWidth (alternate ? 132 : 80);
+    if (currentScreen != value)
+    {
+      currentScreen = value;
+      System.out.println ("changing to: " + value);
+      ScreenDimensions screenDimensions = value == ScreenOption.DEFAULT
+          ? defaultScreenDimensions : alternateScreenDimensions;
+
+      BufferAddress.setScreenWidth (screenDimensions.columns);
+      cursor.setScreenDimensions (screenDimensions);
+      pen.setScreenDimensions (screenDimensions);
+      historyManager.setScreenDimensions (screenDimensions);
+    }
+  }
+
+  @Override
+  public ScreenDimensions getScreenDimensions ()
+  {
+    return currentScreen == ScreenOption.DEFAULT ? defaultScreenDimensions
+        : alternateScreenDimensions;
   }
 
   public void setIsConsole ()
@@ -198,12 +229,6 @@ public class Screen extends Canvas
   public FieldManager getFieldManager ()
   {
     return fieldManager;
-  }
-
-  @Override
-  public ScreenDimensions getScreenDimensions ()
-  {
-    return screenDimensions;
   }
 
   public boolean isTSOCommandScreen ()
@@ -353,10 +378,9 @@ public class Screen extends Canvas
   // called from Write.process()
   public void draw ()
   {
-    int pos = 0;
-
-    for (ScreenPosition screenPosition : screenPositions)
-      screenPosition.draw (HIDE_CURSOR);
+    int max = getScreenDimensions ().size;
+    for (int i = 0; i < max; i++)
+      screenPositions[i].draw (HIDE_CURSOR);
 
     if (insertedCursorPosition >= 0)
     {
@@ -365,8 +389,7 @@ public class Screen extends Canvas
       cursor.setVisible (true);
     }
 
-    pos = cursor.getLocation ();
-    screenPositions[pos].draw (SHOW_CURSOR);
+    screenPositions[cursor.getLocation ()].draw (SHOW_CURSOR);
   }
 
   // called from Field.draw()
@@ -386,6 +409,10 @@ public class Screen extends Canvas
   void fontChanged (FontDetails fontDetails)
   {
     contextManager.setFontDetails (fontDetails);
+
+    // always use the largest available screen
+    ScreenDimensions screenDimensions = alternateScreenDimensions == null
+        ? defaultScreenDimensions : alternateScreenDimensions;
     setWidth (fontDetails.width * screenDimensions.columns
         + screenDimensions.xOffset * 2);
     setHeight (fontDetails.height * screenDimensions.rows + screenDimensions.yOffset * 2);
@@ -467,10 +494,15 @@ public class Screen extends Canvas
   @Override
   public void telnetStateChanged (TelnetState telnetState)
   {
-    ScreenDimensions primary = telnetState.getPrimary ();
+    //    ScreenDimensions primary = telnetState.getPrimary ();
     ScreenDimensions alternate = telnetState.getSecondary ();
-    System.out.println (primary);
-    System.out.println (alternate);
+    //    System.out.println (primary);
+    //    System.out.println (alternate);
+    if (alternate.size > 0 && alternateScreenDimensions == null)
+    {
+      alternateScreenDimensions = alternate;
+      System.out.println ("setting alternate dimensions: " + alternate);
+    }
   }
 
   // ---------------------------------------------------------------------------------//

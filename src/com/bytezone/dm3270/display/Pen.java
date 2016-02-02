@@ -36,4 +36,6 @@ public interface Pen extends Iterable<ScreenPosition>
   String getScreenText ();
 
   public int validate (int position);
+
+  public void setScreenDimensions (ScreenDimensions screenDimensions);
 }

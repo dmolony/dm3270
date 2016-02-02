@@ -10,7 +10,7 @@ public class Cursor
   private static final boolean WITHOUT_CURSOR = false;
 
   private final Screen screen;
-  private final ScreenDimensions screenDimensions;
+  private ScreenDimensions screenDimensions;
 
   private int currentPosition;
   private Field currentField;
@@ -44,6 +44,11 @@ public class Cursor
   public boolean isVisible ()
   {
     return visible;
+  }
+
+  void setScreenDimensions (ScreenDimensions screenDimensions)
+  {
+    this.screenDimensions = screenDimensions;
   }
 
   public ScreenPosition getScreenPosition ()

@@ -25,7 +25,7 @@ public final class ScreenPosition
   public static final byte VERTICAL_LINE = (byte) 0x85;
 
   private final GraphicsContext gc;
-  private final ScreenDimensions screenDimensions;
+  private ScreenDimensions screenDimensions;
   private final int position;
 
   private StartFieldAttribute startFieldAttribute;
@@ -121,6 +121,16 @@ public final class ScreenPosition
   int getPosition ()
   {
     return position;
+  }
+
+  void setScreenDimensions (ScreenDimensions screenDimensions)
+  {
+    this.screenDimensions = screenDimensions;
+  }
+
+  ScreenDimensions getScreenDimensions ()
+  {
+    return screenDimensions;
   }
 
   // called by Field when deleting a character
@@ -257,7 +267,6 @@ public final class ScreenPosition
   void draw (boolean hasCursor)
   {
     FontDetails fontDetails = screenContext.fontDetails;
-    //    ScreenDimensions screenDimensions = screenContext.screenDimensions;
 
     double x = 4 + position % screenDimensions.columns * fontDetails.width;
     double y = 4 + position / screenDimensions.columns * fontDetails.height;

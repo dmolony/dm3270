@@ -11,11 +11,11 @@ import javafx.scene.canvas.GraphicsContext;
 
 class PenType1 implements Pen
 {
-  private final ScreenPosition[] screenPositions;
+  private final ScreenPosition[] screenPositions;   // owned by Screen
 
   private int currentPosition;
   private boolean formattedScreen;
-  private final int columns;
+  private ScreenDimensions screenDimensions;
 
   private final List<Attribute> pendingAttributes = new ArrayList<> ();
 
@@ -24,7 +24,8 @@ class PenType1 implements Pen
       ContextManager contextManager, ScreenDimensions screenDimensions)
   {
     this.screenPositions = screenPositions;
-    columns = screenDimensions.columns;
+    this.screenDimensions = screenDimensions;
+    //    columns = screenDimensions.columns;
 
     ScreenContext defaultContext = contextManager.getDefaultScreenContext ();
 
@@ -227,6 +228,14 @@ class PenType1 implements Pen
   }
 
   @Override
+  public void setScreenDimensions (ScreenDimensions screenDimensions)
+  {
+    this.screenDimensions = screenDimensions;
+    for (int i = 0; i < screenDimensions.size; i++)
+      screenPositions[i].setScreenDimensions (screenDimensions);
+  }
+
+  @Override
   public String getScreenText ()
   {
     StringBuilder text = new StringBuilder ();
@@ -238,7 +247,7 @@ class PenType1 implements Pen
         text.append ("%");
       else
         text.append (sp.getCharString ());
-      if (++pos % columns == 0)
+      if (++pos % screenDimensions.columns == 0)
         text.append ("\n");
     }
 
@@ -293,7 +302,7 @@ class PenType1 implements Pen
     StringBuilder text = new StringBuilder ();
 
     text.append (String.format ("[Pos:%d, columns:%d, formatted:%s]", currentPosition,
-                                columns, formattedScreen));
+                                screenDimensions.columns, formattedScreen));
 
     return text.toString ();
   }

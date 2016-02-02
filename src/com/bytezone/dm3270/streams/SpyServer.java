@@ -42,6 +42,7 @@ public class SpyServer implements Runnable
 
     serverURL = server.getURL ();
     serverPort = server.getPort ();
+
     this.clientPort = clientPort;
     this.session = session;
     this.telnetState = telnetState;

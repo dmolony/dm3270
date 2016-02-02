@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.Screen.ScreenOption;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
 
@@ -94,7 +95,8 @@ public class WriteCommand extends Command
     boolean screenDrawRequired = false;
 
     if (eraseWrite)
-      screen.setAlternateScreen (alternate);
+      screen
+          .setCurrentScreen (alternate ? ScreenOption.ALTERNATE : ScreenOption.DEFAULT);
 
     if (eraseWrite)
     {

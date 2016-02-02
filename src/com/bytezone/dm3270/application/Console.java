@@ -35,7 +35,8 @@ public class Console extends Application
 
   private Preferences prefs;
   private Screen screen;
-  private ScreenDimensions screenDimensions = new ScreenDimensions (24, 80);
+  private final ScreenDimensions screenDimensions = new ScreenDimensions (24, 80);
+  private ScreenDimensions alternateScreenDimensions;
   private final TelnetState telnetState = new TelnetState ();
 
   private OptionStage optionStage;
@@ -111,7 +112,7 @@ public class Console extends Application
           try
           {
             Session session = new Session (telnetState, path);   // can throw Exception
-            screenDimensions = session.getScreenDimensions ();
+            alternateScreenDimensions = session.getScreenDimensions ();
 
             Optional<Site> serverSite = findSite (session.getServerName ());
             if (serverSite.isPresent ())
@@ -295,8 +296,8 @@ public class Console extends Application
 
   private Screen createScreen (Function function, Site site)
   {
-    screen =
-        new Screen (screenDimensions, prefs, function, pluginsStage, site, telnetState);
+    screen = new Screen (screenDimensions, alternateScreenDimensions, prefs, function,
+        pluginsStage, site, telnetState);
     return screen;
   }
 }
