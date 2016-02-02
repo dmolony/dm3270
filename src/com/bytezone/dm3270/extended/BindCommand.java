@@ -111,18 +111,10 @@ public class BindCommand extends AbstractExtendedCommand
       primaryColumns = data[21] & 0xFF;
       alternateRows = data[22] & 0xFF;
       alternateColumns = data[23] & 0xFF;
+      presentationSpace = data[24] & 0xFF;
 
-      presentationSpace = data[24] & 0xFF;            // 0x7E means 'use default fields'
       primaryScreenDimensions = new ScreenDimensions (primaryRows, primaryColumns);
       alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
-
-      // presentationSpace:
-      // 00 - undefined
-      // 01 - 12 x 40
-      // 02 - 24 x 80
-      // 03 - 24 x 80 default, alternate specified in Query Reply
-      // 7E - fixed size as defined by default values
-      // 7F - both default and alternate as specifed
 
       compression = data[25];
 
@@ -131,28 +123,31 @@ public class BindCommand extends AbstractExtendedCommand
       sessionOptions = (data[26] & 0x30) >> 4;
       sessionOptionsLength = data[26] & 0x0F;
 
-      if (cryptographicControl == 0)
-        nsOffset = 0;
-      else
-        nsOffset = 8;
+      nsOffset = cryptographicControl == 0 ? 0 : 8;
 
       primaryLuNameLength = data[27 + nsOffset] & 0xFF;
       primaryLuName = Dm3270Utility.getString (data, 28 + nsOffset, primaryLuNameLength);
 
       userDataOffset = 28 + nsOffset + primaryLuNameLength;
       userDataLength = data[userDataOffset] & 0xFF;
+      int extra = data.length - userDataOffset - userDataLength - 1;
 
-      System.out.printf ("Data:%d, ns:%d, pLU:%d, user:%d%n", data.length, nsOffset,
-                         primaryLuNameLength, userDataLength);
+      System.out.printf ("Data:%d, ns:%d, pLU:%d, user:%d, extra:%d%n", data.length,
+                         nsOffset, primaryLuNameLength, userDataLength, extra);
 
-      int ptr = userDataOffset + userDataLength + 1;
-      while (ptr < data.length)
+      if (extra > 0)
       {
-        int len = data[ptr] & 0xFF;
-        String userData = Dm3270Utility.getString (data, ptr + 1, len);
-        System.out.printf ("ptr:%d, len:%d, [%s]%n", ptr, len, userData);
-        ptr += len + 1;
+        System.out.println ();
+        int ptr = userDataOffset + userDataLength + 1;
+        while (ptr < data.length)
+        {
+          int len = data[ptr] & 0xFF;
+          String userData = Dm3270Utility.getString (data, ptr + 1, len);
+          System.out.printf ("ptr:%d, len:%d, [%s]%n", ptr, len, userData);
+          ptr += len + 1;
+        }
       }
+      System.out.println ();
     }
     else
     {
