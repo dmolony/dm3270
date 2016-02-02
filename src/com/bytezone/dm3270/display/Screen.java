@@ -180,20 +180,19 @@ public class Screen extends Canvas
     return telnetState;
   }
 
+  // called from WriteCommand.process()
   public void setCurrentScreen (ScreenOption value)
   {
-    if (currentScreen != value)
-    {
-      currentScreen = value;
-      System.out.println ("changing to: " + value);
-      ScreenDimensions screenDimensions = value == ScreenOption.DEFAULT
-          ? defaultScreenDimensions : alternateScreenDimensions;
+    if (currentScreen == value)
+      return;
 
-      BufferAddress.setScreenWidth (screenDimensions.columns);
-      cursor.setScreenDimensions (screenDimensions);
-      pen.setScreenDimensions (screenDimensions);
-      historyManager.setScreenDimensions (screenDimensions);
-    }
+    currentScreen = value;
+    ScreenDimensions screenDimensions = getScreenDimensions ();
+
+    BufferAddress.setScreenWidth (screenDimensions.columns);
+    cursor.setScreenDimensions (screenDimensions);
+    pen.setScreenDimensions (screenDimensions);
+    historyManager.setScreenDimensions (screenDimensions);
   }
 
   @Override

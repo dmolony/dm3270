@@ -44,10 +44,6 @@ public class ImplicitPartition extends QueryReplyField
 
     implicitScreenDimensions = new ScreenDimensions (height, width);
     alternateScreenDimensions = new ScreenDimensions (alternateHeight, alternateWidth);
-
-    if (alternateHeight != 24 || alternateWidth != 80)
-      System.out.printf ("Alternate screen height:%d, width:%d%n", alternateHeight,
-                         alternateWidth);
   }
 
   public ScreenDimensions getScreenDimensions ()
