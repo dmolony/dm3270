@@ -21,9 +21,14 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
  */
 
 // http://publibfp.dhe.ibm.com/cgi-bin/bookmgr/BOOKS/d50a5007/6.3.20
+// z/OS V2R1.0 Communications Server: SNA Programming
 
 public class BindCommand extends AbstractExtendedCommand
 {
+  private static String[] presentationText =
+      { "Undefined", "12 x 40", "24 x 80", "24 x 80, alt in Query Reply",
+        "fixed size as defined by default values",
+        "both default and alternate as specifed" };
   private final int format;
   private final int type;
 
@@ -31,8 +36,8 @@ public class BindCommand extends AbstractExtendedCommand
   private final int fmProfile;
   private final int tsProfile;
 
-  private final LogicalUnit primaryLU;
-  private final LogicalUnit secondaryLU;
+  private final LogicalUnit primaryLuProtocols;
+  private final LogicalUnit secondaryLuProtocols;
 
   private final int wholeBIUs;
   private final int fmHeaderUsage;
@@ -51,11 +56,13 @@ public class BindCommand extends AbstractExtendedCommand
   private final int userDataOffset;
 
   private byte flags;
+  private boolean querySupported;
   private int primaryRows;
   private int primaryColumns;
   private int alternateRows;
   private int alternateColumns;
   private int presentationSpace;
+  private int compression;
   private byte cryptographicControl;
   private int primaryLuNameLength;
   private String primaryLuName;
@@ -74,14 +81,15 @@ public class BindCommand extends AbstractExtendedCommand
     format = (data[1] & 0xF0) >> 4;
     type = data[1] & 0x0F;
 
-    fmProfile = data[2] & 0xFF;         // should be 03
-    tsProfile = data[3] & 0xFF;         // should be 03
+    fmProfile = data[2] & 0xFF;         // Function Management Profile   - should be 03
+    tsProfile = data[3] & 0xFF;         // Transmission Services Profile - should be 03
     psProfile = data[14] & 0xFF;        // should be 02
+
     if (fmProfile != 3 || tsProfile != 3 || psProfile != 2)
       System.out.printf ("FM:02X, TS:%02X, PS:%02X%n", fmProfile, tsProfile, psProfile);
 
-    primaryLU = new LogicalUnit (data[4]);
-    secondaryLU = new LogicalUnit (data[5]);
+    primaryLuProtocols = new LogicalUnit (data[4]);
+    secondaryLuProtocols = new LogicalUnit (data[5]);
 
     wholeBIUs = (data[6] & 0x80) >> 7;
     fmHeaderUsage = (data[6] & 0x40) >> 6;
@@ -95,6 +103,7 @@ public class BindCommand extends AbstractExtendedCommand
     if (psProfile == 2)
     {
       flags = data[15];                               // bit 0 = 1 means Query supported
+      querySupported = (flags & 0x80) == 0x80;
 
       // 16-19 are reserved
 
@@ -102,11 +111,20 @@ public class BindCommand extends AbstractExtendedCommand
       primaryColumns = data[21] & 0xFF;
       alternateRows = data[22] & 0xFF;
       alternateColumns = data[23] & 0xFF;
+
       presentationSpace = data[24] & 0xFF;            // 0x7E means 'use default fields'
       primaryScreenDimensions = new ScreenDimensions (primaryRows, primaryColumns);
       alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
 
-      // 25 is compression
+      // presentationSpace:
+      // 00 - undefined
+      // 01 - 12 x 40
+      // 02 - 24 x 80
+      // 03 - 24 x 80 default, alternate specified in Query Reply
+      // 7E - fixed size as defined by default values
+      // 7F - both default and alternate as specifed
+
+      compression = data[25];
 
       cryptographicControl = data[26];
       privateOptions = (data[26] & 0xC0) >> 6;
@@ -131,7 +149,8 @@ public class BindCommand extends AbstractExtendedCommand
       while (ptr < data.length)
       {
         int len = data[ptr] & 0xFF;
-        System.out.printf ("ptr:%d, len:%d%n", ptr, len);
+        String userData = Dm3270Utility.getString (data, ptr + 1, len);
+        System.out.printf ("ptr:%d, len:%d, [%s]%n", ptr, len, userData);
         ptr += len + 1;
       }
     }
@@ -164,16 +183,21 @@ public class BindCommand extends AbstractExtendedCommand
   {
     StringBuilder text = new StringBuilder ("BND:\n");
 
-    text.append (String.format ("Format ............... %02X%n", format));
-    text.append (String.format ("Type ................. %02X%n", type));
+    int offset = presentationSpace <= 3 ? 0 : 0x7A;
+    String presText = presentationText[presentationSpace - offset];
+
+    text.append (String.format ("Format ............... %02X  %s%n", format,
+                                "must be zero"));
+    text.append (String.format ("Type ................. %02X  %s%n", type,
+                                (type == 1 ? "non-" : "") + "negotiable"));
     text.append ("\n");
     text.append (String.format ("FM profile ........... %02X%n", fmProfile));
     text.append (String.format ("TS profile ........... %02X%n", tsProfile));
     text.append (String.format ("PS profile ........... %02X%n", psProfile));
     text.append ("\n---- Primary LU ---------\n");
-    text.append (primaryLU);
+    text.append (primaryLuProtocols);
     text.append ("\n---- Secondary LU -------\n");
-    text.append (secondaryLU);
+    text.append (secondaryLuProtocols);
     text.append ("\n---- Common LU ----------\n");
     text.append (String.format ("whole BIUs ........... %02X%n", wholeBIUs));
     text.append (String.format ("FM header usage ...... %02X%n", fmHeaderUsage));
@@ -188,7 +212,11 @@ public class BindCommand extends AbstractExtendedCommand
     text.append (String.format ("session options ...... %02X%n", sessionOptions));
     text.append (String.format ("session options len .. %02X%n", sessionOptionsLength));
     text.append (String.format ("ns offset ............ %02X%n", nsOffset));
-    text.append ("\n---- Screen sizes ------\n");
+    text.append ("\n---- Screens ------------\n");
+    text.append (String.format ("flags ................ %02X%n", flags));
+    text.append (String.format ("query supported ...... %s%n", querySupported));
+    text.append (String.format ("Presentation space ... %02X  %s%n", presentationSpace,
+                                presText));
     text.append (String.format ("Rows ................. %02X  %3d%n", primaryRows,
                                 primaryRows));
     text.append (String.format ("Columns .............. %02X  %3d%n", primaryColumns,
@@ -197,6 +225,7 @@ public class BindCommand extends AbstractExtendedCommand
                                 alternateRows));
     text.append (String.format ("Alt Columns .......... %02X  %3d%n", alternateColumns,
                                 alternateColumns));
+    text.append (String.format ("compression .......... %02X%n", compression));
     text.append ("\n");
     text.append (String.format ("primary LU name len .. %02X%n", primaryLuNameLength));
     text.append (String.format ("primary LU name ...... %s%n", primaryLuName));
