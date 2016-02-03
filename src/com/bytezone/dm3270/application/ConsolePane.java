@@ -78,13 +78,11 @@ public class ConsolePane extends BorderPane
   private MenuItem menuItemConsoleLog;
 
   private final FontManager fontManager;
-  private final ScreenDimensions screenDimensions;
 
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
     this.telnetState = screen.getTelnetState ();
-    this.screenDimensions = screen.getScreenDimensions ();
     this.server = server;
 
     this.fontManager = screen.getFontManager ();
@@ -381,6 +379,7 @@ public class ConsolePane extends BorderPane
   @Override
   public void cursorMoved (int oldLocation, int newLocation, Field currentField)
   {
+    ScreenDimensions screenDimensions = screen.getScreenDimensions ();
     int row = newLocation / screenDimensions.columns;
     int col = newLocation % screenDimensions.columns;
     cursorLocation.setText (String.format ("%03d/%03d", row, col));
