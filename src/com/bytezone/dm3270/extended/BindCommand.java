@@ -62,7 +62,10 @@ public class BindCommand extends AbstractExtendedCommand
   private int alternateRows;
   private int alternateColumns;
   private int presentationSpace;
+
   private int compression;
+  private String compressionText;
+
   private byte cryptographicControl;
   private int primaryLuNameLength;
   private String primaryLuName;
@@ -116,7 +119,11 @@ public class BindCommand extends AbstractExtendedCommand
       primaryScreenDimensions = new ScreenDimensions (primaryRows, primaryColumns);
       alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
 
-      compression = data[25];
+      compression = data[25] & 0xFF;
+      int comp = data[25] & 0x03;
+      String[] compressionTypes =
+          { "No compression", "Compression bid", "Reserved", "Compression required" };
+      compressionText = compressionTypes[comp];
 
       cryptographicControl = data[26];
       privateOptions = (data[26] & 0xC0) >> 6;
@@ -208,8 +215,9 @@ public class BindCommand extends AbstractExtendedCommand
     text.append (String.format ("session options len .. %02X%n", sessionOptionsLength));
     text.append (String.format ("ns offset ............ %02X%n", nsOffset));
     text.append ("\n---- Screens ------------\n");
-    text.append (String.format ("flags ................ %02X%n", flags));
-    text.append (String.format ("query supported ...... %s%n", querySupported));
+    //    text.append (String.format ("flags ................ %02X%n", flags));
+    text.append (String.format ("query supported ...... %02X  %s%n", flags,
+                                querySupported));
     text.append (String.format ("Presentation space ... %02X  %s%n", presentationSpace,
                                 presText));
     text.append (String.format ("Rows ................. %02X  %3d%n", primaryRows,
@@ -220,7 +228,8 @@ public class BindCommand extends AbstractExtendedCommand
                                 alternateRows));
     text.append (String.format ("Alt Columns .......... %02X  %3d%n", alternateColumns,
                                 alternateColumns));
-    text.append (String.format ("compression .......... %02X%n", compression));
+    text.append (String.format ("compression .......... %02X  %s%n", compression,
+                                compressionText));
     text.append ("\n");
     text.append (String.format ("primary LU name len .. %02X%n", primaryLuNameLength));
     text.append (String.format ("primary LU name ...... %s%n", primaryLuName));
