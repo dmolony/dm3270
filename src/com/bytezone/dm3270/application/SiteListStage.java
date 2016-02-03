@@ -39,6 +39,7 @@ public class SiteListStage extends PreferencesStage
     fields.add (new PreferenceField ("URL", 150, Type.TEXT));
     fields.add (new PreferenceField ("Port", 50, Type.NUMBER));
     fields.add (new PreferenceField ("3270-E", 50, Type.BOOLEAN));
+    fields.add (new PreferenceField ("Model", 50, Type.NUMBER));
     fields.add (new PreferenceField ("Plugins", 50, Type.BOOLEAN));
     fields.add (new PreferenceField ("Save folder", 80, Type.TEXT));
 
@@ -103,6 +104,7 @@ public class SiteListStage extends PreferencesStage
       String url = prefs.get (keyName + "URL", "");
       int port = prefs.getInt (keyName + "Port", 23);
       boolean extended = prefs.getBoolean (keyName + "Extended", true);
+      int model = prefs.getInt (keyName + "Model", 2);
       boolean plugins = prefs.getBoolean (keyName + "Plugins", false);
       String folder = prefs.get (keyName + "Folder", "");
 
@@ -111,10 +113,10 @@ public class SiteListStage extends PreferencesStage
 
       Site site = null;
       if (name.isEmpty () || url.isEmpty ())
-        site = new Site ("", "", 23, false, false, "");
+        site = new Site ("", "", 23, false, 2, false, "");
       else
       {
-        site = new Site (name, url, port, extended, plugins, folder);
+        site = new Site (name, url, port, extended, model, plugins, folder);
         siteNames.add (name);
       }
       sites.add (site);

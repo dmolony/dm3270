@@ -28,11 +28,12 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  FieldManager (Screen screen, ContextManager contextManager)
+  FieldManager (Screen screen, ContextManager contextManager,
+      ScreenDimensions screenDimensions)
   {
     this.screen = screen;
     this.contextManager = contextManager;
-    this.screenDimensions = screen.getScreenDimensions ();
+    this.screenDimensions = screenDimensions;
     screenWatcher = new ScreenWatcher (this, screenDimensions);
   }
 
@@ -42,7 +43,7 @@ public class FieldManager
     return screenWatcher;
   }
 
-  void setScreenDimensions ()
+  void setScreenDimensions (ScreenDimensions screenDimensions)
   {
     this.screenDimensions = screen.getScreenDimensions ();
     screenWatcher = new ScreenWatcher (this, screenDimensions);

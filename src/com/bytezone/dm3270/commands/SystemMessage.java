@@ -88,7 +88,6 @@ public class SystemMessage
   private int previousTotLines = 0;
 
   private ConsoleMode consoleMode;
-  private final ScreenDimensions screenDimensions;
   int screenWidth;
 
   enum ConsoleMode
@@ -96,11 +95,16 @@ public class SystemMessage
     IPL, CONSOLE
   }
 
-  public SystemMessage (Screen screen, BatchJobListener batchJobListener)
+  public SystemMessage (Screen screen, BatchJobListener batchJobListener,
+      ScreenDimensions screenDimensions)
   {
     this.screen = screen;
     this.batchJobListener = batchJobListener;
-    screenDimensions = screen.getScreenDimensions ();
+    screenWidth = screenDimensions.columns;
+  }
+
+  public void setScreenDimensions (ScreenDimensions screenDimensions)
+  {
     screenWidth = screenDimensions.columns;
   }
 

@@ -114,12 +114,12 @@ public class Screen extends Canvas
 
     contextManager = new ContextManager ();
     fontManager = FontManager.getInstance (this, prefs);
-    fieldManager = new FieldManager (this, contextManager);
+    fieldManager = new FieldManager (this, contextManager, screenDimensions);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     transfersStage = new TransfersStage (this);
 
     consoleLogStage = new ConsoleLogStage (this);
-    systemMessage = new SystemMessage (this, transfersStage);
+    systemMessage = new SystemMessage (this, transfersStage, screenDimensions);
 
     transferManager = new TransferManager (this, serverSite);
     transferMenu = new TransferMenu (serverSite, transferManager);
@@ -193,6 +193,8 @@ public class Screen extends Canvas
     cursor.setScreenDimensions (screenDimensions);
     pen.setScreenDimensions (screenDimensions);
     historyManager.setScreenDimensions (screenDimensions);
+    fieldManager.setScreenDimensions (screenDimensions);
+    systemMessage.setScreenDimensions (screenDimensions);
   }
 
   @Override

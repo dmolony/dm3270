@@ -26,7 +26,7 @@ public class Console extends Application
 {
   private static final int MAINFRAME_EMULATOR_PORT = 5555;
   private static final Site DEFAULT_MAINFRAME =
-      new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true, false, "");
+      new Site ("mainframe", "localhost", MAINFRAME_EMULATOR_PORT, true, 2, false, "");
 
   private Stage primaryStage;
   private Rectangle2D primaryScreenBounds;
