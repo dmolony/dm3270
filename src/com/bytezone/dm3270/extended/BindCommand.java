@@ -25,10 +25,13 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class BindCommand extends AbstractExtendedCommand
 {
-  private static String[] presentationText =
-      { "Undefined", "12 x 40", "24 x 80", "24 x 80, alt in Query Reply",
+  private static final String[] presentationText =
+      { "Undefined", "12 x 40", "24 x 80", "default 24 x 80, alternate in Query Reply",
         "fixed size as defined by default values",
         "both default and alternate as specifed" };
+  private static final String[] compressionTypes =
+      { "No compression", "Compression bid", "Reserved", "Compression required" };
+
   private final int format;
   private final int type;
 
@@ -70,6 +73,7 @@ public class BindCommand extends AbstractExtendedCommand
   private int primaryLuNameLength;
   private String primaryLuName;
   private int userDataLength;
+  private int extraBytes;
 
   private ScreenDimensions primaryScreenDimensions;
   private ScreenDimensions alternateScreenDimensions;
@@ -120,10 +124,7 @@ public class BindCommand extends AbstractExtendedCommand
       alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
 
       compression = data[25] & 0xFF;
-      int comp = data[25] & 0x03;
-      String[] compressionTypes =
-          { "No compression", "Compression bid", "Reserved", "Compression required" };
-      compressionText = compressionTypes[comp];
+      compressionText = compressionTypes[data[25] & 0x03];
 
       cryptographicControl = data[26];
       privateOptions = (data[26] & 0xC0) >> 6;
@@ -137,12 +138,12 @@ public class BindCommand extends AbstractExtendedCommand
 
       userDataOffset = 28 + nsOffset + primaryLuNameLength;
       userDataLength = data[userDataOffset] & 0xFF;
-      int extra = data.length - userDataOffset - userDataLength - 1;
+      extraBytes = data.length - userDataOffset - userDataLength - 1;
 
       System.out.printf ("Data:%d, ns:%d, pLU:%d, user:%d, extra:%d%n", data.length,
-                         nsOffset, primaryLuNameLength, userDataLength, extra);
+                         nsOffset, primaryLuNameLength, userDataLength, extraBytes);
 
-      if (extra > 0)
+      if (extraBytes > 0)
       {
         System.out.println ();
         int ptr = userDataOffset + userDataLength + 1;
@@ -196,46 +197,57 @@ public class BindCommand extends AbstractExtendedCommand
     text.append (String.format ("FM profile ........... %02X%n", fmProfile));
     text.append (String.format ("TS profile ........... %02X%n", tsProfile));
     text.append (String.format ("PS profile ........... %02X%n", psProfile));
-    text.append ("\n---- Primary LU ---------\n");
-    text.append (primaryLuProtocols);
-    text.append ("\n---- Secondary LU -------\n");
-    text.append (secondaryLuProtocols);
+
+    String[] plu = primaryLuProtocols.toString ().split ("\n");
+    String[] slu = secondaryLuProtocols.toString ().split ("\n");
+    text.append ("\n---- Primary LU ---------           ---- Secondary LU -------\n");
+    for (int i = 0; i < plu.length; i++)
+      text.append (String.format ("%-35s %-35s%n", plu[i], slu[i]));
+
     text.append ("\n---- Common LU ----------\n");
-    text.append (String.format ("whole BIUs ........... %02X%n", wholeBIUs));
+    text.append (String.format ("Whole BIUs ........... %02X%n", wholeBIUs));
     text.append (String.format ("FM header usage ...... %02X%n", fmHeaderUsage));
-    text.append (String.format ("brackets usage ....... %02X%n", bracketsUsage));
-    text.append (String.format ("brackets termination . %02X%n", bracketsTermination));
-    text.append (String.format ("alt code set ......... %02X%n", altCodeSet));
-    text.append (String.format ("set availability ..... %02X%n", seqAvailability));
+    text.append (String.format ("Brackets usage ....... %02X%n", bracketsUsage));
+    text.append (String.format ("Brackets termination . %02X%n", bracketsTermination));
+    text.append (String.format ("Alt code set ......... %02X%n", altCodeSet));
+    text.append (String.format ("Set availability ..... %02X%n", seqAvailability));
     text.append (String.format ("BIS sent ............. %02X%n", bisSent));
-    text.append (String.format ("bind queuing ind ..... %02X%n", bindQueuingIndicator));
+    text.append (String.format ("Bind queuing ind ..... %02X%n", bindQueuingIndicator));
+
     text.append ("\n---- Cryptography -------\n");
-    text.append (String.format ("private options ...... %02X%n", privateOptions));
-    text.append (String.format ("session options ...... %02X%n", sessionOptions));
-    text.append (String.format ("session options len .. %02X%n", sessionOptionsLength));
-    text.append (String.format ("ns offset ............ %02X%n", nsOffset));
-    text.append ("\n---- Screens ------------\n");
-    //    text.append (String.format ("flags ................ %02X%n", flags));
-    text.append (String.format ("query supported ...... %02X  %s%n", flags,
+    text.append (String.format ("Private options ...... %02X%n", privateOptions));
+    text.append (String.format ("Session options ...... %02X%n", sessionOptions));
+    text.append (String.format ("Session options len .. %02X%n", sessionOptionsLength));
+    text.append (String.format ("NS offset ............ %02X%n", nsOffset));
+
+    text.append ("\n--- Presentation Space --\n");
+    text.append (String.format ("Query supported ...... %02X  %s%n", flags,
                                 querySupported));
     text.append (String.format ("Presentation space ... %02X  %s%n", presentationSpace,
                                 presText));
-    text.append (String.format ("Rows ................. %02X  %3d%n", primaryRows,
+    text.append (String.format ("Default rows ......... %02X  %3d%n", primaryRows,
                                 primaryRows));
-    text.append (String.format ("Columns .............. %02X  %3d%n", primaryColumns,
+    text.append (String.format ("Default columns ...... %02X  %3d%n", primaryColumns,
                                 primaryColumns));
-    text.append (String.format ("Alt Rows ............. %02X  %3d%n", alternateRows,
+    text.append (String.format ("Alternate Rows ....... %02X  %3d%n", alternateRows,
                                 alternateRows));
-    text.append (String.format ("Alt Columns .......... %02X  %3d%n", alternateColumns,
+    text.append (String.format ("Alternate Columns .... %02X  %3d%n", alternateColumns,
                                 alternateColumns));
-    text.append (String.format ("compression .......... %02X  %s%n", compression,
+    text.append ("\n");
+    text.append (String.format ("Compression .......... %02X  %s%n", compression,
                                 compressionText));
     text.append ("\n");
-    text.append (String.format ("primary LU name len .. %02X%n", primaryLuNameLength));
-    text.append (String.format ("primary LU name ...... %s%n", primaryLuName));
+    text.append (String.format ("Primary LU name len .. %02X%n", primaryLuNameLength));
+    text.append (String.format ("Primary LU name ...... %s%n", primaryLuName));
 
-    text.append (String.format ("user data offset ..... %02X%n", userDataOffset));
-    text.append (String.format ("user data length ..... %02X%n", userDataLength));
+    text.append (String.format ("User data offset ..... %02X%n", userDataOffset));
+    text.append (String.format ("User data length ..... %02X%n", userDataLength));
+    text.append ("\n");
+    text.append (String.format ("Extra bytes .......... %02X%n", extraBytes));
+
+    if (extraBytes > 0)
+      text.append (Dm3270Utility.toHex (data, userDataOffset + userDataLength + 1,
+                                        extraBytes));
 
     return text.toString ();
   }

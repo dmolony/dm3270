@@ -34,7 +34,7 @@ public class LogicalUnit
     text.append (String.format ("Response protocol .... %02X%n", responseProtocol));
     text.append (String.format ("Commit ............... %02X%n", commit));
     text.append (String.format ("SCB compression ...... %02X%n", scbCompression));
-    text.append (String.format ("send End Bracket ..... %02X%n", sendEndBracket));
+    text.append (String.format ("Send End Bracket ..... %02X%n", sendEndBracket));
 
     return text.toString ();
   }
