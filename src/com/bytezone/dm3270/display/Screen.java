@@ -189,12 +189,13 @@ public class Screen extends Canvas
     currentScreen = value;
     ScreenDimensions screenDimensions = getScreenDimensions ();
 
-    BufferAddress.setScreenWidth (screenDimensions.columns);
     cursor.setScreenDimensions (screenDimensions);
     pen.setScreenDimensions (screenDimensions);
     historyManager.setScreenDimensions (screenDimensions);
     fieldManager.setScreenDimensions (screenDimensions);
     systemMessage.setScreenDimensions (screenDimensions);
+
+    BufferAddress.setScreenWidth (screenDimensions.columns);
   }
 
   @Override

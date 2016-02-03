@@ -18,7 +18,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
   protected static final byte EXT_SEND = 8;
 
   private SubType subType;
-  private String connect;
+  private String luName = "";
   private List<Function> functions;
   private String functionsList = "";
 
@@ -60,7 +60,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
             if (buffer[ptr] == 1)
             {
               value = new String (buffer, 5, ptr - 5);          // value before the ptr
-              connect = new String (buffer, ptr + 1, length - ptr - 3);   // after
+              luName = new String (buffer, ptr + 1, length - ptr - 3);   // after
               break;
             }
           }
@@ -183,7 +183,11 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
         if (type == SubcommandType.FUNCTIONS)
           telnetState.setFunctions (functions);
         else if (type == SubcommandType.DEVICE_TYPE)
+        {
           telnetState.setDeviceType (getValue ());
+          if (!luName.isEmpty ())
+            telnetState.setLogicalUnit (luName);
+        }
         break;
 
       case DEVICE_TYPE:
@@ -201,10 +205,10 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     return functions.contains (function);
   }
 
-  public String getConnect ()
-  {
-    return connect;
-  }
+  //  public String getConnect ()
+  //  {
+  //    return connect;
+  //  }
 
   public String getFunctions ()
   {
@@ -221,7 +225,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
       case FUNCTIONS:
         return type + " " + subType + " : " + functionsList;
       case DEVICE_TYPE:
-        String connectText = connect == null ? "" : " (" + connect + ")";
+        String connectText = luName.isEmpty () ? "" : " (" + luName + ")";
         return type + " " + subType + " " + value + connectText;
       default:
         return "SUB: " + "Unknown";

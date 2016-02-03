@@ -119,14 +119,15 @@ public class ConsolePane extends BorderPane
         {
           char direction = offset.charAt (3);
           int value = Integer.parseInt (offset.substring (4));
-          System.out.printf ("Time offset: %s %d%n", direction, value);
+          System.out.printf ("Time offset : %s %d%n", direction, value);
           ZonedDateTime now = ZonedDateTime.now (ZoneOffset.UTC);
-          System.out.println ("UTC : " + now);
+          System.out.println ("UTC         : " + now);
           if (direction == '+')
             now = now.plusHours (value);
           else
             now = now.minusHours (value);
-          System.out.println ("Site: " + now);
+          System.out.println ("Site        : " + now);
+          System.out.println ();
         }
       }
     }

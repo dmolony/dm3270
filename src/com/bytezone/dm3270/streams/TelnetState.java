@@ -35,6 +35,7 @@ public class TelnetState implements Runnable
   private boolean doesTerminalType = false;
   private String deviceType = "";
   private List<Function> functions;
+  private String luName;
 
   private String terminal = "";
   private TerminalServer terminalServer;
@@ -211,18 +212,24 @@ public class TelnetState implements Runnable
     this.terminal = terminal;
   }
 
-  // called from TelnetListener.processTelnetSubcommand()
+  // called from TN3270ExtendedSubcommand.process()
   public void setDeviceType (String deviceType)
   {
     System.out.println ("Device Type : " + deviceType);
     this.deviceType = deviceType;
   }
 
-  // called from TelnetListener.processTelnetSubcommand()
+  // called from TN3270ExtendedSubcommand.process()
   public void setFunctions (List<Function> functions)
   {
     System.out.println ("Functions   : " + functions);
     this.functions = functions;
+  }
+
+  public void setLogicalUnit (String luName)
+  {
+    System.out.println ("LU name     : " + luName);
+    this.luName = luName;
   }
 
   // ---------------------------------------------------------------------------------//
