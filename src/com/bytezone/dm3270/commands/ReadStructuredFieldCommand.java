@@ -42,7 +42,8 @@ public class ReadStructuredFieldCommand extends Command
     clientNames.put ("C1F30DBA8306E1887C7EE2D976C6B24A", "dm3270 (old1)");
     clientNames.put ("0BA60960D0116F016EBA4D14E610AA39", "Vista2");
     clientNames.put ("08997C53F68A969853867072174CD882", "dm3270 (old2)");
-    clientNames.put ("BD47AE1B606E2DF29C7D24DD128648A8", "dm3270");
+    clientNames.put ("BD47AE1B606E2DF29C7D24DD128648A8", "dm3270 Model 2");
+    clientNames.put ("00235B1025AEAA11132E71EC16CD3B06", "dm3270 Model 5");
     clientNames.put ("26ED6D641768FDF25889838F29248F07", "Vista Model 4");
     clientNames.put ("8EC3FF4989C2A3B7CB5B6B464CE6C24D", "Vista Model 3");
     clientNames.put ("93FCC5A3CC3515F167F995DE634B193F", "Vista Model 5");
@@ -113,6 +114,8 @@ public class ReadStructuredFieldCommand extends Command
       byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
       signature = DatatypeConverter.printHexBinary (digest);
       String clientName = clientNames.get (signature);
+      if (clientName == null)
+        System.out.printf ("Unknown signature: %s%n", signature);
       return clientName == null ? "Unknown" : clientName;
     }
     catch (NoSuchAlgorithmException e)

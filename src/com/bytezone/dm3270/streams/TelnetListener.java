@@ -18,12 +18,7 @@ import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
-import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand;
-import com.bytezone.dm3270.telnet.TelnetCommand;
-import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
-import com.bytezone.dm3270.telnet.TelnetProcessor;
-import com.bytezone.dm3270.telnet.TelnetSubcommand;
-import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
+import com.bytezone.dm3270.telnet.*;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
@@ -33,11 +28,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   private final Session session;
   private final Source source;
 
-  // convenience variables obtained from the Session parameter
   private final TelnetState telnetState;
   private final Function function;
-
-  private Screen screen;
+  private final Screen screen;
 
   private CommandHeader currentCommandHeader;
   private LocalDateTime currentDateTime;
@@ -51,11 +44,12 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   public TelnetListener (Source source, Session session, Function function, Screen screen,
       TelnetState telnetState)
   {
-    this.session = session;       // where we store the session records
-    this.source = source;         // are we listening to a SERVER or a CLIENT?
-
+    this.screen = screen;
     this.telnetState = telnetState;
     this.function = function;
+
+    this.source = source;         // are we listening to a SERVER or a CLIENT?
+    this.session = session;       // where we store the session records
   }
 
   // Use this when not recording the session and running in TERMINAL mode.
@@ -63,8 +57,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   {
     this.screen = screen;
     this.telnetState = telnetState;
-
     this.function = screen.getFunction ();        // should be TERMINAL
+
     this.source = Source.SERVER;                  // listening to a server
     this.session = null;
 

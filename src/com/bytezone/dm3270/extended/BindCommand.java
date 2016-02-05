@@ -133,7 +133,7 @@ public class BindCommand extends AbstractExtendedCommand
         while (ptr < data.length)
         {
           int len = data[ptr] & 0xFF;
-          String userData = Dm3270Utility.getString (data, ptr + 1, len);
+          String userData = Dm3270Utility.getSanitisedString (data, ptr + 1, len);
           System.out.printf ("ptr:%d, len:%d, [%s]%n", ptr, len, userData);
           ptr += len + 1;
         }
