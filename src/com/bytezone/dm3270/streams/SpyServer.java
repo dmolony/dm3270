@@ -82,7 +82,7 @@ public class SpyServer implements Runnable
       // TelnetSocket.link() will connect both sockets to each other (bidirectional)
       serverTelnetSocket.link (clientTelnetSocket);
 
-      // stop the session from using tn3270E mode
+      // stop the session from using tn3270E mode?
       System.out.printf ("Prevent 3270E: %s%n", prevent3270E);
       serverTelnetSocket.prevent3270E (prevent3270E);
 
@@ -101,14 +101,11 @@ public class SpyServer implements Runnable
     catch (SocketException e)     // caused by closing the clientServerSocket
     {
       System.out.println ("tata");
+      close ();
     }
     catch (IOException e)
     {
       e.printStackTrace ();
-    }
-    finally
-    {
-      close ();
     }
   }
 

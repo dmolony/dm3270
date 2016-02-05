@@ -54,7 +54,6 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     this.session = session;       // where we store the session records
     this.source = source;         // are we listening to a SERVER or a CLIENT?
 
-    //    this.telnetState = session.getTelnetState ();
     this.telnetState = telnetState;
     this.function = function;
   }
@@ -64,9 +63,12 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   {
     this.screen = screen;
     this.telnetState = telnetState;
-    this.function = screen.getFunction ();
+
+    this.function = screen.getFunction ();        // should be TERMINAL
     this.source = Source.SERVER;                  // listening to a server
     this.session = null;
+
+    assert function == Function.TERMINAL;
   }
 
   // This method is always called with a copy of the original buffer. It can be

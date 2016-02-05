@@ -5,6 +5,7 @@ import java.security.InvalidParameterException;
 import com.bytezone.dm3270.buffers.AbstractTelnetCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
+import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TelnetCommand extends AbstractTelnetCommand
 {
@@ -118,24 +119,23 @@ public class TelnetCommand extends AbstractTelnetCommand
       {
         boolean preference = telnetState.do3270Extended ();     // preference
         reply[1] = preference ? WILL : WONT;
+        System.out.println ("1");
+        Dm3270Utility.printStackTrace ();
         telnetState.setDoes3270Extended (preference);           // set actual
       }
-
-      if (commandType == CommandType.TERMINAL_TYPE)
+      else if (commandType == CommandType.TERMINAL_TYPE)
       {
         boolean preference = telnetState.doTerminalType ();     // preference
         reply[1] = preference ? WILL : WONT;
         telnetState.setDoesTerminalType (preference);           // set actual
       }
-
-      if (commandType == CommandType.EOR)
+      else if (commandType == CommandType.EOR)
       {
         boolean preference = telnetState.doEOR ();              // preference
         reply[1] = preference ? WILL : WONT;
         telnetState.setDoesEOR (preference);                    // set actual
       }
-
-      if (commandType == CommandType.BINARY)
+      else if (commandType == CommandType.BINARY)
       {
         boolean preference = telnetState.doBinary ();           // preference
         reply[1] = preference ? WILL : WONT;
@@ -152,6 +152,7 @@ public class TelnetCommand extends AbstractTelnetCommand
       if (commandType == CommandType.TN3270_EXTENDED)
       {
         reply[1] = telnetState.does3270Extended () ? DO : DONT;
+        System.out.println ("2");
         telnetState.setDoes3270Extended (true);
       }
 
