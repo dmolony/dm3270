@@ -78,9 +78,6 @@ public class Session implements Iterable<SessionRecord>
 
   private void init (SessionReader client, SessionReader server) throws Exception
   {
-    telnetState.setDo3270Extended (true);
-    telnetState.setDoTerminalType (true);
-
     TelnetListener clientTelnetListener =
         new TelnetListener (Source.CLIENT, this, function, null, telnetState);
     TelnetListener serverTelnetListener =
@@ -101,14 +98,7 @@ public class Session implements Iterable<SessionRecord>
               && buffer[buffer.length - 1] == (byte) 0xEF)
             labels.add (server.getLabel ());
         }
-
-    //    screen.setScreenDimensions (screenDimensions);
   }
-
-  //  public TelnetState getTelnetState ()
-  //  {
-  //    return telnetState;
-  //  }
 
   public List<String> getLabels ()
   {
