@@ -114,7 +114,8 @@ public class Console extends Application
             Session session = new Session (telnetState, path);   // can throw Exception
             alternateScreenDimensions = session.getScreenDimensions ();
 
-            Optional<Site> serverSite = findSite (session.getServerName ());
+            Optional<Site> serverSite = optionStage.serverSitesListStage
+                .getSelectedSite (session.getServerName ());
             if (serverSite.isPresent ())
             {
               Site site = serverSite.get ();
@@ -142,23 +143,7 @@ public class Console extends Application
         if (optionalServerSite.isPresent ())
         {
           Site serverSite = optionalServerSite.get ();
-          int model = serverSite.getModel ();
-          System.out.println ("model: " + model);
-          if (model == 4)
-          {
-            alternateScreenDimensions = new ScreenDimensions (43, 80);
-            telnetState.setDoDeviceType (4);
-          }
-          else if (model == 3)
-          {
-            alternateScreenDimensions = new ScreenDimensions (32, 80);
-            telnetState.setDoDeviceType (3);
-          }
-          else if (model == 5)
-          {
-            alternateScreenDimensions = new ScreenDimensions (27, 132);
-            telnetState.setDoDeviceType (5);
-          }
+          setModel (serverSite);
           setConsolePane (createScreen (Function.TERMINAL, serverSite), serverSite);
           consolePane.connect ();
         }
@@ -200,12 +185,38 @@ public class Console extends Application
       optionStage.show ();
   }
 
-  private Optional<Site> findSite (String serverName)
+  private void setModel (Site serverSite)
   {
-    Optional<Site> optionalServerSite =
-        optionStage.serverSitesListStage.getSelectedSite (serverName);
-    return optionalServerSite;
+    int model = serverSite.getModel ();
+    System.out.println ("model: " + model);
+    switch (model)
+    {
+      case 2:
+        alternateScreenDimensions = new ScreenDimensions (24, 80);
+        telnetState.setDoDeviceType (2);
+        break;
+      case 3:
+        alternateScreenDimensions = new ScreenDimensions (32, 80);
+        telnetState.setDoDeviceType (3);
+        break;
+      case 4:
+        alternateScreenDimensions = new ScreenDimensions (43, 80);
+        telnetState.setDoDeviceType (4);
+        break;
+      case 5:
+        alternateScreenDimensions = new ScreenDimensions (27, 132);
+        telnetState.setDoDeviceType (5);
+      default:
+        System.out.println ("Invalid model number: " + model);
+    }
   }
+
+  //  private Optional<Site> findSite (String serverName)
+  //  {
+  //    Optional<Site> optionalServerSite =
+  //        optionStage.serverSitesListStage.getSelectedSite (serverName);
+  //    return optionalServerSite;
+  //  }
 
   private void setConsolePane (Screen screen, Site serverSite)
   {
