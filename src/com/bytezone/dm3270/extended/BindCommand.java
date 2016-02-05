@@ -58,9 +58,6 @@ public class BindCommand extends AbstractExtendedCommand
   private int userDataLength;
   private int extraBytes;
 
-  //  private ScreenDimensions primaryScreenDimensions;
-  //  private ScreenDimensions alternateScreenDimensions;
-
   public BindCommand (CommandHeader commandHeader, byte[] buffer, int offset, int length)
   {
     super (commandHeader, buffer, offset, length);
@@ -73,7 +70,7 @@ public class BindCommand extends AbstractExtendedCommand
 
     fmProfile = data[2] & 0xFF;         // Function Management Profile   - should be 03
     tsProfile = data[3] & 0xFF;         // Transmission Services Profile - should be 03
-    psProfile = data[14] & 0xFF;        // should be 02
+    psProfile = data[14] & 0xFF;        // Presentation Space Profile    - should be 02
 
     if (fmProfile != 3 || tsProfile != 3 || psProfile != 2)
       System.out.printf ("FM:02X, TS:%02X, PS:%02X%n", fmProfile, tsProfile, psProfile);
@@ -102,9 +99,6 @@ public class BindCommand extends AbstractExtendedCommand
       alternateRows = data[22] & 0xFF;
       alternateColumns = data[23] & 0xFF;
       presentationSpace = data[24] & 0xFF;
-
-      //      primaryScreenDimensions = new ScreenDimensions (primaryRows, primaryColumns);
-      //      alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
 
       compression = data[25] & 0xFF;
       compressionText = compressionTypes[data[25] & 0x03];

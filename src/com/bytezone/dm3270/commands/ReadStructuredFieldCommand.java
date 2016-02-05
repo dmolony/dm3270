@@ -25,7 +25,7 @@ public class ReadStructuredFieldCommand extends Command
   private static Map<String, String> clientNames = new HashMap<> ();
 
   private final List<StructuredField> structuredFields = new ArrayList<> ();
-  private static final String line =
+  private static final String SEPARATOR =
       "\n-------------------------------------------------------------------------";
 
   private String clientName = "";
@@ -35,24 +35,26 @@ public class ReadStructuredFieldCommand extends Command
 
   static
   {
-    clientNames.put ("53952DB14CBB53CD7C1E5AB1FDFDA193", "tn3270X");
+    clientNames.put ("0BA60960D0116F016EBA4D14E610AA39", "Vista2");
     clientNames.put ("12F0F4557FB72796E8A4398AA694255C", "Vista Model 2");
+    clientNames.put ("8EC3FF4989C2A3B7CB5B6B464CE6C24D", "Vista Model 3");
+    clientNames.put ("26ED6D641768FDF25889838F29248F07", "Vista Model 4");
+    clientNames.put ("93FCC5A3CC3515F167F995DE634B193F", "Vista Model 5");
+
+    clientNames.put ("53952DB14CBB53CD7C1E5AB1FDFDA193", "tn3270X");
     clientNames.put ("19D8CA4B4B59357FBF37FB9B7F38EC21", "x3270");
     clientNames.put ("F960E103861F3920FC3B8AF00D8B8601", "FreeHost");
+
     clientNames.put ("C1F30DBA8306E1887C7EE2D976C6B24A", "dm3270 (old1)");
-    clientNames.put ("0BA60960D0116F016EBA4D14E610AA39", "Vista2");
     clientNames.put ("08997C53F68A969853867072174CD882", "dm3270 (old2)");
     clientNames.put ("BD47AE1B606E2DF29C7D24DD128648A8", "dm3270 Model 2");
     clientNames.put ("00235B1025AEAA11132E71EC16CD3B06", "dm3270 Model 5");
-    clientNames.put ("26ED6D641768FDF25889838F29248F07", "Vista Model 4");
-    clientNames.put ("8EC3FF4989C2A3B7CB5B6B464CE6C24D", "Vista Model 3");
-    clientNames.put ("93FCC5A3CC3515F167F995DE634B193F", "Vista Model 5");
   }
 
   // called from ReadPartitionSF via ReadPartitionQuery
   public ReadStructuredFieldCommand (TelnetState telnetState)
   {
-    this (buildReply (2, telnetState));
+    this (buildReply (telnetState));
   }
 
   public ReadStructuredFieldCommand (byte[] buffer)
@@ -135,7 +137,7 @@ public class ReadStructuredFieldCommand extends Command
     return screenDimensions;
   }
 
-  private static byte[] buildReply (int version, TelnetState telnetState)
+  private static byte[] buildReply (TelnetState telnetState)
   {
     Highlight highlight = new Highlight ();
     Color color = new Color ();
@@ -146,41 +148,15 @@ public class ReadStructuredFieldCommand extends Command
 
     List<QueryReplyField> replyFields = new ArrayList<> ();
 
-    // based on Freehost
-    if (version == 1)
-    {
-      replyFields.add (color);
-      replyFields.add (highlight);
-      replyFields.add (partition);
-    }
-    // based on Vista
-    else if (version == 2)
-    {
-      //      replyFields.add (new UsableArea (24, 80));          // rows, columns
-      replyFields.add (new UsableArea (screenDimensions.rows, screenDimensions.columns));
-      replyFields.add (new CharacterSets ());
-      replyFields.add (color);
-      replyFields.add (highlight);
-      replyFields.add (new ReplyModes ());
-      replyFields.add (new AuxilliaryDevices ());
-      replyFields.add (partition);
-      replyFields.add (new OEMAuxilliaryDevice ());
-      replyFields.add (new DistributedDataManagement ());
-    }
-    // based on x3270
-    else
-    {
-      //      replyFields.add (new UsableArea (24, 80));
-      replyFields.add (new UsableArea (43, 80));          // rows, columns
-      replyFields.add (new AlphanumericPartitions ());
-      replyFields.add (new CharacterSets ());
-      replyFields.add (color);
-      replyFields.add (highlight);
-      replyFields.add (new ReplyModes ());
-      replyFields.add (partition);
-      replyFields.add (new DistributedDataManagement ());
-      replyFields.add (new RPQNames ());
-    }
+    replyFields.add (new UsableArea (screenDimensions.rows, screenDimensions.columns));
+    replyFields.add (new CharacterSets ());
+    replyFields.add (color);
+    replyFields.add (highlight);
+    replyFields.add (new ReplyModes ());
+    replyFields.add (new AuxilliaryDevices ());
+    replyFields.add (partition);
+    replyFields.add (new OEMAuxilliaryDevice ());
+    replyFields.add (new DistributedDataManagement ());
 
     Summary summary = new Summary (replyFields);      // adds itself to the list
 
@@ -229,13 +205,13 @@ public class ReadStructuredFieldCommand extends Command
 
     for (StructuredField sf : structuredFields)
     {
-      text.append (line);
+      text.append (SEPARATOR);
       text.append ("\n");
       text.append (sf);
     }
 
     if (structuredFields.size () > 0)
-      text.append (line);
+      text.append (SEPARATOR);
 
     return text.toString ();
   }
