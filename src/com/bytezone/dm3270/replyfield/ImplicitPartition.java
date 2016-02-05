@@ -10,7 +10,7 @@ public class ImplicitPartition extends QueryReplyField
   private ScreenDimensions implicitScreenDimensions;
   private ScreenDimensions alternateScreenDimensions;
 
-  public ImplicitPartition ()
+  public ImplicitPartition (int rows, int columns)
   {
     super (IMP_PART_QUERY_REPLY);
 
@@ -23,10 +23,11 @@ public class ImplicitPartition extends QueryReplyField
     reply[ptr++] = 0x01;
     reply[ptr++] = 0x00;
 
-    ptr = Dm3270Utility.packUnsignedShort (0x50, reply, ptr);     // width
-    ptr = Dm3270Utility.packUnsignedShort (0x18, reply, ptr);     // height
-    ptr = Dm3270Utility.packUnsignedShort (0x50, reply, ptr);     // alt width
-    ptr = Dm3270Utility.packUnsignedShort (0x18, reply, ptr);     // alt height
+    ptr = Dm3270Utility.packUnsignedShort (0x50, reply, ptr);         // width
+    ptr = Dm3270Utility.packUnsignedShort (0x18, reply, ptr);         // height
+
+    ptr = Dm3270Utility.packUnsignedShort (columns, reply, ptr);      // alt width
+    ptr = Dm3270Utility.packUnsignedShort (rows, reply, ptr);         // alt height
 
     checkDataLength (ptr);
   }

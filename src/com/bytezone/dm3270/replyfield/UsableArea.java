@@ -34,6 +34,8 @@ public class UsableArea extends QueryReplyField
     // copy the screen dimensions into the reply (skipping 4 header bytes)
     Dm3270Utility.packUnsignedShort (columns, reply, 6);
     Dm3270Utility.packUnsignedShort (rows, reply, 8);
+    //    Dm3270Utility.packUnsignedShort (rows * columns, reply, 21);
+    Dm3270Utility.packUnsignedShort (1920, reply, 21);
 
     checkDataLength (ptr);
   }

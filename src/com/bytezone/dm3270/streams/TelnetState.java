@@ -32,6 +32,7 @@ public class TelnetState implements Runnable
   private boolean doesBinary;
   private boolean doesTerminalType;
   private String deviceType = "";
+  private int modelNo;
   private List<Function> functions;
   private String luName;
 
@@ -44,8 +45,8 @@ public class TelnetState implements Runnable
   private volatile boolean running = false;
   private Thread thread;
 
-  private ScreenDimensions primary;
-  private ScreenDimensions secondary;
+  private final ScreenDimensions primary = new ScreenDimensions (24, 80);
+  private ScreenDimensions secondary = new ScreenDimensions (24, 80);
 
   private int totalReads;
   private int totalWrites;
@@ -142,14 +143,6 @@ public class TelnetState implements Runnable
     }
   }
 
-  public void setScreenDimensions (ScreenDimensions primary, ScreenDimensions secondary)
-  {
-    this.primary = primary;
-    this.secondary = secondary;
-
-    fireTelnetStateChange ();
-  }
-
   public ScreenDimensions getPrimary ()
   {
     return primary;
@@ -163,7 +156,7 @@ public class TelnetState implements Runnable
   public String getSummary ()
   {
     if (totalReads == 0 || totalWrites == 0)
-      return "No data";
+      return "Nothing to report";
 
     int averageReads = totalBytesRead / totalReads;
     int averageWrites = totalBytesWritten / totalWrites;
@@ -225,6 +218,35 @@ public class TelnetState implements Runnable
   {
     System.out.println ("Device Type          : " + deviceType);
     this.deviceType = deviceType;
+
+    modelNo = 0;
+    for (int i = 2; i <= 5; i++)
+    {
+      if (terminalTypes[i].equals (deviceType))
+      {
+        modelNo = i;
+        break;
+      }
+    }
+
+    switch (modelNo)
+    {
+      case 2:
+        secondary = new ScreenDimensions (24, 80);
+        break;
+      case 3:
+        secondary = new ScreenDimensions (32, 80);
+        break;
+      case 4:
+        secondary = new ScreenDimensions (43, 80);
+        break;
+      case 5:
+        secondary = new ScreenDimensions (27, 132);
+        break;
+      default:
+        secondary = new ScreenDimensions (24, 80);
+        System.out.println ("Model not found: " + deviceType);
+    }
   }
 
   // called from TN3270ExtendedSubcommand.process()
@@ -325,6 +347,7 @@ public class TelnetState implements Runnable
   public void setDoDeviceType (int modelNo)
   {
     doDeviceType = terminalTypes[modelNo];
+    System.out.println ("setting: " + doDeviceType);
   }
 
   @Override

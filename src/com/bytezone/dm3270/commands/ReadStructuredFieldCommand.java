@@ -13,19 +13,8 @@ import javax.xml.bind.DatatypeConverter;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.filetransfer.FileTransferInboundSF;
-import com.bytezone.dm3270.replyfield.AlphanumericPartitions;
-import com.bytezone.dm3270.replyfield.AuxilliaryDevices;
-import com.bytezone.dm3270.replyfield.CharacterSets;
-import com.bytezone.dm3270.replyfield.Color;
-import com.bytezone.dm3270.replyfield.DistributedDataManagement;
-import com.bytezone.dm3270.replyfield.Highlight;
-import com.bytezone.dm3270.replyfield.ImplicitPartition;
-import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
-import com.bytezone.dm3270.replyfield.QueryReplyField;
-import com.bytezone.dm3270.replyfield.RPQNames;
-import com.bytezone.dm3270.replyfield.ReplyModes;
-import com.bytezone.dm3270.replyfield.Summary;
-import com.bytezone.dm3270.replyfield.UsableArea;
+import com.bytezone.dm3270.replyfield.*;
+import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
@@ -60,9 +49,9 @@ public class ReadStructuredFieldCommand extends Command
   }
 
   // called from ReadPartitionSF via ReadPartitionQuery
-  public ReadStructuredFieldCommand ()
+  public ReadStructuredFieldCommand (TelnetState telnetState)
   {
-    this (buildReply (2));
+    this (buildReply (2, telnetState));
   }
 
   public ReadStructuredFieldCommand (byte[] buffer)
@@ -143,11 +132,14 @@ public class ReadStructuredFieldCommand extends Command
     return screenDimensions;
   }
 
-  private static byte[] buildReply (int version)
+  private static byte[] buildReply (int version, TelnetState telnetState)
   {
     Highlight highlight = new Highlight ();
     Color color = new Color ();
-    ImplicitPartition partition = new ImplicitPartition ();
+
+    ScreenDimensions screenDimensions = telnetState.getSecondary ();
+    ImplicitPartition partition =
+        new ImplicitPartition (screenDimensions.rows, screenDimensions.columns);
 
     List<QueryReplyField> replyFields = new ArrayList<> ();
 
@@ -161,7 +153,8 @@ public class ReadStructuredFieldCommand extends Command
     // based on Vista
     else if (version == 2)
     {
-      replyFields.add (new UsableArea (24, 80));
+      //      replyFields.add (new UsableArea (24, 80));          // rows, columns
+      replyFields.add (new UsableArea (screenDimensions.rows, screenDimensions.columns));
       replyFields.add (new CharacterSets ());
       replyFields.add (color);
       replyFields.add (highlight);
@@ -174,7 +167,8 @@ public class ReadStructuredFieldCommand extends Command
     // based on x3270
     else
     {
-      replyFields.add (new UsableArea (24, 80));
+      //      replyFields.add (new UsableArea (24, 80));
+      replyFields.add (new UsableArea (43, 80));          // rows, columns
       replyFields.add (new AlphanumericPartitions ());
       replyFields.add (new CharacterSets ());
       replyFields.add (color);

@@ -142,6 +142,23 @@ public class Console extends Application
         if (optionalServerSite.isPresent ())
         {
           Site serverSite = optionalServerSite.get ();
+          int model = serverSite.getModel ();
+          System.out.println ("model: " + model);
+          if (model == 4)
+          {
+            alternateScreenDimensions = new ScreenDimensions (43, 80);
+            telnetState.setDoDeviceType (4);
+          }
+          else if (model == 3)
+          {
+            alternateScreenDimensions = new ScreenDimensions (32, 80);
+            telnetState.setDoDeviceType (3);
+          }
+          else if (model == 5)
+          {
+            alternateScreenDimensions = new ScreenDimensions (27, 132);
+            telnetState.setDoDeviceType (5);
+          }
           setConsolePane (createScreen (Function.TERMINAL, serverSite), serverSite);
           consolePane.connect ();
         }

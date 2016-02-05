@@ -5,7 +5,6 @@ import java.security.InvalidParameterException;
 import com.bytezone.dm3270.buffers.AbstractTelnetCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TelnetCommand extends AbstractTelnetCommand
 {
@@ -119,8 +118,8 @@ public class TelnetCommand extends AbstractTelnetCommand
       {
         boolean preference = telnetState.do3270Extended ();     // preference
         reply[1] = preference ? WILL : WONT;
-        System.out.println ("1");
-        Dm3270Utility.printStackTrace ();
+        //        System.out.println ("1");
+        //        Dm3270Utility.printStackTrace ();
         telnetState.setDoes3270Extended (preference);           // set actual
       }
       else if (commandType == CommandType.TERMINAL_TYPE)
@@ -152,7 +151,7 @@ public class TelnetCommand extends AbstractTelnetCommand
       if (commandType == CommandType.TN3270_EXTENDED)
       {
         reply[1] = telnetState.does3270Extended () ? DO : DONT;
-        System.out.println ("2");
+        //        System.out.println ("2");
         telnetState.setDoes3270Extended (true);
       }
 

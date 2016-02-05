@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.extended;
 
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 // http://publibfp.dhe.ibm.com/cgi-bin/bookmgr/BOOKS/d50a5007/6.3.20
@@ -59,8 +58,8 @@ public class BindCommand extends AbstractExtendedCommand
   private int userDataLength;
   private int extraBytes;
 
-  private ScreenDimensions primaryScreenDimensions;
-  private ScreenDimensions alternateScreenDimensions;
+  //  private ScreenDimensions primaryScreenDimensions;
+  //  private ScreenDimensions alternateScreenDimensions;
 
   public BindCommand (CommandHeader commandHeader, byte[] buffer, int offset, int length)
   {
@@ -104,8 +103,8 @@ public class BindCommand extends AbstractExtendedCommand
       alternateColumns = data[23] & 0xFF;
       presentationSpace = data[24] & 0xFF;
 
-      primaryScreenDimensions = new ScreenDimensions (primaryRows, primaryColumns);
-      alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
+      //      primaryScreenDimensions = new ScreenDimensions (primaryRows, primaryColumns);
+      //      alternateScreenDimensions = new ScreenDimensions (alternateRows, alternateColumns);
 
       compression = data[25] & 0xFF;
       compressionText = compressionTypes[data[25] & 0x03];
@@ -155,8 +154,7 @@ public class BindCommand extends AbstractExtendedCommand
   @Override
   public void process (Screen screen)
   {
-    screen.getTelnetState ().setScreenDimensions (primaryScreenDimensions,
-                                                  alternateScreenDimensions);
+    //    System.out.println (this);
   }
 
   @Override
