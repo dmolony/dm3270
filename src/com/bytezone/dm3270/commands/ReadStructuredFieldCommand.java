@@ -116,7 +116,7 @@ public class ReadStructuredFieldCommand extends Command
       byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
       signature = DatatypeConverter.printHexBinary (digest);
       String clientName = clientNames.get (signature);
-      if (clientName == null)
+      if (clientName == null && false)
         System.out.printf ("Unknown signature: %s%n", signature);
       return clientName == null ? "Unknown" : clientName;
     }
