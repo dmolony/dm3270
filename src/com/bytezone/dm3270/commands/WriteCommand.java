@@ -95,17 +95,13 @@ public class WriteCommand extends Command
     boolean screenDrawRequired = false;
 
     if (eraseWrite)
-      screen
-          .setCurrentScreen (alternate ? ScreenOption.ALTERNATE : ScreenOption.DEFAULT);
-
-    if (eraseWrite)
     {
+      screen.setCurrentScreen (alternate ? ScreenOption.ALTERNATE : ScreenOption.DEFAULT);
       screen.lockKeyboard ("Erase Write");
       screen.clearScreen ();            // resets pen
     }
     else
       screen.lockKeyboard ("Write");
-    //      screen.getPen ().moveTo (0);
 
     if (orders.size () > 0)
     {
