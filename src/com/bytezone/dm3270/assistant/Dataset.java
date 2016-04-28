@@ -11,9 +11,8 @@ public class Dataset
 
   private StringProperty volumeProperty;
   private StringProperty deviceProperty;
-  private StringProperty dsorgProperty;
-  private StringProperty recfmProperty;
   private StringProperty catalogProperty;
+
   private StringProperty createdProperty;
   private StringProperty expiresProperty;
   private StringProperty referredDateProperty;
@@ -23,8 +22,15 @@ public class Dataset
   private IntegerProperty cylindersProperty;
   private IntegerProperty extentsProperty;
   private IntegerProperty percentUsedProperty;
+
+  private StringProperty dsorgProperty;
+  private StringProperty recfmProperty;
   private IntegerProperty lreclProperty;
   private IntegerProperty blksizeProperty;
+
+  // ---------------------------------------------------------------------------------//
+  // Constructor
+  // ---------------------------------------------------------------------------------//
 
   public Dataset (String name)
   {
@@ -92,48 +98,6 @@ public class Dataset
     if (deviceProperty == null)
       deviceProperty = new SimpleStringProperty ();
     return deviceProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // Dsorg
-  // ---------------------------------------------------------------------------------//
-
-  public final void setDsorg (String value)
-  {
-    dsorgProperty ().set (value);
-  }
-
-  public final String getDsorg ()
-  {
-    return dsorgProperty ().get ();
-  }
-
-  public final StringProperty dsorgProperty ()
-  {
-    if (dsorgProperty == null)
-      dsorgProperty = new SimpleStringProperty ();
-    return dsorgProperty;
-  }
-
-  // ---------------------------------------------------------------------------------//
-  // Recfm
-  // ---------------------------------------------------------------------------------//
-
-  public final void setRecfm (String value)
-  {
-    recfmProperty ().set (value);
-  }
-
-  public final String getRecfm ()
-  {
-    return recfmProperty ().get ();
-  }
-
-  public final StringProperty recfmProperty ()
-  {
-    if (recfmProperty == null)
-      recfmProperty = new SimpleStringProperty ();
-    return recfmProperty;
   }
 
   // ---------------------------------------------------------------------------------//
@@ -326,6 +290,48 @@ public class Dataset
   }
 
   // ---------------------------------------------------------------------------------//
+  // Dsorg
+  // ---------------------------------------------------------------------------------//
+
+  public final void setDsorg (String value)
+  {
+    dsorgProperty ().set (value);
+  }
+
+  public final String getDsorg ()
+  {
+    return dsorgProperty ().get ();
+  }
+
+  public final StringProperty dsorgProperty ()
+  {
+    if (dsorgProperty == null)
+      dsorgProperty = new SimpleStringProperty ();
+    return dsorgProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Recfm
+  // ---------------------------------------------------------------------------------//
+
+  public final void setRecfm (String value)
+  {
+    recfmProperty ().set (value);
+  }
+
+  public final String getRecfm ()
+  {
+    return recfmProperty ().get ();
+  }
+
+  public final StringProperty recfmProperty ()
+  {
+    if (recfmProperty == null)
+      recfmProperty = new SimpleStringProperty ();
+    return recfmProperty;
+  }
+
+  // ---------------------------------------------------------------------------------//
   // Lrecl
   // ---------------------------------------------------------------------------------//
 
@@ -366,6 +372,10 @@ public class Dataset
       blksizeProperty = new SimpleIntegerProperty ();
     return blksizeProperty;
   }
+
+  // ---------------------------------------------------------------------------------//
+  // toString
+  // ---------------------------------------------------------------------------------//
 
   @Override
   public String toString ()
