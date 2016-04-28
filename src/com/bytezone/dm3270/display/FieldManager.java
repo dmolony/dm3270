@@ -37,8 +37,8 @@ public class FieldManager implements Initiator
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
-  private final BlockingQueue<DatabaseRequest> queue = new ArrayBlockingQueue<> (64);
-  private final DatabaseThread databaseThread;
+  private BlockingQueue<DatabaseRequest> queue;
+  private DatabaseThread databaseThread;
 
   FieldManager (Screen screen, ContextManager contextManager,
       ScreenDimensions screenDimensions, Site serverSite)
@@ -47,18 +47,22 @@ public class FieldManager implements Initiator
     this.contextManager = contextManager;
     this.screenDimensions = screenDimensions;
 
-    databaseThread = new DatabaseThread (serverSite.getName () + ".db", queue);
-    databaseThread.start ();
-    try
+    if (serverSite != null)
     {
-      queue.put (new DatabaseRequest (this, OPEN));
-    }
-    catch (InterruptedException e)
-    {
-      e.printStackTrace ();
+      queue = new ArrayBlockingQueue<> (64);
+      databaseThread = new DatabaseThread (serverSite.getName () + ".db", queue);
+      databaseThread.start ();
+      try
+      {
+        queue.put (new DatabaseRequest (this, OPEN));
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace ();
+      }
     }
 
-    screenWatcher = new ScreenWatcher (this, screenDimensions, databaseThread);
+    screenWatcher = new ScreenWatcher (this, screenDimensions, queue);
   }
 
   // ScreenWatcher is never deleted, but most (not all) of its fields are refreshed
@@ -70,7 +74,7 @@ public class FieldManager implements Initiator
   void setScreenDimensions (ScreenDimensions screenDimensions)
   {
     this.screenDimensions = screen.getScreenDimensions ();
-    screenWatcher = new ScreenWatcher (this, screenDimensions, databaseThread);
+    screenWatcher = new ScreenWatcher (this, screenDimensions, queue);
   }
 
   // called by Screen.clearScreen()
@@ -83,15 +87,15 @@ public class FieldManager implements Initiator
 
   void close ()
   {
-    System.out.println ("FiledManager closing");
-    try
-    {
-      queue.put (new DatabaseRequest (this, CLOSE));
-    }
-    catch (InterruptedException e)
-    {
-      e.printStackTrace ();
-    }
+    if (queue != null)
+      try
+      {
+        queue.put (new DatabaseRequest (this, CLOSE));
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace ();
+      }
   }
 
   // this is called after the pen and screen positions have been modified
@@ -454,6 +458,6 @@ public class FieldManager implements Initiator
   @Override
   public void processResult (DatabaseRequest request)
   {
-    System.out.println (request);
+    //    System.out.println (request);
   }
 }

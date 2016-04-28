@@ -1,21 +1,24 @@
 package com.bytezone.dm3270.display;
 
+import static com.bytezone.dm3270.database.DatabaseRequest.Command.UPDATE;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.TableDataset;
-import com.bytezone.dm3270.database.DatabaseThread;
+import com.bytezone.dm3270.database.*;;
 
 // created by FieldManager
 // used by ScreenChangeListener (ScreenPacker, TransfersStage, TransferMenu)
 // used by DownloadDialog (via TransferMenu)
 // used by UploadDialog (via TransferMenu)
-public class ScreenWatcher
+public class ScreenWatcher implements Initiator
 {
   private static final String[] tsoMenus =
       { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
@@ -37,7 +40,7 @@ public class ScreenWatcher
 
   private final FieldManager fieldManager;
   private final ScreenDimensions screenDimensions;
-  private final DatabaseThread databaseThread;
+  private final BlockingQueue<DatabaseRequest> queue;
 
   private final Map<String, TableDataset> siteDatasets = new TreeMap<> ();
   private final List<TableDataset> screenDatasets = new ArrayList<> ();
@@ -60,11 +63,11 @@ public class ScreenWatcher
   private String prefix = "";
 
   public ScreenWatcher (FieldManager fieldManager, ScreenDimensions screenDimensions,
-      DatabaseThread databaseThread)
+      BlockingQueue<DatabaseRequest> queue)
   {
     this.fieldManager = fieldManager;
     this.screenDimensions = screenDimensions;
-    this.databaseThread = databaseThread;
+    this.queue = queue;
   }
 
   public Field getTSOCommandField ()
@@ -436,22 +439,34 @@ public class ScreenWatcher
     }
 
     screenDatasets.add (dataset);
+    Dataset ds = new Dataset (dataset.getDatasetName ());
 
     switch (screenType)
     {
       case 1:
         if (rowFields.size () == 2)
+        {
           setSpace (dataset, rowFields.get (1).getText (), 6, 11, 15);
+          ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
+                       dataset.getExtents (), dataset.getPercentUsed ());
+        }
         break;
 
       case 2:
         if (rowFields.size () == 2)
+        {
           setDisposition (dataset, rowFields.get (1).getText (), 5, 11, 18);
+          ds.setDisposition (dataset.getDsorg (), dataset.getRecfm (),
+                             dataset.getLrecl (), dataset.getBlksize ());
+        }
         break;
 
       case 3:
         if (rowFields.size () == 3)
+        {
           dataset.setVolume (rowFields.get (2).getText ().trim ());
+          ds.setVolume (dataset.getVolume ());
+        }
         break;
 
       case 4:
@@ -465,6 +480,12 @@ public class ScreenWatcher
           String catalog = rowFields.get (6).getText ().trim ();
           if (datasetNamePattern.matcher (catalog).matches ())
             dataset.setCatalog (catalog);
+
+          ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
+                       dataset.getExtents (), dataset.getPercentUsed ());
+          ds.setDisposition (dataset.getDsorg (), dataset.getRecfm (),
+                             dataset.getLrecl (), dataset.getBlksize ());
+          ds.setVolume (dataset.getVolume ());
         }
         break;
 
@@ -477,10 +498,17 @@ public class ScreenWatcher
             setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
             setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
             setDates (dataset, rowFields.get (5).getText ());
+
+            ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
+                         dataset.getExtents (), dataset.getPercentUsed ());
+            ds.setDisposition (dataset.getDsorg (), dataset.getRecfm (),
+                               dataset.getLrecl (), dataset.getBlksize ());
           }
         }
         break;
     }
+
+    sendRequest (new DatasetRequest (this, UPDATE, ds));
   }
 
   private void setSpace (TableDataset dataset, String details, int t1, int t2, int t3)
@@ -574,6 +602,7 @@ public class ScreenWatcher
 
     String datasetName = field.getText ().trim ();
     currentPDS = datasetName;
+    Dataset ds = new Dataset (datasetName);
 
     List<Field> headings = fieldManager.getRowFields (4);
 
@@ -595,11 +624,12 @@ public class ScreenWatcher
       //      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
       //      screenMembers.add (member);
       TableDataset member = addMember (datasetName, memberName);
+      Member m = new Member (ds, member.getDatasetName ());
 
       if (headings.size () == 7 || headings.size () == 10)
-        screenType1 (member, details, tabs1);
+        screenType1 (member, details, tabs1, m);
       else if (headings.size () == 13)
-        screenType2 (member, details, tabs2);
+        screenType2 (member, details, tabs2, m);
       else
         System.out.printf ("Headings size: %d%n", headings.size ());
     }
@@ -631,6 +661,7 @@ public class ScreenWatcher
       return false;
     String datasetName = field.getText ().trim ();
     currentPDS = datasetName;
+    Dataset ds = new Dataset (datasetName);
 
     List<Field> headings = fieldManager.getRowFields (4);
 
@@ -663,11 +694,12 @@ public class ScreenWatcher
       String details = rowFields.get (3).getText ();
 
       TableDataset member = addMember (datasetName, memberName);
+      Member m = new Member (ds, member.getDatasetName ());
 
       if (screenType == 1)
-        screenType1 (member, details, tabs1);
+        screenType1 (member, details, tabs1, m);
       else if (screenType == 2)
-        screenType2 (member, details, tabs2);
+        screenType2 (member, details, tabs2, m);
       else
         dumpFields (rowFields);
     }
@@ -693,25 +725,47 @@ public class ScreenWatcher
     return member;
   }
 
-  private void screenType1 (TableDataset member, String details, int[] tabs)
+  private void screenType1 (TableDataset member, String details, int[] tabs, Member m)
   {
     member.setCreated (details.substring (tabs[0], tabs[1]).trim ());
     member.setReferredDate (details.substring (tabs[1], tabs[2]).trim ());
     member.setReferredTime (details.substring (tabs[2], tabs[3]).trim ());
     member.setCatalog (details.substring (tabs[3]).trim ());
     member.setExtents (getInteger ("Ext:", details.substring (0, tabs[0]).trim ()));
+
+    int size = getInteger ("Size", details.substring (0, tabs[0]).trim ());
+    String created = details.substring (tabs[0], tabs[1]);
+    String changed = details.substring (tabs[1], tabs[3]);
+    String id = details.substring (tabs[3]).trim ();
+    m.setDates (created, changed);
+    m.setID (id);
+    m.setSize (size);
+
+    sendRequest (new MemberRequest (this, UPDATE, m));
   }
 
-  private void screenType2 (TableDataset member, String details, int[] tabs)
+  private void screenType2 (TableDataset member, String details, int[] tabs, Member m)
   {
-    String size = details.substring (0, tabs[0]);
-    String init = details.substring (tabs[0], tabs[1]);
-    String mod = details.substring (tabs[1], tabs[2]);
+    //    String size = details.substring (0, tabs[0]);
+    //    String init = details.substring (tabs[0], tabs[1]);
+    //    String mod = details.substring (tabs[1], tabs[2]);
     String vvmm = details.substring (tabs[2], tabs[3]);
     String id = details.substring (tabs[3]);
+    System.out.printf ("[%s]%n", vvmm);
+
+    int size = getInteger ("Size", details.substring (0, tabs[0]).trim ());
+    int init = getInteger ("Init", details.substring (tabs[0], tabs[1]).trim ());
+    int mod = getInteger ("Mod", details.substring (tabs[1], tabs[2]).trim ());
+    int vv = getInteger ("VV", vvmm.substring (0, 2));
+    int mm = getInteger ("MM", vvmm.substring (3));
 
     member.setCatalog (id.trim ());
-    member.setExtents (getInteger ("Ext:", size.trim ()));
+    member.setExtents (size);
+
+    m.setSize (size, init, mod, vv, mm);
+    m.setID (id);
+
+    sendRequest (new MemberRequest (this, UPDATE, m));
   }
 
   private int getInteger (String id, String value)
@@ -823,5 +877,24 @@ public class ScreenWatcher
       text.append (String.format ("            %3d ... %s%n", ++i, datasetName));
 
     return text.toString ();
+  }
+
+  private void sendRequest (DatabaseRequest request)
+  {
+    if (queue != null)
+      try
+      {
+        queue.put (request);
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace ();
+      }
+  }
+
+  @Override
+  public void processResult (DatabaseRequest request)
+  {
+    //    System.out.println (request);
   }
 }
