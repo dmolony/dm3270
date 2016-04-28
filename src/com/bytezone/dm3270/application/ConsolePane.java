@@ -3,18 +3,16 @@ package com.bytezone.dm3270.application;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import com.bytezone.dm3270.application.Parameters.SiteParameters;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
-import com.bytezone.dm3270.display.CursorMoveListener;
-import com.bytezone.dm3270.display.Field;
-import com.bytezone.dm3270.display.FieldChangeListener;
-import com.bytezone.dm3270.display.FontManager;
-import com.bytezone.dm3270.display.HistoryManager;
-import com.bytezone.dm3270.display.HistoryScreen;
-import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.display.ScreenDimensions;
+import com.bytezone.dm3270.database.DatabaseRequest;
+import com.bytezone.dm3270.database.DatabaseThread;
+import com.bytezone.dm3270.database.Initiator;
+import com.bytezone.dm3270.display.*;
 import com.bytezone.dm3270.extended.CommandHeader;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.plugins.PluginsStage;
@@ -30,12 +28,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Separator;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -44,7 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
 public class ConsolePane extends BorderPane
-    implements FieldChangeListener, CursorMoveListener, KeyboardStatusListener
+    implements FieldChangeListener, CursorMoveListener, KeyboardStatusListener, Initiator
 {
   private final static int MARGIN = 4;
   private final static int GAP = 12;
@@ -79,6 +72,9 @@ public class ConsolePane extends BorderPane
 
   private final FontManager fontManager;
 
+  private final BlockingQueue<DatabaseRequest> queue = new ArrayBlockingQueue<> (64);
+  private DatabaseThread databaseThread;
+
   public ConsolePane (Screen screen, Site server, PluginsStage pluginsStage)
   {
     this.screen = screen;
@@ -112,6 +108,19 @@ public class ConsolePane extends BorderPane
       Optional<SiteParameters> sp = parameters.getSiteParameters (server.getName ());
       if (sp.isPresent ())
       {
+        SiteParameters siteParameters = sp.get ();
+        databaseThread = new DatabaseThread (siteParameters.getName () + ".db", queue);
+        databaseThread.start ();
+        try
+        {
+          queue.put (new DatabaseRequest (this,
+              com.bytezone.dm3270.database.DatabaseRequest.Command.OPEN));
+        }
+        catch (InterruptedException e)
+        {
+          e.printStackTrace ();
+        }
+
         String offset = sp.get ().getParameter ("offset");
         if (!offset.isEmpty () && offset.length () > 4)
         {
@@ -357,6 +366,19 @@ public class ConsolePane extends BorderPane
         e.printStackTrace ();
       }
     }
+
+    if (databaseThread != null)
+    {
+      try
+      {
+        queue.put (new DatabaseRequest (this,
+            com.bytezone.dm3270.database.DatabaseRequest.Command.CLOSE));
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace ();
+      }
+    }
   }
 
   @Override
@@ -391,5 +413,11 @@ public class ConsolePane extends BorderPane
   {
     setStatusText (evt.keyboardLocked ? evt.keyName : "       ");
     insertMode.setText (evt.insertMode ? "Insert" : "      ");
+  }
+
+  @Override
+  public void processResult (DatabaseRequest request)
+  {
+    System.out.println (request);
   }
 }
