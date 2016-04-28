@@ -11,14 +11,14 @@ import com.bytezone.dm3270.utilities.FileSaver;
 
 import javafx.scene.control.Label;
 
-public class DownloadDialog extends TransferDialog
+class DownloadDialog extends TransferDialog
 {
   private final Label labelToFolder = new Label ();
   private final Label labelAction = new Label ();
   private final Label labelFileDate = new Label ();
   private final Label labelDatasetDate = new Label ();
 
-  public DownloadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
+  DownloadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
     super (screenWatcher, homePath, baseLength, "Download dataset", "GET");
 

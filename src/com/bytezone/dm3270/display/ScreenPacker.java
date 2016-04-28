@@ -18,7 +18,7 @@ class ScreenPacker implements ScreenChangeListener
   private final byte[] buffer = new byte[8192];
   private final List<String> tsoCommands = new ArrayList<> ();
 
-  private ScreenWatcher screenDetails;
+  private ScreenWatcher screenWatcher;
   private Pen pen;
   private final FieldManager fieldManager;
 
@@ -51,8 +51,8 @@ class ScreenPacker implements ScreenChangeListener
     BufferAddress ba = new BufferAddress (cursorLocation);
     ptr = ba.packAddress (buffer, ptr);
 
-    Field tsoCommandField = screenDetails.getTSOCommandField ();
-    boolean isTSOScreen = screenDetails.isTSOCommandScreen ();
+    Field tsoCommandField = screenWatcher.getTSOCommandField ();
+    boolean isTSOScreen = screenWatcher.isTSOCommandScreen ();
     boolean tsoFieldSent = false;
 
     // pack all modified fields
@@ -218,8 +218,8 @@ class ScreenPacker implements ScreenChangeListener
   }
 
   @Override
-  public void screenChanged (ScreenWatcher screenDetails)
+  public void screenChanged (ScreenWatcher screenWatcher)
   {
-    this.screenDetails = screenDetails;
+    this.screenWatcher = screenWatcher;
   }
 }

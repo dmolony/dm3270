@@ -1,18 +1,27 @@
 package com.bytezone.dm3270.display;
 
+import static com.bytezone.dm3270.database.DatabaseRequest.Command.CLOSE;
+import static com.bytezone.dm3270.database.DatabaseRequest.Command.OPEN;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
+import com.bytezone.dm3270.database.DatabaseRequest;
+import com.bytezone.dm3270.database.DatabaseThread;
+import com.bytezone.dm3270.database.Initiator;
 import com.bytezone.dm3270.plugins.PluginData;
 import com.bytezone.dm3270.plugins.PluginField;
 import com.bytezone.dm3270.plugins.ScreenLocation;
+import com.bytezone.dm3270.utilities.Site;;
 
-public class FieldManager
+public class FieldManager implements Initiator
 {
   private final Screen screen;
   private ScreenWatcher screenWatcher;
@@ -28,13 +37,28 @@ public class FieldManager
   private int hiddenProtectedFields;
   private int hiddenUnprotectedFields;
 
+  private final BlockingQueue<DatabaseRequest> queue = new ArrayBlockingQueue<> (64);
+  private final DatabaseThread databaseThread;
+
   FieldManager (Screen screen, ContextManager contextManager,
-      ScreenDimensions screenDimensions)
+      ScreenDimensions screenDimensions, Site serverSite)
   {
     this.screen = screen;
     this.contextManager = contextManager;
     this.screenDimensions = screenDimensions;
-    screenWatcher = new ScreenWatcher (this, screenDimensions);
+
+    databaseThread = new DatabaseThread (serverSite.getName () + ".db", queue);
+    databaseThread.start ();
+    try
+    {
+      queue.put (new DatabaseRequest (this, OPEN));
+    }
+    catch (InterruptedException e)
+    {
+      e.printStackTrace ();
+    }
+
+    screenWatcher = new ScreenWatcher (this, screenDimensions, databaseThread);
   }
 
   // ScreenWatcher is never deleted, but most (not all) of its fields are refreshed
@@ -46,7 +70,7 @@ public class FieldManager
   void setScreenDimensions (ScreenDimensions screenDimensions)
   {
     this.screenDimensions = screen.getScreenDimensions ();
-    screenWatcher = new ScreenWatcher (this, screenDimensions);
+    screenWatcher = new ScreenWatcher (this, screenDimensions, databaseThread);
   }
 
   // called by Screen.clearScreen()
@@ -55,6 +79,19 @@ public class FieldManager
     fields.clear ();
     unprotectedFields.clear ();
     emptyFields.clear ();
+  }
+
+  void close ()
+  {
+    System.out.println ("FiledManager closing");
+    try
+    {
+      queue.put (new DatabaseRequest (this, CLOSE));
+    }
+    catch (InterruptedException e)
+    {
+      e.printStackTrace ();
+    }
   }
 
   // this is called after the pen and screen positions have been modified
@@ -412,5 +449,11 @@ public class FieldManager
       text.deleteCharAt (text.length () - 1);
 
     return text.toString ();
+  }
+
+  @Override
+  public void processResult (DatabaseRequest request)
+  {
+    System.out.println (request);
   }
 }

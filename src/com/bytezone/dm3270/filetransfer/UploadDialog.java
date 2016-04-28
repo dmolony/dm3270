@@ -12,13 +12,13 @@ import com.bytezone.dm3270.utilities.FileSaver;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
-public class UploadDialog extends TransferDialog
+class UploadDialog extends TransferDialog
 {
   private final Label labelFromFolder = new Label ();
   private final Label labelFileDate = new Label ();
   private final Label labelDatasetDate = new Label ();
 
-  public UploadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
+  UploadDialog (ScreenWatcher screenWatcher, Path homePath, int baseLength)
   {
     super (screenWatcher, homePath, baseLength, "Upload dataset", "PUT");
 

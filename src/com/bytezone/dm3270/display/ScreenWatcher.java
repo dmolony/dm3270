@@ -9,7 +9,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.TableDataset;
+import com.bytezone.dm3270.database.DatabaseThread;
 
+// created by FieldManager
+// used by ScreenChangeListener (ScreenPacker, TransfersStage, TransferMenu)
+// used by DownloadDialog (via TransferMenu)
+// used by UploadDialog (via TransferMenu)
 public class ScreenWatcher
 {
   private static final String[] tsoMenus =
@@ -32,6 +37,7 @@ public class ScreenWatcher
 
   private final FieldManager fieldManager;
   private final ScreenDimensions screenDimensions;
+  private final DatabaseThread databaseThread;
 
   private final Map<String, TableDataset> siteDatasets = new TreeMap<> ();
   private final List<TableDataset> screenDatasets = new ArrayList<> ();
@@ -53,10 +59,12 @@ public class ScreenWatcher
   private String userid = "";
   private String prefix = "";
 
-  public ScreenWatcher (FieldManager fieldManager, ScreenDimensions screenDimensions)
+  public ScreenWatcher (FieldManager fieldManager, ScreenDimensions screenDimensions,
+      DatabaseThread databaseThread)
   {
     this.fieldManager = fieldManager;
     this.screenDimensions = screenDimensions;
+    this.databaseThread = databaseThread;
   }
 
   public Field getTSOCommandField ()
@@ -79,6 +87,8 @@ public class ScreenWatcher
     return prefix;
   }
 
+  // called by UploadDialog
+  // called by DownloadDialog
   public Optional<TableDataset> getDataset (String datasetName)
   {
     if (siteDatasets.containsKey (datasetName))
@@ -488,7 +498,8 @@ public class ScreenWatcher
       dataset.setDevice (details.substring (t3).trim ());
   }
 
-  private void setDisposition (TableDataset dataset, String details, int t1, int t2, int t3)
+  private void setDisposition (TableDataset dataset, String details, int t1, int t2,
+      int t3)
   {
     if (details.trim ().isEmpty ())
       return;

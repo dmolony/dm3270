@@ -114,7 +114,7 @@ public class Screen extends Canvas
 
     contextManager = new ContextManager ();
     fontManager = FontManager.getInstance (this, prefs);
-    fieldManager = new FieldManager (this, contextManager, screenDimensions);
+    fieldManager = new FieldManager (this, contextManager, screenDimensions, serverSite);
     historyManager = new HistoryManager (screenDimensions, contextManager, fieldManager);
     transfersStage = new TransfersStage (this);
 
@@ -272,6 +272,7 @@ public class Screen extends Canvas
   public void close ()
   {
     transfersStage.closeWindow ();
+    fieldManager.close ();
   }
 
   public Function getFunction ()
