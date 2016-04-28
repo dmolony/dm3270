@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import com.bytezone.dm3270.assistant.Dataset;
+import com.bytezone.dm3270.assistant.TableDataset;
 import com.bytezone.dm3270.display.ScreenWatcher;
 import com.bytezone.dm3270.utilities.FileSaver;
 
@@ -58,7 +58,7 @@ public class UploadDialog extends TransferDialog
     Path saveFile = Paths.get (saveFolderName, datasetSelected);
 
     labelFromFolder.setText (saveFolderName.substring (baseLength));
-    Optional<Dataset> dataset = screenWatcher.getDataset (datasetSelected);
+    Optional<TableDataset> dataset = screenWatcher.getDataset (datasetSelected);
     if (dataset.isPresent ())
     {
       String date = dataset.get ().getReferredDate ();

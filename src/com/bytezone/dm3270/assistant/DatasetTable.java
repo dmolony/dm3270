@@ -8,9 +8,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 
-public class DatasetTable extends DefaultTable<Dataset>
+public class DatasetTable extends DefaultTable<TableDataset>
 {
-  private final ObservableList<Dataset> datasets = FXCollections.observableArrayList ();
+  private final ObservableList<TableDataset> datasets = FXCollections.observableArrayList ();
 
   public DatasetTable ()
   {
@@ -34,11 +34,11 @@ public class DatasetTable extends DefaultTable<Dataset>
     setItems (datasets);
   }
 
-  public void addDataset (Dataset dataset)
+  public void addDataset (TableDataset dataset)
   {
     String datasetName = dataset.getDatasetName ();
 
-    Optional<Dataset> dataset2 = datasets.stream ()
+    Optional<TableDataset> dataset2 = datasets.stream ()
         .filter (d -> d.getDatasetName ().equals (datasetName)).findAny ();
     if (!dataset2.isPresent ())
       datasets.add (dataset);
@@ -46,12 +46,12 @@ public class DatasetTable extends DefaultTable<Dataset>
     //      dataset2.get ().merge (dataset);
   }
 
-  public void addMember (Dataset member)
+  public void addMember (TableDataset member)
   {
-    Dataset foundDataset = null;
+    TableDataset foundDataset = null;
     String memberName = member.getDatasetName ();
 
-    for (Dataset existingDataset : datasets)
+    for (TableDataset existingDataset : datasets)
       if (existingDataset.getDatasetName ().equals (memberName))
       {
         foundDataset = existingDataset;

@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Dataset
+public class TableDataset
 {
   private StringProperty datasetNameProperty;
 
@@ -32,7 +32,7 @@ public class Dataset
   // Constructor
   // ---------------------------------------------------------------------------------//
 
-  public Dataset (String name)
+  public TableDataset (String name)
   {
     datasetNameProperty ().set (name);
   }

@@ -210,7 +210,7 @@ public class TransfersTab extends AbstractTransferTab
   }
 
   @Override
-  public void datasetSelected (Dataset dataset)
+  public void datasetSelected (TableDataset dataset)
   {
     txtDatasets.setText (dataset.getDatasetName ());
     if (isSelected ())

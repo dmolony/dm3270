@@ -8,9 +8,9 @@ import java.util.Map;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 
-public class DatasetTreeTable extends DefaultTreeTable<Dataset>
+public class DatasetTreeTable extends DefaultTreeTable<TableDataset>
 {
-  private final TreeItem<Dataset> root = new TreeItem<> (new Dataset ("Root"));
+  private final TreeItem<TableDataset> root = new TreeItem<> (new TableDataset ("Root"));
   private final Map<String, DatasetEntry> entries = new HashMap<> ();
 
   public DatasetTreeTable ()
@@ -37,7 +37,7 @@ public class DatasetTreeTable extends DefaultTreeTable<Dataset>
     setPlaceholder (new Label ("No datasets have been seen in this session"));
   }
 
-  public void addDataset (Dataset dataset)
+  public void addDataset (TableDataset dataset)
   {
     DatasetEntry datasetEntry = entries.get (dataset.getDatasetName ());
     if (datasetEntry == null)
@@ -66,15 +66,15 @@ public class DatasetTreeTable extends DefaultTreeTable<Dataset>
 
   class DatasetEntry
   {
-    Dataset dataset;
-    TreeItem<Dataset> treeItem;
+    TableDataset dataset;
+    TreeItem<TableDataset> treeItem;
 
-    List<Dataset> members;            // only a PDS uses this
+    List<TableDataset> members;            // only a PDS uses this
 
     String parentName;                // only PDS members use these 2 name fields
     String memberName;
 
-    DatasetEntry (Dataset dataset)
+    DatasetEntry (TableDataset dataset)
     {
       // check whether this is a PDS member
       String name = dataset.getDatasetName ();
@@ -92,13 +92,13 @@ public class DatasetTreeTable extends DefaultTreeTable<Dataset>
     // only used when we have a PDS member with no parent
     DatasetEntry (String name)
     {
-      dataset = new Dataset (name);
+      dataset = new TableDataset (name);
       parentName = name;
       members = new ArrayList<> ();           // so isPDS() returns true
       treeItem = new TreeItem<> (dataset);
     }
 
-    void add (Dataset pdsMember)
+    void add (TableDataset pdsMember)
     {
       if (members == null)
         members = new ArrayList<> ();

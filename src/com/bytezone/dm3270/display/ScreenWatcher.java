@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bytezone.dm3270.assistant.Dataset;
+import com.bytezone.dm3270.assistant.TableDataset;
 
 public class ScreenWatcher
 {
@@ -33,9 +33,9 @@ public class ScreenWatcher
   private final FieldManager fieldManager;
   private final ScreenDimensions screenDimensions;
 
-  private final Map<String, Dataset> siteDatasets = new TreeMap<> ();
-  private final List<Dataset> screenDatasets = new ArrayList<> ();
-  private final List<Dataset> screenMembers = new ArrayList<> ();
+  private final Map<String, TableDataset> siteDatasets = new TreeMap<> ();
+  private final List<TableDataset> screenDatasets = new ArrayList<> ();
+  private final List<TableDataset> screenMembers = new ArrayList<> ();
   private final List<String> recentDatasetNames = new ArrayList<> ();
 
   private String datasetsMatching;
@@ -79,19 +79,19 @@ public class ScreenWatcher
     return prefix;
   }
 
-  public Optional<Dataset> getDataset (String datasetName)
+  public Optional<TableDataset> getDataset (String datasetName)
   {
     if (siteDatasets.containsKey (datasetName))
       return Optional.of (siteDatasets.get (datasetName));
     return Optional.empty ();
   }
 
-  public List<Dataset> getDatasets ()
+  public List<TableDataset> getDatasets ()
   {
     return screenDatasets;
   }
 
-  public List<Dataset> getMembers ()
+  public List<TableDataset> getMembers ()
   {
     return screenMembers;
   }
@@ -416,12 +416,12 @@ public class ScreenWatcher
 
   private void addDataset (String datasetName, int screenType, List<Field> rowFields)
   {
-    Dataset dataset;
+    TableDataset dataset;
     if (siteDatasets.containsKey (datasetName))
       dataset = siteDatasets.get (datasetName);
     else
     {
-      dataset = new Dataset (datasetName);
+      dataset = new TableDataset (datasetName);
       siteDatasets.put (datasetName, dataset);
     }
 
@@ -473,7 +473,7 @@ public class ScreenWatcher
     }
   }
 
-  private void setSpace (Dataset dataset, String details, int t1, int t2, int t3)
+  private void setSpace (TableDataset dataset, String details, int t1, int t2, int t3)
   {
     if (details.trim ().isEmpty ())
       return;
@@ -488,7 +488,7 @@ public class ScreenWatcher
       dataset.setDevice (details.substring (t3).trim ());
   }
 
-  private void setDisposition (Dataset dataset, String details, int t1, int t2, int t3)
+  private void setDisposition (TableDataset dataset, String details, int t1, int t2, int t3)
   {
     if (details.trim ().isEmpty ())
       return;
@@ -503,7 +503,7 @@ public class ScreenWatcher
       dataset.setBlksize (getInteger ("blksize", details.substring (t3).trim ()));
   }
 
-  private void setDates (Dataset dataset, String details)
+  private void setDates (TableDataset dataset, String details)
   {
     if (details.trim ().isEmpty ())
       return;
@@ -583,7 +583,7 @@ public class ScreenWatcher
 
       //      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
       //      screenMembers.add (member);
-      Dataset member = addMember (datasetName, memberName);
+      TableDataset member = addMember (datasetName, memberName);
 
       if (headings.size () == 7 || headings.size () == 10)
         screenType1 (member, details, tabs1);
@@ -651,7 +651,7 @@ public class ScreenWatcher
       }
       String details = rowFields.get (3).getText ();
 
-      Dataset member = addMember (datasetName, memberName);
+      TableDataset member = addMember (datasetName, memberName);
 
       if (screenType == 1)
         screenType1 (member, details, tabs1);
@@ -664,16 +664,16 @@ public class ScreenWatcher
     return true;
   }
 
-  private Dataset addMember (String pdsName, String memberName)
+  private TableDataset addMember (String pdsName, String memberName)
   {
     String datasetName = pdsName + "(" + memberName.trim () + ")";
-    Dataset member;
+    TableDataset member;
 
     if (siteDatasets.containsKey (datasetName))
       member = siteDatasets.get (datasetName);
     else
     {
-      member = new Dataset (datasetName);
+      member = new TableDataset (datasetName);
       siteDatasets.put (datasetName, member);
     }
 
@@ -682,7 +682,7 @@ public class ScreenWatcher
     return member;
   }
 
-  private void screenType1 (Dataset member, String details, int[] tabs)
+  private void screenType1 (TableDataset member, String details, int[] tabs)
   {
     member.setCreated (details.substring (tabs[0], tabs[1]).trim ());
     member.setReferredDate (details.substring (tabs[1], tabs[2]).trim ());
@@ -691,7 +691,7 @@ public class ScreenWatcher
     member.setExtents (getInteger ("Ext:", details.substring (0, tabs[0]).trim ()));
   }
 
-  private void screenType2 (Dataset member, String details, int[] tabs)
+  private void screenType2 (TableDataset member, String details, int[] tabs)
   {
     String size = details.substring (0, tabs[0]);
     String init = details.substring (tabs[0], tabs[1]);

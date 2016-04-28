@@ -17,7 +17,7 @@ public class DatasetTab extends AbstractTransferTab
   private static final Pattern jclPattern = Pattern.compile (".*\\.(CNTL|JCL)[.(].*\\)");
   private static final Pattern procPattern =
       Pattern.compile (".*\\.(PROC|PARM)LIB[.(].*\\)");
-  private Dataset selectedDataset;
+  private TableDataset selectedDataset;
 
   private final boolean useTable = false;
   private final DatasetTable datasetTable = new DatasetTable ();
@@ -29,21 +29,21 @@ public class DatasetTab extends AbstractTransferTab
 
     if (useTable)
     {
-      ReadOnlyObjectProperty<Dataset> property =
+      ReadOnlyObjectProperty<TableDataset> property =
           datasetTable.getSelectionModel ().selectedItemProperty ();
       property.addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
       setContent (datasetTable);
     }
     else
     {
-      ReadOnlyObjectProperty<TreeItem<Dataset>> property =
+      ReadOnlyObjectProperty<TreeItem<TableDataset>> property =
           datasetTreeTable.getSelectionModel ().selectedItemProperty ();
       property.addListener ( (obs, oldSelection, newSelection) -> select (newSelection));
       setContent (datasetTreeTable);
     }
   }
 
-  private void select (Dataset dataset)
+  private void select (TableDataset dataset)
   {
     if (dataset == null)
       return;
@@ -52,7 +52,7 @@ public class DatasetTab extends AbstractTransferTab
     fireDatasetSelected (selectedDataset);
   }
 
-  private void select (TreeItem<Dataset> treeItem)
+  private void select (TreeItem<TableDataset> treeItem)
   {
     if (treeItem == null)
       return;
@@ -64,9 +64,9 @@ public class DatasetTab extends AbstractTransferTab
   @Override
   public void screenChanged (ScreenWatcher screenDetails)
   {
-    List<Dataset> datasets = screenDetails.getDatasets ();
+    List<TableDataset> datasets = screenDetails.getDatasets ();
     if (datasets != null)
-      for (Dataset dataset : datasets)
+      for (TableDataset dataset : datasets)
       {
         if (useTable)
           datasetTable.addDataset (dataset);
@@ -74,9 +74,9 @@ public class DatasetTab extends AbstractTransferTab
           datasetTreeTable.addDataset (dataset);
       }
 
-    List<Dataset> members = screenDetails.getMembers ();
+    List<TableDataset> members = screenDetails.getMembers ();
     if (members != null)
-      for (Dataset dataset : members)
+      for (TableDataset dataset : members)
       {
         if (useTable)
           datasetTable.addMember (dataset);
@@ -144,7 +144,7 @@ public class DatasetTab extends AbstractTransferTab
 
   private final Set<DatasetSelectionListener> selectionListeners = new HashSet<> ();
 
-  void fireDatasetSelected (Dataset dataset)
+  void fireDatasetSelected (TableDataset dataset)
   {
     selectionListeners.forEach (l -> l.datasetSelected (dataset));
   }
