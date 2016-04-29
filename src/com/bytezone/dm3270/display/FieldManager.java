@@ -458,6 +458,6 @@ public class FieldManager implements Initiator
   @Override
   public void processResult (DatabaseRequest request)
   {
-    //    System.out.println (request);
+    System.out.println (request);
   }
 }
