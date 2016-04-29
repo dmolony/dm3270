@@ -449,6 +449,7 @@ public class ScreenWatcher implements Initiator
           setSpace (dataset, rowFields.get (1).getText (), 6, 11, 15);
           ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
                        dataset.getExtents (), dataset.getPercentUsed ());
+          ds.setDevice (dataset.getDevice ());
         }
         break;
 
@@ -475,17 +476,21 @@ public class ScreenWatcher implements Initiator
           dataset.setVolume (rowFields.get (2).getText ().trim ());
           setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
           setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
-          setDates (dataset, rowFields.get (5).getText ());
+          setDates (dataset, rowFields.get (5).getText (), ds);
 
           String catalog = rowFields.get (6).getText ().trim ();
           if (datasetNamePattern.matcher (catalog).matches ())
+          {
             dataset.setCatalog (catalog);
+            ds.setCatalog (catalog);
+          }
 
           ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
                        dataset.getExtents (), dataset.getPercentUsed ());
           ds.setDisposition (dataset.getDsorg (), dataset.getRecfm (),
                              dataset.getLrecl (), dataset.getBlksize ());
           ds.setVolume (dataset.getVolume ());
+          ds.setDevice (dataset.getDevice ());
         }
         break;
 
@@ -497,7 +502,7 @@ public class ScreenWatcher implements Initiator
           {
             setSpace (dataset, rowFields.get (3).getText (), 6, 10, 14);
             setDisposition (dataset, rowFields.get (4).getText (), 5, 10, 16);
-            setDates (dataset, rowFields.get (5).getText ());
+            setDates (dataset, rowFields.get (5).getText (), ds);
 
             ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
                          dataset.getExtents (), dataset.getPercentUsed ());
@@ -542,14 +547,27 @@ public class ScreenWatcher implements Initiator
       dataset.setBlksize (getInteger ("blksize", details.substring (t3).trim ()));
   }
 
-  private void setDates (TableDataset dataset, String details)
+  private void setDates (TableDataset dataset, String details, Dataset ds)
   {
     if (details.trim ().isEmpty ())
       return;
 
-    dataset.setCreated (details.substring (0, 11).trim ());
-    dataset.setExpires (details.substring (11, 22).trim ());
-    dataset.setReferredDate (details.substring (22).trim ());
+    String created = details.substring (0, 11).trim ();
+    String expires = details.substring (11, 22).trim ();
+    String referred = details.substring (22).trim ();
+
+    dataset.setCreated (created);
+    dataset.setExpires (expires);
+    dataset.setReferredDate (referred);
+
+    //    System.out.printf ("Created: [%s]%n", details.substring (0, 11).trim ());
+    //    System.out.println (dataset.getCreated ());
+    //    System.out.printf ("Expires: [%s]%n", details.substring (11, 22).trim ());
+    //    System.out.println (dataset.getExpires ());
+    //    System.out.printf ("Referred: [%s]%n", details.substring (22).trim ());
+    //    System.out.println (dataset.getReferredDate ());
+    //    System.out.println (dataset.getReferredTime ());
+    ds.setDates (created, expires, referred);
   }
 
   private boolean checkMemberList (List<Field> screenFields)
@@ -624,7 +642,7 @@ public class ScreenWatcher implements Initiator
       //      Dataset member = new Dataset (datasetName + "(" + memberName + ")");
       //      screenMembers.add (member);
       TableDataset member = addMember (datasetName, memberName);
-      Member m = new Member (ds, member.getDatasetName ());
+      Member m = new Member (ds, memberName);
 
       if (headings.size () == 7 || headings.size () == 10)
         screenType1 (member, details, tabs1, m);
@@ -694,7 +712,7 @@ public class ScreenWatcher implements Initiator
       String details = rowFields.get (3).getText ();
 
       TableDataset member = addMember (datasetName, memberName);
-      Member m = new Member (ds, member.getDatasetName ());
+      Member m = new Member (ds, memberName);
 
       if (screenType == 1)
         screenType1 (member, details, tabs1, m);
@@ -737,6 +755,7 @@ public class ScreenWatcher implements Initiator
     String created = details.substring (tabs[0], tabs[1]);
     String changed = details.substring (tabs[1], tabs[3]);
     String id = details.substring (tabs[3]).trim ();
+
     m.setDates (created, changed);
     m.setID (id);
     m.setSize (size);
@@ -749,20 +768,24 @@ public class ScreenWatcher implements Initiator
     //    String size = details.substring (0, tabs[0]);
     //    String init = details.substring (tabs[0], tabs[1]);
     //    String mod = details.substring (tabs[1], tabs[2]);
-    String vvmm = details.substring (tabs[2], tabs[3]);
+    String vvmm = details.substring (tabs[2], tabs[3]).trim ();
     String id = details.substring (tabs[3]);
-    System.out.printf ("[%s]%n", vvmm);
+    //    System.out.printf ("[%s]%n", vvmm);
 
     int size = getInteger ("Size", details.substring (0, tabs[0]).trim ());
     int init = getInteger ("Init", details.substring (tabs[0], tabs[1]).trim ());
     int mod = getInteger ("Mod", details.substring (tabs[1], tabs[2]).trim ());
-    int vv = getInteger ("VV", vvmm.substring (0, 2));
-    int mm = getInteger ("MM", vvmm.substring (3));
 
-    member.setCatalog (id.trim ());
-    member.setExtents (size);
+    if (!vvmm.isEmpty ())
+    {
+      int vv = getInteger ("VV", vvmm.substring (0, 2));
+      int mm = getInteger ("MM", vvmm.substring (3));
+      m.setSize (size, init, mod, vv, mm);
+    }
 
-    m.setSize (size, init, mod, vv, mm);
+    member.setCatalog (id.trim ());       // (mis)use the catalog column
+    member.setExtents (size);             // (mis)use the extents column
+
     m.setID (id);
 
     sendRequest (new MemberRequest (this, UPDATE, m));
