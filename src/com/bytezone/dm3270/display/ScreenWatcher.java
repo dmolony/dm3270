@@ -769,7 +769,7 @@ public class ScreenWatcher implements Initiator
     //    String init = details.substring (tabs[0], tabs[1]);
     //    String mod = details.substring (tabs[1], tabs[2]);
     String vvmm = details.substring (tabs[2], tabs[3]).trim ();
-    String id = details.substring (tabs[3]);
+    String id = details.substring (tabs[3]).trim ();
     //    System.out.printf ("[%s]%n", vvmm);
 
     int size = getInteger ("Size", details.substring (0, tabs[0]).trim ());
@@ -783,7 +783,7 @@ public class ScreenWatcher implements Initiator
       m.setSize (size, init, mod, vv, mm);
     }
 
-    member.setCatalog (id.trim ());       // (mis)use the catalog column
+    member.setCatalog (id);       // (mis)use the catalog column
     member.setExtents (size);             // (mis)use the extents column
 
     m.setID (id);
@@ -918,6 +918,6 @@ public class ScreenWatcher implements Initiator
   @Override
   public void processResult (DatabaseRequest request)
   {
-    System.out.println (request);
+    //    System.out.println (request);
   }
 }
