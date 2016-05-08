@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.display;
 
 import static com.bytezone.dm3270.database.DatabaseRequest.Command.CLOSE;
-import static com.bytezone.dm3270.database.DatabaseRequest.Command.OPEN;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,6 +13,7 @@ import java.util.concurrent.BlockingQueue;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.database.DatabaseRequest;
+import com.bytezone.dm3270.database.DatabaseRequest.Command;
 import com.bytezone.dm3270.database.DatabaseThread;
 import com.bytezone.dm3270.database.Initiator;
 import com.bytezone.dm3270.plugins.PluginData;
@@ -54,7 +54,8 @@ public class FieldManager implements Initiator
       databaseThread.start ();
       try
       {
-        queue.put (new DatabaseRequest (this, OPEN));
+        queue.put (new DatabaseRequest (this, Command.OPEN));
+        //        queue.put (new DatabaseRequest (this, Command.CREATE));
       }
       catch (InterruptedException e)
       {
