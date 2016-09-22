@@ -331,7 +331,6 @@ public class Console extends Application
 
   public static void main (final String[] arguments)
   {
-    System.out.println ("testing");
     Application.launch (arguments);
   }
 }

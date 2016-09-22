@@ -87,6 +87,7 @@ public class TelnetCommand extends AbstractTelnetCommand
       else if (type == TelnetSubcommand.TN3270E)
         commandType = CommandType.TN3270_EXTENDED;
       else
+        // reported: FB 03 (using IBM-3278-2-E model 3)
         throw new InvalidParameterException (
             String.format ("Unknown telnet command type: %02X %02X%n", command, type));
     }

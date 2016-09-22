@@ -54,7 +54,7 @@ public class MainframeServer implements Runnable
       readAtLeast (1);
 
       writeAll (TelnetCommand.IAC, TelnetCommand.SB, TelnetSubcommand.TERMINAL_TYPE,
-                 TerminalTypeSubcommand.OPTION_SEND, TelnetCommand.IAC, TelnetCommand.SE);
+          TerminalTypeSubcommand.OPTION_SEND, TelnetCommand.IAC, TelnetCommand.SE);
       readAtLeast (1);
 
       writeAll (TelnetCommand.IAC, TelnetCommand.DO, TelnetSubcommand.EOR);
@@ -81,6 +81,7 @@ public class MainframeServer implements Runnable
           System.out.println ("MainframeServer interrupted");
           break;
         }
+
         int bytesRead = clientIn.read (buffer);     // assumes all in one buffer !!
         if (mainframe != null && buffer[0] != TelnetCommand.IAC)
         {
