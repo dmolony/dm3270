@@ -21,12 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -237,8 +232,8 @@ public class PluginsStage extends PreferencesStage
       String pluginClass = prefs.get (String.format ("PluginClass-%02d", i), "");
       boolean pluginActivate =
           prefs.getBoolean (String.format ("PluginActivate-%02d", i), false);
-      if (!pluginName.isEmpty ())
-        plugins.add (new PluginEntry (pluginName, pluginClass, pluginActivate));
+      //      if (!pluginName.isEmpty ())
+      plugins.add (new PluginEntry (pluginName, pluginClass, pluginActivate));
     }
   }
 
@@ -250,7 +245,7 @@ public class PluginsStage extends PreferencesStage
       prefs.put (String.format ("PluginName-%02d", i), plugin.name.getText ());
       prefs.put (String.format ("PluginClass-%02d", i), plugin.className.getText ());
       prefs.putBoolean (String.format ("PluginActivate-%02d", i),
-                        plugin.activate.isSelected ());
+          plugin.activate.isSelected ());
     }
   }
 
@@ -386,10 +381,10 @@ public class PluginsStage extends PreferencesStage
 
     public PluginEntry (String name, String className, boolean activate)
     {
-      if (name == null || name.isEmpty ())
-        throw new IllegalArgumentException ("Plugin name not provided");
-      if (className == null || className.isEmpty ())
-        throw new IllegalArgumentException ("Plugin class not provided");
+      //      if (name == null || name.isEmpty ())
+      //        throw new IllegalArgumentException ("Plugin name not provided");
+      //      if (className == null || className.isEmpty ())
+      //        throw new IllegalArgumentException ("Plugin class not provided");
 
       this.name.setText (name);
       this.className.setText (className);

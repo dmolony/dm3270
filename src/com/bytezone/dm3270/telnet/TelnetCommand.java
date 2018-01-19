@@ -1,7 +1,5 @@
 package com.bytezone.dm3270.telnet;
 
-import java.security.InvalidParameterException;
-
 import com.bytezone.dm3270.buffers.AbstractTelnetCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
@@ -57,7 +55,7 @@ public class TelnetCommand extends AbstractTelnetCommand
       else if (command == IP)
         this.commandName = CommandName.INTERRUPT_PROCESS;
       else
-        throw new InvalidParameterException (
+        throw new IllegalArgumentException (
             String.format ("Unknown telnet command: %02X%n", command));
 
       commandType = null;
@@ -75,7 +73,7 @@ public class TelnetCommand extends AbstractTelnetCommand
       else if (command == WONT)
         this.commandName = CommandName.WONT;
       else
-        throw new InvalidParameterException (
+        throw new IllegalArgumentException (
             String.format ("Unknown telnet command: %02X %02X%n", command, type));
 
       if (type == TelnetSubcommand.TERMINAL_TYPE)
@@ -87,12 +85,17 @@ public class TelnetCommand extends AbstractTelnetCommand
       else if (type == TelnetSubcommand.TN3270E)
         commandType = CommandType.TN3270_EXTENDED;
       else
-        // reported: FB 03 (using IBM-3278-2-E model 3)
-        throw new InvalidParameterException (
-            String.format ("Unknown telnet command type: %02X %02X%n", command, type));
+      {
+        commandType = null;
+        System.out.printf ("Unknown telnet command type: %02X %02X%n", command, type);
+      }
+      // reported: FB 03 (using IBM-3278-2-E model 3)
+      // reported: FD 27 (using IBM-3278-2-E model 2)
+      //        throw new IllegalArgumentException (
+      //            String.format ("Unknown telnet command type: %02X %02X%n", command, type));
     }
     else
-      throw new InvalidParameterException ("Buffer incorrect length");
+      throw new IllegalArgumentException ("Buffer incorrect length");
   }
 
   public CommandName commandName ()
@@ -119,8 +122,6 @@ public class TelnetCommand extends AbstractTelnetCommand
       {
         boolean preference = telnetState.do3270Extended ();     // preference
         reply[1] = preference ? WILL : WONT;
-        //        System.out.println ("1");
-        //        Dm3270Utility.printStackTrace ();
         telnetState.setDoes3270Extended (preference);           // set actual
       }
       else if (commandType == CommandType.TERMINAL_TYPE)
@@ -181,11 +182,11 @@ public class TelnetCommand extends AbstractTelnetCommand
     {
       if (commandType == CommandType.BINARY)
         telnetState.setDoesBinary (false);
-      if (commandType == CommandType.TERMINAL_TYPE)
+      else if (commandType == CommandType.TERMINAL_TYPE)
         telnetState.setDoesTerminalType (false);
-      if (commandType == CommandType.TN3270_EXTENDED)
+      else if (commandType == CommandType.TN3270_EXTENDED)
         telnetState.setDoes3270Extended (false);
-      if (commandType == CommandType.EOR)
+      else if (commandType == CommandType.EOR)
         telnetState.setDoesEOR (false);
     }
   }
