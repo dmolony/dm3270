@@ -4,12 +4,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import javafx.collections.ObservableList;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -107,13 +102,13 @@ class FontManagerType1 implements FontManager
     menuFont.getItems ().add (new SeparatorMenuItem ());
 
     MenuItem smaller = new MenuItem ("Smaller font");
-    smaller.setAccelerator (new KeyCodeCombination (KeyCode.MINUS,
-        KeyCombination.SHORTCUT_DOWN));
+    smaller.setAccelerator (
+        new KeyCodeCombination (KeyCode.MINUS, KeyCombination.SHORTCUT_DOWN));
     smaller.setOnAction (e -> smaller ());
 
     MenuItem bigger = new MenuItem ("Larger font");
-    bigger.setAccelerator (new KeyCodeCombination (KeyCode.PLUS,
-        KeyCombination.SHORTCUT_DOWN));
+    bigger.setAccelerator (
+        new KeyCodeCombination (KeyCode.PLUS, KeyCombination.SHORTCUT_DOWN));
     bigger.setOnAction (e -> bigger ());
 
     menuFont.getItems ().addAll (smaller, bigger, new SeparatorMenuItem ());
@@ -197,7 +192,7 @@ class FontManagerType1 implements FontManager
 
   private void setFont (String name, int size)
   {
-    fontDetails = new FontDetails (name, size, Font.font (name, size));
+    fontDetails = new FontDetails (name, size, Font.font (name, size), "");
     statusBarFont = Font.font (name, size - 2);
     screen.fontChanged (fontDetails);
   }
