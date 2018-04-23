@@ -192,7 +192,7 @@ class FontManagerType1 implements FontManager
 
   private void setFont (String name, int size)
   {
-    fontDetails = new FontDetails (name, size, Font.font (name, size), "");
+    fontDetails = new FontDetails (name, size, Font.font (name, size));
     statusBarFont = Font.font (name, size - 2);
     screen.fontChanged (fontDetails);
   }
