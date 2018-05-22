@@ -416,8 +416,8 @@ public class Screen extends Canvas
     // always use the largest available screen
     ScreenDimensions screenDimensions = alternateScreenDimensions == null
         ? defaultScreenDimensions : alternateScreenDimensions;
-    setWidth (fontDetails.width * screenDimensions.columns
-        + screenDimensions.xOffset * 2);
+    setWidth (
+        fontDetails.width * screenDimensions.columns + screenDimensions.xOffset * 2);
     setHeight (fontDetails.height * screenDimensions.rows + screenDimensions.yOffset * 2);
 
     gc.setFont (fontDetails.font);
@@ -531,7 +531,7 @@ public class Screen extends Canvas
         case PROCESSING:
           if (transfer.getTransferType () == TransferType.DOWNLOAD)
             setText (String.format ("%,d : Bytes received: %,d", transfer.size (),
-                                    transfer.getDataLength ()));
+                transfer.getDataLength ()));
           else
             setText (String.format ("Bytes sent: %,d", transfer.getDataLength ()));
           break;
@@ -599,7 +599,7 @@ public class Screen extends Canvas
   public AIDCommand readModifiedFields ()
   {
     return screenPacker.readModifiedFields (currentAID, getScreenCursor ().getLocation (),
-                                            readModifiedAll);
+        readModifiedAll);
   }
 
   // Called from:
@@ -609,7 +609,7 @@ public class Screen extends Canvas
   public AIDCommand readBuffer ()
   {
     return screenPacker.readBuffer (currentAID, getScreenCursor ().getLocation (),
-                                    replyMode, replyTypes);
+        replyMode, replyTypes);
   }
 
   // Called from ReadCommand.process() in response to a ReadModified (F6)

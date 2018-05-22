@@ -427,16 +427,15 @@ public class FieldManager implements Initiator
     text.append (String.format ("Start fields     : %4d%n", fields.size ()));
     text.append (String.format ("  Zero length    : %4d%n", emptyFields.size ()));
     text.append (String.format ("  Unprotected    : %4d   (%d hidden)%n",
-                                unprotectedFields.size (), hiddenUnprotectedFields));
+        unprotectedFields.size (), hiddenUnprotectedFields));
     text.append (String.format ("  Protected      : %4d   (%d hidden)%n%n",
-                                fields.size () - unprotectedFields.size (),
-                                hiddenProtectedFields));
+        fields.size () - unprotectedFields.size (), hiddenProtectedFields));
 
-    text.append (String.format ("Screen positions : %4d%n",
-                                dataPositions + fields.size ()));
+    text.append (
+        String.format ("Screen positions : %4d%n", dataPositions + fields.size ()));
     text.append (String.format ("  Attributes     : %4d%n", fields.size ()));
-    text.append (String.format ("  Output         : %4d%n",
-                                dataPositions - inputPositions));
+    text.append (
+        String.format ("  Output         : %4d%n", dataPositions - inputPositions));
     text.append (String.format ("  Input          : %4d", inputPositions));
 
     return text.toString ();

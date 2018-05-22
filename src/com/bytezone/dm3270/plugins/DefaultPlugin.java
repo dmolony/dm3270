@@ -5,8 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
 public abstract class DefaultPlugin implements Plugin
 {
   protected String getMD5 (byte[] buffer)
@@ -14,7 +12,8 @@ public abstract class DefaultPlugin implements Plugin
     try
     {
       byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
-      return DatatypeConverter.printHexBinary (digest);
+      //      return DatatypeConverter.printHexBinary (digest);
+      return toHex (digest);
     }
     catch (NoSuchAlgorithmException e)
     {
@@ -76,5 +75,22 @@ public abstract class DefaultPlugin implements Plugin
       if (!field.isAlpha)
         fields.add (field);
     return fields;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // toHex
+  // ---------------------------------------------------------------------------------//
+
+  static String toHex (byte[] bytes)
+  {
+    StringBuilder builder = new StringBuilder (bytes.length * 2);
+    for (int i = 0; i < bytes.length; i++)
+    {
+      int digit = (bytes[i] >> 4) & 0xF;
+      builder.append (digit < 10 ? (char) ('0' + digit) : (char) ('A' - 10 + digit));
+      digit = (bytes[i] & 0xF);
+      builder.append (digit < 10 ? (char) ('0' + digit) : (char) ('A' - 10 + digit));
+    }
+    return builder.toString ();
   }
 }

@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.xml.bind.DatatypeConverter;
-
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.filetransfer.FileTransferInboundSF;
@@ -114,7 +112,8 @@ public class ReadStructuredFieldCommand extends Command
     try
     {
       byte[] digest = MessageDigest.getInstance ("MD5").digest (buffer);
-      signature = DatatypeConverter.printHexBinary (digest);
+      //      signature = DatatypeConverter.printHexBinary (digest);
+      signature = toHex (digest);
       String clientName = clientNames.get (signature);
       if (clientName == null && false)
         System.out.printf ("Unknown signature: %s%n", signature);
@@ -125,6 +124,23 @@ public class ReadStructuredFieldCommand extends Command
       e.printStackTrace ();
     }
     return "Unknown";
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // toHex
+  // ---------------------------------------------------------------------------------//
+
+  static String toHex (byte[] bytes)
+  {
+    StringBuilder builder = new StringBuilder (bytes.length * 2);
+    for (int i = 0; i < bytes.length; i++)
+    {
+      int digit = (bytes[i] >> 4) & 0xF;
+      builder.append (digit < 10 ? (char) ('0' + digit) : (char) ('A' - 10 + digit));
+      digit = (bytes[i] & 0xF);
+      builder.append (digit < 10 ? (char) ('0' + digit) : (char) ('A' - 10 + digit));
+    }
+    return builder.toString ();
   }
 
   public Optional<String> getClientName ()

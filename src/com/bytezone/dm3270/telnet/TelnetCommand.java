@@ -90,6 +90,7 @@ public class TelnetCommand extends AbstractTelnetCommand
         System.out.printf ("Unknown telnet command type: %02X %02X%n", command, type);
       }
       // reported: FB 03 (using IBM-3278-2-E model 3)
+      // reported: FD 20 (using IBM-3278-2-E model 2)
       // reported: FD 27 (using IBM-3278-2-E model 2)
       //        throw new IllegalArgumentException (
       //            String.format ("Unknown telnet command type: %02X %02X%n", command, type));
