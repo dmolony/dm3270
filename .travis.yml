@@ -1,0 +1,16 @@
+language: java
+jdk: oraclejdk8
+cache:
+ directories:
+   - $HOME/.m2
+deploy:
+  provider: script
+  script:
+    - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+    - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+    - mvn versions:set -DnewVersion=$TRAVIS_TAG --settings .travis/settings.xml
+    - mvn clean deploy -Prelease -DskipTests=true --settings .travis/settings.xml
+  skip_cleanup: true
+  on:
+    tags: true
+

@@ -1,0 +1,282 @@
+package com.bytezone.dm3270.display;
+
+import com.bytezone.dm3270.application.ConsolePane;
+import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
+import com.bytezone.dm3270.application.KeyboardStatusListener;
+import com.bytezone.dm3270.attributes.Attribute;
+import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.commands.Command;
+import com.bytezone.dm3270.orders.BufferAddress;
+import com.bytezone.dm3270.streams.TelnetState;
+import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+public class Screen implements DisplayScreen {
+
+  private static final byte[] SAVE_SCREEN_REPLY_TYPES =
+      {Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
+          Attribute.XA_BGCOLOR, Attribute.XA_TRANSPARENCY};
+
+  private final ScreenPosition[] screenPositions;
+  private final FieldManager fieldManager;
+  private final ScreenPacker screenPacker;
+
+  private final TelnetState telnetState;
+
+  private final ScreenDimensions defaultScreenDimensions;
+  private ScreenDimensions alternateScreenDimensions;
+
+  private final Pen pen;
+  private final Cursor cursor;
+  private ScreenOption currentScreen;
+
+  private byte currentAID;
+  private byte replyMode;
+  private byte[] replyTypes = new byte[0];
+
+  private int insertedCursorPosition = -1;
+  private boolean keyboardLocked;
+  private boolean insertMode;
+  private boolean readModifiedAll = false;
+
+  private final Set<KeyboardStatusListener> keyboardChangeListeners = new HashSet<>();
+
+  public enum ScreenOption {
+    DEFAULT, ALTERNATE
+  }
+
+  public Screen(ScreenDimensions defaultScreenDimensions,
+      ScreenDimensions alternateScreenDimensions, TelnetState telnetState) {
+    this.defaultScreenDimensions = defaultScreenDimensions;
+    this.alternateScreenDimensions = alternateScreenDimensions;
+    this.telnetState = telnetState;
+
+    ScreenDimensions screenDimensions = alternateScreenDimensions == null
+        ? defaultScreenDimensions : alternateScreenDimensions;
+
+    cursor = new Cursor(this);
+
+    ContextManager contextManager = new ContextManager();
+    fieldManager = new FieldManager(this, contextManager, screenDimensions);
+
+    screenPositions = new ScreenPosition[screenDimensions.size];
+    pen = Pen.getInstance(screenPositions, contextManager, screenDimensions);
+
+    screenPacker = new ScreenPacker(pen, fieldManager);
+
+    setCurrentScreen(ScreenOption.DEFAULT);
+  }
+
+  public TelnetState getTelnetState() {
+    return telnetState;
+  }
+
+  public void setCurrentScreen(ScreenOption value) {
+    if (currentScreen == value) {
+      return;
+    }
+
+    currentScreen = value;
+    ScreenDimensions screenDimensions = getScreenDimensions();
+
+    pen.setScreenDimensions(screenDimensions);
+    fieldManager.setScreenDimensions(screenDimensions);
+
+    BufferAddress.setScreenWidth(screenDimensions.columns);
+  }
+
+  @Override
+  public ScreenDimensions getScreenDimensions() {
+    return currentScreen == ScreenOption.DEFAULT ? defaultScreenDimensions
+        : alternateScreenDimensions;
+  }
+
+  public void setConsolePane(ConsolePane consolePane) {
+    addKeyboardStatusChangeListener(consolePane);
+  }
+
+  public FieldManager getFieldManager() {
+    return fieldManager;
+  }
+
+  public Cursor getScreenCursor() {
+    return cursor;
+  }
+
+  public void resetInsertMode() {
+    if (insertMode) {
+      toggleInsertMode();
+    }
+  }
+
+  public void toggleInsertMode() {
+    insertMode = !insertMode;
+    fireKeyboardStatusChange("");
+  }
+
+  public boolean isInsertMode() {
+    return insertMode;
+  }
+
+  public void eraseAllUnprotected() {
+    Optional<Field> firstUnprotectedField = fieldManager.eraseAllUnprotected();
+
+    restoreKeyboard();         // resets the AID to NO_AID_SPECIFIED
+    resetModified();
+    draw();
+
+    firstUnprotectedField
+        .ifPresent(screenPositions1 -> cursor.moveTo(screenPositions1.getFirstLocation()));
+  }
+
+  public void buildFields() {
+    fieldManager.buildFields(screenPositions);        // what about resetModified?
+  }
+
+  public void checkRecording() {
+    byte savedReplyMode = replyMode;
+    byte[] savedReplyTypes = replyTypes;
+    setReplyMode(SetReplyModeSF.RM_CHARACTER, SAVE_SCREEN_REPLY_TYPES);
+    setReplyMode(savedReplyMode, savedReplyTypes);
+  }
+
+  public void draw() {
+    if (insertedCursorPosition >= 0) {
+      cursor.moveTo(insertedCursorPosition);
+      insertedCursorPosition = -1;
+      cursor.setVisible(true);
+    }
+  }
+
+  public void setAID(byte aid) {
+    currentAID = aid;
+  }
+
+  public void setReplyMode(byte replyMode, byte[] replyTypes) {
+    this.replyMode = replyMode;
+    this.replyTypes = replyTypes;
+  }
+
+  public void setFieldText(Field field, String text) {
+    try {
+      field.setText(text.getBytes("CP1047"));
+      field.setModified(true);
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // DisplayScreen interface methods
+  // ---------------------------------------------------------------------------------//
+
+  @Override
+  public Pen getPen() {
+    return pen;
+  }
+
+  @Override
+  public ScreenPosition getScreenPosition(int position) {
+    return screenPositions[position];
+  }
+
+  @Override
+  public int validate(int position) {
+    return pen.validate(position);
+  }
+
+  @Override
+  public void clearScreen() {
+    cursor.moveTo(0);
+    pen.clearScreen();
+    fieldManager.reset();
+  }
+
+  @Override
+  public void insertCursor(int position) {
+    insertedCursorPosition = position;                // move it here later
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Convert screen contents to an AID command
+  // ---------------------------------------------------------------------------------//
+
+  public AIDCommand readModifiedFields() {
+    return screenPacker.readModifiedFields(currentAID, getScreenCursor().getLocation(),
+        readModifiedAll);
+  }
+
+  public AIDCommand readModifiedFields(byte type) {
+    switch (type) {
+      case Command.READ_MODIFIED_F6:
+        return readModifiedFields();
+
+      case Command.READ_MODIFIED_ALL_6E:
+        readModifiedAll = true;
+        AIDCommand command = readModifiedFields();
+        readModifiedAll = false;
+        return command;
+
+      default:
+        System.out.println("Unknown type in Screen.readModifiedFields()");
+    }
+
+    return null;
+  }
+
+  public AIDCommand readBuffer() {
+    return screenPacker.readBuffer(currentAID, getScreenCursor().getLocation(),
+        replyMode, replyTypes);
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Events to be processed from WriteControlCharacter.process()
+  // ---------------------------------------------------------------------------------//
+
+  public void soundAlarm() {
+  }
+
+  public void restoreKeyboard() {
+    setAID(AIDCommand.NO_AID_SPECIFIED);
+    cursor.setVisible(true);
+    keyboardLocked = false;
+    fireKeyboardStatusChange("");
+  }
+
+  public void lockKeyboard(String keyName) {
+    keyboardLocked = true;
+    fireKeyboardStatusChange(keyName);
+    cursor.setVisible(false);
+  }
+
+  public void resetModified() {
+    fieldManager.getUnprotectedFields().forEach(f -> f.setModified(false));
+  }
+
+  public boolean isKeyboardLocked() {
+    return keyboardLocked;
+  }
+
+  // ---------------------------------------------------------------------------------//
+  // Listener events
+  // ---------------------------------------------------------------------------------//
+
+  private void fireKeyboardStatusChange(String keyName) {
+    KeyboardStatusChangedEvent evt =
+        new KeyboardStatusChangedEvent(insertMode, keyboardLocked, keyName);
+    keyboardChangeListeners.forEach(l -> l.keyboardStatusChanged(evt));
+  }
+
+  public void addKeyboardStatusChangeListener(KeyboardStatusListener listener) {
+    keyboardChangeListeners.add(listener);
+  }
+
+  public void removeKeyboardStatusChangeListener(KeyboardStatusListener listener) {
+    keyboardChangeListeners.remove(listener);
+  }
+
+}
