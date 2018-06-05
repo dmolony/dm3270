@@ -31,6 +31,4 @@ Then just run `mvn clean install` and the library will be built and installed in
 
 ### Release
 
-To release the plugin is required [GnuPG](https://www.gnupg.org/), the proper keys installed on the system and maven central (ossrh) credentials configured in `~/.m2/settings.xml`.
-
-Then doing `mvn -Prelease deploy` will deploy the library to maven central repository.
+To release the plugin just tag (with the version id and using [semantic versioning](https://semver.org/)) the commit to release and push it to GitHub. Travis will take care of the rest and you will be able to find the artifact in [maven central](https://search.maven.org/).
