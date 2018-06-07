@@ -58,7 +58,6 @@
         <module name="UnusedImports"/>
 
         <module name="AtclauseOrder"/>
-        <module name="JavadocParagraph"/>
         <module name="JavadocStyle"/>
         <module name="NonEmptyAtclauseDescription"/>
         <module name="SingleLineJavadoc"/>

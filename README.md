@@ -9,7 +9,7 @@ Additionally it includes some basic refactor (not too deep refactor to keep some
 
 To use the library is required [JRE8+](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html).
 
-Include the library as dependency:
+Include the library as maven dependency in `pom.xml`:
 
 ```xml
 <dependency>
@@ -21,14 +21,15 @@ Include the library as dependency:
 
 >Check latest version of the library in [releases](https://github.com/abstracta/dm3270/releases) for `-lib` releases.
 
-And then use provided API. An example of such usage can be found in [ManualTestClient](src/test/java/com/bytezone/dm3270/ManualTestClient.java).
+And then use provided API. An example of such usage can be found in [Tn3270ClientTest](src/test/java/com/bytezone/dm3270/Tn3270ClientTest.java).
 
 ## Build
 
 To build the project is required [JDK8+](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), [maven](https://maven.apache.org/) 3.3+.
 
-Then just run `mvn clean install` and the library will be built and installed in local maven repository.
+Then just run `mvn clean install` and the library will be built and installed in the local maven repository.
 
-### Release
+## Release
 
-To release the plugin just tag (with the version id and using [semantic versioning](https://semver.org/)) the commit to release and push it to GitHub. Travis will take care of the rest and you will be able to find the artifact in [maven central](https://search.maven.org/).
+To release the project, define the version to be released by checking included changes since last release and following [semantic versioning](https://semver.org/). 
+Then, create a [release](https://github.com/abstracta/dm3270/releases) (including `v` as prefix of the version, e.g. `v0.1`), this will trigger a Travis build which will publish the jars to maven central repository (and make it general available to be used as maven dependency projects) in around 10 mins and can be found in [maven central search](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22us.abstracta%22%20AND%20a%3A%22dm3270-lib%22) after up to 2 hours.
