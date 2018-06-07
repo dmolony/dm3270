@@ -5,9 +5,8 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 
 public interface Pen extends Iterable<ScreenPosition> {
 
-  static Pen getInstance(ScreenPosition[] screenPositions,
-      ContextManager contextManager, ScreenDimensions screenDimensions) {
-    return new PenType1(screenPositions, contextManager, screenDimensions);
+  static Pen getInstance(ScreenPosition[] screenPositions, ScreenDimensions screenDimensions) {
+    return new PenType1(screenPositions, screenDimensions);
   }
 
   void clearScreen();

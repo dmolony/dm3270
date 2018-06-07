@@ -6,8 +6,12 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class PenType1 implements Pen {
+
+  private static final Logger LOG = LoggerFactory.getLogger(PenType1.class);
 
   private final ScreenPosition[] screenPositions;   // owned by Screen
 
@@ -18,15 +22,12 @@ class PenType1 implements Pen {
   private final List<Attribute> pendingAttributes = new ArrayList<>();
 
   // created by Screen and HistoryScreen
-  PenType1(ScreenPosition[] screenPositions, ContextManager contextManager,
-      ScreenDimensions screenDimensions) {
+  PenType1(ScreenPosition[] screenPositions, ScreenDimensions screenDimensions) {
     this.screenPositions = screenPositions;
     this.screenDimensions = screenDimensions;
 
-    ScreenContext defaultContext = contextManager.getDefaultScreenContext();
-
     for (int i = 0; i < screenPositions.length; i++) {
-      screenPositions[i] = new ScreenPosition(i, defaultContext);
+      screenPositions[i] = new ScreenPosition(i, ScreenContext.DEFAULT_CONTEXT);
     }
   }
 
@@ -99,7 +100,7 @@ class PenType1 implements Pen {
   @Override
   public void eraseEOF() {
     if (!formattedScreen) {
-      System.out.println("No fields to erase");
+      LOG.debug("No fields to erase");
       return;
     }
 
@@ -140,9 +141,12 @@ class PenType1 implements Pen {
   @Override
   public void moveTo(int position) {
     if (pendingAttributes.size() > 0) {
-      System.out.printf("Unapplied attributes at %d%n", currentPosition);
-      for (Attribute attribute : pendingAttributes) {
-        System.out.println(attribute);
+      if (LOG.isDebugEnabled()) {
+        List<String> attrs = new ArrayList<>();
+        for (Attribute attribute : pendingAttributes) {
+          attrs.add(attribute.toString());
+        }
+        LOG.debug("Unapplied attributes at {}: {}", currentPosition, attrs);
       }
       applyAttributes(screenPositions[currentPosition]);
     }
@@ -164,7 +168,7 @@ class PenType1 implements Pen {
       }
     }
 
-    System.out.printf("No next start field found: %d%n", position);
+    LOG.debug("No next start field found: {}", position);
     return -1;
   }
 

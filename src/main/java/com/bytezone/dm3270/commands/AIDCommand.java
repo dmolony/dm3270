@@ -48,6 +48,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   public static final byte AID_PF22 = (byte) 0x4A;
   public static final byte AID_PF23 = (byte) 0x4B;
   public static final byte AID_PF24 = (byte) 0x4C;
+  public static final byte AID_SYSREQ = (byte) 0xF0;
 
   private static final byte AID_READ_PARTITION = 0x61;
   private static final byte AID_CLEAR_PARTITION = 0x6A;
@@ -57,13 +58,13 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
           AID_PF6, AID_PF7, AID_PF8, AID_PF9, AID_PF10, AID_PF11, AID_PF12, AID_PF13,
           AID_PF14, AID_PF15, AID_PF16, AID_PF17, AID_PF18, AID_PF19, AID_PF20, AID_PF21,
           AID_PF22, AID_PF23, AID_PF24, AID_PA1, AID_PA2, AID_PA3, AID_CLEAR,
-          AID_CLEAR_PARTITION, AID_READ_PARTITION};
+          AID_CLEAR_PARTITION, AID_READ_PARTITION, AID_SYSREQ};
 
   private static String[] keyNames =
       {"Not found", "No AID", "ENTR", "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "PF7",
           "PF8", "PF9", "PF10", "PF11", "PF12", "PF13", "PF14", "PF15", "PF16", "PF17",
           "PF18", "PF19", "PF20", "PF21", "PF22", "PF23", "PF24", "PA1", "PA2", "PA3",
-          "CLR", "CLR Partition", "Read Partition"};
+          "CLR", "CLR Partition", "Read Partition", "System Request"};
 
   private int key;
   private byte keyCommand;

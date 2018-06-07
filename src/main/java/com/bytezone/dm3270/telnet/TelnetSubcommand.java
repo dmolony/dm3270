@@ -10,6 +10,7 @@ public abstract class TelnetSubcommand extends AbstractTelnetCommand {
   public static final byte TERMINAL_TYPE = 0x18;
   public static final byte EOR = 0x19;
   public static final byte TN3270E = 0x28;
+  public static final byte START_TLS = 0x2E;
 
   protected SubcommandType type;
   protected String value;

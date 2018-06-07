@@ -29,7 +29,7 @@ public class TelnetCommand extends AbstractTelnetCommand {
   }
 
   private enum CommandType {
-    TERMINAL_TYPE, EOR, BINARY, TN3270_EXTENDED
+    TERMINAL_TYPE, EOR, BINARY, TN3270_EXTENDED, START_TLS
   }
 
   private TelnetCommand(TelnetState state, byte[] buffer) {
@@ -76,6 +76,8 @@ public class TelnetCommand extends AbstractTelnetCommand {
         commandType = CommandType.BINARY;
       } else if (type == TelnetSubcommand.TN3270E) {
         commandType = CommandType.TN3270_EXTENDED;
+      } else if (type == TelnetSubcommand.START_TLS) {
+        commandType = CommandType.START_TLS;
       } else {
         throw new InvalidParameterException(
             String.format("Unknown telnet command type: %02X %02X%n", command, type));

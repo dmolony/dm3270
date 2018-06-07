@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.display;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Cursor {
 
@@ -11,9 +11,9 @@ public class Cursor {
   private int currentPosition;
   private Field currentField;
   private boolean visible = false;    // this should match the keyboard locked status
-  private final Set<FieldChangeListener> fieldChangeListeners = new HashSet<>();
+  private final Set<FieldChangeListener> fieldChangeListeners = ConcurrentHashMap.newKeySet();
 
-  private final Set<CursorMoveListener> cursorMoveListeners = new HashSet<>();
+  private final Set<CursorMoveListener> cursorMoveListeners = ConcurrentHashMap.newKeySet();
 
   public Cursor(Screen screen) {
     this.screen = screen;

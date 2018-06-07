@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.attributes;
 
-import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 import java.awt.Color;
 
@@ -82,13 +81,12 @@ public class StartFieldAttribute extends Attribute {
    * on a terminal.)
    */
   @Override
-  public ScreenContext process(ContextManager contextManager, ScreenContext unused1,
-                               ScreenContext unused2) {
+  public ScreenContext process(ScreenContext unused1, ScreenContext unused2) {
     assert unused1 == null && unused2 == null;
 
     Color color = isHighIntensity ? isProtected ? WHITE : RED : isProtected ? BLUE : GREEN;
 
-    return contextManager.getScreenContext(color, BLACK, (byte) 0, isHighIntensity);
+    return new ScreenContext(color, BLACK, (byte) 0, isHighIntensity);
   }
 
   private String getColorName() {

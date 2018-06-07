@@ -13,10 +13,6 @@ import com.bytezone.dm3270.streams.TerminalServer;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 import com.bytezone.dm3270.utilities.Site;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-
 public class ConsolePane implements FieldChangeListener, CursorMoveListener,
     KeyboardStatusListener {
 
@@ -37,28 +33,6 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
     screen.setConsolePane(this);
     screen.getScreenCursor().addFieldChangeListener(this);
     screen.getScreenCursor().addCursorMoveListener(this);
-
-    if (server != null) {
-      Parameters parameters = new Parameters();
-      Optional<Parameters.SiteParameters> sp = parameters.getSiteParameters(server.getName());
-      if (sp.isPresent()) {
-        String offset = sp.get().getParameter("offset");
-        if (!offset.isEmpty() && offset.length() > 4) {
-          char direction = offset.charAt(3);
-          int value = Integer.parseInt(offset.substring(4));
-          System.out.printf("Time offset : %s %d%n", direction, value);
-          ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-          System.out.println("UTC         : " + now);
-          if (direction == '+') {
-            now = now.plusHours(value);
-          } else {
-            now = now.minusHours(value);
-          }
-          System.out.println("Site        : " + now);
-          System.out.println();
-        }
-      }
-    }
   }
 
   public void sendAID(byte aid, String name) {

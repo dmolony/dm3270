@@ -1,6 +1,5 @@
 package com.bytezone.dm3270.attributes;
 
-import com.bytezone.dm3270.display.ContextManager;
 import com.bytezone.dm3270.display.ScreenContext;
 
 import java.util.Optional;
@@ -48,8 +47,7 @@ public abstract class Attribute {
     return offset;
   }
 
-  public abstract ScreenContext process(ContextManager contextManager, ScreenContext defaultContext,
-                                        ScreenContext currentContext);
+  public abstract ScreenContext process(ScreenContext defaultContext, ScreenContext currentContext);
 
   public byte getAttributeValue() {
     return attributeValue;

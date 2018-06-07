@@ -20,8 +20,12 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TelnetListener implements BufferListener, TelnetCommandProcessor {
+
+  private static final Logger LOG = LoggerFactory.getLogger(TelnetListener.class);
 
   private final TelnetSocket.Source source;
 
@@ -59,9 +63,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
 
   @Override
   public void processData(byte[] buffer, int length) {
-    System.out.println("Unknown telnet data received:");
-    System.out.println(new String(buffer, 0, length));
-    System.out.println(Dm3270Utility.toHex(buffer, 0, length, false));
+    LOG.warn("Unknown telnet data received: {}", Dm3270Utility.toHex(buffer, 0, length, false));
   }
 
   @Override
@@ -117,8 +119,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
         break;
 
       default:
-        System.out.println("Data type not written: " + dataType);
-        System.out.println(Dm3270Utility.toHex(data, offset, length));
+        LOG.warn("Data type not written: {}, {}", dataType,
+            Dm3270Utility.toHex(data, offset, length));
     }
   }
 
@@ -138,7 +140,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
     } else if (data[2] == TelnetSubcommand.TN3270E) {
       subcommand = new TN3270ExtendedSubcommand(data, 0, dataPtr, telnetState);
     } else {
-      System.out.printf("Unknown command type : %02X%n" + data[2]);
+      LOG.warn("Unknown command type : {}", Dm3270Utility.toHex(data, 2, 1, false));
     }
 
     addDataRecord(subcommand, SessionRecord.SessionRecordType.TELNET);

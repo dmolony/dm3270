@@ -11,11 +11,15 @@ import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Screen implements DisplayScreen {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Screen.class);
 
   private static final byte[] SAVE_SCREEN_REPLY_TYPES =
       {Attribute.XA_HIGHLIGHTING, Attribute.XA_FGCOLOR, Attribute.XA_CHARSET,
@@ -43,7 +47,7 @@ public class Screen implements DisplayScreen {
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final Set<KeyboardStatusListener> keyboardChangeListeners = new HashSet<>();
+  private final Set<KeyboardStatusListener> keyboardChangeListeners = ConcurrentHashMap.newKeySet();;
 
   public enum ScreenOption {
     DEFAULT, ALTERNATE
@@ -60,11 +64,10 @@ public class Screen implements DisplayScreen {
 
     cursor = new Cursor(this);
 
-    ContextManager contextManager = new ContextManager();
-    fieldManager = new FieldManager(this, contextManager, screenDimensions);
+    fieldManager = new FieldManager(this, screenDimensions);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
-    pen = Pen.getInstance(screenPositions, contextManager, screenDimensions);
+    pen = Pen.getInstance(screenPositions, screenDimensions);
 
     screenPacker = new ScreenPacker(pen, fieldManager);
 
@@ -222,7 +225,7 @@ public class Screen implements DisplayScreen {
         return command;
 
       default:
-        System.out.println("Unknown type in Screen.readModifiedFields()");
+        LOG.warn("Unknown type {}", type);
     }
 
     return null;

@@ -25,8 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReadStructuredFieldCommand extends Command {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ReadStructuredFieldCommand.class);
 
   private static Map<String, String> clientNames = new HashMap<>();
   private static final String SEPARATOR =
@@ -84,7 +88,7 @@ public class ReadStructuredFieldCommand extends Command {
           break;
 
         default:
-          System.out.printf("Unknown Structured Field: %02X%n", data[ptr]);
+          LOG.warn("Unknown Structured Field: {}", Dm3270Utility.toHex(data, ptr, 1, false));
           structuredFields.add(new DefaultStructuredField(data, ptr, size));
       }
       ptr += size;

@@ -1,6 +1,11 @@
 package com.bytezone.dm3270.utilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Site {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Site.class);
 
   public final String name;
   public final boolean extended;
@@ -24,7 +29,7 @@ public class Site {
 
   public int getPort() {
     if (port <= 0) {
-      System.out.println("Invalid port value: " + port);
+      LOG.warn("Invalid port value: {}. Fallback to default value {}", port, 23);
       port = 23;
     }
     return port;

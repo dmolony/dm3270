@@ -3,27 +3,24 @@ package com.bytezone.dm3270.display;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FieldManager {
 
   private final Screen screen;
   private ScreenWatcher screenWatcher;
-  private final ContextManager contextManager;
   private ScreenDimensions screenDimensions;
 
   private final List<Field> fields = new ArrayList<>();
   private final List<Field> unprotectedFields = new ArrayList<>();
 
-  private final Set<ScreenChangeListener> screenChangeListeners = new HashSet<>();
+  private final Set<ScreenChangeListener> screenChangeListeners = ConcurrentHashMap.newKeySet();
 
-  public FieldManager(Screen screen, ContextManager contextManager,
-      ScreenDimensions screenDimensions) {
+  public FieldManager(Screen screen, ScreenDimensions screenDimensions) {
     this.screen = screen;
-    this.contextManager = contextManager;
     this.screenDimensions = screenDimensions;
     screenWatcher = new ScreenWatcher(this, screenDimensions);
   }
@@ -247,8 +244,7 @@ public class FieldManager {
 
   private void setContexts(List<ScreenPosition> positions) {
     StartFieldAttribute startFieldAttribute = positions.get(0).getStartFieldAttribute();
-    ScreenContext defaultContext =
-        startFieldAttribute.process(contextManager, null, null);
+    ScreenContext defaultContext = startFieldAttribute.process(null, null);
 
     if (startFieldAttribute.isExtended()) {
       setExtendedContext(defaultContext, positions);
@@ -266,7 +262,7 @@ public class FieldManager {
     for (ScreenPosition screenPosition : positions) {
       for (Attribute attribute : screenPosition.getAttributes()) {
         currentContext =
-            attribute.process(contextManager, defaultContext, currentContext);
+            attribute.process(defaultContext, currentContext);
       }
 
       if (first) {
