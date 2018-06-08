@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -83,7 +84,12 @@ public class Tn3270ClientTest {
   }
 
   @Test
-  public void shouldUnlockKeyboardWhenConnect() throws Exception {
+  public void shouldGetUnlockedKeyboardWhenConnect() throws Exception {
+    awaitKeyboardUnlock();
+    assertThat(client.isKeyboardLocked()).isFalse();
+  }
+
+  private void awaitKeyboardUnlock() throws InterruptedException, TimeoutException {
     CountDownLatch latch = new CountDownLatch(1);
     client.addKeyboardStatusListener(e -> {
       if (!e.keyboardLocked) {
@@ -217,6 +223,28 @@ public class Tn3270ClientTest {
   }
 
   @Test
+  public void shouldGetFieldPositionWhenGetCursorPositionAfterConnect() throws Exception {
+    Point fieldPosition = new Point(1, 2);
+    awaitCursorPosition(fieldPosition);
+    assertThat(client.getCursorPosition()).isEqualTo(fieldPosition);
+  }
+
+  private void awaitCursorPosition(Point position) throws InterruptedException, TimeoutException {
+    CountDownLatch latch = new CountDownLatch(1);
+    client.addCursorMoveListener((newPos, oldPos, field) -> {
+      if (position.equals(client.getCursorPosition())) {
+        latch.countDown();
+      }
+    });
+    if (!client.isKeyboardLocked()) {
+      latch.countDown();
+    }
+    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.SECONDS)) {
+      throw new TimeoutException();
+    }
+  }
+
+  @Test
   public void shouldSendExceptionToExceptionHandlerWhenConnectWithInvalidPort() throws Exception {
     client.connect(SERVICE_HOST, 1, TerminalType.DEFAULT_TERMINAL_TYPE);
     exceptionWaiter.awaitException();
@@ -226,7 +254,7 @@ public class Tn3270ClientTest {
   public void shouldThrowIllegalArgumentExceptionWhenSendIncorrectFieldPosition()
       throws Exception {
     awaitLoginScreen();
-    client.setFieldText(0,1, "test");
+    client.setFieldText(0, 1, "test");
   }
 
   @Test

@@ -2,12 +2,16 @@ package com.bytezone.dm3270;
 
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
+import com.bytezone.dm3270.display.Cursor;
+import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenChangeListener;
+import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Site;
+import java.awt.Point;
 import javax.net.SocketFactory;
 
 /**
@@ -73,6 +77,14 @@ public class Tn3270Client {
     return text.toString();
   }
 
+  public void addScreenChangeListener(ScreenChangeListener listener) {
+    screen.getFieldManager().addScreenChangeListener(listener);
+  }
+
+  public void removeScreenChangeListener(ScreenChangeListener listener) {
+    screen.getFieldManager().removeScreenChangeListener(listener);
+  }
+
   public boolean isKeyboardLocked() {
     return screen.isKeyboardLocked();
   }
@@ -85,16 +97,27 @@ public class Tn3270Client {
     screen.removeKeyboardStatusChangeListener(listener);
   }
 
-  public void addScreenChangeListener(ScreenChangeListener listener) {
-    screen.getFieldManager().addScreenChangeListener(listener);
-  }
-
-  public void removeScreenChangeListener(ScreenChangeListener listener) {
-    screen.getFieldManager().removeScreenChangeListener(listener);
-  }
-
   public boolean resetAlarm() {
     return screen.resetAlarm();
+  }
+
+  public ScreenDimensions getScreenDimensions() {
+    return screen.getScreenDimensions();
+  }
+
+  public Point getCursorPosition() {
+    Cursor cursor = screen.getScreenCursor();
+    int location = cursor.getLocation();
+    int columns = screen.getScreenDimensions().columns;
+    return cursor.isVisible() ? new Point(location % columns + 1, location / columns + 1) : null;
+  }
+
+  public void addCursorMoveListener(CursorMoveListener listener) {
+    screen.getScreenCursor().addCursorMoveListener(listener);
+  }
+
+  public void removeCursorMoveListener(CursorMoveListener listener) {
+    screen.getScreenCursor().removeCursorMoveListener(listener);
   }
 
   public void disconnect() throws InterruptedException {
