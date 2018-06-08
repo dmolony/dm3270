@@ -4,9 +4,11 @@ import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Site;
+import javax.net.SocketFactory;
 
 /**
  * Client to connect to TN3270 terminal servers.
@@ -17,6 +19,7 @@ public class Tn3270Client {
 
   private Screen screen;
   private ConsolePane consolePane;
+  private SocketFactory socketFactory = SocketFactory.getDefault();
 
   public void connect(String host, int port, TerminalType terminalType) {
     TelnetState telnetState = new TelnetState();
@@ -24,8 +27,12 @@ public class Tn3270Client {
     screen = new Screen(terminalType.getScreenDimensions(), null, telnetState);
     screen.lockKeyboard("connect");
     consolePane = new ConsolePane(screen,
-        new Site("", host, port, terminalType.usesExtended3270()));
+        new Site(host, port, terminalType.usesExtended3270()), socketFactory);
     consolePane.connect();
+  }
+
+  public void setSocketFactory(SocketFactory socketFactory) {
+    this.socketFactory = socketFactory;
   }
 
   public void setFieldText(int row, int column, String text) {
@@ -66,7 +73,15 @@ public class Tn3270Client {
     screen.removeKeyboardStatusChangeListener(listener);
   }
 
-  public void disconnect() {
+  public void addScreenChangeListener(ScreenChangeListener listener) {
+    screen.getFieldManager().addScreenChangeListener(listener);
+  }
+
+  public void removeScreenChangeListener(ScreenChangeListener listener) {
+    screen.getFieldManager().removeScreenChangeListener(listener);
+  }
+
+  public void disconnect() throws InterruptedException {
     consolePane.disconnect();
   }
 

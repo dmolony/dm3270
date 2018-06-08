@@ -12,6 +12,7 @@ import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 import com.bytezone.dm3270.utilities.Site;
+import javax.net.SocketFactory;
 
 public class ConsolePane implements FieldChangeListener, CursorMoveListener,
     KeyboardStatusListener {
@@ -21,14 +22,16 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
   private final TelnetState telnetState;
   private int commandHeaderCount;
   private final Site server;
+  private final SocketFactory socketFactory;
 
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
 
-  public ConsolePane(Screen screen, Site server) {
+  public ConsolePane(Screen screen, Site server, SocketFactory socketFactory) {
     this.screen = screen;
     this.telnetState = screen.getTelnetState();
     this.server = server;
+    this.socketFactory = socketFactory;
 
     screen.setConsolePane(this);
     screen.getScreenCursor().addFieldChangeListener(this);
@@ -72,27 +75,23 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
 
     TelnetListener telnetListener = new TelnetListener(screen, telnetState);
     terminalServer =
-        new TerminalServer(server.getURL(), server.getPort(), telnetListener);
+        new TerminalServer(server.getURL(), server.getPort(), socketFactory, telnetListener);
     telnetState.setTerminalServer(terminalServer);
 
     terminalServerThread = new Thread(terminalServer);
     terminalServerThread.start();
   }
 
-  public void disconnect() {
+  public void disconnect() throws InterruptedException {
+    telnetState.close();
+
     if (terminalServer != null) {
       terminalServer.close();
     }
 
-    telnetState.close();
-
     if (terminalServerThread != null) {
       terminalServerThread.interrupt();
-      try {
-        terminalServerThread.join();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+      terminalServerThread.join();
     }
   }
 

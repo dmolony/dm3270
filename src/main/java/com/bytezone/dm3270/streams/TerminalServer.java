@@ -1,63 +1,50 @@
 package com.bytezone.dm3270.streams;
 
-import com.bytezone.dm3270.utilities.Dm3270Utility;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import javax.net.SocketFactory;
 
 public class TerminalServer implements Runnable {
 
-  private final int serverPort;
   private final String serverURL;
-  private final Socket serverSocket = new Socket();
-  private InputStream serverIn;
+  private final int serverPort;
+  private final SocketFactory socketFactory;
+
+  private Socket serverSocket;
   private OutputStream serverOut;
 
   private final byte[] buffer = new byte[4096];
   private volatile boolean running;
 
   private final BufferListener telnetListener;
-  private final boolean debug = false;
 
-  public TerminalServer(String serverURL, int serverPort, BufferListener listener) {
+  public TerminalServer(String serverURL, int serverPort, SocketFactory socketFactory,
+      BufferListener listener) {
     this.serverPort = serverPort;
     this.serverURL = serverURL;
+    this.socketFactory = socketFactory;
     this.telnetListener = listener;
   }
 
   @Override
   public void run() {
     try {
+      serverSocket = socketFactory.createSocket();
       serverSocket.connect(new InetSocketAddress(serverURL, serverPort));
 
-      serverIn = serverSocket.getInputStream();
+      InputStream serverIn = serverSocket.getInputStream();
       serverOut = serverSocket.getOutputStream();
 
       running = true;
       while (running) {
-        if (Thread.interrupted()) {
-          System.out.println("TerminalServer interrupted");
-          break;
-        }
-
         int bytesRead = serverIn.read(buffer);
         if (bytesRead < 0) {
           close();
           break;
-        }
-
-        if (Thread.currentThread().isInterrupted()) {
-          System.out.println("TerminalServer was interrupted!");
-        }
-
-        if (debug) {
-          System.out.println(toString());
-          System.out.println("reading:");
-          System.out.println(Dm3270Utility.toHex(buffer, 0, bytesRead));
         }
 
         byte[] message = new byte[bytesRead];
@@ -85,22 +72,15 @@ public class TerminalServer implements Runnable {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    if (debug) {
-      System.out.println(toString());
-      System.out.println("writing:");
-      System.out.println(Dm3270Utility.toHex(buffer));
-    }
   }
 
   public void close() {
     try {
       running = false;
 
-      serverIn = null;
-      serverOut = null;
-
-      serverSocket.close();
+      if (serverSocket != null) {
+        serverSocket.close();
+      }
 
       if (telnetListener != null) {
         telnetListener.close();

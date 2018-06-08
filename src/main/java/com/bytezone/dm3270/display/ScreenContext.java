@@ -5,7 +5,8 @@ import java.awt.Color;
 
 public class ScreenContext {
 
-  public static final ScreenContext DEFAULT_CONTEXT = new ScreenContext(ColorAttribute.COLORS[0], ColorAttribute.COLORS[8], (byte) 0, false);
+  public static final ScreenContext DEFAULT_CONTEXT = new ScreenContext(ColorAttribute.COLORS[0],
+      ColorAttribute.COLORS[8], (byte) 0, false);
 
   public final Color foregroundColor;
   public final Color backgroundColor;

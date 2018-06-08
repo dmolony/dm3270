@@ -47,7 +47,7 @@ public class Screen implements DisplayScreen {
   private boolean insertMode;
   private boolean readModifiedAll = false;
 
-  private final Set<KeyboardStatusListener> keyboardChangeListeners = ConcurrentHashMap.newKeySet();;
+  private final Set<KeyboardStatusListener> keyboardChangeListeners = ConcurrentHashMap.newKeySet();
 
   public enum ScreenOption {
     DEFAULT, ALTERNATE

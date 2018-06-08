@@ -3,15 +3,15 @@ package com.bytezone.dm3270.streams;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TelnetState implements Runnable {
 
-  private static final DateTimeFormatter FORMATTER = DateTimeFormatter
-      .ofPattern("dd MMM uuuu HH:mm:ss.S");
+  private static final Logger LOG = LoggerFactory.getLogger(TelnetState.class);
+
   private static byte[] noOp = {(byte) 0xFF, (byte) 0xF1};
 
   private final String[] terminalTypes =
@@ -34,7 +34,6 @@ public class TelnetState implements Runnable {
 
   private String terminal = "";
   private TerminalServer terminalServer;
-  private final boolean debug = false;
 
   // IO
   private AtomicLong lastAccess;
@@ -58,12 +57,8 @@ public class TelnetState implements Runnable {
     thread.start();
   }
 
-  public void setLastAccess(LocalDateTime dateTime, int bytes) {
+  public void setLastAccess() {
     lastAccess.set(System.currentTimeMillis());
-
-    if (debug) {
-      System.out.printf("Read  : %,6d %s%n", bytes, FORMATTER.format(dateTime));
-    }
   }
 
   public void write(byte[] buffer) {
@@ -73,11 +68,6 @@ public class TelnetState implements Runnable {
 
     if (lastAccess != null) {
       lastAccess.set(System.currentTimeMillis());
-    }
-
-    if (debug) {
-      System.out.printf("Write : %,6d %s%n", buffer.length,
-          FORMATTER.format(LocalDateTime.now()));
     }
   }
 
@@ -134,32 +124,32 @@ public class TelnetState implements Runnable {
   // ---------------------------------------------------------------------------------//
 
   public void setDoes3270Extended(boolean state) {
-    System.out.println("Does Extended        : " + state);
+    LOG.debug("Does Extended: {}", state);
     does3270Extended = state;
   }
 
   public void setDoesEOR(boolean state) {
-    System.out.println("Does EOR             : " + state);
+    LOG.debug("Does EOR: {}", state);
     doesEOR = state;
   }
 
   public void setDoesBinary(boolean state) {
-    System.out.println("Does Binary          : " + state);
+    LOG.debug("Does Binary: {}", state);
     doesBinary = state;
   }
 
   public void setDoesTerminalType(boolean state) {
-    System.out.println("Does Terminal type  : " + state);
+    LOG.debug("Does Terminal type: {}", state);
     doesTerminalType = state;
   }
 
   public void setTerminal(String terminal) {
-    System.out.println("Terminal            : " + terminal);
+    LOG.debug("Terminal: {}", terminal);
     this.terminal = terminal;
   }
 
   public void setDeviceType(String deviceType) {
-    System.out.println("Device Type          : " + deviceType);
+    LOG.debug("Device Type: {}", deviceType);
     this.deviceType = deviceType;
 
     int modelNo = 0;
@@ -185,12 +175,12 @@ public class TelnetState implements Runnable {
         break;
       default:
         secondary = new ScreenDimensions(24, 80);
-        System.out.println("Model not found: " + deviceType);
+        LOG.debug("Model not found: {}", deviceType);
     }
   }
 
   public void setFunctions(List<TN3270ExtendedSubcommand.Function> functions) {
-    System.out.println("Functions            : " + functions);
+    LOG.debug("Functions: {}", functions);
     this.functions = functions;
   }
 
@@ -260,7 +250,7 @@ public class TelnetState implements Runnable {
 
   public void setDoDeviceType(int modelNo) {
     doDeviceType = terminalTypes[modelNo];
-    System.out.println("setting: " + doDeviceType);
+    LOG.debug("setting: {}", doDeviceType);
   }
 
   @Override

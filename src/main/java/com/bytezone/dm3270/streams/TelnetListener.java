@@ -54,7 +54,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
 
     telnetProcessor.listen(buffer);     // will call one of the processXXX routines
 
-    telnetState.setLastAccess(dateTime, buffer.length);
+    telnetState.setLastAccess();
   }
 
   @Override
