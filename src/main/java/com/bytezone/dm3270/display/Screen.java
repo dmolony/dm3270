@@ -37,6 +37,7 @@ public class Screen implements DisplayScreen {
   private final Pen pen;
   private final Cursor cursor;
   private ScreenOption currentScreen;
+  private boolean alarmSounded;
 
   private byte currentAID;
   private byte replyMode;
@@ -241,6 +242,13 @@ public class Screen implements DisplayScreen {
   // ---------------------------------------------------------------------------------//
 
   public void soundAlarm() {
+    alarmSounded = true;
+  }
+
+  public boolean resetAlarm() {
+    boolean sounded = alarmSounded;
+    alarmSounded = false;
+    return sounded;
   }
 
   public void restoreKeyboard() {

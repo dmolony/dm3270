@@ -102,7 +102,7 @@ public class Tn3270ClientTest {
   public void shouldGetWelcomeScreenWhenConnect() throws Exception {
     awaitLoginScreen();
     assertThat(client.getScreenText())
-        .isEqualTo(getFileContent("login-welcome-screen.txt"));
+        .isEqualTo(getWelcomeScreen());
   }
 
   private void awaitLoginScreen() throws TimeoutException, InterruptedException {
@@ -123,6 +123,10 @@ public class Tn3270ClientTest {
     if (!latch.await(TIMEOUT_MILLIS, TimeUnit.SECONDS)) {
       throw new TimeoutException();
     }
+  }
+
+  private String getWelcomeScreen() throws IOException {
+    return getFileContent("login-welcome-screen.txt");
   }
 
   private String getFileContent(String resourceFile) throws IOException {
@@ -147,7 +151,7 @@ public class Tn3270ClientTest {
 
     awaitLoginScreen();
     assertThat(client.getScreenText())
-        .isEqualTo(getFileContent("login-welcome-screen.txt"));
+        .isEqualTo(getWelcomeScreen());
   }
 
   private SSLContext buildSslContext() throws GeneralSecurityException {
@@ -175,14 +179,41 @@ public class Tn3270ClientTest {
   public void shouldGetUserMenuScreenWhenSendUserField() throws Exception {
     awaitLoginScreen();
     sendUserField();
-    awaitScreenContains("TSO/E LOGON");
+    awaitMenuScreen();
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
+  }
+
+  private void awaitMenuScreen() throws InterruptedException, TimeoutException {
+    awaitScreenContains("TSO/E LOGON");
   }
 
   private void sendUserField() {
     client.setFieldText(2, 1, "testusr");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
+  }
+
+  @Test
+  public void shouldGetNotSoundedAlarmWhenWhenConnect() throws Exception {
+    awaitLoginScreen();
+    assertThat(client.resetAlarm()).isFalse();
+  }
+
+  @Test
+  public void shouldGetSoundedAlarmWhenWhenSendUserField() throws Exception {
+    awaitLoginScreen();
+    sendUserField();
+    awaitMenuScreen();
+    assertThat(client.resetAlarm()).isTrue();
+  }
+
+  @Test
+  public void shouldGetNotSoundedAlarmWhenWhenSendUserFieldAndResetAlarm() throws Exception {
+    awaitLoginScreen();
+    sendUserField();
+    awaitMenuScreen();
+    client.resetAlarm();
+    assertThat(client.resetAlarm()).isFalse();
   }
 
   @Test

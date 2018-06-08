@@ -93,6 +93,10 @@ public class Tn3270Client {
     screen.getFieldManager().removeScreenChangeListener(listener);
   }
 
+  public boolean resetAlarm() {
+    return screen.resetAlarm();
+  }
+
   public void disconnect() throws InterruptedException {
     consolePane.disconnect();
   }
