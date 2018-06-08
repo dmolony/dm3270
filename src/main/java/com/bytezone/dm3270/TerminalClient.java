@@ -19,24 +19,27 @@ import javax.net.SocketFactory;
  * <p>
  * This class provides a facade to ease usage of dm3270 to java clients.
  */
-public class Tn3270Client {
+public class TerminalClient {
 
+  private int model = 2;
+  private ScreenDimensions screenDimensions = new ScreenDimensions(24, 80);
+  private boolean usesExtended3270;
   private Screen screen;
   private ConsolePane consolePane;
   private SocketFactory socketFactory = SocketFactory.getDefault();
   private ExceptionHandler exceptionHandler;
   private int connectionTimeoutMillis;
 
-  public void connect(String host, int port, TerminalType terminalType) {
-    TelnetState telnetState = new TelnetState();
-    telnetState.setDoDeviceType(terminalType.getModel());
-    screen = new Screen(terminalType.getScreenDimensions(), null, telnetState);
-    screen.lockKeyboard("connect");
-    consolePane = new ConsolePane(screen,
-        new Site(host, port, terminalType.usesExtended3270()), socketFactory);
-    consolePane.setConnectionTimeoutMillis(connectionTimeoutMillis);
-    consolePane.setExceptionHandler(exceptionHandler);
-    consolePane.connect();
+  public void setModel(int model) {
+    this.model = model;
+  }
+
+  public void setScreenDimensions(ScreenDimensions screenDimensions) {
+    this.screenDimensions = screenDimensions;
+  }
+
+  public void setUsesExtended3270(boolean usesExtended3270) {
+    this.usesExtended3270 = usesExtended3270;
   }
 
   public void setSocketFactory(SocketFactory socketFactory) {
@@ -49,6 +52,17 @@ public class Tn3270Client {
 
   public void setExceptionHandler(ExceptionHandler exceptionHandler) {
     this.exceptionHandler = exceptionHandler;
+  }
+
+  public void connect(String host, int port) {
+    TelnetState telnetState = new TelnetState();
+    telnetState.setDoDeviceType(model);
+    screen = new Screen(screenDimensions, null, telnetState);
+    screen.lockKeyboard("connect");
+    consolePane = new ConsolePane(screen, new Site(host, port, usesExtended3270), socketFactory);
+    consolePane.setConnectionTimeoutMillis(connectionTimeoutMillis);
+    consolePane.setExceptionHandler(exceptionHandler);
+    consolePane.connect();
   }
 
   public void setFieldText(int row, int column, String text) {

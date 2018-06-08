@@ -25,14 +25,14 @@ import org.slf4j.LoggerFactory;
 import us.abstracta.wiresham.Flow;
 import us.abstracta.wiresham.VirtualTcpService;
 
-public class Tn3270ClientTest {
+public class TerminalClientTest {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Tn3270ClientTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TerminalClientTest.class);
   private static final long TIMEOUT_MILLIS = 10000;
   private static final String SERVICE_HOST = "localhost";
 
   private VirtualTcpService service = new VirtualTcpService();
-  private Tn3270Client client;
+  private TerminalClient client;
   private ExceptionWaiter exceptionWaiter;
 
   @Before
@@ -40,11 +40,11 @@ public class Tn3270ClientTest {
     service.setSslEnabled(false);
     service.setFlow(Flow.fromYml(new File(getResourceFilePath("/login.yml"))));
     service.start();
-    client = new Tn3270Client();
+    client = new TerminalClient();
     client.setConnectionTimeoutMillis(5000);
     exceptionWaiter = new ExceptionWaiter();
     client.setExceptionHandler(exceptionWaiter);
-    client.connect(SERVICE_HOST, service.getPort(), TerminalType.DEFAULT_TERMINAL_TYPE);
+    client.connect(SERVICE_HOST, service.getPort());
   }
 
   private static class ExceptionWaiter implements ExceptionHandler {
@@ -151,9 +151,9 @@ public class Tn3270ClientTest {
     System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
     service.start();
 
-    client = new Tn3270Client();
+    client = new TerminalClient();
     client.setSocketFactory(buildSslContext().getSocketFactory());
-    client.connect(SERVICE_HOST, service.getPort(), TerminalType.DEFAULT_TERMINAL_TYPE);
+    client.connect(SERVICE_HOST, service.getPort());
 
     awaitLoginScreen();
     assertThat(client.getScreenText())
@@ -246,7 +246,7 @@ public class Tn3270ClientTest {
 
   @Test
   public void shouldSendExceptionToExceptionHandlerWhenConnectWithInvalidPort() throws Exception {
-    client.connect(SERVICE_HOST, 1, TerminalType.DEFAULT_TERMINAL_TYPE);
+    client.connect(SERVICE_HOST, 1);
     exceptionWaiter.awaitException();
   }
 
