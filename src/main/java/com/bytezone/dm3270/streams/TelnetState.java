@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 
 public class TelnetState implements Runnable {
 
+  public static final byte[] NO_OP = {(byte) 0xFF, (byte) 0xF1};
+
   private static final Logger LOG = LoggerFactory.getLogger(TelnetState.class);
 
-  private static byte[] noOp = {(byte) 0xFF, (byte) 0xF1};
-
-  private final String[] terminalTypes =
+  private static final String[] TERMINAL_TYPES =
       {"", "", "IBM-3278-2-E", "IBM-3278-3-E", "IBM-3278-4-E", "IBM-3278-5-E"};
 
   // preferences
@@ -49,6 +49,7 @@ public class TelnetState implements Runnable {
     setDoEOR(true);
     setDoBinary(true);
     setDoTerminalType(true);
+    lastAccess = new AtomicLong(System.currentTimeMillis());
   }
 
   public void setTerminalServer(TerminalServer terminalServer) {
@@ -66,9 +67,7 @@ public class TelnetState implements Runnable {
       terminalServer.write(buffer);
     }
 
-    if (lastAccess != null) {
-      lastAccess.set(System.currentTimeMillis());
-    }
+    lastAccess.set(System.currentTimeMillis());
   }
 
   // This thread exists simply to keep the connection alive. It sleeps for a
@@ -78,7 +77,6 @@ public class TelnetState implements Runnable {
   @Override
   public void run() {
     long lastTimeIChecked;
-    lastAccess = new AtomicLong(System.currentTimeMillis());
     running = true;
     long limit = 120;      // seconds to wait
 
@@ -88,21 +86,18 @@ public class TelnetState implements Runnable {
         long delay = (System.currentTimeMillis() - lastTimeIChecked) / 1000;
         long sleep = limit - delay;
 
-        if (Thread.currentThread().isInterrupted()) {
-          return;
-        }
-
         if (sleep > 1) {
           Thread.sleep(sleep * 1000);
         }
 
         if (lastTimeIChecked == lastAccess.get()) {
-          write(noOp);
+          write(NO_OP);
         }
       } catch (InterruptedException e) {
         if (running) {
-          e.printStackTrace();
+          LOG.debug("TelnetState was interrupted.");
         }
+        close();
         return;
       }
     }
@@ -154,7 +149,7 @@ public class TelnetState implements Runnable {
 
     int modelNo = 0;
     for (int i = 2; i <= 5; i++) {
-      if (terminalTypes[i].equals(deviceType)) {
+      if (TERMINAL_TYPES[i].equals(deviceType)) {
         modelNo = i;
         break;
       }
@@ -249,7 +244,7 @@ public class TelnetState implements Runnable {
   }
 
   public void setDoDeviceType(int modelNo) {
-    doDeviceType = terminalTypes[modelNo];
+    doDeviceType = TERMINAL_TYPES[modelNo];
     LOG.debug("setting: {}", doDeviceType);
   }
 

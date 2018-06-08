@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.streams;
 
+import com.bytezone.dm3270.ExceptionHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,6 +14,8 @@ public class TerminalServer implements Runnable {
   private final String serverURL;
   private final int serverPort;
   private final SocketFactory socketFactory;
+  private int connectionTimeoutMillis;
+  private ExceptionHandler exceptionHandler;
 
   private Socket serverSocket;
   private OutputStream serverOut;
@@ -30,11 +33,24 @@ public class TerminalServer implements Runnable {
     this.telnetListener = listener;
   }
 
+  public void setConnectionTimeoutMillis(int connectionTimeoutMillis) {
+    this.connectionTimeoutMillis = connectionTimeoutMillis;
+  }
+
+  public void setExceptionHandler(ExceptionHandler exceptionHandler) {
+    this.exceptionHandler = exceptionHandler;
+  }
+
   @Override
   public void run() {
     try {
-      serverSocket = socketFactory.createSocket();
-      serverSocket.connect(new InetSocketAddress(serverURL, serverPort));
+      try {
+        serverSocket = socketFactory.createSocket();
+        serverSocket.connect(new InetSocketAddress(serverURL, serverPort), connectionTimeoutMillis);
+      } catch (IOException ex) {
+        exceptionHandler.onException(ex);
+        return;
+      }
 
       InputStream serverIn = serverSocket.getInputStream();
       serverOut = serverSocket.getOutputStream();
@@ -44,6 +60,7 @@ public class TerminalServer implements Runnable {
         int bytesRead = serverIn.read(buffer);
         if (bytesRead < 0) {
           close();
+          exceptionHandler.onConnectionClosed();
           break;
         }
 
@@ -53,16 +70,15 @@ public class TerminalServer implements Runnable {
       }
     } catch (IOException e) {
       if (running) {
-        e.printStackTrace();
         close();
+        exceptionHandler.onConnectionClosed();
       }
     }
   }
 
-  synchronized void write(byte[] buffer) {
-    if (serverOut == null) {
-      // the no-op may come here if the program is not closed after disconnection
-      System.out.println("serverOut is null in TerminalServer");
+  public synchronized void write(byte[] buffer) {
+    // the no-op may come here if socket is closed from remote end and client has not been closed
+    if (!running && buffer == TelnetState.NO_OP) {
       return;
     }
 
@@ -70,7 +86,7 @@ public class TerminalServer implements Runnable {
       serverOut.write(buffer);
       serverOut.flush();
     } catch (IOException e) {
-      e.printStackTrace();
+      exceptionHandler.onException(e);
     }
   }
 
@@ -86,7 +102,7 @@ public class TerminalServer implements Runnable {
         telnetListener.close();
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      exceptionHandler.onException(e);
     }
   }
 

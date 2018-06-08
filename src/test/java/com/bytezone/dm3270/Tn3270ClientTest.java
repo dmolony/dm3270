@@ -19,15 +19,20 @@ import javax.net.ssl.X509TrustManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.abstracta.wiresham.Flow;
 import us.abstracta.wiresham.VirtualTcpService;
 
 public class Tn3270ClientTest {
 
+  private static final Logger LOG = LoggerFactory.getLogger(Tn3270ClientTest.class);
   private static final long TIMEOUT_MILLIS = 10000;
+  private static final String SERVICE_HOST = "localhost";
 
   private VirtualTcpService service = new VirtualTcpService();
   private Tn3270Client client;
+  private ExceptionWaiter exceptionWaiter;
 
   @Before
   public void setup() throws IOException {
@@ -35,8 +40,37 @@ public class Tn3270ClientTest {
     service.setFlow(Flow.fromYml(new File(getResourceFilePath("/login.yml"))));
     service.start();
     client = new Tn3270Client();
-    client.connect("localhost", service.getPort(), TerminalType.DEFAULT_TERMINAL_TYPE);
+    client.setConnectionTimeoutMillis(5000);
+    exceptionWaiter = new ExceptionWaiter();
+    client.setExceptionHandler(exceptionWaiter);
+    client.connect(SERVICE_HOST, service.getPort(), TerminalType.DEFAULT_TERMINAL_TYPE);
   }
+
+  private static class ExceptionWaiter implements ExceptionHandler {
+
+    private CountDownLatch exceptionLatch = new CountDownLatch(1);
+    private CountDownLatch closeLatch = new CountDownLatch(1);
+
+    @Override
+    public void onException(Exception ex) {
+      exceptionLatch.countDown();
+    }
+
+    @Override
+    public void onConnectionClosed() {
+      closeLatch.countDown();
+    }
+
+    private void awaitException() throws InterruptedException {
+      assertThat(exceptionLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+    }
+
+    private void awaitClose() throws InterruptedException {
+      assertThat(closeLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+    }
+
+  }
+
 
   private String getResourceFilePath(String resourcePath) {
     return getClass().getResource(resourcePath).getFile();
@@ -48,8 +82,8 @@ public class Tn3270ClientTest {
     service.stop(TIMEOUT_MILLIS);
   }
 
-  @Test(timeout = TIMEOUT_MILLIS)
-  public void shouldUnlockKeyboardAfterConnect() throws Exception {
+  @Test
+  public void shouldUnlockKeyboardWhenConnect() throws Exception {
     CountDownLatch latch = new CountDownLatch(1);
     client.addKeyboardStatusListener(e -> {
       if (!e.keyboardLocked) {
@@ -59,7 +93,7 @@ public class Tn3270ClientTest {
     if (!client.isKeyboardLocked()) {
       latch.countDown();
     }
-    if (!latch.await(30, TimeUnit.SECONDS)) {
+    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.SECONDS)) {
       throw new TimeoutException();
     }
   }
@@ -78,6 +112,7 @@ public class Tn3270ClientTest {
   private void awaitScreenContains(String text) throws InterruptedException, TimeoutException {
     CountDownLatch latch = new CountDownLatch(1);
     client.addScreenChangeListener(e -> {
+      LOG.debug("Received screen {}", text);
       if (client.getScreenText().contains(text)) {
         latch.countDown();
       }
@@ -85,7 +120,7 @@ public class Tn3270ClientTest {
     if (client.getScreenText().contains(text)) {
       latch.countDown();
     }
-    if (!latch.await(30, TimeUnit.SECONDS)) {
+    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.SECONDS)) {
       throw new TimeoutException();
     }
   }
@@ -97,6 +132,7 @@ public class Tn3270ClientTest {
 
   @Test
   public void shouldGetWelcomeScreenWhenConnectWithSsl() throws Exception {
+    awaitLoginScreen();
     client.disconnect();
     service.stop(TIMEOUT_MILLIS);
 
@@ -107,7 +143,7 @@ public class Tn3270ClientTest {
 
     client = new Tn3270Client();
     client.setSocketFactory(buildSslContext().getSocketFactory());
-    client.connect("localhost", service.getPort(), TerminalType.DEFAULT_TERMINAL_TYPE);
+    client.connect(SERVICE_HOST, service.getPort(), TerminalType.DEFAULT_TERMINAL_TYPE);
 
     awaitLoginScreen();
     assertThat(client.getScreenText())
@@ -138,11 +174,44 @@ public class Tn3270ClientTest {
   @Test
   public void shouldGetUserMenuScreenWhenSendUserField() throws Exception {
     awaitLoginScreen();
-    client.setFieldText(2, 1, "testusr");
-    client.sendAID(AIDCommand.AID_ENTER, "ENTER");
+    sendUserField();
     awaitScreenContains("TSO/E LOGON");
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
+  }
+
+  private void sendUserField() {
+    client.setFieldText(2, 1, "testusr");
+    client.sendAID(AIDCommand.AID_ENTER, "ENTER");
+  }
+
+  @Test
+  public void shouldSendExceptionToExceptionHandlerWhenConnectWithInvalidPort() throws Exception {
+    client.connect(SERVICE_HOST, 1, TerminalType.DEFAULT_TERMINAL_TYPE);
+    exceptionWaiter.awaitException();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void shouldThrowIllegalArgumentExceptionWhenSendIncorrectFieldPosition()
+      throws Exception {
+    awaitLoginScreen();
+    client.setFieldText(0,1, "test");
+  }
+
+  @Test
+  public void shouldSendCloseToExceptionHandlerWhenServerDown() throws Exception {
+    awaitLoginScreen();
+    service.stop(TIMEOUT_MILLIS);
+    sendUserField();
+    exceptionWaiter.awaitClose();
+  }
+
+  @Test
+  public void shouldSendExceptionToExceptionHandlerWhenSendAndServerDown() throws Exception {
+    awaitLoginScreen();
+    service.stop(TIMEOUT_MILLIS);
+    sendUserField();
+    exceptionWaiter.awaitException();
   }
 
 }

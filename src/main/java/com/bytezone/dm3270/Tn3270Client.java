@@ -20,6 +20,8 @@ public class Tn3270Client {
   private Screen screen;
   private ConsolePane consolePane;
   private SocketFactory socketFactory = SocketFactory.getDefault();
+  private ExceptionHandler exceptionHandler;
+  private int connectionTimeoutMillis;
 
   public void connect(String host, int port, TerminalType terminalType) {
     TelnetState telnetState = new TelnetState();
@@ -28,11 +30,21 @@ public class Tn3270Client {
     screen.lockKeyboard("connect");
     consolePane = new ConsolePane(screen,
         new Site(host, port, terminalType.usesExtended3270()), socketFactory);
+    consolePane.setConnectionTimeoutMillis(connectionTimeoutMillis);
+    consolePane.setExceptionHandler(exceptionHandler);
     consolePane.connect();
   }
 
   public void setSocketFactory(SocketFactory socketFactory) {
     this.socketFactory = socketFactory;
+  }
+
+  public void setConnectionTimeoutMillis(int connectionTimeoutMillis) {
+    this.connectionTimeoutMillis = connectionTimeoutMillis;
+  }
+
+  public void setExceptionHandler(ExceptionHandler exceptionHandler) {
+    this.exceptionHandler = exceptionHandler;
   }
 
   public void setFieldText(int row, int column, String text) {
