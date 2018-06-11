@@ -7,13 +7,8 @@ before_deploy:
   - mvn --batch-mode versions:set -DnewVersion="$(T=${TRAVIS_TAG%%-lib}; echo ${T:1})" --settings .travis/settings.xml
   - mvn clean package -DskipTests --settings .travis/settings.xml
 deploy:
-  - provider: script
-    script: bash .travis/maven-central-deploy.sh
-    on:
-      tags: true
-  - provider: releases
-    api_key: $GITHUB_OAUTH_TOKEN
-    file:
-      - "dm3270-lib-$(T=${TRAVIS_TAG%%-lib}; echo ${T:1}).jar"
-    on:
-      tags: true
+  provider: script
+  script: bash .travis/maven-central-deploy.sh
+  skip_cleanup: true
+  on:
+    tags: true
