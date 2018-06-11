@@ -48,7 +48,7 @@ public class TerminalServer implements Runnable {
         serverSocket = socketFactory.createSocket();
         serverSocket.connect(new InetSocketAddress(serverURL, serverPort), connectionTimeoutMillis);
       } catch (IOException ex) {
-        exceptionHandler.onException(ex);
+        handleException(ex);
         return;
       }
 
@@ -60,7 +60,9 @@ public class TerminalServer implements Runnable {
         int bytesRead = serverIn.read(buffer);
         if (bytesRead < 0) {
           close();
-          exceptionHandler.onConnectionClosed();
+          if (exceptionHandler != null) {
+            exceptionHandler.onConnectionClosed();
+          }
           break;
         }
 
@@ -71,8 +73,16 @@ public class TerminalServer implements Runnable {
     } catch (IOException e) {
       if (running) {
         close();
-        exceptionHandler.onConnectionClosed();
+        handleException(e);
       }
+    }
+  }
+
+  private void handleException(IOException ex) {
+    if (exceptionHandler != null) {
+      exceptionHandler.onException(ex);
+    } else {
+      ex.printStackTrace();
     }
   }
 
@@ -86,7 +96,7 @@ public class TerminalServer implements Runnable {
       serverOut.write(buffer);
       serverOut.flush();
     } catch (IOException e) {
-      exceptionHandler.onException(e);
+      handleException(e);
     }
   }
 
@@ -102,7 +112,7 @@ public class TerminalServer implements Runnable {
         telnetListener.close();
       }
     } catch (IOException e) {
-      exceptionHandler.onException(e);
+      handleException(e);
     }
   }
 

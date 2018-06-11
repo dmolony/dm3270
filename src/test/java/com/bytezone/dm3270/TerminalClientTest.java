@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -226,13 +227,13 @@ public class TerminalClientTest {
   public void shouldGetFieldPositionWhenGetCursorPositionAfterConnect() throws Exception {
     Point fieldPosition = new Point(1, 2);
     awaitCursorPosition(fieldPosition);
-    assertThat(client.getCursorPosition()).isEqualTo(fieldPosition);
+    assertThat(client.getCursorPosition()).isEqualTo(Optional.of(fieldPosition));
   }
 
   private void awaitCursorPosition(Point position) throws InterruptedException, TimeoutException {
     CountDownLatch latch = new CountDownLatch(1);
     client.addCursorMoveListener((newPos, oldPos, field) -> {
-      if (position.equals(client.getCursorPosition())) {
+      if (position.equals(client.getCursorPosition().orElse(null))) {
         latch.countDown();
       }
     });

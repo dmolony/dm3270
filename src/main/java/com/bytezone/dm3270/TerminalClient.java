@@ -12,6 +12,7 @@ import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Site;
 import java.awt.Point;
+import java.util.Optional;
 import javax.net.SocketFactory;
 
 /**
@@ -30,30 +31,73 @@ public class TerminalClient {
   private ExceptionHandler exceptionHandler;
   private int connectionTimeoutMillis;
 
+  /**
+   * Sets the model of terminal to emulate.
+   *
+   * @param model model of the terminal. Known values are 2,3,4 and 5. When not specified the
+   * default model 2 will be used.
+   */
   public void setModel(int model) {
     this.model = model;
   }
 
+  /**
+   * Sets the screen dimensions of the terminal to emulate.
+   *
+   * @param screenDimensions dimensions in rows and columns. When not specified default dimensions
+   * of 24 rows and 80 columns will be used.
+   */
   public void setScreenDimensions(ScreenDimensions screenDimensions) {
     this.screenDimensions = screenDimensions;
   }
 
+  /**
+   * Sets whether the emulated terminal supports extended protocol or not.
+   *
+   * @param usesExtended3270 set true to support extended protocol, and false if not. By default is
+   * false.
+   */
   public void setUsesExtended3270(boolean usesExtended3270) {
     this.usesExtended3270 = usesExtended3270;
   }
 
+  /**
+   * Allows setting the {@link SocketFactory} to be used to create sockets which allows using SSL
+   * sockets.
+   *
+   * @param socketFactory the {@link SocketFactory} to use. If non is specified the {@link
+   * javax.net.DefaultSocketFactory} will be used.
+   */
   public void setSocketFactory(SocketFactory socketFactory) {
     this.socketFactory = socketFactory;
   }
 
+  /**
+   * Sets the timeout for the socket connection.
+   *
+   * @param connectionTimeoutMillis Number of millis to wait for a connection to be established
+   * before it fails. If not specified no timeout (same as 0 value) will be applied.
+   */
   public void setConnectionTimeoutMillis(int connectionTimeoutMillis) {
     this.connectionTimeoutMillis = connectionTimeoutMillis;
   }
 
+  /**
+   * Sets a class to handle general exception handler.
+   *
+   * @param exceptionHandler a class to handle exceptions. If none is provided then exceptions stack
+   * trace will be printed to error output.
+   */
   public void setExceptionHandler(ExceptionHandler exceptionHandler) {
     this.exceptionHandler = exceptionHandler;
   }
 
+  /**
+   * Connect to a terminal server.
+   *
+   * @param host host name of the terminal server.
+   * @param port port where the terminal server is listening for connections.
+   */
   public void connect(String host, int port) {
     TelnetState telnetState = new TelnetState();
     telnetState.setDoDeviceType(model);
@@ -65,6 +109,13 @@ public class TerminalClient {
     consolePane.connect();
   }
 
+  /**
+   * Set the text of a field in the screen.
+   *
+   * @param row row number where to set the field text. First row is 1.
+   * @param column column number where to set the field text. First column is 1.
+   * @param text the text to set on the field.
+   */
   public void setFieldText(int row, int column, String text) {
     int fieldLinearPosition = (row - 1) * screen.getScreenDimensions().columns + column - 1;
     Field field = screen.getFieldManager()
@@ -75,10 +126,24 @@ public class TerminalClient {
     screen.getScreenCursor().moveTo(fieldLinearPosition + text.length());
   }
 
+  /**
+   * Send an Action ID.
+   *
+   * This method is usually used to send Enter after setting text fields, or to send some other keys
+   * (like F1).
+   *
+   * @param aid Action ID to send. For example Enter.
+   * @param name Name of the action sent.
+   */
   public void sendAID(byte aid, String name) {
     consolePane.sendAID(aid, name);
   }
 
+  /**
+   * Gets the screen text.
+   *
+   * @return The screen text with newlines separating each row.
+   */
   public String getScreenText() {
     StringBuilder text = new StringBuilder();
     int pos = 0;
@@ -91,49 +156,108 @@ public class TerminalClient {
     return text.toString();
   }
 
+  /**
+   * Adding a {@link ScreenChangeListener} to the terminal emulator.
+   *
+   * @param listener The listener to be notified when changes on the screen happen.
+   */
   public void addScreenChangeListener(ScreenChangeListener listener) {
     screen.getFieldManager().addScreenChangeListener(listener);
   }
 
+  /**
+   * Remove a {@link ScreenChangeListener} from the terminal emulator.
+   *
+   * @param listener Listener to be removed from notifications.
+   */
   public void removeScreenChangeListener(ScreenChangeListener listener) {
     screen.getFieldManager().removeScreenChangeListener(listener);
   }
 
+  /**
+   * Allows checking if keyboard has been locked (no input can be sent) by the terminal server.
+   *
+   * @return True if the keyboard is currently locked, false otherwise.
+   */
   public boolean isKeyboardLocked() {
     return screen.isKeyboardLocked();
   }
 
+  /**
+   * Add a {@link KeyboardStatusListener} to the terminal emulator.
+   *
+   * @param listener the listener to be notified when the status (locked/unlocked) of the keyboard
+   * has changed.
+   */
   public void addKeyboardStatusListener(KeyboardStatusListener listener) {
     screen.addKeyboardStatusChangeListener(listener);
   }
 
+  /**
+   * Remove a {@link KeyboardStatusListener} from the terminal emulator.
+   *
+   * @param listener the listener to be removed from notifications.
+   */
   public void removeKeyboardStatusListener(KeyboardStatusListener listener) {
     screen.removeKeyboardStatusChangeListener(listener);
   }
 
+  /**
+   * Allows resetting and getting the status of the alarm triggered by the terminal server.
+   *
+   * @return True if the alarm has sounded, false otherwise.
+   */
   public boolean resetAlarm() {
     return screen.resetAlarm();
   }
 
+  /**
+   * Get the screen dimensions of the terminal emulator screen.
+   *
+   * @return Allows getting the number of rows and columns used by the terminal emulator.
+   */
   public ScreenDimensions getScreenDimensions() {
     return screen.getScreenDimensions();
   }
 
-  public Point getCursorPosition() {
+  /**
+   * Get the position of the cursor in the screen.
+   *
+   * @return The position of the cursor in the screen (x contains the column and y the row). If the
+   * cursor is not visible then empty value is returned.
+   */
+  public Optional<Point> getCursorPosition() {
     Cursor cursor = screen.getScreenCursor();
     int location = cursor.getLocation();
     int columns = screen.getScreenDimensions().columns;
-    return cursor.isVisible() ? new Point(location % columns + 1, location / columns + 1) : null;
+    return cursor.isVisible()
+        ? Optional.of(new Point(location % columns + 1, location / columns + 1))
+        : Optional.empty();
   }
 
+  /**
+   * Add a {@link CursorMoveListener} to the terminal emulator.
+   *
+   * @param listener listener to be notified when the cursor is moved by terminal server.
+   */
   public void addCursorMoveListener(CursorMoveListener listener) {
     screen.getScreenCursor().addCursorMoveListener(listener);
   }
 
+  /**
+   * Remove a {@link CursorMoveListener} from the terminal emulator.
+   *
+   * @param listener listener to be remove from notificaitons.
+   */
   public void removeCursorMoveListener(CursorMoveListener listener) {
     screen.getScreenCursor().removeCursorMoveListener(listener);
   }
 
+  /**
+   * Disconnect the terminal emulator from the server.
+   *
+   * @throws InterruptedException thrown when the disconnect is interrupted.
+   */
   public void disconnect() throws InterruptedException {
     consolePane.disconnect();
   }
