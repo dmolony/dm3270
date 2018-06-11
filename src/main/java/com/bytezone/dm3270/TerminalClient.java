@@ -65,8 +65,8 @@ public class TerminalClient {
    * Allows setting the {@link SocketFactory} to be used to create sockets which allows using SSL
    * sockets.
    *
-   * @param socketFactory the {@link SocketFactory} to use. If non is specified the {@link
-   * javax.net.DefaultSocketFactory} will be used.
+   * @param socketFactory the {@link SocketFactory} to use. If non is specified {@link
+   * SocketFactory#getDefault()} will be used.
    */
   public void setSocketFactory(SocketFactory socketFactory) {
     this.socketFactory = socketFactory;
