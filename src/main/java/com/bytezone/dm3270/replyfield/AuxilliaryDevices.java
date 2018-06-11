@@ -5,16 +5,6 @@ public class AuxilliaryDevices extends QueryReplyField {
   private byte flags1;
   private byte flags2;
 
-  public AuxilliaryDevices() {
-    super(AUXILLIARY_DEVICE_REPLY);
-
-    int ptr = createReply(2);
-    reply[ptr++] = 0;
-    reply[ptr++] = 0;
-
-    checkDataLength(ptr);
-  }
-
   public AuxilliaryDevices(byte[] buffer) {
     super(buffer);
 

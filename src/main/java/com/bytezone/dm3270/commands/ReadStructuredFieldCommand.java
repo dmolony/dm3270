@@ -2,16 +2,12 @@ package com.bytezone.dm3270.commands;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
-import com.bytezone.dm3270.replyfield.AuxilliaryDevices;
 import com.bytezone.dm3270.replyfield.CharacterSets;
 import com.bytezone.dm3270.replyfield.Color;
-import com.bytezone.dm3270.replyfield.DistributedDataManagement;
 import com.bytezone.dm3270.replyfield.Highlight;
 import com.bytezone.dm3270.replyfield.ImplicitPartition;
-import com.bytezone.dm3270.replyfield.OEMAuxilliaryDevice;
 import com.bytezone.dm3270.replyfield.QueryReplyField;
 import com.bytezone.dm3270.replyfield.ReplyModes;
-import com.bytezone.dm3270.replyfield.Summary;
 import com.bytezone.dm3270.replyfield.UsableArea;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
@@ -127,21 +123,16 @@ public class ReadStructuredFieldCommand extends Command {
 
     List<QueryReplyField> replyFields = new ArrayList<>();
 
-    replyFields.add(new UsableArea(screenDimensions.rows, screenDimensions.columns));
-    replyFields.add(new CharacterSets());
     replyFields.add(color);
     replyFields.add(highlight);
-    replyFields.add(new ReplyModes());
-    replyFields.add(new AuxilliaryDevices());
+    replyFields.add(new UsableArea(screenDimensions.rows, screenDimensions.columns));
     replyFields.add(partition);
-    replyFields.add(new OEMAuxilliaryDevice());
-    replyFields.add(new DistributedDataManagement());
-
-    Summary summary = new Summary(replyFields);      // adds itself to the list
+    replyFields.add(new ReplyModes());
+    replyFields.add(new CharacterSets());
 
     // calculate the size of the reply record
     int replyLength = 1;
-    for (QueryReplyField reply : summary) {
+    for (QueryReplyField reply : replyFields) {
       replyLength += reply.replySize();
     }
 
@@ -152,7 +143,7 @@ public class ReadStructuredFieldCommand extends Command {
     buffer[ptr++] = AIDCommand.AID_STRUCTURED_FIELD;
 
     // fill buffer with reply components
-    for (QueryReplyField reply : summary) {
+    for (QueryReplyField reply : replyFields) {
       ptr = reply.packReply(buffer, ptr);
     }
 

@@ -10,20 +10,6 @@ public class DistributedDataManagement extends QueryReplyField {
   private int subsets;
   private byte ddmSubset;
 
-  public DistributedDataManagement() {
-    super(DISTRIBUTED_DATA_MANAGEMENT_REPLY);
-
-    int ptr = createReply(8);
-
-    ptr = Dm3270Utility.packUnsignedShort(0, reply, ptr);
-    ptr = Dm3270Utility.packUnsignedShort(16384, reply, ptr);
-    ptr = Dm3270Utility.packUnsignedShort(16384, reply, ptr);
-    reply[ptr++] = 1;
-    reply[ptr++] = 1;
-
-    checkDataLength(ptr);
-  }
-
   public DistributedDataManagement(byte[] buffer) {
     super(buffer);
     assert data[1] == DISTRIBUTED_DATA_MANAGEMENT_REPLY;

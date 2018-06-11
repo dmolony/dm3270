@@ -262,7 +262,6 @@ public class TerminalClientTest {
   public void shouldSendCloseToExceptionHandlerWhenServerDown() throws Exception {
     awaitLoginScreen();
     service.stop(TIMEOUT_MILLIS);
-    sendUserField();
     exceptionWaiter.awaitClose();
   }
 
