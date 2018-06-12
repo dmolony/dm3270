@@ -119,8 +119,9 @@ public class TerminalClientTest {
   private void awaitScreenContains(String text) throws InterruptedException, TimeoutException {
     CountDownLatch latch = new CountDownLatch(1);
     client.addScreenChangeListener(e -> {
-      LOG.debug("Received screen {}", text);
-      if (client.getScreenText().contains(text)) {
+      String screen = client.getScreenText();
+      LOG.debug("Received screen {}", screen);
+      if (screen.contains(text)) {
         latch.countDown();
       }
     });
