@@ -100,7 +100,7 @@ public class TerminalClientTest {
     if (!client.isKeyboardLocked()) {
       latch.countDown();
     }
-    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.SECONDS)) {
+    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
       throw new TimeoutException();
     }
   }
@@ -128,7 +128,7 @@ public class TerminalClientTest {
     if (client.getScreenText().contains(text)) {
       latch.countDown();
     }
-    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.SECONDS)) {
+    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
       throw new TimeoutException();
     }
   }
@@ -241,7 +241,7 @@ public class TerminalClientTest {
     if (!client.isKeyboardLocked()) {
       latch.countDown();
     }
-    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.SECONDS)) {
+    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
       throw new TimeoutException();
     }
   }
