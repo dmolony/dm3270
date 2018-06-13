@@ -73,7 +73,6 @@ public class TerminalClientTest {
 
   }
 
-
   private String getResourceFilePath(String resourcePath) {
     return getClass().getResource(resourcePath).getFile();
   }
@@ -192,13 +191,13 @@ public class TerminalClientTest {
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 
-  private void awaitMenuScreen() throws InterruptedException, TimeoutException {
-    awaitScreenContains("TSO/E LOGON");
-  }
-
   private void sendUserField() {
     client.setFieldText(2, 1, "testusr");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
+  }
+
+  private void awaitMenuScreen() throws InterruptedException, TimeoutException {
+    awaitScreenContains("TSO/E LOGON");
   }
 
   @Test
