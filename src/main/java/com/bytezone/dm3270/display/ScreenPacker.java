@@ -44,10 +44,18 @@ public class ScreenPacker {
     BufferAddress ba = new BufferAddress(cursorLocation);
     ptr = ba.packAddress(buffer, ptr);
 
-    // pack all modified fields
-    for (Field field : fieldManager.getUnprotectedFields()) {
-      if (field.isModified()) {
-        ptr = packField(field, buffer, ptr);
+    if (!fieldManager.getUnprotectedFields().isEmpty()) {
+      // pack all modified fields
+      for (Field field : fieldManager.getUnprotectedFields()) {
+        if (field.isModified()) {
+          ptr = packField(field, buffer, ptr);
+        }
+      }
+    } else {
+      for (ScreenPosition sp : pen) {
+        if (!sp.isNull()) {
+          buffer[ptr++] = sp.getByte();
+        }
       }
     }
 

@@ -117,13 +117,17 @@ public class TerminalClient {
    * @param text the text to set on the field.
    */
   public void setFieldText(int row, int column, String text) {
-    int fieldLinearPosition = (row - 1) * screen.getScreenDimensions().columns + column - 1;
-    Field field = screen.getFieldManager()
-        .getFieldAt(fieldLinearPosition)
-        .orElseThrow(
-            () -> new IllegalArgumentException("Invalid field position " + row + "," + column));
-    screen.setFieldText(field, text);
-    screen.getScreenCursor().moveTo(fieldLinearPosition + text.length());
+    int linearPosition = (row - 1) * screen.getScreenDimensions().columns + column - 1;
+    if (screen.getFieldManager().getFields().isEmpty()) {
+      screen.setPositionText(linearPosition, text);
+    } else {
+      Field field = screen.getFieldManager()
+          .getFieldAt(linearPosition)
+          .orElseThrow(
+              () -> new IllegalArgumentException("Invalid field position " + row + "," + column));
+      screen.setFieldText(field, text);
+    }
+    screen.getScreenCursor().moveTo(linearPosition + text.length());
   }
 
   /**

@@ -166,11 +166,22 @@ public class Screen implements DisplayScreen {
   }
 
   public void setFieldText(Field field, String text) {
+    field.setText(getTextBytes(text));
+    field.setModified(true);
+  }
+
+  private byte[] getTextBytes(String text) {
     try {
-      field.setText(text.getBytes("CP1047"));
-      field.setModified(true);
+      return text.getBytes("CP1047");
     } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void setPositionText(int position, String text) {
+    byte[] bytes = getTextBytes(text);
+    for (int i = 0; i < bytes.length && position + i < screenPositions.length; i++) {
+      screenPositions[position + i].setChar(bytes[i]);
     }
   }
 

@@ -192,12 +192,40 @@ public class TerminalClientTest {
   }
 
   private void sendUserField() {
-    client.setFieldText(2, 1, "testusr");
+    sendField(2, 1, "testusr");
+  }
+
+  private void sendField(int row, int column, String text) {
+    client.setFieldText(row, column, text);
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
   }
 
   private void awaitMenuScreen() throws InterruptedException, TimeoutException {
     awaitScreenContains("TSO/E LOGON");
+  }
+
+  @Test
+  public void shouldGetWelcomeMessageWhenSendUserInScreenWithoutFields() throws Exception {
+    setupLoginWithoutFields();
+    awaitScreenContains("Application");
+    sendField(20, 48, "testusr");
+    awaitKeyboardUnlock();
+    sendField(1,1, "testusr");
+    awaitScreenContains("hello");
+  }
+
+  private void setupLoginWithoutFields()
+      throws TimeoutException, InterruptedException, IOException {
+    awaitLoginScreen();
+    client.disconnect();
+    service.stop(TIMEOUT_MILLIS);
+
+    service.setFlow(Flow.fromYml(new File(getResourceFilePath("/login-without-fields.yml"))));
+    service.start();
+
+    client = new TerminalClient();
+    client.setUsesExtended3270(true);
+    client.connect(SERVICE_HOST, service.getPort());
   }
 
   @Test
