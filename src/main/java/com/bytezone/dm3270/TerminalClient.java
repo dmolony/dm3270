@@ -12,6 +12,7 @@ import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Site;
 import java.awt.Point;
+import java.util.Iterator;
 import java.util.Optional;
 import javax.net.SocketFactory;
 
@@ -116,7 +117,7 @@ public class TerminalClient {
    * @param column column number where to set the field text. First column is 1.
    * @param text the text to set on the field.
    */
-  public void setFieldText(int row, int column, String text) {
+  public void setFieldTextByCoord(int row, int column, String text) {
     int linearPosition = (row - 1) * screen.getScreenDimensions().columns + column - 1;
     if (screen.getFieldManager().getFields().isEmpty()) {
       screen.setPositionText(linearPosition, text);
@@ -128,6 +129,53 @@ public class TerminalClient {
       screen.setFieldText(field, text);
     }
     screen.getScreenCursor().moveTo(linearPosition + text.length());
+  }
+
+  public void setFieldTextByLabel(String lbl, String text) {
+    int linearPosition = findFieldPositionByLabel(lbl);
+    Field field = screen.getFieldManager()
+        .getFieldAt(linearPosition)
+        .orElseThrow(
+            () -> buildInvalidLabelException(lbl));
+    screen.setFieldText(field, text);
+    screen.getScreenCursor().moveTo(linearPosition + text.length());
+
+  }
+
+  private IllegalArgumentException buildInvalidLabelException(String lbl) {
+    return new IllegalArgumentException("Invalid label: " + lbl);
+  }
+
+  private int findFieldPositionByLabel(String label) {
+    String screen = getScreenText();
+    int pos = 0;
+    while (pos != -1) {
+      pos = screen.indexOf(label, pos);
+      if (pos != -1) {
+        if (!isPositionWithinField(pos)) {
+          return findNextFieldPosition(pos + label.length(), label);
+        } else {
+          pos++;
+        }
+      }
+    }
+    throw buildInvalidLabelException(label);
+  }
+
+  private boolean isPositionWithinField(int pos) {
+    Field field = screen.getFieldManager().getFieldAt(pos).orElse(null);
+    return field != null && field.isUnprotected();
+  }
+
+  private int findNextFieldPosition(int pos, String label) {
+    Iterator fieldsIt = screen.getFieldManager().getUnprotectedFields().iterator();
+    while (fieldsIt.hasNext()) {
+      Field f = (Field) fieldsIt.next();
+      if (pos >= f.getFirstLocation()) {
+        return f.getFirstLocation();
+      }
+    }
+    throw buildInvalidLabelException(label);
   }
 
   /**

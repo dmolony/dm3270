@@ -198,20 +198,39 @@ public class TerminalClientTest {
   }
 
   @Test
-  public void shouldGetUserMenuScreenWhenSendUserField() throws Exception {
+  public void shouldGetUserMenuScreenWhenSendUserFieldByCoord() throws Exception {
     awaitLoginScreen();
-    sendUserField();
+    sendUserFieldByCoord();
     awaitMenuScreen();
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 
-  private void sendUserField() {
-    sendField(2, 1, "testusr");
+  private void sendUserFieldByCoord() {
+    sendFieldByCoord(2, 1, "testusr");
   }
 
-  private void sendField(int row, int column, String text) {
-    client.setFieldText(row, column, text);
+  private void sendFieldByCoord(int row, int column, String text) {
+    client.setFieldTextByCoord(row, column, text);
+    client.sendAID(AIDCommand.AID_ENTER, "ENTER");
+  }
+
+  @Test
+  public void shouldGetUserMenuScreenWhenSendPasswordFieldByLabel() throws Exception {
+    awaitLoginScreen();
+    sendUserFieldByCoord();
+    awaitMenuScreen();
+    sendPasswordFieldByLabel();
+    awaitSucceesScreen();
+    assertThat(client.getScreenText()).contains("READY");
+  }
+
+  private void sendPasswordFieldByLabel() {
+    sendFieldByLabel("Password", "testpsw");
+  }
+
+  private void sendFieldByLabel(String label, String text) {
+    client.setFieldTextByLabel(label, text);
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
   }
 
@@ -219,13 +238,17 @@ public class TerminalClientTest {
     awaitScreenContains("TSO/E LOGON");
   }
 
+  private void awaitSucceesScreen() throws InterruptedException, TimeoutException {
+    awaitScreenContains("READY");
+  }
+
   @Test
   public void shouldGetWelcomeMessageWhenSendUserInScreenWithoutFields() throws Exception {
     setupLoginWithoutFields();
     awaitKeyboardUnlock();
-    sendField(20, 48, "testusr");
+    sendFieldByCoord(20, 48, "testusr");
     awaitKeyboardUnlock();
-    sendField(1, 1, "testusr");
+    sendFieldByCoord(1, 1, "testusr");
     awaitKeyboardUnlock();
   }
 
@@ -250,7 +273,7 @@ public class TerminalClientTest {
   @Test
   public void shouldGetSoundedAlarmWhenWhenSendUserField() throws Exception {
     awaitLoginScreen();
-    sendUserField();
+    sendUserFieldByCoord();
     awaitMenuScreen();
     assertThat(client.resetAlarm()).isTrue();
   }
@@ -258,7 +281,7 @@ public class TerminalClientTest {
   @Test
   public void shouldGetNotSoundedAlarmWhenWhenSendUserFieldAndResetAlarm() throws Exception {
     awaitLoginScreen();
-    sendUserField();
+    sendUserFieldByCoord();
     awaitMenuScreen();
     client.resetAlarm();
     assertThat(client.resetAlarm()).isFalse();
@@ -296,7 +319,7 @@ public class TerminalClientTest {
   public void shouldThrowIllegalArgumentExceptionWhenSendIncorrectFieldPosition()
       throws Exception {
     awaitLoginScreen();
-    client.setFieldText(0, 1, "test");
+    client.setFieldTextByCoord(0, 1, "test");
   }
 
   @Test
@@ -310,7 +333,7 @@ public class TerminalClientTest {
   public void shouldSendExceptionToExceptionHandlerWhenSendAndServerDown() throws Exception {
     awaitLoginScreen();
     service.stop(TIMEOUT_MILLIS);
-    sendUserField();
+    sendUserFieldByCoord();
     exceptionWaiter.awaitException();
   }
 
@@ -318,10 +341,10 @@ public class TerminalClientTest {
   public void shouldGetLoginSuccessScreenWhenLoginWithSscpLuData() throws Exception {
     setupLoginWithSscpLuData();
     awaitKeyboardUnlock();
-    sendField(11, 25, "testapp");
+    sendFieldByCoord(11, 25, "testapp");
     awaitKeyboardUnlock();
-    client.setFieldText(12, 21, "testusr");
-    client.setFieldText(13, 21, "testpsw");
+    client.setFieldTextByCoord(12, 21, "testusr");
+    client.setFieldTextByCoord(13, 21, "testpsw");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
     awaitKeyboardUnlock();
     assertThat(client.getScreenText())
