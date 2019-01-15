@@ -75,11 +75,11 @@ public abstract class Order {
       case FCO_FIELD_MARK:
       case FCO_FORM_FEED:
       case FCO_CARRIAGE_RETURN:
-      case FCO_NEWLINE:
       case FCO_END_OF_MEDIUM:
       case FCO_EIGHT_ONES:
         return new FormatControlOrder(buffer, ptr);
-
+      case FCO_NEWLINE:
+        return new NewlineOrder(buffer, ptr);
       default:
         return new TextOrder(buffer, ptr, max);
     }

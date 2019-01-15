@@ -38,6 +38,7 @@ public class Screen implements DisplayScreen {
   private final Cursor cursor;
   private ScreenOption currentScreen;
   private boolean alarmSounded;
+  private boolean sscpLuData;
 
   private byte currentAID;
   private byte replyMode;
@@ -126,6 +127,14 @@ public class Screen implements DisplayScreen {
     return insertMode;
   }
 
+  public void setSscpLuData() {
+    sscpLuData = true;
+  }
+
+  public boolean isSscpLuData() {
+    return sscpLuData;
+  }
+
   public void eraseAllUnprotected() {
     Optional<Field> firstUnprotectedField = fieldManager.eraseAllUnprotected();
 
@@ -208,6 +217,7 @@ public class Screen implements DisplayScreen {
   public void clearScreen() {
     cursor.moveTo(0);
     pen.clearScreen();
+    sscpLuData = false;
     fieldManager.reset();
   }
 
@@ -220,19 +230,19 @@ public class Screen implements DisplayScreen {
   // Convert screen contents to an AID command
   // ---------------------------------------------------------------------------------//
 
-  public AIDCommand readModifiedFields() {
+  public Command readModifiedFields() {
     return screenPacker.readModifiedFields(currentAID, getScreenCursor().getLocation(),
-        readModifiedAll);
+        readModifiedAll, sscpLuData);
   }
 
-  public AIDCommand readModifiedFields(byte type) {
+  public Command readModifiedFields(byte type) {
     switch (type) {
       case Command.READ_MODIFIED_F6:
         return readModifiedFields();
 
       case Command.READ_MODIFIED_ALL_6E:
         readModifiedAll = true;
-        AIDCommand command = readModifiedFields();
+        Command command = readModifiedFields();
         readModifiedAll = false;
         return command;
 
@@ -251,6 +261,10 @@ public class Screen implements DisplayScreen {
   // ---------------------------------------------------------------------------------//
   // Events to be processed from WriteControlCharacter.process()
   // ---------------------------------------------------------------------------------//
+
+  public boolean isAlarmOn() {
+    return alarmSounded;
+  }
 
   public void soundAlarm() {
     alarmSounded = true;

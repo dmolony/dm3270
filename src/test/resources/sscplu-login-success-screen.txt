@@ -1,0 +1,24 @@
+                                                                                
+                                                                                
+                                                                                
+TEST1111 TEST001 LAST SYSTEM ACCESS 11.13-01/08/19 FROM XXXXXXXX                
+TEST1111 CICS XXX: 1111     SIGNON OK: USER=TESTUSR  NAME=TEST USER             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

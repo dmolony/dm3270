@@ -27,7 +27,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand {
   }
 
   public enum Function {
-    BIND_IMAGE, RESPONSES, SYSREQ
+    BIND_IMAGE, RESPONSES, SYSREQ, REASON
   }
 
   public TN3270ExtendedSubcommand(byte[] buffer, int offset, int length,
@@ -94,6 +94,9 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand {
       } else if (buffer[ptr] == 4) {
         functions.add(Function.SYSREQ);
         funcList.append("SYSREQ, ");
+      } else if (buffer[ptr] == 5) {
+        functions.add(Function.REASON);
+        funcList.append("REASON, ");
       } else {
         throw new InvalidParameterException(
             String.format("Unknown function: %02X%n", buffer[ptr]));
@@ -132,7 +135,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand {
     if (type == SubcommandType.DEVICE_TYPE && subType == SubType.IS) {
       byte[] reply =
           {TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_FUNCTIONS, EXT_REQUEST,
-              0x00, 0x02, 0x04, TelnetCommand.IAC, TelnetCommand.SE};
+              0x00, 0x02, 0x04, 0x05, TelnetCommand.IAC, TelnetCommand.SE};
       setReply(new TN3270ExtendedSubcommand(reply, 0, reply.length, telnetState));
     }
 

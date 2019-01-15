@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.application;
 
 import com.bytezone.dm3270.ExceptionHandler;
-import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldChangeListener;
@@ -57,15 +57,18 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
     screen.lockKeyboard(name);
     screen.setAID(aid);
 
-    AIDCommand command = screen.readModifiedFields();
+    Command command = screen.readModifiedFields();
     sendAID(command);
   }
 
-  private void sendAID(AIDCommand command) {
+  private void sendAID(Command command) {
     assert telnetState != null;
 
     if (telnetState.does3270Extended()) {
       byte[] buffer = new byte[5];
+      if (screen.isSscpLuData()) {
+        buffer[0] = 0x07;
+      }
       Dm3270Utility.packUnsignedShort(commandHeaderCount++, buffer, 3);
       CommandHeader header = new CommandHeader(buffer);
       TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand(header, command);

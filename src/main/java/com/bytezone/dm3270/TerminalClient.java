@@ -151,8 +151,12 @@ public class TerminalClient {
   public String getScreenText() {
     StringBuilder text = new StringBuilder();
     int pos = 0;
+    boolean visible = true;
     for (ScreenPosition sp : screen.getPen()) {
-      text.append(sp.getCharString());
+      if (sp.isStartField()) {
+        visible = sp.getStartFieldAttribute().isVisible();
+      }
+      text.append(visible ? sp.getCharString() : " ");
       if (++pos % screen.getScreenDimensions().columns == 0) {
         text.append("\n");
       }
@@ -204,6 +208,16 @@ public class TerminalClient {
    */
   public void removeKeyboardStatusListener(KeyboardStatusListener listener) {
     screen.removeKeyboardStatusChangeListener(listener);
+  }
+
+  /**
+   * Gets the status of the alarm.
+   *
+   * Prefer using resetAlarm so it is properly reset when checking value. Use this operation only if
+   * you are implementing some tracing or debugging and don't want to change the alarm flag status.
+   */
+  public boolean isAlarmOn() {
+    return screen.isAlarmOn();
   }
 
   /**

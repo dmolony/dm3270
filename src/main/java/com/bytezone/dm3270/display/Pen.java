@@ -23,6 +23,8 @@ public interface Pen extends Iterable<ScreenPosition> {
 
   void moveRight();
 
+  void moveToNextLine();
+
   void eraseEOF();
 
   void tab();
@@ -32,5 +34,7 @@ public interface Pen extends Iterable<ScreenPosition> {
   int validate(int position);
 
   void setScreenDimensions(ScreenDimensions screenDimensions);
+
+  Iterable<ScreenPosition> fromCurrentPosition();
 
 }

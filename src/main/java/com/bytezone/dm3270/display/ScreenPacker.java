@@ -3,6 +3,8 @@ package com.bytezone.dm3270.display;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.commands.Command;
+import com.bytezone.dm3270.extended.SscpLuDataCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
@@ -21,16 +23,13 @@ public class ScreenPacker {
     this.fieldManager = fieldManager;
   }
 
-  // used when the screen changes to a different terminal model in replay mode
-  public void setPen(Pen pen) {
-    this.pen = pen;
-  }
-
-  public AIDCommand readModifiedFields(byte currentAID, int cursorLocation,
-                                       boolean readModifiedAll) {
+  public Command readModifiedFields(byte currentAID, int cursorLocation,
+      boolean readModifiedAll, boolean sscpLuData) {
     // pack the AID
     int ptr = 0;
-    buffer[ptr++] = currentAID;               // whatever key was pressed
+    if (!sscpLuData) {
+      buffer[ptr++] = currentAID;               // whatever key was pressed
+    }
 
     // PA keys and the CLR key only return the AID byte
     if (!readModifiedAll) {
@@ -40,26 +39,29 @@ public class ScreenPacker {
       }
     }
 
-    // pack the cursor address
-    BufferAddress ba = new BufferAddress(cursorLocation);
-    ptr = ba.packAddress(buffer, ptr);
+    if (!sscpLuData) {
+      // pack the cursor address
+      BufferAddress ba = new BufferAddress(cursorLocation);
+      ptr = ba.packAddress(buffer, ptr);
+    }
 
-    if (!fieldManager.getFields().isEmpty()) {
-      // pack all modified fields
-      for (Field field : fieldManager.getFields()) {
-        if (field.isModified()) {
-          ptr = packField(field, buffer, ptr);
-        }
+    boolean packedFields = false;
+    // pack all modified fields
+    for (Field field : fieldManager.getFields()) {
+      if (field.isModified()) {
+        ptr = packField(field, buffer, ptr);
+        packedFields = true;
       }
-    } else {
-      for (ScreenPosition sp : pen) {
+    }
+    if (!packedFields && currentAID == AIDCommand.AID_ENTER) {
+      for (ScreenPosition sp : pen.fromCurrentPosition()) {
         if (!sp.isNull()) {
           buffer[ptr++] = sp.getByte();
         }
       }
     }
 
-    return new AIDCommand(buffer, 0, ptr);
+    return sscpLuData ? new SscpLuDataCommand(buffer, 0, ptr) : new AIDCommand(buffer, 0, ptr);
   }
 
   private int packField(Field field, byte[] buffer, int ptr) {

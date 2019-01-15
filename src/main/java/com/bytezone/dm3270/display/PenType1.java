@@ -33,6 +33,7 @@ class PenType1 implements Pen {
 
   @Override
   public void clearScreen() {
+    currentPosition = 0;
     for (ScreenPosition screenPosition : screenPositions) {
       screenPosition.reset();
     }
@@ -95,6 +96,15 @@ class PenType1 implements Pen {
     }
 
     currentPosition = validate(currentPosition + 1);
+  }
+
+  @Override
+  public void moveToNextLine() {
+    if (pendingAttributes.size() > 0) {
+      applyAttributes(screenPositions[currentPosition]);
+    }
+    int currentRow = (currentPosition / screenDimensions.columns);
+    currentPosition = validate((currentRow + 1) * screenDimensions.columns);
   }
 
   @Override
@@ -188,6 +198,29 @@ class PenType1 implements Pen {
   @Override
   public void setScreenDimensions(ScreenDimensions screenDimensions) {
     this.screenDimensions = screenDimensions;
+  }
+
+  @Override
+  public Iterable<ScreenPosition> fromCurrentPosition() {
+    return () ->
+        new Iterator<ScreenPosition>() {
+          private int pos = currentPosition;
+
+          @Override
+          public boolean hasNext() {
+            return screenPositions.length > pos;
+          }
+
+          @Override
+          public ScreenPosition next() {
+            return screenPositions[pos++];
+          }
+
+          @Override
+          public void remove() {
+            throw new UnsupportedOperationException("Cannot remove an element of an array.");
+          }
+        };
   }
 
   // ---------------------------------------------------------------------------------//

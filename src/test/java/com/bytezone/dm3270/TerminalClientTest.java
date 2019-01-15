@@ -7,6 +7,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import java.awt.Point;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
@@ -39,13 +40,24 @@ public class TerminalClientTest {
   @Before
   public void setup() throws IOException {
     service.setSslEnabled(false);
-    service.setFlow(Flow.fromYml(new File(getResourceFilePath("/login.yml"))));
+    setServiceFlowFromFile("/login.yml");
     service.start();
     client = new TerminalClient();
     client.setConnectionTimeoutMillis(5000);
     exceptionWaiter = new ExceptionWaiter();
     client.setExceptionHandler(exceptionWaiter);
+    connectClient();
+  }
+
+  private void connectClient() {
     client.connect(SERVICE_HOST, service.getPort());
+    client.addScreenChangeListener(
+        screenWatcher -> LOG.debug("Screen updated, cursor={}, alarm={}, screen:{}",
+            client.getCursorPosition().orElse(null), client.isAlarmOn(), client.getScreenText()));
+  }
+
+  private void setServiceFlowFromFile(String s) throws FileNotFoundException {
+    service.setFlow(Flow.fromYml(new File(getResourceFilePath(s))));
   }
 
   private static class ExceptionWaiter implements ExceptionHandler {
@@ -92,12 +104,14 @@ public class TerminalClientTest {
   private void awaitKeyboardUnlock() throws InterruptedException, TimeoutException {
     CountDownLatch latch = new CountDownLatch(1);
     client.addKeyboardStatusListener(e -> {
+      LOG.debug("Keyboard {}", e.keyboardLocked ? "locked" : "unlocked");
       if (!e.keyboardLocked) {
         latch.countDown();
       }
     });
     if (!client.isKeyboardLocked()) {
-      latch.countDown();
+      LOG.debug("Keyboard already unlocked!");
+      return;
     }
     if (!latch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
       throw new TimeoutException();
@@ -119,7 +133,6 @@ public class TerminalClientTest {
     CountDownLatch latch = new CountDownLatch(1);
     client.addScreenChangeListener(e -> {
       String screen = client.getScreenText();
-      LOG.debug("Received screen {}", screen);
       if (screen.contains(text)) {
         latch.countDown();
       }
@@ -143,9 +156,15 @@ public class TerminalClientTest {
 
   @Test
   public void shouldGetWelcomeScreenWhenConnectWithSsl() throws Exception {
+    setupSslConnection();
     awaitLoginScreen();
-    client.disconnect();
-    service.stop(TIMEOUT_MILLIS);
+    assertThat(client.getScreenText())
+        .isEqualTo(getWelcomeScreen());
+  }
+
+  private void setupSslConnection() throws Exception {
+    awaitLoginScreen();
+    teardown();
 
     service.setSslEnabled(true);
     System.setProperty("javax.net.ssl.keyStore", getResourceFilePath("/keystore.jks"));
@@ -154,11 +173,7 @@ public class TerminalClientTest {
 
     client = new TerminalClient();
     client.setSocketFactory(buildSslContext().getSocketFactory());
-    client.connect(SERVICE_HOST, service.getPort());
-
-    awaitLoginScreen();
-    assertThat(client.getScreenText())
-        .isEqualTo(getWelcomeScreen());
+    connectClient();
   }
 
   private SSLContext buildSslContext() throws GeneralSecurityException {
@@ -207,25 +222,23 @@ public class TerminalClientTest {
   @Test
   public void shouldGetWelcomeMessageWhenSendUserInScreenWithoutFields() throws Exception {
     setupLoginWithoutFields();
-    awaitScreenContains("Application");
+    awaitKeyboardUnlock();
     sendField(20, 48, "testusr");
     awaitKeyboardUnlock();
-    sendField(1,1, "testusr");
-    awaitScreenContains("hello");
+    sendField(1, 1, "testusr");
+    awaitKeyboardUnlock();
   }
 
-  private void setupLoginWithoutFields()
-      throws TimeoutException, InterruptedException, IOException {
+  private void setupLoginWithoutFields() throws Exception {
     awaitLoginScreen();
-    client.disconnect();
-    service.stop(TIMEOUT_MILLIS);
+    teardown();
 
-    service.setFlow(Flow.fromYml(new File(getResourceFilePath("/login-without-fields.yml"))));
+    setServiceFlowFromFile("/login-without-fields.yml");
     service.start();
 
     client = new TerminalClient();
     client.setUsesExtended3270(true);
-    client.connect(SERVICE_HOST, service.getPort());
+    connectClient();
   }
 
   @Test
@@ -299,6 +312,32 @@ public class TerminalClientTest {
     service.stop(TIMEOUT_MILLIS);
     sendUserField();
     exceptionWaiter.awaitException();
+  }
+
+  @Test
+  public void shouldGetLoginSuccessScreenWhenLoginWithSscpLuData() throws Exception {
+    setupLoginWithSscpLuData();
+    awaitKeyboardUnlock();
+    sendField(11, 25, "testapp");
+    awaitKeyboardUnlock();
+    client.setFieldText(12, 21, "testusr");
+    client.setFieldText(13, 21, "testpsw");
+    client.sendAID(AIDCommand.AID_ENTER, "ENTER");
+    awaitKeyboardUnlock();
+    assertThat(client.getScreenText())
+        .isEqualTo(getFileContent("sscplu-login-success-screen.txt"));
+  }
+
+  private void setupLoginWithSscpLuData() throws Exception {
+    awaitLoginScreen();
+    teardown();
+
+    setServiceFlowFromFile("/sscplu-login.yml");
+    service.start();
+
+    client = new TerminalClient();
+    client.setUsesExtended3270(true);
+    connectClient();
   }
 
 }

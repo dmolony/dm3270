@@ -9,7 +9,7 @@ public class CommandHeader extends AbstractReplyBuffer {
   private static DataType[] dataTypes =
       {DataType.TN3270_DATA, DataType.SCS_DATA, DataType.RESPONSE, DataType.BIND_IMAGE,
           DataType.UNBIND, DataType.NVT_DATA, DataType.REQUEST, DataType.SSCP_LU_DATA,
-          DataType.PRINT_EOJ};
+          DataType.PRINT_EOJ, DataType.BID};
 
   private static final byte ERR_COND_CLEARED = 0x00;
 
@@ -27,7 +27,9 @@ public class CommandHeader extends AbstractReplyBuffer {
 
   public enum DataType {
     TN3270_DATA, SCS_DATA, RESPONSE, BIND_IMAGE, UNBIND, NVT_DATA, REQUEST, SSCP_LU_DATA,
-    PRINT_EOJ
+    PRINT_EOJ,
+    // https://tools.ietf.org/html/draft-ietf-tn3270e-extensions-00#section-4.5.3
+    BID
   }
 
   private enum RequestType {
@@ -51,6 +53,7 @@ public class CommandHeader extends AbstractReplyBuffer {
     switch (dataType) {
       case TN3270_DATA:
       case SCS_DATA:
+      case BID:
         switch (data[2]) {
           case RQ_NO_RESPONSE:
             responseType = ResponseType.NO_RESPONSE;

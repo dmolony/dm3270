@@ -3,7 +3,7 @@
                                                                                 
     Enter LOGON parameters below:                   RACF LOGON parameters:      
                                                                                 
-    Userid    ===> TESTUSR                          Seclabel     ===>           
+    Userid    ===> TESTUSR                                                      
                                                                                 
     Password  ===>                                  New Password ===>           
                                                                                 
