@@ -350,7 +350,7 @@ public class TerminalClientTest {
     client.setFieldTextByCoord(12, 21, "testusr");
     client.setFieldTextByCoord(13, 21, "testpsw");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
-    awaitKeyboardUnlock();
+    awaitScreenContains("LAST SYSTEM ACCESS");
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("sscplu-login-success-screen.txt"));
   }
