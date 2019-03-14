@@ -21,7 +21,13 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.rules.TestWatchman;
+import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.abstracta.wiresham.Flow;
@@ -36,6 +42,19 @@ public class TerminalClientTest {
   private VirtualTcpService service = new VirtualTcpService();
   private TerminalClient client;
   private ExceptionWaiter exceptionWaiter;
+
+  @Rule
+  public TestRule watchman = new TestWatcher() {
+    @Override
+    public void starting(Description description) {
+      LOG.debug("Starting {}", description.getMethodName());
+    }
+
+    @Override
+    public void finished(Description description) {
+      LOG.debug("Finished {}", description.getMethodName());
+    }
+  };
 
   @Before
   public void setup() throws IOException {
