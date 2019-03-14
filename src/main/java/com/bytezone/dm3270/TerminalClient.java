@@ -12,7 +12,6 @@ import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Site;
 import java.awt.Point;
-import java.util.Iterator;
 import java.util.Optional;
 import javax.net.SocketFactory;
 
@@ -132,50 +131,42 @@ public class TerminalClient {
   }
 
   public void setFieldTextByLabel(String lbl, String text) {
-    int linearPosition = findFieldPositionByLabel(lbl);
-    Field field = screen.getFieldManager()
-        .getFieldAt(linearPosition)
-        .orElseThrow(
-            () -> buildInvalidLabelException(lbl));
+    Field field = findFieldPositionByLabel(lbl);
+    if (field == null) {
+      throw new IllegalArgumentException("Invalid field label: " + lbl);
+    }
     screen.setFieldText(field, text);
-    screen.getScreenCursor().moveTo(linearPosition + text.length());
-
+    screen.getScreenCursor().moveTo(field.getFirstLocation() + text.length());
   }
 
-  private IllegalArgumentException buildInvalidLabelException(String lbl) {
-    return new IllegalArgumentException("Invalid label: " + lbl);
+  private Field findFieldPositionByLabel(String label) {
+    Field labelField = findLabelField(label);
+    return (labelField != null) ? labelField.getNextUnprotectedField() : null;
   }
 
-  private int findFieldPositionByLabel(String label) {
-    String screen = getScreenText();
+  private Field findLabelField(String label) {
+    String screenText = getScreenText();
     int pos = 0;
+    Field fallbackLabelField = null;
     while (pos != -1) {
-      pos = screen.indexOf(label, pos);
+      pos = screenText.indexOf(label, pos);
       if (pos != -1) {
-        if (!isPositionWithinField(pos)) {
-          return findNextFieldPosition(pos + label.length(), label);
+        Field field = screen.getFieldManager().getFieldAt(pos).orElse(null);
+        if (field != null) {
+          if (field.isProtected()) {
+            return field;
+          } else {
+            if (fallbackLabelField == null) {
+              fallbackLabelField = field;
+            }
+            pos++;
+          }
         } else {
           pos++;
         }
       }
     }
-    throw buildInvalidLabelException(label);
-  }
-
-  private boolean isPositionWithinField(int pos) {
-    Field field = screen.getFieldManager().getFieldAt(pos).orElse(null);
-    return field != null && field.isUnprotected();
-  }
-
-  private int findNextFieldPosition(int pos, String label) {
-    Iterator fieldsIt = screen.getFieldManager().getUnprotectedFields().iterator();
-    while (fieldsIt.hasNext()) {
-      Field f = (Field) fieldsIt.next();
-      if (pos >= f.getFirstLocation()) {
-        return f.getFirstLocation();
-      }
-    }
-    throw buildInvalidLabelException(label);
+    return fallbackLabelField;
   }
 
   /**

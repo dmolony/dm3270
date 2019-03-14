@@ -207,7 +207,7 @@ public class TerminalClientTest {
   }
 
   private void sendUserFieldByCoord() {
-    sendFieldByCoord(2, 1, "testusr");
+    sendFieldByCoord(1, 27, "testusr");
   }
 
   private void sendFieldByCoord(int row, int column, String text) {
@@ -215,18 +215,17 @@ public class TerminalClientTest {
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
   }
 
+  private void awaitMenuScreen() throws InterruptedException, TimeoutException {
+    awaitScreenContains("TSO/E LOGON");
+  }
+
   @Test
-  public void shouldGetUserMenuScreenWhenSendPasswordFieldByLabel() throws Exception {
+  public void shouldGetLoginSuccessScreenWhenSendPasswordFieldByProtectedLabel() throws Exception {
     awaitLoginScreen();
     sendUserFieldByCoord();
     awaitMenuScreen();
-    sendPasswordFieldByLabel();
-    awaitSucceesScreen();
-    assertThat(client.getScreenText()).contains("READY");
-  }
-
-  private void sendPasswordFieldByLabel() {
     sendFieldByLabel("Password", "testpsw");
+    awaitSucceesScreen();
   }
 
   private void sendFieldByLabel(String label, String text) {
@@ -234,12 +233,17 @@ public class TerminalClientTest {
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
   }
 
-  private void awaitMenuScreen() throws InterruptedException, TimeoutException {
-    awaitScreenContains("TSO/E LOGON");
-  }
-
   private void awaitSucceesScreen() throws InterruptedException, TimeoutException {
     awaitScreenContains("READY");
+  }
+
+  @Test
+  public void shouldGetUserMenuScreenWhenSendUserFieldByUnprotectedLabel() throws Exception {
+    awaitLoginScreen();
+    sendFieldByLabel("ENTER USERID", "testusr");
+    awaitMenuScreen();
+    assertThat(client.getScreenText())
+        .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 
   @Test

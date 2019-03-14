@@ -27,7 +27,7 @@
   delayMillis: 877}
 - !server {data: 01C2FFEF}
 # user: testusr + enter
-- !client {data: 7DC1D711405AA385A2A3A4A299FFEF}
+- !client {data: 7D406111405AA385A2A3A4A299FFEF}
 # reset + cursor=1,1
 - !server {data: 05C1115D7F1D4011404013FFEF, delayMillis: 289}
 # restore keyboard
