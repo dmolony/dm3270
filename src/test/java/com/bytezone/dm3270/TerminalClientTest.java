@@ -14,6 +14,8 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.net.ssl.SSLContext;
@@ -23,10 +25,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.MethodRule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
-import org.junit.rules.TestWatchman;
 import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +42,8 @@ public class TerminalClientTest {
   private VirtualTcpService service = new VirtualTcpService();
   private TerminalClient client;
   private ExceptionWaiter exceptionWaiter;
+  private ScheduledExecutorService stableTimeoutExecutor = Executors
+      .newSingleThreadScheduledExecutor();
 
   @Rule
   public TestRule watchman = new TestWatcher() {
@@ -121,47 +123,14 @@ public class TerminalClientTest {
   }
 
   private void awaitKeyboardUnlock() throws InterruptedException, TimeoutException {
-    CountDownLatch latch = new CountDownLatch(1);
-    client.addKeyboardStatusListener(e -> {
-      LOG.debug("Keyboard {}", e.keyboardLocked ? "locked" : "unlocked");
-      if (!e.keyboardLocked) {
-        latch.countDown();
-      }
-    });
-    if (!client.isKeyboardLocked()) {
-      LOG.debug("Keyboard already unlocked!");
-      return;
-    }
-    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
-      throw new TimeoutException();
-    }
+    new UnlockWaiter(TIMEOUT_MILLIS, client, stableTimeoutExecutor).await();
   }
 
   @Test
   public void shouldGetWelcomeScreenWhenConnect() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     assertThat(client.getScreenText())
         .isEqualTo(getWelcomeScreen());
-  }
-
-  private void awaitLoginScreen() throws TimeoutException, InterruptedException {
-    awaitScreenContains("ENTER USERID");
-  }
-
-  private void awaitScreenContains(String text) throws InterruptedException, TimeoutException {
-    CountDownLatch latch = new CountDownLatch(1);
-    client.addScreenChangeListener(e -> {
-      String screen = client.getScreenText();
-      if (screen.contains(text)) {
-        latch.countDown();
-      }
-    });
-    if (client.getScreenText().contains(text)) {
-      latch.countDown();
-    }
-    if (!latch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
-      throw new TimeoutException();
-    }
   }
 
   private String getWelcomeScreen() throws IOException {
@@ -176,13 +145,13 @@ public class TerminalClientTest {
   @Test
   public void shouldGetWelcomeScreenWhenConnectWithSsl() throws Exception {
     setupSslConnection();
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     assertThat(client.getScreenText())
         .isEqualTo(getWelcomeScreen());
   }
 
   private void setupSslConnection() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     teardown();
 
     service.setSslEnabled(true);
@@ -218,9 +187,9 @@ public class TerminalClientTest {
 
   @Test
   public void shouldGetUserMenuScreenWhenSendUserFieldByCoord() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     sendUserFieldByCoord();
-    awaitMenuScreen();
+    awaitKeyboardUnlock();
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
@@ -234,17 +203,13 @@ public class TerminalClientTest {
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
   }
 
-  private void awaitMenuScreen() throws InterruptedException, TimeoutException {
-    awaitScreenContains("TSO/E LOGON");
-  }
-
   @Test
   public void shouldGetLoginSuccessScreenWhenSendPasswordFieldByProtectedLabel() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     sendUserFieldByCoord();
-    awaitMenuScreen();
+    awaitKeyboardUnlock();
     sendFieldByLabel("Password", "testpsw");
-    awaitSucceesScreen();
+    awaitSuccessScreen();
   }
 
   private void sendFieldByLabel(String label, String text) {
@@ -252,15 +217,19 @@ public class TerminalClientTest {
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
   }
 
-  private void awaitSucceesScreen() throws InterruptedException, TimeoutException {
+  private void awaitSuccessScreen() throws InterruptedException, TimeoutException {
     awaitScreenContains("READY");
+  }
+
+  private void awaitScreenContains(String text) throws TimeoutException, InterruptedException {
+    new ScreenTextWaiter(text, TIMEOUT_MILLIS, client, stableTimeoutExecutor).await();
   }
 
   @Test
   public void shouldGetUserMenuScreenWhenSendUserFieldByUnprotectedLabel() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     sendFieldByLabel("ENTER USERID", "testusr");
-    awaitMenuScreen();
+    awaitKeyboardUnlock();
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
@@ -276,7 +245,7 @@ public class TerminalClientTest {
   }
 
   private void setupLoginWithoutFields() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     teardown();
 
     setServiceFlowFromFile("/login-without-fields.yml");
@@ -289,23 +258,23 @@ public class TerminalClientTest {
 
   @Test
   public void shouldGetNotSoundedAlarmWhenWhenConnect() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     assertThat(client.resetAlarm()).isFalse();
   }
 
   @Test
   public void shouldGetSoundedAlarmWhenWhenSendUserField() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     sendUserFieldByCoord();
-    awaitMenuScreen();
+    awaitKeyboardUnlock();
     assertThat(client.resetAlarm()).isTrue();
   }
 
   @Test
   public void shouldGetNotSoundedAlarmWhenWhenSendUserFieldAndResetAlarm() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     sendUserFieldByCoord();
-    awaitMenuScreen();
+    awaitKeyboardUnlock();
     client.resetAlarm();
     assertThat(client.resetAlarm()).isFalse();
   }
@@ -341,20 +310,20 @@ public class TerminalClientTest {
   @Test(expected = IllegalArgumentException.class)
   public void shouldThrowIllegalArgumentExceptionWhenSendIncorrectFieldPosition()
       throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     client.setFieldTextByCoord(0, 1, "test");
   }
 
   @Test
   public void shouldSendCloseToExceptionHandlerWhenServerDown() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     service.stop(TIMEOUT_MILLIS);
     exceptionWaiter.awaitClose();
   }
 
   @Test
   public void shouldSendExceptionToExceptionHandlerWhenSendAndServerDown() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     service.stop(TIMEOUT_MILLIS);
     sendUserFieldByCoord();
     exceptionWaiter.awaitException();
@@ -365,17 +334,17 @@ public class TerminalClientTest {
     setupLoginWithSscpLuData();
     awaitKeyboardUnlock();
     sendFieldByCoord(11, 25, "testapp");
-    awaitScreenContains("WELCOME TO   DM3270 TESTING APPLICATION");
+    awaitKeyboardUnlock();
     client.setFieldTextByCoord(12, 21, "testusr");
     client.setFieldTextByCoord(13, 21, "testpsw");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
-    awaitScreenContains("LAST SYSTEM ACCESS");
+    awaitKeyboardUnlock();
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("sscplu-login-success-screen.txt"));
   }
 
   private void setupLoginWithSscpLuData() throws Exception {
-    awaitLoginScreen();
+    awaitKeyboardUnlock();
     teardown();
 
     setServiceFlowFromFile("/sscplu-login.yml");
