@@ -12,8 +12,8 @@ public class UnlockWaiter extends ConditionWaiter implements KeyboardStatusListe
 
   private boolean isInputInhibited;
 
-  public UnlockWaiter(long timeoutMillis, TerminalClient client, ScheduledExecutorService stableTimeoutExecutor) {
-    super(timeoutMillis, client, stableTimeoutExecutor);
+  public UnlockWaiter(TerminalClient client, ScheduledExecutorService stableTimeoutExecutor) {
+    super(client, stableTimeoutExecutor);
     client.addKeyboardStatusListener(this);
     isInputInhibited = client.isKeyboardLocked();
     if (!isInputInhibited) {

@@ -123,7 +123,7 @@ public class TerminalClientTest {
   }
 
   private void awaitKeyboardUnlock() throws InterruptedException, TimeoutException {
-    new UnlockWaiter(TIMEOUT_MILLIS, client, stableTimeoutExecutor).await();
+    new UnlockWaiter(client, stableTimeoutExecutor).await(TIMEOUT_MILLIS);
   }
 
   @Test
@@ -222,7 +222,7 @@ public class TerminalClientTest {
   }
 
   private void awaitScreenContains(String text) throws TimeoutException, InterruptedException {
-    new ScreenTextWaiter(text, TIMEOUT_MILLIS, client, stableTimeoutExecutor).await();
+    new ScreenTextWaiter(text, client, stableTimeoutExecutor).await(TIMEOUT_MILLIS);
   }
 
   @Test

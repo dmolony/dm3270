@@ -13,13 +13,10 @@ public abstract class ConditionWaiter {
   private final CountDownLatch lock = new CountDownLatch(1);
   protected final TerminalClient client;
   private final ScheduledExecutorService stableTimeoutExecutor;
-  private final long timeoutMillis;
   private ScheduledFuture stableTimeoutTask;
   private boolean ended;
 
-  public ConditionWaiter(long timeoutMillis, TerminalClient client,
-      ScheduledExecutorService stableTimeoutExecutor) {
-    this.timeoutMillis = timeoutMillis;
+  public ConditionWaiter(TerminalClient client, ScheduledExecutorService stableTimeoutExecutor) {
     this.client = client;
     this.stableTimeoutExecutor = stableTimeoutExecutor;
   }
@@ -39,7 +36,7 @@ public abstract class ConditionWaiter {
     }
   }
 
-  public void await() throws InterruptedException, TimeoutException {
+  public void await(long timeoutMillis) throws InterruptedException, TimeoutException {
     try {
       if (!lock.await(timeoutMillis, TimeUnit.MILLISECONDS)) {
         throw new TimeoutException();

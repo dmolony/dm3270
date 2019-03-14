@@ -18,9 +18,8 @@ public class ScreenTextWaiter extends ConditionWaiter implements KeyboardStatusL
   private final String text;
   private boolean matched;
 
-  public ScreenTextWaiter(String text, long timeoutMillis, TerminalClient client,
-      ScheduledExecutorService stableTimeoutExecutor) {
-    super(timeoutMillis, client, stableTimeoutExecutor);
+  public ScreenTextWaiter(String text, TerminalClient client, ScheduledExecutorService stableTimeoutExecutor) {
+    super(client, stableTimeoutExecutor);
     this.text = text;
     client.addCursorMoveListener(this);
     client.addKeyboardStatusListener(this);
