@@ -365,7 +365,7 @@ public class TerminalClientTest {
     setupLoginWithSscpLuData();
     awaitKeyboardUnlock();
     sendFieldByCoord(11, 25, "testapp");
-    awaitKeyboardUnlock();
+    awaitScreenContains("WELCOME TO   DM3270 TESTING APPLICATION");
     client.setFieldTextByCoord(12, 21, "testusr");
     client.setFieldTextByCoord(13, 21, "testpsw");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
