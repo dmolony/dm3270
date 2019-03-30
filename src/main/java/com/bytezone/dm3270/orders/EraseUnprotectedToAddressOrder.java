@@ -1,8 +1,12 @@
 package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.display.DisplayScreen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EraseUnprotectedToAddressOrder extends Order {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EraseUnprotectedToAddressOrder.class);
 
   private final BufferAddress stopAddress;
 
@@ -16,7 +20,7 @@ public class EraseUnprotectedToAddressOrder extends Order {
 
   @Override
   public void process(DisplayScreen screen) {
-    System.out.println("EraseUnprotectedToAddress not finished");
+    LOG.warn("EraseUnprotectedToAddress not finished");
   }
 
   @Override

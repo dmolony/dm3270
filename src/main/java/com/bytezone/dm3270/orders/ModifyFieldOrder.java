@@ -29,7 +29,6 @@ public class ModifyFieldOrder extends Order {
 
   @Override
   public void process(DisplayScreen screen) {
-    System.out.println("What happens now?");
   }
 
 }

@@ -8,8 +8,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScreenWatcher {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ScreenWatcher.class);
 
   private static final String[] TSO_MENUS =
       {"Menu", "List", "Mode", "Functions", "Utilities", "Help"};
@@ -221,7 +225,7 @@ public class ScreenWatcher {
       datasetsMatching = locationText.substring(9);
     } else {
       // Could be: Matched in list REFLIST
-      System.out.println("Unexpected text: " + locationText);
+      LOG.warn("Unexpected text: {}", locationText);
       return false;
     }
 
@@ -272,19 +276,18 @@ public class ScreenWatcher {
               linesPerDataset = 2;
               nextLine = 8;
             } else {
-              System.out.println("Expected 'Catalog' or underscores: " + line);
+              LOG.warn("Expected 'Catalog' or underscores: {}", line);
             }
           }
         }
         break;
 
       default:
-        System.out.printf("Unexpected number of fields: %d%n", rowFields.size());
+        LOG.warn("Unexpected number of fields: {}", rowFields.size());
     }
 
     if (screenType == 0) {
-      System.out.println("Screen not recognised");
-      dumpFields(rowFields);
+      LOG.warn("Screen not recognised. {}", rowFields);
       return false;
     }
 
@@ -301,7 +304,7 @@ public class ScreenWatcher {
 
       String datasetName = lineText.substring(9).trim();
       if (datasetName.length() > 44) {
-        System.out.printf("Dataset name too long: %s%n", datasetName);
+        LOG.warn("Dataset name too long: {}", datasetName);
         break;
       }
 
@@ -310,7 +313,7 @@ public class ScreenWatcher {
       } else {
         // check for excluded datasets
         if (!EXCLUDE_LINE.equals(datasetName)) {
-          System.out.printf("Invalid dataset name: %s%n", datasetName);
+          LOG.warn("Invalid dataset name: {}", datasetName);
         }
 
         // what about GDGs?
@@ -474,7 +477,7 @@ public class ScreenWatcher {
         tabs2 = new int[]{9, 17, 25, 36};
         break;
       default:
-        System.out.printf("Unexpected mode1: [%s]%n", mode);
+        LOG.warn("Unexpected mode1: [{}]", mode);
         return false;
     }
 
@@ -497,7 +500,7 @@ public class ScreenWatcher {
       String memberName = rowFields.get(1).getText().trim();
       Matcher matcher = MEMBER_NAME_PATTERN.matcher(memberName);
       if (!matcher.matches()) {
-        System.out.printf("Invalid member name: %s%n", memberName);
+        LOG.warn("Invalid member name: {}", memberName);
         break;
       }
       String details = rowFields.get(3).getText();
@@ -509,7 +512,7 @@ public class ScreenWatcher {
       } else if (headings.size() == 13) {
         screenType2(member, details, tabs2);
       } else {
-        System.out.printf("Headings size: %d%n", headings.size());
+        LOG.warn("Headings size: {}", headings.size());
       }
     }
 
@@ -530,7 +533,7 @@ public class ScreenWatcher {
     if (!("EDIT".equals(mode)
         || "BROWSE".equals(mode)
         || "VIEW".equals(mode))) {
-      System.out.printf("Unexpected mode2: [%s]%n", mode);
+      LOG.warn("Unexpected mode2: [{}]", mode);
       return false;
     }
 
@@ -554,7 +557,7 @@ public class ScreenWatcher {
         && fieldManager.textMatchesTrim(headings.get(5), "Init")) {
       screenType = 2;
     } else {
-      dumpFields(headings);
+      LOG.debug("Headings: {}", headings);
     }
 
     if (screenType == 0) {
@@ -570,7 +573,7 @@ public class ScreenWatcher {
       String memberName = rowFields.get(1).getText().trim();
       Matcher matcher = MEMBER_NAME_PATTERN.matcher(memberName);
       if (!matcher.matches()) {
-        System.out.printf("Invalid member name: %s%n", memberName);
+        LOG.warn("Invalid member name: {}", memberName);
         break;
       }
       String details = rowFields.get(3).getText();
@@ -624,7 +627,7 @@ public class ScreenWatcher {
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
-      System.out.printf("ParseInt error with %s: [%s]%n", id, value);
+      LOG.warn("ParseInt error with {}: [{}]", id, value);
       return 0;
     }
   }
@@ -685,11 +688,6 @@ public class ScreenWatcher {
       }
     }
     return true;
-  }
-
-  private void dumpFields(List<Field> fields) {
-    fields.forEach(System.out::println);
-    System.out.println("-------------------------");
   }
 
   @Override

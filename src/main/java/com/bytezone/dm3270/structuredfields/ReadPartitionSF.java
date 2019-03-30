@@ -5,9 +5,14 @@ import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadPartitionQuery;
 import com.bytezone.dm3270.display.Screen;
 
+import com.oracle.tools.packager.Log;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReadPartitionSF extends StructuredField {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ReadPartitionSF.class);
 
   private final byte partitionID;
   private final Command command;
@@ -34,7 +39,7 @@ public class ReadPartitionSF extends StructuredField {
 
       // can only be RB/RM/RMA (i.e. one of the read commands)
       command = Command.getCommand(buffer, offset + 2, length - 2);
-      System.out.println("RB/RM/RMA: " + command);
+      LOG.debug("RB/RM/RMA: {}", command);
     }
   }
 
@@ -61,7 +66,7 @@ public class ReadPartitionSF extends StructuredField {
       } else {
         setReply(null);
       }
-      System.out.println("testing read command reply");
+      LOG.debug("testing read command reply");
     }
   }
 

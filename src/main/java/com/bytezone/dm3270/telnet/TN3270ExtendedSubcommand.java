@@ -2,13 +2,16 @@ package com.bytezone.dm3270.telnet;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
-
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TN3270ExtendedSubcommand extends TelnetSubcommand {
+
+  private static final Logger LOG = LoggerFactory.getLogger(TN3270ExtendedSubcommand.class);
 
   private static final byte EXT_DEVICE_TYPE = 2;
   private static final byte EXT_FUNCTIONS = 3;
@@ -113,22 +116,18 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand {
   @Override
   public void process(Screen screen) {
     if (type == SubcommandType.SEND && subType == SubType.DEVICE_TYPE) {
-      try {
-        byte[] header = {TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_DEVICE_TYPE,
-            EXT_REQUEST};
-        String terminalType = telnetState.doDeviceType();
-        byte[] terminal = terminalType.getBytes("ASCII");
-        byte[] reply = new byte[header.length + terminal.length + 2];
+      byte[] header = {TelnetCommand.IAC, TelnetCommand.SB, TN3270E, EXT_DEVICE_TYPE,
+          EXT_REQUEST};
+      String terminalType = telnetState.doDeviceType();
+      byte[] terminal = terminalType.getBytes(StandardCharsets.US_ASCII);
+      byte[] reply = new byte[header.length + terminal.length + 2];
 
-        System.arraycopy(header, 0, reply, 0, header.length);
-        System.arraycopy(terminal, 0, reply, header.length, terminal.length);
-        reply[reply.length - 2] = TelnetCommand.IAC;
-        reply[reply.length - 1] = TelnetCommand.SE;
+      System.arraycopy(header, 0, reply, 0, header.length);
+      System.arraycopy(terminal, 0, reply, header.length, terminal.length);
+      reply[reply.length - 2] = TelnetCommand.IAC;
+      reply[reply.length - 1] = TelnetCommand.SE;
 
-        setReply(new TN3270ExtendedSubcommand(reply, 0, reply.length, telnetState));
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-      }
+      setReply(new TN3270ExtendedSubcommand(reply, 0, reply.length, telnetState));
     }
 
     // after the server assigns our device type, request these three functions
@@ -164,7 +163,7 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand {
         break;
 
       default:
-        System.out.println("Unknown subtype: " + subType);
+        LOG.warn("Unknown subtype: {}", subType);
         break;
     }
   }

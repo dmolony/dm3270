@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TelnetSocket implements Runnable {
+
+  private static final Logger LOG = LoggerFactory.getLogger(TelnetSocket.class);
 
   private static final boolean GENUINE = true;
 
@@ -53,13 +57,13 @@ public class TelnetSocket implements Runnable {
     running = true;
     while (running) {
       if (Thread.interrupted()) {
-        System.out.println("TelnetSocket interrupted");
+        LOG.debug("TelnetSocket interrupted");
         break;
       }
       try {
         int bytesRead = inputStream.read(buffer);
         if (bytesRead == -1) {
-          System.out.println(name + " has no data on input stream");
+          LOG.debug("{} has no data on input stream", name);
           close();
           return;
         }
@@ -70,16 +74,16 @@ public class TelnetSocket implements Runnable {
         telnetListener.listen(source, message, LocalDateTime.now(), GENUINE);
       } catch (IOException e) {
         if (running) {
-          System.out.println(name + " closing due to IOException: " + e);
+          LOG.error("{} closing due to IOException", name, e);
         } else {
-          System.out.println(name + " quitting");
+          LOG.debug("{} quitting", name, e);
         }
         close();
         return;
       }
     }
 
-    System.out.println(name + " closing - bye everyone");
+    LOG.debug("{} closing - bye everyone", name);
     close();
   }
 

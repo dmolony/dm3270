@@ -1,13 +1,17 @@
 package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.utilities.Dm3270Utility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultReply extends QueryReplyField {
 
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultReply.class);
+
   public DefaultReply(byte[] buffer) {
     super(buffer);
-    System.out.printf("Unknown reply field: %02X%n", buffer[0]);
-    System.out.println(Dm3270Utility.toHex(buffer));
+    LOG.warn("Unknown reply field: {}\n{}", String.format("%02X", buffer[0]),
+        Dm3270Utility.toHex(buffer));
   }
 
   @Override

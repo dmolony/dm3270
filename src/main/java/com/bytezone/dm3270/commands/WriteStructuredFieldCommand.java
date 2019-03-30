@@ -14,8 +14,12 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WriteStructuredFieldCommand extends Command {
+
+  private static final Logger LOG = LoggerFactory.getLogger(WriteStructuredFieldCommand.class);
 
   private static final String LINE =
       "\n-------------------------------------------------------------------------";
@@ -49,7 +53,7 @@ public class WriteStructuredFieldCommand extends Command {
           break;
 
         case StructuredField.RESET_PARTITION:
-          System.out.println("SF_RESET_PARTITION (00) not written yet");
+          LOG.warn("SF_RESET_PARTITION (00) not written yet");
           structuredFields.add(new DefaultStructuredField(buffer, ptr, size));
           break;
 
@@ -58,7 +62,7 @@ public class WriteStructuredFieldCommand extends Command {
           break;
 
         case StructuredField.ACTIVATE_PARTITION:
-          System.out.println("SF_ACTIVATE_PARTITION (0E) not written yet");
+          LOG.warn("SF_ACTIVATE_PARTITION (0E) not written yet");
           structuredFields.add(new DefaultStructuredField(buffer, ptr, size));
           break;
 

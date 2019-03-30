@@ -125,14 +125,4 @@ public class Dm3270Utility {
     return text.toString();
   }
 
-  public static void hexDump(byte[] b) {
-    System.out.println(toHex(b, 0, b.length));
-  }
-
-  public static void printStackTrace() {
-    for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-      System.out.println(ste);
-    }
-  }
-
 }

@@ -2,8 +2,12 @@ package com.bytezone.dm3270.commands;
 
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Command extends AbstractTN3270Command {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Command.class);
 
   // EBCDIC codes (SNA) - Remote Attachment
   public static final byte WRITE_F1 = (byte) 0xF1;
@@ -120,10 +124,7 @@ public abstract class Command extends AbstractTN3270Command {
         return new WriteStructuredFieldCommand(buffer, offset, length);
 
       default:
-        System.out
-            .println("Unknown 3270 Command: " + String.format("%02X", buffer[offset]));
-        System.out.println(Dm3270Utility.toHex(buffer, offset, length));
-        Dm3270Utility.printStackTrace();
+        LOG.warn("Unknown 3270 Command: {}\n{}", String.format("%02X", buffer[offset]), Dm3270Utility.toHex(buffer, offset, length));
         return null;
     }
   }
@@ -131,13 +132,10 @@ public abstract class Command extends AbstractTN3270Command {
   public abstract String getName();
 
   public static Command getReply(byte[] buffer, int offset, int length) {
-    switch (buffer[offset]) {
-      case AIDCommand.AID_STRUCTURED_FIELD:
-        return new ReadStructuredFieldCommand(buffer, offset, length);
-
-      default:
-        return new AIDCommand(buffer, offset, length);
+    if (buffer[offset] == AIDCommand.AID_STRUCTURED_FIELD) {
+      return new ReadStructuredFieldCommand(buffer, offset, length);
     }
+    return new AIDCommand(buffer, offset, length);
   }
 
 }

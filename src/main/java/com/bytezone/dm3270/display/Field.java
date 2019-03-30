@@ -6,8 +6,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Field implements Iterable<ScreenPosition> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Field.class);
 
   private final Screen screen;
 
@@ -145,7 +149,7 @@ public class Field implements Iterable<ScreenPosition> {
         if (ptr < buffer.length) {
           buffer[ptr++] = screenPosition.getChar();
         } else {
-          System.out.printf("Too long: %d%n", ptr);
+          LOG.warn("Too long: {}", ptr);
         }
       }
     }
@@ -168,7 +172,7 @@ public class Field implements Iterable<ScreenPosition> {
       if (ptr < screenPositions.size()) {
         screenPositions.get(ptr++).setChar(b);
       } else {
-        System.out.println("Buffer overrun");
+        LOG.warn("Buffer overrun");
         break;
       }
     }

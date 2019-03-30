@@ -3,8 +3,12 @@ package com.bytezone.dm3270.extended;
 import com.bytezone.dm3270.buffers.AbstractReplyBuffer;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommandHeader extends AbstractReplyBuffer {
+
+  private static final Logger LOG = LoggerFactory.getLogger(CommandHeader.class);
 
   private static DataType[] dataTypes =
       {DataType.TN3270_DATA, DataType.SCS_DATA, DataType.RESPONSE, DataType.BIND_IMAGE,
@@ -95,7 +99,7 @@ public class CommandHeader extends AbstractReplyBuffer {
         if (data[2] == ERR_COND_CLEARED) {
           requestType = RequestType.ERR_COND_CLEARED;
         } else {
-          System.out.printf("Unknown request data: %02X%n", data[2]);
+          LOG.warn("Unknown request data: {}", String.format("%02X", data[2]));
         }
         break;
 

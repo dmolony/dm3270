@@ -1,8 +1,12 @@
 package com.bytezone.dm3270.commands;
 
 import com.bytezone.dm3270.display.Screen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReadCommand extends Command {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ReadCommand.class);
 
   private final String name;
   private final CommandType type;
@@ -61,7 +65,7 @@ public class ReadCommand extends Command {
     } else if (type == CommandType.READ_MODIFIED_ALL) {
       setReply(screen.readModifiedFields(READ_MODIFIED_ALL_6E));
     } else {
-      System.out.printf("Unknown READ command: %02X%n", data[0]);
+      LOG.warn("Unknown READ command: {}", String.format("%02X", data[0]));
     }
   }
 
