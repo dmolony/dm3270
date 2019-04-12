@@ -12,6 +12,7 @@ import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Site;
 import java.awt.Point;
+import java.util.List;
 import java.util.Optional;
 import javax.net.SocketFactory;
 
@@ -201,6 +202,10 @@ public class TerminalClient {
       }
     }
     return text.toString();
+  }
+
+  public List<Field> getFields() {
+    return screen.getFieldManager().getFields();
   }
 
   /**

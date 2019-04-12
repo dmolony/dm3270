@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class Attribute {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Attribute.class);
-
   public static final byte XA_RESET = 0x00;
   public static final byte XA_HIGHLIGHTING = 0x41;
   public static final byte XA_FGCOLOR = 0x42;
@@ -17,6 +15,8 @@ public abstract class Attribute {
   public static final byte XA_BGCOLOR = 0x45;
   public static final byte XA_TRANSPARENCY = 0x46;
   public static final byte XA_START_FIELD = (byte) 0xC0;
+
+  private static final Logger LOG = LoggerFactory.getLogger(Attribute.class);
 
   private static final byte XA_VALIDATION = (byte) 0xC1;
   private static final byte XA_OUTLINING = (byte) 0xC2;

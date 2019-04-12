@@ -4,8 +4,6 @@ import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadPartitionQuery;
 import com.bytezone.dm3270.display.Screen;
-
-import com.oracle.tools.packager.Log;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

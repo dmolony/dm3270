@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class Command extends AbstractTN3270Command {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Command.class);
-
   // EBCDIC codes (SNA) - Remote Attachment
   public static final byte WRITE_F1 = (byte) 0xF1;
   public static final byte ERASE_WRITE_F5 = (byte) 0xF5;
@@ -30,6 +28,8 @@ public abstract class Command extends AbstractTN3270Command {
   public static final byte READ_BUFFER_02 = 0x02;
   public static final byte READ_MODIFIED_06 = 0x06;
   public static final byte READ_MODIFIED_ALL_0E = 0x0E;
+
+  private static final Logger LOG = LoggerFactory.getLogger(Command.class);
 
   public Command(byte[] buffer, int offset, int length) {
     super(buffer, offset, length);
@@ -124,7 +124,8 @@ public abstract class Command extends AbstractTN3270Command {
         return new WriteStructuredFieldCommand(buffer, offset, length);
 
       default:
-        LOG.warn("Unknown 3270 Command: {}\n{}", String.format("%02X", buffer[offset]), Dm3270Utility.toHex(buffer, offset, length));
+        LOG.warn("Unknown 3270 Command: {}\n{}", String.format("%02X", buffer[offset]),
+            Dm3270Utility.toHex(buffer, offset, length));
         return null;
     }
   }

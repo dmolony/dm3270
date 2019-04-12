@@ -28,7 +28,8 @@ public class Outbound3270DS extends StructuredField {
   public void process(Screen screen) {
     command.process(screen);
     if (command.getReply().isPresent()) {
-      LOG.debug("Non-null reply: {}, {}", command, command.getReply().get()); // reply should always be null
+      LOG.debug("Non-null reply: {}, {}", command,
+          command.getReply().get()); // reply should always be null
     }
   }
 
