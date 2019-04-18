@@ -207,7 +207,7 @@ public class Screen implements DisplayScreen {
   public ScreenPosition getScreenPosition(int position) {
     return screenPositions[position];
   }
-
+  
   @Override
   public int validate(int position) {
     return pen.validate(position);

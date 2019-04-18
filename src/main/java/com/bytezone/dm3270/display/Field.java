@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,7 @@ public class Field implements Iterable<ScreenPosition> {
   private final StartFieldAttribute startFieldAttribute;
   private final List<ScreenPosition> screenPositions;
   private final ScreenDimensions screenDimensions;
-
+  
   public Field(Screen screen, List<ScreenPosition> positions) {
     this.screen = screen;
     this.screenDimensions = screen.getScreenDimensions();
@@ -182,6 +183,26 @@ public class Field implements Iterable<ScreenPosition> {
   public String toString() {
     return String.format("%04d-%04d %s [%s]", startPosition, endPosition,
         startFieldAttribute.getAcronym(), getText());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Field that = (Field) o;
+    return startPosition == that.startPosition &&
+        endPosition == that.endPosition &&
+        startFieldAttribute.getAcronym().equals(that.startFieldAttribute.getAcronym()) && 
+        getText().equals(that.getText());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(startPosition, endPosition, startFieldAttribute.getAcronym(), getText());
   }
 
   @Override

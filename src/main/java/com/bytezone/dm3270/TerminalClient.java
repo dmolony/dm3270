@@ -204,6 +204,12 @@ public class TerminalClient {
     return text.toString();
   }
 
+  /**
+   * Gets the list of all fields (protected and unprotected) that compose the screen.
+   *
+   * @return The list of fields that compose the screen. Fields are not only positions where input
+   * is expected, but also parts of the screen which are not meant to be modified or even visible.
+   */
   public List<Field> getFields() {
     return screen.getFieldManager().getFields();
   }

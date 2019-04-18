@@ -1,26 +1,14 @@
 package com.bytezone.dm3270;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
+import com.bytezone.dm3270.display.Field;
+import com.bytezone.dm3270.display.Screen;
+import com.bytezone.dm3270.display.ScreenContext;
+import com.bytezone.dm3270.display.ScreenPosition;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import java.awt.Point;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import java.io.UnsupportedEncodingException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,23 +16,53 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.abstracta.wiresham.Flow;
 import us.abstracta.wiresham.VirtualTcpService;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
 public class TerminalClientTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(TerminalClientTest.class);
   private static final long TIMEOUT_MILLIS = 10000;
   private static final String SERVICE_HOST = "localhost";
-
   private VirtualTcpService service = new VirtualTcpService();
   private TerminalClient client;
   private ExceptionWaiter exceptionWaiter;
   private ScheduledExecutorService stableTimeoutExecutor = Executors
       .newSingleThreadScheduledExecutor();
-
+  @Mock
+  private Screen screenMock;
+  
   @Rule
   public TestRule watchman = new TestWatcher() {
     @Override
@@ -115,7 +133,7 @@ public class TerminalClientTest {
     client.disconnect();
     service.stop(TIMEOUT_MILLIS);
   }
-
+  
   @Test
   public void shouldGetUnlockedKeyboardWhenConnect() throws Exception {
     awaitKeyboardUnlock();
@@ -168,19 +186,19 @@ public class TerminalClientTest {
     SSLContext sslContext = SSLContext.getInstance("TLS");
     TrustManager trustManager = new X509TrustManager() {
 
-      public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+      public X509Certificate[] getAcceptedIssuers() {
         return new X509Certificate[0];
       }
 
       public void checkClientTrusted(
-          java.security.cert.X509Certificate[] certs, String authType) {
+          X509Certificate[] certs, String authType) {
       }
 
       public void checkServerTrusted(
-          java.security.cert.X509Certificate[] certs, String authType) {
+          X509Certificate[] certs, String authType) {
       }
     };
-    sslContext.init(null, new TrustManager[]{trustManager},
+    sslContext.init(null, new TrustManager[] {trustManager},
         new SecureRandom());
     return sslContext;
   }
@@ -353,6 +371,209 @@ public class TerminalClientTest {
     client = new TerminalClient();
     client.setUsesExtended3270(true);
     connectClient();
+  }
+  
+  @Test
+  public void shouldGetCorrectFieldsWhenGetFields() throws Exception {
+    when(screenMock.validate(anyInt())).thenAnswer(
+        (Answer<Integer>) invocationOnMock -> (Integer) invocationOnMock.getArguments()[0]);
+    awaitKeyboardUnlock();
+    sendUserFieldByCoord();
+    awaitKeyboardUnlock();
+    assertEquals(expectedFields(), client.getFields());
+  }
+
+  private List<Field> expectedFields() {
+    ScreenBuilder screenBuilder = new ScreenBuilder()
+        .withField(new FieldBuilder("------------------------------- TSO/E LOGON ----------------" +
+            "-------------------").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                                             " +
+            "                  ").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                                             " +
+            "                     ").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("Enter LOGON parameters below:                  ")
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("RACF LOGON parameters:                                       " +
+            "                                                 ")
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" Userid    ===>"))
+        .withField(new FieldBuilder("TESTUSR ").withHighIntensity())
+        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder(" Seclabel     ===>").withNumeric().withHidden())
+        .withField(new FieldBuilder("        ").withNumeric().withHidden())
+        .withField(new FieldBuilder("                                                             " +
+            "                      ").withNumeric())
+        .withField(new FieldBuilder(" Password  ===>"))
+        .withField(new FieldBuilder("        ").withNotProtected().withHidden())
+        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder(" New Password ===>"))
+        .withField(new FieldBuilder("        ").withNotProtected().withHidden())
+        .withField(new FieldBuilder("                                                             " +
+            "                      ").withNumeric())
+        .withField(new FieldBuilder(" Procedure ===>"))
+        .withField(new FieldBuilder("PROC394 ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder(" Group Ident  ===>"))
+        .withField(new FieldBuilder("        ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                                             " +
+            "                      ").withNumeric())
+        .withField(new FieldBuilder(" Acct Nmbr ===>"))
+        .withField(new FieldBuilder("1000000                                 ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                                             " +
+            "                                         ").withNumeric())
+        .withField(new FieldBuilder(" Size      ===>"))
+        .withField(new FieldBuilder("4096   ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                                            " +
+            "                                                                           ").withNumeric())
+        .withField(new FieldBuilder(" Perform   ===>"))
+        .withField(new FieldBuilder("   ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                                            " +
+            "                                                                               ").withNumeric())
+        .withField(new FieldBuilder(" Command   ===>"))
+        .withField(new FieldBuilder("                                                            " +
+            "                    ").withNotProtected().withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                                            " +
+            "   ").withNumeric())
+        .withField(new FieldBuilder("Enter an 'S' before each option desired below:")
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("                                    "))
+        .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("-Nomail").withNumeric())
+        .withField(new FieldBuilder("   "))
+        .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("-Nonotice").withNumeric())
+        .withField(new FieldBuilder("  "))
+        .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("-Reconnect").withNumeric())
+        .withField(new FieldBuilder("  "))
+        .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected()
+            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("-OIDcard ").withNumeric())
+        .withField(new FieldBuilder("                                                             " +
+            "                          "))
+        .withField(new FieldBuilder("PF1/PF13 ==> Help    PF3/PF15 ==> Logoff    PA1 ==> Attention" +
+            "    PA2 ==> Reshow").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("You may request specific help information by entering a '?' in" +
+            " any entry field ").withHighIntensity().withSelectorPenDetectable());
+    return screenBuilder.build();
+  }
+
+  private static final class ScreenBuilder {
+
+    private final List<Field> fields = new ArrayList<>();
+    private Field lastField = null;
+
+    private ScreenBuilder withField(FieldBuilder builder) {
+      Field currField = lastField != null ? builder.withStartPosition(lastField.getFirstLocation()
+          + lastField.getText().length()).build() : builder.build();
+      fields.add(currField);
+      lastField = currField;
+      return this;
+    }
+
+    private List<Field> build() {
+      return fields;
+    }
+
+  }
+
+  private final class FieldBuilder {
+    private int startPosition;
+    private String text;
+    private boolean isProtected = true;
+    private boolean isNumeric = false;
+    private boolean isHidden = false;
+    private boolean isHighIntensity = false;
+    private boolean isModified = false;
+    private boolean selectorPenDetectable = false;
+
+    private FieldBuilder(String text) {
+      this.text = text;
+    }
+
+    private FieldBuilder withStartPosition(int pos) {
+      this.startPosition = pos;
+      return this;
+    }
+
+    private FieldBuilder withNotProtected() {
+      isProtected = false;
+      return this;
+    }
+
+    private FieldBuilder withNumeric() {
+      isNumeric = true;
+      return this;
+    }
+
+    private FieldBuilder withHidden() {
+      isHidden = true;
+      return this;
+    }
+
+    private FieldBuilder withModified() {
+      isModified = true;
+      return this;
+    }
+
+    private FieldBuilder withHighIntensity() {
+      isHighIntensity = true;
+      return this;
+    }
+
+
+    private FieldBuilder withSelectorPenDetectable() {
+      selectorPenDetectable = true;
+      return this;
+    }
+
+    private Field build() {
+      try {
+        List<ScreenPosition> positions = new ArrayList<>();
+        for (int i = 0; i <= text.length(); i++) {
+          positions.add(new ScreenPosition(startPosition + i, null));
+        }
+        positions.get(0).setStartField(buildStartFieldAttribute());
+        Field f = new Field(TerminalClientTest.this.screenMock, positions);
+        f.setText(text.getBytes("CP1047"));
+        return f;
+      } catch (UnsupportedEncodingException e) {
+        // As this is not expected to happen, we just throw RuntimeException.
+        throw new RuntimeException(e);
+      }
+    }
+
+    private StartFieldAttribute buildStartFieldAttribute() {
+      byte b = 0;
+      if (isProtected) {
+        b |= 0x20;
+      }
+      if (isNumeric) {
+        b |= 0x10;
+      }
+      if (isModified) {
+        b |= 0x01;
+      }
+      if (isHighIntensity) {
+        b |= 0x08;
+      } else if (isHidden) {
+        b |= 0x0C;
+      } else if (selectorPenDetectable){
+        b |= 0x04;
+      }
+      return new StartFieldAttribute(b);
+    }
   }
 
 }
