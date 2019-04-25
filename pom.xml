@@ -10,7 +10,9 @@
   <version>0.1-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
-  <description>This is a trimmed down version of https://github.com/dmolony/dm3270 to be used as TN3270 client library</description>
+  <description>This is a trimmed down version of https://github.com/dmolony/dm3270 to be used as
+    TN3270 client library
+  </description>
   <url>https://github.com/abstracta/dm3270</url>
 
   <licenses>
@@ -80,11 +82,12 @@
       <version>24.0-jre</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-all</artifactId>
-          <version>1.10.19</version>
-      </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.27.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
