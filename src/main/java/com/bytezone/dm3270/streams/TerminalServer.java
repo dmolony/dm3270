@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.streams;
 
-import com.bytezone.dm3270.ExceptionHandler;
+import com.bytezone.dm3270.ConnectionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,7 +15,7 @@ public class TerminalServer implements Runnable {
   private final int serverPort;
   private final SocketFactory socketFactory;
   private int connectionTimeoutMillis;
-  private ExceptionHandler exceptionHandler;
+  private ConnectionListener connectionListener;
 
   private Socket serverSocket;
   private OutputStream serverOut;
@@ -37,8 +37,8 @@ public class TerminalServer implements Runnable {
     this.connectionTimeoutMillis = connectionTimeoutMillis;
   }
 
-  public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-    this.exceptionHandler = exceptionHandler;
+  public void setConnectionListener(ConnectionListener connectionListener) {
+    this.connectionListener = connectionListener;
   }
 
   @Override
@@ -47,6 +47,9 @@ public class TerminalServer implements Runnable {
       try {
         serverSocket = socketFactory.createSocket();
         serverSocket.connect(new InetSocketAddress(serverURL, serverPort), connectionTimeoutMillis);
+        if (connectionListener != null) {
+          connectionListener.onConnection();
+        }
       } catch (IOException ex) {
         handleException(ex);
         return;
@@ -60,8 +63,8 @@ public class TerminalServer implements Runnable {
         int bytesRead = serverIn.read(buffer);
         if (bytesRead < 0) {
           close();
-          if (exceptionHandler != null) {
-            exceptionHandler.onConnectionClosed();
+          if (connectionListener != null) {
+            connectionListener.onConnectionClosed();
           }
           break;
         }
@@ -79,8 +82,8 @@ public class TerminalServer implements Runnable {
   }
 
   private void handleException(IOException ex) {
-    if (exceptionHandler != null) {
-      exceptionHandler.onException(ex);
+    if (connectionListener != null) {
+      connectionListener.onException(ex);
     } else {
       ex.printStackTrace();
     }

@@ -1,9 +1,14 @@
 package com.bytezone.dm3270;
 
 /**
- * Interface to be invoked when some exceptional case arises.
+ * Interface to be invoked when there is some change on terminal connection.
  */
-public interface ExceptionHandler {
+public interface ConnectionListener {
+
+  /**
+   * Method invoked when connection is established to terminal server.
+   */
+  void onConnection();
 
   /**
    * Method invoked when an {@link Exception} is thrown.

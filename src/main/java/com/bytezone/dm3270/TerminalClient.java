@@ -23,33 +23,23 @@ import javax.net.SocketFactory;
  */
 public class TerminalClient {
 
-  private int model = 2;
-  private ScreenDimensions screenDimensions = new ScreenDimensions(24, 80);
   private boolean usesExtended3270;
-  private Screen screen;
+  private final Screen screen;
   private ConsolePane consolePane;
   private SocketFactory socketFactory = SocketFactory.getDefault();
-  private ExceptionHandler exceptionHandler;
+  private ConnectionListener connectionListener;
   private int connectionTimeoutMillis;
 
   /**
-   * Sets the model of terminal to emulate.
+   * Creates a new terminal client with given model and screen dimensions.
    *
-   * @param model model of the terminal. Known values are 2,3,4 and 5. When not specified the
-   * default model 2 will be used.
+   * @param model model of the terminal. Known values are 2,3,4 and 5
+   * @param screenDimensions dimensions in rows and columns
    */
-  public void setModel(int model) {
-    this.model = model;
-  }
-
-  /**
-   * Sets the screen dimensions of the terminal to emulate.
-   *
-   * @param screenDimensions dimensions in rows and columns. When not specified default dimensions
-   * of 24 rows and 80 columns will be used.
-   */
-  public void setScreenDimensions(ScreenDimensions screenDimensions) {
-    this.screenDimensions = screenDimensions;
+  public TerminalClient(int model, ScreenDimensions screenDimensions) {
+    TelnetState telnetState = new TelnetState();
+    telnetState.setDoDeviceType(model);
+    screen = new Screen(screenDimensions, null, telnetState);
   }
 
   /**
@@ -86,11 +76,11 @@ public class TerminalClient {
   /**
    * Sets a class to handle general exception handler.
    *
-   * @param exceptionHandler a class to handle exceptions. If none is provided then exceptions stack
-   * trace will be printed to error output.
+   * @param connectionListener a class to handle exceptions. If none is provided then exceptions
+   * stack trace will be printed to error output.
    */
-  public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-    this.exceptionHandler = exceptionHandler;
+  public void setConnectionListener(ConnectionListener connectionListener) {
+    this.connectionListener = connectionListener;
   }
 
   /**
@@ -100,13 +90,10 @@ public class TerminalClient {
    * @param port port where the terminal server is listening for connections.
    */
   public void connect(String host, int port) {
-    TelnetState telnetState = new TelnetState();
-    telnetState.setDoDeviceType(model);
-    screen = new Screen(screenDimensions, null, telnetState);
     screen.lockKeyboard("connect");
     consolePane = new ConsolePane(screen, new Site(host, port, usesExtended3270), socketFactory);
     consolePane.setConnectionTimeoutMillis(connectionTimeoutMillis);
-    consolePane.setExceptionHandler(exceptionHandler);
+    consolePane.setConnectionListener(connectionListener);
     consolePane.connect();
   }
 

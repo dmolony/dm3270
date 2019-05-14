@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.application;
 
-import com.bytezone.dm3270.ExceptionHandler;
+import com.bytezone.dm3270.ConnectionListener;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
@@ -28,7 +28,7 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
   private TerminalServer terminalServer;
   private Thread terminalServerThread;
   private int connectionTimeoutMillis;
-  private ExceptionHandler exceptionHandler;
+  private ConnectionListener connectionListener;
 
   public ConsolePane(Screen screen, Site server, SocketFactory socketFactory) {
     this.screen = screen;
@@ -45,8 +45,8 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
     this.connectionTimeoutMillis = connectionTimeoutMillis;
   }
 
-  public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-    this.exceptionHandler = exceptionHandler;
+  public void setConnectionListener(ConnectionListener connectionListener) {
+    this.connectionListener = connectionListener;
   }
 
   public void sendAID(byte aid, String name) {
@@ -91,7 +91,7 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
     terminalServer =
         new TerminalServer(server.getURL(), server.getPort(), socketFactory, telnetListener);
     terminalServer.setConnectionTimeoutMillis(connectionTimeoutMillis);
-    terminalServer.setExceptionHandler(exceptionHandler);
+    terminalServer.setConnectionListener(connectionListener);
     telnetState.setTerminalServer(terminalServer);
 
     terminalServerThread = new Thread(terminalServer);
