@@ -83,7 +83,7 @@ public class TerminalClientTest {
     service.setSslEnabled(false);
     setServiceFlowFromFile("/login.yml");
     service.start();
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS);
+    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
     client.setConnectionTimeoutMillis(5000);
     exceptionWaiter = new ExceptionWaiter();
     client.setConnectionListener(exceptionWaiter);
@@ -183,7 +183,7 @@ public class TerminalClientTest {
     System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
     service.start();
 
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS);
+    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
     client.setSocketFactory(buildSslContext().getSocketFactory());
     connectClient();
   }
@@ -275,7 +275,7 @@ public class TerminalClientTest {
     setServiceFlowFromFile("/login-without-fields.yml");
     service.start();
 
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS);
+    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
     client.setUsesExtended3270(true);
     connectClient();
   }
@@ -374,7 +374,7 @@ public class TerminalClientTest {
     setServiceFlowFromFile("/sscplu-login.yml");
     service.start();
 
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS);
+    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
     client.setUsesExtended3270(true);
     connectClient();
   }

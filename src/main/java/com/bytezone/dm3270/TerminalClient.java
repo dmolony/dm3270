@@ -23,8 +23,8 @@ import javax.net.SocketFactory;
  */
 public class TerminalClient {
 
-  private boolean usesExtended3270;
   private final Screen screen;
+  private boolean usesExtended3270;
   private ConsolePane consolePane;
   private SocketFactory socketFactory = SocketFactory.getDefault();
   private ConnectionListener connectionListener;
@@ -34,12 +34,14 @@ public class TerminalClient {
    * Creates a new terminal client with given model and screen dimensions.
    *
    * @param model model of the terminal. Known values are 2,3,4 and 5
-   * @param screenDimensions dimensions in rows and columns
+   * @param defaultScreenDimension default screen dimensions in rows and columns
+   * @param alternateScreenDimensions alternate screen dimensions in rows and columns
    */
-  public TerminalClient(int model, ScreenDimensions screenDimensions) {
+  public TerminalClient(int model, ScreenDimensions defaultScreenDimension,
+      ScreenDimensions alternateScreenDimensions) {
     TelnetState telnetState = new TelnetState();
     telnetState.setDoDeviceType(model);
-    screen = new Screen(screenDimensions, null, telnetState);
+    screen = new Screen(defaultScreenDimension, alternateScreenDimensions, telnetState);
   }
 
   /**
