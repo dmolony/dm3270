@@ -52,19 +52,12 @@ import us.abstracta.wiresham.VirtualTcpService;
 public class TerminalClientTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(TerminalClientTest.class);
-  private static final int TERMINAL_MODEL = 2;
+  private static final int TERMINAL_MODEL_TYPE_TWO = 2;
+  private static final int TERMINAL_MODEL_TYPE_M_FIVE = 5;
+  private static final ScreenDimensions SCREEN_DIMENSIONS_M_FIVE = new ScreenDimensions(27, 132);
   private static final ScreenDimensions SCREEN_DIMENSIONS = new ScreenDimensions(24, 80);
   private static final long TIMEOUT_MILLIS = 10000;
   private static final String SERVICE_HOST = "localhost";
-
-  private VirtualTcpService service = new VirtualTcpService();
-  private TerminalClient client;
-  private ExceptionWaiter exceptionWaiter;
-  private ScheduledExecutorService stableTimeoutExecutor = Executors
-      .newSingleThreadScheduledExecutor();
-  @Mock
-  private Screen screenMock;
-
   @Rule
   public TestRule watchman = new TestWatcher() {
     @Override
@@ -77,13 +70,20 @@ public class TerminalClientTest {
       LOG.debug("Finished {}", description.getMethodName());
     }
   };
+  private VirtualTcpService service = new VirtualTcpService();
+  private TerminalClient client;
+  private ExceptionWaiter exceptionWaiter;
+  private ScheduledExecutorService stableTimeoutExecutor = Executors
+      .newSingleThreadScheduledExecutor();
+  @Mock
+  private Screen screenMock;
 
   @Before
   public void setup() throws IOException {
     service.setSslEnabled(false);
     setServiceFlowFromFile("/login.yml");
     service.start();
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
+    client = new TerminalClient(TERMINAL_MODEL_TYPE_TWO, SCREEN_DIMENSIONS);
     client.setConnectionTimeoutMillis(5000);
     exceptionWaiter = new ExceptionWaiter();
     client.setConnectionListener(exceptionWaiter);
@@ -99,35 +99,6 @@ public class TerminalClientTest {
 
   private void setServiceFlowFromFile(String s) throws FileNotFoundException {
     service.setFlow(Flow.fromYml(new File(getResourceFilePath(s))));
-  }
-
-  private static class ExceptionWaiter implements ConnectionListener {
-
-    private CountDownLatch exceptionLatch = new CountDownLatch(1);
-    private CountDownLatch closeLatch = new CountDownLatch(1);
-
-    @Override
-    public void onConnection() {
-    }
-
-    @Override
-    public void onException(Exception ex) {
-      exceptionLatch.countDown();
-    }
-
-    @Override
-    public void onConnectionClosed() {
-      closeLatch.countDown();
-    }
-
-    private void awaitException() throws InterruptedException {
-      assertThat(exceptionLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
-    }
-
-    private void awaitClose() throws InterruptedException {
-      assertThat(closeLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
-    }
-
   }
 
   private String getResourceFilePath(String resourcePath) {
@@ -183,7 +154,7 @@ public class TerminalClientTest {
     System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
     service.start();
 
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
+    client = new TerminalClient(TERMINAL_MODEL_TYPE_TWO, SCREEN_DIMENSIONS);
     client.setSocketFactory(buildSslContext().getSocketFactory());
     connectClient();
   }
@@ -260,7 +231,7 @@ public class TerminalClientTest {
 
   @Test
   public void shouldGetWelcomeMessageWhenSendUserInScreenWithoutFields() throws Exception {
-    setupLoginWithoutFields();
+    setupExtendedFlow(TERMINAL_MODEL_TYPE_TWO, SCREEN_DIMENSIONS, "/login-without-fields.yml");
     awaitKeyboardUnlock();
     sendFieldByCoord(20, 48, "testusr");
     awaitKeyboardUnlock();
@@ -268,14 +239,13 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
   }
 
-  private void setupLoginWithoutFields() throws Exception {
+  private void setupExtendedFlow(int terminalType, ScreenDimensions screenDimensions, String s)
+      throws Exception {
     awaitKeyboardUnlock();
     teardown();
-
-    setServiceFlowFromFile("/login-without-fields.yml");
+    setServiceFlowFromFile(s);
     service.start();
-
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
+    client = new TerminalClient(terminalType, screenDimensions);
     client.setUsesExtended3270(true);
     connectClient();
   }
@@ -355,7 +325,7 @@ public class TerminalClientTest {
 
   @Test
   public void shouldGetLoginSuccessScreenWhenLoginWithSscpLuData() throws Exception {
-    setupLoginWithSscpLuData();
+    setupExtendedFlow(TERMINAL_MODEL_TYPE_TWO, SCREEN_DIMENSIONS, "/sscplu-login.yml");
     awaitKeyboardUnlock();
     sendFieldByCoord(11, 25, "testapp");
     awaitKeyboardUnlock();
@@ -365,18 +335,6 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     assertThat(client.getScreenText())
         .isEqualTo(getFileContent("sscplu-login-success-screen.txt"));
-  }
-
-  private void setupLoginWithSscpLuData() throws Exception {
-    awaitKeyboardUnlock();
-    teardown();
-
-    setServiceFlowFromFile("/sscplu-login.yml");
-    service.start();
-
-    client = new TerminalClient(TERMINAL_MODEL, SCREEN_DIMENSIONS, null);
-    client.setUsesExtended3270(true);
-    connectClient();
   }
 
   @Test
@@ -489,6 +447,55 @@ public class TerminalClientTest {
     return screenBuilder.build();
   }
 
+  @Test
+  public void shouldShowWelcomeScreenWithDifferentTerminalType()
+      throws Exception {
+    setupExtendedFlow(TERMINAL_MODEL_TYPE_M_FIVE, SCREEN_DIMENSIONS_M_FIVE,
+        "/login-3270-model-5.yml");
+    awaitKeyboardUnlock();
+    assertThat(client.getScreenText())
+        .isEqualTo(getFileContent("login-welcome-screen.txt"));
+  }
+
+  @Test
+  public void shouldShowMenuScreenWithDifferentTerminalType() throws Exception {
+    setupExtendedFlow(TERMINAL_MODEL_TYPE_M_FIVE, SCREEN_DIMENSIONS_M_FIVE,
+        "/login-3270-model-5.yml");
+    awaitKeyboardUnlock();
+    sendUserFieldByCoord();
+    awaitKeyboardUnlock();
+    assertThat(client.getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
+  }
+
+  private static class ExceptionWaiter implements ConnectionListener {
+
+    private CountDownLatch exceptionLatch = new CountDownLatch(1);
+    private CountDownLatch closeLatch = new CountDownLatch(1);
+
+    @Override
+    public void onConnection() {
+    }
+
+    @Override
+    public void onException(Exception ex) {
+      exceptionLatch.countDown();
+    }
+
+    @Override
+    public void onConnectionClosed() {
+      closeLatch.countDown();
+    }
+
+    private void awaitException() throws InterruptedException {
+      assertThat(exceptionLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+    }
+
+    private void awaitClose() throws InterruptedException {
+      assertThat(closeLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+    }
+
+  }
+
   private static final class ScreenBuilder {
 
     private final List<Field> fields = new ArrayList<>();
@@ -596,5 +603,4 @@ public class TerminalClientTest {
       return new StartFieldAttribute(b);
     }
   }
-
 }
