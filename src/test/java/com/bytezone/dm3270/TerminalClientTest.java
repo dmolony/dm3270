@@ -90,6 +90,36 @@ public class TerminalClientTest {
     connectClient();
   }
 
+  private static class ExceptionWaiter implements ConnectionListener {
+
+    private CountDownLatch exceptionLatch = new CountDownLatch(1);
+
+    private CountDownLatch closeLatch = new CountDownLatch(1);
+    @Override
+    public void onConnection() {
+    }
+
+    @Override
+    public void onException(Exception ex) {
+      exceptionLatch.countDown();
+    }
+
+    @Override
+    public void onConnectionClosed() {
+      closeLatch.countDown();
+    }
+
+    private void awaitException() throws InterruptedException {
+      assertThat(exceptionLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+    }
+
+    private void awaitClose() throws InterruptedException {
+      assertThat(closeLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+    }
+
+
+  }
+
   private void connectClient() {
     client.connect(SERVICE_HOST, service.getPort());
     client.addScreenChangeListener(
@@ -239,11 +269,11 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
   }
 
-  private void setupExtendedFlow(int terminalType, ScreenDimensions screenDimensions, String s)
+  private void setupExtendedFlow(int terminalType, ScreenDimensions screenDimensions, String filePath)
       throws Exception {
     awaitKeyboardUnlock();
     teardown();
-    setServiceFlowFromFile(s);
+    setServiceFlowFromFile(filePath);
     service.start();
     client = new TerminalClient(terminalType, screenDimensions);
     client.setUsesExtended3270(true);
@@ -446,61 +476,11 @@ public class TerminalClientTest {
                 " any entry field ").withHighIntensity().withSelectorPenDetectable());
     return screenBuilder.build();
   }
-
-  @Test
-  public void shouldShowWelcomeScreenWithDifferentTerminalType()
-      throws Exception {
-    setupExtendedFlow(TERMINAL_MODEL_TYPE_M_FIVE, SCREEN_DIMENSIONS_M_FIVE,
-        "/login-3270-model-5.yml");
-    awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
-        .isEqualTo(getFileContent("login-welcome-screen.txt"));
-  }
-
-  @Test
-  public void shouldShowMenuScreenWithDifferentTerminalType() throws Exception {
-    setupExtendedFlow(TERMINAL_MODEL_TYPE_M_FIVE, SCREEN_DIMENSIONS_M_FIVE,
-        "/login-3270-model-5.yml");
-    awaitKeyboardUnlock();
-    sendUserFieldByCoord();
-    awaitKeyboardUnlock();
-    assertThat(client.getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
-  }
-
-  private static class ExceptionWaiter implements ConnectionListener {
-
-    private CountDownLatch exceptionLatch = new CountDownLatch(1);
-    private CountDownLatch closeLatch = new CountDownLatch(1);
-
-    @Override
-    public void onConnection() {
-    }
-
-    @Override
-    public void onException(Exception ex) {
-      exceptionLatch.countDown();
-    }
-
-    @Override
-    public void onConnectionClosed() {
-      closeLatch.countDown();
-    }
-
-    private void awaitException() throws InterruptedException {
-      assertThat(exceptionLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
-    }
-
-    private void awaitClose() throws InterruptedException {
-      assertThat(closeLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
-    }
-
-  }
-
   private static final class ScreenBuilder {
 
     private final List<Field> fields = new ArrayList<>();
-    private Field lastField = null;
 
+    private Field lastField = null;
     private ScreenBuilder withField(FieldBuilder builder) {
       Field currField = lastField != null ? builder.withStartPosition(lastField.getFirstLocation()
           + lastField.getText().length()).build() : builder.build();
@@ -513,11 +493,12 @@ public class TerminalClientTest {
       return fields;
     }
 
-  }
 
+  }
   private final class FieldBuilder {
 
     private int startPosition;
+
     private String text;
     private boolean isProtected = true;
     private boolean isNumeric = false;
@@ -525,7 +506,6 @@ public class TerminalClientTest {
     private boolean isHighIntensity = false;
     private boolean isModified = false;
     private boolean selectorPenDetectable = false;
-
     private FieldBuilder(String text) {
       this.text = text;
     }
@@ -602,5 +582,16 @@ public class TerminalClientTest {
       }
       return new StartFieldAttribute(b);
     }
+
+  }
+
+  @Test
+  public void shouldShowMenuScreenWithDifferentTerminalType() throws Exception {
+    setupExtendedFlow(TERMINAL_MODEL_TYPE_M_FIVE, SCREEN_DIMENSIONS_M_FIVE,
+        "/login-3270-model-5.yml");
+    awaitKeyboardUnlock();
+    sendUserFieldByCoord();
+    awaitKeyboardUnlock();
+    assertThat(client.getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 }
