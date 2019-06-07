@@ -12,6 +12,7 @@ import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.utilities.Site;
 import java.awt.Point;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import javax.net.SocketFactory;
@@ -23,8 +24,8 @@ import javax.net.SocketFactory;
  */
 public class TerminalClient {
 
-  private boolean usesExtended3270;
   private final Screen screen;
+  private boolean usesExtended3270;
   private ConsolePane consolePane;
   private SocketFactory socketFactory = SocketFactory.getDefault();
   private ConnectionListener connectionListener;
@@ -34,12 +35,12 @@ public class TerminalClient {
    * Creates a new terminal client with given model and screen dimensions.
    *
    * @param model model of the terminal. Known values are 2,3,4 and 5
-   * @param screenDimensions dimensions in rows and columns
+   * @param alternateScreenDimensions alternate screen dimensions in rows and columns
    */
-  public TerminalClient(int model, ScreenDimensions screenDimensions) {
+  public TerminalClient(int model, ScreenDimensions alternateScreenDimensions) {
     TelnetState telnetState = new TelnetState();
     telnetState.setDoDeviceType(model);
-    screen = new Screen(screenDimensions, null, telnetState);
+    screen = new Screen(new ScreenDimensions(24, 80), alternateScreenDimensions, telnetState);
   }
 
   /**
@@ -179,12 +180,17 @@ public class TerminalClient {
     StringBuilder text = new StringBuilder();
     int pos = 0;
     boolean visible = true;
-    for (ScreenPosition sp : screen.getPen()) {
+    Iterator<ScreenPosition> positionsIterator = screen.getPen().iterator();
+    ScreenDimensions screenDimensions = screen.getScreenDimensions();
+    int positionsCount = screenDimensions.columns * screenDimensions.rows;
+    while (pos < positionsCount && positionsIterator.hasNext()) {
+      ScreenPosition sp = positionsIterator.next();
       if (sp.isStartField()) {
         visible = sp.getStartFieldAttribute().isVisible();
       }
       text.append(visible ? sp.getCharString() : " ");
-      if (++pos % screen.getScreenDimensions().columns == 0) {
+      ++pos;
+      if (pos % screenDimensions.columns == 0) {
         text.append("\n");
       }
     }
