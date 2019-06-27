@@ -3,7 +3,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>us.abstracta</groupId>
+  <groupId>com.blazemeter</groupId>
   <artifactId>dm3270-lib</artifactId>
   <!-- This version has no relation to the released version since the release version is extracted
   from git tag by Travis -->
@@ -13,7 +13,7 @@
   <description>This is a trimmed down version of https://github.com/dmolony/dm3270 to be used as
     TN3270 client library
   </description>
-  <url>https://github.com/abstracta/dm3270</url>
+  <url>https://github.com/blazemeter/dm3270</url>
 
   <licenses>
     <license>
@@ -24,17 +24,17 @@
 
   <developers>
     <developer>
-      <name>Abstracta</name>
-      <email>ops@abstracta.us</email>
-      <organization>Abstracta</organization>
-      <organizationUrl>https://abstracta.us/</organizationUrl>
+      <name>Blazemeter</name>
+      <email>ops@blazemeter.com</email>
+      <organization>Blazemeter</organization>
+      <organizationUrl>https://blazemeter.com/</organizationUrl>
     </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/abstracta/dm3270.git</connection>
-    <developerConnection>scm:git:ssh://github.com:abstracta/dm3270.git</developerConnection>
-    <url>https://github.com/abstracta/dm3270/tree/master</url>
+    <connection>scm:git:git://github.com/blazmeter/dm3270.git</connection>
+    <developerConnection>scm:git:ssh://github.com:blazmeter/dm3270.git</developerConnection>
+    <url>https://github.com/blazmeter/dm3270/tree/master</url>
   </scm>
 
   <distributionManagement>
