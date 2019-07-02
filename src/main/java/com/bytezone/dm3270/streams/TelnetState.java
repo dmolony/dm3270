@@ -19,6 +19,7 @@ public class TelnetState implements Runnable {
 
   // preferences
   private boolean do3270Extended;
+  private int commandHeaderCount;
   private boolean doBinary;
   private boolean doEOR;
   private boolean doTerminalType;
@@ -68,6 +69,10 @@ public class TelnetState implements Runnable {
     }
 
     lastAccess.set(System.currentTimeMillis());
+  }
+
+  public int nextCommandHeaderSeq() {
+    return commandHeaderCount++;
   }
 
   // This thread exists simply to keep the connection alive. It sleeps for a

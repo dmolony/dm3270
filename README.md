@@ -9,7 +9,31 @@ Additionally it includes some basic refactor (not too deep refactor to keep some
 
 To use the library is required [JRE8+](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html).
 
-Download the library from [releases](https://github.com/blazemeter/dm3270/releases) and include it in your project (either including on IDE, or in your build tool).
+To use the emulator as maven dependency include in `pom.xml`:
+
+```xml
+<project>
+...
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+...
+<dependencies>
+  <dependency>
+      <groupId>com.github.blazemeter</groupId>
+      <artifactId>dm3270</artifactId>
+      <version>0.9.1-lib</version>
+  </dependency>
+  ...
+</dependencies>
+...
+</project>
+```
+
+>Check latest version in [releases](https://github.com/blazemeter/xtn5250/releases).
 
 And then use provided API. An example of such usage can be found in [TerminalClientTest](src/test/java/com/bytezone/dm3270/TerminalClientTest.java).
 

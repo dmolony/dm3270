@@ -108,6 +108,9 @@ public final class ScreenPosition {
   }
 
   public char getChar() {
+    if (value == 0) {
+      return '\u0000';
+    }
     if ((value & 0xC0) == 0) {
       return ' ';
     }

@@ -109,14 +109,32 @@ public class TerminalClient {
     int linearPosition = (row - 1) * screen.getScreenDimensions().columns + column - 1;
     if (screen.getFieldManager().getFields().isEmpty()) {
       screen.setPositionText(linearPosition, text);
+      screen.getScreenCursor().moveTo(linearPosition + findFieldNextPosition(text));
     } else {
       Field field = screen.getFieldManager()
           .getFieldAt(linearPosition)
           .orElseThrow(
               () -> new IllegalArgumentException("Invalid field position " + row + "," + column));
-      screen.setFieldText(field, text);
+      setFieldText(field, text);
     }
-    screen.getScreenCursor().moveTo(linearPosition + text.length());
+  }
+
+  private int findFieldNextPosition(String text) {
+    int pos = text.length() - 1;
+    while (text.charAt(pos) == '\u0000' || text.charAt(pos) == ' ') {
+      pos--;
+    }
+    return pos + 1;
+  }
+
+  private void setFieldText(Field field, String text) {
+    field.setText(text);
+    int nextPosition = findFieldNextPosition(text);
+    int cursorPosition =
+        field.getDisplayLength() > nextPosition ? field.getFirstLocation() + nextPosition
+            : field.getNextUnprotectedField().getFirstLocation();
+
+    screen.getScreenCursor().moveTo(cursorPosition);
   }
 
   public void setFieldTextByLabel(String lbl, String text) {
@@ -124,8 +142,7 @@ public class TerminalClient {
     if (field == null) {
       throw new IllegalArgumentException("Invalid field label: " + lbl);
     }
-    screen.setFieldText(field, text);
-    screen.getScreenCursor().moveTo(field.getFirstLocation() + text.length());
+    setFieldText(field, text);
   }
 
   private Field findFieldPositionByLabel(String label) {
@@ -188,7 +205,7 @@ public class TerminalClient {
       if (sp.isStartField()) {
         visible = sp.getStartFieldAttribute().isVisible();
       }
-      text.append(visible ? sp.getCharString() : " ");
+      text.append(visible ? sp.getChar() : ' ');
       ++pos;
       if (pos % screenDimensions.columns == 0) {
         text.append("\n");
