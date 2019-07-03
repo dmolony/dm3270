@@ -81,6 +81,7 @@ public class TerminalClientTest {
   @Before
   public void setup() throws IOException {
     service.setSslEnabled(false);
+    service.setPort(2325);
     setServiceFlowFromFile("/login.yml");
     service.start();
     client = new TerminalClient(TERMINAL_MODEL_TYPE_TWO, SCREEN_DIMENSIONS);
@@ -391,95 +392,84 @@ public class TerminalClientTest {
                 "                  ").withHighIntensity().withSelectorPenDetectable())
         .withField(
             new FieldBuilder("                                                             " +
-                "                     ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("Enter LOGON parameters below:                  ")
+                "                   \u0000\u0000").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("Enter LOGON parameters below:" + buildNullString(18))
             .withHighIntensity().withSelectorPenDetectable())
         .withField(
-            new FieldBuilder("RACF LOGON parameters:                                       " +
-                "                                                 ")
-                .withHighIntensity().withSelectorPenDetectable())
+            new FieldBuilder("RACF LOGON parameters:" + buildNullString(88)).withHighIntensity()
+                .withSelectorPenDetectable())
         .withField(new FieldBuilder(" Userid    ===>"))
         .withField(new FieldBuilder("TESTUSR ").withHighIntensity())
-        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(22)).withNumeric())
         .withField(new FieldBuilder(" Seclabel     ===>").withNumeric().withHidden())
         .withField(new FieldBuilder("        ").withNumeric().withHidden())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(83)).withNumeric())
         .withField(new FieldBuilder(" Password  ===>"))
         .withField(new FieldBuilder("        ").withNotProtected().withHidden())
-        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(22)).withNumeric())
         .withField(new FieldBuilder(" New Password ===>"))
         .withField(new FieldBuilder("        ").withNotProtected().withHidden())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(83)).withNumeric())
         .withField(new FieldBuilder(" Procedure ===>"))
-        .withField(new FieldBuilder("PROC394 ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder("PROC394 ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(22)).withNumeric())
         .withField(new FieldBuilder(" Group Ident  ===>"))
-        .withField(new FieldBuilder("        ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                      ").withNumeric())
+        .withField(new FieldBuilder("        ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(83)).withNumeric())
         .withField(new FieldBuilder(" Acct Nmbr ===>"))
         .withField(new FieldBuilder("1000000                                 ").withNotProtected()
             .withHighIntensity().withSelectorPenDetectable())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                                         ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(102)).withNumeric())
         .withField(new FieldBuilder(" Size      ===>"))
-        .withField(new FieldBuilder("4096   ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                                            " +
-            "                                                                           ")
-            .withNumeric())
+        .withField(new FieldBuilder("4096   ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(135)).withNumeric())
         .withField(new FieldBuilder(" Perform   ===>"))
-        .withField(new FieldBuilder("   ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                                            " +
-            "                                                                               ")
-            .withNumeric())
+        .withField(new FieldBuilder("   ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(139)).withNumeric())
         .withField(new FieldBuilder(" Command   ===>"))
         .withField(new FieldBuilder("                                                            " +
             "                    ").withNotProtected().withHighIntensity()
             .withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                                            " +
-            "   ").withNumeric())
-        .withField(new FieldBuilder("Enter an 'S' before each option desired below:")
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                    "))
+        .withField(new FieldBuilder(buildNullString(63)).withNumeric())
+        .withField(
+            new FieldBuilder("Enter an 'S' before each option desired below:").withHighIntensity()
+                .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(36)))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
         .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
             .withSelectorPenDetectable())
         .withField(new FieldBuilder("-Nomail").withNumeric())
-        .withField(new FieldBuilder("   "))
+        .withField(new FieldBuilder("\u0000\u0000\u0000"))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder(" ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
         .withField(new FieldBuilder("-Nonotice").withNumeric())
-        .withField(new FieldBuilder("  "))
+        .withField(new FieldBuilder("\u0000\u0000"))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder(" ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
         .withField(new FieldBuilder("-Reconnect").withNumeric())
-        .withField(new FieldBuilder("  "))
+        .withField(new FieldBuilder("\u0000\u0000"))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder(" ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
         .withField(new FieldBuilder("-OIDcard ").withNumeric())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                          "))
+        .withField(new FieldBuilder(buildNullString(87)))
         .withField(
             new FieldBuilder("PF1/PF13 ==> Help    PF3/PF15 ==> Logoff    PA1 ==> Attention" +
                 "    PA2 ==> Reshow").withHighIntensity().withSelectorPenDetectable())
         .withField(
             new FieldBuilder("You may request specific help information by entering a '?' in" +
-                " any entry field ").withHighIntensity().withSelectorPenDetectable());
+                " any entry field\u0000").withHighIntensity().withSelectorPenDetectable());
     return screenBuilder.build();
+  }
+
+  private String buildNullString(int count) {
+    return new String(new char[count]);
   }
 
   private static final class ScreenBuilder {
