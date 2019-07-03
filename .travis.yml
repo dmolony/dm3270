@@ -1,15 +1,18 @@
 language: java
 jdk: oraclejdk8
 cache:
- directories:
-   - $HOME/.m2
+  directories:
+  - "$HOME/.m2"
 before_deploy:
-  - mvn --batch-mode versions:set -DnewVersion="$(T=${TRAVIS_TAG%%-lib}; echo ${T:1})" --settings .travis/settings.xml
-  - mvn clean package -DskipTests --settings .travis/settings.xml
+- mvn --batch-mode versions:set -DnewVersion="$(T=${TRAVIS_TAG%%-lib}; echo ${T:1})"
+- mvn clean package -DskipTests
 deploy:
   provider: releases
-  api_key: "${GITHUB_OAUTH_TOKEN}"
-  file: "target/dm3270-lib-*.jar"
+  api_key:
+    secure: CGBw5K5DgRDlUbw9jcfFj11YC25uf5gkyPyaFfPZ+Csbexk6XyZAA2aykUoyKaScZwamFBl0+inwL+ZInXiTJfUo/YODbob4R4PXd9VeDr64jTCCjJAumLmsSWTW/hUiIZ+0g1h3TETFJkUunA0IpMZw/NzW91k4iaQ4NNUz0WrboJmBLUdHTo6TWImhhmV7EBJH3Wc+96d8CJUHTbmHURxIYUHQFH5JhtsmG7ppci7idCkCuqAgktw0V8vu5nAYK8DcBWFADRekUppbC0OsbvZhvbCXJuFbfbWKGe3aaXp2Zek+e3SLugoqmwGIpVM06klmscAGWZXtYY0ISpl26fiQFuGrm+ZIl4/+Tr6h5in1noyd1gi71QTibyq4m9qeJvCEIzBCjERjLM21Y1q9mcybMutptOGamWFscGchLIW+bcokScsE+ESWKUyKPebcDsUSsP8cY+FZwb1tDmOX7IyOg4d6/MxmS3Kwu4T108bsAzlIV/Aiexv6iW88MzjISD/oxBwm0bnjgpy008CYIQGK6gHhWo1/ofKD/gBdqZB/gFk7o0wBTkokvQcprsUoJMTwbCySTG/yBlyGfv9b6zsi3waFaLvlCAzb4i9BcLxkKjYx8r0l7NaP/i3Rda761Y8JsBkDQyDqvxVeR+BLFYLZjs6IK0vQNFKpTjIQ0Ic=
+  file_glob: true
+  file: target/dm3270-lib-*.jar
   skip_cleanup: true
   on:
+    repo: Blazemeter/dm3270
     tags: true
