@@ -95,6 +95,7 @@ public class TerminalClientTest {
     private CountDownLatch exceptionLatch = new CountDownLatch(1);
 
     private CountDownLatch closeLatch = new CountDownLatch(1);
+
     @Override
     public void onConnection() {
     }
@@ -117,14 +118,17 @@ public class TerminalClientTest {
       assertThat(closeLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
     }
 
-
   }
 
   private void connectClient() {
     client.connect(SERVICE_HOST, service.getPort());
     client.addScreenChangeListener(
         screenWatcher -> LOG.debug("Screen updated, cursor={}, alarm={}, screen:{}",
-            client.getCursorPosition().orElse(null), client.isAlarmOn(), client.getScreenText()));
+            client.getCursorPosition().orElse(null), client.isAlarmOn(), getScreenText()));
+  }
+
+  private String getScreenText() {
+    return client.getScreenText().replace('\u0000', ' ');
   }
 
   private void setServiceFlowFromFile(String s) throws FileNotFoundException {
@@ -154,7 +158,7 @@ public class TerminalClientTest {
   @Test
   public void shouldGetWelcomeScreenWhenConnect() throws Exception {
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getWelcomeScreen());
   }
 
@@ -171,7 +175,7 @@ public class TerminalClientTest {
   public void shouldGetWelcomeScreenWhenConnectWithSsl() throws Exception {
     setupSslConnection();
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getWelcomeScreen());
   }
 
@@ -215,7 +219,7 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     sendUserFieldByCoord();
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 
@@ -255,7 +259,7 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     sendFieldByLabel("ENTER USERID", "testusr");
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 
@@ -269,7 +273,8 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
   }
 
-  private void setupExtendedFlow(int terminalType, ScreenDimensions screenDimensions, String filePath)
+  private void setupExtendedFlow(int terminalType, ScreenDimensions screenDimensions,
+      String filePath)
       throws Exception {
     awaitKeyboardUnlock();
     teardown();
@@ -363,7 +368,7 @@ public class TerminalClientTest {
     client.setFieldTextByCoord(13, 21, "testpsw");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getFileContent("sscplu-login-success-screen.txt"));
   }
 
@@ -476,11 +481,13 @@ public class TerminalClientTest {
                 " any entry field ").withHighIntensity().withSelectorPenDetectable());
     return screenBuilder.build();
   }
+
   private static final class ScreenBuilder {
 
     private final List<Field> fields = new ArrayList<>();
 
     private Field lastField = null;
+
     private ScreenBuilder withField(FieldBuilder builder) {
       Field currField = lastField != null ? builder.withStartPosition(lastField.getFirstLocation()
           + lastField.getText().length()).build() : builder.build();
@@ -495,6 +502,7 @@ public class TerminalClientTest {
 
 
   }
+
   private final class FieldBuilder {
 
     private int startPosition;
@@ -506,6 +514,7 @@ public class TerminalClientTest {
     private boolean isHighIntensity = false;
     private boolean isModified = false;
     private boolean selectorPenDetectable = false;
+
     private FieldBuilder(String text) {
       this.text = text;
     }
@@ -592,6 +601,6 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     sendUserFieldByCoord();
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
+    assertThat(getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 }
