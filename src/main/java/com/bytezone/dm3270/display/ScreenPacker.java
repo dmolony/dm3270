@@ -45,15 +45,14 @@ public class ScreenPacker {
       ptr = ba.packAddress(buffer, ptr);
     }
 
-    boolean packedFields = false;
-    // pack all modified fields
-    for (Field field : fieldManager.getFields()) {
-      if (field.isModified()) {
-        ptr = packField(field, buffer, ptr);
-        packedFields = true;
+    if (!fieldManager.getFields().isEmpty()) {
+      // pack all modified fields
+      for (Field field : fieldManager.getFields()) {
+        if (field.isModified()) {
+          ptr = packField(field, buffer, ptr);
+        }
       }
-    }
-    if (!packedFields && currentAID == AIDCommand.AID_ENTER) {
+    } else {
       for (ScreenPosition sp : pen.fromCurrentPosition()) {
         if (!sp.isNull()) {
           buffer[ptr++] = sp.getByte();

@@ -195,43 +195,27 @@ public class FieldManager {
     List<List<ScreenPosition>> components = new ArrayList<>();
     List<ScreenPosition> positions = new ArrayList<>();
 
-    int start = -1;
-    int first = -1;
+    boolean inField = false;
     int ptr = 0;
 
-    // not wrapped around to the first field yet
-    while (ptr != first) {
-      ScreenPosition screenPosition = screenPositions[ptr];
+    while (ptr < screenPositions.length) {
+      ScreenPosition screenPosition = screenPositions[ptr++];
 
       // check for the start of a new field
       if (screenPosition.isStartField()) {
-        // if there is a field to add
-        if (start >= 0) {
+        if (inField) {
           components.add(new ArrayList<>(positions));
           positions.clear();
-        } else {
-          first = ptr;                      // this is the first field on the screen
         }
-
-        start = ptr;                        // beginning of the current field
+        inField = true;
       }
 
-      // if we are in a field...
-      if (start >= 0) {
-        positions.add(screenPosition);     // collect next field's positions
-      }
-
-      // increment ptr and wrap around
-      // faster than validate()
-      if (++ptr == screenPositions.length) {
-        ptr = 0;
-        if (first == -1) {
-          break;                            // wrapped around and still no fields
-        }
+      if (inField) {
+        positions.add(screenPosition);
       }
     }
 
-    if (start >= 0 && positions.size() > 0) {
+    if (inField && !positions.isEmpty()) {
       components.add(new ArrayList<>(positions));
     }
 

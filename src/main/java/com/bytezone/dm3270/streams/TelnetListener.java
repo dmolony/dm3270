@@ -98,7 +98,8 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
             command = Command.getReply(data, offset, length);
           }
           if (currentCommandHeader != null) {
-            command = new TN3270ExtendedCommand(currentCommandHeader, (Command) command);
+            command = new TN3270ExtendedCommand(currentCommandHeader, (Command) command,
+                telnetState);
           }
         }
 
@@ -125,7 +126,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
 
       case SSCP_LU_DATA:
         ReplyBuffer extCommand = new TN3270ExtendedCommand(currentCommandHeader,
-            new SscpLuDataCommand(data, offset, length));
+            new SscpLuDataCommand(data, offset, length), telnetState);
         addDataRecord(extCommand, SessionRecord.SessionRecordType.TN3270E);
         break;
 

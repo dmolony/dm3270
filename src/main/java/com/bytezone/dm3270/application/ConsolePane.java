@@ -21,7 +21,6 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
   private final Screen screen;
 
   private final TelnetState telnetState;
-  private int commandHeaderCount;
   private final Site server;
   private final SocketFactory socketFactory;
 
@@ -69,9 +68,10 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
       if (screen.isSscpLuData()) {
         buffer[0] = 0x07;
       }
-      Dm3270Utility.packUnsignedShort(commandHeaderCount++, buffer, 3);
+      Dm3270Utility.packUnsignedShort(telnetState.nextCommandHeaderSeq(), buffer, 3);
       CommandHeader header = new CommandHeader(buffer);
-      TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand(header, command);
+      TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand(header, command,
+          telnetState);
       telnetState.write(extendedCommand.getTelnetData());
     } else {
       telnetState.write(command.getTelnetData());

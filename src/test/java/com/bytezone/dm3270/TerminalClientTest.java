@@ -81,6 +81,7 @@ public class TerminalClientTest {
   @Before
   public void setup() throws IOException {
     service.setSslEnabled(false);
+    service.setPort(2325);
     setServiceFlowFromFile("/login.yml");
     service.start();
     client = new TerminalClient(TERMINAL_MODEL_TYPE_TWO, SCREEN_DIMENSIONS);
@@ -95,6 +96,7 @@ public class TerminalClientTest {
     private CountDownLatch exceptionLatch = new CountDownLatch(1);
 
     private CountDownLatch closeLatch = new CountDownLatch(1);
+
     @Override
     public void onConnection() {
     }
@@ -117,14 +119,17 @@ public class TerminalClientTest {
       assertThat(closeLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
     }
 
-
   }
 
   private void connectClient() {
     client.connect(SERVICE_HOST, service.getPort());
     client.addScreenChangeListener(
         screenWatcher -> LOG.debug("Screen updated, cursor={}, alarm={}, screen:{}",
-            client.getCursorPosition().orElse(null), client.isAlarmOn(), client.getScreenText()));
+            client.getCursorPosition().orElse(null), client.isAlarmOn(), getScreenText()));
+  }
+
+  private String getScreenText() {
+    return client.getScreenText().replace('\u0000', ' ');
   }
 
   private void setServiceFlowFromFile(String s) throws FileNotFoundException {
@@ -154,7 +159,7 @@ public class TerminalClientTest {
   @Test
   public void shouldGetWelcomeScreenWhenConnect() throws Exception {
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getWelcomeScreen());
   }
 
@@ -171,7 +176,7 @@ public class TerminalClientTest {
   public void shouldGetWelcomeScreenWhenConnectWithSsl() throws Exception {
     setupSslConnection();
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getWelcomeScreen());
   }
 
@@ -215,7 +220,7 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     sendUserFieldByCoord();
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 
@@ -255,7 +260,7 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     sendFieldByLabel("ENTER USERID", "testusr");
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 
@@ -269,7 +274,8 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
   }
 
-  private void setupExtendedFlow(int terminalType, ScreenDimensions screenDimensions, String filePath)
+  private void setupExtendedFlow(int terminalType, ScreenDimensions screenDimensions,
+      String filePath)
       throws Exception {
     awaitKeyboardUnlock();
     teardown();
@@ -363,7 +369,7 @@ public class TerminalClientTest {
     client.setFieldTextByCoord(13, 21, "testpsw");
     client.sendAID(AIDCommand.AID_ENTER, "ENTER");
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText())
+    assertThat(getScreenText())
         .isEqualTo(getFileContent("sscplu-login-success-screen.txt"));
   }
 
@@ -386,101 +392,92 @@ public class TerminalClientTest {
                 "                  ").withHighIntensity().withSelectorPenDetectable())
         .withField(
             new FieldBuilder("                                                             " +
-                "                     ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("Enter LOGON parameters below:                  ")
+                "                   \u0000\u0000").withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder("Enter LOGON parameters below:" + buildNullString(18))
             .withHighIntensity().withSelectorPenDetectable())
         .withField(
-            new FieldBuilder("RACF LOGON parameters:                                       " +
-                "                                                 ")
-                .withHighIntensity().withSelectorPenDetectable())
+            new FieldBuilder("RACF LOGON parameters:" + buildNullString(88)).withHighIntensity()
+                .withSelectorPenDetectable())
         .withField(new FieldBuilder(" Userid    ===>"))
         .withField(new FieldBuilder("TESTUSR ").withHighIntensity())
-        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(22)).withNumeric())
         .withField(new FieldBuilder(" Seclabel     ===>").withNumeric().withHidden())
         .withField(new FieldBuilder("        ").withNumeric().withHidden())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(83)).withNumeric())
         .withField(new FieldBuilder(" Password  ===>"))
         .withField(new FieldBuilder("        ").withNotProtected().withHidden())
-        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(22)).withNumeric())
         .withField(new FieldBuilder(" New Password ===>"))
         .withField(new FieldBuilder("        ").withNotProtected().withHidden())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                      ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(83)).withNumeric())
         .withField(new FieldBuilder(" Procedure ===>"))
-        .withField(new FieldBuilder("PROC394 ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                      ").withNumeric())
+        .withField(new FieldBuilder("PROC394 ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(22)).withNumeric())
         .withField(new FieldBuilder(" Group Ident  ===>"))
-        .withField(new FieldBuilder("        ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                      ").withNumeric())
+        .withField(new FieldBuilder("        ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(83)).withNumeric())
         .withField(new FieldBuilder(" Acct Nmbr ===>"))
         .withField(new FieldBuilder("1000000                                 ").withNotProtected()
             .withHighIntensity().withSelectorPenDetectable())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                                         ").withNumeric())
+        .withField(new FieldBuilder(buildNullString(102)).withNumeric())
         .withField(new FieldBuilder(" Size      ===>"))
-        .withField(new FieldBuilder("4096   ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                                            " +
-            "                                                                           ")
-            .withNumeric())
+        .withField(new FieldBuilder("4096   ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(135)).withNumeric())
         .withField(new FieldBuilder(" Perform   ===>"))
-        .withField(new FieldBuilder("   ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                                            " +
-            "                                                                               ")
-            .withNumeric())
+        .withField(new FieldBuilder("   ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(139)).withNumeric())
         .withField(new FieldBuilder(" Command   ===>"))
         .withField(new FieldBuilder("                                                            " +
             "                    ").withNotProtected().withHighIntensity()
             .withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                                            " +
-            "   ").withNumeric())
-        .withField(new FieldBuilder("Enter an 'S' before each option desired below:")
-            .withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder("                                    "))
+        .withField(new FieldBuilder(buildNullString(63)).withNumeric())
+        .withField(
+            new FieldBuilder("Enter an 'S' before each option desired below:").withHighIntensity()
+                .withSelectorPenDetectable())
+        .withField(new FieldBuilder(buildNullString(36)))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
         .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
             .withSelectorPenDetectable())
         .withField(new FieldBuilder("-Nomail").withNumeric())
-        .withField(new FieldBuilder("   "))
+        .withField(new FieldBuilder("\u0000\u0000\u0000"))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder(" ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
         .withField(new FieldBuilder("-Nonotice").withNumeric())
-        .withField(new FieldBuilder("  "))
+        .withField(new FieldBuilder("\u0000\u0000"))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder(" ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
         .withField(new FieldBuilder("-Reconnect").withNumeric())
-        .withField(new FieldBuilder("  "))
+        .withField(new FieldBuilder("\u0000\u0000"))
         .withField(new FieldBuilder(" ").withHighIntensity().withSelectorPenDetectable())
-        .withField(new FieldBuilder(" ").withNotProtected()
-            .withHighIntensity().withSelectorPenDetectable())
+        .withField(new FieldBuilder(" ").withNotProtected().withHighIntensity()
+            .withSelectorPenDetectable())
         .withField(new FieldBuilder("-OIDcard ").withNumeric())
-        .withField(
-            new FieldBuilder("                                                             " +
-                "                          "))
+        .withField(new FieldBuilder(buildNullString(87)))
         .withField(
             new FieldBuilder("PF1/PF13 ==> Help    PF3/PF15 ==> Logoff    PA1 ==> Attention" +
                 "    PA2 ==> Reshow").withHighIntensity().withSelectorPenDetectable())
         .withField(
             new FieldBuilder("You may request specific help information by entering a '?' in" +
-                " any entry field ").withHighIntensity().withSelectorPenDetectable());
+                " any entry field\u0000").withHighIntensity().withSelectorPenDetectable());
     return screenBuilder.build();
   }
+
+  private String buildNullString(int count) {
+    return new String(new char[count]);
+  }
+
   private static final class ScreenBuilder {
 
     private final List<Field> fields = new ArrayList<>();
 
     private Field lastField = null;
+
     private ScreenBuilder withField(FieldBuilder builder) {
       Field currField = lastField != null ? builder.withStartPosition(lastField.getFirstLocation()
           + lastField.getText().length()).build() : builder.build();
@@ -495,6 +492,7 @@ public class TerminalClientTest {
 
 
   }
+
   private final class FieldBuilder {
 
     private int startPosition;
@@ -506,6 +504,7 @@ public class TerminalClientTest {
     private boolean isHighIntensity = false;
     private boolean isModified = false;
     private boolean selectorPenDetectable = false;
+
     private FieldBuilder(String text) {
       this.text = text;
     }
@@ -592,6 +591,6 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     sendUserFieldByCoord();
     awaitKeyboardUnlock();
-    assertThat(client.getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
+    assertThat(getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
   }
 }
