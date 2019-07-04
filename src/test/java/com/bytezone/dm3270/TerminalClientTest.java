@@ -81,7 +81,6 @@ public class TerminalClientTest {
   @Before
   public void setup() throws IOException {
     service.setSslEnabled(false);
-    service.setPort(2325);
     setServiceFlowFromFile("/login.yml");
     service.start();
     client = new TerminalClient(TERMINAL_MODEL_TYPE_TWO, SCREEN_DIMENSIONS);
