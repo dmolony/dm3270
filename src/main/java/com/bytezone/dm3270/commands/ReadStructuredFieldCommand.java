@@ -1,5 +1,7 @@
 package com.bytezone.dm3270.commands;
 
+import com.bytezone.dm3270.Charset;
+import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.replyfield.CharacterSets;
@@ -13,7 +15,6 @@ import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.structuredfields.DefaultStructuredField;
 import com.bytezone.dm3270.structuredfields.QueryReplySF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -30,15 +31,15 @@ public class ReadStructuredFieldCommand extends Command {
 
   private ScreenDimensions screenDimensions;
 
-  public ReadStructuredFieldCommand(TelnetState telnetState) {
-    this(buildReply(telnetState));
+  public ReadStructuredFieldCommand(TelnetState telnetState, Charset charset) {
+    this(buildReply(telnetState), charset);
   }
 
-  private ReadStructuredFieldCommand(byte[] buffer) {
-    this(buffer, 0, buffer.length);
+  private ReadStructuredFieldCommand(byte[] buffer, Charset charset) {
+    this(buffer, 0, buffer.length, charset);
   }
 
-  public ReadStructuredFieldCommand(byte[] buffer, int offset, int length) {
+  public ReadStructuredFieldCommand(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);
 
     assert data[0] == AIDCommand.AID_STRUCTURED_FIELD;
@@ -48,19 +49,19 @@ public class ReadStructuredFieldCommand extends Command {
 
     List<QueryReplyField> replies = new ArrayList<>();
     while (ptr < max) {
-      int size = Dm3270Utility.unsignedShort(data, ptr) - 2;
+      int size = Buffer.unsignedShort(data, ptr) - 2;
       ptr += 2;
 
       switch (data[ptr]) {
         case StructuredField.QUERY_REPLY:
-          QueryReplySF queryReply = new QueryReplySF(data, ptr, size);
+          QueryReplySF queryReply = new QueryReplySF(data, ptr, size, charset);
           structuredFields.add(queryReply);
           replies.add(queryReply.getQueryReplyField());
           break;
 
         default:
-          LOG.warn("Unknown Structured Field: {}", Dm3270Utility.toHex(data, ptr, 1, false));
-          structuredFields.add(new DefaultStructuredField(data, ptr, size));
+          LOG.warn("Unknown Structured Field: {}", Buffer.toHex(data, ptr, 1));
+          structuredFields.add(new DefaultStructuredField(data, ptr, size, charset));
       }
       ptr += size;
     }

@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.display;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
@@ -8,7 +9,6 @@ import com.bytezone.dm3270.extended.SscpLuDataCommand;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
-
 import java.util.List;
 
 public class ScreenPacker {
@@ -17,10 +17,12 @@ public class ScreenPacker {
 
   private Pen pen;
   private final FieldManager fieldManager;
+  private final Charset charset;
 
-  public ScreenPacker(Pen pen, FieldManager fieldManager) {
+  public ScreenPacker(Pen pen, FieldManager fieldManager, Charset charset) {
     this.pen = pen;
     this.fieldManager = fieldManager;
+    this.charset = charset;
   }
 
   public Command readModifiedFields(byte currentAID, int cursorLocation,
@@ -35,7 +37,7 @@ public class ScreenPacker {
     if (!readModifiedAll) {
       if (currentAID == AIDCommand.AID_PA1 || currentAID == AIDCommand.AID_PA2
           || currentAID == AIDCommand.AID_PA3 || currentAID == AIDCommand.AID_CLEAR) {
-        return new AIDCommand(buffer, 0, ptr);
+        return new AIDCommand(buffer, 0, ptr, charset);
       }
     }
 
@@ -60,7 +62,8 @@ public class ScreenPacker {
       }
     }
 
-    return sscpLuData ? new SscpLuDataCommand(buffer, 0, ptr) : new AIDCommand(buffer, 0, ptr);
+    return sscpLuData ? new SscpLuDataCommand(buffer, 0, ptr, charset)
+        : new AIDCommand(buffer, 0, ptr, charset);
   }
 
   private int packField(Field field, byte[] buffer, int ptr) {
@@ -99,7 +102,7 @@ public class ScreenPacker {
       }
     }
 
-    return new AIDCommand(buffer, 0, ptr);
+    return new AIDCommand(buffer, 0, ptr, charset);
   }
 
   private int packStartPosition(ScreenPosition sp, byte[] buffer, int ptr,

@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Dm3270Utility;
+import com.bytezone.dm3270.buffers.Buffer;
 
 public class ImplicitPartition extends QueryReplyField {
 
@@ -21,11 +21,11 @@ public class ImplicitPartition extends QueryReplyField {
     reply[ptr++] = 0x01;
     reply[ptr++] = 0x00;
 
-    ptr = Dm3270Utility.packUnsignedShort(0x50, reply, ptr);         // width
-    ptr = Dm3270Utility.packUnsignedShort(0x18, reply, ptr);         // height
+    ptr = Buffer.packUnsignedShort(0x50, reply, ptr);         // width
+    ptr = Buffer.packUnsignedShort(0x18, reply, ptr);         // height
 
-    ptr = Dm3270Utility.packUnsignedShort(columns, reply, ptr);      // alt width
-    ptr = Dm3270Utility.packUnsignedShort(rows, reply, ptr);         // alt height
+    ptr = Buffer.packUnsignedShort(columns, reply, ptr);      // alt width
+    ptr = Buffer.packUnsignedShort(rows, reply, ptr);         // alt height
 
     checkDataLength(ptr);
   }
@@ -35,10 +35,10 @@ public class ImplicitPartition extends QueryReplyField {
 
     assert data[1] == IMP_PART_QUERY_REPLY;
 
-    width = Dm3270Utility.unsignedShort(data, 7);
-    height = Dm3270Utility.unsignedShort(data, 9);
-    alternateWidth = Dm3270Utility.unsignedShort(data, 11);
-    alternateHeight = Dm3270Utility.unsignedShort(data, 13);
+    width = Buffer.unsignedShort(data, 7);
+    height = Buffer.unsignedShort(data, 9);
+    alternateWidth = Buffer.unsignedShort(data, 11);
+    alternateHeight = Buffer.unsignedShort(data, 13);
   }
 
   @Override

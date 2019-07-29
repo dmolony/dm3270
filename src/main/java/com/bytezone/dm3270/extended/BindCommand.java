@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.extended;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +15,8 @@ public class BindCommand extends AbstractExtendedCommand {
           "both default and alternate as specifed"};
   private static final String[] COMPRESSION_TYPES =
       {"No compression", "Compression bid", "Reserved", "Compression required"};
+
+  private final Charset charset;
 
   private final int format;
   private final int type;
@@ -58,11 +60,13 @@ public class BindCommand extends AbstractExtendedCommand {
   private int userDataLength;
   private int extraBytes;
 
-  public BindCommand(CommandHeader commandHeader, byte[] buffer, int offset, int length) {
+  public BindCommand(CommandHeader commandHeader, byte[] buffer, int offset, int length,
+      Charset charset) {
     super(commandHeader, buffer, offset, length);
+    this.charset = charset;
     assert data[0] == 0x31;                    // bind command
 
-    LOG.debug(Dm3270Utility.toHex(data, 0, data.length));
+    LOG.debug(charset.toHex(data, 0, data.length));
 
     format = (data[1] & 0xF0) >> 4;
     type = data[1] & 0x0F;
@@ -110,7 +114,7 @@ public class BindCommand extends AbstractExtendedCommand {
       nsOffset = cryptographicControl == 0 ? 0 : 8;
 
       primaryLuNameLength = data[27 + nsOffset] & 0xFF;
-      primaryLuName = Dm3270Utility.getString(data, 28 + nsOffset, primaryLuNameLength);
+      primaryLuName = charset.getString(data, 28 + nsOffset, primaryLuNameLength);
 
       userDataOffset = 28 + nsOffset + primaryLuNameLength;
       userDataLength = data[userDataOffset] & 0xFF;
@@ -123,7 +127,7 @@ public class BindCommand extends AbstractExtendedCommand {
         int ptr = userDataOffset + userDataLength + 1;
         while (ptr < data.length) {
           int len = data[ptr] & 0xFF;
-          String userData = Dm3270Utility.getSanitisedString(data, ptr + 1, len);
+          String userData = charset.getString(sanitise(data, ptr + 1, len));
           LOG.debug("ptr:{}, len:{}, [{}]", ptr, len, userData);
           ptr += len + 1;
         }
@@ -136,6 +140,18 @@ public class BindCommand extends AbstractExtendedCommand {
       nsOffset = 0;
       userDataOffset = 0;
     }
+  }
+
+  private byte[] sanitise(byte[] buffer, int offset, int length) {
+    if (offset + length > buffer.length) {
+      length = buffer.length - offset - 1;
+    }
+    byte[] cleanBuffer = new byte[length];
+    for (int i = 0; i < length; i++) {
+      int b = buffer[offset++] & 0xFF;
+      cleanBuffer[i] = b < 0x40 ? 0x40 : (byte) b;
+    }
+    return cleanBuffer;
   }
 
   @Override
@@ -212,7 +228,7 @@ public class BindCommand extends AbstractExtendedCommand {
     text.append(String.format("Extra bytes .......... %02X%n", extraBytes));
 
     if (extraBytes > 0) {
-      text.append(Dm3270Utility.toHex(data, userDataOffset + userDataLength + 1,
+      text.append(charset.toHex(data, userDataOffset + userDataLength + 1,
           extraBytes));
     }
 

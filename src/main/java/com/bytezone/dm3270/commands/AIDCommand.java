@@ -1,10 +1,10 @@
 package com.bytezone.dm3270.commands;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Field;
 import com.bytezone.dm3270.display.FieldManager;
 import com.bytezone.dm3270.display.Screen;
-
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.BufferAddressSource;
 import com.bytezone.dm3270.orders.Order;
@@ -74,7 +74,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
   private final List<Order> orders = new ArrayList<>();
   private final List<Order> textOrders = new ArrayList<>();
 
-  public AIDCommand(byte[] buffer, int offset, int length) {
+  public AIDCommand(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);       // copies buffer[offset:length] to data[]
 
     keyCommand = data[0];
@@ -92,7 +92,7 @@ public class AIDCommand extends Command implements BufferAddressSource, Iterable
     ModifiedField currentAIDField = null;
 
     while (ptr < length) {
-      Order order = Order.getOrder(data, ptr, length);
+      Order order = Order.getOrder(data, ptr, length, charset);
       if (previousOrder != null && previousOrder.matchesPreviousOrder(order)) {
         previousOrder.incrementDuplicates();
       } else {

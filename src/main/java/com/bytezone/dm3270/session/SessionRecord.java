@@ -4,7 +4,6 @@ import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.streams.TelnetSocket;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

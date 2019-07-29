@@ -2,7 +2,6 @@ package com.bytezone.dm3270.orders;
 
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.DisplayScreen;
-
 import java.util.Optional;
 
 public class ModifyFieldOrder extends Order {

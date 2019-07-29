@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.structuredfields;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadPartitionQuery;
@@ -15,8 +16,8 @@ public class ReadPartitionSF extends StructuredField {
   private final byte partitionID;
   private final Command command;
 
-  public ReadPartitionSF(byte[] buffer, int offset, int length) {
-    super(buffer, offset, length);
+  public ReadPartitionSF(byte[] buffer, int offset, int length, Charset charset) {
+    super(buffer, offset, length, charset);
 
     assert data[0] == StructuredField.READ_PARTITION;
     partitionID = data[1];
@@ -25,7 +26,7 @@ public class ReadPartitionSF extends StructuredField {
       switch (data[2]) {
         case (byte) 0x02:
         case (byte) 0x03:
-          command = new ReadPartitionQuery(buffer, offset, length);
+          command = new ReadPartitionQuery(buffer, offset, length, charset);
           break;
 
         default:
@@ -36,7 +37,7 @@ public class ReadPartitionSF extends StructuredField {
       assert (partitionID & (byte) 0x80) == 0;    // must be 0x00 - 0x7F
 
       // can only be RB/RM/RMA (i.e. one of the read commands)
-      command = Command.getCommand(buffer, offset + 2, length - 2);
+      command = Command.getCommand(buffer, offset + 2, length - 2, charset);
       LOG.debug("RB/RM/RMA: {}", command);
     }
   }

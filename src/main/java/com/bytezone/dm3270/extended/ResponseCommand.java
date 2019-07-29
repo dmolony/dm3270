@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.extended;
 
-import com.bytezone.dm3270.utilities.Dm3270Utility;
+import com.bytezone.dm3270.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,11 +9,11 @@ public class ResponseCommand extends AbstractExtendedCommand {
   private static final Logger LOG = LoggerFactory.getLogger(ResponseCommand.class);
 
   public ResponseCommand(CommandHeader commandHeader, byte[] buffer, int offset,
-      int length) {
+      int length, Charset charset) {
     super(commandHeader, buffer, offset, length);
 
     if (length != 1) {
-      LOG.debug(Dm3270Utility.toHex(buffer, offset, length));
+      LOG.debug(charset.toHex(buffer, offset, length));
     }
   }
 

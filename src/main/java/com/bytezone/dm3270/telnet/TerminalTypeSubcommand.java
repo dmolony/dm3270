@@ -2,8 +2,7 @@ package com.bytezone.dm3270.telnet;
 
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
-
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 
 public class TerminalTypeSubcommand extends TelnetSubcommand {
@@ -32,23 +31,19 @@ public class TerminalTypeSubcommand extends TelnetSubcommand {
   @Override
   public void process(Screen screen) {
     if (type == SubcommandType.SEND) {
-      try {
-        byte[] header = {TelnetCommand.IAC, TelnetCommand.SB, TERMINAL_TYPE, OPTION_IS};
-        byte[] terminal = terminalType2.getBytes("ASCII");
-        byte[] reply = new byte[header.length + terminal.length + 2];
+      byte[] header = {TelnetCommand.IAC, TelnetCommand.SB, TERMINAL_TYPE, OPTION_IS};
+      byte[] terminal = terminalType2.getBytes(StandardCharsets.US_ASCII);
+      byte[] reply = new byte[header.length + terminal.length + 2];
 
-        System.arraycopy(header, 0, reply, 0, header.length);
-        System.arraycopy(terminal, 0, reply, header.length, terminal.length);
+      System.arraycopy(header, 0, reply, 0, header.length);
+      System.arraycopy(terminal, 0, reply, header.length, terminal.length);
 
-        reply[reply.length - 2] = TelnetCommand.IAC;
-        reply[reply.length - 1] = TelnetCommand.SE;
+      reply[reply.length - 2] = TelnetCommand.IAC;
+      reply[reply.length - 1] = TelnetCommand.SE;
 
-        telnetState.setTerminal(terminalType2);
+      telnetState.setTerminal(terminalType2);
 
-        setReply(new TerminalTypeSubcommand(reply, 0, reply.length, telnetState));
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-      }
+      setReply(new TerminalTypeSubcommand(reply, 0, reply.length, telnetState));
     }
   }
 

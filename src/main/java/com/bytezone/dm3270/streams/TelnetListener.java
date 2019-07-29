@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.streams;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.ReplyBuffer;
 import com.bytezone.dm3270.commands.Command;
@@ -18,7 +19,6 @@ import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
 import com.bytezone.dm3270.telnet.TelnetProcessor;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -30,6 +30,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
 
   private final TelnetSocket.Source source;
 
+  private final Charset charset;
   private final TelnetState telnetState;
   private final Screen screen;
 
@@ -38,6 +39,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
   // Use this when not recording the session and running in TERMINAL mode.
   public TelnetListener(Screen screen, TelnetState telnetState) {
     this.screen = screen;
+    this.charset = screen.getCharset();
     this.telnetState = telnetState;
 
     this.source = TelnetSocket.Source.SERVER;                  // listening to a server
@@ -64,7 +66,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
 
   @Override
   public void processData(byte[] buffer, int length) {
-    LOG.warn("Unknown telnet data received: {}", Dm3270Utility.toHex(buffer, 0, length, false));
+    LOG.warn("Unknown telnet data received: {}", Buffer.toHex(buffer, 0, length));
   }
 
   @Override
@@ -77,7 +79,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
     if (telnetState.does3270Extended()) {
       offset = 5;
       length = dataPtr - 7;         // exclude IAC/EOR and header
-      currentCommandHeader = new CommandHeader(data, 0, 5);
+      currentCommandHeader = new CommandHeader(data, 0, 5, charset);
       dataType = currentCommandHeader.getDataType();
     } else {
       offset = 0;
@@ -93,13 +95,13 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
           command = currentCommandHeader;
         } else {
           if (source == TelnetSocket.Source.SERVER) {
-            command = Command.getCommand(data, offset, length);
+            command = Command.getCommand(data, offset, length, screen.getCharset());
           } else {
-            command = Command.getReply(data, offset, length);
+            command = Command.getReply(data, offset, length, screen.getCharset());
           }
           if (currentCommandHeader != null) {
             command = new TN3270ExtendedCommand(currentCommandHeader, (Command) command,
-                telnetState);
+                telnetState, charset);
           }
         }
 
@@ -108,7 +110,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
 
       case BIND_IMAGE:
         BindCommand bindCommand =
-            new BindCommand(currentCommandHeader, data, offset, length);
+            new BindCommand(currentCommandHeader, data, offset, length, screen.getCharset());
         addDataRecord(bindCommand, SessionRecord.SessionRecordType.TN3270E);
         break;
 
@@ -120,13 +122,13 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
 
       case RESPONSE:
         ResponseCommand responseCommand =
-            new ResponseCommand(currentCommandHeader, data, offset, length);
+            new ResponseCommand(currentCommandHeader, data, offset, length, charset);
         addDataRecord(responseCommand, SessionRecord.SessionRecordType.TN3270E);
         break;
 
       case SSCP_LU_DATA:
         ReplyBuffer extCommand = new TN3270ExtendedCommand(currentCommandHeader,
-            new SscpLuDataCommand(data, offset, length), telnetState);
+            new SscpLuDataCommand(data, offset, length, screen.getCharset()), telnetState, charset);
         addDataRecord(extCommand, SessionRecord.SessionRecordType.TN3270E);
         break;
 
@@ -135,8 +137,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
         break;
 
       default:
-        LOG.warn("Data type not written: {}, {}", dataType,
-            Dm3270Utility.toHex(data, offset, length));
+        LOG.warn("Data type not written: {}, {}", dataType, charset.toHex(data, offset, length));
     }
   }
 
@@ -156,7 +157,7 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor {
     } else if (data[2] == TelnetSubcommand.TN3270E) {
       subcommand = new TN3270ExtendedSubcommand(data, 0, dataPtr, telnetState);
     } else {
-      LOG.warn("Unknown command type : {}", Dm3270Utility.toHex(data, 2, 1, false));
+      LOG.warn("Unknown command type : {}", Buffer.toHex(data, 2, 1));
     }
 
     addDataRecord(subcommand, SessionRecord.SessionRecordType.TELNET);

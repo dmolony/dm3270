@@ -4,7 +4,6 @@ import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.structuredfields;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public abstract class StructuredField extends AbstractTN3270Command {
 
@@ -14,11 +14,13 @@ public abstract class StructuredField extends AbstractTN3270Command {
   public static final byte OUTBOUND_3270DS = 0x40;
 
   public static final byte QUERY_REPLY = (byte) 0x81;
+  protected final Charset charset;
 
   protected byte type;
 
-  public StructuredField(byte[] buffer, int offset, int length) {
+  public StructuredField(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);
+    this.charset = charset;
     type = buffer[offset];
   }
 
@@ -28,7 +30,7 @@ public abstract class StructuredField extends AbstractTN3270Command {
 
   @Override
   public String toString() {
-    return String.format("StrF: %s", Dm3270Utility.toHex(data).substring(8));
+    return String.format("StrF: %s", charset.toHex(data).substring(8));
   }
 
 }

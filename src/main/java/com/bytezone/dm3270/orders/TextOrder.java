@@ -1,12 +1,15 @@
 package com.bytezone.dm3270.orders;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 public class TextOrder extends Order {
 
-  public TextOrder(byte[] buffer, int ptr, int max) {
+  private final Charset charset;
+
+  public TextOrder(byte[] buffer, int ptr, int max, Charset charset) {
+    this.charset = charset;
     int dataLength = getDataLength(buffer, ptr, max);
     this.buffer = new byte[dataLength];
     System.arraycopy(buffer, ptr, this.buffer, 0, dataLength);
@@ -43,7 +46,7 @@ public class TextOrder extends Order {
 
   @Override
   public String toString() {
-    return buffer.length == 0 ? "" : "Text: [" + Dm3270Utility.getString(buffer) + "]";
+    return buffer.length == 0 ? "" : "Text: [" + charset.getString(buffer) + "]";
   }
 
 }

@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.replyfield;
 
+import com.bytezone.dm3270.Charset;
+import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.structuredfields.StructuredField;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +71,7 @@ public abstract class QueryReplyField {
     replyType = getReplyType(buffer[1]);
   }
 
-  public static QueryReplyField getReplyField(byte[] buffer) {
+  public static QueryReplyField getReplyField(byte[] buffer, Charset charset) {
     assert buffer[0] == StructuredField.QUERY_REPLY;
 
     switch (buffer[1]) {
@@ -97,7 +97,7 @@ public abstract class QueryReplyField {
         return new ReplyModes(buffer);
 
       case OEM_AUXILLIARY_DEVICE_REPLY:
-        return new OEMAuxilliaryDevice(buffer);
+        return new OEMAuxilliaryDevice(buffer, charset);
 
       case DISTRIBUTED_DATA_MANAGEMENT_REPLY:
         return new DistributedDataManagement(buffer);
@@ -106,7 +106,7 @@ public abstract class QueryReplyField {
         return new AuxilliaryDevices(buffer);
 
       case RPQ_NAMES_REPLY:
-        return new RPQNames(buffer);
+        return new RPQNames(buffer, charset);
 
       case IMP_PART_QUERY_REPLY:
         return new ImplicitPartition(buffer);
@@ -118,7 +118,7 @@ public abstract class QueryReplyField {
         return new Segment(buffer);
 
       default:
-        return new DefaultReply(buffer);
+        return new DefaultReply(buffer, charset);
     }
   }
 
@@ -148,7 +148,7 @@ public abstract class QueryReplyField {
   protected int createReply(int size) {
     size += 4;                              // we add 4 bytes at the beginning
     reply = new byte[size];
-    int ptr = Dm3270Utility.packUnsignedShort(size, reply, 0);
+    int ptr = Buffer.packUnsignedShort(size, reply, 0);
     reply[ptr++] = (byte) 0x81;
     reply[ptr++] = replyType.type;
     return ptr;                             // next location to fill
@@ -182,8 +182,8 @@ public abstract class QueryReplyField {
   public String toString() {
     StringBuilder text = new StringBuilder();
     Optional<Summary> summary = getSummary();
-    String message = summary.isPresent()
-        ? summary.get().isListed(replyType.type) ? "" : "** missing **" : "no summary";
+    String message = summary.map(value -> value.isListed(replyType.type) ? "" : "** missing **")
+        .orElse("no summary");
     text.append(String.format("  Type       : %-30s %s%n", replyType, message));
     return text.toString();
   }

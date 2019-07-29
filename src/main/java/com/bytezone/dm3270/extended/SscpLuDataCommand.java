@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.extended;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.InsertCursorOrder;
@@ -12,7 +13,7 @@ public class SscpLuDataCommand extends Command {
 
   private final List<Order> orders = new ArrayList<>();
 
-  public SscpLuDataCommand(byte[] buffer, int offset, int length) {
+  public SscpLuDataCommand(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);
 
     int ptr = offset;
@@ -20,7 +21,7 @@ public class SscpLuDataCommand extends Command {
 
     int max = offset + length;
     while (ptr < max) {
-      Order order = Order.getOrder(buffer, ptr, max);
+      Order order = Order.getOrder(buffer, ptr, max, charset);
 
       if (order.matchesPreviousOrder(previousOrder)) {
         previousOrder.incrementDuplicates();           // and discard this Order

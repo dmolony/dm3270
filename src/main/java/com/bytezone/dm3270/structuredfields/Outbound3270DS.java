@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.structuredfields;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.Screen;
 import org.slf4j.Logger;
@@ -13,15 +14,15 @@ public class Outbound3270DS extends StructuredField {
   private final Command command;
 
   // wrapper for original write commands - W. EW, EWA, EAU
-  public Outbound3270DS(byte[] buffer, int offset, int length) {
-    super(buffer, offset, length);             // copies buffer -> data
+  public Outbound3270DS(byte[] buffer, int offset, int length, Charset charset) {
+    super(buffer, offset, length, charset);             // copies buffer -> data
 
     assert data[0] == StructuredField.OUTBOUND_3270DS;
     partitionID = data[1];
     assert (partitionID & (byte) 0x80) == 0;    // must be 0x00 - 0x7F
 
     // can only be W/EW/EWA/EAU (i.e. one of the write commands)
-    command = Command.getCommand(buffer, offset + 2, length - 2);
+    command = Command.getCommand(buffer, offset + 2, length - 2, charset);
   }
 
   @Override

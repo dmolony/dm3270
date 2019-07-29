@@ -2,6 +2,7 @@ package com.bytezone.dm3270;
 
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
+import com.bytezone.dm3270.application.Site;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
@@ -10,7 +11,6 @@ import com.bytezone.dm3270.display.ScreenChangeListener;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.display.ScreenPosition;
 import com.bytezone.dm3270.streams.TelnetState;
-import com.bytezone.dm3270.utilities.Site;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.List;
@@ -38,9 +38,15 @@ public class TerminalClient {
    * @param alternateScreenDimensions alternate screen dimensions in rows and columns
    */
   public TerminalClient(int model, ScreenDimensions alternateScreenDimensions) {
+    this(model, alternateScreenDimensions, Charset.CP1047);
+  }
+
+  public TerminalClient(int model, ScreenDimensions alternateScreenDimensions, Charset charset) {
+    charset.load();
     TelnetState telnetState = new TelnetState();
     telnetState.setDoDeviceType(model);
-    screen = new Screen(new ScreenDimensions(24, 80), alternateScreenDimensions, telnetState);
+    screen = new Screen(new ScreenDimensions(24, 80), alternateScreenDimensions, telnetState,
+        charset);
   }
 
   /**

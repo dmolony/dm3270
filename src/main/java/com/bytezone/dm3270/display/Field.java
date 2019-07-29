@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.display;
 
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -161,7 +160,7 @@ public class Field implements Iterable<ScreenPosition> {
   public void setText(String text) {
     try {
       erase();                                     // sets the field to modified
-      setText(text.getBytes("CP1047"));
+      setText(text.getBytes(screen.getCharset().name()));
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }

@@ -1,8 +1,8 @@
 package com.bytezone.dm3270.display;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,12 +22,13 @@ class PenType1 implements Pen {
   private final List<Attribute> pendingAttributes = new ArrayList<>();
 
   // created by Screen and HistoryScreen
-  PenType1(ScreenPosition[] screenPositions, ScreenDimensions screenDimensions) {
+  PenType1(ScreenPosition[] screenPositions, ScreenDimensions screenDimensions,
+      Charset charset) {
     this.screenPositions = screenPositions;
     this.screenDimensions = screenDimensions;
 
     for (int i = 0; i < screenPositions.length; i++) {
-      screenPositions[i] = new ScreenPosition(i, ScreenContext.DEFAULT_CONTEXT);
+      screenPositions[i] = new ScreenPosition(i, ScreenContext.DEFAULT_CONTEXT, charset);
     }
   }
 

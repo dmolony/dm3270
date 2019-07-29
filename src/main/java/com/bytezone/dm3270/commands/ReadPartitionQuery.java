@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.commands;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import org.slf4j.Logger;
@@ -8,11 +9,13 @@ import org.slf4j.LoggerFactory;
 public class ReadPartitionQuery extends Command {
 
   private static final Logger LOG = LoggerFactory.getLogger(ReadPartitionQuery.class);
+  private final Charset charset;
 
   private String typeName;
 
-  public ReadPartitionQuery(byte[] buffer, int offset, int length) {
+  public ReadPartitionQuery(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);
+    this.charset = charset;
 
     assert data[0] == StructuredField.READ_PARTITION;
     assert data[1] == (byte) 0xFF;
@@ -26,8 +29,7 @@ public class ReadPartitionQuery extends Command {
 
     switch (data[2]) {
       case (byte) 0x02:
-        setReply(
-            new ReadStructuredFieldCommand(screen.getTelnetState()));      // build a QueryReply
+        setReply(new ReadStructuredFieldCommand(screen.getTelnetState(), charset));
         typeName = "Read Partition (Query)";
         break;
 
@@ -43,7 +45,7 @@ public class ReadPartitionQuery extends Command {
 
           case 2:
             setReply(
-                new ReadStructuredFieldCommand(screen.getTelnetState()));      // build a QueryReply
+                new ReadStructuredFieldCommand(screen.getTelnetState(), charset));
             typeName = "Read Partition (QueryList)";
             break;
 

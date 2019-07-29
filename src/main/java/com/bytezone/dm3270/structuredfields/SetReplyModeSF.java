@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.structuredfields;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.Screen;
 
@@ -13,8 +14,8 @@ public class SetReplyModeSF extends StructuredField {
   private final byte replyMode;
   private final byte[] types;
 
-  public SetReplyModeSF(byte[] buffer, int offset, int length) {
-    super(buffer, offset, length);
+  public SetReplyModeSF(byte[] buffer, int offset, int length, Charset charset) {
+    super(buffer, offset, length, charset);
 
     assert data[0] == StructuredField.SET_REPLY_MODE;
 

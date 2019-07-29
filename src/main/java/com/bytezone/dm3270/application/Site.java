@@ -1,4 +1,4 @@
-package com.bytezone.dm3270.utilities;
+package com.bytezone.dm3270.application;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

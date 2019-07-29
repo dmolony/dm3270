@@ -548,11 +548,11 @@ public class TerminalClientTest {
       try {
         List<ScreenPosition> positions = new ArrayList<>();
         for (int i = 0; i <= text.length(); i++) {
-          positions.add(new ScreenPosition(startPosition + i, null));
+          positions.add(new ScreenPosition(startPosition + i, null, Charset.CP1047));
         }
         positions.get(0).setStartField(buildStartFieldAttribute());
         Field f = new Field(TerminalClientTest.this.screenMock, positions);
-        f.setText(text.getBytes("CP1047"));
+        f.setText(text.getBytes(Charset.CP1047.name()));
         return f;
       } catch (UnsupportedEncodingException e) {
         // As this is not expected to happen, we just throw RuntimeException.

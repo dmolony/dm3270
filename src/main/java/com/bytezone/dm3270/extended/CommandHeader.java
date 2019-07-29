@@ -1,8 +1,9 @@
 package com.bytezone.dm3270.extended;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.buffers.AbstractReplyBuffer;
+import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class CommandHeader extends AbstractReplyBuffer {
   private static final byte NEGATIVE_RESPONSE = 0x01;
 
   private final DataType dataType;
+  private final Charset charset;
   private ResponseType responseType;
   private RequestType requestType;
   private final int commandSeq;
@@ -44,13 +46,14 @@ public class CommandHeader extends AbstractReplyBuffer {
     NO_RESPONSE, ERROR_RESPONSE, ALWAYS_RESPONSE, POSITIVE_RESPONSE, NEGATIVE_RESPONSE
   }
 
-  public CommandHeader(byte[] buffer) {
-    this(buffer, 0, buffer.length);
+  public CommandHeader(byte[] buffer, Charset charset) {
+    this(buffer, 0, buffer.length, charset);
     assert buffer.length == 5;
   }
 
-  public CommandHeader(byte[] buffer, int offset, int length) {
+  public CommandHeader(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);
+    this.charset = charset;
 
     dataType = dataTypes[data[0]];
 
@@ -86,15 +89,6 @@ public class CommandHeader extends AbstractReplyBuffer {
         }
         break;
 
-      case BIND_IMAGE:
-        break;
-
-      case UNBIND:
-        break;
-
-      case NVT_DATA:
-        break;
-
       case REQUEST:
         if (data[2] == ERR_COND_CLEARED) {
           requestType = RequestType.ERR_COND_CLEARED;
@@ -103,17 +97,18 @@ public class CommandHeader extends AbstractReplyBuffer {
         }
         break;
 
+      case BIND_IMAGE:
+      case UNBIND:
       case SSCP_LU_DATA:
-        break;
-
       case PRINT_EOJ:
+      case NVT_DATA:
         break;
 
       default:
         throw new UnsupportedOperationException("Unsupported data type " + dataType);
     }
 
-    commandSeq = Dm3270Utility.unsignedShort(data, 3);
+    commandSeq = Buffer.unsignedShort(data, 3);
   }
 
   public DataType getDataType() {
@@ -125,11 +120,11 @@ public class CommandHeader extends AbstractReplyBuffer {
     if (responseType == ResponseType.ALWAYS_RESPONSE) {
       byte[] header = new byte[5];
       header[0] = 0x02;
-      Dm3270Utility.packUnsignedShort(commandSeq, header, 3);
-      CommandHeader commandHeader = new CommandHeader(header);
+      Buffer.packUnsignedShort(commandSeq, header, 3);
+      CommandHeader commandHeader = new CommandHeader(header, charset);
       byte[] value = {0x00};
 
-      setReply(new ResponseCommand(commandHeader, value, 0, value.length));
+      setReply(new ResponseCommand(commandHeader, value, 0, value.length, charset));
     }
   }
 

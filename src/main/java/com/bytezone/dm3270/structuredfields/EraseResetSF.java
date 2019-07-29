@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.structuredfields;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.Screen;
 
 public class EraseResetSF extends StructuredField {
@@ -11,8 +12,8 @@ public class EraseResetSF extends StructuredField {
     DEFAULT, ALTERNATE
   }
 
-  public EraseResetSF(byte[] buffer, int offset, int length) {
-    super(buffer, offset, length);
+  public EraseResetSF(byte[] buffer, int offset, int length, Charset charset) {
+    super(buffer, offset, length, charset);
 
     assert data[0] == StructuredField.ERASE_RESET;
     flags = data[1];

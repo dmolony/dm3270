@@ -1,9 +1,8 @@
 package com.bytezone.dm3270.display;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +16,6 @@ public final class ScreenPosition {
   private static final byte HORIZONTAL_LINE = (byte) 0xA2;
   private static final byte VERTICAL_LINE = (byte) 0x85;
 
-  private static final String[] SCREEN_DISPLAY_CHARS = new String[256];
-
   private final int position;
 
   private StartFieldAttribute startFieldAttribute;
@@ -27,21 +24,13 @@ public final class ScreenPosition {
   private byte value;
   private boolean isGraphics;
   private ScreenContext screenContext;
+  private final Charset charset;
 
-  static {
-    // build strings to use in the screen-drawing routine
-    String space = " ";
-    for (int i = 0; i < 33; i++) {
-      SCREEN_DISPLAY_CHARS[i] = space;
-    }
-    for (int i = 33; i < 256; i++) {
-      SCREEN_DISPLAY_CHARS[i] = (char) i + "";
-    }
-  }
-
-  public ScreenPosition(int position, ScreenContext screenContext) {
+  public ScreenPosition(int position, ScreenContext screenContext,
+      Charset charset) {
     this.position = position;
     this.screenContext = screenContext;
+    this.charset = charset;
     reset();
   }
 
@@ -126,7 +115,7 @@ public final class ScreenPosition {
       }
     }
 
-    return (char) Dm3270Utility.EBC_2_ASC[value & 0xFF];
+    return charset.getChar(value);
   }
 
   public String getCharString() {
@@ -150,7 +139,8 @@ public final class ScreenPosition {
       }
     }
 
-    return SCREEN_DISPLAY_CHARS[Dm3270Utility.EBC_2_ASC[value & 0xFF]];
+    char ret = charset.getChar(value);
+    return ret < ' ' ? " " : String.valueOf(ret);
   }
 
   public byte getByte() {

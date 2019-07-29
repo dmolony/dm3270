@@ -1,6 +1,7 @@
 package com.bytezone.dm3270.application;
 
 import com.bytezone.dm3270.ConnectionListener;
+import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.CursorMoveListener;
 import com.bytezone.dm3270.display.Field;
@@ -11,8 +12,6 @@ import com.bytezone.dm3270.extended.TN3270ExtendedCommand;
 import com.bytezone.dm3270.streams.TelnetListener;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.streams.TerminalServer;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
-import com.bytezone.dm3270.utilities.Site;
 import javax.net.SocketFactory;
 
 public class ConsolePane implements FieldChangeListener, CursorMoveListener,
@@ -68,10 +67,10 @@ public class ConsolePane implements FieldChangeListener, CursorMoveListener,
       if (screen.isSscpLuData()) {
         buffer[0] = 0x07;
       }
-      Dm3270Utility.packUnsignedShort(telnetState.nextCommandHeaderSeq(), buffer, 3);
-      CommandHeader header = new CommandHeader(buffer);
+      Buffer.packUnsignedShort(telnetState.nextCommandHeaderSeq(), buffer, 3);
+      CommandHeader header = new CommandHeader(buffer, screen.getCharset());
       TN3270ExtendedCommand extendedCommand = new TN3270ExtendedCommand(header, command,
-          telnetState);
+          telnetState, screen.getCharset());
       telnetState.write(extendedCommand.getTelnetData());
     } else {
       telnetState.write(command.getTelnetData());

@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.orders;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.DisplayScreen;
 
 public abstract class Order {
@@ -37,7 +38,7 @@ public abstract class Order {
   protected byte[] buffer;
   protected int duplicates;
 
-  public static Order getOrder(byte[] buffer, int ptr, int max) {
+  public static Order getOrder(byte[] buffer, int ptr, int max, Charset charset) {
     switch (buffer[ptr]) {
       case START_FIELD:
         return new StartFieldOrder(buffer, ptr);
@@ -61,7 +62,7 @@ public abstract class Order {
         return new ProgramTabOrder(buffer, ptr);
 
       case REPEAT_TO_ADDRESS:
-        return new RepeatToAddressOrder(buffer, ptr);
+        return new RepeatToAddressOrder(buffer, ptr, charset);
 
       case ERASE_UNPROTECTED:
         return new EraseUnprotectedToAddressOrder(buffer, ptr);
@@ -81,7 +82,7 @@ public abstract class Order {
       case FCO_NEWLINE:
         return new NewlineOrder(buffer, ptr);
       default:
-        return new TextOrder(buffer, ptr, max);
+        return new TextOrder(buffer, ptr, max, charset);
     }
   }
 

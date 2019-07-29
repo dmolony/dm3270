@@ -1,7 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Dm3270Utility;
-
+import com.bytezone.dm3270.buffers.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +86,7 @@ public class CharacterSets extends QueryReplyField {
       startSubsection = buffer[offset + 5] & 0xFF;
       endSubsection = buffer[offset + 6] & 0xFF;
       if (length > 7) {
-        cgcsID = Dm3270Utility.unsignedLong(buffer, 7);
+        cgcsID = Buffer.unsignedLong(buffer, 7);
       }
     }
 

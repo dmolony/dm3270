@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Dm3270Utility;
+import com.bytezone.dm3270.buffers.Buffer;
 
 public class AlphanumericPartitions extends QueryReplyField {
 
@@ -19,7 +19,7 @@ public class AlphanumericPartitions extends QueryReplyField {
     assert data[1] == ALPHANUMERIC_PARTITIONS_REPLY;
 
     maxPartitions = data[2] & 0xFF;
-    totalAvailableStorage = Dm3270Utility.unsignedShort(data, 3);
+    totalAvailableStorage = Buffer.unsignedShort(data, 3);
 
     flags = data[5];
     vertWin = (flags & 0x80) != 0;

@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.commands;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.display.Screen;
@@ -9,8 +10,6 @@ import com.bytezone.dm3270.structuredfields.Outbound3270DS;
 import com.bytezone.dm3270.structuredfields.ReadPartitionSF;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 import com.bytezone.dm3270.structuredfields.StructuredField;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +26,11 @@ public class WriteStructuredFieldCommand extends Command {
   private final List<StructuredField> structuredFields =
       new ArrayList<>();
   private final List<Buffer> replies = new ArrayList<>();
+  private final Charset charset;
 
-  public WriteStructuredFieldCommand(byte[] buffer, int offset, int length) {
+  public WriteStructuredFieldCommand(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);
+    this.charset = charset;
 
     assert buffer[offset] == Command.WRITE_STRUCTURED_FIELD_11
         || buffer[offset] == Command.WRITE_STRUCTURED_FIELD_F3;
@@ -38,40 +39,40 @@ public class WriteStructuredFieldCommand extends Command {
     int max = offset + length;
 
     while (ptr < max) {
-      int size = Dm3270Utility.unsignedShort(buffer, ptr) - 2;
+      int size = Buffer.unsignedShort(buffer, ptr) - 2;
       ptr += 2;
 
       switch (buffer[ptr]) {
         // wrapper for original write commands - W. EW, EWA, EAU
         case StructuredField.OUTBOUND_3270DS:
-          structuredFields.add(new Outbound3270DS(buffer, ptr, size));
+          structuredFields.add(new Outbound3270DS(buffer, ptr, size, charset));
           break;
 
         // wrapper for original read commands - RB, RM, RMA
         case StructuredField.READ_PARTITION:
-          structuredFields.add(new ReadPartitionSF(buffer, ptr, size));
+          structuredFields.add(new ReadPartitionSF(buffer, ptr, size, charset));
           break;
 
         case StructuredField.RESET_PARTITION:
           LOG.warn("SF_RESET_PARTITION (00) not written yet");
-          structuredFields.add(new DefaultStructuredField(buffer, ptr, size));
+          structuredFields.add(new DefaultStructuredField(buffer, ptr, size, charset));
           break;
 
         case StructuredField.SET_REPLY_MODE:
-          structuredFields.add(new SetReplyModeSF(buffer, ptr, size));
+          structuredFields.add(new SetReplyModeSF(buffer, ptr, size, charset));
           break;
 
         case StructuredField.ACTIVATE_PARTITION:
           LOG.warn("SF_ACTIVATE_PARTITION (0E) not written yet");
-          structuredFields.add(new DefaultStructuredField(buffer, ptr, size));
+          structuredFields.add(new DefaultStructuredField(buffer, ptr, size, charset));
           break;
 
         case StructuredField.ERASE_RESET:
-          structuredFields.add(new EraseResetSF(buffer, ptr, size));
+          structuredFields.add(new EraseResetSF(buffer, ptr, size, charset));
           break;
 
         default:
-          structuredFields.add(new DefaultStructuredField(buffer, ptr, size));
+          structuredFields.add(new DefaultStructuredField(buffer, ptr, size, charset));
           break;
       }
 
@@ -100,7 +101,7 @@ public class WriteStructuredFieldCommand extends Command {
       return Optional.of(replies.get(0));
     }
 
-    MultiBuffer multiBuffer = new MultiBuffer();
+    MultiBuffer multiBuffer = new MultiBuffer(charset);
     for (Buffer reply : replies) {
       multiBuffer.addBuffer(reply);
     }

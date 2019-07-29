@@ -1,12 +1,11 @@
 package com.bytezone.dm3270.extended;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.buffers.Buffer;
 import com.bytezone.dm3270.buffers.MultiBuffer;
 import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.display.Screen;
-
 import com.bytezone.dm3270.streams.TelnetState;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +14,14 @@ public class TN3270ExtendedCommand extends AbstractExtendedCommand {
 
   private final Command command;
   private final TelnetState telnetState;
+  private final Charset charset;
 
   public TN3270ExtendedCommand(CommandHeader commandHeader, Command command,
-      TelnetState telnetState) {
+      TelnetState telnetState, Charset charset) {
     super(commandHeader);
     this.command = command;
     this.telnetState = telnetState;
+    this.charset = charset;
   }
 
   public Command getCommand() {
@@ -59,10 +60,10 @@ public class TN3270ExtendedCommand extends AbstractExtendedCommand {
     Optional<Buffer> reply = command.getReply();
     if (reply.isPresent()) {
       byte[] headerBuffer = new byte[5];
-      Dm3270Utility.packUnsignedShort(telnetState.nextCommandHeaderSeq(), headerBuffer, 3);
-      CommandHeader header = new CommandHeader(headerBuffer);
+      Buffer.packUnsignedShort(telnetState.nextCommandHeaderSeq(), headerBuffer, 3);
+      CommandHeader header = new CommandHeader(headerBuffer, charset);
       TN3270ExtendedCommand command = new TN3270ExtendedCommand(header, (Command) reply.get(),
-          telnetState);
+          telnetState, charset);
       buffers.add(command);
     }
 
@@ -74,7 +75,7 @@ public class TN3270ExtendedCommand extends AbstractExtendedCommand {
       return Optional.of(buffers.get(0));
     }
 
-    MultiBuffer multiBuffer = new MultiBuffer();
+    MultiBuffer multiBuffer = new MultiBuffer(charset);
     for (Buffer buffer : buffers) {
       multiBuffer.addBuffer(buffer);
     }

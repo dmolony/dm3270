@@ -1,6 +1,6 @@
 package com.bytezone.dm3270.replyfield;
 
-import com.bytezone.dm3270.utilities.Dm3270Utility;
+import com.bytezone.dm3270.buffers.Buffer;
 
 public class DistributedDataManagement extends QueryReplyField {
 
@@ -14,9 +14,9 @@ public class DistributedDataManagement extends QueryReplyField {
     super(buffer);
     assert data[1] == DISTRIBUTED_DATA_MANAGEMENT_REPLY;
 
-    flags = Dm3270Utility.unsignedShort(data, 2);
-    limitIn = Dm3270Utility.unsignedShort(data, 4);
-    limitOut = Dm3270Utility.unsignedShort(data, 6);
+    flags = Buffer.unsignedShort(data, 2);
+    limitIn = Buffer.unsignedShort(data, 4);
+    limitOut = Buffer.unsignedShort(data, 6);
     subsets = data[8] & 0xFF;
     ddmSubset = data[9];
 

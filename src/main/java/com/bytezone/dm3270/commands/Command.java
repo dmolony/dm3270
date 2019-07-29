@@ -1,7 +1,7 @@
 package com.bytezone.dm3270.commands;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.buffers.AbstractTN3270Command;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +97,7 @@ public abstract class Command extends AbstractTN3270Command {
    * used. A Short Read results in only the AID being sent inbound to the host.
    */
 
-  public static Command getCommand(byte[] buffer, int offset, int length) {
+  public static Command getCommand(byte[] buffer, int offset, int length, Charset charset) {
     switch (buffer[offset]) {
       case Command.WRITE_F1:
       case Command.WRITE_01:
@@ -105,7 +105,7 @@ public abstract class Command extends AbstractTN3270Command {
       case Command.ERASE_WRITE_05:
       case Command.ERASE_WRITE_ALTERNATE_7E:
       case Command.ERASE_WRITE_ALTERNATE_0D:
-        return new WriteCommand(buffer, offset, length);
+        return new WriteCommand(buffer, offset, length, charset);
 
       case Command.ERASE_ALL_UNPROTECTED_6F:
       case Command.ERASE_ALL_UNPROTECTED_0F:
@@ -121,22 +121,22 @@ public abstract class Command extends AbstractTN3270Command {
 
       case Command.WRITE_STRUCTURED_FIELD_F3:
       case Command.WRITE_STRUCTURED_FIELD_11:
-        return new WriteStructuredFieldCommand(buffer, offset, length);
+        return new WriteStructuredFieldCommand(buffer, offset, length, charset);
 
       default:
         LOG.warn("Unknown 3270 Command: {}\n{}", String.format("%02X", buffer[offset]),
-            Dm3270Utility.toHex(buffer, offset, length));
+            charset.toHex(buffer, offset, length));
         return null;
     }
   }
 
   public abstract String getName();
 
-  public static Command getReply(byte[] buffer, int offset, int length) {
+  public static Command getReply(byte[] buffer, int offset, int length, Charset charset) {
     if (buffer[offset] == AIDCommand.AID_STRUCTURED_FIELD) {
-      return new ReadStructuredFieldCommand(buffer, offset, length);
+      return new ReadStructuredFieldCommand(buffer, offset, length, charset);
     }
-    return new AIDCommand(buffer, offset, length);
+    return new AIDCommand(buffer, offset, length, charset);
   }
 
 }

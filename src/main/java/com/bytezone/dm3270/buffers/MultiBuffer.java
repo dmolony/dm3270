@@ -1,8 +1,7 @@
 package com.bytezone.dm3270.buffers;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.Screen;
-import com.bytezone.dm3270.utilities.Dm3270Utility;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -11,8 +10,13 @@ import org.slf4j.LoggerFactory;
 public class MultiBuffer implements Buffer {
 
   private static final Logger LOG = LoggerFactory.getLogger(MultiBuffer.class);
+  private final Charset charset;
 
   private List<Buffer> buffers = new ArrayList<>();
+
+  public MultiBuffer(Charset charset) {
+    this.charset = charset;
+  }
 
   public void addBuffer(Buffer buffer) {
     buffers.add(buffer);
@@ -23,11 +27,11 @@ public class MultiBuffer implements Buffer {
     byte[] data = new byte[size()];
     int ptr = 0;
     for (Buffer buffer : buffers) {
-      LOG.debug(Dm3270Utility.toHex(buffer.getData()));
+      LOG.debug(charset.toHex(buffer.getData()));
       System.arraycopy(buffer.getData(), 0, data, ptr, buffer.size());
       ptr += buffer.size();
     }
-    LOG.debug(Dm3270Utility.toHex(data));
+    LOG.debug(charset.toHex(data));
     return data;
   }
 

@@ -1,5 +1,6 @@
 package com.bytezone.dm3270.display;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.application.ConsolePane;
 import com.bytezone.dm3270.application.KeyboardStatusChangedEvent;
 import com.bytezone.dm3270.application.KeyboardStatusListener;
@@ -9,7 +10,6 @@ import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.streams.TelnetState;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +30,7 @@ public class Screen implements DisplayScreen {
   private final ScreenPacker screenPacker;
 
   private final TelnetState telnetState;
+  private final Charset charset;
 
   private final ScreenDimensions defaultScreenDimensions;
   private ScreenDimensions alternateScreenDimensions;
@@ -56,10 +57,11 @@ public class Screen implements DisplayScreen {
   }
 
   public Screen(ScreenDimensions defaultScreenDimensions,
-      ScreenDimensions alternateScreenDimensions, TelnetState telnetState) {
+      ScreenDimensions alternateScreenDimensions, TelnetState telnetState, Charset charset) {
     this.defaultScreenDimensions = defaultScreenDimensions;
     this.alternateScreenDimensions = alternateScreenDimensions;
     this.telnetState = telnetState;
+    this.charset = charset;
 
     ScreenDimensions screenDimensions = alternateScreenDimensions == null
         ? defaultScreenDimensions : alternateScreenDimensions;
@@ -69,9 +71,9 @@ public class Screen implements DisplayScreen {
     fieldManager = new FieldManager(this, screenDimensions);
 
     screenPositions = new ScreenPosition[screenDimensions.size];
-    pen = Pen.getInstance(screenPositions, screenDimensions);
+    pen = Pen.getInstance(screenPositions, screenDimensions, charset);
 
-    screenPacker = new ScreenPacker(pen, fieldManager);
+    screenPacker = new ScreenPacker(pen, fieldManager, charset);
 
     setCurrentScreen(ScreenOption.DEFAULT);
   }
@@ -135,6 +137,10 @@ public class Screen implements DisplayScreen {
     return sscpLuData;
   }
 
+  public Charset getCharset() {
+    return charset;
+  }
+
   public void eraseAllUnprotected() {
     Optional<Field> firstUnprotectedField = fieldManager.eraseAllUnprotected();
 
@@ -181,7 +187,7 @@ public class Screen implements DisplayScreen {
 
   private byte[] getTextBytes(String text) {
     try {
-      return text.getBytes("CP1047");
+      return text.getBytes(charset.name());
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }

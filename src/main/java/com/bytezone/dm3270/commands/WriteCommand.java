@@ -1,10 +1,10 @@
 package com.bytezone.dm3270.commands;
 
+import com.bytezone.dm3270.Charset;
 import com.bytezone.dm3270.display.Cursor;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.orders.TextOrder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class WriteCommand extends Command {
   private final WriteControlCharacter writeControlCharacter;
   private final List<Order> orders = new ArrayList<>();
 
-  public WriteCommand(byte[] buffer, int offset, int length) {
+  public WriteCommand(byte[] buffer, int offset, int length, Charset charset) {
     super(buffer, offset, length);
 
     assert buffer[offset] == Command.WRITE_01 || buffer[offset] == Command.WRITE_F1
@@ -35,7 +35,7 @@ public class WriteCommand extends Command {
 
     int max = offset + length;
     while (ptr < max) {
-      Order order = Order.getOrder(buffer, ptr, max);
+      Order order = Order.getOrder(buffer, ptr, max, charset);
 
       if (order.matchesPreviousOrder(previousOrder)) {
         previousOrder.incrementDuplicates();           // and discard this Order
