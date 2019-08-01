@@ -1,10 +1,5 @@
 package com.bytezone.dm3270;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-
 import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.commands.AIDCommand;
 import com.bytezone.dm3270.display.Field;
@@ -13,25 +8,6 @@ import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.display.ScreenPosition;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import java.awt.Point;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,11 +24,33 @@ import org.slf4j.LoggerFactory;
 import us.abstracta.wiresham.Flow;
 import us.abstracta.wiresham.VirtualTcpService;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class TerminalClientTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(TerminalClientTest.class);
   private static final int TERMINAL_MODEL_TYPE_TWO = 2;
+  private static final int TERMINAL_MODEL_TYPE_THREE = 3;
   private static final int TERMINAL_MODEL_TYPE_M_FIVE = 5;
   private static final ScreenDimensions SCREEN_DIMENSIONS_M_FIVE = new ScreenDimensions(27, 132);
   private static final ScreenDimensions SCREEN_DIMENSIONS = new ScreenDimensions(24, 80);
@@ -169,6 +167,35 @@ public class TerminalClientTest {
   private String getFileContent(String resourceFile) throws IOException {
     return Resources.toString(Resources.getResource(resourceFile),
         Charsets.UTF_8);
+  }
+
+  @Test
+  public void shouldGetWelcomeScreenWithWrongCharset() throws Exception {
+    setupExtendedFlow(TERMINAL_MODEL_TYPE_THREE, SCREEN_DIMENSIONS, "/login-special-characters.yml");
+
+    awaitKeyboardUnlock();
+    assertThat(getScreenText())
+            .isEqualTo( getFileContent("login-special-character-charset-CP1047.txt"));
+  }
+
+  @Test
+  public void shouldGetWelcomeScreenWithRightCharset() throws Exception {
+    setupExtendedFlowWithCharsetCP1147(TERMINAL_MODEL_TYPE_THREE, SCREEN_DIMENSIONS, "/login-special-characters.yml");
+    awaitKeyboardUnlock();
+    assertThat(getScreenText())
+            .isEqualTo( getFileContent("login-special-character-charset-CP1147.txt"));
+  }
+
+  private void setupExtendedFlowWithCharsetCP1147(int terminalType, ScreenDimensions screenDimensions,
+                                 String filePath)
+          throws Exception {
+    awaitKeyboardUnlock();
+    teardown();
+    setServiceFlowFromFile(filePath);
+    service.start();
+    client = new TerminalClient(terminalType, screenDimensions,Charset.CP1147);
+    client.setUsesExtended3270(true);
+    connectClient();
   }
 
   @Test
