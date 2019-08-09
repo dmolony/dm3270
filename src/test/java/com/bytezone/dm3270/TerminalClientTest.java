@@ -619,4 +619,14 @@ public class TerminalClientTest {
     awaitKeyboardUnlock();
     assertThat(getScreenText()).isEqualTo(getFileContent("user-menu-screen.txt"));
   }
+  
+  @Test 
+  public void shouldSetTextWhenNoScreenFieldsWhileInputByLabel() throws Exception {
+    setupExtendedFlow(TERMINAL_MODEL_TYPE_TWO, new ScreenDimensions(24, 80), "/sscplu-login.yml");
+    awaitKeyboardUnlock();
+    sendFieldByLabel("APPLICATION NAME", "testapp");
+    awaitKeyboardUnlock();
+    assertThat(getScreenText()).isEqualTo(getFileContent("sscplu-login-middle-screen"));
+  }
+  
 }

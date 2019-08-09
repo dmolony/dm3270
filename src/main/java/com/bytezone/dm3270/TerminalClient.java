@@ -142,16 +142,44 @@ public class TerminalClient {
 
     screen.getScreenCursor().moveTo(cursorPosition);
   }
-
+  
   public void setFieldTextByLabel(String lbl, String text) {
-    Field field = findFieldPositionByLabel(lbl);
-    if (field == null) {
-      throw new IllegalArgumentException("Invalid field label: " + lbl);
+    if (screen.getFieldManager().getFields().isEmpty()) {
+      String screenText = getScreenText();
+      if (!screenText.contains(lbl)) {
+        throw buildInvalidFieldLabelException(lbl);
+      }
+      // findLastNonBlankPosition() + 2 in order to get the first writable position,
+      // avoiding the first space after labels (which has been considered as 'standard')
+      int fieldPosition = findLastNonBlankPosition() + 2;
+      screen.setPositionText(fieldPosition, text);
+      screen.getScreenCursor().moveTo(fieldPosition + findFieldNextPosition(text));
+    } else {
+      Field field = findFieldByLabel(lbl);
+      if (field == null) {
+        throw buildInvalidFieldLabelException(lbl);
+      }
+      setFieldText(field, text);
     }
-    setFieldText(field, text);
+
   }
 
-  private Field findFieldPositionByLabel(String label) {
+  private IllegalArgumentException buildInvalidFieldLabelException(String lbl) {
+    return new IllegalArgumentException("Invalid label: " + lbl);
+  }
+
+  private int findLastNonBlankPosition() {
+    String screenText = getScreenText();
+    int lastNonBlankPosition = screenText.length() - 1;
+    while (lastNonBlankPosition >= 0 && (screenText.charAt(lastNonBlankPosition) == '\u0000'
+        || screenText.charAt(lastNonBlankPosition) == '\n')
+        || screenText.charAt(lastNonBlankPosition) == ' ') {
+      lastNonBlankPosition--;
+    }
+    return lastNonBlankPosition;
+  }
+
+  private Field findFieldByLabel(String label) {
     Field labelField = findLabelField(label);
     return (labelField != null) ? labelField.getNextUnprotectedField() : null;
   }
