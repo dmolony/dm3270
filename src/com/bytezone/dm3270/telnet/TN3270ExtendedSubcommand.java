@@ -8,7 +8,9 @@ import java.util.List;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
 
+// -----------------------------------------------------------------------------------//
 public class TN3270ExtendedSubcommand extends TelnetSubcommand
+// -----------------------------------------------------------------------------------//
 {
   protected static final byte EXT_DEVICE_TYPE = 2;
   protected static final byte EXT_FUNCTIONS = 3;
@@ -32,8 +34,10 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     BIND_IMAGE, RESPONSES, SYSREQ
   }
 
+  // ---------------------------------------------------------------------------------//
   public TN3270ExtendedSubcommand (byte[] buffer, int offset, int length,
       TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer, offset, length, telnetState);
 
@@ -89,7 +93,9 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void setFunctions (byte[] buffer, int length)
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder funcList = new StringBuilder ();
     functions = new ArrayList<> ();
@@ -124,13 +130,17 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     functionsList = funcList.toString ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public SubType getSubtype ()
+  // ---------------------------------------------------------------------------------//
   {
     return subType;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     if (type == SubcommandType.SEND && subType == SubType.DEVICE_TYPE)
     {
@@ -200,7 +210,9 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean doesFunction (Function function)
+  // ---------------------------------------------------------------------------------//
   {
     return functions.contains (function);
   }
@@ -210,13 +222,17 @@ public class TN3270ExtendedSubcommand extends TelnetSubcommand
   //    return connect;
   //  }
 
+  // ---------------------------------------------------------------------------------//
   public String getFunctions ()
+  // ---------------------------------------------------------------------------------//
   {
     return functionsList;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     switch (type)
     {

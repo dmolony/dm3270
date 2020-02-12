@@ -4,7 +4,9 @@ import com.bytezone.dm3270.buffers.AbstractTelnetCommand;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
 
+// -----------------------------------------------------------------------------------//
 public class TelnetCommand extends AbstractTelnetCommand
+// -----------------------------------------------------------------------------------//
 {
   public static final byte IAC = (byte) 0xFF;   // Interpret As Command
   public static final byte SB = (byte) 0xFA;    // Begin subcommand
@@ -37,12 +39,16 @@ public class TelnetCommand extends AbstractTelnetCommand
     TERMINAL_TYPE, EOR, BINARY, TN3270_EXTENDED
   }
 
+  // ---------------------------------------------------------------------------------//
   public TelnetCommand (TelnetState state, byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     this (state, buffer, buffer.length);
   }
 
+  // ---------------------------------------------------------------------------------//
   public TelnetCommand (TelnetState state, byte[] buffer, int length)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer, 0, length, state);
 
@@ -99,18 +105,24 @@ public class TelnetCommand extends AbstractTelnetCommand
       throw new IllegalArgumentException ("Buffer incorrect length");
   }
 
+  // ---------------------------------------------------------------------------------//
   public CommandName commandName ()
+  // ---------------------------------------------------------------------------------//
   {
     return commandName;
   }
 
+  // ---------------------------------------------------------------------------------//
   public CommandType commandType ()
+  // ---------------------------------------------------------------------------------//
   {
     return commandType;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     if (commandName == CommandName.DO)      // mainframe asks us DO xxx
     {
@@ -192,15 +204,19 @@ public class TelnetCommand extends AbstractTelnetCommand
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getName ()
+  // ---------------------------------------------------------------------------------//
   {
     if (commandName == CommandName.NO_OP)
       return "NoOp";
     return toString ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     return String.format ("%s %s", commandName, (commandType == null ? "" : commandType));
   }

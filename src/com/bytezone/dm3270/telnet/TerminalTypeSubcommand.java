@@ -6,7 +6,9 @@ import java.security.InvalidParameterException;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.streams.TelnetState;
 
+// -----------------------------------------------------------------------------------//
 public class TerminalTypeSubcommand extends TelnetSubcommand
+// -----------------------------------------------------------------------------------//
 {
   public static final byte OPTION_IS = 0;
   public static final byte OPTION_SEND = 1;
@@ -14,8 +16,10 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
   private final String terminalType2 = "IBM-3278-2-E";
   private final String terminalType4 = "IBM-3278-4-E";
 
+  // ---------------------------------------------------------------------------------//
   public TerminalTypeSubcommand (byte[] buffer, int offset, int length,
       TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer, offset, length, telnetState);
 
@@ -34,8 +38,10 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
           String.format ("Unknown subcommand type: %02X%n", buffer[3]));
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     if (type == SubcommandType.SEND)
     {
@@ -66,8 +72,10 @@ public class TerminalTypeSubcommand extends TelnetSubcommand
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     switch (type)
     {

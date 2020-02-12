@@ -2,7 +2,9 @@ package com.bytezone.dm3270.structuredfields;
 
 import com.bytezone.dm3270.display.Screen;
 
+// -----------------------------------------------------------------------------------//
 public class EraseResetSF extends StructuredField
+// -----------------------------------------------------------------------------------//
 {
   byte flags;
   Size size;
@@ -12,7 +14,9 @@ public class EraseResetSF extends StructuredField
     DEFAULT, ALTERNATE
   }
 
+  // ---------------------------------------------------------------------------------//
   public EraseResetSF (byte[] buffer, int offset, int length)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer, offset, length);
 
@@ -25,14 +29,18 @@ public class EraseResetSF extends StructuredField
       size = Size.ALTERNATE;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     // what to do?
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ("Struct Field : 03 Erase/Reset\n");
     text.append (String.format ("   flags     : %02X (%s)", flags, size));

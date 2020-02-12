@@ -7,12 +7,16 @@ import com.bytezone.dm3270.commands.Command;
 import com.bytezone.dm3270.commands.ReadPartitionQuery;
 import com.bytezone.dm3270.display.Screen;
 
+// -----------------------------------------------------------------------------------//
 public class ReadPartitionSF extends StructuredField
+// -----------------------------------------------------------------------------------//
 {
   private final byte partitionID;
   private final Command command;
 
+  // ---------------------------------------------------------------------------------//
   public ReadPartitionSF (byte[] buffer, int offset, int length)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer, offset, length);
 
@@ -43,8 +47,10 @@ public class ReadPartitionSF extends StructuredField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     if (getReply ().isPresent ())                // replay mode
       return;
@@ -70,15 +76,19 @@ public class ReadPartitionSF extends StructuredField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String brief ()
+  // ---------------------------------------------------------------------------------//
   {
     Optional<Buffer> opt = getReply ();
     return String.format ("ReadPT: %s", opt.get ());
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text =
         new StringBuilder (String.format ("Struct Field : 01 Read Partition\n"));

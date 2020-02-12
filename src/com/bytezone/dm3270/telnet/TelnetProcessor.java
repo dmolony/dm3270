@@ -1,6 +1,8 @@
 package com.bytezone.dm3270.telnet;
 
+// -----------------------------------------------------------------------------------//
 public class TelnetProcessor
+// -----------------------------------------------------------------------------------//
 {
   // command prefix
   public static final byte IAC = (byte) 0xFF;
@@ -34,18 +36,24 @@ public class TelnetProcessor
   // command processor
   private final TelnetCommandProcessor commandProcessor;
 
+  // ---------------------------------------------------------------------------------//
   public TelnetProcessor (TelnetCommandProcessor commandProcessor)
+  // ---------------------------------------------------------------------------------//
   {
     this.commandProcessor = commandProcessor;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void test (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     for (byte b : buffer)
       listen (b);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void listen (byte... buffer)
+  // ---------------------------------------------------------------------------------//
   {
     for (byte thisByte : buffer)
     {
@@ -123,7 +131,9 @@ public class TelnetProcessor
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void reset ()
+  // ---------------------------------------------------------------------------------//
   {
     dataPtr = 0;
     command = 0;

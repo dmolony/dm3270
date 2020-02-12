@@ -4,7 +4,9 @@ import com.bytezone.dm3270.buffers.AbstractTN3270Command;
 import com.bytezone.dm3270.display.Screen;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public abstract class StructuredField extends AbstractTN3270Command
+// -----------------------------------------------------------------------------------//
 {
   public final static byte RESET_PARTITION = 0x00;
   public final static byte READ_PARTITION = 0x01;
@@ -28,25 +30,33 @@ public abstract class StructuredField extends AbstractTN3270Command
 
   protected byte type;
 
+  // ---------------------------------------------------------------------------------//
   public StructuredField (byte[] buffer, int offset, int length)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer, offset, length);
     type = buffer[offset];
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     // do nothing 
   }
 
+  // ---------------------------------------------------------------------------------//
   public String brief ()
+  // ---------------------------------------------------------------------------------//
   {
     return toString ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     return String.format ("StrF: %s", Dm3270Utility.toHex (data).substring (8));
   }
