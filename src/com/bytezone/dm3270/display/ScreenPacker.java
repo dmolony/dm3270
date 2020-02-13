@@ -13,7 +13,9 @@ import com.bytezone.dm3270.orders.BufferAddress;
 import com.bytezone.dm3270.orders.Order;
 import com.bytezone.dm3270.structuredfields.SetReplyModeSF;
 
+// -----------------------------------------------------------------------------------//
 class ScreenPacker implements ScreenChangeListener
+// -----------------------------------------------------------------------------------//
 {
   private final byte[] buffer = new byte[8192];
   private final List<String> tsoCommands = new ArrayList<> ();
@@ -22,20 +24,26 @@ class ScreenPacker implements ScreenChangeListener
   private Pen pen;
   private final FieldManager fieldManager;
 
+  // ---------------------------------------------------------------------------------//
   public ScreenPacker (Pen pen, FieldManager fieldManager)
+  // ---------------------------------------------------------------------------------//
   {
     this.pen = pen;
     this.fieldManager = fieldManager;
   }
 
   // used when the screen changes to a different terminal model in replay mode
+  // ---------------------------------------------------------------------------------//
   void setPen (Pen pen)
+  // ---------------------------------------------------------------------------------//
   {
     this.pen = pen;
   }
 
+  // ---------------------------------------------------------------------------------//
   public AIDCommand readModifiedFields (byte currentAID, int cursorLocation,
       boolean readModifiedAll)
+  // ---------------------------------------------------------------------------------//
   {
     // pack the AID
     int ptr = 0;
@@ -77,7 +85,9 @@ class ScreenPacker implements ScreenChangeListener
     return new AIDCommand (buffer, 0, ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   private int packField (Field field, byte[] buffer, int ptr)
+  // ---------------------------------------------------------------------------------//
   {
     assert field.isModified ();
 
@@ -94,8 +104,10 @@ class ScreenPacker implements ScreenChangeListener
     return ptr;
   }
 
+  // ---------------------------------------------------------------------------------//
   public AIDCommand readBuffer (byte currentAID, int cursorLocation, byte replyMode,
       byte[] replyTypes)
+  // ---------------------------------------------------------------------------------//
   {
     // pack the AID
     int ptr = 0;
@@ -116,8 +128,10 @@ class ScreenPacker implements ScreenChangeListener
     return new AIDCommand (buffer, 0, ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   private int packStartPosition (ScreenPosition sp, byte[] buffer, int ptr,
       byte replyMode)
+  // ---------------------------------------------------------------------------------//
   {
     assert sp.isStartField ();
 
@@ -143,8 +157,10 @@ class ScreenPacker implements ScreenChangeListener
     return ptr;
   }
 
+  // ---------------------------------------------------------------------------------//
   private int packDataPosition (ScreenPosition sp, byte[] buffer, int ptr, byte replyMode,
       byte[] replyTypes)
+  // ---------------------------------------------------------------------------------//
   {
     if (replyMode == SetReplyModeSF.RM_CHARACTER)
       for (Attribute attribute : sp.getAttributes ())
@@ -171,7 +187,9 @@ class ScreenPacker implements ScreenChangeListener
   }
 
   // called from the constructor above, and also from Screen in replay mode
+  // ---------------------------------------------------------------------------------//
   void addTSOCommand (String command)
+  // ---------------------------------------------------------------------------------//
   {
     String minCommand = command.trim ().toUpperCase ();
     if (minCommand.isEmpty ())
@@ -181,14 +199,18 @@ class ScreenPacker implements ScreenChangeListener
     notifyTSOCommandListeners (minCommand);
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getPreviousTSOCommand ()
+  // ---------------------------------------------------------------------------------//
   {
     if (tsoCommands.size () > 0)
       return tsoCommands.get (tsoCommands.size () - 1);
     return "bollocks";
   }
 
+  // ---------------------------------------------------------------------------------//
   public void listTSOCommands ()
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("User commands:");
     for (String command : tsoCommands)
@@ -201,24 +223,32 @@ class ScreenPacker implements ScreenChangeListener
 
   private final Set<TSOCommandListener> tsoCommandListeners = new HashSet<> ();
 
+  // ---------------------------------------------------------------------------------//
   void notifyTSOCommandListeners (String command)
+  // ---------------------------------------------------------------------------------//
   {
     for (TSOCommandListener listener : tsoCommandListeners)
       listener.tsoCommand (command);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void addTSOCommandListener (TSOCommandListener listener)
+  // ---------------------------------------------------------------------------------//
   {
     tsoCommandListeners.add (listener);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void removeTSOCommandListener (TSOCommandListener listener)
+  // ---------------------------------------------------------------------------------//
   {
     tsoCommandListeners.remove (listener);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void screenChanged (ScreenWatcher screenWatcher)
+  // ---------------------------------------------------------------------------------//
   {
     this.screenWatcher = screenWatcher;
   }

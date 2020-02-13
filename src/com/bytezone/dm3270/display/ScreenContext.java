@@ -4,7 +4,9 @@ import com.bytezone.dm3270.attributes.ColorAttribute;
 
 import javafx.scene.paint.Color;
 
+// -----------------------------------------------------------------------------------//
 public class ScreenContext
+// -----------------------------------------------------------------------------------//
 {
   final public Color foregroundColor;
   final public Color backgroundColor;
@@ -17,8 +19,10 @@ public class ScreenContext
 
   FontDetails fontDetails;
 
+  // ---------------------------------------------------------------------------------//
   public ScreenContext (Color foregroundColor, Color backgroundColor, byte highlight,
       boolean highIntensity, FontDetails fontDetails)
+  // ---------------------------------------------------------------------------------//
   {
     this.foregroundColor = foregroundColor;
     this.backgroundColor = backgroundColor;
@@ -33,7 +37,9 @@ public class ScreenContext
     //    this.normalHighlight = highlight == (byte) 0xF0;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean matches (ScreenContext other)
+  // ---------------------------------------------------------------------------------//
   {
     return foregroundColor == other.foregroundColor
         && backgroundColor == other.backgroundColor     //
@@ -41,8 +47,10 @@ public class ScreenContext
         && highIntensity == other.highIntensity;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean matches (Color foregroundColor, Color backgroundColor, byte highlight,
       boolean highIntensity)
+  // ---------------------------------------------------------------------------------//
   {
     return this.foregroundColor == foregroundColor
         && this.backgroundColor == backgroundColor     //
@@ -50,28 +58,36 @@ public class ScreenContext
         && this.highIntensity == highIntensity;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setFontDetails (FontDetails fontDetails)
+  // ---------------------------------------------------------------------------------//
   {
     this.fontDetails = fontDetails;
   }
 
+  // ---------------------------------------------------------------------------------//
   public FontDetails getFontDetails ()
+  // ---------------------------------------------------------------------------------//
   {
     return fontDetails;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setFontData (FontDetails fontDetails)
+  // ---------------------------------------------------------------------------------//
   {
     this.fontDetails = fontDetails;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     String name = fontDetails == null ? "" : fontDetails.font.getName ();
     return String.format ("[Fg:%-10s Bg:%-10s In:%s  Hl:%02X, f:%s]",
-                          ColorAttribute.getName (foregroundColor),
-                          ColorAttribute.getName (backgroundColor),
-                          (highIntensity ? 'x' : ' '), highlight, name);
+        ColorAttribute.getName (foregroundColor),
+        ColorAttribute.getName (backgroundColor), (highIntensity ? 'x' : ' '), highlight,
+        name);
   }
 }

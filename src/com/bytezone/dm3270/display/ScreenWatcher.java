@@ -12,13 +12,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bytezone.dm3270.assistant.TableDataset;
-import com.bytezone.dm3270.database.*;;
+import com.bytezone.dm3270.database.DatabaseRequest;
+import com.bytezone.dm3270.database.Dataset;
+import com.bytezone.dm3270.database.DatasetRequest;
+import com.bytezone.dm3270.database.Initiator;
+import com.bytezone.dm3270.database.Member;
+import com.bytezone.dm3270.database.MemberRequest;;
 
 // created by FieldManager
 // used by ScreenChangeListener (ScreenPacker, TransfersStage, TransferMenu)
 // used by DownloadDialog (via TransferMenu)
 // used by UploadDialog (via TransferMenu)
+// -----------------------------------------------------------------------------------//
 public class ScreenWatcher implements Initiator
+// -----------------------------------------------------------------------------------//
 {
   private static final String[] tsoMenus =
       { "Menu", "List", "Mode", "Functions", "Utilities", "Help" };
@@ -62,70 +69,94 @@ public class ScreenWatcher implements Initiator
   private String userid = "";
   private String prefix = "";
 
+  // ---------------------------------------------------------------------------------//
   public ScreenWatcher (FieldManager fieldManager, ScreenDimensions screenDimensions,
       BlockingQueue<DatabaseRequest> queue)
+  // ---------------------------------------------------------------------------------//
   {
     this.fieldManager = fieldManager;
     this.screenDimensions = screenDimensions;
     this.queue = queue;
   }
 
+  // ---------------------------------------------------------------------------------//
   public Field getTSOCommandField ()
+  // ---------------------------------------------------------------------------------//
   {
     return tsoCommandField;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean isTSOCommandScreen ()
+  // ---------------------------------------------------------------------------------//
   {
     return isTSOCommandScreen;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getUserid ()
+  // ---------------------------------------------------------------------------------//
   {
     return userid;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getPrefix ()
+  // ---------------------------------------------------------------------------------//
   {
     return prefix;
   }
 
   // called by UploadDialog
   // called by DownloadDialog
+  // ---------------------------------------------------------------------------------//
   public Optional<TableDataset> getDataset (String datasetName)
+  // ---------------------------------------------------------------------------------//
   {
     if (siteDatasets.containsKey (datasetName))
       return Optional.of (siteDatasets.get (datasetName));
     return Optional.empty ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public List<TableDataset> getDatasets ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenDatasets;
   }
 
+  // ---------------------------------------------------------------------------------//
   public List<TableDataset> getMembers ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenMembers;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getCurrentPDS ()
+  // ---------------------------------------------------------------------------------//
   {
     return currentPDS;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getSingleDataset ()
+  // ---------------------------------------------------------------------------------//
   {
     return singleDataset;
   }
 
+  // ---------------------------------------------------------------------------------//
   public List<String> getRecentDatasets ()
+  // ---------------------------------------------------------------------------------//
   {
     return recentDatasetNames;
   }
 
   // called by FieldManager after building a new screen
+  // ---------------------------------------------------------------------------------//
   void check ()
+  // ---------------------------------------------------------------------------------//
   {
     tsoCommandField = null;
     isTSOCommandScreen = false;
@@ -176,7 +207,9 @@ public class ScreenWatcher implements Initiator
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void checkMenu ()
+  // ---------------------------------------------------------------------------------//
   {
     if (true)
       return;
@@ -196,7 +229,9 @@ public class ScreenWatcher implements Initiator
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean checkSplitScreen ()
+  // ---------------------------------------------------------------------------------//
   {
     return fieldManager.getFields ().parallelStream ()
         .filter (f -> f.isProtected () && f.getDisplayLength () == 79
@@ -205,7 +240,9 @@ public class ScreenWatcher implements Initiator
         .findAny ().isPresent ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean hasPromptField ()
+  // ---------------------------------------------------------------------------------//
   {
     List<Field> rowFields = fieldManager.getRowFields (1, 3);
     for (int i = 0; i < rowFields.size (); i++)
@@ -237,7 +274,9 @@ public class ScreenWatcher implements Initiator
     return false;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void checkPrefixScreen (List<Field> screenFields)
+  // ---------------------------------------------------------------------------------//
   {
     if (screenFields.size () < 74)
       return;
@@ -266,7 +305,9 @@ public class ScreenWatcher implements Initiator
     prefix = field.getText ().trim ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean checkTSOCommandScreen (List<Field> screenFields)
+  // ---------------------------------------------------------------------------------//
   {
     if (screenFields.size () < 19)
       return false;
@@ -291,7 +332,9 @@ public class ScreenWatcher implements Initiator
     return true;
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean checkDatasetList (List<Field> screenFields)
+  // ---------------------------------------------------------------------------------//
   {
     if (screenFields.size () < 21)
       return false;
@@ -427,7 +470,9 @@ public class ScreenWatcher implements Initiator
     return true;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void addDataset (String datasetName, int screenType, List<Field> rowFields)
+  // ---------------------------------------------------------------------------------//
   {
     TableDataset dataset;
     if (siteDatasets.containsKey (datasetName))
@@ -448,7 +493,7 @@ public class ScreenWatcher implements Initiator
         {
           setSpace (dataset, rowFields.get (1).getText (), 6, 11, 15);
           ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
-                       dataset.getExtents (), dataset.getPercentUsed ());
+              dataset.getExtents (), dataset.getPercentUsed ());
           ds.setDevice (dataset.getDevice ());
         }
         break;
@@ -458,7 +503,7 @@ public class ScreenWatcher implements Initiator
         {
           setDisposition (dataset, rowFields.get (1).getText (), 5, 11, 18);
           ds.setDisposition (dataset.getDsorg (), dataset.getRecfm (),
-                             dataset.getLrecl (), dataset.getBlksize ());
+              dataset.getLrecl (), dataset.getBlksize ());
         }
         break;
 
@@ -486,9 +531,9 @@ public class ScreenWatcher implements Initiator
           }
 
           ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
-                       dataset.getExtents (), dataset.getPercentUsed ());
+              dataset.getExtents (), dataset.getPercentUsed ());
           ds.setDisposition (dataset.getDsorg (), dataset.getRecfm (),
-                             dataset.getLrecl (), dataset.getBlksize ());
+              dataset.getLrecl (), dataset.getBlksize ());
           ds.setVolume (dataset.getVolume ());
           ds.setDevice (dataset.getDevice ());
         }
@@ -505,9 +550,9 @@ public class ScreenWatcher implements Initiator
             setDates (dataset, rowFields.get (5).getText (), ds);
 
             ds.setSpace (dataset.getTracks (), dataset.getCylinders (),
-                         dataset.getExtents (), dataset.getPercentUsed ());
+                dataset.getExtents (), dataset.getPercentUsed ());
             ds.setDisposition (dataset.getDsorg (), dataset.getRecfm (),
-                               dataset.getLrecl (), dataset.getBlksize ());
+                dataset.getLrecl (), dataset.getBlksize ());
           }
         }
         break;
@@ -516,7 +561,9 @@ public class ScreenWatcher implements Initiator
     sendRequest (new DatasetRequest (this, UPDATE, ds));
   }
 
+  // ---------------------------------------------------------------------------------//
   private void setSpace (TableDataset dataset, String details, int t1, int t2, int t3)
+  // ---------------------------------------------------------------------------------//
   {
     if (details.trim ().isEmpty ())
       return;
@@ -531,8 +578,10 @@ public class ScreenWatcher implements Initiator
       dataset.setDevice (details.substring (t3).trim ());
   }
 
+  // ---------------------------------------------------------------------------------//
   private void setDisposition (TableDataset dataset, String details, int t1, int t2,
       int t3)
+  // ---------------------------------------------------------------------------------//
   {
     if (details.trim ().isEmpty ())
       return;
@@ -547,7 +596,9 @@ public class ScreenWatcher implements Initiator
       dataset.setBlksize (getInteger ("blksize", details.substring (t3).trim ()));
   }
 
+  // ---------------------------------------------------------------------------------//
   private void setDates (TableDataset dataset, String details, Dataset ds)
+  // ---------------------------------------------------------------------------------//
   {
     if (details.trim ().isEmpty ())
       return;
@@ -570,7 +621,9 @@ public class ScreenWatcher implements Initiator
     ds.setDates (created, expires, referred);
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean checkMemberList (List<Field> screenFields)
+  // ---------------------------------------------------------------------------------//
   {
     if (screenFields.size () < 14)
       return false;
@@ -584,7 +637,9 @@ public class ScreenWatcher implements Initiator
     return false;
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean checkMemberList1 (List<Field> screenFields)
+  // ---------------------------------------------------------------------------------//
   {
     Field field = screenFields.get (8);
     int location = field.getFirstLocation ();
@@ -655,7 +710,9 @@ public class ScreenWatcher implements Initiator
     return true;
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean checkMemberList2 (List<Field> screenFields)
+  // ---------------------------------------------------------------------------------//
   {
     Field field = screenFields.get (7);
     int location = field.getFirstLocation ();
@@ -725,7 +782,9 @@ public class ScreenWatcher implements Initiator
     return true;
   }
 
+  // ---------------------------------------------------------------------------------//
   private TableDataset addMember (String pdsName, String memberName)
+  // ---------------------------------------------------------------------------------//
   {
     String datasetName = pdsName + "(" + memberName.trim () + ")";
     TableDataset member;
@@ -743,7 +802,9 @@ public class ScreenWatcher implements Initiator
     return member;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void screenType1 (TableDataset member, String details, int[] tabs, Member m)
+  // ---------------------------------------------------------------------------------//
   {
     member.setCreated (details.substring (tabs[0], tabs[1]).trim ());
     member.setReferredDate (details.substring (tabs[1], tabs[2]).trim ());
@@ -763,7 +824,9 @@ public class ScreenWatcher implements Initiator
     sendRequest (new MemberRequest (this, UPDATE, m));
   }
 
+  // ---------------------------------------------------------------------------------//
   private void screenType2 (TableDataset member, String details, int[] tabs, Member m)
+  // ---------------------------------------------------------------------------------//
   {
     //    String size = details.substring (0, tabs[0]);
     //    String init = details.substring (tabs[0], tabs[1]);
@@ -791,7 +854,9 @@ public class ScreenWatcher implements Initiator
     sendRequest (new MemberRequest (this, UPDATE, m));
   }
 
+  // ---------------------------------------------------------------------------------//
   private int getInteger (String id, String value)
+  // ---------------------------------------------------------------------------------//
   {
     if (value == null || value.isEmpty () || value.equals ("?"))
       return 0;
@@ -807,7 +872,9 @@ public class ScreenWatcher implements Initiator
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void checkSingleDataset (List<Field> fields)
+  // ---------------------------------------------------------------------------------//
   {
     if (fields.size () < 13)
       return;
@@ -855,7 +922,9 @@ public class ScreenWatcher implements Initiator
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean listMatchesArray (List<String> list, String[] array)
+  // ---------------------------------------------------------------------------------//
   {
     if (list.size () != array.length)
       return false;
@@ -866,7 +935,9 @@ public class ScreenWatcher implements Initiator
     return true;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void dumpFields (List<Field> fields)
+  // ---------------------------------------------------------------------------------//
   {
     fields.forEach (System.out::println);
     //    for (Field field : fields)
@@ -874,8 +945,10 @@ public class ScreenWatcher implements Initiator
     System.out.println ("-------------------------");
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
 
@@ -891,10 +964,9 @@ public class ScreenWatcher implements Initiator
     text.append (String.format ("Datasets for ...... %s%n", datasetsMatching));
     text.append (String.format ("Volume ............ %s%n", datasetsOnVolume));
     text.append (String.format ("Datasets .......... %s%n",
-                                screenDatasets == null ? "" : screenDatasets.size ()));
-    text.append (String
-        .format ("Recent datasets ... %s%n",
-                 screenDatasets == null ? "" : recentDatasetNames.size ()));
+        screenDatasets == null ? "" : screenDatasets.size ()));
+    text.append (String.format ("Recent datasets ... %s%n",
+        screenDatasets == null ? "" : recentDatasetNames.size ()));
     int i = 0;
     for (String datasetName : recentDatasetNames)
       text.append (String.format ("            %3d ... %s%n", ++i, datasetName));
@@ -902,7 +974,9 @@ public class ScreenWatcher implements Initiator
     return text.toString ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private void sendRequest (DatabaseRequest request)
+  // ---------------------------------------------------------------------------------//
   {
     if (queue != null)
       try
@@ -915,8 +989,10 @@ public class ScreenWatcher implements Initiator
       }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void processResult (DatabaseRequest request)
+  // ---------------------------------------------------------------------------------//
   {
     //    System.out.println (request);
   }

@@ -11,7 +11,9 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+// -----------------------------------------------------------------------------------//
 public final class ScreenPosition
+// -----------------------------------------------------------------------------------//
 {
   // screen display characters
   private static final String[] charString = new String[256];
@@ -36,7 +38,9 @@ public final class ScreenPosition
   private boolean isVisible = true;
   private ScreenContext screenContext;
 
+  // ---------------------------------------------------------------------------------//
   static
+  // ---------------------------------------------------------------------------------//
   {
     // build strings to use in the screen-drawing routine
     String space = " ";
@@ -46,8 +50,10 @@ public final class ScreenPosition
       charString[i] = (char) i + "";
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenPosition (int position, GraphicsContext gc,
       ScreenDimensions screenDimensions, ScreenContext screenContext)
+  // ---------------------------------------------------------------------------------//
   {
     this.position = position;
     this.screenDimensions = screenDimensions;
@@ -62,7 +68,9 @@ public final class ScreenPosition
   // called from Pen.startField()
   // called from Pen.write()
   // called from Pen.writeGraphics()
+  // ---------------------------------------------------------------------------------//
   void reset ()
+  // ---------------------------------------------------------------------------------//
   {
     isVisible = true;
     value = 0;
@@ -79,25 +87,33 @@ public final class ScreenPosition
   // called from Field.pull()
   // called from Field.push()
   // called from Field.setText()
+  // ---------------------------------------------------------------------------------//
   void setChar (byte value)
+  // ---------------------------------------------------------------------------------//
   {
     this.value = value;
     isGraphics = false;
   }
 
   // called from Pen.writeGraphics()
+  // ---------------------------------------------------------------------------------//
   void setGraphicsChar (byte value)
+  // ---------------------------------------------------------------------------------//
   {
     this.value = value;
     isGraphics = true;
   }
 
+  // ---------------------------------------------------------------------------------//
   StartFieldAttribute getStartFieldAttribute ()
+  // ---------------------------------------------------------------------------------//
   {
     return startFieldAttribute;
   }
 
+  // ---------------------------------------------------------------------------------//
   void setStartField (StartFieldAttribute startFieldAttribute)
+  // ---------------------------------------------------------------------------------//
   {
     if (startFieldAttribute == null)
     {
@@ -108,33 +124,45 @@ public final class ScreenPosition
     this.startFieldAttribute = startFieldAttribute;
   }
 
+  // ---------------------------------------------------------------------------------//
   void addAttribute (Attribute attribute)
+  // ---------------------------------------------------------------------------------//
   {
     attributes.add (attribute);
   }
 
+  // ---------------------------------------------------------------------------------//
   List<Attribute> getAttributes ()
+  // ---------------------------------------------------------------------------------//
   {
     return attributes;
   }
 
+  // ---------------------------------------------------------------------------------//
   int getPosition ()
+  // ---------------------------------------------------------------------------------//
   {
     return position;
   }
 
+  // ---------------------------------------------------------------------------------//
   void setScreenDimensions (ScreenDimensions screenDimensions)
+  // ---------------------------------------------------------------------------------//
   {
     this.screenDimensions = screenDimensions;
   }
 
+  // ---------------------------------------------------------------------------------//
   ScreenDimensions getScreenDimensions ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenDimensions;
   }
 
   // called by Field when deleting a character
+  // ---------------------------------------------------------------------------------//
   void clearAttributes ()
+  // ---------------------------------------------------------------------------------//
   {
     attributes.clear ();
   }
@@ -142,36 +170,48 @@ public final class ScreenPosition
   // Password fields etc
   // called from PenType1.startField()
   // called from Field constructor
+  // ---------------------------------------------------------------------------------//
   void setVisible (boolean visible)
+  // ---------------------------------------------------------------------------------//
   {
     this.isVisible = visible;
   }
 
   // All the colour and highlight options
+  // ---------------------------------------------------------------------------------//
   void setScreenContext (ScreenContext screenContext)
+  // ---------------------------------------------------------------------------------//
   {
     if (screenContext == null)
       throw new IllegalArgumentException ("ScreenContext cannot be null");
     this.screenContext = screenContext;
   }
 
+  // ---------------------------------------------------------------------------------//
   ScreenContext getScreenContext ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenContext;
   }
 
+  // ---------------------------------------------------------------------------------//
   boolean isStartField ()
+  // ---------------------------------------------------------------------------------//
   {
     return startFieldAttribute != null;
   }
 
+  // ---------------------------------------------------------------------------------//
   boolean isGraphicsChar ()
+  // ---------------------------------------------------------------------------------//
   {
     return isGraphics;
   }
 
   // used by Field.getText()
+  // ---------------------------------------------------------------------------------//
   char getChar ()
+  // ---------------------------------------------------------------------------------//
   {
     if ((value & 0xC0) == 0)
       return ' ';
@@ -190,7 +230,9 @@ public final class ScreenPosition
     return (char) Dm3270Utility.ebc2asc[value & 0xFF];
   }
 
+  // ---------------------------------------------------------------------------------//
   String getCharString ()
+  // ---------------------------------------------------------------------------------//
   {
     if (isStartField ())
       return " ";
@@ -214,17 +256,23 @@ public final class ScreenPosition
     return charString[Dm3270Utility.ebc2asc[value & 0xFF]];
   }
 
+  // ---------------------------------------------------------------------------------//
   byte getByte ()
+  // ---------------------------------------------------------------------------------//
   {
     return value;
   }
 
+  // ---------------------------------------------------------------------------------//
   boolean isNull ()
+  // ---------------------------------------------------------------------------------//
   {
     return value == 0;
   }
 
+  // ---------------------------------------------------------------------------------//
   int pack (byte[] buffer, int ptr, byte order)
+  // ---------------------------------------------------------------------------------//
   {
     assert isStartField ();
 
@@ -245,7 +293,9 @@ public final class ScreenPosition
     return ptr;
   }
 
+  // ---------------------------------------------------------------------------------//
   int pack (byte[] buffer, int ptr, byte[] replyTypes)
+  // ---------------------------------------------------------------------------------//
   {
     assert !isStartField ();
 
@@ -264,7 +314,9 @@ public final class ScreenPosition
   // called by Screen.draw()
   // called by Screen.drawPosition()
   // called by UserScreen.drawScreen()
+  // ---------------------------------------------------------------------------------//
   void draw (boolean hasCursor)
+  // ---------------------------------------------------------------------------------//
   {
     FontDetails fontDetails = screenContext.fontDetails;
 
@@ -276,8 +328,8 @@ public final class ScreenPosition
       gc.setFill (hasCursor ^ screenContext.reverseVideo ? screenContext.foregroundColor
           : screenContext.backgroundColor);
     else
-      gc.setFill (hasCursor ? screenContext.foregroundColor
-          : screenContext.backgroundColor);
+      gc.setFill (
+          hasCursor ? screenContext.foregroundColor : screenContext.backgroundColor);
 
     gc.fillRect (x, y, fontDetails.width, fontDetails.height);
 
@@ -307,7 +359,9 @@ public final class ScreenPosition
       }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void doGraphics (double x, double y)
+  // ---------------------------------------------------------------------------------//
   {
     x += 0.5;     // stroke commands need to be offset for Windows
     y += 0.5;
@@ -352,8 +406,10 @@ public final class ScreenPosition
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
     if (isStartField ())

@@ -42,8 +42,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
+// -----------------------------------------------------------------------------------//
 public class Screen extends Canvas
     implements DisplayScreen, TransferListener, TelnetStateListener
+// -----------------------------------------------------------------------------------//
 {
   private static final Toolkit defaultToolkit = Toolkit.getDefaultToolkit ();
   private static final boolean SHOW_CURSOR = true;
@@ -97,9 +99,11 @@ public class Screen extends Canvas
     DEFAULT, ALTERNATE
   }
 
+  // ---------------------------------------------------------------------------------//
   public Screen (ScreenDimensions defaultScreenDimensions,
       ScreenDimensions alternateScreenDimensions, Preferences prefs, Function function,
       PluginsStage pluginsStage, Site serverSite, TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     this.defaultScreenDimensions = defaultScreenDimensions;
     this.alternateScreenDimensions = alternateScreenDimensions;
@@ -150,38 +154,52 @@ public class Screen extends Canvas
     pluginsStage.setScreen (this);
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenWatcher getScreenWatcher ()
+  // ---------------------------------------------------------------------------------//
   {
     return fieldManager.getScreenWatcher ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public TransferManager getTransferManager ()
+  // ---------------------------------------------------------------------------------//
   {
     return transferManager;
   }
 
+  // ---------------------------------------------------------------------------------//
   public SystemMessage getSystemMessage ()
+  // ---------------------------------------------------------------------------------//
   {
     return systemMessage;
   }
 
+  // ---------------------------------------------------------------------------------//
   public MenuItem getMenuItemUpload ()
+  // ---------------------------------------------------------------------------------//
   {
     return transferMenu.getMenuItemUpload ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public MenuItem getMenuItemDownload ()
+  // ---------------------------------------------------------------------------------//
   {
     return transferMenu.getMenuItemDownload ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public TelnetState getTelnetState ()
+  // ---------------------------------------------------------------------------------//
   {
     return telnetState;
   }
 
   // called from WriteCommand.process()
+  // ---------------------------------------------------------------------------------//
   public void setCurrentScreen (ScreenOption value)
+  // ---------------------------------------------------------------------------------//
   {
     if (currentScreen == value)
       return;
@@ -198,21 +216,27 @@ public class Screen extends Canvas
     BufferAddress.setScreenWidth (screenDimensions.columns);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public ScreenDimensions getScreenDimensions ()
+  // ---------------------------------------------------------------------------------//
   {
     return currentScreen == ScreenOption.DEFAULT ? defaultScreenDimensions
         : alternateScreenDimensions;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setIsConsole ()
+  // ---------------------------------------------------------------------------------//
   {
     consolePane.setIsConsole (true);
     consoleLogStage.setConsoleLog (systemMessage.getConsoleLog ());
   }
 
   // called from the ConsolePane constructor
+  // ---------------------------------------------------------------------------------//
   public void setConsolePane (ConsolePane consolePane)
+  // ---------------------------------------------------------------------------------//
   {
     this.consolePane = consolePane;
 
@@ -223,81 +247,111 @@ public class Screen extends Canvas
     addKeyboardStatusChangeListener (consolePane);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setStatusText (String text)
+  // ---------------------------------------------------------------------------------//
   {
     consolePane.setStatusText (text);
   }
 
+  // ---------------------------------------------------------------------------------//
   public FieldManager getFieldManager ()
+  // ---------------------------------------------------------------------------------//
   {
     return fieldManager;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean isTSOCommandScreen ()
+  // ---------------------------------------------------------------------------------//
   {
     return fieldManager.getScreenWatcher ().isTSOCommandScreen ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public Field getTSOCommandField ()
+  // ---------------------------------------------------------------------------------//
   {
     return fieldManager.getScreenWatcher ().getTSOCommandField ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getPrefix ()
+  // ---------------------------------------------------------------------------------//
   {
     return fieldManager.getScreenWatcher ().getPrefix ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public FontManager getFontManager ()
+  // ---------------------------------------------------------------------------------//
   {
     return fontManager;
   }
 
   // called by WriteCommand.process()
+  // ---------------------------------------------------------------------------------//
   public PluginsStage getPluginsStage ()
+  // ---------------------------------------------------------------------------------//
   {
     return pluginsStage;
   }
 
+  // ---------------------------------------------------------------------------------//
   public TransfersStage getAssistantStage ()
+  // ---------------------------------------------------------------------------------//
   {
     return transfersStage;
   }
 
+  // ---------------------------------------------------------------------------------//
   public ConsoleLogStage getConsoleLogStage ()
+  // ---------------------------------------------------------------------------------//
   {
     return consoleLogStage;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void close ()
+  // ---------------------------------------------------------------------------------//
   {
     transfersStage.closeWindow ();
     fieldManager.close ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public Function getFunction ()
+  // ---------------------------------------------------------------------------------//
   {
     return function;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getPreviousTSOCommand ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenPacker.getPreviousTSOCommand ();
   }
 
   // called from AIDCommand.process()
+  // ---------------------------------------------------------------------------------//
   public void addTSOCommand (String command)
+  // ---------------------------------------------------------------------------------//
   {
     screenPacker.addTSOCommand (command);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void listTSOCommands ()
+  // ---------------------------------------------------------------------------------//
   {
     screenPacker.listTSOCommands ();
   }
 
   // display a message on the screen - only used when logging off
+  // ---------------------------------------------------------------------------------//
   public void displayText (String text)
+  // ---------------------------------------------------------------------------------//
   {
     gc.setFill (ColorAttribute.colors[8]);                // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
@@ -319,13 +373,17 @@ public class Screen extends Canvas
   // called from PluginsStage.processPluginAuto()
   // called from PluginsStage.processPluginRequest()
   // called from PluginsStage.processReply()
+  // ---------------------------------------------------------------------------------//
   public Cursor getScreenCursor ()
+  // ---------------------------------------------------------------------------------//
   {
     return cursor;
   }
 
   // called from WriteControlCharacter.process()
+  // ---------------------------------------------------------------------------------//
   public void resetInsertMode ()
+  // ---------------------------------------------------------------------------------//
   {
     if (insertMode)
       toggleInsertMode ();
@@ -333,7 +391,9 @@ public class Screen extends Canvas
 
   // called from ConsoleKeyPress.handle()
   // called from ConsolePane.sendAID()
+  // ---------------------------------------------------------------------------------//
   public void toggleInsertMode ()
+  // ---------------------------------------------------------------------------------//
   {
     insertMode = !insertMode;
     fireKeyboardStatusChange ("");
@@ -341,13 +401,17 @@ public class Screen extends Canvas
 
   // called from Cursor.typeChar()
   // called from ConsolePane.sendAID()
+  // ---------------------------------------------------------------------------------//
   public boolean isInsertMode ()
+  // ---------------------------------------------------------------------------------//
   {
     return insertMode;
   }
 
   // called from EraseAllUnprotectedCommand.process()
+  // ---------------------------------------------------------------------------------//
   public void eraseAllUnprotected ()
+  // ---------------------------------------------------------------------------------//
   {
     Optional<Field> firstUnprotectedField = fieldManager.eraseAllUnprotected ();
 
@@ -359,13 +423,17 @@ public class Screen extends Canvas
       cursor.moveTo (firstUnprotectedField.get ().getFirstLocation ());
   }
 
+  // ---------------------------------------------------------------------------------//
   public void buildFields (WriteControlCharacter wcc)
+  // ---------------------------------------------------------------------------------//
   {
     fieldManager.buildFields (screenPositions);        // what about resetModified?
   }
 
   // called from WriteCommand.process()
+  // ---------------------------------------------------------------------------------//
   public void checkRecording ()
+  // ---------------------------------------------------------------------------------//
   {
     byte savedReplyMode = replyMode;
     byte[] savedReplyTypes = replyTypes;
@@ -379,7 +447,9 @@ public class Screen extends Canvas
   // called from this.eraseAllUnprotected()
   // called from this.resize()
   // called from Write.process()
+  // ---------------------------------------------------------------------------------//
   public void draw ()
+  // ---------------------------------------------------------------------------------//
   {
     int max = getScreenDimensions ().size;
     for (int i = 0; i < max; i++)
@@ -402,7 +472,9 @@ public class Screen extends Canvas
   // called from Cursor.delete()
   // called from Cursor.eraseEOL()
   // called from Cursor.moveTo()
+  // ---------------------------------------------------------------------------------//
   void drawPosition (int position, boolean hasCursor)
+  // ---------------------------------------------------------------------------------//
   {
     screenPositions[position].draw (hasCursor);
   }
@@ -432,14 +504,18 @@ public class Screen extends Canvas
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   void eraseScreen ()
+  // ---------------------------------------------------------------------------------//
   {
     gc.setFill (ColorAttribute.colors[8]);             // black
     gc.fillRect (0, 0, getWidth (), getHeight ());
   }
 
   // called from Cursor.home()
+  // ---------------------------------------------------------------------------------//
   Optional<Field> getHomeField ()
+  // ---------------------------------------------------------------------------------//
   {
     List<Field> fields = fieldManager.getUnprotectedFields ();
     if (fields != null && fields.size () > 0)
@@ -447,25 +523,33 @@ public class Screen extends Canvas
     return Optional.empty ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setAID (byte aid)
+  // ---------------------------------------------------------------------------------//
   {
     currentAID = aid;
   }
 
+  // ---------------------------------------------------------------------------------//
   public byte getAID ()
+  // ---------------------------------------------------------------------------------//
   {
     return currentAID;
   }
 
   // called from SetReplyModeSF
   // called from this.checkRecording()
+  // ---------------------------------------------------------------------------------//
   public void setReplyMode (byte replyMode, byte[] replyTypes)
+  // ---------------------------------------------------------------------------------//
   {
     this.replyMode = replyMode;
     this.replyTypes = replyTypes;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setFieldText (Field field, String text)
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -479,7 +563,9 @@ public class Screen extends Canvas
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getScreenText ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
 
@@ -491,11 +577,9 @@ public class Screen extends Canvas
   }
 
   // ---------------------------------------------------------------------------------//
-  // TelnetStateListener methods
-  // ---------------------------------------------------------------------------------//
-
   @Override
   public void telnetStateChanged (TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     //    ScreenDimensions primary = telnetState.getPrimary ();
     ScreenDimensions alternate = telnetState.getSecondary ();
@@ -509,11 +593,9 @@ public class Screen extends Canvas
   }
 
   // ---------------------------------------------------------------------------------//
-  // TransferListener methods
-  // ---------------------------------------------------------------------------------//
-
   @Override
   public void transferStatusChanged (TransferStatus status, Transfer transfer)
+  // ---------------------------------------------------------------------------------//
   {
     if (transfer.isData ())
       switch (status)
@@ -542,41 +624,49 @@ public class Screen extends Canvas
       }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void setText (String text)
+  // ---------------------------------------------------------------------------------//
   {
     Platform.runLater ( () -> setStatusText (text));
   }
 
   // ---------------------------------------------------------------------------------//
-  // DisplayScreen interface methods
-  // ---------------------------------------------------------------------------------//
-
   @Override
   public Pen getPen ()
+  // ---------------------------------------------------------------------------------//
   {
     return pen;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public ScreenPosition getScreenPosition (int position)
+  // ---------------------------------------------------------------------------------//
   {
     return screenPositions[position];
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public ScreenPosition[] getScreenPositions ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenPositions;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public int validate (int position)
+  // ---------------------------------------------------------------------------------//
   {
     return pen.validate (position);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void clearScreen ()
+  // ---------------------------------------------------------------------------------//
   {
     eraseScreen ();
     cursor.moveTo (0);
@@ -584,8 +674,10 @@ public class Screen extends Canvas
     fieldManager.reset ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void insertCursor (int position)
+  // ---------------------------------------------------------------------------------//
   {
     insertedCursorPosition = position;                // move it here later
   }
@@ -596,7 +688,10 @@ public class Screen extends Canvas
 
   // called from ConsoleKeyPress.handle() in response to a user command
   // called from this.readModifiedFields(0x..) below
+
+  // ---------------------------------------------------------------------------------//
   public AIDCommand readModifiedFields ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenPacker.readModifiedFields (currentAID, getScreenCursor ().getLocation (),
         readModifiedAll);
@@ -606,7 +701,9 @@ public class Screen extends Canvas
   //      ReadCommand.process() in response to a ReadBuffer (F2) command
   //      ReadPartitionSF.process() in response to a ReadBuffer (F2) command
   //      ScreenHistory.requestScreen()
+  // ---------------------------------------------------------------------------------//
   public AIDCommand readBuffer ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenPacker.readBuffer (currentAID, getScreenCursor ().getLocation (),
         replyMode, replyTypes);
@@ -616,7 +713,9 @@ public class Screen extends Canvas
   // or a ReadModifiedAll (6E) command
   // Called from ReadPartitionSF.process() in response to a ReadModified (F6)
   // or a ReadModifiedAll (6E) command
+  // ---------------------------------------------------------------------------------//
   public AIDCommand readModifiedFields (byte type)
+  // ---------------------------------------------------------------------------------//
   {
     switch (type)
     {
@@ -640,20 +739,28 @@ public class Screen extends Canvas
   // Events to be processed from WriteControlCharacter.process()
   // ---------------------------------------------------------------------------------//
 
+  // ---------------------------------------------------------------------------------//
   public void resetPartition ()
+  // ---------------------------------------------------------------------------------//
   {
   }
 
+  // ---------------------------------------------------------------------------------//
   public void startPrinter ()
+  // ---------------------------------------------------------------------------------//
   {
   }
 
+  // ---------------------------------------------------------------------------------//
   public void soundAlarm ()
+  // ---------------------------------------------------------------------------------//
   {
     defaultToolkit.beep ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public void restoreKeyboard ()
+  // ---------------------------------------------------------------------------------//
   {
     setAID (NO_AID_SPECIFIED);
     cursor.setVisible (true);
@@ -661,7 +768,9 @@ public class Screen extends Canvas
     fireKeyboardStatusChange ("");
   }
 
+  // ---------------------------------------------------------------------------------//
   public void lockKeyboard (String keyName)
+  // ---------------------------------------------------------------------------------//
   {
     keyboardLocked = true;
     fireKeyboardStatusChange (keyName);
@@ -670,12 +779,16 @@ public class Screen extends Canvas
       cursor.setVisible (false);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void resetModified ()
+  // ---------------------------------------------------------------------------------//
   {
     fieldManager.getUnprotectedFields ().forEach (f -> f.setModified (false));
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean isKeyboardLocked ()
+  // ---------------------------------------------------------------------------------//
   {
     return keyboardLocked;
   }
@@ -686,20 +799,26 @@ public class Screen extends Canvas
 
   private final Set<KeyboardStatusListener> keyboardChangeListeners = new HashSet<> ();
 
+  // ---------------------------------------------------------------------------------//
   private void fireKeyboardStatusChange (String keyName)
+  // ---------------------------------------------------------------------------------//
   {
     KeyboardStatusChangedEvent evt =
         new KeyboardStatusChangedEvent (insertMode, keyboardLocked, keyName);
     keyboardChangeListeners.forEach (l -> l.keyboardStatusChanged (evt));
   }
 
+  // ---------------------------------------------------------------------------------//
   public void addKeyboardStatusChangeListener (KeyboardStatusListener listener)
+  // ---------------------------------------------------------------------------------//
   {
     if (!keyboardChangeListeners.contains (listener))
       keyboardChangeListeners.add (listener);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void removeKeyboardStatusChangeListener (KeyboardStatusListener listener)
+  // ---------------------------------------------------------------------------------//
   {
     if (keyboardChangeListeners.contains (listener))
       keyboardChangeListeners.remove (listener);
@@ -709,7 +828,9 @@ public class Screen extends Canvas
   // Screen history
   // ---------------------------------------------------------------------------------//
 
+  // ---------------------------------------------------------------------------------//
   public Optional<HistoryManager> pause ()             // triggered by cmd-s
+  // ---------------------------------------------------------------------------------//
   {
     if (historyManager.size () == 0)
       return Optional.empty ();
@@ -720,7 +841,9 @@ public class Screen extends Canvas
     return Optional.of (historyManager);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void resume ()                     // also triggered by cmd-s
+  // ---------------------------------------------------------------------------------//
   {
     keyboardLocked = historyManager.resume ();
   }
