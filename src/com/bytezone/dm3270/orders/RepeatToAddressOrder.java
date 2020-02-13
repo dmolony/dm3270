@@ -4,13 +4,17 @@ import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class RepeatToAddressOrder extends Order
+// -----------------------------------------------------------------------------------//
 {
   private final BufferAddress stopAddress;
   private char repeatCharacter;
   private byte rptChar;
 
+  // ---------------------------------------------------------------------------------//
   public RepeatToAddressOrder (byte[] buffer, int offset)
+  // ---------------------------------------------------------------------------------//
   {
     assert buffer[offset] == Order.REPEAT_TO_ADDRESS;
 
@@ -38,8 +42,10 @@ public class RepeatToAddressOrder extends Order
       repeatCharacter = ' ';
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (DisplayScreen screen)
+  // ---------------------------------------------------------------------------------//
   {
     int stopLocation = stopAddress.getLocation ();
 
@@ -51,14 +57,18 @@ public class RepeatToAddressOrder extends Order
         pen.write (rptChar);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     return String.format ("RTA : %-12s : %02X [%1.1s]", stopAddress, rptChar,
-                          repeatCharacter);
+        repeatCharacter);
   }
 
+  // ---------------------------------------------------------------------------------//
   public static boolean isValid (byte value)
+  // ---------------------------------------------------------------------------------//
   {
     return value <= 0 || value >= 0x40;
   }

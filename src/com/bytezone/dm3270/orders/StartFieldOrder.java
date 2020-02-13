@@ -4,12 +4,16 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
 
+// -----------------------------------------------------------------------------------//
 public class StartFieldOrder extends Order
+// -----------------------------------------------------------------------------------//
 {
   private final StartFieldAttribute startFieldAttribute;
   private int location = -1;
 
+  // ---------------------------------------------------------------------------------//
   public StartFieldOrder (byte[] buffer, int offset)
+  // ---------------------------------------------------------------------------------//
   {
     assert buffer[offset] == Order.START_FIELD;
 
@@ -20,7 +24,9 @@ public class StartFieldOrder extends Order
     this.buffer[1] = buffer[offset + 1];
   }
 
+  // ---------------------------------------------------------------------------------//
   public StartFieldOrder (StartFieldAttribute startFieldAttribute)
+  // ---------------------------------------------------------------------------------//
   {
     this.startFieldAttribute = startFieldAttribute;
     this.buffer = new byte[2];
@@ -28,8 +34,10 @@ public class StartFieldOrder extends Order
     this.buffer[1] = startFieldAttribute.getAttributeValue ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (DisplayScreen screen)
+  // ---------------------------------------------------------------------------------//
   {
     Pen pen = screen.getPen ();
     location = pen.getPosition ();
@@ -38,8 +46,10 @@ public class StartFieldOrder extends Order
     pen.moveRight ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     return String.format ("SF  : %s (%04d)", startFieldAttribute, location);
   }

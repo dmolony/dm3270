@@ -7,11 +7,15 @@ import java.util.Optional;
 import com.bytezone.dm3270.attributes.Attribute;
 import com.bytezone.dm3270.display.DisplayScreen;
 
+// -----------------------------------------------------------------------------------//
 public class ModifyFieldOrder extends Order
+// -----------------------------------------------------------------------------------//
 {
   private final List<Attribute> attributes = new ArrayList<> ();
 
+  // ---------------------------------------------------------------------------------//
   public ModifyFieldOrder (byte[] buffer, int offset)
+  // ---------------------------------------------------------------------------------//
   {
     assert buffer[offset] == Order.MODIFY_FIELD;
 
@@ -37,8 +41,10 @@ public class ModifyFieldOrder extends Order
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (DisplayScreen screen)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("What happens now?");
   }

@@ -3,11 +3,15 @@ package com.bytezone.dm3270.orders;
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
 
+// -----------------------------------------------------------------------------------//
 public class GraphicsEscapeOrder extends Order
+// -----------------------------------------------------------------------------------//
 {
   private final byte code;
 
+  // ---------------------------------------------------------------------------------//
   public GraphicsEscapeOrder (byte[] buffer, int offset)
+  // ---------------------------------------------------------------------------------//
   {
     assert buffer[offset] == Order.GRAPHICS_ESCAPE;
     code = buffer[offset + 1];
@@ -17,8 +21,10 @@ public class GraphicsEscapeOrder extends Order
     this.buffer[1] = buffer[offset + 1];
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (DisplayScreen screen)
+  // ---------------------------------------------------------------------------------//
   {
     Pen pen = screen.getPen ();
     int max = duplicates;
@@ -26,8 +32,10 @@ public class GraphicsEscapeOrder extends Order
       pen.writeGraphics (code);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public boolean matchesPreviousOrder (Order order)
+  // ---------------------------------------------------------------------------------//
   {
     if (order instanceof GraphicsEscapeOrder
         && this.code == ((GraphicsEscapeOrder) order).code)
@@ -35,8 +43,10 @@ public class GraphicsEscapeOrder extends Order
     return false;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     String duplicateText = duplicates == 0 ? "" : "x " + (duplicates + 1);
     return String.format ("GE  : %02X %s", code, duplicateText);

@@ -5,9 +5,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+// -----------------------------------------------------------------------------------//
 public abstract class DefaultPlugin implements Plugin
+// -----------------------------------------------------------------------------------//
 {
+  // ---------------------------------------------------------------------------------//
   protected String getMD5 (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -32,7 +36,9 @@ public abstract class DefaultPlugin implements Plugin
   //    return null;
   //  }
 
+  // ---------------------------------------------------------------------------------//
   protected static int countModifiableFields (PluginData data)
+  // ---------------------------------------------------------------------------------//
   {
     int count = 0;
     for (PluginField field : data.screenFields)
@@ -41,7 +47,9 @@ public abstract class DefaultPlugin implements Plugin
     return count;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected static List<PluginField> getModifiableFields (PluginData data)
+  // ---------------------------------------------------------------------------------//
   {
     List<PluginField> fields = new ArrayList<> ();
     for (PluginField field : data.screenFields)
@@ -50,7 +58,9 @@ public abstract class DefaultPlugin implements Plugin
     return fields;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected static List<PluginField> getProtectedFields (PluginData data)
+  // ---------------------------------------------------------------------------------//
   {
     List<PluginField> fields = new ArrayList<> ();
     for (PluginField field : data.screenFields)
@@ -59,7 +69,9 @@ public abstract class DefaultPlugin implements Plugin
     return fields;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected static List<PluginField> getAlphanumericFields (PluginData data)
+  // ---------------------------------------------------------------------------------//
   {
     List<PluginField> fields = new ArrayList<> ();
     for (PluginField field : data.screenFields)
@@ -68,7 +80,9 @@ public abstract class DefaultPlugin implements Plugin
     return fields;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected static List<PluginField> getNumericFields (PluginData data)
+  // ---------------------------------------------------------------------------------//
   {
     List<PluginField> fields = new ArrayList<> ();
     for (PluginField field : data.screenFields)
@@ -78,10 +92,8 @@ public abstract class DefaultPlugin implements Plugin
   }
 
   // ---------------------------------------------------------------------------------//
-  // toHex
-  // ---------------------------------------------------------------------------------//
-
   static String toHex (byte[] bytes)
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder builder = new StringBuilder (bytes.length * 2);
     for (int i = 0; i < bytes.length; i++)

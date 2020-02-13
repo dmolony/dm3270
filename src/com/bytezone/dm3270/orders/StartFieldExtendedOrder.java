@@ -10,13 +10,17 @@ import com.bytezone.dm3270.attributes.StartFieldAttribute;
 import com.bytezone.dm3270.display.DisplayScreen;
 import com.bytezone.dm3270.display.Pen;
 
+// -----------------------------------------------------------------------------------//
 public class StartFieldExtendedOrder extends Order
+// -----------------------------------------------------------------------------------//
 {
   private StartFieldAttribute startFieldAttribute;
   private final List<Attribute> attributes = new ArrayList<Attribute> ();
   private int location = -1;
 
+  // ---------------------------------------------------------------------------------//
   public StartFieldExtendedOrder (byte[] buffer, int offset)
+  // ---------------------------------------------------------------------------------//
   {
     assert buffer[offset] == Order.START_FIELD_EXTENDED;
 
@@ -48,8 +52,10 @@ public class StartFieldExtendedOrder extends Order
     startFieldAttribute.setExtended ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public StartFieldExtendedOrder (StartFieldAttribute startFieldAttribute,
       List<Attribute> attributes)
+  // ---------------------------------------------------------------------------------//
   {
     this.startFieldAttribute = startFieldAttribute;
     this.attributes.addAll (attributes);
@@ -65,7 +71,9 @@ public class StartFieldExtendedOrder extends Order
       ptr = attribute.pack (buffer, ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public StartFieldExtendedOrder (StartFieldAttribute startFieldAttribute)
+  // ---------------------------------------------------------------------------------//
   {
     this.startFieldAttribute = startFieldAttribute;
     buffer = new byte[4];
@@ -74,8 +82,10 @@ public class StartFieldExtendedOrder extends Order
     startFieldAttribute.pack (buffer, 2);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void process (DisplayScreen screen)
+  // ---------------------------------------------------------------------------------//
   {
     Pen pen = screen.getPen ();
     location = pen.getPosition ();
@@ -87,8 +97,10 @@ public class StartFieldExtendedOrder extends Order
     pen.moveRight ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
     String locationText = location >= 0 ? String.format ("(%04d)", location) : "";

@@ -21,7 +21,12 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -29,7 +34,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+// -----------------------------------------------------------------------------------//
 public class PluginsStage extends PreferencesStage
+// -----------------------------------------------------------------------------------//
 {
   private static final int MAX_PLUGINS = 10;
   private static KeyCode[] keyCodes =
@@ -46,7 +53,9 @@ public class PluginsStage extends PreferencesStage
   private int sequence;
   private ConsolePane consolePane;
 
+  // ---------------------------------------------------------------------------------//
   public PluginsStage (Preferences prefs)
+  // ---------------------------------------------------------------------------------//
   {
     super (prefs);
     setTitle ("Plugin Manager");
@@ -105,18 +114,24 @@ public class PluginsStage extends PreferencesStage
     cancelButton.setOnAction (e -> this.hide ());
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setScreen (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     this.screen = screen;
     this.screenDimensions = screen.getScreenDimensions ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setConsolePane (ConsolePane consolePane)
+  // ---------------------------------------------------------------------------------//
   {
     this.consolePane = consolePane;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void processAll (PluginData data)
+  // ---------------------------------------------------------------------------------//
   {
     for (PluginEntry pluginEntry : plugins)
       if (pluginEntry.isActivated)
@@ -134,7 +149,9 @@ public class PluginsStage extends PreferencesStage
       }
   }
 
+  // ---------------------------------------------------------------------------------//
   public int activePlugins ()
+  // ---------------------------------------------------------------------------------//
   {
     int activePlugins = 0;
     for (PluginEntry pluginEntry : plugins)
@@ -146,23 +163,31 @@ public class PluginsStage extends PreferencesStage
     return activePlugins;
   }
 
+  // ---------------------------------------------------------------------------------//
   public Menu getMenu (Site site)
+  // ---------------------------------------------------------------------------------//
   {
     setMenu (site);
     return menu;
   }
 
+  // ---------------------------------------------------------------------------------//
   public MenuItem getEditMenuItem ()
+  // ---------------------------------------------------------------------------------//
   {
     return editMenuItem;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean allowsPlugins ()
+  // ---------------------------------------------------------------------------------//
   {
     return true;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void setMenu (Site site)
+  // ---------------------------------------------------------------------------------//
   {
     menu = new Menu ("Plugins");
 
@@ -203,7 +228,9 @@ public class PluginsStage extends PreferencesStage
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void itemSelected (ActionEvent e)
+  // ---------------------------------------------------------------------------------//
   {
     CheckMenuItem menuItem = ((CheckMenuItem) e.getSource ());
     PluginEntry pluginEntry = (PluginEntry) menuItem.getUserData ();
@@ -211,7 +238,9 @@ public class PluginsStage extends PreferencesStage
     rebuildMenu ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private void rebuildMenu ()
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("rebuilding");
     ObservableList<MenuItem> items = menu.getItems ();
@@ -224,7 +253,9 @@ public class PluginsStage extends PreferencesStage
         items.add (pluginEntry.requestMenuItem);
   }
 
+  // ---------------------------------------------------------------------------------//
   private void readPrefs ()
+  // ---------------------------------------------------------------------------------//
   {
     for (int i = 0; i < MAX_PLUGINS; i++)
     {
@@ -237,7 +268,9 @@ public class PluginsStage extends PreferencesStage
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void savePrefs ()
+  // ---------------------------------------------------------------------------------//
   {
     for (int i = 0; i < MAX_PLUGINS; i++)
     {
@@ -255,7 +288,9 @@ public class PluginsStage extends PreferencesStage
 
   // called from WriteCommand.process() after unlocking keyboard
   // will eventually be called before unlocking the keyboard
+  // ---------------------------------------------------------------------------------//
   public AIDCommand processPluginAuto ()
+  // ---------------------------------------------------------------------------------//
   {
     assert !screen.isKeyboardLocked ();
 
@@ -287,7 +322,9 @@ public class PluginsStage extends PreferencesStage
 
   // created by PluginsStage.itemSelected() -> PluginEntry.select()
   // which sets menuItem.setOnAction (e -> screen.processPluginRequest (plugin))
+  // ---------------------------------------------------------------------------------//
   public void processPluginRequest (Plugin plugin)
+  // ---------------------------------------------------------------------------------//
   {
     assert consolePane != null;
 
@@ -308,7 +345,9 @@ public class PluginsStage extends PreferencesStage
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private AIDCommand processReply (PluginData data)
+  // ---------------------------------------------------------------------------------//
   {
     FieldManager fieldManager = screen.getFieldManager ();
     Cursor cursor = screen.getScreenCursor ();
@@ -366,7 +405,9 @@ public class PluginsStage extends PreferencesStage
     return null;
   }
 
+  // ---------------------------------------------------------------------------------//
   private class PluginEntry
+  // ---------------------------------------------------------------------------------//
   {
     private final TextField name = new TextField ();
     private final TextField className = new TextField ();

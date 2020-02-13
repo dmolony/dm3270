@@ -3,7 +3,9 @@ package com.bytezone.dm3270.plugins;
 import java.util.ArrayList;
 import java.util.List;
 
+// -----------------------------------------------------------------------------------//
 public class PluginData
+// -----------------------------------------------------------------------------------//
 {
   public final int sequence;
   public final List<PluginField> screenFields;
@@ -14,8 +16,10 @@ public class PluginData
   public final List<PluginField> changedFields = new ArrayList<> ();
   public boolean suppressDisplay;
 
+  // ---------------------------------------------------------------------------------//
   public PluginData (int sequence, ScreenLocation screenLocation,
       List<PluginField> fields)
+  // ---------------------------------------------------------------------------------//
   {
     this.sequence = sequence;
     //    initialCursorLocation = new ScreenLocation (row, column);
@@ -23,13 +27,17 @@ public class PluginData
     screenFields = fields;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void addChangedField (PluginField field)
+  // ---------------------------------------------------------------------------------//
   {
     if (!changedFields.contains (field))
       changedFields.add (field);
   }
 
+  // ---------------------------------------------------------------------------------//
   public String trimField (int index)
+  // ---------------------------------------------------------------------------------//
   {
     if (index >= 0 && index < screenFields.size ())
     {
@@ -40,22 +48,30 @@ public class PluginData
     return "";
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setKey (byte key)
+  // ---------------------------------------------------------------------------------//
   {
     this.key = key;
   }
 
+  // ---------------------------------------------------------------------------------//
   public byte getKey ()
+  // ---------------------------------------------------------------------------------//
   {
     return key;
   }
 
+  // ---------------------------------------------------------------------------------//
   public int size ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenFields.size ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public PluginField getField (int index)
+  // ---------------------------------------------------------------------------------//
   {
     if (index >= 0 && index < screenFields.size ())
     {
@@ -66,7 +82,9 @@ public class PluginData
     return null;
   }
 
+  // ---------------------------------------------------------------------------------//
   public PluginField getField (ScreenLocation location)
+  // ---------------------------------------------------------------------------------//
   {
     for (PluginField field : screenFields)
       if (field.contains (location))
@@ -78,7 +96,9 @@ public class PluginData
     return null;
   }
 
+  // ---------------------------------------------------------------------------------//
   public PluginField getField (String value)
+  // ---------------------------------------------------------------------------------//
   {
     for (PluginField field : screenFields)
       if (field.getFieldValue ().equals (value))
@@ -90,12 +110,16 @@ public class PluginData
     return null;
   }
 
+  // ---------------------------------------------------------------------------------//
   public PluginField getCursorField ()
+  // ---------------------------------------------------------------------------------//
   {
     return getField (initialCursorLocation);
   }
 
+  // ---------------------------------------------------------------------------------//
   public String listFields ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
     int count = 0;
@@ -106,17 +130,23 @@ public class PluginData
     return text.toString ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setNewCursorPosition (int row, int column)
+  // ---------------------------------------------------------------------------------//
   {
     newCursorLocation = new ScreenLocation (row, column);
   }
 
+  // ---------------------------------------------------------------------------------//
   public int getNewCursorLocation ()
+  // ---------------------------------------------------------------------------------//
   {
     return newCursorLocation.location;
   }
 
+  // ---------------------------------------------------------------------------------//
   public List<PluginField> getModifiableFields ()
+  // ---------------------------------------------------------------------------------//
   {
     List<PluginField> fields = new ArrayList<> ();
     for (PluginField field : screenFields)
@@ -125,13 +155,17 @@ public class PluginData
     return fields;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean cursorMoved ()
+  // ---------------------------------------------------------------------------------//
   {
     return newCursorLocation != null;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
 
