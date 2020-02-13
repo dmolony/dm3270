@@ -14,7 +14,9 @@ import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.utilities.Site;
 
+// -----------------------------------------------------------------------------------//
 public class SpyServer implements Runnable
+// -----------------------------------------------------------------------------------//
 {
   private Socket clientSocket;
   private final Socket serverSocket = new Socket ();
@@ -31,7 +33,9 @@ public class SpyServer implements Runnable
   private final Session session;
   private Screen screen;
 
+  // ---------------------------------------------------------------------------------//
   public SpyServer (Site server, int clientPort, Session session, TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     if (server == null)
       throw new IllegalArgumentException ("Server cannot be null or empty");
@@ -48,13 +52,17 @@ public class SpyServer implements Runnable
     this.telnetState = telnetState;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void prevent3270E (boolean value)
+  // ---------------------------------------------------------------------------------//
   {
     prevent3270E = value;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void run ()
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -109,17 +117,23 @@ public class SpyServer implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public TelnetSocket getListener (Source source)
+  // ---------------------------------------------------------------------------------//
   {
     return source == Source.CLIENT ? clientTelnetSocket : serverTelnetSocket;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setScreen (Screen screen)
+  // ---------------------------------------------------------------------------------//
   {
     this.screen = screen;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void close ()
+  // ---------------------------------------------------------------------------------//
   {
     if (clientServerSocket != null)
       try

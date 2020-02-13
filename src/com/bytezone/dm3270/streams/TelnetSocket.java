@@ -10,7 +10,9 @@ import com.bytezone.dm3270.telnet.TelnetCommand;
 import com.bytezone.dm3270.telnet.TelnetSubcommand;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class TelnetSocket implements Runnable
+// -----------------------------------------------------------------------------------//
 {
   private static final boolean debug = false;
 
@@ -42,8 +44,10 @@ public class TelnetSocket implements Runnable
   // copies its inputStream to its partner's outputStream after sending a copy to
   // the listener.
 
+  // ---------------------------------------------------------------------------------//
   public TelnetSocket (Source source, Socket socket, BufferListener listener)
       throws IOException
+  // ---------------------------------------------------------------------------------//
   {
     if (source == null)
       throw new IllegalArgumentException ("Source cannot be null");
@@ -66,22 +70,28 @@ public class TelnetSocket implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public void link (TelnetSocket partner)
+  // ---------------------------------------------------------------------------------//
   {
     this.partner = partner;
     partner.partner = this;
   }
 
   // called from SpyServer.run()
+  // ---------------------------------------------------------------------------------//
   void prevent3270E (boolean value)
+  // ---------------------------------------------------------------------------------//
   {
     if (source != Source.SERVER)
       throw new IllegalStateException ("Only a SERVER listener can do that");
     prevent3270E = value;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void run ()
+  // ---------------------------------------------------------------------------------//
   {
     running = true;
     while (running)
@@ -134,7 +144,9 @@ public class TelnetSocket implements Runnable
     close ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private void write (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -154,7 +166,9 @@ public class TelnetSocket implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private boolean fakeReplySent () throws IOException
+  // ---------------------------------------------------------------------------------//
   {
     // If the server sends a request for us to DO 3270E and we don't want to, then
     // send a fake WONT reply instead of passing on the request.
@@ -180,7 +194,9 @@ public class TelnetSocket implements Runnable
     return false;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void close ()
+  // ---------------------------------------------------------------------------------//
   {
     running = false;
 
@@ -202,8 +218,10 @@ public class TelnetSocket implements Runnable
       System.out.printf ("Closing %s%n", toString ());
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     return String.format ("TelnetSocket: Source=%s, name=%s", source, name);
   }

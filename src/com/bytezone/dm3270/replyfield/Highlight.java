@@ -1,9 +1,11 @@
 package com.bytezone.dm3270.replyfield;
 
+// -----------------------------------------------------------------------------------//
 public class Highlight extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
-  private static final String[] values = { "Normal", "Blink", "Reverse video", "",
-                                          "Underscore", "", "", "", "Intensity" };
+  private static final String[] values =
+      { "Normal", "Blink", "Reverse video", "", "Underscore", "", "", "", "Intensity" };
 
   final static byte HIGHLIGHT_DEFAULT = 0x00;
   final static byte HIGHLIGHT_NORMAL = (byte) 0xF0;
@@ -16,7 +18,9 @@ public class Highlight extends QueryReplyField
   byte[] attributeValue;
   byte[] action;
 
+  // ---------------------------------------------------------------------------------//
   public Highlight ()
+  // ---------------------------------------------------------------------------------//
   {
     super (HIGHLIGHT_QUERY_REPLY);
 
@@ -45,7 +49,9 @@ public class Highlight extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public Highlight (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
 
@@ -62,8 +68,10 @@ public class Highlight extends QueryReplyField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 
@@ -76,7 +84,7 @@ public class Highlight extends QueryReplyField
       String out =
           attrText.equals (actionText) ? attrText : attrText + " -> " + actionText;
       text.append (String.format ("%n  val/actn   : %02X/%02X - %s", attributeValue[i],
-                                  action[i], out));
+          action[i], out));
     }
 
     return text.toString ();

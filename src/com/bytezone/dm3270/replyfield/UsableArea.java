@@ -3,7 +3,9 @@ package com.bytezone.dm3270.replyfield;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class UsableArea extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   private static String[] measurementUnits = { "Inches", "Millimetres" };
   private static String[] addressingModes =
@@ -18,7 +20,9 @@ public class UsableArea extends QueryReplyField
   int yNumerator, yDenominator;
   int bufferSize;
 
+  // ---------------------------------------------------------------------------------//
   public UsableArea (int rows, int columns)
+  // ---------------------------------------------------------------------------------//
   {
     super (USABLE_AREA_REPLY);
 
@@ -40,7 +44,9 @@ public class UsableArea extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public UsableArea (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
 
@@ -66,13 +72,17 @@ public class UsableArea extends QueryReplyField
       addressingMode = 4;
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenDimensions getScreenDimensions ()
+  // ---------------------------------------------------------------------------------//
   {
     return new ScreenDimensions (height, width);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 
@@ -82,7 +92,7 @@ public class UsableArea extends QueryReplyField
     text.append (String.format ("%n  width      : %d", width));
     text.append (String.format ("%n  height     : %d", height));
     text.append (String.format ("%n  units      : %d - %s", unitsOfMeasurement,
-                                measurementUnits[unitsOfMeasurement]));
+        measurementUnits[unitsOfMeasurement]));
     text.append (String.format ("%n  x ratio    : %d / %d", xNumerator, xDenominator));
     text.append (String.format ("%n  y ratio    : %d / %d", yNumerator, yDenominator));
     text.append (String.format ("%n  x units    : %d", xUnits));

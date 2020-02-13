@@ -15,7 +15,9 @@ import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
 
 import javafx.application.Platform;
 
+// -----------------------------------------------------------------------------------//
 public class MainframeServer implements Runnable
+// -----------------------------------------------------------------------------------//
 {
   private final int port;
   private final byte[] buffer = new byte[4096];
@@ -29,18 +31,24 @@ public class MainframeServer implements Runnable
 
   private Mainframe mainframe;
 
+  // ---------------------------------------------------------------------------------//
   public MainframeServer (int port)
+  // ---------------------------------------------------------------------------------//
   {
     this.port = port;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setStage (Mainframe mainframe)
+  // ---------------------------------------------------------------------------------//
   {
     this.mainframe = mainframe;     // MainframeStage
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void run ()
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -104,7 +112,9 @@ public class MainframeServer implements Runnable
     System.out.println ("Mainframe Server closed");
   }
 
+  // ---------------------------------------------------------------------------------//
   private int sanitise (byte[] buffer, int bytesRead)
+  // ---------------------------------------------------------------------------------//
   {
     if (tempBuffer != null)
     {
@@ -148,18 +158,24 @@ public class MainframeServer implements Runnable
     return ptr;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void readAtLeast (int bytesToRead) throws IOException
+  // ---------------------------------------------------------------------------------//
   {
     while (bytesToRead > 0)
       bytesToRead -= clientIn.read (buffer);      // blocks
   }
 
+  // ---------------------------------------------------------------------------------//
   private void writeAll (byte... buffer) throws IOException
+  // ---------------------------------------------------------------------------------//
   {
     write (buffer);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void write (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     if (clientOut != null)
     {
@@ -175,13 +191,17 @@ public class MainframeServer implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public void sendCommand (Command command)
+  // ---------------------------------------------------------------------------------//
   {
     byte[] buffer = command.getTelnetData ();
     write (buffer);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void close ()
+  // ---------------------------------------------------------------------------------//
   {
     running = false;
 

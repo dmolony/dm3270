@@ -11,7 +11,9 @@ import java.util.List;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class SessionReader
+// -----------------------------------------------------------------------------------//
 {
   private final String name;
   private final String firstLetter;
@@ -29,7 +31,9 @@ public class SessionReader
 
   public byte[] buffer = new byte[16500];       // see also TelnetProcessor
 
+  // ---------------------------------------------------------------------------------//
   public SessionReader (Source source, List<String> lines)
+  // ---------------------------------------------------------------------------------//
   {
     this.name = source == Source.CLIENT ? "Client" : "Server";
     firstLetter = name.substring (0, 1);
@@ -38,7 +42,9 @@ public class SessionReader
     skipToNext ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public SessionReader (Source source, Path path)
+  // ---------------------------------------------------------------------------------//
   {
     this.name = source == Source.CLIENT ? "Client" : "Server";
     firstLetter = name.substring (0, 1);
@@ -46,7 +52,9 @@ public class SessionReader
     skipToNext ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private List<String> readFile (Path path)
+  // ---------------------------------------------------------------------------------//
   {
     List<String> lines = null;
     try
@@ -62,7 +70,9 @@ public class SessionReader
     return lines;
   }
 
+  // ---------------------------------------------------------------------------------//
   public byte[] nextBuffer () throws Exception
+  // ---------------------------------------------------------------------------------//
   {
     int bytesRead = next ();
     byte[] data = new byte[bytesRead];
@@ -70,7 +80,9 @@ public class SessionReader
     return data;
   }
 
+  // ---------------------------------------------------------------------------------//
   public int next () throws Exception
+  // ---------------------------------------------------------------------------------//
   {
     if (nextLine >= lines.size ())
       return 0;
@@ -94,23 +106,31 @@ public class SessionReader
     return bytesWritten;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean isGenuine ()
+  // ---------------------------------------------------------------------------------//
   {
     return returnGenuine;
   }
 
+  // ---------------------------------------------------------------------------------//
   public LocalDateTime getDateTime ()
+  // ---------------------------------------------------------------------------------//
   {
     return returnDateTime;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getLabel ()
+  // ---------------------------------------------------------------------------------//
   {
     return returnLabel;
   }
 
   // returns a List of lines contained in a single buffer
+  // ---------------------------------------------------------------------------------//
   private List<String> getBufferLines ()
+  // ---------------------------------------------------------------------------------//
   {
     // file structure
     int firstHexDigit = 0;
@@ -142,7 +162,9 @@ public class SessionReader
     return list;
   }
 
+  // ---------------------------------------------------------------------------------//
   private void skipToNext ()
+  // ---------------------------------------------------------------------------------//
   {
     while (nextLine < lines.size ())
     {
@@ -176,12 +198,16 @@ public class SessionReader
     nextLine++;         // make it greater than lines.size()
   }
 
+  // ---------------------------------------------------------------------------------//
   public int nextLineNo ()
+  // ---------------------------------------------------------------------------------//
   {
     return nextLine;
   }
 
+  // ---------------------------------------------------------------------------------//
   public static void main (String[] args) throws IOException
+  // ---------------------------------------------------------------------------------//
   {
     //    String base = "/Users/denismolony/Documents/workspace/"
     //        + "dm3270/src/com/bytezone/dm3270/application/";
@@ -224,14 +250,18 @@ public class SessionReader
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private static void print (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println (Dm3270Utility.toHex (buffer));
     if (buffer[buffer.length - 1] == (byte) 0xEF)
       System.out.println ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private static void print (List<String> list)
+  // ---------------------------------------------------------------------------------//
   {
     for (String line : list)
       System.out.println (line);

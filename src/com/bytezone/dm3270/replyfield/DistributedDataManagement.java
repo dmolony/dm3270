@@ -5,7 +5,9 @@ import com.bytezone.dm3270.utilities.Dm3270Utility;
 // Required for DFT data transfers. If this reply is not included, any file transfers
 // will default to CUT mode.
 
+// -----------------------------------------------------------------------------------//
 public class DistributedDataManagement extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   int flags;
   int limitIn;
@@ -13,7 +15,9 @@ public class DistributedDataManagement extends QueryReplyField
   int subsets;
   byte ddmSubset;
 
+  // ---------------------------------------------------------------------------------//
   public DistributedDataManagement ()
+  // ---------------------------------------------------------------------------------//
   {
     super (DISTRIBUTED_DATA_MANAGEMENT_REPLY);
 
@@ -28,7 +32,9 @@ public class DistributedDataManagement extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public DistributedDataManagement (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
     assert data[1] == DISTRIBUTED_DATA_MANAGEMENT_REPLY;
@@ -48,8 +54,10 @@ public class DistributedDataManagement extends QueryReplyField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 

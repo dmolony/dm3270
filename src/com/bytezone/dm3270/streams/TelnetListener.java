@@ -18,12 +18,19 @@ import com.bytezone.dm3270.session.Session;
 import com.bytezone.dm3270.session.SessionRecord;
 import com.bytezone.dm3270.session.SessionRecord.SessionRecordType;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
-import com.bytezone.dm3270.telnet.*;
+import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand;
+import com.bytezone.dm3270.telnet.TelnetCommand;
+import com.bytezone.dm3270.telnet.TelnetCommandProcessor;
+import com.bytezone.dm3270.telnet.TelnetProcessor;
+import com.bytezone.dm3270.telnet.TelnetSubcommand;
+import com.bytezone.dm3270.telnet.TerminalTypeSubcommand;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
 import javafx.application.Platform;
 
+// -----------------------------------------------------------------------------------//
 public class TelnetListener implements BufferListener, TelnetCommandProcessor
+// -----------------------------------------------------------------------------------//
 {
   private final Session session;
   private final Source source;
@@ -41,8 +48,10 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
 
   // Use this when recording the session in SPY mode, or replaying the session
   // in REPLAY mode.
+  // ---------------------------------------------------------------------------------//
   public TelnetListener (Source source, Session session, Function function, Screen screen,
       TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     this.screen = screen;
     this.telnetState = telnetState;
@@ -53,7 +62,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   }
 
   // Use this when not recording the session and running in TERMINAL mode.
+  // ---------------------------------------------------------------------------------//
   public TelnetListener (Screen screen, TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     this.screen = screen;
     this.telnetState = telnetState;
@@ -73,9 +84,11 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
   // Called from a TelnetSocket thread whilst eavesdropping        - SPY mode
   // Called from a TerminalServer thread during a Terminal session - TERMINAL mode
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public synchronized void listen (Source source, byte[] buffer, LocalDateTime dateTime,
       boolean genuine)
+  // ---------------------------------------------------------------------------------//
   {
     assert source == this.source : "Incorrect source: " + source + ", expecting: "
         + this.source;
@@ -89,22 +102,28 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
       telnetState.setLastAccess (dateTime, buffer.length);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void close ()
+  // ---------------------------------------------------------------------------------//
   {
     Platform.runLater ( () -> screen.displayText (telnetState.getSummary ()));
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void processData (byte[] buffer, int length)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Unknown telnet data received:");
     System.out.println (new String (buffer, 0, length));
     System.out.println (Dm3270Utility.toHex (buffer, 0, length, false));
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void processRecord (byte[] data, int dataPtr)
+  // ---------------------------------------------------------------------------------//
   {
     int offset;
     int length;
@@ -163,16 +182,20 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void processTelnetCommand (byte[] data, int dataPtr)
+  // ---------------------------------------------------------------------------------//
   {
     TelnetCommand telnetCommand = new TelnetCommand (telnetState, data, dataPtr);
     addDataRecord (telnetCommand, SessionRecordType.TELNET);
     telnetCommand.process (screen);       // updates TelnetState
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void processTelnetSubcommand (byte[] data, int dataPtr)
+  // ---------------------------------------------------------------------------------//
   {
     TelnetSubcommand subcommand = null;
 
@@ -194,7 +217,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     addDataRecord (subcommand, SessionRecordType.TELNET);
   }
 
+  // ---------------------------------------------------------------------------------//
   private void addDataRecord (ReplyBuffer message, SessionRecordType sessionRecordType)
+  // ---------------------------------------------------------------------------------//
   {
     // add the SessionRecord to the Session - is it OK to do this from a non-EDT?
     if (session != null)
@@ -213,7 +238,9 @@ public class TelnetListener implements BufferListener, TelnetCommandProcessor
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void processMessage (ReplyBuffer message)
+  // ---------------------------------------------------------------------------------//
   {
     message.process (screen);
     Optional<Buffer> reply = message.getReply ();

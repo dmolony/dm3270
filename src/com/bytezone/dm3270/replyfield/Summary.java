@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+// -----------------------------------------------------------------------------------//
 public class Summary extends QueryReplyField implements Iterable<QueryReplyField>
+// -----------------------------------------------------------------------------------//
 {
   List<QueryReplyField> replyList;        // replies we build
 
+  // ---------------------------------------------------------------------------------//
   public Summary (List<QueryReplyField> replies)
+  // ---------------------------------------------------------------------------------//
   {
     super (SUMMARY_QUERY_REPLY);
 
@@ -23,21 +27,27 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public Summary (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
     assert data[1] == SUMMARY_QUERY_REPLY;
     replyList = new ArrayList<> (buffer.length - 2);
   }
 
+  // ---------------------------------------------------------------------------------//
   public int size ()
+  // ---------------------------------------------------------------------------------//
   {
     if (replyList.size () > 0)
       return replyList.size ();
     return data.length - 2;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected boolean isListed (byte type)
+  // ---------------------------------------------------------------------------------//
   {
     for (int i = 2; i < data.length; i++)
       if (data[i] == type)
@@ -45,20 +55,24 @@ public class Summary extends QueryReplyField implements Iterable<QueryReplyField
     return false;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public Iterator<QueryReplyField> iterator ()
+  // ---------------------------------------------------------------------------------//
   {
     return replyList.iterator ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 
     for (int i = 2; i < data.length; i++)
       text.append (String.format ("%n  %-30s  %s", getReplyType (data[i]),
-                                  isProvided (data[i]) ? "" : "** missing **"));
+          isProvided (data[i]) ? "" : "** missing **"));
 
     // check for QueryReplyFields sent but not listed in the summary
     List<QueryReplyField> missingFields = new ArrayList<> (4);

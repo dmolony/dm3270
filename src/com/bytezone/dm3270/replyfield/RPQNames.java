@@ -4,13 +4,17 @@ import java.io.UnsupportedEncodingException;
 
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class RPQNames extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   String deviceType;
   long model;
   String rpqName;
 
+  // ---------------------------------------------------------------------------------//
   public RPQNames ()
+  // ---------------------------------------------------------------------------------//
   {
     super (RPQ_NAMES_REPLY);
 
@@ -35,7 +39,9 @@ public class RPQNames extends QueryReplyField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public RPQNames (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
     assert data[1] == RPQ_NAMES_REPLY;
@@ -56,13 +62,17 @@ public class RPQNames extends QueryReplyField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getRPQName ()
+  // ---------------------------------------------------------------------------------//
   {
     return rpqName;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 

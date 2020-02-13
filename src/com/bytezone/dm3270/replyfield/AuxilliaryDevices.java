@@ -1,11 +1,15 @@
 package com.bytezone.dm3270.replyfield;
 
+// -----------------------------------------------------------------------------------//
 public class AuxilliaryDevices extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   byte flags1;
   byte flags2;
 
+  // ---------------------------------------------------------------------------------//
   public AuxilliaryDevices ()
+  // ---------------------------------------------------------------------------------//
   {
     super (AUXILLIARY_DEVICE_REPLY);
 
@@ -16,7 +20,9 @@ public class AuxilliaryDevices extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public AuxilliaryDevices (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
 
@@ -26,8 +32,10 @@ public class AuxilliaryDevices extends QueryReplyField
     flags2 = data[3];
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 

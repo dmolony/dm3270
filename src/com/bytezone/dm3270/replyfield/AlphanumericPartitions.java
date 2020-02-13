@@ -2,7 +2,9 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class AlphanumericPartitions extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   int maxPartitions;
   int totalAvailableStorage;
@@ -13,7 +15,9 @@ public class AlphanumericPartitions extends QueryReplyField
   boolean localCopy;
   boolean modifyPartition;
 
+  // ---------------------------------------------------------------------------------//
   public AlphanumericPartitions ()
+  // ---------------------------------------------------------------------------------//
   {
     super (ALPHANUMERIC_PARTITIONS_REPLY);
 
@@ -21,7 +25,9 @@ public class AlphanumericPartitions extends QueryReplyField
     checkDataLength (ptr + 4);
   }
 
+  // ---------------------------------------------------------------------------------//
   public AlphanumericPartitions (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
     assert data[1] == ALPHANUMERIC_PARTITIONS_REPLY;
@@ -38,8 +44,10 @@ public class AlphanumericPartitions extends QueryReplyField
     modifyPartition = (flags & 0x02) != 0;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 

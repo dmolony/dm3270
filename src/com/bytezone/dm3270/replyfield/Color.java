@@ -2,14 +2,18 @@ package com.bytezone.dm3270.replyfield;
 
 import com.bytezone.dm3270.attributes.ColorAttribute;
 
+// -----------------------------------------------------------------------------------//
 public class Color extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   private byte flags;
   private int pairs;
   private byte[] attributeValue;
   private byte[] action;
 
+  // ---------------------------------------------------------------------------------//
   public Color ()
+  // ---------------------------------------------------------------------------------//
   {
     super (COLOR_QUERY_REPLY);
 
@@ -70,7 +74,9 @@ public class Color extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public Color (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
 
@@ -88,8 +94,10 @@ public class Color extends QueryReplyField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 
@@ -98,7 +106,7 @@ public class Color extends QueryReplyField
     for (int i = 0; i < pairs; i++)
     {
       text.append (String.format ("%n  val/actn   : %02X/%02X - %s", attributeValue[i],
-                                  action[i], ColorAttribute.colorName (attributeValue[i])));
+          action[i], ColorAttribute.colorName (attributeValue[i])));
       if (attributeValue[i] != action[i])
         text.append ("/" + ColorAttribute.colorName (action[i]));
     }

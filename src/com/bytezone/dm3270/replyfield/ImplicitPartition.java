@@ -3,14 +3,18 @@ package com.bytezone.dm3270.replyfield;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class ImplicitPartition extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   int width, height;
   int alternateWidth, alternateHeight;
   private ScreenDimensions implicitScreenDimensions;
   private ScreenDimensions alternateScreenDimensions;
 
+  // ---------------------------------------------------------------------------------//
   public ImplicitPartition (int rows, int columns)
+  // ---------------------------------------------------------------------------------//
   {
     super (IMP_PART_QUERY_REPLY);
 
@@ -32,7 +36,9 @@ public class ImplicitPartition extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public ImplicitPartition (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
 
@@ -47,18 +53,24 @@ public class ImplicitPartition extends QueryReplyField
     alternateScreenDimensions = new ScreenDimensions (alternateHeight, alternateWidth);
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenDimensions getScreenDimensions ()
+  // ---------------------------------------------------------------------------------//
   {
     return implicitScreenDimensions;
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenDimensions getAlternateScreenDimensions ()
+  // ---------------------------------------------------------------------------------//
   {
     return alternateScreenDimensions;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 

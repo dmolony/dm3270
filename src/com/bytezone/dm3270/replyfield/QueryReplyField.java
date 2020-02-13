@@ -2,12 +2,16 @@ package com.bytezone.dm3270.replyfield;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import com.bytezone.dm3270.structuredfields.StructuredField;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public abstract class QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   public final static byte SUMMARY_QUERY_REPLY = (byte) 0x80;
   public final static byte USABLE_AREA_REPLY = (byte) 0x81;
@@ -38,29 +42,38 @@ public abstract class QueryReplyField
   // change this to a treemap or an enum
   public static final List<ReplyType> replyTypes =
       Arrays.asList (new ReplyType (SUMMARY_QUERY_REPLY, "Summary"),
-                     new ReplyType (USABLE_AREA_REPLY, "Usable Area"),
-                     new ReplyType (ALPHANUMERIC_PARTITIONS_REPLY,
-                         "Alphanumeric Partitions"),
-                     new ReplyType (CHARACTER_SETS_REPLY, "Character Sets"),
-                     new ReplyType (COLOR_QUERY_REPLY, "Color"),
-                     new ReplyType (HIGHLIGHT_QUERY_REPLY, "Highlight"),
-                     new ReplyType (REPLY_MODES_REPLY, "Reply Modes"),
-                     new ReplyType (OEM_AUXILLIARY_DEVICE_REPLY, "OEM Aux Devices"),
-                     new ReplyType (DISTRIBUTED_DATA_MANAGEMENT_REPLY,
-                         "Distributed Data Management"),
-                     new ReplyType (STORAGE_POOLS_REPLY, "Storage Pools"),
-                     new ReplyType (AUXILLIARY_DEVICE_REPLY, "Auxilliary Devices"),
-                     new ReplyType (RPQ_NAMES_REPLY, "RPQ Names"),
-                     new ReplyType (IMP_PART_QUERY_REPLY, "Implicit Partition"),
-                     new ReplyType (TRANSPARENCY_REPLY, "Transparency"),
-                     new ReplyType (SEGMENT_REPLY, "Segment"),
-                     new ReplyType (PROCEDURE_REPLY, "Procedure"),
-                     new ReplyType (LINE_TYPE_REPLY, "Line Type"),
-                     new ReplyType (PORT_REPLY, "Port"),
-                     new ReplyType (GRAPHIC_COLOR_REPLY, "Graphic Color"),
-                     new ReplyType (GRAPHIC_SYMBOL_SETS_REPLY, "Graphic Symbol Sets"));
+          new ReplyType (USABLE_AREA_REPLY, "Usable Area"),
+          new ReplyType (ALPHANUMERIC_PARTITIONS_REPLY, "Alphanumeric Partitions"),
+          new ReplyType (CHARACTER_SETS_REPLY, "Character Sets"),
+          new ReplyType (COLOR_QUERY_REPLY, "Color"),
+          new ReplyType (HIGHLIGHT_QUERY_REPLY, "Highlight"),
+          new ReplyType (REPLY_MODES_REPLY, "Reply Modes"),
+          new ReplyType (OEM_AUXILLIARY_DEVICE_REPLY, "OEM Aux Devices"),
+          new ReplyType (DISTRIBUTED_DATA_MANAGEMENT_REPLY,
+              "Distributed Data Management"),
+          new ReplyType (STORAGE_POOLS_REPLY, "Storage Pools"),
+          new ReplyType (AUXILLIARY_DEVICE_REPLY, "Auxilliary Devices"),
+          new ReplyType (RPQ_NAMES_REPLY, "RPQ Names"),
+          new ReplyType (IMP_PART_QUERY_REPLY, "Implicit Partition"),
+          new ReplyType (TRANSPARENCY_REPLY, "Transparency"),
+          new ReplyType (SEGMENT_REPLY, "Segment"),
+          new ReplyType (PROCEDURE_REPLY, "Procedure"),
+          new ReplyType (LINE_TYPE_REPLY, "Line Type"), //
+          new ReplyType (PORT_REPLY, "Port"),
+          new ReplyType (GRAPHIC_COLOR_REPLY, "Graphic Color"),
+          new ReplyType (GRAPHIC_SYMBOL_SETS_REPLY, "Graphic Symbol Sets"));
 
+  static final Map<Byte, ReplyType> replyTips = new TreeMap<> ();
+
+  static
+  {
+    replyTips.put (SUMMARY_QUERY_REPLY, new ReplyType (SUMMARY_QUERY_REPLY, "Summary"));
+    // ... etc
+  }
+
+  // ---------------------------------------------------------------------------------//
   public static QueryReplyField getReplyField (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     assert buffer[0] == StructuredField.QUERY_REPLY;
 
@@ -113,12 +126,16 @@ public abstract class QueryReplyField
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public QueryReplyField (byte replyType)
+  // ---------------------------------------------------------------------------------//
   {
     this.replyType = getReplyType (replyType);
   }
 
+  // ---------------------------------------------------------------------------------//
   public QueryReplyField (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     assert buffer[0] == (byte) 0x81;
     data = buffer;
@@ -126,12 +143,16 @@ public abstract class QueryReplyField
   }
 
   // Called from ReadStructuredFieldCommand when in REPLAY mode
+  // ---------------------------------------------------------------------------------//
   public void addReplyFields (List<QueryReplyField> replies)
+  // ---------------------------------------------------------------------------------//
   {
     this.replies = replies;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected boolean isProvided (byte type)
+  // ---------------------------------------------------------------------------------//
   {
     for (QueryReplyField reply : replies)
       if (reply.replyType.type == type)
@@ -139,7 +160,9 @@ public abstract class QueryReplyField
     return false;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected Optional<Summary> getSummary ()
+  // ---------------------------------------------------------------------------------//
   {
     for (QueryReplyField reply : replies)
       if (reply.replyType.type == SUMMARY_QUERY_REPLY)
@@ -147,7 +170,9 @@ public abstract class QueryReplyField
     return Optional.empty ();
   }
 
+  // ---------------------------------------------------------------------------------//
   protected int createReply (int size)
+  // ---------------------------------------------------------------------------------//
   {
     size += 4;                              // we add 4 bytes at the beginning
     reply = new byte[size];
@@ -157,44 +182,59 @@ public abstract class QueryReplyField
     return ptr;                             // next location to fill
   }
 
+  // ---------------------------------------------------------------------------------//
   public ReplyType getReplyType ()
+  // ---------------------------------------------------------------------------------//
   {
     return replyType;
   }
 
+  // ---------------------------------------------------------------------------------//
   public ReplyType getReplyType (byte type)
+  // ---------------------------------------------------------------------------------//
   {
     for (ReplyType rt : replyTypes)
       if (type == rt.type)
         return rt;
+
     return new ReplyType (type, "Unknown Reply Type");
   }
 
+  // ---------------------------------------------------------------------------------//
   public int packReply (byte[] buffer, int ptr)
+  // ---------------------------------------------------------------------------------//
   {
     System.arraycopy (reply, 0, buffer, ptr, reply.length);
     ptr += reply.length;
     return ptr;
   }
 
+  // ---------------------------------------------------------------------------------//
   protected boolean checkDataLength (int ptr)
+  // ---------------------------------------------------------------------------------//
   {
     assert ptr == reply.length : String.format ("Length:%d, Ptr:%d", reply.length, ptr);
     return ptr == reply.length;
   }
 
+  // ---------------------------------------------------------------------------------//
   public int replySize ()
+  // ---------------------------------------------------------------------------------//
   {
     return reply.length;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String brief ()
+  // ---------------------------------------------------------------------------------//
   {
     return String.format ("Type  : %02X %s", data[1], replyType.name);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
     Optional<Summary> summary = getSummary ();
@@ -204,7 +244,9 @@ public abstract class QueryReplyField
     return text.toString ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public static class ReplyType
+  // ---------------------------------------------------------------------------------//
   {
     public final byte type;
     public final String name;

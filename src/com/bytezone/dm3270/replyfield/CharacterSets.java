@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class CharacterSets extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
   byte flags1;
   byte flags2;
@@ -15,7 +17,9 @@ public class CharacterSets extends QueryReplyField
   int descriptorLength;
   List<Descriptor> descriptors = new ArrayList<> ();
 
+  // ---------------------------------------------------------------------------------//
   public CharacterSets ()
+  // ---------------------------------------------------------------------------------//
   {
     super (CHARACTER_SETS_REPLY);
 
@@ -29,7 +33,9 @@ public class CharacterSets extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public CharacterSets (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
 
@@ -49,8 +55,10 @@ public class CharacterSets extends QueryReplyField
       descriptors.add (new Descriptor (data, ptr, descriptorLength));
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 
@@ -66,7 +74,9 @@ public class CharacterSets extends QueryReplyField
     return text.toString ();
   }
 
+  // ---------------------------------------------------------------------------------//
   class Descriptor
+  // ---------------------------------------------------------------------------------//
   {
     int set;
     byte flags;

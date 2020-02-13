@@ -10,7 +10,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.bytezone.dm3270.display.ScreenDimensions;
 import com.bytezone.dm3270.telnet.TN3270ExtendedSubcommand.Function;
 
+// -----------------------------------------------------------------------------------//
 public class TelnetState implements Runnable
+// -----------------------------------------------------------------------------------//
 {
   private static final DateTimeFormatter formatter =
       DateTimeFormatter.ofPattern ("dd MMM uuuu HH:mm:ss.S");
@@ -18,6 +20,8 @@ public class TelnetState implements Runnable
 
   private final String[] terminalTypes =
       { "", "", "IBM-3278-2-E", "IBM-3278-3-E", "IBM-3278-4-E", "IBM-3278-5-E" };
+
+  private final Set<TelnetStateListener> listeners = new HashSet<> ();
 
   // preferences
   private boolean do3270Extended;
@@ -53,7 +57,9 @@ public class TelnetState implements Runnable
   private int totalBytesRead;
   private int totalBytesWritten;
 
+  // ---------------------------------------------------------------------------------//
   public TelnetState ()
+  // ---------------------------------------------------------------------------------//
   {
     setDo3270Extended (true);       // prefer extended
     setDoDeviceType (2);
@@ -63,14 +69,18 @@ public class TelnetState implements Runnable
     setDoTerminalType (true);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setTerminalServer (TerminalServer terminalServer)
+  // ---------------------------------------------------------------------------------//
   {
     this.terminalServer = terminalServer;
     thread = new Thread (this);
     thread.start ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setLastAccess (LocalDateTime dateTime, int bytes)
+  // ---------------------------------------------------------------------------------//
   {
     lastAccess.set (System.currentTimeMillis ());
     ++totalReads;
@@ -80,7 +90,9 @@ public class TelnetState implements Runnable
       System.out.printf ("Read  : %,6d %s%n", bytes, formatter.format (dateTime));
   }
 
+  // ---------------------------------------------------------------------------------//
   public void write (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     if (terminalServer != null)
       terminalServer.write (buffer);
@@ -93,15 +105,17 @@ public class TelnetState implements Runnable
 
     if (debug)
       System.out.printf ("Write : %,6d %s%n", buffer.length,
-                         formatter.format (LocalDateTime.now ()));
+          formatter.format (LocalDateTime.now ()));
   }
 
   // This thread exists simply to keep the connection alive. It sleeps for a
   // certain period, and when it wakes it issues a NOOP if nothing else has
   // communicated with the server.
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void run ()
+  // ---------------------------------------------------------------------------------//
   {
     long lastTimeIChecked;
     lastAccess = new AtomicLong (System.currentTimeMillis ());
@@ -134,7 +148,9 @@ public class TelnetState implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public void close ()
+  // ---------------------------------------------------------------------------------//
   {
     if (thread != null)
     {
@@ -143,17 +159,23 @@ public class TelnetState implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenDimensions getPrimary ()
+  // ---------------------------------------------------------------------------------//
   {
     return primary;
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenDimensions getSecondary ()
+  // ---------------------------------------------------------------------------------//
   {
     return secondary;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getSummary ()
+  // ---------------------------------------------------------------------------------//
   {
     if (totalReads == 0 || totalWrites == 0)
       return "Nothing to report";
@@ -169,12 +191,12 @@ public class TelnetState implements Runnable
     text.append (String.format ("          Total        Bytes    Average%n"));
     text.append (String.format ("         -------   ----------   -------%n"));
     text.append (String.format ("Reads     %,5d       %,7d     %,4d %n", totalReads,
-                                totalBytesRead, averageReads));
+        totalBytesRead, averageReads));
     text.append (String.format ("Writes    %,5d       %,7d     %,4d %n", totalWrites,
-                                totalBytesWritten, averageWrites));
+        totalBytesWritten, averageWrites));
     text.append (String.format ("         -------   ----------   -------%n"));
     text.append (String.format ("          %,5d       %,7d     %,4d %n", totalIO,
-                                totalIOBytes, averageIO));
+        totalIOBytes, averageIO));
 
     return text.toString ();
   }
@@ -183,38 +205,50 @@ public class TelnetState implements Runnable
   // Set actual (what was communicated during negotiations)
   // ---------------------------------------------------------------------------------//
 
+  // ---------------------------------------------------------------------------------//
   public void setDoes3270Extended (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Does Extended        : " + state);
     does3270Extended = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setDoesEOR (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Does EOR             : " + state);
     doesEOR = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setDoesBinary (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Does Binary          : " + state);
     doesBinary = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setDoesTerminalType (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Does Terminal type  : " + state);
     doesTerminalType = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setTerminal (String terminal)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Terminal            : " + terminal);
     this.terminal = terminal;
   }
 
   // called from TN3270ExtendedSubcommand.process()
+  // ---------------------------------------------------------------------------------//
   public void setDeviceType (String deviceType)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Device Type          : " + deviceType);
     this.deviceType = deviceType;
@@ -250,13 +284,17 @@ public class TelnetState implements Runnable
   }
 
   // called from TN3270ExtendedSubcommand.process()
+  // ---------------------------------------------------------------------------------//
   public void setFunctions (List<Function> functions)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("Functions            : " + functions);
     this.functions = functions;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setLogicalUnit (String luName)
+  // ---------------------------------------------------------------------------------//
   {
     System.out.println ("LU name              : " + luName);
     this.luName = luName;
@@ -266,27 +304,37 @@ public class TelnetState implements Runnable
   // Ask actual
   // ---------------------------------------------------------------------------------//
 
+  // ---------------------------------------------------------------------------------//
   public boolean does3270Extended ()
+  // ---------------------------------------------------------------------------------//
   {
     return does3270Extended;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean doesEOR ()
+  // ---------------------------------------------------------------------------------//
   {
     return doesEOR || does3270Extended;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean doesBinary ()
+  // ---------------------------------------------------------------------------------//
   {
     return doesBinary || does3270Extended;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean doesTerminalType ()
+  // ---------------------------------------------------------------------------------//
   {
     return doesTerminalType || does3270Extended;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getTerminal ()
+  // ---------------------------------------------------------------------------------//
   {
     return terminal;
   }
@@ -295,27 +343,37 @@ public class TelnetState implements Runnable
   // Ask preferences
   // ---------------------------------------------------------------------------------//
 
+  // ---------------------------------------------------------------------------------//
   public boolean do3270Extended ()
+  // ---------------------------------------------------------------------------------//
   {
     return do3270Extended;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean doEOR ()
+  // ---------------------------------------------------------------------------------//
   {
     return doEOR;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean doBinary ()
+  // ---------------------------------------------------------------------------------//
   {
     return doBinary;
   }
 
+  // ---------------------------------------------------------------------------------//
   public boolean doTerminalType ()
+  // ---------------------------------------------------------------------------------//
   {
     return doTerminalType;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String doDeviceType ()
+  // ---------------------------------------------------------------------------------//
   {
     return doDeviceType;
   }
@@ -324,34 +382,46 @@ public class TelnetState implements Runnable
   // Set preferences
   // ---------------------------------------------------------------------------------//
 
+  // ---------------------------------------------------------------------------------//
   public void setDo3270Extended (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     do3270Extended = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setDoBinary (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     doBinary = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setDoEOR (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     doEOR = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setDoTerminalType (boolean state)
+  // ---------------------------------------------------------------------------------//
   {
     doTerminalType = state;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void setDoDeviceType (int modelNo)
+  // ---------------------------------------------------------------------------------//
   {
     doDeviceType = terminalTypes[modelNo];
     System.out.println ("setting: " + doDeviceType);
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
 
@@ -370,20 +440,24 @@ public class TelnetState implements Runnable
   // Listener events
   // ---------------------------------------------------------------------------------//
 
-  private final Set<TelnetStateListener> listeners = new HashSet<> ();
-
+  // ---------------------------------------------------------------------------------//
   private void fireTelnetStateChange ()
+  // ---------------------------------------------------------------------------------//
   {
     listeners.forEach (listener -> listener.telnetStateChanged (this));
   }
 
+  // ---------------------------------------------------------------------------------//
   public void addTelnetStateListener (TelnetStateListener listener)
+  // ---------------------------------------------------------------------------------//
   {
     if (!listeners.contains (listener))
       listeners.add (listener);
   }
 
+  // ---------------------------------------------------------------------------------//
   public void removeTelnetStateListener (TelnetStateListener listener)
+  // ---------------------------------------------------------------------------------//
   {
     if (listeners.contains (listener))
       listeners.remove (listener);

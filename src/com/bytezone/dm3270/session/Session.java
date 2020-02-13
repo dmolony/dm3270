@@ -31,7 +31,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 
+// -----------------------------------------------------------------------------------//
 public class Session implements Iterable<SessionRecord>
+// -----------------------------------------------------------------------------------//
 {
   private final ObservableList<SessionRecord> sessionRecords =
       FXCollections.observableArrayList ();
@@ -46,14 +48,18 @@ public class Session implements Iterable<SessionRecord>
   private ScreenDimensions screenDimensions;
 
   // called by SpyPane constructor
+  // ---------------------------------------------------------------------------------//
   public Session (TelnetState telnetState)
+  // ---------------------------------------------------------------------------------//
   {
     this.function = Function.SPY;
     this.telnetState = telnetState;
   }
 
   // called by MainframeStage constructor
+  // ---------------------------------------------------------------------------------//
   public Session (TelnetState telnetState, List<String> lines) throws Exception
+  // ---------------------------------------------------------------------------------//
   {
     function = Function.TEST;
     this.telnetState = telnetState;
@@ -65,7 +71,9 @@ public class Session implements Iterable<SessionRecord>
   }
 
   // called by Console.startSelectedFunction()
+  // ---------------------------------------------------------------------------------//
   public Session (TelnetState telnetState, Path path) throws Exception
+  // ---------------------------------------------------------------------------------//
   {
     function = Function.REPLAY;
     this.telnetState = telnetState;
@@ -76,7 +84,9 @@ public class Session implements Iterable<SessionRecord>
     init (client, server);
   }
 
+  // ---------------------------------------------------------------------------------//
   private void init (SessionReader client, SessionReader server) throws Exception
+  // ---------------------------------------------------------------------------------//
   {
     TelnetListener clientTelnetListener =
         new TelnetListener (Source.CLIENT, this, function, null, telnetState);
@@ -87,52 +97,66 @@ public class Session implements Iterable<SessionRecord>
       if (client.nextLineNo () < server.nextLineNo ())
         while (client.nextLineNo () < server.nextLineNo ())
           clientTelnetListener.listen (Source.CLIENT, client.nextBuffer (),
-                                       client.getDateTime (), client.isGenuine ());
+              client.getDateTime (), client.isGenuine ());
       else
         while (client.nextLineNo () > server.nextLineNo ())
         {
           byte[] buffer = server.nextBuffer ();
           serverTelnetListener.listen (Source.SERVER, buffer, server.getDateTime (),
-                                       server.isGenuine ());
+              server.isGenuine ());
           if (buffer[buffer.length - 2] == (byte) 0xFF
               && buffer[buffer.length - 1] == (byte) 0xEF)
             labels.add (server.getLabel ());
         }
   }
 
+  // ---------------------------------------------------------------------------------//
   public List<String> getLabels ()
+  // ---------------------------------------------------------------------------------//
   {
     return labels;
   }
 
+  // ---------------------------------------------------------------------------------//
   public int size ()
+  // ---------------------------------------------------------------------------------//
   {
     return sessionRecords.size ();
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getClientName ()
+  // ---------------------------------------------------------------------------------//
   {
     return clientName == null ? "Unknown" : clientName;
   }
 
+  // ---------------------------------------------------------------------------------//
   public String getServerName ()
+  // ---------------------------------------------------------------------------------//
   {
     return serverName == null ? "Unknown" : serverName;
   }
 
+  // ---------------------------------------------------------------------------------//
   public ScreenDimensions getScreenDimensions ()
+  // ---------------------------------------------------------------------------------//
   {
     return screenDimensions;
   }
 
+  // ---------------------------------------------------------------------------------//
   public Label getHeaderLabel ()
+  // ---------------------------------------------------------------------------------//
   {
     return headerLabel;
   }
 
   // called from MainframeStage.prepareButtons()
   // called from TelnetListener.addDataRecord()
+  // ---------------------------------------------------------------------------------//
   public synchronized void add (SessionRecord sessionRecord)
+  // ---------------------------------------------------------------------------------//
   {
     if (sessionRecord == null)
       throw new IllegalArgumentException ("DataRecord is null");
@@ -159,13 +183,17 @@ public class Session implements Iterable<SessionRecord>
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void checkScreenDimensions (Command command)
+  // ---------------------------------------------------------------------------------//
   {
     if ((command instanceof ReadStructuredFieldCommand))
       screenDimensions = ((ReadStructuredFieldCommand) command).getScreenDimensions ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private void checkClientName (Command command)
+  // ---------------------------------------------------------------------------------//
   {
     if (!(command instanceof ReadStructuredFieldCommand))
       return;
@@ -179,7 +207,9 @@ public class Session implements Iterable<SessionRecord>
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   private void checkServerName (Command command)
+  // ---------------------------------------------------------------------------------//
   {
     if (!(command instanceof WriteCommand))
       return;
@@ -214,18 +244,24 @@ public class Session implements Iterable<SessionRecord>
       setHeaderText ();
   }
 
+  // ---------------------------------------------------------------------------------//
   private void setHeaderText ()
+  // ---------------------------------------------------------------------------------//
   {
     Platform.runLater ( () -> headerLabel
         .setText (String.format ("%s : %s", getServerName (), getClientName ())));
   }
 
+  // ---------------------------------------------------------------------------------//
   public ObservableList<SessionRecord> getDataRecords ()
+  // ---------------------------------------------------------------------------------//
   {
     return sessionRecords;
   }
 
+  // ---------------------------------------------------------------------------------//
   public SessionRecord getNext (SessionRecordType dataRecordType)
+  // ---------------------------------------------------------------------------------//
   {
     for (SessionRecord dataRecord : sessionRecords)
       if (dataRecord.getDataRecordType () == dataRecordType)
@@ -233,7 +269,9 @@ public class Session implements Iterable<SessionRecord>
     return null;
   }
 
+  // ---------------------------------------------------------------------------------//
   public SessionRecord getBySize (int size)
+  // ---------------------------------------------------------------------------------//
   {
     for (SessionRecord dataRecord : sessionRecords)
       if (dataRecord.size () == size)
@@ -241,7 +279,9 @@ public class Session implements Iterable<SessionRecord>
     return null;
   }
 
+  // ---------------------------------------------------------------------------------//
   public void save (File file)
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -249,8 +289,8 @@ public class Session implements Iterable<SessionRecord>
       for (SessionRecord dataRecord : sessionRecords)
       {
         writer.printf ("%s %s %s%n",
-                       dataRecord.getSource () == Source.CLIENT ? "Client" : "Server",
-                       dataRecord.isGenuine () ? " " : "*", dataRecord.getDateTime ());
+            dataRecord.getSource () == Source.CLIENT ? "Client" : "Server",
+            dataRecord.isGenuine () ? " " : "*", dataRecord.getDateTime ());
 
         // scramble user input
         if (safeFlag)
@@ -275,21 +315,27 @@ public class Session implements Iterable<SessionRecord>
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public void safeSave (File file)
+  // ---------------------------------------------------------------------------------//
   {
     safeFlag = true;
     save (file);
     safeFlag = false;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public Iterator<SessionRecord> iterator ()
+  // ---------------------------------------------------------------------------------//
   {
     return sessionRecords.iterator ();
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder ();
 

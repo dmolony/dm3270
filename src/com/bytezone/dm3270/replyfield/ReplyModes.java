@@ -1,12 +1,16 @@
 package com.bytezone.dm3270.replyfield;
 
+// -----------------------------------------------------------------------------------//
 public class ReplyModes extends QueryReplyField
+// -----------------------------------------------------------------------------------//
 {
-  private static String[] modeTypes = { "Field mode", "Extended field mode",
-                                       "Character mode" };
+  private static String[] modeTypes =
+      { "Field mode", "Extended field mode", "Character mode" };
   int[] modes;
 
+  // ---------------------------------------------------------------------------------//
   public ReplyModes ()
+  // ---------------------------------------------------------------------------------//
   {
     super (REPLY_MODES_REPLY);
     int ptr = createReply (3);
@@ -18,7 +22,9 @@ public class ReplyModes extends QueryReplyField
     checkDataLength (ptr);
   }
 
+  // ---------------------------------------------------------------------------------//
   public ReplyModes (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     super (buffer);
 
@@ -29,8 +35,10 @@ public class ReplyModes extends QueryReplyField
       modes[i] = data[i + 2] & 0xFF;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     StringBuilder text = new StringBuilder (super.toString ());
 

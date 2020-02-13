@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import com.bytezone.dm3270.streams.TelnetSocket.Source;
 import com.bytezone.dm3270.utilities.Dm3270Utility;
 
+// -----------------------------------------------------------------------------------//
 public class TerminalServer implements Runnable
+// -----------------------------------------------------------------------------------//
 {
   private final int serverPort;
   private final String serverURL;
@@ -25,15 +27,19 @@ public class TerminalServer implements Runnable
   private final BufferListener telnetListener;
   private final boolean debug = false;
 
+  // ---------------------------------------------------------------------------------//
   public TerminalServer (String serverURL, int serverPort, BufferListener listener)
+  // ---------------------------------------------------------------------------------//
   {
     this.serverPort = serverPort;
     this.serverURL = serverURL;
     this.telnetListener = listener;
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public void run ()
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -83,7 +89,9 @@ public class TerminalServer implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   synchronized void write (byte[] buffer)
+  // ---------------------------------------------------------------------------------//
   {
     if (serverOut == null)
     {
@@ -110,7 +118,9 @@ public class TerminalServer implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   public void close ()
+  // ---------------------------------------------------------------------------------//
   {
     try
     {
@@ -131,8 +141,10 @@ public class TerminalServer implements Runnable
     }
   }
 
+  // ---------------------------------------------------------------------------------//
   @Override
   public String toString ()
+  // ---------------------------------------------------------------------------------//
   {
     return String.format ("TerminalSocket listening to %s : %d", serverURL, serverPort);
   }
